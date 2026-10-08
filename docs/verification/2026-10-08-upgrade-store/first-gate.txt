@@ -1,0 +1,179 @@
+test_forgotten_record_remains_retained_and_leaves_native_views (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_forgotten_record_remains_retained_and_leaves_native_views) ... FAIL
+test_invalid_expiry_preserves_original_skip_without_publication (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_invalid_expiry_preserves_original_skip_without_publication) ... 
+  test_invalid_expiry_preserves_original_skip_without_publication (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_invalid_expiry_preserves_original_skip_without_publication) (original=False) ... FAIL
+test_list_and_get_preserve_all_original_fields (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_list_and_get_preserve_all_original_fields) ... FAIL
+test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) ... 
+  test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) (action='add') ... FAIL
+  test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) (action='status') ... FAIL
+  test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) (action='expire') ... FAIL
+test_original_terminal_status_refuses_an_illegal_transition_without_writing (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_original_terminal_status_refuses_an_illegal_transition_without_writing) ... ok
+test_private_creation_never_changes_record_or_state (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_private_creation_never_changes_record_or_state) ... ok
+test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) ... FAIL
+test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) ... ok
+test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) ... ok
+
+======================================================================
+FAIL: test_forgotten_record_remains_retained_and_leaves_native_views (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_forgotten_record_remains_retained_and_leaves_native_views)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 148, in test_forgotten_record_remains_retained_and_leaves_native_views
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at listUpgrades (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:250:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_invalid_expiry_preserves_original_skip_without_publication (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_invalid_expiry_preserves_original_skip_without_publication) (original=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 178, in test_invalid_expiry_preserves_original_skip_without_publication
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at expireSweep (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:306:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_list_and_get_preserve_all_original_fields (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_list_and_get_preserve_all_original_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 82, in test_list_and_get_preserve_all_original_fields
+    self.assertEqual(actual.returncode,0,actual.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at listUpgrades (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:250:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) (action='add')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 97, in test_native_add_status_and_expiry_preserve_selected_file_effects
+    self.assertEqual(actual.returncode,0,actual.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at addUpgrade (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:228:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) (action='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 97, in test_native_add_status_and_expiry_preserve_selected_file_effects
+    self.assertEqual(actual.returncode,0,actual.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at setStatus (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:292:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) (action='expire')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 97, in test_native_add_status_and_expiry_preserve_selected_file_effects
+    self.assertEqual(actual.returncode,0,actual.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at expireSweep (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:306:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 132, in test_read_only_owner_keeps_reads_and_cannot_mutate
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at storeAccess (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:202:20)
+      at listUpgrades (/home/outsider/.cache/lifeos-daily-text-20261007/upgrade-store-first/lifeos/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts:250:20)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:162
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 9 tests in 3.200s
+
+FAILED (failures=7)

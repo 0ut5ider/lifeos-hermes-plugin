@@ -1,0 +1,24 @@
+test_forgotten_record_remains_retained_and_leaves_native_views (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_forgotten_record_remains_retained_and_leaves_native_views) ... ok
+test_invalid_expiry_preserves_original_skip_without_publication (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_invalid_expiry_preserves_original_skip_without_publication) ... 
+  test_invalid_expiry_preserves_original_skip_without_publication (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_invalid_expiry_preserves_original_skip_without_publication) (original=False) ... FAIL
+test_list_and_get_preserve_all_original_fields (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_list_and_get_preserve_all_original_fields) ... ok
+test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) ... ok
+test_original_terminal_status_refuses_an_illegal_transition_without_writing (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_original_terminal_status_refuses_an_illegal_transition_without_writing) ... ok
+test_private_creation_never_changes_record_or_state (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_private_creation_never_changes_record_or_state) ... ok
+test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) ... ok
+test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) ... ok
+test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) ... ok
+
+======================================================================
+FAIL: test_invalid_expiry_preserves_original_skip_without_publication (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_invalid_expiry_preserves_original_skip_without_publication) (original=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 179, in test_invalid_expiry_preserves_original_skip_without_publication
+    self.assertEqual(json.loads(result.stdout),0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+----------------------------------------------------------------------
+Ran 9 tests in 7.058s
+
+FAILED (failures=1)

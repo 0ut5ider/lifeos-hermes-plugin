@@ -260,6 +260,10 @@ class MemoryService:
     def _native_operation(self, context, operation, arguments, configuration, scope):
         try:
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'upgrade_store' and set(arguments)=={'action','arguments','request_id'}:
+                from .memory_upgrades import run
+                return run(memory,scope,**arguments,source_session=context.session_id,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'hypothesis_list' and not arguments:
                 from .memory_hypothesis_queue import pending
                 return {'ok':True,'hypotheses':pending(memory,scope,

@@ -6344,10 +6344,27 @@ index 8162267..5fafe9a 100755
 -main();
 +if (import.meta.main) main();
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
-index 30db06e..7c1ca94 100644
+index 30db06e..0ef3111 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
-@@ -36,6 +36,11 @@ const UPGRADES_DIR = join(BASE_DIR, "MEMORY", "UPGRADES");
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reads and publishes native upgrade records through current owner admission.
++// ABOUTME: Preserves standalone transitions and plans managed store publications.
+ /**
+  * @version 1.0.0
+  * Upgrades.ts — the Upgrades store: every system-improvement candidate as one
+@@ -22,7 +24,8 @@
+ 
+ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "fs";
+ import { join } from "path";
+-import { createHash } from "crypto";
++import { createHash, randomUUID } from "crypto";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { homedir } from "node:os";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+@@ -36,6 +39,11 @@ const UPGRADES_DIR = join(BASE_DIR, "MEMORY", "UPGRADES");
  const RECORDS_DIR = join(UPGRADES_DIR, "records");
  const STATE_FILE = join(UPGRADES_DIR, ".state.json");
  const EXPIRY_DAYS = 30;
@@ -6359,19 +6376,72 @@ index 30db06e..7c1ca94 100644
  
  export type UpgradeStatus = "recommended" | "accepted" | "applied" | "verified" | "rejected" | "expired";
  export type UpgradeSource = "directive" | "correction" | "upgrade-skill" | "algo-run" | "autonomous" | "manual";
-@@ -189,7 +194,7 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+@@ -134,6 +142,10 @@ function parseRecord(filename: string): UpgradeRecord | null {
+   const fp = join(RECORDS_DIR, filename);
+   if (!existsSync(fp)) return null;
+   const content = readFileSync(fp, "utf-8");
++  return parseUpgradeSource(filename, content);
++}
++
++export function parseUpgradeSource(filename: string, content: string): UpgradeRecord | null {
+   const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+   if (!m) return null;
+   const fm: Record<string, any> = {};
+@@ -178,18 +190,25 @@ function parseRecord(filename: string): UpgradeRecord | null {
+ 
+ // ── Public API ──
+ 
+-export function addUpgrade(input: UpgradeInput): { created: boolean; id: string; reason?: string } {
+-  if (!input.claim || input.claim.trim().length < 10) return { created: false, id: "", reason: "claim_too_short" };
+-  const st = loadState();
+-  const hash = claimHash(input.claim);
+-  if (st.claim_hashes[hash]) return { created: false, id: st.claim_hashes[hash].id, reason: "duplicate" };
++function validUpgrade(value: unknown): value is UpgradeRecord {
++  return memoryObject(value) && ["id", "slug", "status", "source", "created", "expires", "claim", "current_state",
++    "recommendation", "target_surface", "session_id", "filename"].every(key => typeof value[key] === "string")
++    && typeof value.confidence === "number" && (value.ledger_id === null || typeof value.ledger_id === "string")
++    && Array.isArray(value.notes) && value.notes.every(note => typeof note === "string")
++    && Array.isArray(value.evidence) && value.evidence.every(item => typeof item === "string");
++}
+ 
+-  mkdirSync(RECORDS_DIR, { recursive: true });
+-  const now = new Date();
++function storeAccess<T>(action: string, arguments_: Record<string, unknown>, valid: (value: unknown) => value is T): T | undefined {
++  const response = memoryAccess("upgrade_store", {action, arguments: arguments_, request_id: randomUUID()},
++    (value): value is {ok: true; result: T} => memoryObject(value) && value.ok === true && valid(value.result));
++  return response?.result;
++}
++
++function createUpgradeRecord(input: UpgradeInput, now: Date): UpgradeRecord {
    const stamp = now.toISOString();
    const idStamp = stamp.slice(0, 19).replace(/[-:T]/g, "").replace(/^(\d{8})(\d{6})$/, "$1-$2");
    const slug = slugify(input.claim);
 -  const id = `${idStamp}_${slug}`;
-+  const id = `${idStamp}_${slug}_${hash}`;
++  const id = `${idStamp}_${slug}_${claimHash(input.claim)}`;
    const record: UpgradeRecord = {
      ...input,
      claim: input.claim.trim().slice(0, 1000),
-@@ -202,8 +207,10 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+@@ -202,13 +221,35 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
      notes: [`${stamp} — created (source: ${input.source})`],
      filename: `${id}.md`,
    };
++  return record;
++}
++
++export function addUpgrade(input: UpgradeInput): { created: boolean; id: string; reason?: string } {
++  const governed = storeAccess("add", {input},
++    (value): value is {created: boolean; id: string; reason?: string} => memoryObject(value)
++      && typeof value.created === "boolean" && typeof value.id === "string"
++      && (value.reason === undefined || typeof value.reason === "string"));
++  if (governed !== undefined) return governed;
++  if (!input.claim || input.claim.trim().length < 10) return { created: false, id: "", reason: "claim_too_short" };
++  const st = loadState();
++  const hash = claimHash(input.claim);
++  if (st.claim_hashes[hash]) return { created: false, id: st.claim_hashes[hash].id, reason: "duplicate" };
++
++  mkdirSync(RECORDS_DIR, { recursive: true });
++  const record = createUpgradeRecord(input, new Date());
++  const {id, created: stamp} = record;
 +  publicationObserver?.(join(RECORDS_DIR, record.filename));
    writeFileSync(join(RECORDS_DIR, record.filename), renderRecord(record));
    st.claim_hashes[hash] = { id, created: stamp };
@@ -6379,6 +6449,167 @@ index 30db06e..7c1ca94 100644
    saveState(st);
    return { created: true, id };
  }
+ 
+ export function listUpgrades(filter?: { status?: string; source?: string }): UpgradeRecord[] {
++  const governed = storeAccess("list", {filter: filter ?? null},
++    (value): value is UpgradeRecord[] => Array.isArray(value) && value.every(validUpgrade));
++  if (governed !== undefined) return governed;
+   if (!existsSync(RECORDS_DIR)) return [];
+   const out: UpgradeRecord[] = [];
+   for (const f of readdirSync(RECORDS_DIR).filter((f) => f.endsWith(".md"))) {
+@@ -222,6 +263,8 @@ export function listUpgrades(filter?: { status?: string; source?: string }): Upg
+ }
+ 
+ export function getUpgrade(id: string): UpgradeRecord | null {
++  const governed = storeAccess("get", {id}, (value): value is UpgradeRecord | null => value === null || validUpgrade(value));
++  if (governed !== undefined) return governed;
+   return parseRecord(`${id}.md`);
+ }
+ 
+@@ -231,24 +274,37 @@ const TRANSITIONS: Record<string, UpgradeStatus[]> = {
+   applied: ["verified"],
+ };
+ 
++function transitionUpgrade(r: UpgradeRecord, status: UpgradeStatus, opts: {note?: string; ledger_id?: string} | undefined,
++  stamp: string): {ok: boolean; reason?: string} {
++  const allowed = TRANSITIONS[r.status] ?? [];
++  if (!allowed.includes(status)) return { ok: false, reason: `illegal_transition_${r.status}_to_${status}` };
++  r.status = status;
++  if (opts?.ledger_id) r.ledger_id = opts.ledger_id;
++  r.notes.push(`${stamp} — ${status}${opts?.ledger_id ? ` (ledger: ${opts.ledger_id})` : ""}${opts?.note ? `: ${opts.note}` : ""}`);
++  return {ok: true};
++}
++
+ export function setStatus(
+   id: string,
+   status: UpgradeStatus,
+   opts?: { note?: string; ledger_id?: string }
+ ): { ok: boolean; reason?: string } {
++  const governed = storeAccess("status", {id, status, opts: opts ?? null},
++    (value): value is {ok: boolean; reason?: string} => memoryObject(value) && typeof value.ok === "boolean"
++      && (value.reason === undefined || typeof value.reason === "string"));
++  if (governed !== undefined) return governed;
+   const r = getUpgrade(id);
+   if (!r) return { ok: false, reason: "not_found" };
+-  const allowed = TRANSITIONS[r.status] ?? [];
+-  if (!allowed.includes(status)) return { ok: false, reason: `illegal_transition_${r.status}_to_${status}` };
+-  r.status = status;
+-  if (opts?.ledger_id) r.ledger_id = opts.ledger_id;
+-  const stamp = new Date().toISOString();
+-  r.notes.push(`${stamp} — ${status}${opts?.ledger_id ? ` (ledger: ${opts.ledger_id})` : ""}${opts?.note ? `: ${opts.note}` : ""}`);
++  const result = transitionUpgrade(r, status, opts, new Date().toISOString());
++  if (!result.ok) return result;
++  publicationObserver?.(join(RECORDS_DIR, r.filename));
+   writeFileSync(join(RECORDS_DIR, r.filename), renderRecord(r));
+   return { ok: true };
+ }
+ 
+ export function expireSweep(): number {
++  const governed = storeAccess("expire", {}, (value): value is number => typeof value === "number" && Number.isSafeInteger(value) && value >= 0);
++  if (governed !== undefined) return governed;
+   const now = Date.now();
+   let n = 0;
+   for (const r of listUpgrades({ status: "recommended" })) {
+@@ -259,6 +315,99 @@ export function expireSweep(): number {
+   return n;
+ }
+ 
++function validSource(value: unknown): value is UpgradeSource {
++  return value === "directive" || value === "correction" || value === "upgrade-skill" || value === "algo-run"
++    || value === "autonomous" || value === "manual";
++}
++
++function validStatus(value: unknown): value is UpgradeStatus {
++  return value === "recommended" || value === "accepted" || value === "applied" || value === "verified"
++    || value === "rejected" || value === "expired";
++}
++
++function validInput(value: unknown): value is UpgradeInput {
++  return memoryObject(value) && typeof value.claim === "string" && validSource(value.source)
++    && ["current_state", "recommendation", "target_surface", "session_id"].every(key => value[key] === undefined || typeof value[key] === "string")
++    && (value.confidence === undefined || typeof value.confidence === "number")
++    && (value.evidence === undefined || Array.isArray(value.evidence) && value.evidence.every(item => typeof item === "string"));
++}
++
++function parseStoreState(content: string | null): StoreState {
++  if (content === null) return {schema_version: 1, claim_hashes: {}};
++  const value: unknown = JSON.parse(content);
++  const valid = (state: unknown): state is StoreState => memoryObject(state) && typeof state.schema_version === "number"
++    && memoryObject(state.claim_hashes) && Object.values(state.claim_hashes).every(row => memoryObject(row)
++      && typeof row.id === "string" && typeof row.created === "string");
++  if (!valid(value)) throw new Error("Upgrade publication requires declared current store state");
++  return value;
++}
++
++export function renderUpgradeRecords(sources: {filename: string; content: string}[]): UpgradeRecord[] {
++  const records: UpgradeRecord[] = [];
++  for (const source of sources) {
++    const record = parseUpgradeSource(source.filename, source.content);
++    if (record) records.push(record);
++  }
++  return records.sort((a, b) => b.created.localeCompare(a.created));
++}
++
++export function renderUpgradeStore(sources: {filename: string; content: string}[], state: string | null,
++  action: string, arguments_: Record<string, unknown>, now: string, sourceSession: string): {
++    result: unknown; publications: {path: string; content: string}[];
++  } {
++  const records = renderUpgradeRecords(sources);
++  const publications: {path: string; content: string}[] = [];
++  if (action === "list") {
++    const filter = arguments_.filter;
++    if (filter !== null && !memoryObject(filter)) throw new Error("Upgrade list requires a declared native filter");
++    return {result: records.filter(record => (!filter?.status || record.status === filter.status)
++      && (!filter?.source || record.source === filter.source)), publications};
++  }
++  if (action === "get") return {result: records.find(record => record.filename === `${arguments_.id}.md`) ?? null, publications};
++  if (action === "add") {
++    const input = arguments_.input;
++    if (!validInput(input)) throw new Error("Upgrade creation requires declared input fields");
++    if (!input.claim || input.claim.trim().length < 10) return {result: {created: false, id: "", reason: "claim_too_short"}, publications};
++    const current = parseStoreState(state);
++    const hash = claimHash(input.claim);
++    if (current.claim_hashes[hash]) return {result: {created: false, id: current.claim_hashes[hash].id, reason: "duplicate"}, publications};
++    const record = createUpgradeRecord({...input, session_id: sourceSession}, new Date(now));
++    current.claim_hashes[hash] = {id: record.id, created: record.created};
++    publications.push({path: `LIFEOS/MEMORY/UPGRADES/records/${record.filename}`, content: renderRecord(record)},
++      {path: "LIFEOS/MEMORY/UPGRADES/.state.json", content: JSON.stringify(current, null, 2)});
++    return {result: {created: true, id: record.id}, publications};
++  }
++  if (action === "status") {
++    const record = records.find(row => row.filename === `${arguments_.id}.md`);
++    if (!record) return {result: {ok: false, reason: "not_found"}, publications};
++    const status = arguments_.status;
++    const opts = arguments_.opts;
++    if (!validStatus(status) || !(opts === null || memoryObject(opts))) throw new Error("Upgrade transition requires declared fields");
++    if (opts !== null && (opts.note !== undefined && typeof opts.note !== "string"
++      || opts.ledger_id !== undefined && typeof opts.ledger_id !== "string")) throw new Error("Upgrade transition requires native note text");
++    const options = opts === null ? undefined : {note: typeof opts.note === "string" ? opts.note : undefined,
++      ledger_id: typeof opts.ledger_id === "string" ? opts.ledger_id : undefined};
++    const result = transitionUpgrade(record, status, options, new Date(now).toISOString());
++    if (result.ok) publications.push({path: `LIFEOS/MEMORY/UPGRADES/records/${record.filename}`, content: renderRecord(record)});
++    return {result, publications};
++  }
++  if (action === "expire") {
++    let count = 0;
++    const outputs = new Map<string, string>();
++    for (const pending of records.filter(record => record.status === "recommended")) {
++      if (!pending.expires || !(new Date(pending.expires).getTime() < new Date(now).getTime())) continue;
++      const record = records.find(row => row.filename === `${pending.id}.md`);
++      if (record && transitionUpgrade(record, "expired", {note: "TTL sweep"}, new Date(now).toISOString()).ok) {
++        count++;
++        outputs.set(record.filename, renderRecord(record));
++      }
++    }
++    for (const [filename, content] of outputs) publications.push({path: `LIFEOS/MEMORY/UPGRADES/records/${filename}`, content});
++    return {result: count, publications};
++  }
++  throw new Error("Choose a declared native upgrade store action");
++}
++
+ // ── CLI ──
+ 
+ function argVal(args: string[], flag: string): string | undefined {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts b/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts
 index 4e2c04a..f3cf6a9 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts

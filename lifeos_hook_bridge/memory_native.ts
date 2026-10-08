@@ -27,7 +27,15 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'hypothesis_review') {
+  if (input.action === 'upgrade_store') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/Upgrades.ts')).href);
+    if (!object(module) || typeof module.renderUpgradeStore !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
+        || typeof input.action_name !== 'string' || !object(input.arguments)
+        || !(input.state === null || typeof input.state === 'string') || typeof input.now !== 'string'
+        || typeof input.source_session !== 'string') throw new Error('Native upgrades require declared current sources and actions');
+    result = module.renderUpgradeStore(input.sources,input.state,input.action_name,input.arguments,input.now,input.source_session);
+  } else if (input.action === 'hypothesis_review') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
     if (!object(module) || typeof module.renderHypothesisReview !== 'function' || !object(input.sources)
         || !Array.isArray(input.sources.hypotheses) || !object(input.sources.frames)
