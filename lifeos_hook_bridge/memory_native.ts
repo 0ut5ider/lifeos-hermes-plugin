@@ -27,7 +27,14 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "proposal_gc") {
+  if (input.action === 'session_harvest') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/SessionHarvester.ts')).href);
+    if (!object(module) || typeof module.renderSessionHarvest !== 'function' || !Array.isArray(input.sessions)
+        || typeof input.mine !== 'boolean' || typeof input.now !== 'string') {
+      throw new Error('Session consolidation requires declared transcripts and modes');
+    }
+    result = module.renderSessionHarvest(input.sessions, input.mine, input.now);
+  } else if (input.action === "proposal_gc") {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/ProposalGC.ts')).href);
     if (!object(module) || typeof module.renderProposalGC !== 'function' || !object(input.sources)
         || Object.values(input.sources).some(content => typeof content !== 'string')

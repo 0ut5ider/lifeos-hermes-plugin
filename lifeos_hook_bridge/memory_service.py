@@ -247,6 +247,11 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = self._context_scope(configuration, context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'session_harvest' and set(arguments) == {'recent','all','session','projects_dir','dry_run','mine'}:
+                from .memory_session_harvest import run
+                return run(memory, scope, configuration, self.configuration.path.parent, **arguments,
+                    check_current=lambda: self._check_current_context(configuration, context, scope),
+                    session_scope=lambda session: self._context_scope(configuration, session))
             if operation == 'proposal_gc' and set(arguments) == {'apply', 'auto', 'route'}:
                 from .memory_proposal_gc import run
                 return run(memory, scope, **arguments,

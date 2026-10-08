@@ -1,0 +1,65 @@
+FFFF.F..                                                                 [100%]
+=================================== FAILURES ===================================
+___________ MemorySessionHarvestTests.test_dry_run_preserves_memory ____________
+
+self = <test_memory_session_harvest.MemorySessionHarvestTests testMethod=test_dry_run_preserves_memory>
+
+    def test_dry_run_preserves_memory(self):
+        result = self.call('--recent', '20', '--dry-run')
+        self.assertEqual(result.returncode, 0, result.stderr)
+>       self.assertIn('1', result.stdout)
+E       AssertionError: '1' not found in 'No sessions found to harvest\n'
+
+tests/test_memory_session_harvest.py:93: AssertionError
+_ MemorySessionHarvestTests.test_managed_default_harvests_hermes_transcripts_privately _
+
+self = <test_memory_session_harvest.MemorySessionHarvestTests testMethod=test_managed_default_harvests_hermes_transcripts_privately>
+
+    def test_managed_default_harvests_hermes_transcripts_privately(self):
+        result = self.call('--recent', '20')
+        self.assertEqual(result.returncode, 0, result.stderr)
+>       self.assertEqual(len(self.notes()), 1)
+E       AssertionError: 0 != 1
+
+tests/test_memory_session_harvest.py:66: AssertionError
+_ MemorySessionHarvestTests.test_missing_context_refuses_before_native_processing _
+
+self = <test_memory_session_harvest.MemorySessionHarvestTests testMethod=test_missing_context_refuses_before_native_processing>
+
+    def test_missing_context_refuses_before_native_processing(self):
+        result = self.call('--recent', '20', context=False)
+>       self.assertNotEqual(result.returncode, 0)
+E       AssertionError: 0 == 0
+
+tests/test_memory_session_harvest.py:74: AssertionError
+_ MemorySessionHarvestTests.test_private_capture_span_never_reaches_a_learning_file _
+
+self = <test_memory_session_harvest.MemorySessionHarvestTests testMethod=test_private_capture_span_never_reaches_a_learning_file>
+
+    def test_private_capture_span_never_reaches_a_learning_file(self):
+        self.write_transcript(self.content + ' <private>Synthetic withheld token marker</private>')
+        result = self.call('--recent', '20')
+        self.assertEqual(result.returncode, 0, result.stderr)
+>       text = self.notes()[0].read_text()
+               ^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests/test_memory_session_harvest.py:100: IndexError
+__ MemorySessionHarvestTests.test_revoked_owner_refuses_session_consolidation __
+
+self = <test_memory_session_harvest.MemorySessionHarvestTests testMethod=test_revoked_owner_refuses_session_consolidation>
+
+    def test_revoked_owner_refuses_session_consolidation(self):
+        self.fixture.configuration.update(lambda value: value['accounts'].pop('chat-a:100'))
+        result = self.call('--recent', '20')
+>       self.assertNotEqual(result.returncode, 0)
+E       AssertionError: 0 == 0
+
+tests/test_memory_session_harvest.py:81: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_memory_session_harvest.py::MemorySessionHarvestTests::test_dry_run_preserves_memory
+FAILED tests/test_memory_session_harvest.py::MemorySessionHarvestTests::test_managed_default_harvests_hermes_transcripts_privately
+FAILED tests/test_memory_session_harvest.py::MemorySessionHarvestTests::test_missing_context_refuses_before_native_processing
+FAILED tests/test_memory_session_harvest.py::MemorySessionHarvestTests::test_private_capture_span_never_reaches_a_learning_file
+FAILED tests/test_memory_session_harvest.py::MemorySessionHarvestTests::test_revoked_owner_refuses_session_consolidation
+5 failed, 3 passed in 1.16s

@@ -7274,3 +7274,177 @@ index 8dbc6c4..26d8337 100755
    main();
  } catch (err) {
    if (!process.argv.includes("--auto")) throw err;
+diff --git a/LifeOS/install/LIFEOS/TOOLS/SessionHarvester.ts b/LifeOS/install/LIFEOS/TOOLS/SessionHarvester.ts
+index a9a1c6e..6b96417 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/SessionHarvester.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/SessionHarvester.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Extracts native learning patterns from session transcripts.
++// ABOUTME: Delegates managed Hermes transcript admission and publication to the memory service.
+ /**
+  * SessionHarvester - Extract learnings from Claude Code session transcripts
+  *
+@@ -25,6 +27,7 @@ import * as path from "path";
+ import { getLearningCategory, isLearningCapture } from "../../hooks/lib/learning-utils";
+ import { ingestCaptureEnvelope } from "./CaptureEnvelope";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from './lib/MemoryAccess';
+ 
+ // ============================================================================
+ // Configuration
+@@ -246,11 +249,11 @@ function matchesPatterns(text: string, patterns: RegExp[]): { matches: boolean;
+ // Learning Extraction
+ // ============================================================================
+ 
+-function harvestLearnings(sessionPath: string): HarvestedLearning[] {
++function harvestLearnings(sessionPath: string, declared?: string): HarvestedLearning[] {
+   const learnings: HarvestedLearning[] = [];
+   const sessionId = path.basename(sessionPath, '.jsonl');
+ 
+-  const content = fs.readFileSync(sessionPath, 'utf-8');
++  const content = declared ?? fs.readFileSync(sessionPath, 'utf-8');
+   const lines = content.split('\n').filter(line => line.trim());
+ 
+   let previousContext = '';
+@@ -328,11 +331,11 @@ function harvestLearnings(sessionPath: string): HarvestedLearning[] {
+ // Memory Mining
+ // ============================================================================
+ 
+-function mineMemories(sessionPath: string): MinedMemory[] {
++function mineMemories(sessionPath: string, declared?: string): MinedMemory[] {
+   const memories: MinedMemory[] = [];
+   const sessionId = path.basename(sessionPath, '.jsonl');
+ 
+-  const content = fs.readFileSync(sessionPath, 'utf-8');
++  const content = declared ?? fs.readFileSync(sessionPath, 'utf-8');
+   const lines = content.split('\n').filter(line => line.trim());
+ 
+   for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+@@ -427,7 +430,14 @@ function writeToQueue(mem: MinedMemory): string {
+   const filename = `mine_${ts}_${mem.memoryType}_${sessionShort}_L${mem.sourceLine}.json`;
+   const filepath = path.join(HARVEST_QUEUE_DIR, filename);
+ 
+-  const candidate = {
++  const candidate = captureCandidate(mem, CAPTURE_SOURCE, now.toISOString());
++
++  fs.writeFileSync(filepath, JSON.stringify(candidate, null, 2));
++  return filepath;
++}
++
++function captureCandidate(mem: MinedMemory, source: string, now: string): Record<string, unknown> {
++  return {
+     title: `${mem.memoryType}: ${mem.content.substring(0, 60)}...`,
+     content: `## ${mem.memoryType.charAt(0).toUpperCase() + mem.memoryType.slice(1)}\n\n${mem.content}\n\n## Context\n\n${mem.context}`,
+     domain: "Ideas",
+@@ -436,17 +446,15 @@ function writeToQueue(mem: MinedMemory): string {
+     confidence: mem.confidence,
+     sourcePattern: mem.sourcePattern,
+     sourcePath: mem.sessionId,
+-    minedAt: now.toISOString(),
++    minedAt: now,
+     provenance: {
+-      source: CAPTURE_SOURCE,
++      source,
+       channel: CAPTURE_CHANNEL,
+       captured_at: mem.timestamp,
+       session_id: mem.sessionId,
+     },
+   };
+ 
+-  fs.writeFileSync(filepath, JSON.stringify(candidate, null, 2));
+-  return filepath;
+ }
+ 
+ // ============================================================================
+@@ -477,14 +485,14 @@ function generateLearningFilename(learning: HarvestedLearning): string {
+   return `${dateStr}_${timeStr}_${typeSlug}_${sessionShort}.md`;
+ }
+ 
+-function formatLearningFile(learning: HarvestedLearning): string {
++function formatLearningFile(learning: HarvestedLearning, source = CAPTURE_SOURCE): string {
+   return `# ${learning.type.charAt(0).toUpperCase() + learning.type.slice(1)} Learning
+ 
+ **Session:** ${learning.sessionId}
+ **Timestamp:** ${learning.timestamp}
+ **Category:** ${learning.category}
+ **Source Pattern:** ${learning.source}
+-**Provenance:** source=${CAPTURE_SOURCE} channel=${CAPTURE_CHANNEL} captured_at=${learning.timestamp} session_id=${learning.sessionId}
++**Provenance:** source=${source} channel=${CAPTURE_CHANNEL} captured_at=${learning.timestamp} session_id=${learning.sessionId}
+ 
+ ---
+ 
+@@ -498,7 +506,7 @@ ${learning.content}
+ 
+ ---
+ 
+-*Harvested by SessionHarvester from projects/ transcript*
++*Harvested by SessionHarvester from ${source === 'hermes' ? 'Hermes' : 'projects/'} transcript*
+ `;
+ }
+ 
+@@ -522,6 +530,37 @@ function writeLearning(learning: HarvestedLearning): string {
+ // CLI
+ // ============================================================================
+ 
++export function renderSessionHarvest(sessions: {path: string; content: string}[], mine: boolean,
++    now: string): {count: number; writes: {file: string; content: string}[]} {
++  if (!Array.isArray(sessions) || sessions.some(row => !memoryObject(row)
++      || typeof row.path !== 'string' || typeof row.content !== 'string') || !Number.isFinite(Date.parse(now))) {
++    throw new Error('Session consolidation requires declared transcripts and a capture date');
++  }
++  const writes: {file: string; content: string}[] = [];
++  let count = 0;
++  const date = new Date(now);
++  const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
++  for (const session of sessions) {
++    if (mine) {
++      for (const mem of mineMemories(session.path, session.content)) {
++        const captured = new Date(mem.timestamp).toISOString().replace(/[:.]/g, '-').slice(0, 19);
++        const filename = `mine_${captured}_${mem.memoryType}_${mem.sessionId.slice(0, 8)}_L${mem.sourceLine}.json`;
++        const candidate = captureCandidate(mem, 'hermes', now);
++        writes.push({file: `LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/${filename}`, content: JSON.stringify(candidate, null, 2)});
++        count++;
++      }
++    } else {
++      for (const learning of harvestLearnings(session.path, session.content)) {
++        writes.push({file: `LIFEOS/MEMORY/LEARNING/${learning.category}/${month}/${generateLearningFilename(learning)}`,
++          content: formatLearningFile(learning, 'hermes')});
++        count++;
++      }
++    }
++  }
++  return {count, writes};
++}
++
++function main(): void {
+ const { values } = parseArgs({
+   args: Bun.argv.slice(2),
+   options: {
+@@ -558,6 +597,19 @@ Output:
+   process.exit(0);
+ }
+ 
++const governed = memoryAccess('session_harvest', {recent: values.recent ? Number(values.recent) : 10,
++  all: values.all ?? false, session: values.session ?? null, projects_dir: values['projects-dir'] ?? null,
++  dry_run: values['dry-run'] ?? false, mine: values.mine ?? false},
++  (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === 'boolean');
++if (governed !== undefined) {
++  if (governed.ok !== true || !Number.isInteger(governed.count) || !Number.isInteger(governed.sessions)) {
++    throw new Error('Session consolidation is unavailable under the current memory policy');
++  }
++  if (governed.sessions === 0) console.log('No sessions found to harvest');
++  else console.log(`${values['dry-run'] ? 'Found' : values.mine ? 'Queued' : 'Harvested'} ${governed.count} ${values.mine ? 'candidate(s)' : 'learning(s)'}${values['dry-run'] ? ' (dry run)' : ''}`);
++  return;
++}
++
+ // Get sessions to process
+ const sessionFiles = getSessionFiles({
+   recent: values.recent ? parseInt(values.recent) : undefined,
+@@ -636,3 +688,6 @@ if (values["dry-run"]) {
+   }
+   console.log(`\n✅ Harvested ${totalLearnings} learning(s) to MEMORY/LEARNING/`);
+ }
++}
++
++if (import.meta.main) main();
