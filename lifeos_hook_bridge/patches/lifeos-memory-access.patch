@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..b67c663 100644
+index 787cf28..b11e41b 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -713,6 +713,42 @@ index 787cf28..b67c663 100644
        plan,
        incomeStreams,
        expenseCategories,
+@@ -2919,19 +2949,19 @@ function resolveCompanyDir(): string {
+   return dirs.find(d => existsSync(join(d, "REVENUE"))) ?? dirs[0] ?? ""
+ }
+ 
+-function handleLifeBusiness(): Response {
++function handleLifeBusiness(read = readMd, company?: string, reports?: ReadonlyArray<string>): Response {
+   try {
+-    const ulDir = resolveCompanyDir()
++    const ulDir = company === undefined ? resolveCompanyDir() : company ? join(BUSINESS_DIR, company) : ""
+     const revenueDir = ulDir ? join(ulDir, "REVENUE") : ""
+ 
+     // Find most recent revenue report
+     let latestRevenue = ""
+     let latestRevenueFile = ""
+-    if (existsSync(revenueDir)) {
+-      const revFiles = readdirSync(revenueDir).filter(f => f.endsWith(".md")).sort().reverse()
++    if (reports !== undefined || existsSync(revenueDir)) {
++      const revFiles = [...(reports ?? readdirSync(revenueDir))].filter(f => f.endsWith(".md")).sort().reverse()
+       if (revFiles.length > 0) {
+         latestRevenueFile = revFiles[0]
+-        latestRevenue = readMd(join(revenueDir, revFiles[0]))
++        latestRevenue = read(join(revenueDir, revFiles[0]))
+       }
+     }
+ 
+@@ -2945,8 +2975,8 @@ function handleLifeBusiness(): Response {
+       revenueSummary: summarySection?.body || "",
+       revenueByProduct: revenueByProduct?.body || "",
+       revenueAllSections: revenueSections,
+-      ulOverview: ulDir ? parseSections(readMd(join(ulDir, "README.md"))) : [],
+-      businessOverview: parseSections(readMd(join(BUSINESS_DIR, "README.md"))),
++      ulOverview: ulDir ? parseSections(read(join(ulDir, "README.md"))) : [],
++      businessOverview: parseSections(read(join(BUSINESS_DIR, "README.md"))),
+     })
+   } catch (err: any) {
+     return Response.json({ error: err.message }, { status: 500 })
 @@ -2994,9 +3024,9 @@ async function handleLifeGrowth(): Promise<Response> {
  
  // ── GET /api/life/work ──
@@ -821,10 +857,33 @@ index 787cf28..b67c663 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -4520,6 +4550,106 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4550,129 @@ function handleOnboardingState(): Response {
    })
  }
  
++export function renderBusinessView(sources: ReadonlyArray<{relative: string; content: string}>, company: string): Response {
++  const parent = "LIFEOS/USER/WORK/YOUR_COMPANIES";
++  if (company.includes("/") || company.includes("\\") || company === "." || company === "..") {
++    throw new Error("Choose a fixed business directory leaf");
++  }
++  const companyRoot = parent + "/" + company;
++  const reports: string[] = [];
++  for (const source of sources) {
++    if (source.relative === parent + "/README.md") continue;
++    if (!company) throw new Error("Business sources require a selected company");
++    if (source.relative === companyRoot + "/README.md") continue;
++    const prefix = companyRoot + "/REVENUE/";
++    const filename = source.relative.slice(prefix.length);
++    if (!source.relative.startsWith(prefix) || filename.includes("/") || filename.includes("\\")
++        || !filename.endsWith(".md")) throw new Error("Choose fixed business report sources");
++    reports.push(filename);
++  }
++  if (new Set(sources.map(source => source.relative)).size !== sources.length) throw new Error("Choose distinct business sources");
++  const contents = new Map(sources.map(source => [join(dirname(LIFEOS_DIR), source.relative), source.content]));
++  const read = (path: string): string => contents.get(path) ?? "";
++  return handleLifeBusiness(read, company, reports);
++}
++
 +export function renderWorkView(sources: ReadonlyArray<{relative: string; content: string}>): Response {
 +  const allowed = new Set(["LIFEOS/USER/PROJECTS.md", "LIFEOS/USER/TELOS/TELOS.md", "LIFEOS/USER/TELOS/CURRENT.md",
 +    "LIFEOS/MEMORY/STATE/work.json"]);
@@ -928,11 +987,11 @@ index 787cf28..b67c663 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4661,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4684,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
-+  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/life/work", "/api/observability/life-card"].includes(pathname)) {
++  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/life/work", "/api/life/business", "/api/observability/life-card"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "Life views require GET"}, {status: 405, headers});
 +    if (url.search) return Response.json({error: "Life views use fixed installed sources"}, {status: 400, headers});

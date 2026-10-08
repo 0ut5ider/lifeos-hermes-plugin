@@ -19,11 +19,14 @@ rendered = False
 def observe(memory, action, **arguments):
     global rendered
     result = original(memory, action, **arguments)
-    if action in ('life_view', 'life_health_view', 'life_finance_view', 'life_work_view'):
+    if action in ('life_view', 'life_health_view', 'life_finance_view', 'life_work_view', 'life_business_view'):
         rendered = True
         if mode == 'authority': configuration.update(lambda value: value['accounts'].clear())
         elif mode == 'source':
-            if target == '/api/life/work':
+            if target == '/api/life/business':
+                path = root / 'LIFEOS/USER/WORK/YOUR_COMPANIES/synthetic-company/REVENUE/2026-10.md'
+                path.write_text(path.read_text().replace('SyntheticCurrentRevenue', 'SyntheticChangedRevenue'))
+            elif target == '/api/life/work':
                 path = root / 'LIFEOS/USER/PROJECTS.md'
                 path.write_text(path.read_text().replace('SyntheticWorkProject', 'SyntheticChangedWorkProject'))
             elif target == '/api/life/finances':
@@ -42,6 +45,9 @@ def observe(memory, action, **arguments):
             path.write_text(path.read_text().replace('SyntheticWorkSession', 'SyntheticChangedSession'))
         elif mode == 'created':
             (root / 'LIFEOS/USER/TELOS/TELOS.md').write_text('## Current State\n**focus:** Synthetic added focus\n')
+        elif mode == 'report':
+            (root / 'LIFEOS/USER/WORK/YOUR_COMPANIES/synthetic-company/REVENUE/2026-11.md').write_text(
+                '## Summary\nSynthetic newer report\n')
     return result
 
 

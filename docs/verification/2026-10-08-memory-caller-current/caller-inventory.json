@@ -2957,7 +2957,7 @@
   },
   {
     "path": "LIFEOS/PULSE/Observability/observability.ts",
-    "sha256": "6ee5bcf20260b10ed39b7dd40239d5f0ca6a264e57985be13cd6bbcd9dcf584f",
+    "sha256": "a403d983fdac67f55f8074faede8e8434874ecab7c05bc942c654dc79a3777fe",
     "registered_hooks": [],
     "cli_guard": false,
     "source_evidence": [
@@ -3862,20 +3862,24 @@
         "text": "  const dirs = readdirSync(BUSINESS_DIR, { withFileTypes: true })"
       },
       {
+        "line": 2952,
+        "text": "function handleLifeBusiness(read = readMd, company?: string, reports?: ReadonlyArray<string>): Response {"
+      },
+      {
         "line": 2961,
-        "text": "      const revFiles = readdirSync(revenueDir).filter(f => f.endsWith(\".md\")).sort().reverse()"
+        "text": "      const revFiles = [...(reports ?? readdirSync(revenueDir))].filter(f => f.endsWith(\".md\")).sort().reverse()"
       },
       {
         "line": 2964,
-        "text": "        latestRevenue = readMd(join(revenueDir, revFiles[0]))"
+        "text": "        latestRevenue = read(join(revenueDir, revFiles[0]))"
       },
       {
         "line": 2978,
-        "text": "      ulOverview: ulDir ? parseSections(readMd(join(ulDir, \"README.md\"))) : [],"
+        "text": "      ulOverview: ulDir ? parseSections(read(join(ulDir, \"README.md\"))) : [],"
       },
       {
         "line": 2979,
-        "text": "      businessOverview: parseSections(readMd(join(BUSINESS_DIR, \"README.md\"))),"
+        "text": "      businessOverview: parseSections(read(join(BUSINESS_DIR, \"README.md\"))),"
       },
       {
         "line": 2987,
@@ -4327,118 +4331,134 @@
       },
       {
         "line": 4553,
-        "text": "export function renderWorkView(sources: ReadonlyArray<{relative: string; content: string}>): Response {"
+        "text": "export function renderBusinessView(sources: ReadonlyArray<{relative: string; content: string}>, company: string): Response {"
       },
       {
         "line": 4554,
+        "text": "  const parent = \"LIFEOS/USER/WORK/YOUR_COMPANIES\";"
+      },
+      {
+        "line": 4572,
+        "text": "  const read = (path: string): string => contents.get(path) ?? \"\";"
+      },
+      {
+        "line": 4573,
+        "text": "  return handleLifeBusiness(read, company, reports);"
+      },
+      {
+        "line": 4576,
+        "text": "export function renderWorkView(sources: ReadonlyArray<{relative: string; content: string}>): Response {"
+      },
+      {
+        "line": 4577,
         "text": "  const allowed = new Set([\"LIFEOS/USER/PROJECTS.md\", \"LIFEOS/USER/TELOS/TELOS.md\", \"LIFEOS/USER/TELOS/CURRENT.md\","
       },
       {
-        "line": 4555,
+        "line": 4578,
         "text": "    \"LIFEOS/MEMORY/STATE/work.json\"]);"
       },
       {
-        "line": 4559,
+        "line": 4582,
         "text": "  const read = (path: string): string => {"
       },
       {
-        "line": 4563,
+        "line": 4586,
         "text": "  return handleLifeWork(read);"
       },
       {
-        "line": 4566,
+        "line": 4589,
         "text": "export function financeViewSources(): string[] {"
       },
       {
-        "line": 4568,
+        "line": 4591,
         "text": "    \"PLAN.md\", \"vendors.yaml\", \"obligations.yaml\", \"GOALS.md\", \"FINANCES.md\"].map(name => \"LIFEOS/USER/FINANCES/\" + name)"
       },
       {
-        "line": 4569,
+        "line": 4592,
         "text": "    .concat([\"LIFEOS/MEMORY/OBSERVABILITY/vendor-costs.jsonl\", \"LIFEOS/MEMORY/OBSERVABILITY/statement-spend.jsonl\","
       },
       {
-        "line": 4570,
+        "line": 4593,
         "text": "      \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\"]);"
       },
       {
-        "line": 4591,
+        "line": 4614,
         "text": "export function financeSourceProjections(sources: ReadonlyArray<{relative: string; content: string}>): Array<string | null> {"
       },
       {
-        "line": 4592,
+        "line": 4615,
         "text": "  const allowed = new Set([\"LIFEOS/USER/FINANCES/vendors.yaml\", \"LIFEOS/USER/FINANCES/obligations.yaml\","
       },
       {
-        "line": 4593,
+        "line": 4616,
         "text": "    \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\"]);"
       },
       {
-        "line": 4604,
+        "line": 4627,
         "text": "export function renderFinanceView(sources: ReadonlyArray<{relative: string; content: string}>): Response {"
       },
       {
-        "line": 4609,
+        "line": 4632,
         "text": "  const read = (path: string): string => {"
       },
       {
-        "line": 4615,
+        "line": 4638,
         "text": "      const raw: unknown = Bun.TOML.parse(read(join(LIFEOS_DIR, \"USER/CONFIG/LIFEOS_CONFIG.toml\")));"
       },
       {
-        "line": 4616,
+        "line": 4639,
         "text": "      return validateAndNormalize(raw, \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\").principal.currency || \"USD\";"
       },
       {
-        "line": 4619,
+        "line": 4642,
         "text": "  return handleLifeFinances(read, currency);"
       },
       {
-        "line": 4622,
+        "line": 4645,
         "text": "export function renderHealthView(sources: ReadonlyArray<{filename: string; content: string}>): Response {"
       },
       {
-        "line": 4626,
+        "line": 4649,
         "text": "  const read = (path: string): string => {"
       },
       {
-        "line": 4630,
+        "line": 4653,
         "text": "  return handleLifeHealth(read, sources.map(source => source.filename));"
       },
       {
-        "line": 4633,
+        "line": 4656,
         "text": "export function lifeViewSources(): string[] {"
       },
       {
-        "line": 4640,
+        "line": 4663,
         "text": "export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {"
       },
       {
-        "line": 4644,
+        "line": 4667,
         "text": "  const read = (path: string): string => {"
       },
       {
-        "line": 4648,
+        "line": 4671,
         "text": "  if (target === \"/api/life/home\" || target === \"/api/observability/life-card\") return handleLifeHome(read);"
       },
       {
-        "line": 4649,
+        "line": 4672,
         "text": "  if (target === \"/api/life/goals\") return handleLifeGoals(read);"
       },
       {
-        "line": 4657,
+        "line": 4680,
         "text": "export async function handleObservabilityRequest(req: Request): Promise<Response | null> {"
       },
       {
-        "line": 4696,
+        "line": 4719,
         "text": "      return Response.json({error: \"Knowledge reads require a same-origin request\"}, {status: 403, headers})"
       },
       {
-        "line": 4710,
+        "line": 4733,
         "text": "    if (noteParams) return handlePutKnowledgeNote(req, noteParams.domain, noteParams.slug)"
       },
       {
-        "line": 4772,
+        "line": 4795,
         "text": "    if (knoteParams) return handleGetKnowledgeNote(knoteParams.domain, knoteParams.slug)"
       }
     ],
@@ -4453,7 +4473,7 @@
     "entry_point": "declared_entry",
     "behavioral_status": "requires_source_policy_or_existing_test_evidence",
     "source_policy": "contains_governed_api_reference",
-    "source_sha256": "6ee5bcf20260b10ed39b7dd40239d5f0ca6a264e57985be13cd6bbcd9dcf584f"
+    "source_sha256": "a403d983fdac67f55f8074faede8e8434874ecab7c05bc942c654dc79a3777fe"
   },
   {
     "path": "LIFEOS/PULSE/Observability/src/app/assistant/page.tsx",
