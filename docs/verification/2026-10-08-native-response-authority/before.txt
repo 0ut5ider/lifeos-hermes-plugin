@@ -1,0 +1,33 @@
+test_canonical_corpus_rechecks_authority_after_native_parsing (test_memory_native_response_authority.MemoryNativeResponseAuthorityTests.test_canonical_corpus_rechecks_authority_after_native_parsing) ... FAIL
+test_staged_preview_rechecks_authority_after_index_rendering (test_memory_native_response_authority.MemoryNativeResponseAuthorityTests.test_staged_preview_rechecks_authority_after_index_rendering) ... FAIL
+
+======================================================================
+FAIL: test_canonical_corpus_rechecks_authority_after_native_parsing (test_memory_native_response_authority.MemoryNativeResponseAuthorityTests.test_canonical_corpus_rechecks_authority_after_native_parsing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native_response_authority.py", line 40, in test_canonical_corpus_rechecks_authority_after_native_parsing
+    self.exercise('canonical_corpus',{'root':str(self.fixture.root/'LIFEOS/MEMORY')},'canonical_records')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native_response_authority.py", line 34, in exercise
+    self.assertFalse(result.get('ok'),result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'root': '/tmp/native-memory-j89mi4hu/.config/LIFEOS/USER/MEMORY', 'files': ['/tmp/native-memory-j89mi4hu/.config/LIFEOS/USER/MEMORY/KNOWLEDGE/Research/synthetic-response-authority-fact.md'], 'records': [{'id': 'kb_e9889d9a794c', 'type': 'research', 'title': 'Synthetic response authority fact', 'created': '2026-10-08T15:10:28.243Z', 'updated': '2026-10-08T15:10:28.243Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-response-authority-fact.md'}, 'content': '---\nid: kb_e9889d9a794c\ntype: research\ntitle: "Synthetic response authority fact"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-08T15:10:28.243Z\nupdated: 2026-10-08T15:10:28.243Z\nrelated: []\nconvention: kb-v3\n---\n\nSynthetic response authority private fact', 'related': [], 'valid_from': None, 'valid_until': None}]}
+
+======================================================================
+FAIL: test_staged_preview_rechecks_authority_after_index_rendering (test_memory_native_response_authority.MemoryNativeResponseAuthorityTests.test_staged_preview_rechecks_authority_after_index_rendering)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native_response_authority.py", line 43, in test_staged_preview_rechecks_authority_after_index_rendering
+    self.exercise('staged_preview',{'target':'Research/synthetic-response-preview','all':False,'project':'lab'},
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  'knowledge_indexes')
+                  ^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native_response_authority.py", line 34, in exercise
+    self.assertFalse(result.get('ok'),result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'signature': 'e16d38e9cbd91350cefa0996aaba6e2db7c2b2e756964a1a1410eabab048004b', 'project': 'lab', 'notes': [{'selector': 'Research/synthetic-response-preview', 'title': 'Synthetic private preview title'}], 'index_files': 5}
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.855s
+
+FAILED (failures=2)

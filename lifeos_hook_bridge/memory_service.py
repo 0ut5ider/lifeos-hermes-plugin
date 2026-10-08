@@ -246,6 +246,19 @@ class MemoryService:
         try:
             configuration = self.configuration.load()
             scope = self._context_scope(configuration, context)
+        except (MemoryUnavailable, ValueError, OSError, sqlite3.Error, subprocess.TimeoutExpired) as error:
+            return {'ok':False, 'code':'EWRITE_FAILED' if operation in ('add','set') else 'EINVAL_PATH',
+                    'message':str(error)}
+        result = self._native_operation(context, operation, arguments, configuration, scope)
+        try:
+            self._check_current_context(configuration, context, scope)
+        except (MemoryUnavailable, ValueError, OSError):
+            return {'ok':False, 'code':'EACCESS_CHANGED',
+                    'message':'Current memory authority is unavailable; the operation response is withheld.'}
+        return result
+
+    def _native_operation(self, context, operation, arguments, configuration, scope):
+        try:
             memory = NativeMemory(Path(configuration["root"]))
             if operation == 'knowledge_view' and set(arguments) == {'view','request_id'}:
                 from .memory_knowledge_views import run
