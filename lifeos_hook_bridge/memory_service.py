@@ -551,7 +551,8 @@ class MemoryService:
                 required = {"reference", "decision", "request_id"}
                 if not required <= set(arguments) or set(arguments) - required - {"content", "note", "confidence_threshold"}:
                     raise ValueError("Invalid native proposal decision fields")
-                receipt = memory.decide_proposal(scope, **arguments)
+                receipt = memory.decide_proposal(scope, **arguments,
+                    check_current=lambda _connection: self._check_current_context(configuration, context, scope))
                 row = memory.proposal_decision_row(scope, receipt['proposal_reference']) if receipt['status'] == 'committed' else None
                 return {"ok":receipt['status'] == 'committed', "row":row, "receipt":receipt,
                         "reason":receipt.get('reason', '')}
@@ -570,9 +571,11 @@ class MemoryService:
                     return memory.read_hot(scope, category)
                 if operation == "set" and set(arguments) == {"path", "entries", "request_id", "observed_revision", "allow_drastic"}:
                     return memory.native_set(scope, category, source_session=context.session_id,
+                                             check_current=lambda _connection: self._check_current_context(configuration, context, scope),
                                              **{key: value for key, value in arguments.items() if key != "path"})
             if operation == "add" and set(arguments) == {"item", "request_id", "project", "observed_revision"}:
-                return memory.native_add(scope, **arguments, source_session=context.session_id)
+                return memory.native_add(scope, **arguments, source_session=context.session_id,
+                    check_current=lambda _connection: self._check_current_context(configuration, context, scope))
             raise ValueError("Unsupported native memory operation or arguments")
         except (MemoryUnavailable, ValueError, OSError, sqlite3.Error, subprocess.TimeoutExpired) as error:
             return {"ok": False, "code": "EWRITE_FAILED" if operation in ("add", "set") else "EINVAL_PATH", "message": str(error)}
@@ -666,7 +669,7 @@ class MemoryService:
             if name == "lifeos_memory_proposals":
                 return {"status":"ok", "results":memory.review_proposals(scope)}
             if name == "lifeos_memory_decide_proposal":
-                return memory.decide_proposal(scope, **arguments)
+                return memory.decide_proposal(scope, **arguments, check_current=check_current)
             if name == "lifeos_memory_search":
                 return {"status": "ok", "results": memory.recall(scope, **arguments)}
             if name == "lifeos_memory_get":

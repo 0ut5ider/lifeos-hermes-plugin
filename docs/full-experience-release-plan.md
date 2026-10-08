@@ -10,6 +10,8 @@ Keep `.252` as the development server. Provision a separate daily-use server onl
 
 Adrian selects one private server text channel for daily use. The bot refuses direct messages, other channels, and threads in the selected mode. Managed memory requires current Discord permissions that admit only Adrian and the selected bot. The [channel controls](verification/2026-10-07-private-channel/README.md) pass in isolated SDK and native memory tests. The private channel ID, installed application acceptance, and final delivery authority checks remain open.
 
+The October 8 candidate adds [governed proposal cleanup](verification/2026-10-08-proposal-gc/README.md), [Hermes session consolidation](verification/2026-10-08-session-harvest/README.md), and [current authority before publication](verification/2026-10-08-publication-authority/README.md). The writer gate passes 161 tests. The installed profile now uses private directory permissions and a private service creation mask. Ownership activation and the installed acceptance gates remain open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

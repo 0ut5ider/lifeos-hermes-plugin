@@ -109,7 +109,7 @@ def decision_row(memory, scope: MemoryScope, reference: dict[str, Any]) -> dict[
 
 def decide(memory, scope: MemoryScope, reference: dict[str, Any], decision: str,
            request_id: str, *, content: str = "", note: str = "",
-           confidence_threshold: float | None = None) -> dict[str, Any]:
+           confidence_threshold: float | None = None, check_current=None) -> dict[str, Any]:
     permission = 'auto_apply' if decision == 'auto_apply' else 'approve'
     if not _permitted(scope, permission):
         return {'status':'rejected', 'reason':'This context has no proposal approval grant'}
@@ -147,6 +147,8 @@ def decide(memory, scope: MemoryScope, reference: dict[str, Any], decision: str,
                 return {'status':'rejected', 'reason':'Native validation rejected the pending proposal'}
             if memory._blocked(connection, item['edit']):
                 return {'status':'rejected', 'reason':'This proposal needs explicit reactivation after correction or forgetting'}
+        if check_current is not None:
+            check_current(connection)
         result = memory._native('proposal_decision', identifier=reference['id'], decision=decision, content=content,
                                 note=note, confidence_threshold=confidence_threshold)
         if not result.get('ok'):
