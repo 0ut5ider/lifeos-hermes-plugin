@@ -1,0 +1,36 @@
+test_managed_mining_publishes_private_staging_with_a_receipt (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_managed_mining_publishes_private_staging_with_a_receipt) ... ERROR
+test_read_only_owner_can_preview_but_cannot_stage_sources (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_read_only_owner_can_preview_but_cannot_stage_sources) ... ok
+test_revoked_owner_cannot_mine_or_consume_sources (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_revoked_owner_cannot_mine_or_consume_sources) ... ok
+test_standalone_mining_preserves_native_staging_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_standalone_mining_preserves_native_staging_and_state) ... ok
+test_unbound_mining_preserves_the_queue_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_unbound_mining_preserves_the_queue_and_state) ... ok
+
+======================================================================
+ERROR: test_managed_mining_publishes_private_staging_with_a_receipt (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_managed_mining_publishes_private_staging_with_a_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py", line 58, in test_managed_mining_publishes_private_staging_with_a_receipt
+    repeated=self.call('--request-id','synthetic-harvest')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py", line 35, in call
+    return subprocess.run(['bun','--no-install',str(self.root/'LIFEOS/TOOLS/KnowledgeHarvester.ts'),
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'harvest','--source','research',*arguments],env=environment,capture_output=True,text=True,timeout=40)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['bun', '--no-install', '/tmp/native-memory-b6k0ju_k/.claude/LIFEOS/TOOLS/KnowledgeHarvester.ts', 'harvest', '--source', 'research', '--request-id', 'synthetic-harvest']' timed out after 40 seconds
+
+----------------------------------------------------------------------
+Ran 5 tests in 41.105s
+
+FAILED (errors=1)

@@ -471,6 +471,24 @@ async function main(): Promise<void> {
     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
     if (!(response instanceof Response)) throw new Error("Native wiki response is unavailable");
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === "knowledge_harvest") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
+    if (!object(module) || typeof module.renderHarvest !== "function" || !Array.isArray(input.sources)
+        || !(input.source === null || typeof input.source === "string") || typeof input.dry_run !== "boolean"
+        || typeof input.max_notes !== "number" || !Number.isSafeInteger(input.max_notes)
+        || input.max_notes < 1 || input.max_notes > 50 || !Array.isArray(input.occupied)
+        || !input.occupied.every(value => typeof value === "string") || !Array.isArray(input.ordering)
+        || !input.ordering.every(value => typeof value === "string")) {
+      throw new Error("Native harvesting needs declared sources and bounded options");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native harvesting needs declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderHarvest(sources, input.source, input.dry_run, input.max_notes, input.occupied, input.ordering);
   } else if (input.action === "knowledge_indexes") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
     if (!object(module) || typeof module.renderKnowledgeIndexes !== "function" || !Array.isArray(input.sources)

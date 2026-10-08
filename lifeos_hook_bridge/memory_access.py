@@ -192,7 +192,7 @@ class NativeMemory:
         permissions = scope.write if write else scope.read
         if record["category"] not in permissions:
             return False
-        if record["path"].startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/")) and "principal" not in permissions:
+        if NativeMemory._private_entity(record["path"]) and "principal" not in permissions:
             return False
         if record['category'] == 'project' and not record['project'] and not CATEGORIES <= set(permissions):
             return False
@@ -284,7 +284,8 @@ class NativeMemory:
 
     @staticmethod
     def _private_entity(path: str) -> bool:
-        return path.startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/"))
+        return path.startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/",
+                                "LIFEOS/MEMORY/KNOWLEDGE/_archive/People/", "LIFEOS/MEMORY/KNOWLEDGE/_archive/Companies/"))
 
     def _duplicate(self, connection: sqlite3.Connection, scope: MemoryScope, content: str,
                    category: str, project: str, destination: str) -> sqlite3.Row | None:
@@ -356,6 +357,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'knowledge_harvest':
+            from .memory_knowledge_harvest import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'session_harvest':
             from .memory_session_harvest import publication_paths
             return publication_paths(self, scope, payload)

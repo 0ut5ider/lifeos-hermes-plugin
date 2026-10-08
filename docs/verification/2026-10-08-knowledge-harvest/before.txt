@@ -1,0 +1,54 @@
+test_managed_mining_publishes_private_staging_with_a_receipt (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_managed_mining_publishes_private_staging_with_a_receipt) ... ERROR
+test_read_only_owner_can_preview_but_cannot_stage_sources (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_read_only_owner_can_preview_but_cannot_stage_sources) ... FAIL
+test_revoked_owner_cannot_mine_or_consume_sources (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_revoked_owner_cannot_mine_or_consume_sources) ... FAIL
+test_standalone_mining_preserves_native_staging_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_standalone_mining_preserves_native_staging_and_state) ... ok
+test_unbound_mining_preserves_the_queue_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_unbound_mining_preserves_the_queue_and_state) ... FAIL
+
+======================================================================
+ERROR: test_managed_mining_publishes_private_staging_with_a_receipt (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_managed_mining_publishes_private_staging_with_a_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py", line 50, in test_managed_mining_publishes_private_staging_with_a_receipt
+    receipt=json.loads(result.stdout)['receipt']
+            ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+FAIL: test_read_only_owner_can_preview_but_cannot_stage_sources (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_read_only_owner_can_preview_but_cannot_stage_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py", line 77, in test_read_only_owner_can_preview_but_cannot_stage_sources
+    self.assertNotEqual(self.call().returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_revoked_owner_cannot_mine_or_consume_sources (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_revoked_owner_cannot_mine_or_consume_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py", line 65, in test_revoked_owner_cannot_mine_or_consume_sources
+    self.assertNotEqual(result.returncode,0,result)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : CompletedProcess(args=['bun', '--no-install', '/tmp/native-memory-n2vy89gd/.claude/LIFEOS/TOOLS/KnowledgeHarvester.ts', 'harvest', '--source', 'research'], returncode=0, stdout='🌾 Knowledge Harvester\n────────────────────────────────────────\n  RESEARCH/: 0 candidates\n  Queue: 1 candidates\n\n  After dedup: 1 candidates\n  Harvesting: 1 (max 5/run)\n\n  📥 staged: _harvest-queue/Ideas/synthetic-staged-knowledge.md\n\n  ✅ Harvest complete. 1 note(s) staged to _harvest-queue/.\n  Review with `review`, then `promote <slug>` (or `promote --all`) / `reject <slug>`.\n', stderr='')
+
+======================================================================
+FAIL: test_unbound_mining_preserves_the_queue_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_unbound_mining_preserves_the_queue_and_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py", line 41, in test_unbound_mining_preserves_the_queue_and_state
+    self.assertNotEqual(result.returncode,0,result)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : CompletedProcess(args=['bun', '--no-install', '/tmp/native-memory-6ms8dlvn/.claude/LIFEOS/TOOLS/KnowledgeHarvester.ts', 'harvest', '--source', 'research'], returncode=0, stdout='🌾 Knowledge Harvester\n────────────────────────────────────────\n  RESEARCH/: 0 candidates\n  Queue: 1 candidates\n\n  After dedup: 1 candidates\n  Harvesting: 1 (max 5/run)\n\n  📥 staged: _harvest-queue/Ideas/synthetic-staged-knowledge.md\n\n  ✅ Harvest complete. 1 note(s) staged to _harvest-queue/.\n  Review with `review`, then `promote <slug>` (or `promote --all`) / `reject <slug>`.\n', stderr='')
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.217s
+
+FAILED (failures=3, errors=1)
