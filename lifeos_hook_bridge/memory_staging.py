@@ -2,11 +2,13 @@
 # ABOUTME: Binds source identity and project grants to a recoverable publication receipt.
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import re
 
 from .memory_access import MemoryUnavailable, _digest
 from .memory_adoption import _owner, _sections
+from .memory_backup import _read
 from .memory_canonical import corpus
 from .memory_sources import _strings
 from .memory_transaction import publish
@@ -132,7 +134,8 @@ def _plan(memory,connection,scope,target,all,project):
     encoded=json.dumps(identity,sort_keys=True)
     if len(encoded.encode())>3*1024*1024:
         raise MemoryUnavailable('The staged transaction exceeds its declared source limit')
-    return {'signature':_digest(encoded),'notes':notes,'state':state,'indexes':writes,'project':project}
+    return {'signature':_digest(encoded),'notes':notes,'state':state,'state_before':state_text,
+            'indexes':writes,'project':project}
 
 
 def all_strings(values):
@@ -158,7 +161,7 @@ def publication_paths(memory,connection,scope,payload):
             +[Path(write['path']).relative_to(memory.root).as_posix() for write in plan['indexes']])
 
 
-def promote(memory,scope,target,signature,request_id,*,all=False,project='',source_session=''):
+def promote(memory,scope,target,signature,request_id,*,all=False,project='',source_session='',check_current=None):
     try:_authorize(scope)
     except MemoryUnavailable as error:return {'status':'rejected','reason':str(error)}
     if not isinstance(signature,str) or re.fullmatch('[0-9a-f]{64}',signature) is None:
@@ -166,6 +169,15 @@ def promote(memory,scope,target,signature,request_id,*,all=False,project='',sour
     def apply(connection):
         plan=_plan(memory,connection,scope,target,all,project)
         if plan['signature']!=signature:return {'status':'conflict','reason':'The staged preview changed. Review a fresh preview.'}
+        if check_current is not None:check_current()
+        for note in plan['notes']:
+            source=_path(memory,note['source'])
+            if not source.is_file() or _digest(source.read_text())!=note['original_digest']:
+                return {'status':'conflict','reason':'The staged source changes during publication rendering'}
+        state_path=_path(memory,STATE)
+        current_state=state_path.read_text() if state_path.exists() else ''
+        if current_state!=plan['state_before']:
+            return {'status':'conflict','reason':'The harvest state changes during publication rendering'}
         references=[]
         for note in plan['notes']:
             destination=_path(memory,note['destination'])
@@ -181,3 +193,56 @@ def promote(memory,scope,target,signature,request_id,*,all=False,project='',sour
                 'indexes_published':len(plan['indexes']),'project':project}
     return memory._operation(scope,request_id,{'operation':'staged_promote','target':target,'all':all,'project':project,
                                              'signature':signature,'source_session':source_session},apply)
+
+
+def _rejection_plan(memory,scope,target,all):
+    _authorize(scope)
+    notes=[]
+    for name in _selected(memory,target,all):
+        relative=KNOWLEDGE+'/_harvest-queue/'+name+'.md'
+        path=_path(memory,relative)
+        info=path.stat()
+        if info.st_uid!=os.getuid() or info.st_nlink!=1 or info.st_mode&0o022:
+            raise MemoryUnavailable('Staged rejection requires regular unshared owner files')
+        content,stamp=_read(path)
+        if len(content)>SOURCE_LIMIT:
+            raise MemoryUnavailable('Staged rejection exceeds its source limit')
+        notes.append({'path':relative,'digest':_digest(content.hex()),'stamp':stamp})
+    return notes
+
+
+def rejection_paths(memory,scope,payload):
+    _authorize(scope)
+    notes=payload.get('notes')
+    if (not isinstance(notes,list) or not 0<len(notes)<=BATCH_LIMIT
+            or any(not isinstance(note,dict) or set(note)!={'path','digest','stamp'}
+                   or not isinstance(note['path'],str) or re.fullmatch(
+                       r'LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/(People|Companies|Ideas|Research)/[a-z0-9][a-z0-9_-]{0,180}\.md',
+                       note['path']) is None for note in notes)
+            or len({note['path'] for note in notes})!=len(notes)):
+        raise MemoryUnavailable('Staged rejection requires bounded reviewed queue paths')
+    for note in notes:_path(memory,note['path'])
+    return [note['path'] for note in notes]
+
+
+def reject(memory,scope,target,request_id,*,all=False,source_session='',check_current=None):
+    _authorize(scope)
+    if check_current is not None:check_current()
+    identity={'operation':'staged_reject','target':target,'all':all,'source_session':source_session}
+    with memory._transaction() as connection:
+        prior=connection.execute('SELECT 1 FROM operations WHERE writer=? AND request_id=?',
+                                 (scope.writer,request_id)).fetchone()
+        notes=[] if prior is not None else _rejection_plan(memory,scope,target,all)
+    payload={**identity,'notes':notes}
+
+    def apply(connection):
+        current=_rejection_plan(memory,scope,target,all)
+        if current!=notes:
+            return {'status':'conflict','reason':'The staged queue changes before rejection'}
+        if check_current is not None:check_current()
+        if _rejection_plan(memory,scope,target,all)!=notes:
+            return {'status':'conflict','reason':'The staged queue changes during rejection authorization'}
+        for relative in rejection_paths(memory,scope,payload):_path(memory,relative).unlink()
+        return {'status':'committed','notes_rejected':len(notes)}
+
+    return memory._operation(scope,request_id,payload,apply,identity_payload=identity)

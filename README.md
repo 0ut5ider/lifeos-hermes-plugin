@@ -8,6 +8,8 @@ The [managed proposal cleanup controls](docs/verification/2026-10-08-proposal-gc
 
 The [managed session consolidation controls](docs/verification/2026-10-08-session-harvest/README.md) connect the native harvester to admitted Hermes transcripts. They preserve private capture spans, exclude retired history, and recover interrupted learning publication. The gate passes 119 tests and 71 subtests. Installed scheduled-job authority and execution remain open.
 
+The [staged decision controls](docs/verification/2026-10-08-staging-writers/README.md) govern native queue rejection and recheck promotion sources after index rendering. The gate passes 114 tests, including actual interrupted deletion and concurrent source changes. Native source mining and stale-note expiry remain open.
+
 This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
 
 

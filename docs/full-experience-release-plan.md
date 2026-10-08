@@ -14,6 +14,8 @@ The October 8 candidate adds [governed proposal cleanup](verification/2026-10-08
 
 The [clarification cancellation candidate](verification/2026-10-08-clarify-cancellation/README.md) passes 98 native tests with warnings treated as errors. It distinguishes `/stop` from an actual timeout, preserves earlier batch answers, and handles cancellation during card sending. The combined installed acceptance repeat remains open.
 
+The [staged decision gate](verification/2026-10-08-staging-writers/README.md) passes 114 tests. Native rejection uses recoverable owner transactions. Promotion preserves source and state changes that occur during final rendering. Native source mining and stale-note expiry remain open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

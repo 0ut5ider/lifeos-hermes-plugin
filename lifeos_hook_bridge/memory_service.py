@@ -300,7 +300,13 @@ class MemoryService:
                 return update_frame(memory, scope, arguments, check_current=check_current)
             if operation == 'staged_promote' and set(arguments) == {'target','all','project','signature','request_id'}:
                 from .memory_staging import promote
-                receipt=promote(memory,scope,**arguments,source_session=context.session_id)
+                receipt=promote(memory,scope,**arguments,source_session=context.session_id,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
+                return {'ok':receipt['status'] in ('committed','unchanged'),'receipt':receipt}
+            if operation == 'staged_reject' and set(arguments) == {'target','all','request_id'}:
+                from .memory_staging import reject
+                receipt=reject(memory,scope,**arguments,source_session=context.session_id,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
                 return {'ok':receipt['status'] in ('committed','unchanged'),'receipt':receipt}
             if operation == 'restore_list' and set(arguments) == {'category'}:
                 from .memory_restore import list_snapshots

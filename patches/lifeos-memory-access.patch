@@ -3275,12 +3275,12 @@ index 310662c..efd332b 100755
      // Wikilink edges
      const wikilinks = extractWikilinks(content);
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
-index 0975c2f..0c15cb8 100755
+index 0975c2f..8dfb592 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
 @@ -1,4 +1,6 @@
  #!/usr/bin/env bun
-+// ABOUTME: Stages native Knowledge notes and delegates managed promotion to reviewed publication.
++// ABOUTME: Stages native Knowledge notes and delegates managed queue decisions to governed publication.
 +// ABOUTME: Renders native indexes from declared current sources without a second fact store.
  // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
  // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
@@ -3455,7 +3455,7 @@ index 0975c2f..0c15cb8 100755
    },
    allowPositionals: true,
    strict: false,
-@@ -1323,7 +1353,15 @@ switch (command) {
+@@ -1323,10 +1353,23 @@ switch (command) {
      cmdReview();
      break;
    case "promote":
@@ -3471,8 +3471,17 @@ index 0975c2f..0c15cb8 100755
 +    } else cmdPromote(positionals[1] ?? null, !!values.all);
      break;
    case "reject":
-     cmdReject(positionals[1] ?? null, !!values.all);
-@@ -1341,3 +1379,13 @@ switch (command) {
+-    cmdReject(positionals[1] ?? null, !!values.all);
++    if (hasMemoryAccess()) {
++      const result = memoryAccess('staged_reject', {target: positionals[1] ?? null, all: !!values.all,
++        request_id: values['request-id'] ?? randomUUID()}, memoryObject);
++      if (!result || result.ok !== true) throw new Error('Managed staged rejection is unavailable');
++      console.log(JSON.stringify(result));
++    } else cmdReject(positionals[1] ?? null, !!values.all);
+     break;
+   case "status":
+     cmdStatus();
+@@ -1341,3 +1384,13 @@ switch (command) {
      console.error(`Unknown command: ${command}. Use --help for usage.`);
      process.exit(1);
  }

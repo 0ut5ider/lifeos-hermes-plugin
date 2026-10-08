@@ -1,0 +1,54 @@
+test_managed_rejection_returns_a_governed_receipt_and_preserves_the_state (test_memory_staging_writers.MemoryStagingWriterTests.test_managed_rejection_returns_a_governed_receipt_and_preserves_the_state) ... ERROR
+test_native_promotion_refuses_authority_revoked_after_index_rendering (test_memory_staging_writers.MemoryStagingWriterTests.test_native_promotion_refuses_authority_revoked_after_index_rendering) ... FAIL
+test_revoked_native_owner_cannot_remove_staging (test_memory_staging_writers.MemoryStagingWriterTests.test_revoked_native_owner_cannot_remove_staging) ... FAIL
+test_standalone_rejection_retains_the_native_command_behavior (test_memory_staging_writers.MemoryStagingWriterTests.test_standalone_rejection_retains_the_native_command_behavior) ... ok
+test_unbound_native_rejection_cannot_remove_staging (test_memory_staging_writers.MemoryStagingWriterTests.test_unbound_native_rejection_cannot_remove_staging) ... FAIL
+
+======================================================================
+ERROR: test_managed_rejection_returns_a_governed_receipt_and_preserves_the_state (test_memory_staging_writers.MemoryStagingWriterTests.test_managed_rejection_returns_a_governed_receipt_and_preserves_the_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging_writers.py", line 33, in test_managed_rejection_returns_a_governed_receipt_and_preserves_the_state
+    receipt = json.loads(result.stdout)['receipt']
+              ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 3 (char 2)
+
+======================================================================
+FAIL: test_native_promotion_refuses_authority_revoked_after_index_rendering (test_memory_staging_writers.MemoryStagingWriterTests.test_native_promotion_refuses_authority_revoked_after_index_rendering)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging_writers.py", line 65, in test_native_promotion_refuses_authority_revoked_after_index_rendering
+    self.assertFalse(result['ok'], result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'receipt': {'status': 'committed', 'references': [{'id': '50182c80fcad43a9bd489f769586f3e5', 'revision': 1}], 'notes_promoted': 1, 'indexes_published': 5, 'project': '', 'writer': 'chat-a:100', 'request_id': 'promote-authority'}}
+
+======================================================================
+FAIL: test_revoked_native_owner_cannot_remove_staging (test_memory_staging_writers.MemoryStagingWriterTests.test_revoked_native_owner_cannot_remove_staging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging_writers.py", line 52, in test_revoked_native_owner_cannot_remove_staging
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_native_rejection_cannot_remove_staging (test_memory_staging_writers.MemoryStagingWriterTests.test_unbound_native_rejection_cannot_remove_staging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging_writers.py", line 22, in test_unbound_native_rejection_cannot_remove_staging
+    self.assertNotEqual(result.returncode, 0, result)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : CompletedProcess(args=['bun', '--no-install', '/tmp/native-memory-4ltk6959/.claude/LIFEOS/TOOLS/KnowledgeHarvester.ts', 'reject', 'Research/synthetic-staged-note'], returncode=0, stdout='  🗑  rejected: Research/synthetic-staged-note.md\n', stderr='')
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.596s
+
+FAILED (failures=3, errors=1)
