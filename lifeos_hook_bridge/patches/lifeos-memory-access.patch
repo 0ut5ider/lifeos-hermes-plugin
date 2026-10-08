@@ -7901,3 +7901,36 @@ index 36069d0..1c577b9 100644
  }
  
  // Allow running standalone for verification.
+diff --git a/LifeOS/install/hooks/lib/events.ts b/LifeOS/install/hooks/lib/events.ts
+index c4c7f14..8db00d9 100644
+--- a/LifeOS/install/hooks/lib/events.ts
++++ b/LifeOS/install/hooks/lib/events.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Emits native finding events and reads bounded event history.
++// ABOUTME: Sends managed appends through owner transactions while preserving standalone behavior.
+ /**
+  * events.ts — shared emitter and reader for the unified event log.
+  *
+@@ -44,6 +46,8 @@
+ import { appendFileSync, mkdirSync, openSync, readSync, fstatSync, closeSync } from 'fs';
+ import { dirname } from 'path';
+ import { paiPath } from './paths';
++import { randomUUID } from 'node:crypto';
++import { memoryAccess, memoryObject } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
+ 
+ // UTC via Date, not lib/time.ts: `timestamp` has been UTC in every event ever
+ // written to this log, and lib/time.ts's getISOTimestamp() is local-with-offset —
+@@ -100,10 +104,12 @@ export function eventsPath(): string {
+ 
+ /**
+  * Append one event. `timestamp` and `session_id` are injected; an event may
+- * override either by supplying its own. Never throws.
++ * override either in standalone mode. Managed events use the authenticated session. Never throws.
+  */
+ export function appendEvent(event: BaseEvent, path: string = eventsPath()): void {
+   try {
++    const governed = memoryAccess('event_append', {path, event, request_id: randomUUID()}, memoryObject);
++    if (governed !== undefined) return;
+     mkdirSync(dirname(path), { recursive: true });
+     const record: EventRecord = {
+       timestamp: eventTimestamp(),

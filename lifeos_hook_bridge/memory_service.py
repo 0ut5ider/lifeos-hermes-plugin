@@ -260,6 +260,10 @@ class MemoryService:
     def _native_operation(self, context, operation, arguments, configuration, scope):
         try:
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'event_append' and set(arguments) == {'path','event','request_id'}:
+                from .memory_events import append
+                return append(memory, scope, **arguments, source_session=context.session_id,
+                    check_current=lambda: self._check_current_context(configuration, context, scope))
             if operation == 'knowledge_conformance' and set(arguments) == {'request_id'}:
                 from .memory_knowledge_conformance import run
                 return run(memory, scope, **arguments, source_session=context.session_id,
