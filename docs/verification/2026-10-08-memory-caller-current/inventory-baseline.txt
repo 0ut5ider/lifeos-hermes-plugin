@@ -1,0 +1,32 @@
+test_missing_seed_source_refuses_instead_of_hashing_empty_text (test_memory_caller_inventory.MemoryCallerInventoryTests.test_missing_seed_source_refuses_instead_of_hashing_empty_text) ... FAIL
+test_seed_lines_are_replaced_by_current_source_evidence (test_memory_caller_inventory.MemoryCallerInventoryTests.test_seed_lines_are_replaced_by_current_source_evidence) ... FAIL
+test_user_only_program_is_discovered_without_reading_user_records (test_memory_caller_inventory.MemoryCallerInventoryTests.test_user_only_program_is_discovered_without_reading_user_records) ... ok
+
+======================================================================
+FAIL: test_missing_seed_source_refuses_instead_of_hashing_empty_text (test_memory_caller_inventory.MemoryCallerInventoryTests.test_missing_seed_source_refuses_instead_of_hashing_empty_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_caller_inventory.py", line 57, in test_missing_seed_source_refuses_instead_of_hashing_empty_text
+    with self.assertRaisesRegex(ValueError, 'missing.ts'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_seed_lines_are_replaced_by_current_source_evidence (test_memory_caller_inventory.MemoryCallerInventoryTests.test_seed_lines_are_replaced_by_current_source_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_caller_inventory.py", line 51, in test_seed_lines_are_replaced_by_current_source_evidence
+    self.assertEqual(rows[0]['sha256'], rows[0]['source_sha256'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'historical' != '47b2033130e4a5bc5158dea6cbcd867c828c2dcc8a8cfa6f3da8885fbd9d9e74'
+- historical
++ 47b2033130e4a5bc5158dea6cbcd867c828c2dcc8a8cfa6f3da8885fbd9d9e74
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.006s
+
+FAILED (failures=2)
+{"files_scanned": 3, "candidates": 1, "entry_points": {"unresolved_dynamic_or_manual": 1}}
+{"files_scanned": 4, "candidates": 1, "entry_points": {"unresolved_dynamic_or_manual": 1}}
+{"files_scanned": 4, "candidates": 1, "entry_points": {"unresolved_dynamic_or_manual": 1}}
