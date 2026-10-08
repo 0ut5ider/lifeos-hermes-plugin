@@ -224,7 +224,7 @@ index 9eeb62a6..439d5e04 100644
          self._print_exit_summary()
          self._release_active_session()
 diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
-index 905186ce..265ef86e 100644
+index 905186ce..97afc5c4 100644
 --- a/plugins/platforms/discord/adapter.py
 +++ b/plugins/platforms/discord/adapter.py
 @@ -1,3 +1,6 @@
@@ -291,7 +291,93 @@ index 905186ce..265ef86e 100644
              summary["updated"] += 1
          summary["total"] = len(desired_payloads)
          return summary
-@@ -4003,6 +4020,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+@@ -3001,6 +3018,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+             kept.append(notice)
+         return kept
+ 
++    async def _require_private_delivery(self, channel):
++        if self._guild_channel_restriction() is None:
++            return
++        if not self._guild_channel_allows(channel):
++            raise PermissionError('Private Discord delivery requires the selected guild text channel')
++        from plugins.platforms.discord.delivery import authorize_delivery
++        await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
++                                 token=getattr(self._client.http, 'token', ''))
++
+     async def send(
+         self,
+         chat_id: str,
+@@ -3052,6 +3078,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 else:  # "first" (default) or "off"
+                     chunk_reference = reference if i == 0 else None
+                 try:
++                    await self._require_private_delivery(channel)
+                     msg = await channel.send(content=chunk, reference=chunk_reference)
+                 except Exception as e:
+                     if chunk_reference is not None and self._is_reply_reference_rejected(e):
+@@ -3060,6 +3087,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                             self.name, reply_to,
+                         )
+                         reference = None
++                        await self._require_private_delivery(channel)
+                         msg = await channel.send(content=chunk, reference=None)
+                     else:
+                         raise
+@@ -3219,6 +3247,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 # Content shrank under the cap: clear saturation state so dedup can't mask a real edit.
+                 self._last_overflow_preview.pop(_preview_key, None)
+             try:
++                await self._require_private_delivery(channel)
+                 await msg.edit(content=formatted)
+                 if _saturated_preview:
+                     self._last_overflow_preview[_preview_key] = formatted
+@@ -3231,6 +3260,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                     if self._last_overflow_preview.get(_preview_key) == truncated:
+                         # Saturated-preview dedup (see pre-flight path above).
+                         return SendResult(success=True, message_id=message_id)
++                    await self._require_private_delivery(channel)
+                     await msg.edit(content=truncated)
+                     self._last_overflow_preview[_preview_key] = truncated
+                 else:
+@@ -3271,9 +3301,11 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         chunks = self._cap_split_chunks(self.truncate_message(formatted, self.MAX_MESSAGE_LENGTH))
+         if len(chunks) <= 1:
+             # Defensive: pre-flight should guarantee >1 chunk; otherwise edit normally.
++            await self._require_private_delivery(channel)
+             await msg.edit(content=chunks[0] if chunks else formatted)
+             return SendResult(success=True, message_id=message_id)
+         try:
++            await self._require_private_delivery(channel)
+             await msg.edit(content=chunks[0])
+         except Exception as e:
+             logger.error(
+@@ -3294,6 +3326,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 # Prior message without to_reference (duck-typed): build the reference from ids.
+                 reference = self._message_reference_from_ids(prev_msg.id, channel)
+             try:
++                await self._require_private_delivery(channel)
+                 sent = await channel.send(content=chunk, reference=reference)
+             except Exception as send_err:
+                 # Drop the reply anchor and retry once: deleted anchor (10008) / system message (50035).
+@@ -3302,6 +3335,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                     self.name, send_err,
+                 )
+                 try:
++                    await self._require_private_delivery(channel)
+                     sent = await channel.send(content=chunk, reference=None)
+                 except Exception as retry_err:
+                     logger.warning(
+@@ -3310,7 +3344,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                     )
+                     last_id = continuation_ids[-1] if continuation_ids else message_id
+                     return SendResult(
+-                        success=True,
++                        success=not isinstance(retry_err, PermissionError),
++                        error=str(retry_err) if isinstance(retry_err, PermissionError) else None,
+                         message_id=last_id,
+                         continuation_message_ids=tuple(continuation_ids),
+                         raw_response={
+@@ -4003,6 +4038,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
          Fail closed on malformed payloads: with an allowlist, a missing channel id/user REJECTS.
          """
          chan_obj = getattr(interaction, "channel", None)
@@ -300,7 +386,7 @@ index 905186ce..265ef86e 100644
          in_dm = isinstance(chan_obj, discord.DMChannel) if chan_obj is not None else False
          channel_ids: set = set()
          channel_keys: set = set()
-@@ -4869,6 +4888,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+@@ -4869,6 +4906,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
          """This adapter's DISCORD_ALLOWED_CHANNELS gate (per-profile)."""
          return self._gate_csv_set(self._gate_raw("allowed_channels", "DISCORD_ALLOWED_CHANNELS"))
  
@@ -316,7 +402,7 @@ index 905186ce..265ef86e 100644
      def _get_ignored_channels(self) -> set:
          """This adapter's DISCORD_IGNORED_CHANNELS gate (per-profile)."""
          return self._gate_csv_set(self._gate_raw("ignored_channels", "DISCORD_IGNORED_CHANNELS"))
-@@ -5210,10 +5238,13 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+@@ -5210,10 +5256,13 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
          dying in ``int()`` as a generic send failure."""
          if isinstance(channel_id, str):
              channel_id = discord_channel_id_from_link(channel_id.strip()) or channel_id
@@ -331,7 +417,133 @@ index 905186ce..265ef86e 100644
  
      def _thread_parent_channel(self, channel: Any) -> Any:
          """Return the parent text channel when invoked from a thread."""
-@@ -6959,6 +6990,15 @@ async def _standalone_send(
+@@ -5492,9 +5541,11 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         try:
+             channel = await self._resolve_channel(_prompt_target_id(chat_id, metadata))
+             send_kwargs, view = build(channel)
++            await self._require_private_delivery(channel)
+             msg = await channel.send(**send_kwargs)
+             if view is not None:
+                 view._message = msg
++                view._delivery_guard = lambda: self._require_private_delivery(channel)
+             return SendResult(success=True, message_id=str(msg.id))
+         except Exception as e:
+             if fail_log:
+@@ -6256,12 +6307,22 @@ def _define_discord_view_classes() -> None:
+             self.allowed_role_ids = allowed_role_ids or set()
+             self.resolved = False
+             self._message = None
++            self._delivery_guard = None
++
++        async def _check_delivery(self):
++            if self._delivery_guard is not None:
++                await self._delivery_guard()
+ 
+         def _check_auth(self, interaction: discord.Interaction) -> bool:
+             return _component_check_auth(interaction, self.allowed_user_ids, self.allowed_role_ids)
+ 
+         async def _gate(self, interaction: discord.Interaction, *, resolved_msg: Optional[str], unauth_msg: str) -> bool:
+             """Reject (ephemerally) an already-resolved or unauthorized click; True when it may proceed."""
++            try:
++                await self._check_delivery()
++            except PermissionError:
++                await interaction.response.send_message('Private channel access changed. This prompt is unavailable.', ephemeral=True)
++                return False
+             if resolved_msg is not None and self.resolved:
+                 await interaction.response.send_message(resolved_msg, ephemeral=True)
+                 return False
+@@ -6287,6 +6348,7 @@ def _define_discord_view_classes() -> None:
+                     if embed:
+                         embed.color = discord.Color.greyple()
+                         embed.set_footer(text=footer)
++                    await self._check_delivery()
+                     await msg.edit(embed=embed, view=self)
+                 except Exception:
+                     pass  # message deleted or too old to edit
+@@ -6299,6 +6361,7 @@ def _define_discord_view_classes() -> None:
+                 embed.color = color
+                 embed.set_footer(text=footer)
+             self._disable_all()
++            await self._check_delivery()
+             await interaction.response.edit_message(embed=embed, view=self)
+ 
+         async def on_timeout(self):
+@@ -6412,6 +6475,7 @@ def _define_discord_view_classes() -> None:
+                 from tools import slash_confirm as _slash_confirm_mod
+                 result_text = await _slash_confirm_mod.resolve(self.session_key, self.confirm_id, choice)
+                 if result_text:
++                    await self._check_delivery()
+                     await interaction.followup.send(result_text)
+                 logger.info(
+                     "Discord button resolved slash-confirm for session %s "
+@@ -6493,6 +6557,7 @@ def _define_discord_view_classes() -> None:
+ 
+         async def _edit(self, interaction: discord.Interaction, description: str, *, view=..., **embed_kw) -> None:
+             """Edit the picker message in place with a config embed (``view`` defaults to self)."""
++            await self._check_delivery()
+             await interaction.response.edit_message(
+                 embed=self._config_embed(description, **embed_kw), view=self if view is ... else view,
+             )
+@@ -6587,6 +6652,7 @@ def _define_discord_view_classes() -> None:
+                 result_text = await self.on_model_selected(str(interaction.channel_id), model_id, self._selected_provider)
+             except Exception as exc:
+                 result_text = f"Error switching model: {exc}"
++            await self._check_delivery()
+             await interaction.edit_original_response(
+                 embed=self._config_embed(result_text, title="⚙ Model Switched", color=discord.Color.green()),
+                 view=None,
+@@ -6639,6 +6705,7 @@ def _define_discord_view_classes() -> None:
+             if msg:
+                 try:
+                     embed = self._config_embed("⏱ Selection expired — no model change.", color=discord.Color.greyple())
++                    await self._check_delivery()
+                     await msg.edit(embed=embed, view=self)
+                 except Exception:
+                     pass
+@@ -6681,6 +6748,7 @@ def _define_discord_view_classes() -> None:
+             embed = discord.Embed(description=result_text, color=discord.Color.green())
+             self.clear_items()
+             self.stop()
++            await self._check_delivery()
+             await interaction.response.edit_message(embed=embed, view=self)
+ 
+         async def on_timeout(self):
+@@ -6691,6 +6759,7 @@ def _define_discord_view_classes() -> None:
+                 try:
+                     embed = discord.Embed(description="⏱ Selection expired — no change made.", color=discord.Color.greyple())
+                     self.clear_items()
++                    await self._check_delivery()
+                     await msg.edit(embed=embed, view=self)
+                 except Exception:
+                     pass
+@@ -6754,6 +6823,7 @@ def _define_discord_view_classes() -> None:
+                 embed.color = color
+                 embed.set_footer(text=footer)
+             try:
++                await self._check_delivery()
+                 await interaction.response.edit_message(embed=embed, view=self)
+             except Exception:
+                 if log_edit_failure:
+@@ -6924,6 +6994,9 @@ async def _standalone_response_json_or_error(resp: Any, error_prefix: str):
+     return await _standalone_read_json_limited(resp, _DISCORD_STANDALONE_JSON_BODY_LIMIT_BYTES), None
+ 
+ 
++_DISCORD_API_BASE = 'https://discord.com/api/v10'
++
++
+ async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_kw: dict, req_kw: dict) -> bool:
+     """Forum detection: channel directory → process-local probe cache → memoized ``GET /channels/{id}``."""
+     _channel_type = None
+@@ -6939,7 +7012,7 @@ async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_k
+         return cached
+     is_forum = False
+     try:
+-        info_url = f"https://discord.com/api/v10/channels/{chat_id}"
++        info_url = f"{_DISCORD_API_BASE}/channels/{chat_id}"
+         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15), **sess_kw) as info_sess:
+             async with info_sess.get(info_url, headers=json_headers, **req_kw) as info_resp:
+                 if info_resp.status == 200:
+@@ -6959,6 +7032,15 @@ async def _standalone_send(
      Forum channels (type 15) reject ``POST /messages``, so a thread post is created via
      ``POST /channels/{id}/threads`` with media as multipart attachments. Channel type: directory
      cache → process-local probe cache → memoized GET. ``force_document`` accepted but unused."""
@@ -347,7 +559,80 @@ index 905186ce..265ef86e 100644
      try:
          import aiohttp
      except ImportError:
-@@ -7298,6 +7338,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
+@@ -6971,6 +7053,11 @@ async def _standalone_send(
+     if not token:
+         return send_error("Discord standalone send: DISCORD_BOT_TOKEN is not set")
+     try:
++        async def check_delivery():
++            if selected is not None:
++                from plugins.platforms.discord.delivery import authorize_delivery
++                await authorize_delivery(chat_id, token=token)
++        await check_delivery()
+         from gateway.platforms.base import resolve_proxy_url, proxy_kwargs_for_aiohttp
+         _proxy = resolve_proxy_url(platform_env_var="DISCORD_PROXY")
+         _sess_kw, _req_kw = proxy_kwargs_for_aiohttp(_proxy)
+@@ -6980,12 +7067,12 @@ async def _standalone_send(
+         last_data = None
+         warnings = []
+         if thread_id:
+-            url = f"https://discord.com/api/v10/channels/{thread_id}/messages"
++            url = f"{_DISCORD_API_BASE}/channels/{thread_id}/messages"
+         else:
+             # Forum channels (type 15) reject POST /messages — create a thread post.
+             if await _standalone_is_forum(aiohttp, chat_id, json_headers, _sess_kw, _req_kw):
+                 thread_name = _derive_forum_thread_name(message)
+-                thread_url = f"https://discord.com/api/v10/channels/{chat_id}/threads"
++                thread_url = f"{_DISCORD_API_BASE}/channels/{chat_id}/threads"
+                 # Filter readable media first to pick JSON vs multipart before opening a session.
+                 valid_media = []
+                 for media_path, _is_voice in media_files:
+@@ -7035,9 +7122,10 @@ async def _standalone_send(
+                 if warnings:
+                     result["warnings"] = warnings
+                 return result
+-            url = f"https://discord.com/api/v10/channels/{chat_id}/messages"
++            url = f"{_DISCORD_API_BASE}/channels/{chat_id}/messages"
+         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30), **_sess_kw) as session:
+             if message.strip() or not media_files:
++                await check_delivery()
+                 async with session.post(url, headers=json_headers, json={"content": message}, **_req_kw) as resp:
+                     last_data, err = await _standalone_response_json_or_error(resp, "Discord API error")
+                     if err:
+@@ -7050,6 +7138,7 @@ async def _standalone_send(
+                     warnings.append(_standalone_warn_missing_media(media_path))
+                     if caption_pending:
+                         try:
++                            await check_delivery()
+                             async with session.post(
+                                 url, headers=json_headers, json={"content": caption}, **_req_kw,
+                             ) as resp:
+@@ -7058,6 +7147,8 @@ async def _standalone_send(
+                                         resp, _DISCORD_STANDALONE_JSON_BODY_LIMIT_BYTES,
+                                     )
+                                     caption_pending = False
++                        except PermissionError:
++                            raise
+                         except Exception:
+                             logger.warning("Discord caption-fallback send failed for missing media")
+                     continue
+@@ -7072,6 +7163,7 @@ async def _standalone_send(
+                         caption_pending = False
+                     with open(media_path, "rb") as f:
+                         form.add_field("files[0]", f, filename=filename)
++                        await check_delivery()
+                         async with session.post(url, headers=auth_headers, data=form, **_req_kw) as resp:
+                             data, err = await _standalone_response_json_or_error(resp, "Discord API error")
+                             if err:
+@@ -7080,6 +7172,8 @@ async def _standalone_send(
+                                 warnings.append(warning)
+                                 continue
+                             last_data = data
++                except PermissionError:
++                    raise
+                 except Exception as e:
+                     warning = send_error(f"Failed to send media {media_path}: {e}")["error"]
+                     logger.error(warning)
+@@ -7298,6 +7392,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
          seeded_extra["missed_message_backfill"] = dict(backfill_cfg)
      _gate("ignored_channels", "DISCORD_IGNORED_CHANNELS", from_platform_extra=False)
      _gate("allowed_channels", "DISCORD_ALLOWED_CHANNELS", from_platform_extra=False)
@@ -355,6 +640,126 @@ index 905186ce..265ef86e 100644
      _gate("no_thread_channels", "DISCORD_NO_THREAD_CHANNELS", from_platform_extra=False)
      # history_backfill: recover mention-gated channel messages between bot turns.
      if "history_backfill" in discord_cfg:
+diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
+index 6afa1663..4ab75471 100644
+--- a/plugins/platforms/discord/adapter_media.py
++++ b/plugins/platforms/discord/adapter_media.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Delivers Discord native media and attachment fallbacks.
++# ABOUTME: Checks private channel authority before each native upload or caption write.
+ """Discord native media uploads and delivery fallbacks."""
+ from __future__ import annotations
+ 
+@@ -65,12 +67,14 @@ class DiscordMediaMixin:
+             if shown:
+                 # Legacy: the notice is posted in-channel only (forum parents get no bare notice).
+                 if not self._is_forum_parent(channel):
++                    await self._require_private_delivery(channel)
+                     await channel.send(content=notice)
+             elif caption:
+                 # Hidden: the requested caption still travels, on the channel's native shape.
+                 if self._is_forum_parent(channel):
+                     await self._send_to_forum(channel, caption)
+                 else:
++                    await self._require_private_delivery(channel)
+                     await channel.send(content=caption)
+         except Exception:
+             logger.debug("[%s] Failed to send oversized-file notice for %s", self.name, filename, exc_info=True)
+@@ -95,6 +99,7 @@ class DiscordMediaMixin:
+         channel = await self._resolve_channel(_prompt_target_id(chat_id, metadata))
+         if not channel:
+             return SendResult(success=False, error=f"Channel {chat_id} not found")
++        await self._require_private_delivery(channel)
+         filename = file_name or os.path.basename(file_path)
+         rejected = await self._reject_oversized_upload(channel, file_path, filename, caption=caption)
+         if rejected is not None:
+@@ -110,6 +115,11 @@ class DiscordMediaMixin:
+                 channel, content=(caption or "").strip(), files=[discord_file],
+             )
+             return result
++        try:
++            await self._require_private_delivery(channel)
++        except BaseException:
++            discord_file.close()
++            raise
+         msg = await channel.send(content=caption if caption else None, files=[discord_file])
+         attachments = getattr(msg, "attachments", None) or []
+         if not attachments:
+@@ -233,9 +243,11 @@ class DiscordMediaMixin:
+                         if self._is_forum_parent(channel):
+                             await self._send_to_forum(channel, captions[0])
+                         else:
++                            await self._require_private_delivery(channel)
+                             await channel.send(content=captions[0])
+                     if skip_notices and shown and not self._is_forum_parent(channel):
+                         try:
++                            await self._require_private_delivery(channel)
+                             await channel.send(content="\n".join(skip_notices))
+                         except Exception:
+                             logger.debug(
+@@ -256,6 +268,7 @@ class DiscordMediaMixin:
+                         channel, content=(content or "").strip(), files=files,
+                     )
+                 else:
++                    await self._require_private_delivery(channel)
+                     await channel.send(content=content, files=files)
+                 delivered = True
+             except Exception as e:
+@@ -325,6 +338,7 @@ class DiscordMediaMixin:
+                         "content_type": "audio/ogg",
+                     },
+                 ]
++                await self._require_private_delivery(channel)
+                 msg_data = await self._client.http.request(
+                     discord.http.Route("POST", "/channels/{channel_id}/messages", channel_id=channel.id),
+                     form=form,
+@@ -334,9 +348,11 @@ class DiscordMediaMixin:
+                 logger.debug("Voice message flag failed, falling back to file: %s", voice_err)
+                 file = discord.File(io.BytesIO(file_data), filename=filename)
+                 try:
++                    await self._require_private_delivery(channel)
+                     msg = await channel.send(file=file, reference=reference)
+                 except Exception as send_err:
+                     if reference is not None and self._is_reply_reference_rejected(send_err):
++                        await self._require_private_delivery(channel)
+                         msg = await channel.send(file=file, reference=None)
+                     else:
+                         raise
+@@ -398,6 +414,7 @@ class DiscordMediaMixin:
+                 file = discord.File(io.BytesIO(data), filename=filename_for(headers))
+                 if self._is_forum_parent(channel):
+                     return await self._forum_post_file(channel, content=(caption or "").strip(), file=file)
++                await self._require_private_delivery(channel)
+                 msg = await channel.send(content=caption if caption else None, file=file)
+                 return SendResult(success=True, message_id=str(msg.id))
+         except ImportError:
+@@ -456,4 +473,3 @@ class DiscordMediaMixin:
+             chat_id, file_path, caption, file_name=file_name, not_found="File not found", kind="document",
+             metadata=metadata,
+         )
+-
+diff --git a/plugins/platforms/discord/delivery.py b/plugins/platforms/discord/delivery.py
+new file mode 100644
+index 00000000..cdb15ca4
+--- /dev/null
++++ b/plugins/platforms/discord/delivery.py
+@@ -0,0 +1,16 @@
++# ABOUTME: Requires current profile policy before private Discord content delivery.
++# ABOUTME: Binds the transport credential without exposing it to plugin callbacks.
++from hmac import compare_digest
++
++
++async def authorize_delivery(chat_id, *, guild_id='', token=''):
++    from agent.secret_scope import get_secret
++    from hermes_constants import get_hermes_home
++    from hermes_cli.plugins import get_plugin_manager
++    expected = get_secret('DISCORD_BOT_TOKEN', '')
++    if not isinstance(token, str) or not token or not isinstance(expected, str) or not compare_digest(token, expected):
++        raise PermissionError('Private Discord delivery has a different profile credential')
++    results = await get_plugin_manager().ainvoke_hook('pre_message_delivery',
++        platform='discord', chat_id=str(chat_id), guild_id=str(guild_id), hermes_home=str(get_hermes_home()))
++    if not results or any(not isinstance(result, dict) or result.get('action') != 'allow' for result in results):
++        raise PermissionError('Current Discord permissions do not admit private delivery')
 diff --git a/tests/gateway/test_clarify_cancellation_outcome.py b/tests/gateway/test_clarify_cancellation_outcome.py
 new file mode 100644
 index 00000000..e4f206c5

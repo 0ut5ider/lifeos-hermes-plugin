@@ -1,0 +1,265 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+_ GuildChannelOnlyTests.test_absent_opt_in_preserves_direct_message_admission __
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_absent_opt_in_preserves_direct_message_admission>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+___ GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id ____
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_channel_only_requires_one_numeric_channel_id>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+____ GuildChannelOnlyTests.test_direct_messages_refuse_an_allowlisted_owner ____
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_direct_messages_refuse_an_allowlisted_owner>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+__ GuildChannelOnlyTests.test_other_guild_channel_refuses_messages_and_status __
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_other_guild_channel_refuses_messages_and_status>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_outbound_messages_and_files_cannot_resolve_another_destination _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_outbound_messages_and_files_cannot_resolve_another_destination>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+__ GuildChannelOnlyTests.test_pairing_does_not_bypass_the_channel_restriction __
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_pairing_does_not_bypass_the_channel_restriction>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_private_channel_accepts_owner_messages_and_status _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_private_channel_accepts_owner_messages_and_status>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_standalone_selected_channel_reaches_credential_validation _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_standalone_selected_channel_reaches_credential_validation>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_standalone_text_and_media_refuse_another_channel_before_credentials _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_standalone_text_and_media_refuse_another_channel_before_credentials>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+=========================== short test summary info ============================
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_absent_opt_in_preserves_direct_message_admission
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_channel_only_requires_one_numeric_channel_id
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_direct_messages_refuse_an_allowlisted_owner
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_other_guild_channel_refuses_messages_and_status
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_outbound_messages_and_files_cannot_resolve_another_destination
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_pairing_does_not_bypass_the_channel_restriction
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_private_channel_accepts_owner_messages_and_status
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_standalone_selected_channel_reaches_credential_validation
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_standalone_text_and_media_refuse_another_channel_before_credentials
+9 failed in 0.60s

@@ -40,6 +40,7 @@ GROUPS = {
         "hermes_cli/cli_session_mixin.py", "hermes_cli/cli_tui_runtime_mixin.py",
         "tests/gateway/test_resume_command.py", "tests/gateway/test_stop_clarify_waiters.py",
         "plugins/platforms/discord/adapter.py", "tests/gateway/test_discord_command_identity.py",
+        "plugins/platforms/discord/adapter_media.py", "plugins/platforms/discord/delivery.py",
         "tests/gateway/test_discord_connect.py", "tests/gateway/test_discord_sync_limit.py",
         "tests/gateway/test_discord_guild_channel_only.py",
         "tools/clarify_gateway.py", "tools/clarify_outcome.py", "tools/clarify_tool.py",

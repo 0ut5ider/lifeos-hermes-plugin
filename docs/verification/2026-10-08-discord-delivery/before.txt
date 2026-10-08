@@ -1,0 +1,102 @@
+test_changed_audience_withholds_generated_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_audience_withholds_generated_reply) ... FAIL
+test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience) ... FAIL
+test_missing_required_guard_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_missing_required_guard_withholds_the_reply) ... FAIL
+test_optional_channel_mode_preserves_actual_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_optional_channel_mode_preserves_actual_delivery) ... ok
+test_private_audience_permits_an_actual_sdk_post (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_permits_an_actual_sdk_post) ... ERROR
+test_streaming_edit_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_streaming_edit_rechecks_the_current_audience) ... FAIL
+test_unknown_guard_result_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_unknown_guard_result_withholds_the_reply) ... FAIL
+
+======================================================================
+ERROR: test_private_audience_permits_an_actual_sdk_post (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_permits_an_actual_sdk_post)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 68, in test_private_audience_permits_an_actual_sdk_post
+    self.assertEqual(self.calls[-1],('discord','60','10',str(get_hermes_home())))
+                     ~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_changed_audience_withholds_generated_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_audience_withholds_generated_reply)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 73, in test_changed_audience_withholds_generated_reply
+    self.assertFalse(result.success, result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : SendResult(success=True, message_id='100000000000000001', error=None, raw_response={'message_ids': ['100000000000000001']}, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None)
+
+======================================================================
+FAIL: test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 79, in test_each_chunk_rechecks_the_current_audience
+    self.assertFalse(result.success, result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : SendResult(success=True, message_id='100000000000000001', error=None, raw_response={'message_ids': ['100000000000000001', '100000000000000002']}, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None)
+
+======================================================================
+FAIL: test_missing_required_guard_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_missing_required_guard_withholds_the_reply)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 93, in test_missing_required_guard_withholds_the_reply
+    self.assertFalse(result.success, result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : SendResult(success=True, message_id='100000000000000001', error=None, raw_response={'message_ids': ['100000000000000001']}, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None)
+
+======================================================================
+FAIL: test_streaming_edit_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_streaming_edit_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 87, in test_streaming_edit_rechecks_the_current_audience
+    self.assertFalse(result.success, result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : SendResult(success=True, message_id='100000000000000000', error=None, raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None)
+
+======================================================================
+FAIL: test_unknown_guard_result_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_unknown_guard_result_withholds_the_reply)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 99, in test_unknown_guard_result_withholds_the_reply
+    self.assertFalse(result.success, result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : SendResult(success=True, message_id='100000000000000001', error=None, raw_response={'message_ids': ['100000000000000001']}, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None)
+
+----------------------------------------------------------------------
+Ran 7 tests in 3.629s
+
+FAILED (failures=5, errors=1)

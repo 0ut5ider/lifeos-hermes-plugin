@@ -18,6 +18,8 @@ The [staged decision gate](verification/2026-10-08-staging-writers/README.md) pa
 
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.
 
+The [outbound audience gate](verification/2026-10-08-discord-delivery/README.md) passes 168 tests across actual SDK and HTTP controls, native unit controls, and installation checks. The private channel mode requires a current policy grant for every content write. Live private-channel acceptance remains open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

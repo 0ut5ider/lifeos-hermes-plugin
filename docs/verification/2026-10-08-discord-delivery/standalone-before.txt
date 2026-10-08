@@ -1,0 +1,49 @@
+test_another_profile_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_another_profile_withholds_the_reply) ... ok
+test_another_transport_token_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_another_transport_token_withholds_the_reply) ... ok
+test_changed_audience_withholds_generated_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_audience_withholds_generated_reply) ... ok
+test_changed_configuration_during_permission_reads_withholds_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_configuration_during_permission_reads_withholds_delivery) ... ok
+test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience) ... ok
+test_missing_required_guard_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_missing_required_guard_withholds_the_reply) ... ok
+test_optional_channel_mode_preserves_actual_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_optional_channel_mode_preserves_actual_delivery) ... ok
+test_overflow_edit_stops_after_the_audience_changes (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_overflow_edit_stops_after_the_audience_changes) ... ok
+test_private_audience_allows_actual_standalone_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_allows_actual_standalone_delivery) ... FAIL
+test_private_audience_permits_an_actual_sdk_post (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_permits_an_actual_sdk_post) ... ok
+test_prompt_delivery_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_prompt_delivery_rechecks_the_current_audience) ... ok
+test_standalone_delivery_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_standalone_delivery_rechecks_the_current_audience) ... FAIL
+test_streaming_edit_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_streaming_edit_rechecks_the_current_audience) ... ok
+test_unknown_guard_result_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_unknown_guard_result_withholds_the_reply) ... ok
+
+======================================================================
+FAIL: test_private_audience_allows_actual_standalone_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_allows_actual_standalone_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 175, in test_private_audience_allows_actual_standalone_delivery
+    self.assertEqual(len(self.calls),1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_standalone_delivery_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_standalone_delivery_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 166, in test_standalone_delivery_rechecks_the_current_audience
+    self.assertFalse(result.get('success'),result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'success': True, 'platform': 'discord', 'chat_id': '60', 'message_id': '100000000000000001'}
+
+----------------------------------------------------------------------
+Ran 14 tests in 7.251s
+
+FAILED (failures=2)

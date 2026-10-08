@@ -1,6 +1,8 @@
 # ABOUTME: Verifies private Discord audience admission through an actual local HTTP API fixture.
 # ABOUTME: Covers permission overrides, administrators, unbound destinations, and changing readers.
 import copy
+from email.parser import BytesParser
+from email.policy import default
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
@@ -31,11 +33,51 @@ class DiscordAudienceTests(unittest.TestCase):
             '/users/@me': {'id': '30', 'bot': True},
         }
         self.requests = []
+        self.deliveries = []
+        self.on_delivery = None
         self.redirects = {}
         self.on_request = None
         fixture = self
 
         class Handler(BaseHTTPRequestHandler):
+            def do_POST(self):
+                self.deliver()
+
+            def do_PATCH(self):
+                self.deliver()
+
+            def deliver(self):
+                self.assert_authorization()
+                length = int(self.headers.get('Content-Length', '0'))
+                data = self.rfile.read(length)
+                attachments = []
+                if self.headers.get('Content-Type','').startswith('multipart/'):
+                    message = BytesParser(policy=default).parsebytes(
+                        ('Content-Type: '+self.headers['Content-Type']+'\r\n\r\n').encode()+data)
+                    payload = {}
+                    for part in message.iter_parts():
+                        if part.get_param('name',header='content-disposition') == 'payload_json':
+                            payload = json.loads(part.get_payload(decode=True))
+                        elif part.get_filename():
+                            attachments.append({'id':str(len(attachments)+1),'filename':part.get_filename(),
+                                'size':len(part.get_payload(decode=True)), 'url':'https://synthetic.invalid/file',
+                                'proxy_url':'https://synthetic.invalid/file'})
+                else:
+                    payload = json.loads(data)
+                fixture.deliveries.append({'method':self.command, 'path':self.path, 'payload':payload})
+                body = {'id':str(100000000000000000+len(fixture.deliveries)), 'channel_id':'60',
+                    'type':0, 'author':{'id':'30','username':'SyntheticBot','discriminator':'0000',
+                        'avatar':None,'bot':True}, 'content':payload.get('content',''), 'mentions':[],
+                    'mention_roles':[], 'attachments':attachments, 'embeds':payload.get('embeds',[]),
+                    'flags':0,'pinned':False,'tts':False,
+                    'timestamp':'2026-10-08T13:00:00+00:00','edited_timestamp':None}
+                if fixture.on_delivery is not None:
+                    fixture.on_delivery()
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps(body).encode())
+
             def do_GET(self):
                 fixture.requests.append(self.path)
                 self.assert_authorization()

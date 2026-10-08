@@ -1,0 +1,31 @@
+test_a_changed_audience_withholds_an_actual_file_upload (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_a_changed_audience_withholds_an_actual_file_upload) ... FAIL
+
+======================================================================
+FAIL: test_a_changed_audience_withholds_an_actual_file_upload (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_a_changed_audience_withholds_an_actual_file_upload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 181, in test_a_changed_audience_withholds_an_actual_file_upload
+    result = await self.refused(self.adapter.send_document('60',str(path),caption='Synthetic private caption'))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 69, in refused
+    with self.assertLogs(adapter_module.logger, level='WARNING') as logged:
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/_log.py", line 84, in __exit__
+    self._raiseFailure(
+    ~~~~~~~~~~~~~~~~~~^
+        "no logs of level {} or higher triggered on {}"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        .format(logging.getLevelName(self.level), self.logger.name))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: no logs of level WARNING or higher triggered on plugins.platforms.discord.adapter
+
+----------------------------------------------------------------------
+Ran 1 test in 0.515s
+
+FAILED (failures=1)

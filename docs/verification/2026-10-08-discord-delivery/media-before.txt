@@ -1,0 +1,57 @@
+test_a_changed_audience_withholds_an_actual_file_upload (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_a_changed_audience_withholds_an_actual_file_upload) ... ----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 41662)
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/http/server.py", line 500, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/http/server.py", line 488, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_audience.py", line 42, in do_POST
+    self.deliver()
+    ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_audience.py", line 50, in deliver
+    payload = json.loads(self.rfile.read(length))
+  File "/usr/lib64/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+----------------------------------------
+FAIL
+
+======================================================================
+FAIL: test_a_changed_audience_withholds_an_actual_file_upload (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_a_changed_audience_withholds_an_actual_file_upload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 181, in test_a_changed_audience_withholds_an_actual_file_upload
+    result = await self.refused(self.adapter.send_document('60',str(path),caption='Synthetic private caption'))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 71, in refused
+    self.assertTrue(any('private delivery' in row.lower() for row in logged.output), logged.output)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ['ERROR:plugins.platforms.discord.adapter:[Discord] Failed to send document: Server disconnected\nTraceback (most recent call last):\n  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter_media.py", line 352, in _send_local_file\n    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter_media.py", line 113, in _send_file_attachment\n    msg = await channel.send(content=caption if caption else None, files=[discord_file])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/abc.py", line 1706, in send\n    data = await state.http.send_message(channel.id, params=params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/http.py", line 659, in request\n    async with self.__session.request(method, url, **kwargs) as response:\n               ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/aiohttp/client.py", line 1756, in __aenter__\n    self._resp: _RetType_co = await self._coro\n                              ^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/aiohttp/client.py", line 900, in _request\n    resp = await handler(req)\n           ^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/aiohttp/client.py", line 878, in _connect_and_send_request\n    await resp.start(conn)\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/aiohttp/client_reqrep.py", line 745, in start\n    message, payload = await protocol.read()  # type: ignore[union-attr]\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/aiohttp/streams.py", line 716, in read\n    await self._waiter\naiohttp.client_exceptions.ServerDisconnectedError: Server disconnected']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.516s
+
+FAILED (failures=1)

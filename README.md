@@ -12,6 +12,8 @@ The [staged decision controls](docs/verification/2026-10-08-staging-writers/READ
 
 The [learning and Wisdom audience controls](docs/verification/2026-10-08-background-audience/README.md) recheck current Discord permissions after native processing. The gate passes 96 tests. Final outbound delivery and live audience acceptance remain open.
 
+The [private Discord delivery controls](docs/verification/2026-10-08-discord-delivery/README.md) require current audience approval before each content write in the selected channel mode. The combined gate passes 168 tests. Actual private-channel acceptance and installed release verification remain open.
+
 This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
 
 

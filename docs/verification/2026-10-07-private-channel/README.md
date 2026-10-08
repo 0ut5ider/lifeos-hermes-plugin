@@ -36,4 +36,4 @@ Operator changes remain outside Git. Their receipts are private files under the 
 
 The Step 1 ledger retains the exact historical patch rebuild script under [historical](historical/rebuild_hermes_patches.py). Its hash is unchanged. The ledger path changes because the active rebuild script now includes the channel test file. The historical evidence does not claim that this candidate passes the combined release gate.
 
-The candidate is not deployed to the live gateway. Live channel acceptance, memory ownership setup, complete native writer coverage, background inference, backup recovery, and the combined release remain open. The final send path still needs an audience check for permission changes during generation. Channel ID enforcement alone does not close that gate.
+The candidate is not deployed to the live gateway. Live channel acceptance, memory ownership setup, complete native writer coverage, background inference, backup recovery, and the combined release remain open. The [October 8 outbound audience gate](../2026-10-08-discord-delivery/README.md) adds current permission checks before delivery. Actual private-channel acceptance remains open.

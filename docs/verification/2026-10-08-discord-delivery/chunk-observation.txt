@@ -1,0 +1,77 @@
+test_changed_audience_withholds_generated_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_audience_withholds_generated_reply) ... [Discord] Failed to send Discord message: Current Discord permissions do not admit private delivery
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3081, in send
+    await self._require_private_delivery(channel)
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3027, in _require_private_delivery
+    await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
+                             token=getattr(self._client.http, 'token', ''))
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/delivery.py", line 16, in authorize_delivery
+    raise PermissionError('Current Discord permissions do not admit private delivery')
+PermissionError: Current Discord permissions do not admit private delivery
+ok
+test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience) ... [Discord] Failed to send Discord message: Current Discord permissions do not admit private delivery
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3081, in send
+    await self._require_private_delivery(channel)
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3027, in _require_private_delivery
+    await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
+                             token=getattr(self._client.http, 'token', ''))
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/delivery.py", line 16, in authorize_delivery
+    raise PermissionError('Current Discord permissions do not admit private delivery')
+PermissionError: Current Discord permissions do not admit private delivery
+FAIL
+test_missing_required_guard_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_missing_required_guard_withholds_the_reply) ... [Discord] Failed to send Discord message: Current Discord permissions do not admit private delivery
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3081, in send
+    await self._require_private_delivery(channel)
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3027, in _require_private_delivery
+    await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
+                             token=getattr(self._client.http, 'token', ''))
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/delivery.py", line 16, in authorize_delivery
+    raise PermissionError('Current Discord permissions do not admit private delivery')
+PermissionError: Current Discord permissions do not admit private delivery
+ok
+test_optional_channel_mode_preserves_actual_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_optional_channel_mode_preserves_actual_delivery) ... ok
+test_private_audience_permits_an_actual_sdk_post (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_permits_an_actual_sdk_post) ... ok
+test_streaming_edit_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_streaming_edit_rechecks_the_current_audience) ... [Discord] Failed to edit Discord message 100000000000000000: Current Discord permissions do not admit private delivery
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3250, in edit_message
+    await self._require_private_delivery(channel)
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3027, in _require_private_delivery
+    await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
+                             token=getattr(self._client.http, 'token', ''))
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/delivery.py", line 16, in authorize_delivery
+    raise PermissionError('Current Discord permissions do not admit private delivery')
+PermissionError: Current Discord permissions do not admit private delivery
+ok
+test_unknown_guard_result_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_unknown_guard_result_withholds_the_reply) ... [Discord] Failed to send Discord message: Current Discord permissions do not admit private delivery
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3081, in send
+    await self._require_private_delivery(channel)
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter.py", line 3027, in _require_private_delivery
+    await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
+                             token=getattr(self._client.http, 'token', ''))
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/delivery.py", line 16, in authorize_delivery
+    raise PermissionError('Current Discord permissions do not admit private delivery')
+PermissionError: Current Discord permissions do not admit private delivery
+ok
+
+======================================================================
+FAIL: test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 84, in test_each_chunk_rechecks_the_current_audience
+    self.assertNotIn('Synthetic second chunk',self.audience.deliveries[0]['payload']['content'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic second chunk' unexpectedly found in 'Synthetic first chunk\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nSynthetic second chunk (1/2)'
+
+----------------------------------------------------------------------
+Ran 7 tests in 3.618s
+
+FAILED (failures=1)
