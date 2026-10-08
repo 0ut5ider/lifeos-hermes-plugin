@@ -7,7 +7,7 @@ import re
 
 from .memory_access import MemoryUnavailable, _now
 from .memory_policy import CATEGORIES
-from .memory_sources import (CONTEXT_FILES, TELOS_SOURCES, FRESHNESS_TELOS_SOURCES, is_state_source,
+from .memory_sources import (CONTEXT_FILES, TELOS_SOURCES, TELOS_EDITOR_SOURCES, FRESHNESS_TELOS_SOURCES, is_state_source,
                              SYSTEM_FILES, SYSTEM_PREFIXES, CORPUS_LIMIT,
                              SOURCE_COUNT_LIMIT, _markdown_source, _text_source, authorize,
                              is_evidence_source, json_projection, markdown_projection, INTERVIEW_SETUP_FILES, is_deny_source, is_sync_source)
@@ -28,7 +28,7 @@ def _classification(relative):
         return 'interview_setup'
     if is_evidence_source(relative):
         return 'evidence'
-    if relative in CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES or is_state_source(relative):
+    if relative in CONTEXT_FILES | TELOS_SOURCES | TELOS_EDITOR_SOURCES | FRESHNESS_TELOS_SOURCES or is_state_source(relative):
         return 'owner_context'
     if is_deny_source(relative):
         return 'deny_hashes'

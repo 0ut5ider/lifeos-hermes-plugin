@@ -65,12 +65,13 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
-    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life')
+    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file')
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
+    edit = arguments.get('view') == 'telos_file_edit'
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
-        {'target','note','request_id'} if review else set())
+        {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view and not review and arguments['view'] != 'remount')):
+            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
     remount = arguments['view'] == 'remount'
@@ -87,6 +88,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             from .memory_upgrade_queue import request_target
         elif arguments['view']=='life':
             from .memory_life import request_target
+        elif arguments['view']=='telos_file':
+            from .memory_telos_file import request_target
         else:
             from .memory_tab_freshness import request_target
         try:
@@ -97,6 +100,19 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             return _response(400,{'error':'Invalid source read route'})
         route = '/memory/' + arguments['view'] + '?' + urllib.parse.urlencode({'target':target})
     data = None
+    if edit:
+        from .memory_telos_file import validate_name
+        from .memory_sources import SOURCE_LIMIT
+        try:
+            validate_name(arguments['name'])
+            if (not isinstance(arguments['content'], str) or len(arguments['content'].encode()) > SOURCE_LIMIT
+                    or not isinstance(arguments['reference'], str) or re.fullmatch('[0-9a-f]{64}', arguments['reference']) is None
+                    or not isinstance(arguments['request_id'], str) or not 1 <= len(arguments['request_id']) <= 256):
+                raise ValueError('Choose bounded TELOS edit arguments')
+        except ValueError:
+            return _response(400, {'error': 'Invalid TELOS edit arguments'})
+        route = '/memory/telos_file'
+        data = json.dumps({key: arguments[key] for key in ('name', 'content', 'reference', 'request_id')}, ensure_ascii=False).encode()
     if review:
         if arguments['view']=='hypothesis_review':
             from .memory_hypothesis_review import action_target
@@ -138,9 +154,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         base=dashboard_base(settings['dashboard_base_url'])
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
-        if review:credentials['Content-Type']='application/json'
+        if review or edit:credentials['Content-Type']='application/json'
         request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
-                                      headers=credentials,method='POST' if remount or review else 'GET')
+                                      headers=credentials,method='POST' if remount or review or edit else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         try:
             response=opener.open(request,timeout=120 if remount else 8)
@@ -148,10 +164,10 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,404,409} if review else {200,400,401,403,409} if remount else
+            if status not in ({200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
                               {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
-            if (status in ({200,404,409} if review else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
+            if (status in ({200,404,409} if review or edit else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):
                 raise ValueError('The authenticated response belongs to another installation')
             if response.headers.get_content_type()!='application/json':

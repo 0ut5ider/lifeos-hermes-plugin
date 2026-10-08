@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..212e0d0 100644
+index 787cf28..31baadd 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -379,7 +379,7 @@ index 787cf28..212e0d0 100644
  import { RUN_ACTIVITY } from "../../TOOLS/ascent"
 -import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
 +import { loadLifeosConfig, validateAndNormalize } from "../../TOOLS/LifeosConfig"
-+import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess"
++import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryHTTPFileEdit, memoryObject } from "../../TOOLS/lib/MemoryAccess"
  
  // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
  for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
@@ -505,7 +505,18 @@ index 787cf28..212e0d0 100644
  async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
    const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
    if (!existsSync(filePath)) {
-@@ -1754,10 +1784,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
+@@ -1740,6 +1770,10 @@ const TELOS_FILE_ALLOWLIST = new Set<string>([
+   "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "SPARKS.md", "NEW_TEST.md",
+ ])
+ 
++export function telosFileNames(): string[] {
++  return [...TELOS_FILE_ALLOWLIST];
++}
++
+ function readMd(path: string): string {
+   try { return existsSync(path) ? readFileSync(path, "utf-8") : "" } catch { return "" }
+ }
+@@ -1754,10 +1788,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
  
  // Load a YAML file; return null on missing or parse failure so callers can
  // degrade gracefully (per feedback_degrade_dont_block_on_missing_creds.md).
@@ -519,7 +530,7 @@ index 787cf28..212e0d0 100644
      return YAML.parse(raw) as T
    } catch (err) {
      console.error(`[finances] YAML parse failed: ${path}`, err)
-@@ -1837,11 +1867,11 @@ interface SpendAggregateBundle {
+@@ -1837,11 +1871,11 @@ interface SpendAggregateBundle {
  // (schema, generated_at, record_count, sources); subsequent lines are
  // one JSON record per normalized merchant. Returns empty bundle if the
  // file is missing — the analyzer hasn't been run yet.
@@ -534,7 +545,7 @@ index 787cf28..212e0d0 100644
      if (lines.length === 0) return { generated_at: null, records: [] }
      let generated_at: string | null = null
      const records: SpendAggregate[] = []
-@@ -1995,12 +2025,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
+@@ -1995,12 +2029,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
    return "Review for cancellation"
  }
  
@@ -550,7 +561,7 @@ index 787cf28..212e0d0 100644
      const cutoffMs = Date.now() - 35 * 86400_000
      for (const line of lines) {
        try {
-@@ -2360,12 +2390,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
+@@ -2360,12 +2394,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
    return sections
  }
  
@@ -567,7 +578,7 @@ index 787cf28..212e0d0 100644
      files.push({ name: f.replace(".md", ""), content: content.slice(0, 2000), sections: parseSections(content) })
    }
    return files
-@@ -2428,13 +2458,13 @@ function parseCurrentDomains(content: string): {
+@@ -2428,13 +2462,13 @@ function parseCurrentDomains(content: string): {
    return { updated, updatedBy, domains }
  }
  
@@ -587,7 +598,7 @@ index 787cf28..212e0d0 100644
  
      const fields = parseBoldFields(current)
      const { updated, updatedBy, domains } = parseCurrentDomains(current)
-@@ -2470,11 +2500,11 @@ function handleLifeHome(): Response {
+@@ -2470,11 +2504,11 @@ function handleLifeHome(): Response {
  
  // ── GET /api/life/health ──
  
@@ -602,7 +613,7 @@ index 787cf28..212e0d0 100644
        ? readdirSync(HEALTH_DIR).filter(f => f.startsWith("lab_results"))
        : []
  
-@@ -2485,21 +2515,21 @@ function handleLifeHealth(): Response {
+@@ -2485,21 +2519,21 @@ function handleLifeHealth(): Response {
        freshnessEntries.push({ name: lab, sourceDate: parseFilenameDate(lab) })
      }
      for (const structured of ["CONDITIONS.md", "MEDICATIONS.md", "SUPPLEMENTS.md", "FITNESS.md", "NUTRITION.md", "METRICS.md", "HISTORY.md"]) {
@@ -634,7 +645,7 @@ index 787cf28..212e0d0 100644
        labReports: labFiles,
        freshness,
      })
-@@ -2547,25 +2577,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
+@@ -2547,25 +2581,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
    return { headers, rows }
  }
  
@@ -670,7 +681,7 @@ index 787cf28..212e0d0 100644
  
      // Per-card freshness — each card surfaces its own indicator pulling
      // only from the files it actually depends on. The composite `freshness`
-@@ -2637,8 +2667,8 @@ function handleLifeFinances(): Response {
+@@ -2637,8 +2671,8 @@ function handleLifeFinances(): Response {
  
      // ── v2 envelope: Income / Outbound / Overall ──
  
@@ -681,7 +692,7 @@ index 787cf28..212e0d0 100644
      // Normalize both known on-disk shapes (issue #1438). The shipped install
      // templates use a legacy shape ({name, purpose, category, direction, match}
      // and {vendor, amount: "$X", frequency}) with no `id`, which crashed the
-@@ -2684,8 +2714,8 @@ function handleLifeFinances(): Response {
+@@ -2684,8 +2718,8 @@ function handleLifeFinances(): Response {
            category: o.category ?? "other",
          }
        })
@@ -692,7 +703,7 @@ index 787cf28..212e0d0 100644
      const spendInsights = buildSpendInsights(spendBundle.records)
  
      // Resolve each vendor's monthly spend.
-@@ -2871,14 +2901,14 @@ function handleLifeFinances(): Response {
+@@ -2871,14 +2905,14 @@ function handleLifeFinances(): Response {
        // v2 envelope
        ...v2,
        // ported from public PR #1777, @takanorinishida
@@ -713,7 +724,7 @@ index 787cf28..212e0d0 100644
        plan,
        incomeStreams,
        expenseCategories,
-@@ -2919,19 +2949,19 @@ function resolveCompanyDir(): string {
+@@ -2919,19 +2953,19 @@ function resolveCompanyDir(): string {
    return dirs.find(d => existsSync(join(d, "REVENUE"))) ?? dirs[0] ?? ""
  }
  
@@ -738,7 +749,7 @@ index 787cf28..212e0d0 100644
        }
      }
  
-@@ -2945,8 +2975,8 @@ function handleLifeBusiness(): Response {
+@@ -2945,8 +2979,8 @@ function handleLifeBusiness(): Response {
        revenueSummary: summarySection?.body || "",
        revenueByProduct: revenueByProduct?.body || "",
        revenueAllSections: revenueSections,
@@ -749,7 +760,7 @@ index 787cf28..212e0d0 100644
      })
    } catch (err: any) {
      return Response.json({ error: err.message }, { status: 500 })
-@@ -2994,9 +3024,9 @@ async function handleLifeGrowth(): Promise<Response> {
+@@ -2994,9 +3028,9 @@ async function handleLifeGrowth(): Promise<Response> {
  
  // ── GET /api/life/work ──
  
@@ -761,7 +772,7 @@ index 787cf28..212e0d0 100644
      // Parse project table rows
      let projectLines = projectsContent.split("\n")
        .filter(l => l.startsWith("|") && !l.includes("---") && !l.includes("Project"))
-@@ -3018,14 +3048,14 @@ function handleLifeWork(): Response {
+@@ -3018,14 +3052,14 @@ function handleLifeWork(): Response {
      }
  
      // Current workstreams — unified "## Current State" section, CURRENT.md legacy fallback
@@ -779,7 +790,7 @@ index 787cf28..212e0d0 100644
          const sessions = workData.sessions || {}
          activeSessions = Object.entries(sessions)
            .map(([slug, s]: [string, any]) => ({
-@@ -3054,34 +3084,34 @@ function handleLifeWork(): Response {
+@@ -3054,34 +3088,34 @@ function handleLifeWork(): Response {
  
  // ── GET /api/life/goals ──
  
@@ -839,7 +850,7 @@ index 787cf28..212e0d0 100644
  
      return Response.json({
        mission: parseSections(mission),
-@@ -3465,13 +3495,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+@@ -3465,13 +3499,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
  // this one — TELOS_DIR has no CURRENT.md/GOALS.md). Same semantic as
  // handleTelosOverview's local closure; lifted so every /api/life/* handler
  // resolves sections the same way.
@@ -857,7 +868,7 @@ index 787cf28..212e0d0 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -4520,6 +4550,129 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4554,129 @@ function handleOnboardingState(): Response {
    })
  }
  
@@ -987,10 +998,54 @@ index 787cf28..212e0d0 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4684,59 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4688,103 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
++  if (hasManagedMemoryHTTP() && pathname === "/api/telos/file") {
++    const headers = {"cache-control": "no-store"};
++    if (method !== "GET" && method !== "PUT") return Response.json({error: "TELOS files require GET or PUT"}, {status: 405, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "TELOS files require the current origin"}, {status: 403, headers});
++    try {
++      if (method === "GET") return memoryHTTPResponse(req, "telos_file", pathname + url.search);
++      if (url.search) return Response.json({error: "TELOS saves do not accept route selectors"}, {status: 400, headers});
++      let body: unknown;
++      try {
++        const reader = req.body?.getReader();
++        if (!reader) throw new Error("Missing TELOS save body");
++        const chunks: Uint8Array[] = [];
++        let length = 0;
++        try {
++          while (true) {
++            const next = await reader.read();
++            if (next.done) break;
++            length += next.value.byteLength;
++            if (length > 3 * 1024 * 1024) {
++              await reader.cancel();
++              throw new Error("TELOS save exceeds its request limit");
++            }
++            chunks.push(next.value);
++          }
++        } finally { reader.releaseLock(); }
++        const bytes = new Uint8Array(length);
++        let offset = 0;
++        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
++        body = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes));
++      } catch {
++        return Response.json({error: "TELOS saves require bounded JSON"}, {status: 400, headers});
++      }
++      if (!memoryObject(body) || Object.keys(body).sort().join(",") !== "content,name,reference,request_id"
++          || typeof body.name !== "string" || typeof body.content !== "string" || typeof body.reference !== "string"
++          || typeof body.request_id !== "string") {
++        return Response.json({error: "TELOS saves require the current file reference"}, {status: 400, headers});
++      }
++      return memoryHTTPFileEdit(req, {name: body.name, content: body.content, reference: body.reference, request_id: body.request_id});
++    } catch {
++      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers});
++    }
++  }
++
 +  if (hasManagedMemoryHTTP() && pathname === "/api/user-index") {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "User index views require GET"}, {status: 405, headers});
@@ -7453,10 +7508,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..2586af5
+index 0000000..fef1ce7
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,222 @@
+@@ -0,0 +1,227 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -7653,6 +7708,11 @@ index 0000000..2586af5
 +export function memoryHTTPResponse(request: Request, view: string, target?: string): Response {
 +  return memoryHTTP({view, authorization: request.headers.get("authorization") ?? "",
 +    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})});
++}
++
++export function memoryHTTPFileEdit(request: Request, fields: {name: string; content: string; reference: string; request_id: string}): Response {
++  return memoryHTTP({view: "telos_file_edit", ...fields,
++    authorization: request.headers.get("authorization") ?? "", cookie: request.headers.get("cookie") ?? ""});
 +}
 +
 +export function memoryHTTPReview(request: Request, target: string, note: string | null): Response {
@@ -9472,3 +9532,100 @@ index bc012ad..a844e09 100644
  
    if (args.includes("--json")) {
      console.log(JSON.stringify(index, null, 2))
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/file-editor.tsx b/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/file-editor.tsx
+index 3846e29..04f10a0 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/file-editor.tsx
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/file-editor.tsx
+@@ -1,5 +1,8 @@
+ "use client";
+ 
++// ABOUTME: Edits declared TELOS Markdown through current owner file responses.
++// ABOUTME: Sends the opened file reference with Save and preserves conflicting owner changes.
++
+ // Click-to-edit markdown file editor for TELOS source files.
+ // Opens as a fixed-overlay modal. Fetches GET /api/telos/file?name=,
+ // PUTs /api/telos/file on save, calls onSaved() + onClose().
+@@ -16,11 +19,19 @@ export interface FileEditorProps {
+ interface TelosFilePayload {
+   content?: unknown;
+   error?: unknown;
++  reference?: unknown;
++}
++
++function filePayload(value: unknown): TelosFilePayload {
++  if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error("invalid file response");
++  return {content: "content" in value ? value.content : undefined,
++    error: "error" in value ? value.error : undefined,
++    reference: "reference" in value ? value.reference : undefined};
+ }
+ 
+ async function responseError(res: Response): Promise<string> {
+   try {
+-    const body = await res.json() as TelosFilePayload;
++    const body = filePayload(await res.json());
+     return typeof body.error === "string" ? body.error : `Request failed (${res.status})`;
+   } catch {
+     return `Request failed (${res.status})`;
+@@ -30,6 +41,7 @@ async function responseError(res: Response): Promise<string> {
+ export function FileEditor({ open, filename, onClose, onSaved }: FileEditorProps) {
+   const [content, setContent] = useState<string>("");
+   const [original, setOriginal] = useState<string>("");
++  const [reference, setReference] = useState<string | null>(null);
+   const [loading, setLoading] = useState<boolean>(false);
+   const [saving, setSaving] = useState<boolean>(false);
+   const [error, setError] = useState<string | null>(null);
+@@ -50,9 +62,12 @@ export function FileEditor({ open, filename, onClose, onSaved }: FileEditorProps
+       const res = await fetch("/api/telos/file", {
+         method: "PUT",
+         headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ name: filename, content }),
++        body: JSON.stringify({ name: filename, content,
++          ...(reference === null ? {} : {reference, request_id: crypto.randomUUID()}) }),
+       });
+       if (!res.ok) throw new Error(await responseError(res));
++      const saved = filePayload(await res.json());
++      if (typeof saved.reference === "string") setReference(saved.reference);
+       setOriginal(content);
+       setStatus("Saved");
+       onSaved?.();
+@@ -62,12 +77,13 @@ export function FileEditor({ open, filename, onClose, onSaved }: FileEditorProps
+     } finally {
+       setSaving(false);
+     }
+-  }, [content, filename, onClose, onSaved, saving]);
++  }, [content, filename, onClose, onSaved, reference, saving]);
+ 
+   useEffect(() => {
+     if (!open || !filename) {
+       setContent("");
+       setOriginal("");
++      setReference(null);
+       setError(null);
+       setStatus(null);
+       setLoading(false);
+@@ -75,6 +91,7 @@ export function FileEditor({ open, filename, onClose, onSaved }: FileEditorProps
+     }
+ 
+     const controller = new AbortController();
++    setReference(null);
+     setLoading(true);
+     setError(null);
+     setStatus(null);
+@@ -84,12 +101,16 @@ export function FileEditor({ open, filename, onClose, onSaved }: FileEditorProps
+     })
+       .then(async (res) => {
+         if (!res.ok) throw new Error(await responseError(res));
+-        return res.json() as Promise<TelosFilePayload>;
++        return filePayload(await res.json());
+       })
+       .then((body) => {
+         if (typeof body.content !== "string") throw new Error("invalid file response");
+         setContent(body.content);
+         setOriginal(body.content);
++        if (body.reference !== undefined && (typeof body.reference !== "string" || !/^[0-9a-f]{64}$/.test(body.reference))) {
++          throw new Error("invalid file reference");
++        }
++        setReference(typeof body.reference === "string" ? body.reference : null);
+       })
+       .catch((err) => {
+         if (err instanceof DOMException && err.name === "AbortError") return;

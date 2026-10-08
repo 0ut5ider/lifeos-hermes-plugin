@@ -74,6 +74,12 @@ async function main(): Promise<void> {
     const response: unknown = module.renderHealthView(input.sources);
     if (!(response instanceof Response)) throw new Error('Native health renderer requires a response');
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'telos_file_names') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.telosFileNames !== 'function') {
+      throw new Error('Native TELOS file names are unavailable');
+    }
+    result = {filenames: module.telosFileNames()};
   } else if (input.action === 'user_index_registry' || input.action === 'user_index') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/user-index.ts')).href);
     if (!object(module) || typeof module.userIndexRegistry !== 'function' || typeof module.renderUserIndex !== 'function') {

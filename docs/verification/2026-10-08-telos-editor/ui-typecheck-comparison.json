@@ -1,0 +1,12 @@
+{
+  "same_diagnostics": true,
+  "baseline_exit": 2,
+  "candidate_exit": 2,
+  "baseline_sha256": "e64622e3b60a0d8aa01d34abf09e8e9c60cfd36e87a0a370919a8d58460a20ec",
+  "candidate_sha256": "e64622e3b60a0d8aa01d34abf09e8e9c60cfd36e87a0a370919a8d58460a20ec",
+  "diagnostics": [
+    "src/app/telos/_v7/app.tsx(396,36): error TS2322: Type '{ telos: Telos; openFile: (name: string) => void; }' is not assignable to type 'IntrinsicAttributes & SubTabsProps'.",
+    "  Property 'openFile' does not exist on type 'IntrinsicAttributes & SubTabsProps'.",
+    "../../TOOLS/LifeosConfig.ts(231,17): error TS2339: Property 'main' does not exist on type 'ImportMeta'."
+  ]
+}

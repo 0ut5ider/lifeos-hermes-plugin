@@ -30,6 +30,11 @@ STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'
 TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
     ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'PROJECTS', 'CHALLENGES',
      'NARRATIVES', 'TRAUMAS', 'WRONG', 'MODELS', 'WISDOM'))
+TELOS_EDITOR_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
+    ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'CHALLENGES', 'NARRATIVES',
+     'BELIEFS', 'WISDOM', 'STATUS', 'PROJECTS', 'METRICS', 'TEAM', 'BUDGET', 'MODELS',
+     'PREDICTIONS', 'FRAMES', 'WRONG', 'LEARNED', 'IDEAS', 'AUTHORS', 'BOOKS', 'MOVIES',
+     'TRAUMAS', 'SPARKS', 'NEW_TEST'))
 FRESHNESS_TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
     ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'CHALLENGES', 'NARRATIVES',
      'TRAUMAS', 'WRONG', 'MODELS', 'BELIEFS', 'FRAMES', 'WISDOM', 'PREDICTIONS', 'IDEAS',
@@ -141,7 +146,7 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES
+        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | TELOS_SOURCES | TELOS_EDITOR_SOURCES | FRESHNESS_TELOS_SOURCES
                      or is_state_source(relative)
                      or relative.startswith(PREFIXES) or system)
     if not permitted:

@@ -1,0 +1,124 @@
+{
+  "login": {
+    "toolIcon": {
+      "_tag": "website",
+      "pageUrl": "http://127.0.0.1:34169/"
+    },
+    "value": {
+      "status": 200
+    }
+  },
+  "read": {
+    "url": "http://127.0.0.1:34169/",
+    "title": "",
+    "loading": false,
+    "visibleText": "Open GOALS\n\nSaved count: 0\n\nGOALS.md\nx\nReady\nCancel\nSave",
+    "interactiveElements": [],
+    "consoleEntries": [
+      {
+        "level": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+        "timestamp": "2026-10-08T23:14:59.338Z"
+      },
+      {
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "timestamp": "2026-10-08T23:14:59.487Z"
+      },
+      {
+        "level": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+        "timestamp": "2026-10-08T23:15:06.222Z"
+      }
+    ],
+    "networkEntries": [
+      {
+        "url": "http://127.0.0.1:34169/",
+        "method": "GET",
+        "status": 200,
+        "failed": false,
+        "timestamp": "2026-10-08T23:14:59.280Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/editor.js",
+        "method": "GET",
+        "status": 200,
+        "failed": false,
+        "timestamp": "2026-10-08T23:14:59.308Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/api/telos/file?name=GOALS.md",
+        "method": "GET",
+        "status": 401,
+        "failed": false,
+        "timestamp": "2026-10-08T23:14:59.487Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/auth/password-login",
+        "method": "POST",
+        "status": 200,
+        "failed": false,
+        "timestamp": "2026-10-08T23:15:06.169Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/",
+        "method": "GET",
+        "status": 200,
+        "failed": false,
+        "timestamp": "2026-10-08T23:15:06.202Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/auth/password-login",
+        "method": "POST",
+        "status": null,
+        "failed": true,
+        "errorText": "net::ERR_ABORTED",
+        "timestamp": "2026-10-08T23:15:06.203Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/editor.js",
+        "method": "GET",
+        "status": 200,
+        "failed": false,
+        "timestamp": "2026-10-08T23:15:06.218Z"
+      },
+      {
+        "url": "http://127.0.0.1:34169/api/telos/file?name=GOALS.md",
+        "method": "GET",
+        "status": 200,
+        "failed": false,
+        "timestamp": "2026-10-08T23:15:06.676Z"
+      }
+    ],
+    "actionTimeline": [
+      {
+        "id": "b887a04c-b231-437a-bff0-44d0f0878b64",
+        "action": "navigate",
+        "status": "succeeded",
+        "startedAt": "2026-10-08T23:14:59.272Z",
+        "completedAt": "2026-10-08T23:14:59.340Z"
+      },
+      {
+        "id": "7ca7e02d-9a91-4ad9-8f7a-a2a7389fda39",
+        "action": "navigate",
+        "status": "succeeded",
+        "startedAt": "2026-10-08T23:15:06.198Z",
+        "completedAt": "2026-10-08T23:15:06.224Z"
+      }
+    ],
+    "screenshot": {
+      "mimeType": "image/png",
+      "width": 1280,
+      "height": 800
+    },
+    "accessibilityTree": "- generic [ref=t3-67c8be4a-p-e2] [box=8,8,1264,56]:\n  - button \"Open GOALS\" [ref=t3-67c8be4a-p-e3] [box=8,8,98,22]\n  - paragraph [ref=t3-67c8be4a-p-e4] [box=8,46,1264,19]: \"Saved count: 0\"\n  - generic [ref=t3-67c8be4a-p-e6] [box=169,101,942,599]:\n    - banner [ref=t3-67c8be4a-p-e7] [box=190,122,900,22]:\n      - generic [ref=t3-67c8be4a-p-e8] [box=190,123,67,19]: GOALS.md\n      - button \"Close editor\" [ref=t3-67c8be4a-p-e9] [box=1067,122,23,22]: x\n    - textbox [ref=t3-67c8be4a-p-e10] [box=190,157,942,482]: \"# SyntheticEditableTelosGoal Synthetic current goal\"\n    - contentinfo [ref=t3-67c8be4a-p-e11] [box=190,657,900,22]:\n      - generic [ref=t3-67c8be4a-p-e12] [box=190,660,33,15]: Ready\n      - button \"Cancel\" [ref=t3-67c8be4a-p-e13] [box=974,657,57,22]\n      - button \"Save\" [disabled] [ref=t3-67c8be4a-p-e14] [box=1044,657,46,22]"
+  },
+  "attempt": {
+    "error": {
+      "_tag": "PreviewAutomationNoAvailableHostError",
+      "operation": "snapshot",
+      "failureCount": 1,
+      "message": "No preview automation host is available for snapshot in environment 554f769f-da3e-457f-bf56-b6daab0c8f4a. Preview tools run in a T3 Code desktop app that is open and connected to this environment; a headless server has no browser of its own. Do not retry. To check a page, use a headless browser from the shell, such as Playwright, or curl, or ask the user to open this thread in the T3 Code desktop app."
+    }
+  }
+}

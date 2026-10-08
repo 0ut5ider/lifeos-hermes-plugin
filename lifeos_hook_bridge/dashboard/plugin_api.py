@@ -310,6 +310,41 @@ def get_memory_life(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('life', request, account)
 
 
+@router.get('/memory/telos_file')
+def get_memory_telos_file(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('telos_file', request, account)
+
+
+@router.post('/memory/telos_file')
+async def edit_memory_telos_file(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content) > 3 * 1024 * 1024:
+            return JSONResponse({'error': 'TELOS edit exceeds its request limit'}, status_code=400, headers=headers)
+    preferences = _memory_preferences()
+    try:
+        body = json.loads(content)
+        result, binding = await run_in_threadpool(lambda: preferences.edit_telos_file(body, account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Invalid TELOS edit request'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        from lifeos_memory_settings.memory_http import installation_binding
+        try:
+            config = preferences._configuration(account=account)
+            binding = installation_binding(config, preferences.configuration.path)
+        except PermissionError:
+            return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+        except (ValueError, OSError, RuntimeError):
+            return JSONResponse({'error': 'TELOS editing is unavailable'}, status_code=503, headers=headers)
+        result = {'status': 409, 'body': {'error': 'The TELOS save conflicts with the current source or policy. Open the file again.'}}
+    return JSONResponse(result['body'], status_code=result['status'],
+        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
 @router.get('/memory/tab_freshness')
 def get_memory_tab_freshness(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('tab_freshness', request, account)
@@ -335,7 +370,7 @@ def get_memory_knowledge(request: Request, account: str = Depends(_memory_accoun
     return _memory_source_read('knowledge', request, account)
 
 
-def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life'], request: Request, account: str):
+def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file'], request: Request, account: str):
     preferences = _memory_preferences()
     module = {'hypotheses':'memory_hypothesis_queue','upgrades':'memory_upgrade_queue'}.get(view, 'memory_' + view)
     request_target = importlib.import_module('lifeos_memory_settings.' + module).request_target
@@ -349,9 +384,10 @@ def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrad
     except ValueError:
         return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
     try:
-        operation = {'wiki': preferences.wiki_response, 'knowledge': preferences.knowledge_response,
-                     'hypotheses': preferences.hypothesis_response, 'upgrades': preferences.upgrade_response,
-                     'tab_freshness': preferences.tab_freshness_response, 'life': preferences.life_response}[view]
+        operation = getattr(preferences, {'wiki': 'wiki_response', 'knowledge': 'knowledge_response',
+                     'hypotheses': 'hypothesis_response', 'upgrades': 'upgrade_response',
+                     'tab_freshness': 'tab_freshness_response', 'life': 'life_response',
+                     'telos_file': 'telos_file_response'}[view])
         result, binding = operation(target, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)

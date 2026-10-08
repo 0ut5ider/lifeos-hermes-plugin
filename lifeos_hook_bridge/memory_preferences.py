@@ -297,6 +297,28 @@ class MemoryPreferences:
         return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
             check_current=check_current), account=account)
 
+    def telos_file_response(self, target, *, account=None):
+        from .memory_telos_file import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during TELOS reading')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, view(NativeMemory(self.root), scope, target,
+            check_current=check_current), account=account)
+
+    def edit_telos_file(self, request, *, account=None):
+        from .memory_telos_file import edit
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'name', 'content', 'reference', 'request_id'}:
+            raise ValueError('Provide the current TELOS file reference and requested content')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during TELOS saving')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, edit(NativeMemory(self.root), scope, **request,
+            check_current=check_current), account=account)
+
     def tab_freshness_response(self, target, *, account=None):
         from .memory_tab_freshness import view
         config = self._configuration(account=account)
