@@ -20,6 +20,8 @@ The [learning and Wisdom audience gate](verification/2026-10-08-background-audie
 
 The [outbound audience gate](verification/2026-10-08-discord-delivery/README.md) passes 168 tests across actual SDK and HTTP controls, native unit controls, and installation checks. The private channel mode requires a current policy grant for every content write. Live private-channel acceptance remains open.
 
+The [local owner job gate](verification/2026-10-08-owner-jobs/README.md) passes 76 adjacent tests. The selected deterministic jobs run through explicit local owner admission and current publication authority. The actual Hermes command parser publishes a private weekly synthesis. Installed Pulse activation and live background model acceptance remain open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.
