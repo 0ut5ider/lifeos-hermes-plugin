@@ -20,9 +20,10 @@ from .memory_service import MemoryService
 
 
 JOBS = {
-    'memory-consolidation': (('SessionHarvester.ts', '--recent', '20'),
-                             ('LearningPatternSynthesis.ts', '--week')),
-    'proposal-gc': (('ProposalGC.ts', '--auto'),),
+    'memory-consolidation': (('LIFEOS/TOOLS/SessionHarvester.ts', '--recent', '20'),
+                             ('LIFEOS/TOOLS/LearningPatternSynthesis.ts', '--week')),
+    'life-morning-brief': (('LIFEOS/PULSE/checks/life-morning-brief.ts',),),
+    'proposal-gc': (('LIFEOS/TOOLS/ProposalGC.ts', '--auto'),),
 }
 MAX_OUTPUT = 4 * 1024 * 1024
 
@@ -92,7 +93,7 @@ class OwnerJobs:
         output = []
         for command in JOBS[name]:
             self.runtime.check_call(request={}, **route, session_id=session, metadata={})
-            result, text = _command(['bun', '--no-install', str(root / 'LIFEOS/TOOLS' / command[0]),
+            result, text = _command(['bun', '--no-install', str(root / command[0]),
                 *command[1:]], environment, max(0.001, deadline - time.monotonic()))
             if result:
                 return {'status': 'failed', 'job': name, 'exit_code': result}

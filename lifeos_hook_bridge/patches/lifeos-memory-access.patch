@@ -8673,3 +8673,96 @@ index e0c593b..a88042e 100644
    const url = new URL(req.url)
    const tabId = (url.searchParams.get("tab") ?? "").trim().toLowerCase()
    if (!tabId) {
+diff --git a/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts b/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts
+index 4e74a33..ccd65ee 100755
+--- a/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts
++++ b/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Renders native morning narration from goals, sparks, and next actions.
++// ABOUTME: Delegates managed reads to current owner admission without raw source fallback.
+ /**
+  * Life Morning Brief — Phase 0 Pulse Life Dashboard
+  *
+@@ -12,6 +14,7 @@
+ import { join } from "path"
+ import { existsSync, readFileSync } from "fs"
+ import { homedir } from "node:os";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()
+ const TELOS_DIR = join(HOME, ".claude", "LIFEOS", "USER", "TELOS")
+@@ -26,10 +29,10 @@ function readFile(name: string): string {
+ // (H2 sections) on 2026-05-01. Fall back to TELOS.md's "## GOALS" section
+ // when the legacy file has been archived, so goals written only to TELOS.md
+ // still surface here.
+-function readGoals(): string {
+-  const legacy = readFile("GOALS.md")
++function readGoals(read = readFile): string {
++  const legacy = read("GOALS.md")
+   if (legacy) return legacy
+-  const telos = readFile("TELOS.md")
++  const telos = read("TELOS.md")
+   if (!telos) return ""
+   const match = telos.match(/(?:^|\n)##\s*GOALS\b[^\n]*\n([\s\S]*?)(?=\n##\s|\n---|$)/i)
+   return match ? match[1].trim() : ""
+@@ -69,31 +72,35 @@ function getNextMove(content: string): string | null {
+   return first.trim().replace(/^\d+\.\s*/, "")
+ }
+ 
+-const goals = readGoals()
+-const sparks = readFile("SPARKS.md")
+-const current = readFile("CURRENT.md")
+-
+-if (!goals && !sparks && !current) {
+-  console.log("NO_ACTION")
+-  process.exit(0)
+-}
+-
+-const topGoals = getTopGoals(goals)
+-const spark = getRandomSpark(sparks)
+-const nextMove = getNextMove(current)
+-
+-const parts: string[] = ["Good morning."]
+-
+-if (topGoals.length > 0) {
+-  parts.push(`Your top goals: ${topGoals.map((g, i) => `${i + 1}, ${g}`).join(". ")}.`)
+-}
+-
+-if (spark) {
+-  parts.push(`One spark to ask you about today: ${spark}.`)
++export function renderMorningBrief(sources: {filename: string; content: string}[]): string {
++  const read = (name: string): string => sources.find(source => source.filename === name)?.content ?? ""
++  const goals = readGoals(read)
++  const sparks = read("SPARKS.md")
++  const current = read("CURRENT.md")
++  if (!goals && !sparks && !current) return "NO_ACTION\n"
++  const topGoals = getTopGoals(goals)
++  const spark = getRandomSpark(sparks)
++  const nextMove = getNextMove(current)
++  const parts: string[] = ["Good morning."]
++  if (topGoals.length > 0) parts.push(`Your top goals: ${topGoals.map((g, i) => `${i + 1}, ${g}`).join(". ")}.`)
++  if (spark) parts.push(`One spark to ask you about today: ${spark}.`)
++  if (nextMove) parts.push(`Next obvious move: ${nextMove}.`)
++  return parts.join(" ") + "\n"
+ }
+ 
+-if (nextMove) {
+-  parts.push(`Next obvious move: ${nextMove}.`)
++function main(): void {
++  if (hasMemoryAccess()) {
++    const result = memoryAccess("morning_brief", {},
++      (value): value is {ok: boolean; stdout: string} => memoryObject(value)
++        && value.ok === true && typeof value.stdout === "string")
++    if (!result) throw new Error("Morning brief requires current owner recall")
++    process.stdout.write(result.stdout)
++    return
++  }
++  const sources = [{filename: "GOALS.md", content: readGoals()},
++    {filename: "SPARKS.md", content: readFile("SPARKS.md")},
++    {filename: "CURRENT.md", content: readFile("CURRENT.md")}]
++  process.stdout.write(renderMorningBrief(sources))
+ }
+ 
+-console.log(parts.join(" "))
++if (import.meta.main) main()

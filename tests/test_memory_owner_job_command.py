@@ -75,6 +75,21 @@ class MemoryOwnerJobCommandTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse(self.synthesis.exists())
 
+    def test_actual_parser_runs_morning_brief_without_a_model_call(self):
+        pulse=self.native.root/'LIFEOS/PULSE'
+        if not pulse.exists():
+            pulse.symlink_to(Path(os.environ['LIFEOS_MEMORY_SOURCE'])/'LIFEOS/PULSE',target_is_directory=True)
+        path=self.native.root/'LIFEOS/USER/TELOS/GOALS.md'
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_text('- G1: Synthetic Hermes morning goal\n')
+        result=self.call('life-morning-brief')
+        self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        self.assertEqual(result.stderr,'')
+        body=json.loads(result.stdout)
+        self.assertEqual(body['status'],'completed',body)
+        self.assertIn('Synthetic Hermes morning goal',body['output'])
+        self.assertEqual(self.fixture.fixture.received,[])
+
 
 if __name__ == '__main__':
     unittest.main()

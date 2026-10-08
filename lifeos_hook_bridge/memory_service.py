@@ -260,6 +260,9 @@ class MemoryService:
     def _native_operation(self, context, operation, arguments, configuration, scope):
         try:
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'morning_brief' and not arguments:
+                from .memory_morning_brief import run
+                return run(memory,scope,check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'upgrade_store' and set(arguments)=={'action','arguments','request_id'}:
                 from .memory_upgrades import run
                 return run(memory,scope,**arguments,source_session=context.session_id,

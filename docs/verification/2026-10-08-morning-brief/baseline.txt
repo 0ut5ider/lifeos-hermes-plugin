@@ -1,0 +1,59 @@
+E...FFFF
+======================================================================
+ERROR: test_enabled_owner_job_executes_the_actual_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_enabled_owner_job_executes_the_actual_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 106, in test_enabled_owner_job_executes_the_actual_brief
+    result=fixture.run_job('life-morning-brief')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_jobs.py", line 46, in run_job
+    return self.jobs.run(name, route=self.route, mapping=self.mapping)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_owner_jobs.py", line 67, in run
+    raise ValueError('Choose a supported native owner job')
+ValueError: Choose a supported native owner job
+
+======================================================================
+FAIL: test_private_sources_do_not_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_private_sources_do_not_enter_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 75, in test_private_sources_do_not_enter_brief
+    self.assertNotIn('Synthetic hidden goal',result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic hidden goal' unexpectedly found in 'Good morning. Your top goals: 1, <private>Synthetic hidden goal</private>. One spark to ask you about today: Synthetic only spark. Next obvious move: Synthetic next action.\n'
+
+======================================================================
+FAIL: test_retired_source_does_not_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_retired_source_does_not_enter_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 86, in test_retired_source_does_not_enter_brief
+    self.assertEqual(result.stdout,'NO_ACTION\n')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Good morning. Your top goals: 1, Synthetic retired morning goal.\n' != 'NO_ACTION\n'
+- Good morning. Your top goals: 1, Synthetic retired morning goal.
++ NO_ACTION
+
+
+======================================================================
+FAIL: test_revoked_brief_cannot_read_personal_sources (test_memory_morning_brief.MemoryMorningBriefTests.test_revoked_brief_cannot_read_personal_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 67, in test_revoked_brief_cannot_read_personal_sources
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : Good morning. Your top goals: 1, Synthetic first goal. 2, Synthetic second goal. 3, Synthetic third goal. One spark to ask you about today: Synthetic only spark. Next obvious move: Synthetic next action.
+
+
+======================================================================
+FAIL: test_unbound_brief_cannot_read_personal_sources (test_memory_morning_brief.MemoryMorningBriefTests.test_unbound_brief_cannot_read_personal_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 60, in test_unbound_brief_cannot_read_personal_sources
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : Good morning. Your top goals: 1, Synthetic first goal. 2, Synthetic second goal. 3, Synthetic third goal. One spark to ask you about today: Synthetic only spark. Next obvious move: Synthetic next action.
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.239s
+
+FAILED (failures=4, errors=1)
