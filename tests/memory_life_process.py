@@ -19,11 +19,14 @@ rendered = False
 def observe(memory, action, **arguments):
     global rendered
     result = original(memory, action, **arguments)
-    if action in ('life_view', 'life_health_view', 'life_finance_view', 'life_work_view', 'life_business_view'):
+    if action in ('life_view', 'life_health_view', 'life_finance_view', 'life_work_view', 'life_business_view', 'user_index'):
         rendered = True
         if mode == 'authority': configuration.update(lambda value: value['accounts'].clear())
         elif mode == 'source':
-            if target == '/api/life/business':
+            if target == '/api/user-index':
+                path = root / 'LIFEOS/USER/TELOS/GOALS.md'
+                path.write_text(path.read_text().replace('SyntheticIndexedGoal', 'SyntheticChangedIndexGoal'))
+            elif target == '/api/life/business':
                 path = root / 'LIFEOS/USER/WORK/YOUR_COMPANIES/synthetic-company/REVENUE/2026-10.md'
                 path.write_text(path.read_text().replace('SyntheticCurrentRevenue', 'SyntheticChangedRevenue'))
             elif target == '/api/life/work':

@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..b11e41b 100644
+index 787cf28..212e0d0 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -987,10 +987,22 @@ index 787cf28..b11e41b 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4684,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4684,59 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
++  if (hasManagedMemoryHTTP() && pathname === "/api/user-index") {
++    const headers = {"cache-control": "no-store"};
++    if (method !== "GET") return Response.json({error: "User index views require GET"}, {status: 405, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "User index views require the current origin"}, {status: 403, headers});
++    try {
++      return memoryHTTPResponse(req, "life", pathname + url.search);
++    } catch {
++      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers});
++    }
++  }
++
 +  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/life/work", "/api/life/business", "/api/observability/life-card"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "Life views require GET"}, {status: 405, headers});
@@ -9299,3 +9311,73 @@ index 5b47d90..95792ac 100644
    if (!raw || typeof raw !== "object") {
      throw new Error(`LifeosConfig: ${path} did not parse to an object`);
    }
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts b/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts
+index bc012ad..9a0bc4e 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Calculates native user index entries from local files or explicit admitted sources.
++// ABOUTME: Preserves native index fields, classifications, and collection calculations.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -320,10 +322,17 @@ function extractTitle(body: string, fallbackPath: string): string {
+ // File parser
+ // ───────────────────────────────────────────────────────────────────────────
+ 
+-function parseFile(absolutePath: string): UserIndexEntry {
+-  const content = readFileSync(absolutePath, "utf-8")
++interface UserIndexSource {
++  relative: string
++  content: string
++  size: number
++  modified: string
++}
++
++function parseFile(absolutePath: string, supplied?: UserIndexSource): UserIndexEntry {
++  const content = supplied === undefined ? readFileSync(absolutePath, "utf-8") : supplied.content
+   const { meta, body } = parseFrontmatter(content)
+-  const stat = statSync(absolutePath)
++  const stat = supplied === undefined ? statSync(absolutePath) : {size: supplied.size, mtime: new Date(supplied.modified)}
+   const relPath = relative(USER_DIR, absolutePath).split("\\").join("/")
+ 
+   // Fallback inference if frontmatter missing
+@@ -430,8 +439,8 @@ function walkUserDir(): string[] {
+ // Index builder
+ // ───────────────────────────────────────────────────────────────────────────
+ 
+-function buildIndex(): UserIndex {
+-  const files = walkUserDir().map(parseFile)
++function buildIndex(admitted?: UserIndexEntry[]): UserIndex {
++  const files = admitted ?? walkUserDir().map(path => parseFile(path))
+ 
+   const by_category = {
+     identity: [] as UserIndexEntry[],
+@@ -516,6 +525,27 @@ function buildIndex(): UserIndex {
+   }
+ }
+ 
++export function userIndexRegistry(): string[] {
++  return Array.from(SKIP_DIRS)
++}
++
++export function renderUserIndex(sources: ReadonlyArray<UserIndexSource>): UserIndex {
++  if (sources.length > 2048 || new Set(sources.map(source => source.relative)).size !== sources.length) {
++    throw new Error("Choose distinct bounded user index sources")
++  }
++  const entries = sources.map(source => {
++    const parts = source.relative.split("/")
++    if (parts.length > 3 || parts.some(part => !part || part === "." || part === ".." || part.includes("\\"))
++        || parts.slice(0, -1).some(part => SKIP_DIRS.has(part)) || !source.relative.endsWith(".md")
++        || !Number.isSafeInteger(source.size) || source.size < 0 || source.size > 262144
++        || source.size !== Buffer.byteLength(source.content) || !Number.isFinite(Date.parse(source.modified))) {
++      throw new Error("Choose declared owner Markdown and metadata")
++    }
++    return parseFile(join(USER_DIR, source.relative), source)
++  })
++  return buildIndex(entries)
++}
++
+ function writeIndex(index: UserIndex): void {
+   if (!existsSync(STATE_DIR)) mkdirSync(STATE_DIR, { recursive: true })
+   writeFileSync(INDEX_PATH, JSON.stringify(index, null, 2))

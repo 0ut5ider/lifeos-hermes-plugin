@@ -9,13 +9,17 @@ from .memory_access import MemoryUnavailable
 from .memory_sources import authorize, read_markdown, CORPUS_LIMIT, _source_path
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
-                    '/api/life/work', '/api/life/business', '/api/observability/life-card'})
+                    '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index'})
 
 
 def request_target(value):
     if not isinstance(value, str) or len(value) > 256:
         raise ValueError('Life views require a bounded installed route')
     parsed = urlsplit(value)
+    if parsed.path == '/api/user-index' and not parsed.scheme and not parsed.netloc and not parsed.fragment:
+        if parsed.query not in ('', 'filter=stats', 'filter=publish', 'filter=stale', 'filter=gaps'):
+            raise ValueError('User indexes require a fixed declared slice')
+        return parsed.path + ('?' + parsed.query if parsed.query else '')
     if parsed.scheme or parsed.netloc or parsed.query or parsed.fragment:
         raise ValueError('Life views require fixed routes without selectors')
     if parsed.path not in ROUTES:
@@ -45,6 +49,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if target.split('?')[0] == '/api/user-index':
+        from .memory_user_index import view as index_view
+        return index_view(memory, scope, target, check_current=check_current)
     if target == '/api/life/health':
         from .memory_life_health import view as health_view
         return health_view(memory, scope, check_current=check_current)

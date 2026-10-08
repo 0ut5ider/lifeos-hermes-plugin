@@ -1,0 +1,59 @@
+FFFFF.F..
+======================================================================
+FAIL: test_all_native_index_slices_preserve_current_fields (test_memory_user_index.MemoryUserIndexTests.test_all_native_index_slices_preserve_current_fields) (filter='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index.py", line 58, in test_all_native_index_slices_preserve_current_fields
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_all_native_index_slices_preserve_current_fields (test_memory_user_index.MemoryUserIndexTests.test_all_native_index_slices_preserve_current_fields) (filter='stats')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index.py", line 58, in test_all_native_index_slices_preserve_current_fields
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_all_native_index_slices_preserve_current_fields (test_memory_user_index.MemoryUserIndexTests.test_all_native_index_slices_preserve_current_fields) (filter='publish')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index.py", line 58, in test_all_native_index_slices_preserve_current_fields
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_all_native_index_slices_preserve_current_fields (test_memory_user_index.MemoryUserIndexTests.test_all_native_index_slices_preserve_current_fields) (filter='stale')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index.py", line 58, in test_all_native_index_slices_preserve_current_fields
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_all_native_index_slices_preserve_current_fields (test_memory_user_index.MemoryUserIndexTests.test_all_native_index_slices_preserve_current_fields) (filter='gaps')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index.py", line 58, in test_all_native_index_slices_preserve_current_fields
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_cache_cannot_restore_old_or_private_source_preview (test_memory_user_index.MemoryUserIndexTests.test_cache_cannot_restore_old_or_private_source_preview)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index.py", line 72, in test_cache_cannot_restore_old_or_private_source_preview
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.849s
+
+FAILED (failures=6)

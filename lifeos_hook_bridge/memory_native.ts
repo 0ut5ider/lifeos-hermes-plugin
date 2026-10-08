@@ -74,6 +74,20 @@ async function main(): Promise<void> {
     const response: unknown = module.renderHealthView(input.sources);
     if (!(response instanceof Response)) throw new Error('Native health renderer requires a response');
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'user_index_registry' || input.action === 'user_index') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/user-index.ts')).href);
+    if (!object(module) || typeof module.userIndexRegistry !== 'function' || typeof module.renderUserIndex !== 'function') {
+      throw new Error('Native user index calculations are unavailable');
+    }
+    if (input.action === 'user_index_registry') result = {skip_directories: module.userIndexRegistry()};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string'
+          || typeof source.modified !== 'string' || typeof source.size !== 'number')) {
+        throw new Error('Native user index calculations require declared sources');
+      }
+      result = {index: module.renderUserIndex(input.sources)};
+    }
   } else if (input.action === 'life_view_sources' || input.action === 'life_view') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
     if (!object(module) || typeof module.lifeViewSources !== 'function' || typeof module.renderLifeView !== 'function') {

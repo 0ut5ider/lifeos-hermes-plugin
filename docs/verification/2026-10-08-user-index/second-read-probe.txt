@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-user-index/read_probe.py", line 16, in <module>
+    result = preferences.life_response('/api/user-index',account='dashboard:basic:synthetic-owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 54, in view
+    return index_view(memory, scope, target, check_current=check_current)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_user_index.py", line 95, in view
+    sources, fingerprints = _collect(memory, scope, connection, skipped)
+                            ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_user_index.py", line 73, in _collect
+    walk(root, 0)
+    ~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_user_index.py", line 50, in walk
+    if depth < 2: walk(path, depth + 1)
+                  ~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_user_index.py", line 50, in walk
+    if depth < 2: walk(path, depth + 1)
+                  ~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_user_index.py", line 48, in walk
+    _checked(memory, path)
+    ~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_tab_freshness.py", line 38, in _checked
+    memory._path(relative)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 172, in _path
+    raise MemoryUnavailable("Native memory content cannot alias its SQLite registry")
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory content cannot alias its SQLite registry
+user_symlink True
+registry {'skip_directories': ['Actions', 'ACTIONS', 'Flows', 'FLOWS', 'Pipelines', 'PIPELINES', 'Workflows', 'Arbol', 'ARBOL', 'Config', 'Credentials', 'CREDENTIALS', 'SkillCustomizations', 'SKILLCUSTOMIZATIONS', 'Terminal', 'TERMINAL', 'Security', 'SECURITY', 'Daemon', 'node_modules', '.git', 'Backups']}
