@@ -19,11 +19,14 @@ rendered = False
 def observe(memory, action, **arguments):
     global rendered
     result = original(memory, action, **arguments)
-    if action in ('life_view', 'life_health_view', 'life_finance_view'):
+    if action in ('life_view', 'life_health_view', 'life_finance_view', 'life_work_view'):
         rendered = True
         if mode == 'authority': configuration.update(lambda value: value['accounts'].clear())
         elif mode == 'source':
-            if target == '/api/life/finances':
+            if target == '/api/life/work':
+                path = root / 'LIFEOS/USER/PROJECTS.md'
+                path.write_text(path.read_text().replace('SyntheticWorkProject', 'SyntheticChangedWorkProject'))
+            elif target == '/api/life/finances':
                 path = root / 'LIFEOS/USER/FINANCES/ACCOUNTS.md'
                 path.write_text(path.read_text().replace('SyntheticAccount', 'SyntheticChangedAccount'))
             elif target == '/api/life/health':
@@ -34,6 +37,11 @@ def observe(memory, action, **arguments):
                 path.write_text(path.read_text().replace('SyntheticLifeCurrentGoal', 'SyntheticLifeChangedGoal'))
         elif mode == 'entry':
             (root / 'LIFEOS/USER/HEALTH/lab_results_2026-10-03.pdf').write_bytes(b'%PDF-Synthetic changed lab metadata')
+        elif mode == 'session':
+            path = root / 'LIFEOS/MEMORY/STATE/work.json'
+            path.write_text(path.read_text().replace('SyntheticWorkSession', 'SyntheticChangedSession'))
+        elif mode == 'created':
+            (root / 'LIFEOS/USER/TELOS/TELOS.md').write_text('## Current State\n**focus:** Synthetic added focus\n')
     return result
 
 

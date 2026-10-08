@@ -30,6 +30,8 @@ The [native Life health gate](verification/2026-10-08-life-health/README.md) pas
 
 The [native Life finance gate](verification/2026-10-08-life-finances/README.md) passes 14 focused cases. The native renderer consumes admitted fixed files and transaction rows. Decoded YAML, JSON, and TOML strings receive private and retired source checks. The operation rechecks exact source snapshots and current account binding before delivery. Business, local work, user-index publication, and installed acceptance remain open.
 
+The [native local Work gate](verification/2026-10-08-life-work/README.md) passes 12 focused cases. The operation admits project, TELOS current-focus, and active-session sources under current owner authority. The renderer preserves native project parsing, current-field precedence, active-session filtering, and display limits. Business, source-review coverage for additional source classes, user-index publication, and installed acceptance remain open.
+
 The [dashboard response authority gate](verification/2026-10-08-dashboard-response-authority/README.md) passes 67 tests. Wiki, Knowledge, Pulse, and hypothesis preference responses recheck the current owner binding after native rendering. Installed application acceptance remains open.
 
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.

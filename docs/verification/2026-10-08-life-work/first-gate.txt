@@ -1,0 +1,14 @@
+F.......
+======================================================================
+FAIL: test_anonymous_revoked_and_missing_connector_refuse_work (test_memory_life_work.MemoryLifeWorkTests.test_anonymous_revoked_and_missing_connector_refuse_work)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_work.py", line 80, in test_anonymous_revoked_and_missing_connector_refuse_work
+    self.assertEqual(self.get(client).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 403
+
+----------------------------------------------------------------------
+Ran 8 tests in 11.287s
+
+FAILED (failures=1)
