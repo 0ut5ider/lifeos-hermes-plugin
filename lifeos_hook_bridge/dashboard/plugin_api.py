@@ -281,6 +281,35 @@ async def review_memory_hypothesis(request: Request, account: str = Depends(_mem
     return JSONResponse(result['body'],status_code=result['status'],headers={**headers,'X-LifeOS-Memory-Installation':binding})
 
 
+@router.post('/memory/upgrades/review')
+async def review_memory_upgrade(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control':'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content)>65536:
+            return JSONResponse({'error':'Upgrade review exceeds its request limit'},status_code=400,headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body,dict) or set(body)!={'target','note','request_id'}:
+            raise ValueError('Choose a fixed upgrade review action')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().review_upgrade(**body,account=account))
+    except LookupError:
+        return JSONResponse({'error':'Choose a governed upgrade review action'},status_code=404,headers=headers)
+    except PermissionError:
+        return JSONResponse({'error':'This dashboard account has no installation owner binding'},status_code=403,headers=headers)
+    except ValueError:
+        return JSONResponse({'error':'Invalid upgrade review request'},status_code=400,headers=headers)
+    except (OSError,RuntimeError,sqlite3.Error,subprocess.TimeoutExpired):
+        return JSONResponse({'error':'Upgrade review is unavailable under the current policy'},status_code=409,headers=headers)
+    return JSONResponse(result['body'],status_code=result['status'],headers={**headers,'X-LifeOS-Memory-Installation':binding})
+
+
+@router.get('/memory/upgrades')
+def get_memory_upgrades(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('upgrades', request, account)
+
+
 @router.get('/memory/hypotheses')
 def get_memory_hypotheses(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('hypotheses', request, account)
@@ -296,9 +325,9 @@ def get_memory_knowledge(request: Request, account: str = Depends(_memory_accoun
     return _memory_source_read('knowledge', request, account)
 
 
-def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses'], request: Request, account: str):
+def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades'], request: Request, account: str):
     preferences = _memory_preferences()
-    module = 'memory_hypothesis_queue' if view == 'hypotheses' else 'memory_' + view
+    module = {'hypotheses':'memory_hypothesis_queue','upgrades':'memory_upgrade_queue'}.get(view, 'memory_' + view)
     request_target = importlib.import_module('lifeos_memory_settings.' + module).request_target
     headers = {'Cache-Control': 'no-store'}
     try:
@@ -311,7 +340,7 @@ def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses'], reques
         return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
     try:
         operation = {'wiki': preferences.wiki_response, 'knowledge': preferences.knowledge_response,
-                     'hypotheses': preferences.hypothesis_response}[view]
+                     'hypotheses': preferences.hypothesis_response, 'upgrades': preferences.upgrade_response}[view]
         result, binding = operation(target, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)

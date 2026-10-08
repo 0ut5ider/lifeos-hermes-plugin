@@ -1,0 +1,66 @@
+.......F.F..FFF.F.
+======================================================================
+FAIL: test_healing_fixture_absence_retains_pending_note_and_native_failure (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_healing_fixture_absence_retains_pending_note_and_native_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 283, in test_healing_fixture_absence_retains_pending_note_and_native_failure
+    self.assertEqual(expected['status'],409,expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 409 : {'status': 200, 'body': {'ok': True}}
+
+======================================================================
+FAIL: test_missing_hypothesis_with_existing_directory_preserves_native_reason (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_missing_hypothesis_with_existing_directory_preserves_native_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 273, in test_missing_hypothesis_with_existing_directory_preserves_native_reason
+    self.assertEqual({'status':response.status_code,'body':response.json()},expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'status': 503, 'body': {'error': 'Authenticated mem[16 chars]le'}} != {'status': 409, 'body': {'ok': False, 'reason': 'not[24 chars]ed'}}
+- {'body': {'error': 'Authenticated memory is unavailable'}, 'status': 503}
++ {'body': {'ok': False, 'reason': 'not_found_or_already_archived'},
++  'status': 409}
+
+======================================================================
+FAIL: test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='hyp:synthetic-hypothesis', verb='accept')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 124, in test_owner_record_and_hypothesis_actions_match_original_effects
+    self.assertEqual({'status':response.status_code,'body':response.json()},expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'status': 503, 'body': {'error': 'Authenticated memory is unavailable'}} != {'status': 200, 'body': {'ok': True}}
+- {'body': {'error': 'Authenticated memory is unavailable'}, 'status': 503}
++ {'body': {'ok': True}, 'status': 200}
+
+======================================================================
+FAIL: test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='hyp:synthetic-hypothesis', verb='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 124, in test_owner_record_and_hypothesis_actions_match_original_effects
+    self.assertEqual({'status':response.status_code,'body':response.json()},expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'status': 503, 'body': {'error': 'Authenticated memory is unavailable'}} != {'status': 200, 'body': {'ok': True}}
+- {'body': {'error': 'Authenticated memory is unavailable'}, 'status': 503}
++ {'body': {'ok': True}, 'status': 200}
+
+======================================================================
+FAIL: test_private_records_and_hypotheses_never_enter_queue_or_review (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_private_records_and_hypotheses_never_enter_queue_or_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 200, in test_private_records_and_hypotheses_never_enter_queue_or_review
+    self.assertEqual(client.post(self.native+'/api/upgrades/'+identifier+'/accept',json={}).status_code,404)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 404
+
+======================================================================
+FAIL: test_retired_records_and_hypotheses_remain_on_disk_and_leave_queue (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_retired_records_and_hypotheses_remain_on_disk_and_leave_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 186, in test_retired_records_and_hypotheses_remain_on_disk_and_leave_queue
+    self.assertEqual(client.post(self.native+'/api/upgrades/'+identifier+'/accept',json={}).status_code,404)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 404
+
+----------------------------------------------------------------------
+Ran 17 tests in 32.259s
+
+FAILED (failures=6)

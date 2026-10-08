@@ -1,0 +1,120 @@
+test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) ... 
+  test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='GET', route='/api/upgrades/synthetic-upgrade') ... FAIL
+  test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='GET', route='/api/upgrades/hyp:synthetic-hypothesis') ... FAIL
+  test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='POST', route='/api/upgrades/synthetic-upgrade/accept') ... FAIL
+  test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='POST', route='/api/upgrades/hyp:synthetic-hypothesis/reject') ... FAIL
+test_anonymous_index_cannot_publish_expiry (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_index_cannot_publish_expiry) ... 
+  test_anonymous_index_cannot_publish_expiry (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_index_cannot_publish_expiry) (effect='publication') ... FAIL
+  test_anonymous_index_cannot_publish_expiry (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_index_cannot_publish_expiry) (effect='response') ... FAIL
+test_native_queue_and_detail_fields_match_original (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_native_queue_and_detail_fields_match_original) ... ok
+test_owner_index_preserves_native_expiry_and_queue_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_index_preserves_native_expiry_and_queue_effects) ... FAIL
+test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) ... 
+  test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='synthetic-upgrade', verb='accept') ... FAIL
+  test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='synthetic-upgrade', verb='reject') ... FAIL
+  test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='hyp:synthetic-hypothesis', verb='accept') ... FAIL
+  test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='hyp:synthetic-hypothesis', verb='reject') ... FAIL
+
+======================================================================
+FAIL: test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='GET', route='/api/upgrades/synthetic-upgrade')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 91, in test_anonymous_details_and_actions_cannot_borrow_ambient_owner
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"id":"synthetic-upgrade","slug":"synthetic-upgrade","status":"recommended","source":"manual","created":"2026-10-08T00:00:00.000Z","expires":"2027-01-01T00:00:00.000Z","confidence":0.7,"target_surface":"context","session_id":"synthetic-seed","ledger_id":null,"evidence":["synthetic-evidence"],"claim":"SyntheticUpgradeCurrentMarker","current_state":"Synthetic current state","recommendation":"Synthetic recommendation","notes":["Synthetic seed note"],"filename":"synthetic-upgrade.md"}
+
+======================================================================
+FAIL: test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='GET', route='/api/upgrades/hyp:synthetic-hypothesis')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 91, in test_anonymous_details_and_actions_cannot_borrow_ambient_owner
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"id":"hyp:synthetic-hypothesis","claim":"SyntheticHypothesisCurrentMarker","source":"autonomous","status":"recommended","created":"2026-10-08","expires_in_days":23,"confidence":0.7,"target_surface":"context","evidence_count":1,"ledger_id":null,"has_patch":false,"recommendation":"Synthetic action","falsifier":"Synthetic falsifier","evidence_signals":["synthetic-signal"],"raw_body":"## Claim\nSyntheticHypothesisCurrentMarker\n\n## Evidence\nSynthetic evidence\n\n## Suggested Action\nSynthetic action\n","proposed_patch":""}
+
+======================================================================
+FAIL: test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='POST', route='/api/upgrades/synthetic-upgrade/accept')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 91, in test_anonymous_details_and_actions_cannot_borrow_ambient_owner
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"ok":true}
+
+======================================================================
+FAIL: test_anonymous_details_and_actions_cannot_borrow_ambient_owner (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_details_and_actions_cannot_borrow_ambient_owner) (method='POST', route='/api/upgrades/hyp:synthetic-hypothesis/reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 91, in test_anonymous_details_and_actions_cannot_borrow_ambient_owner
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"ok":true}
+
+======================================================================
+FAIL: test_anonymous_index_cannot_publish_expiry (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_index_cannot_publish_expiry) (effect='publication')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 78, in test_anonymous_index_cannot_publish_expiry
+    with self.subTest(effect='publication'):self.assertEqual(self.snapshot(),before)
+                                            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'UPG[94 chars]tus: expired\nsource: manual\ncreated: 2026-10[403 chars]p\n'} != {'UPG[94 chars]tus: recommended\nsource: manual\ncreated: 202[358 chars]e\n'}
+Diff is 2348 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_anonymous_index_cannot_publish_expiry (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_anonymous_index_cannot_publish_expiry) (effect='response')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 79, in test_anonymous_index_cannot_publish_expiry
+    with self.subTest(effect='response'):self.assertEqual(response.status_code,401,response.text)
+                                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"recommended":[],"implemented":[],"closed":[{"id":"synthetic-upgrade","claim":"SyntheticUpgradeCurrentMarker","source":"manual","status":"expired","created":"2026-10-08T00:00:00.000Z","expires_in_days":null,"confidence":0.7,"target_surface":"context","evidence_count":1,"ledger_id":null,"has_patch":false,"recommendation":"Synthetic recommendation"}],"stats":{"pending":0,"implemented":0,"closed":1,"by_source":{}}}
+
+======================================================================
+FAIL: test_owner_index_preserves_native_expiry_and_queue_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_index_preserves_native_expiry_and_queue_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 107, in test_owner_index_preserves_native_expiry_and_queue_effects
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='synthetic-upgrade', verb='accept')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 126, in test_owner_record_and_hypothesis_actions_match_original_effects
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='synthetic-upgrade', verb='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 126, in test_owner_record_and_hypothesis_actions_match_original_effects
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='hyp:synthetic-hypothesis', verb='accept')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 126, in test_owner_record_and_hypothesis_actions_match_original_effects
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_record_and_hypothesis_actions_match_original_effects (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_owner_record_and_hypothesis_actions_match_original_effects) (identifier='hyp:synthetic-hypothesis', verb='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 126, in test_owner_record_and_hypothesis_actions_match_original_effects
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.806s
+
+FAILED (failures=11)

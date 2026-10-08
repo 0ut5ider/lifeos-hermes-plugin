@@ -37,7 +37,8 @@ def _collect(memory,scope,connection):
     if (memory._native('validate_source_batch',contents=[text])['accepted']!=[True]
             or memory._filter_history(connection,scope,text,instant,reviewed=True)['excluded']):
         raise MemoryUnavailable('Hypothesis review state contains an excluded source')
-    result={'hypotheses':_sources(memory,scope,connection),'frames':frames,'state':state}
+    result={'hypotheses':_sources(memory,scope,connection),'frames':frames,'state':state,
+        'directory_exists':_path(memory,PREFIX,directory=True).exists()}
     if len(json.dumps(result).encode())>CORPUS_LIMIT:
         raise MemoryUnavailable('Hypothesis review exceeds its source transport limit')
     return result

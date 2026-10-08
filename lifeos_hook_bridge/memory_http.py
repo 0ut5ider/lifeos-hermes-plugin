@@ -65,8 +65,8 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
-    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses')
-    review = arguments.get('view') == 'hypothesis_review'
+    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades')
+    review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
         {'target','note','request_id'} if review else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
@@ -81,8 +81,10 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             from .memory_wiki import request_target
         elif arguments['view'] == 'knowledge':
             from .memory_knowledge import request_target
-        else:
+        elif arguments['view'] == 'hypotheses':
             from .memory_hypothesis_queue import request_target
+        else:
+            from .memory_upgrade_queue import request_target
         try:
             target = request_target(arguments['target'])
         except LookupError:
@@ -92,17 +94,20 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         route = '/memory/' + arguments['view'] + '?' + urllib.parse.urlencode({'target':target})
     data = None
     if review:
-        from .memory_hypothesis_review import action_target
+        if arguments['view']=='hypothesis_review':
+            from .memory_hypothesis_review import action_target
+        else:
+            from .memory_upgrade_queue import action_target
         try:
             action_target(arguments['target'])
             if (arguments['note'] is not None and (not isinstance(arguments['note'],str) or len(arguments['note'])>8192)
                     or not isinstance(arguments['request_id'],str) or not 1<=len(arguments['request_id'])<=256):
-                raise ValueError('Choose bounded hypothesis review arguments')
+                raise ValueError('Choose bounded memory review arguments')
         except LookupError:
-            return _response(404,{'error':'Choose a governed hypothesis review route'})
+            return _response(404,{'error':'Choose a governed memory review route'})
         except ValueError:
-            return _response(400,{'error':'Invalid hypothesis review arguments'})
-        route = '/memory/hypotheses/review'
+            return _response(400,{'error':'Invalid memory review arguments'})
+        route = '/memory/' + ('hypotheses' if arguments['view']=='hypothesis_review' else 'upgrades') + '/review'
         data = json.dumps({key:arguments[key] for key in ('target','note','request_id')},ensure_ascii=False).encode()
     credentials={}
     for key in ('authorization','cookie'):

@@ -52,6 +52,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
                                  'startObservability({enabled:true});\n'),
             'memory.ts': ('handleRequest', 'handleRequest', ''),
             'hypotheses.ts': ('handleRequest', 'handleRequest', ''),
+            'upgrades.ts': ('handleRequest', 'handleRequest', ''),
             'hermes.ts': ('handleRequest', 'handleRequest', ''),
         }[self.native_module_name()]
         program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+

@@ -35,12 +35,21 @@ async function main(): Promise<void> {
         || !(input.state === null || typeof input.state === 'string') || typeof input.now !== 'string'
         || typeof input.source_session !== 'string') throw new Error('Native upgrades require declared current sources and actions');
     result = module.renderUpgradeStore(input.sources,input.state,input.action_name,input.arguments,input.now,input.source_session);
+  } else if (input.action === 'upgrades_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/upgrades.ts')).href);
+    if (!object(module) || typeof module.renderUpgradesView !== 'function' || !Array.isArray(input.records)
+        || !Array.isArray(input.hypotheses) || [...input.records, ...input.hypotheses].some(source => !object(source)
+          || typeof source.filename !== 'string' || typeof source.content !== 'string') || typeof input.target !== 'string') {
+      throw new Error('Native upgrades views require declared current records and hypotheses');
+    }
+    result = module.renderUpgradesView(input.records,input.hypotheses,input.target);
   } else if (input.action === 'hypothesis_review') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
     if (!object(module) || typeof module.renderHypothesisReview !== 'function' || !object(input.sources)
         || !Array.isArray(input.sources.hypotheses) || !object(input.sources.frames)
         || input.sources.hypotheses.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
         || Object.values(input.sources.frames).some(content => typeof content !== 'string')
+        || typeof input.sources.directory_exists !== 'boolean'
         || !(input.sources.state === null || typeof input.sources.state === 'string')
         || typeof input.slug !== 'string' || (input.verb !== 'graduate' && input.verb !== 'reject')
         || !(input.note === null || typeof input.note === 'string') || typeof input.now !== 'string') {
