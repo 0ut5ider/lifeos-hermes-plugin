@@ -3275,7 +3275,7 @@ index 310662c..efd332b 100755
      // Wikilink edges
      const wikilinks = extractWikilinks(content);
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
-index 0975c2f..8d08ba5 100755
+index 0975c2f..c3648f5 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
 @@ -1,4 +1,6 @@
@@ -3447,7 +3447,26 @@ index 0975c2f..8d08ba5 100755
  }
  
  // ============================================================================
-@@ -1262,6 +1292,92 @@ function cmdIndex(): void {
+@@ -1246,14 +1276,14 @@ function cmdContradictions(): void {
+   console.log("  Run `/knowledge contradictions` in Claude Code for semantic review.");
+ }
+ 
+-function cmdIndex(): void {
++function cmdIndex(corpus?: readonly KnowledgeSource[]): void {
+   console.log("📑 Regenerating all MOC dashboards...");
+-  const backlinks = computeBacklinks(); // once per run, not per domain
++  const backlinks = computeBacklinks(corpus); // once per run, not per domain
+   for (const domain of DOMAINS) {
+-    regenerateMOC(domain, backlinks);
++    regenerateMOC(domain, backlinks, corpus);
+     console.log(`  ${domain}/_index.md`);
+   }
+-  regenerateMasterMOC();
++  regenerateMasterMOC(corpus);
+   console.log("  _index.md (master)");
+   console.log("\n  ✅ Done.");
+ }
+@@ -1262,6 +1292,120 @@ function cmdIndex(): void {
  // CLI Entry Point
  // ============================================================================
  
@@ -3461,8 +3480,10 @@ index 0975c2f..8d08ba5 100755
 +}
 +
 +/** Runs the native synchronous harvest against its declared source set. */
-+export function renderHarvest(sources: readonly KnowledgeSource[], source: string | null,
-+                              dryRun: boolean, limit: number, occupied: readonly string[], ordering: readonly string[]): {
++type KnowledgeCommand = "harvest" | "review" | "status" | "contradictions" | "index";
++function renderKnowledgeFiles(sources: readonly KnowledgeSource[], source: string | null,
++                              dryRun: boolean, limit: number, occupied: readonly string[], ordering: readonly string[],
++                              command: KnowledgeCommand): {
 +  stdout: string; writes: KnowledgeSource[]; deletes: string[];
 +  moves: Array<{source: string; path: string}>;
 +} {
@@ -3528,7 +3549,16 @@ index 0975c2f..8d08ba5 100755
 +  const output: string[] = [];
 +  fs = declared;
 +  console.log = (...values: unknown[]): void => { output.push(values.map(String).join(" ")); };
-+  try { cmdHarvest(source, dryRun, limit); }
++  try {
++    switch (command) {
++      case "harvest": cmdHarvest(source, dryRun, limit); break;
++      case "review": cmdReview(); break;
++      case "status": cmdStatus(); break;
++      case "contradictions": cmdContradictions(); break;
++      case "index": cmdIndex(sources.filter(item => DOMAINS.some(domain =>
++        path.dirname(item.path) === path.join(KNOWLEDGE_DIR, domain)))); break;
++    }
++  }
 +  finally { fs = priorFiles; console.log = priorLog; }
 +  return {stdout: output.join("\n") + "\n",
 +    writes: [...files].filter(([file, content]) => originals.get(file) !== content)
@@ -3536,11 +3566,28 @@ index 0975c2f..8d08ba5 100755
 +    deletes: [...originals.keys()].filter(file => !files.has(file)), moves};
 +}
 +
++export function renderHarvest(sources: readonly KnowledgeSource[], source: string | null,
++                              dryRun: boolean, limit: number, occupied: readonly string[],
++                              ordering: readonly string[]): ReturnType<typeof renderKnowledgeFiles> {
++  return renderKnowledgeFiles(sources, source, dryRun, limit, occupied, ordering, "harvest");
++}
++
++export function renderKnowledgeView(sources: readonly KnowledgeSource[], view: Exclude<KnowledgeCommand, "harvest">,
++                                    ordering: readonly string[]): ReturnType<typeof renderKnowledgeFiles> {
++  return renderKnowledgeFiles(sources, null, false, 5, [], ordering, view);
++}
++
++function managedKnowledgeView(view: Exclude<KnowledgeCommand, "harvest">, requestId: string): void {
++  const result = memoryAccess("knowledge_view", {view, request_id: requestId}, memoryObject);
++  if (!result || result.ok !== true) throw new Error("Managed Knowledge view is unavailable");
++  console.log(JSON.stringify(result));
++}
++
 +function main(): void {
  const { values, positionals } = parseArgs({
    args: process.argv.slice(2),
    options: {
-@@ -1271,6 +1387,9 @@ const { values, positionals } = parseArgs({
+@@ -1271,6 +1415,9 @@ const { values, positionals } = parseArgs({
      limit: { type: "string", short: "n" },
      all: { type: "boolean" },
      help: { type: "boolean", short: "h" },
@@ -3550,7 +3597,7 @@ index 0975c2f..8d08ba5 100755
    },
    allowPositionals: true,
    strict: false,
-@@ -1316,17 +1435,36 @@ switch (command) {
+@@ -1316,28 +1463,61 @@ switch (command) {
      const limit = values.backfill ? MAX_NOTES_BACKFILL :
                    values.limit ? parseInt(values.limit as string) :
                    MAX_NOTES_PER_HARVEST_DEFAULT;
@@ -3565,7 +3612,9 @@ index 0975c2f..8d08ba5 100755
      break;
    }
    case "review":
-     cmdReview();
+-    cmdReview();
++    if (hasMemoryAccess()) managedKnowledgeView("review", values["request-id"] ?? randomUUID());
++    else cmdReview();
      break;
    case "promote":
 -    cmdPromote(positionals[1] ?? null, !!values.all);
@@ -3589,8 +3638,21 @@ index 0975c2f..8d08ba5 100755
 +    } else cmdReject(positionals[1] ?? null, !!values.all);
      break;
    case "status":
-     cmdStatus();
-@@ -1341,3 +1479,13 @@ switch (command) {
+-    cmdStatus();
++    if (hasMemoryAccess()) managedKnowledgeView("status", values["request-id"] ?? randomUUID());
++    else cmdStatus();
+     break;
+   case "index":
+-    cmdIndex();
++    if (hasMemoryAccess()) managedKnowledgeView("index", values["request-id"] ?? randomUUID());
++    else cmdIndex();
+     break;
+   case "contradictions":
+-    cmdContradictions();
++    if (hasMemoryAccess()) managedKnowledgeView("contradictions", values["request-id"] ?? randomUUID());
++    else cmdContradictions();
+     break;
+   default:
      console.error(`Unknown command: ${command}. Use --help for usage.`);
      process.exit(1);
  }
@@ -3600,7 +3662,7 @@ index 0975c2f..8d08ba5 100755
 +  try { main(); }
 +  catch (error: unknown) {
 +    if (!hasMemoryAccess()) throw error;
-+    console.error("Managed staged publication is unavailable. Check authority and review a current staged preview.");
++    console.error("Managed Knowledge access is unavailable. Check current authority and source admission.");
 +    process.exitCode = 1;
 +  }
 +}

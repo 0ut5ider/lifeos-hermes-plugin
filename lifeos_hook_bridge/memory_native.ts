@@ -471,6 +471,21 @@ async function main(): Promise<void> {
     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
     if (!(response instanceof Response)) throw new Error("Native wiki response is unavailable");
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === "knowledge_harvester_view") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeView !== "function" || !Array.isArray(input.sources)
+        || typeof input.view !== "string" || !["review", "status", "contradictions", "index"].includes(input.view) || !Array.isArray(input.ordering)
+        || !input.ordering.every(value => typeof value === "string")) {
+      throw new Error("Native Knowledge views need declared sources and options");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge views need declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderKnowledgeView(sources, input.view, input.ordering);
   } else if (input.action === "knowledge_harvest") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
     if (!object(module) || typeof module.renderHarvest !== "function" || !Array.isArray(input.sources)

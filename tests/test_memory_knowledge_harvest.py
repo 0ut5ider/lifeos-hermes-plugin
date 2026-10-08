@@ -92,11 +92,11 @@ class MemoryKnowledgeHarvestTests(unittest.TestCase):
         self.assertEqual(state['totalHarvested'],0)
 
 
-    def seed(self,domain='Research',slug='synthetic-seed',body='SyntheticStaleClaimMarker',quality=2,created='2000-01-01'):
+    def seed(self,domain='Research',slug='synthetic-seed',body='SyntheticStaleClaimMarker',quality=2,created='2000-01-01',metadata=''):
         path=self.knowledge/domain/(slug+'.md')
         path.parent.mkdir(exist_ok=True)
         path.write_text('---\ntitle: "Synthetic stale seed"\ntype: idea\ndomain: '+domain.lower()+
-            '\ncreated: '+created+'\nupdated: '+created+'\nquality: '+str(quality)+'\n---\n\n# Synthetic stale seed\n\n'+body+'\n')
+            '\ncreated: '+created+'\nupdated: '+created+'\nquality: '+str(quality)+'\n'+metadata+'---\n\n# Synthetic stale seed\n\n'+body+'\n')
         with self.fixture.fixture.memory._transaction() as connection:
             reference=self.fixture.fixture.memory._record(connection,OWNER,path,body,'project','lab',{'kind':'synthetic','session':''})
         return path,reference

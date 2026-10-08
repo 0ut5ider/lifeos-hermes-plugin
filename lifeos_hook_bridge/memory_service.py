@@ -247,6 +247,10 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = self._context_scope(configuration, context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'knowledge_view' and set(arguments) == {'view','request_id'}:
+                from .memory_knowledge_views import run
+                return run(memory, scope, **arguments, source_session=context.session_id,
+                    check_current=lambda: self._check_current_context(configuration, context, scope))
             if operation == 'knowledge_harvest' and set(arguments) == {'source','dry_run','max_notes','request_id'}:
                 from .memory_knowledge_harvest import run
                 return run(memory, scope, **arguments, source_session=context.session_id,
