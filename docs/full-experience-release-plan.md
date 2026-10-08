@@ -85,6 +85,8 @@ The October 4 [startup controls](verification/2026-10-04-paired-startup-effects/
 
 The [native frontend type gate](verification/2026-10-08-frontend-types/README.md) fixes both existing dashboard TypeScript errors. The strict check and all 24 affected tests pass. The dashboard build completes with its existing workspace and utility warnings. The TELOS overview and installed application acceptance remain open.
 
+The [TELOS overview gate](verification/2026-10-08-telos-overview/README.md) passes fourteen focused cases and 357 combined cases. Current owner authority governs the fixed source registry, current dimension calculations, and response delivery. The [refreshed source inventory](verification/2026-10-08-memory-caller-overview/README.md) verifies all 330 current candidate hashes and excludes generated Pulse state. Operational readers and installed activation remain open.
+
 ## Execution and evidence
 
 Adrian directs work to continue through steps 2 to 7 on October 4. On October 5, he changes the immediate order to the remaining step 1 hook checks, then steps 3, 4, and 5. Resume the remaining memory activation gates before enabling ownership or memory-writing jobs. Voice remains the last feature workstream. Verify the combined package before final activation on `.252`.

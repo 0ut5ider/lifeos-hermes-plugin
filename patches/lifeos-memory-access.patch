@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..31baadd 100644
+index 787cf28..1f87e37 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -850,6 +850,35 @@ index 787cf28..31baadd 100644
  
      return Response.json({
        mission: parseSections(mission),
+@@ -3405,15 +3439,15 @@ function pickBulletValue(content: string, key: string): string | null {
+ //
+ // Composite rule for creative_freedom: average the underlying creative and
+ // freedom percentages from LIFEOS_STATE.json. Missing source dimension contributes 0.
+-function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur: number; ideal: number; velo: number; color: string }> {
++function buildDimensionsFromIdealState(read = readMd, exists = (path: string): boolean => existsSync(path)): Array<{ id: string; label: string; cur: number; ideal: number; velo: number; color: string }> {
+   const idealDir = join(TELOS_DIR, "IDEAL_STATE")
+-  if (!existsSync(idealDir)) return []
++  if (!exists(idealDir)) return []
+ 
+   const statePath = join(TELOS_DIR, "LIFEOS_STATE.json")
+   let pcts: Record<string, number> = {}
+-  if (existsSync(statePath)) {
++  if (exists(statePath)) {
+     try {
+-      const parsed = JSON.parse(readFileSync(statePath, "utf-8")) as { dimensions?: Record<string, { pct?: number }> }
++      const parsed = JSON.parse(read(statePath)) as { dimensions?: Record<string, { pct?: number }> }
+       for (const [id, d] of Object.entries(parsed.dimensions ?? {})) {
+         if (typeof d?.pct === "number") pcts[id] = d.pct
+       }
+@@ -3450,7 +3484,7 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+   ]
+ 
+   return surfaces
+-    .filter((s) => s.sources.some((f) => existsSync(join(idealDir, f))))
++    .filter((s) => s.sources.some((f) => exists(join(idealDir, f))))
+     .map(({ sources: _sources, ...rest }) => ({ ...rest, ideal: 100, velo: 0 }))
+ }
+ 
 @@ -3465,13 +3499,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
  // this one — TELOS_DIR has no CURRENT.md/GOALS.md). Same semantic as
  // handleTelosOverview's local closure; lifted so every /api/life/* handler
@@ -868,7 +897,129 @@ index 787cf28..31baadd 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -4520,6 +4554,129 @@ function handleOnboardingState(): Response {
+@@ -3565,9 +3599,9 @@ async function buildWorkNarrative(): Promise<{ summary: string; inProgress: numb
+   }
+ }
+ 
+-function buildSnapshotFromCurrentState(): Array<{ id: string; label: string; v: number; of: number }> | null {
++function buildSnapshotFromCurrentState(read = readMd): Array<{ id: string; label: string; v: number; of: number }> | null {
+   const path = join(TELOS_DIR, "CURRENT_STATE", "SNAPSHOT.md")
+-  const content = readMd(path)
++  const content = read(path)
+   if (!content) return null
+   const fields = parseBoldFields(content)
+   const parseScore = (raw: string | undefined): number | null => {
+@@ -3601,7 +3635,7 @@ function buildSnapshotFromCurrentState(): Array<{ id: string; label: string; v:
+   return out.length > 0 ? out : null
+ }
+ 
+-function buildPreferencesFromTelos(): {
++function buildPreferencesFromTelos(read = readMd): {
+   books: string[]
+   films: string[]
+   anime: string[]
+@@ -3610,9 +3644,9 @@ function buildPreferencesFromTelos(): {
+   hobbies: string[]
+   literature: string[]
+ } | null {
+-  const books = parseBullets(readMd(join(TELOS_DIR, "BOOKS.md"))).slice(0, 8)
+-  const movies = parseBullets(readMd(join(TELOS_DIR, "MOVIES.md"))).slice(0, 8)
+-  const authors = parseBullets(readMd(join(TELOS_DIR, "AUTHORS.md"))).slice(0, 8)
++  const books = parseBullets(read(join(TELOS_DIR, "BOOKS.md"))).slice(0, 8)
++  const movies = parseBullets(read(join(TELOS_DIR, "MOVIES.md"))).slice(0, 8)
++  const authors = parseBullets(read(join(TELOS_DIR, "AUTHORS.md"))).slice(0, 8)
+   if (books.length === 0 && movies.length === 0 && authors.length === 0) return null
+   return {
+     books,
+@@ -4157,13 +4191,13 @@ function buildStatusMetrics(
+ interface OverviewTeam { id: string; name: string; role: string; kind: "human" | "agent"; owns: string[]; avatar: string; note: string }
+ 
+ // Team is parsed from USER files at request time — names never live in this file.
+-function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
++function buildTeamFromUserFiles(appIds: string[], read = readMd): OverviewTeam[] | null {
+   const team: OverviewTeam[] = []
+   const nameFrom = (md: string): string => {
+     const m = md.match(/\*\*Name:\*\*\s*([^|(\n]+)/)
+     return m ? m[1].trim() : ""
+   }
+-  const principal = nameFrom(readMd(join(USER_DIR, "PRINCIPAL", "PRINCIPAL_IDENTITY.md")))
++  const principal = nameFrom(read(join(USER_DIR, "PRINCIPAL", "PRINCIPAL_IDENTITY.md")))
+   if (principal) {
+     team.push({
+       id: "T0", name: principal, role: "Principal", kind: "human", owns: [],
+@@ -4171,14 +4205,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
+       avatar: principal.charAt(0), note: "Sets direction. Everything here serves their TELOS.",
+     })
+   }
+-  const da = nameFrom(readMd(join(USER_DIR, "DIGITAL_ASSISTANT", "DA_IDENTITY.md")))
++  const da = nameFrom(read(join(USER_DIR, "DIGITAL_ASSISTANT", "DA_IDENTITY.md")))
+   if (da) {
+     team.push({
+       id: "T1", name: da, role: "Primary DA", kind: "agent", owns: appIds,
+       avatar: da.charAt(0), note: "Runs the system: builds, deploys, monitors, verifies.",
+     })
+   }
+-  const fleetMatch = readMd(PROJECTS_FILE).match(/Fleet:\s*([A-Za-z /]+?)\*\*/)
++  const fleetMatch = read(PROJECTS_FILE).match(/Fleet:\s*([A-Za-z /]+?)\*\*/)
+   if (fleetMatch) {
+     fleetMatch[1].split("/").map((n) => n.trim()).filter(Boolean).forEach((n, i) => {
+       team.push({
+@@ -4190,14 +4224,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
+   return team.length > 0 ? team : null
+ }
+ 
+-async function handleTelosOverview(): Promise<Response> {
++async function handleTelosOverview(read = readMd, exists = (path: string): boolean => existsSync(path), localSources = false): Promise<Response> {
+   try {
+     // Single source of truth: LIFEOS/USER/TELOS/TELOS.md, split by H2 sections.
+     // Falls back to legacy per-file reads if TELOS.md is absent or a section
+     // is missing — preserves back-compat for installs that haven't migrated.
+-    const sections = parseTelosUnified()
++    const sections = parseTelosUnified(read)
+     const sectionOrFile = (sectionKey: string, legacyFile: string): string =>
+-      sections[sectionKey] || readMd(join(TELOS_DIR, legacyFile))
++      sections[sectionKey] || read(join(TELOS_DIR, legacyFile))
+     const missionRaw = sectionOrFile("mission", "MISSION.md")
+     const goalsRaw = sectionOrFile("goals", "GOALS.md")
+     const problemsRaw = sectionOrFile("problems", "PROBLEMS.md")
+@@ -4232,7 +4266,7 @@ async function handleTelosOverview(): Promise<Response> {
+           dims: [],
+           metrics: [],
+         }))
+-      : asLifeGoals((await (handleLifeGoals().json())).goals).map((g) => ({
++      : asLifeGoals((await (handleLifeGoals(read).json())).goals).map((g) => ({
+           id: g.id,
+           title: cleanInlineMarkdown(g.title ?? g.text ?? g.id),
+           summary: "",
+@@ -4281,19 +4315,19 @@ async function handleTelosOverview(): Promise<Response> {
+       blocks: refsByPrefix(c.references, "G"),
+     }))
+ 
+-    const dimensions = buildDimensionsFromIdealState()
+-    const snapshot = buildSnapshotFromCurrentState()
+-    const preferences = buildPreferencesFromTelos()
+-    const workNarrative = await buildWorkNarrative()
++    const dimensions = buildDimensionsFromIdealState(read, exists)
++    const snapshot = buildSnapshotFromCurrentState(read)
++    const preferences = buildPreferencesFromTelos(read)
++    const workNarrative = localSources ? null : await buildWorkNarrative()
+ 
+     // Live status sections — real sources only (Bunker monitor, work registry,
+     // launchd, USER identity files). Null when a source has nothing.
+-    const workItems = await fetchWorkItems()
++    const workItems = localSources ? [] : await fetchWorkItems()
+     // Column naming varies ("In Progress" / "In-Progress") — match normalized.
+     const inFlight = workItems.filter((w) => (w.column ?? "").toLowerCase().replace(/[^a-z]/g, "") === "inprogress")
+-    const liveProjects = buildProjectsFromStatus(inFlight)
+-    const liveMetrics = buildStatusMetrics(workNarrative)
+-    const liveTeam = buildTeamFromUserFiles(Object.keys(readBunkerState()))
++    const liveProjects = localSources ? null : buildProjectsFromStatus(inFlight)
++    const liveMetrics = localSources ? null : buildStatusMetrics(workNarrative)
++    const liveTeam = buildTeamFromUserFiles(localSources ? [] : Object.keys(readBunkerState()), read)
+ 
+     const currentStateNarrative = buildCurrentStateNarrative(currentStateRaw)
+     const idealStateNarrative = buildIdealStateNarrative(idealStateRaw)
+@@ -4520,6 +4554,160 @@ function handleOnboardingState(): Response {
    })
  }
  
@@ -982,6 +1133,37 @@ index 787cf28..31baadd 100644
 +    "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "STATUS.md", "PROJECTS.md"];
 +}
 +
++export function telosOverviewSources(): string[] {
++  const stateFiles = ["HEALTH", "MONEY", "FREEDOM", "CREATIVE", "RELATIONSHIPS", "RHYTHMS", "INFRASTRUCTURE"];
++  return lifeViewSources().map(name => "LIFEOS/USER/TELOS/" + name)
++    .concat(["CURRENT_STATE", "IDEAL_STATE"].flatMap(directory => stateFiles.map(name =>
++      "LIFEOS/USER/TELOS/" + directory + "/" + name + ".md")))
++    .concat(["LIFEOS/USER/TELOS/CURRENT_STATE/SNAPSHOT.md", "LIFEOS/USER/TELOS/IDEAL_STATE/FINANCES.md",
++      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md", "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md",
++      "LIFEOS/USER/PROJECTS.md"]);
++}
++
++export function renderTelosOverview(sources: ReadonlyArray<{relative: string; content: string}>, state: string): Promise<Response> {
++  const allowed = new Set(telosOverviewSources());
++  if (sources.length > allowed.size || sources.some(source => !allowed.has(source.relative))
++      || new Set(sources.map(source => source.relative)).size !== sources.length || typeof state !== "string") {
++    throw new Error("Choose declared current TELOS overview sources");
++  }
++  const contents = new Map(sources.map(source => [join(dirname(LIFEOS_DIR), source.relative), source.content]));
++  const statePath = join(TELOS_DIR, "LIFEOS_STATE.json");
++  contents.set(statePath, state);
++  const read = (path: string): string => {
++    if (path !== statePath && !allowed.has(path.slice(dirname(LIFEOS_DIR).length + 1))) {
++      throw new Error("TELOS overviews require fixed owner sources");
++    }
++    return contents.get(path) ?? "";
++  };
++  const exists = (path: string): boolean => path === join(TELOS_DIR, "IDEAL_STATE")
++    ? sources.some(source => source.relative.startsWith("LIFEOS/USER/TELOS/IDEAL_STATE/"))
++    : contents.has(path);
++  return handleTelosOverview(read, exists, true);
++}
++
 +export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {
 +  const allowed = new Set(lifeViewSources());
 +  if (sources.some(source => !allowed.has(source.filename))) throw new Error("Choose declared TELOS sources");
@@ -998,7 +1180,7 @@ index 787cf28..31baadd 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4688,103 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4719,103 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
@@ -1058,7 +1240,7 @@ index 787cf28..31baadd 100644
 +    }
 +  }
 +
-+  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/life/work", "/api/life/business", "/api/observability/life-card"].includes(pathname)) {
++  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/life/work", "/api/life/business", "/api/observability/life-card", "/api/telos/overview"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "Life views require GET"}, {status: 405, headers});
 +    if (url.search) return Response.json({error: "Life views use fixed installed sources"}, {status: 400, headers});

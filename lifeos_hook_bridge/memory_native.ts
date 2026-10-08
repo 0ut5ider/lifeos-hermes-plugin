@@ -74,6 +74,33 @@ async function main(): Promise<void> {
     const response: unknown = module.renderHealthView(input.sources);
     if (!(response instanceof Response)) throw new Error('Native health renderer requires a response');
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'telos_overview_sources' || input.action === 'telos_overview') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.telosOverviewSources !== 'function' || typeof module.renderTelosOverview !== 'function') {
+      throw new Error('Native TELOS overview exports are unavailable');
+    }
+    if (input.action === 'telos_overview_sources') result = {sources: module.telosOverviewSources()};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+        throw new Error('Native TELOS overview requires declared current sources');
+      }
+      const state: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/UpdateLifeosState.ts')).href);
+      if (!object(state) || typeof state.renderLifeosState !== 'function') {
+        throw new Error('Native current dimension calculation is unavailable');
+      }
+      const dimensions = Object.fromEntries(input.sources.filter(source => object(source)
+        && typeof source.relative === 'string'
+        && /^LIFEOS\/USER\/TELOS\/(?:CURRENT_STATE|IDEAL_STATE)\/(?:HEALTH|MONEY|FREEDOM|CREATIVE|RELATIONSHIPS|RHYTHMS|INFRASTRUCTURE)\.md$/.test(source.relative))
+        .map(source => [source.relative.slice('LIFEOS/USER/TELOS/'.length), source.content]));
+      const rendered: unknown = state.renderLifeosState(dimensions, true);
+      if (!object(rendered) || typeof rendered.content !== 'string') {
+        throw new Error('Native current dimension calculation changes its declared output');
+      }
+      const response: unknown = await module.renderTelosOverview(input.sources, rendered.content);
+      if (!(response instanceof Response)) throw new Error('Native TELOS overview requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
   } else if (input.action === 'telos_file_names') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
     if (!object(module) || typeof module.telosFileNames !== 'function') {

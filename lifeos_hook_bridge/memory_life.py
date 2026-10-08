@@ -9,7 +9,8 @@ from .memory_access import MemoryUnavailable
 from .memory_sources import authorize, read_markdown, CORPUS_LIMIT, _source_path
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
-                    '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index'})
+                    '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
+                    '/api/telos/overview'})
 
 
 def request_target(value):
@@ -49,6 +50,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if target == '/api/telos/overview':
+        from .memory_telos_overview import view as overview_view
+        return overview_view(memory, scope, check_current=check_current)
     if target.split('?')[0] == '/api/user-index':
         from .memory_user_index import view as index_view
         return index_view(memory, scope, target, check_current=check_current)
