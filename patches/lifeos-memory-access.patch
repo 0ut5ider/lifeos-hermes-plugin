@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..d00f737 100644
+index 787cf28..45f6918 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -496,6 +496,23 @@ index 787cf28..d00f737 100644
  async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
    const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
    if (!existsSync(filePath)) {
+@@ -2360,12 +2389,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
+   return sections
+ }
+ 
+-function readDirMdFiles(dir: string): { name: string, content: string, sections: { heading: string, body: string }[] }[] {
+-  if (!existsSync(dir)) return []
++function readDirMdFiles(dir: string, read = readMd, entries?: ReadonlyArray<string>): { name: string, content: string, sections: { heading: string, body: string }[] }[] {
++  if (entries === undefined && !existsSync(dir)) return []
+   const files: { name: string, content: string, sections: { heading: string, body: string }[] }[] = []
+-  for (const f of readdirSync(dir)) {
++  for (const f of entries ?? readdirSync(dir)) {
+     if (!f.endsWith(".md") || f === "README.md") continue
+-    const content = readMd(join(dir, f))
++    const content = read(join(dir, f))
+     files.push({ name: f.replace(".md", ""), content: content.slice(0, 2000), sections: parseSections(content) })
+   }
+   return files
 @@ -2428,13 +2457,13 @@ function parseCurrentDomains(content: string): {
    return { updated, updatedBy, domains }
  }
@@ -516,6 +533,53 @@ index 787cf28..d00f737 100644
  
      const fields = parseBoldFields(current)
      const { updated, updatedBy, domains } = parseCurrentDomains(current)
+@@ -2470,11 +2499,11 @@ function handleLifeHome(): Response {
+ 
+ // ── GET /api/life/health ──
+ 
+-function handleLifeHealth(): Response {
++function handleLifeHealth(read = readMd, entries?: ReadonlyArray<string>): Response {
+   try {
+-    const files = readDirMdFiles(HEALTH_DIR)
++    const files = readDirMdFiles(HEALTH_DIR, read, entries)
+     // Also check for lab results
+-    const labFiles = existsSync(HEALTH_DIR)
++    const labFiles = entries !== undefined ? entries.filter(f => f.startsWith("lab_results")) : existsSync(HEALTH_DIR)
+       ? readdirSync(HEALTH_DIR).filter(f => f.startsWith("lab_results"))
+       : []
+ 
+@@ -2485,21 +2514,21 @@ function handleLifeHealth(): Response {
+       freshnessEntries.push({ name: lab, sourceDate: parseFilenameDate(lab) })
+     }
+     for (const structured of ["CONDITIONS.md", "MEDICATIONS.md", "SUPPLEMENTS.md", "FITNESS.md", "NUTRITION.md", "METRICS.md", "HISTORY.md"]) {
+-      freshnessEntries.push({ name: structured, content: readMd(join(HEALTH_DIR, structured)) })
++      freshnessEntries.push({ name: structured, content: read(join(HEALTH_DIR, structured)) })
+     }
+     const freshness = computeFreshness(freshnessEntries)
+ 
+     return Response.json({
+       files: files.map(f => ({ name: f.name, sections: f.sections.map(s => s.heading) })),
+-      conditions: parseSections(readMd(join(HEALTH_DIR, "CONDITIONS.md"))),
+-      medications: parseSections(readMd(join(HEALTH_DIR, "MEDICATIONS.md"))),
+-      supplements: parseSections(readMd(join(HEALTH_DIR, "SUPPLEMENTS.md"))),
+-      fitness: parseSections(readMd(join(HEALTH_DIR, "FITNESS.md"))),
+-      nutrition: parseSections(readMd(join(HEALTH_DIR, "NUTRITION.md"))),
+-      routine: parseSections(readMd(join(HEALTH_DIR, "routine.md"))),
+-      providers: parseSections(readMd(join(HEALTH_DIR, "PROVIDERS.md"))),
+-      metrics: parseSections(readMd(join(HEALTH_DIR, "METRICS.md"))),
+-      history: parseSections(readMd(join(HEALTH_DIR, "HISTORY.md"))),
++      conditions: parseSections(read(join(HEALTH_DIR, "CONDITIONS.md"))),
++      medications: parseSections(read(join(HEALTH_DIR, "MEDICATIONS.md"))),
++      supplements: parseSections(read(join(HEALTH_DIR, "SUPPLEMENTS.md"))),
++      fitness: parseSections(read(join(HEALTH_DIR, "FITNESS.md"))),
++      nutrition: parseSections(read(join(HEALTH_DIR, "NUTRITION.md"))),
++      routine: parseSections(read(join(HEALTH_DIR, "routine.md"))),
++      providers: parseSections(read(join(HEALTH_DIR, "PROVIDERS.md"))),
++      metrics: parseSections(read(join(HEALTH_DIR, "METRICS.md"))),
++      history: parseSections(read(join(HEALTH_DIR, "HISTORY.md"))),
+       labReports: labFiles,
+       freshness,
+     })
 @@ -3054,34 +3083,34 @@ function handleLifeWork(): Response {
  
  // ── GET /api/life/goals ──
@@ -594,10 +658,21 @@ index 787cf28..d00f737 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -4520,6 +4549,26 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4549,37 @@ function handleOnboardingState(): Response {
    })
  }
  
++export function renderHealthView(sources: ReadonlyArray<{filename: string; content: string}>): Response {
++  if (sources.some(source => source.filename.includes("/") || source.filename.includes("\\")
++      || source.filename === "." || source.filename === "..")) throw new Error("Choose fixed health filenames");
++  const contents = new Map(sources.map(source => [source.filename, source.content]));
++  const read = (path: string): string => {
++    if (dirname(path) !== HEALTH_DIR) throw new Error("Health views require fixed owner sources");
++    return contents.get(basename(path)) ?? "";
++  };
++  return handleLifeHealth(read, sources.map(source => source.filename));
++}
++
 +export function lifeViewSources(): string[] {
 +  return ["TELOS.md", "CURRENT.md", "MISSION.md", "GOALS.md", "STRATEGIES.md", "CHALLENGES.md",
 +    "BELIEFS.md", "MODELS.md", "NARRATIVES.md", "WISDOM.md", "PROBLEMS.md", "PREDICTIONS.md",
@@ -621,11 +696,11 @@ index 787cf28..d00f737 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4580,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4591,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
-+  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/observability/life-card"].includes(pathname)) {
++  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/observability/life-card"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "Life views require GET"}, {status: 405, headers});
 +    if (url.search) return Response.json({error: "Life views use fixed installed sources"}, {status: 400, headers});

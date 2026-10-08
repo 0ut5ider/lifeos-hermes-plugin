@@ -2957,7 +2957,7 @@
   },
   {
     "path": "LIFEOS/PULSE/Observability/observability.ts",
-    "sha256": "e2feae5083adad7d1b3c8a82eb433436b13baca06fa167506f2049ef2b5f8925",
+    "sha256": "6fe989e05cc2d3231bb48e65580f75c117a07b7dab910c05c3555aa69854840d",
     "registered_hooks": [],
     "cli_guard": false,
     "source_evidence": [
@@ -3611,15 +3611,15 @@
       },
       {
         "line": 2392,
-        "text": "function readDirMdFiles(dir: string): { name: string, content: string, sections: { heading: string, body: string }[] }[] {"
+        "text": "function readDirMdFiles(dir: string, read = readMd, entries?: ReadonlyArray<string>): { name: string, content: string, sections: { heading: string, body: string }[] }[] {"
       },
       {
         "line": 2395,
-        "text": "  for (const f of readdirSync(dir)) {"
+        "text": "  for (const f of entries ?? readdirSync(dir)) {"
       },
       {
         "line": 2397,
-        "text": "    const content = readMd(join(dir, f))"
+        "text": "    const content = read(join(dir, f))"
       },
       {
         "line": 2418,
@@ -3686,8 +3686,12 @@
         "text": "      domains,"
       },
       {
+        "line": 2502,
+        "text": "function handleLifeHealth(read = readMd, entries?: ReadonlyArray<string>): Response {"
+      },
+      {
         "line": 2504,
-        "text": "    const files = readDirMdFiles(HEALTH_DIR)"
+        "text": "    const files = readDirMdFiles(HEALTH_DIR, read, entries)"
       },
       {
         "line": 2507,
@@ -3695,43 +3699,43 @@
       },
       {
         "line": 2517,
-        "text": "      freshnessEntries.push({ name: structured, content: readMd(join(HEALTH_DIR, structured)) })"
+        "text": "      freshnessEntries.push({ name: structured, content: read(join(HEALTH_DIR, structured)) })"
       },
       {
         "line": 2523,
-        "text": "      conditions: parseSections(readMd(join(HEALTH_DIR, \"CONDITIONS.md\"))),"
+        "text": "      conditions: parseSections(read(join(HEALTH_DIR, \"CONDITIONS.md\"))),"
       },
       {
         "line": 2524,
-        "text": "      medications: parseSections(readMd(join(HEALTH_DIR, \"MEDICATIONS.md\"))),"
+        "text": "      medications: parseSections(read(join(HEALTH_DIR, \"MEDICATIONS.md\"))),"
       },
       {
         "line": 2525,
-        "text": "      supplements: parseSections(readMd(join(HEALTH_DIR, \"SUPPLEMENTS.md\"))),"
+        "text": "      supplements: parseSections(read(join(HEALTH_DIR, \"SUPPLEMENTS.md\"))),"
       },
       {
         "line": 2526,
-        "text": "      fitness: parseSections(readMd(join(HEALTH_DIR, \"FITNESS.md\"))),"
+        "text": "      fitness: parseSections(read(join(HEALTH_DIR, \"FITNESS.md\"))),"
       },
       {
         "line": 2527,
-        "text": "      nutrition: parseSections(readMd(join(HEALTH_DIR, \"NUTRITION.md\"))),"
+        "text": "      nutrition: parseSections(read(join(HEALTH_DIR, \"NUTRITION.md\"))),"
       },
       {
         "line": 2528,
-        "text": "      routine: parseSections(readMd(join(HEALTH_DIR, \"routine.md\"))),"
+        "text": "      routine: parseSections(read(join(HEALTH_DIR, \"routine.md\"))),"
       },
       {
         "line": 2529,
-        "text": "      providers: parseSections(readMd(join(HEALTH_DIR, \"PROVIDERS.md\"))),"
+        "text": "      providers: parseSections(read(join(HEALTH_DIR, \"PROVIDERS.md\"))),"
       },
       {
         "line": 2530,
-        "text": "      metrics: parseSections(readMd(join(HEALTH_DIR, \"METRICS.md\"))),"
+        "text": "      metrics: parseSections(read(join(HEALTH_DIR, \"METRICS.md\"))),"
       },
       {
         "line": 2531,
-        "text": "      history: parseSections(readMd(join(HEALTH_DIR, \"HISTORY.md\"))),"
+        "text": "      history: parseSections(read(join(HEALTH_DIR, \"HISTORY.md\"))),"
       },
       {
         "line": 2581,
@@ -4283,38 +4287,50 @@
       },
       {
         "line": 4552,
-        "text": "export function lifeViewSources(): string[] {"
+        "text": "export function renderHealthView(sources: ReadonlyArray<{filename: string; content: string}>): Response {"
       },
       {
-        "line": 4559,
-        "text": "export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {"
-      },
-      {
-        "line": 4563,
+        "line": 4556,
         "text": "  const read = (path: string): string => {"
       },
       {
-        "line": 4567,
+        "line": 4560,
+        "text": "  return handleLifeHealth(read, sources.map(source => source.filename));"
+      },
+      {
+        "line": 4563,
+        "text": "export function lifeViewSources(): string[] {"
+      },
+      {
+        "line": 4570,
+        "text": "export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {"
+      },
+      {
+        "line": 4574,
+        "text": "  const read = (path: string): string => {"
+      },
+      {
+        "line": 4578,
         "text": "  if (target === \"/api/life/home\" || target === \"/api/observability/life-card\") return handleLifeHome(read);"
       },
       {
-        "line": 4568,
+        "line": 4579,
         "text": "  if (target === \"/api/life/goals\") return handleLifeGoals(read);"
       },
       {
-        "line": 4576,
+        "line": 4587,
         "text": "export async function handleObservabilityRequest(req: Request): Promise<Response | null> {"
       },
       {
-        "line": 4615,
+        "line": 4626,
         "text": "      return Response.json({error: \"Knowledge reads require a same-origin request\"}, {status: 403, headers})"
       },
       {
-        "line": 4629,
+        "line": 4640,
         "text": "    if (noteParams) return handlePutKnowledgeNote(req, noteParams.domain, noteParams.slug)"
       },
       {
-        "line": 4691,
+        "line": 4702,
         "text": "    if (knoteParams) return handleGetKnowledgeNote(knoteParams.domain, knoteParams.slug)"
       }
     ],
@@ -4329,7 +4345,7 @@
     "entry_point": "declared_entry",
     "behavioral_status": "requires_source_policy_or_existing_test_evidence",
     "source_policy": "contains_governed_api_reference",
-    "source_sha256": "e2feae5083adad7d1b3c8a82eb433436b13baca06fa167506f2049ef2b5f8925"
+    "source_sha256": "6fe989e05cc2d3231bb48e65580f75c117a07b7dab910c05c3555aa69854840d"
   },
   {
     "path": "LIFEOS/PULSE/Observability/src/app/assistant/page.tsx",

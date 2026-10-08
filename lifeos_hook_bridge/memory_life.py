@@ -8,7 +8,7 @@ from urllib.parse import urlsplit
 from .memory_access import MemoryUnavailable
 from .memory_sources import authorize, read_markdown, CORPUS_LIMIT, _source_path
 
-ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/observability/life-card'})
+ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/observability/life-card'})
 
 
 def request_target(value):
@@ -44,6 +44,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if target == '/api/life/health':
+        from .memory_life_health import view as health_view
+        return health_view(memory, scope, check_current=check_current)
     if check_current is not None: check_current()
     authorize(scope)
     if not scope.principal:

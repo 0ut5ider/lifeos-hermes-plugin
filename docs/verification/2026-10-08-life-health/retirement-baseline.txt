@@ -1,0 +1,76 @@
+test_admitted_health_fields_and_lab_metadata_match_native (test_memory_life_health.MemoryLifeHealthTests.test_admitted_health_fields_and_lab_metadata_match_native) ... ok
+test_anonymous_health_request_cannot_read_personal_sources (test_memory_life_health.MemoryLifeHealthTests.test_anonymous_health_request_cannot_read_personal_sources) ... FAIL
+test_connector_loss_cannot_restore_raw_health_reads (test_memory_life_health.MemoryLifeHealthTests.test_connector_loss_cannot_restore_raw_health_reads) ... FAIL
+test_forgotten_health_note_cannot_return_from_the_retained_file (test_memory_life_health.MemoryLifeHealthTests.test_forgotten_health_note_cannot_return_from_the_retained_file) ... FAIL
+test_hardlinked_health_note_refuses (test_memory_life_health.MemoryLifeHealthTests.test_hardlinked_health_note_refuses) ... FAIL
+test_private_markdown_does_not_publish_body_heading_or_dynamic_filename (test_memory_life_health.MemoryLifeHealthTests.test_private_markdown_does_not_publish_body_heading_or_dynamic_filename) ... FAIL
+test_redirected_health_directory_refuses_external_data (test_memory_life_health.MemoryLifeHealthTests.test_redirected_health_directory_refuses_external_data) ... FAIL
+test_revoked_account_cannot_read_health_sources (test_memory_life_health.MemoryLifeHealthTests.test_revoked_account_cannot_read_health_sources) ... FAIL
+
+======================================================================
+FAIL: test_anonymous_health_request_cannot_read_personal_sources (test_memory_life_health.MemoryLifeHealthTests.test_anonymous_health_request_cannot_read_personal_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 40, in test_anonymous_health_request_cannot_read_personal_sources
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"files":[{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["last_updated: 2026-10-08","SyntheticHealthCondition current note"]}],"conditions":[{"heading":"last_updated: 2026-10-08","body":"last_updated: 2026-10-08"},{"heading":"SyntheticHealthCondition current note","body":"SyntheticHealthCondition current note"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":"2026-10-08","source":"content"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}
+
+======================================================================
+FAIL: test_connector_loss_cannot_restore_raw_health_reads (test_memory_life_health.MemoryLifeHealthTests.test_connector_loss_cannot_restore_raw_health_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 86, in test_connector_loss_cannot_restore_raw_health_reads
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"files":[{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["last_updated: 2026-10-08","SyntheticHealthCondition current note"]}],"conditions":[{"heading":"last_updated: 2026-10-08","body":"last_updated: 2026-10-08"},{"heading":"SyntheticHealthCondition current note","body":"SyntheticHealthCondition current note"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":"2026-10-08","source":"content"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}
+
+======================================================================
+FAIL: test_forgotten_health_note_cannot_return_from_the_retained_file (test_memory_life_health.MemoryLifeHealthTests.test_forgotten_health_note_cannot_return_from_the_retained_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 77, in test_forgotten_health_note_cannot_return_from_the_retained_file
+    self.assertNotIn('SyntheticHealthCondition', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticHealthCondition' unexpectedly found in '{"files":[{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["last_updated: 2026-10-08","SyntheticHealthCondition current note"]}],"conditions":[{"heading":"last_updated: 2026-10-08","body":"last_updated: 2026-10-08"},{"heading":"SyntheticHealthCondition current note","body":"SyntheticHealthCondition current note"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":"2026-10-08","source":"content"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}'
+
+======================================================================
+FAIL: test_hardlinked_health_note_refuses (test_memory_life_health.MemoryLifeHealthTests.test_hardlinked_health_note_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 106, in test_hardlinked_health_note_refuses
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"files":[{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["last_updated: 2026-10-08","SyntheticHealthCondition current note"]}],"conditions":[{"heading":"last_updated: 2026-10-08","body":"last_updated: 2026-10-08"},{"heading":"SyntheticHealthCondition current note","body":"SyntheticHealthCondition current note"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":"2026-10-08","source":"content"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}
+
+======================================================================
+FAIL: test_private_markdown_does_not_publish_body_heading_or_dynamic_filename (test_memory_life_health.MemoryLifeHealthTests.test_private_markdown_does_not_publish_body_heading_or_dynamic_filename)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 61, in test_private_markdown_does_not_publish_body_heading_or_dynamic_filename
+    self.assertNotIn('SyntheticPrivateHealth', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticPrivateHealth' unexpectedly found in '{"files":[{"name":"SyntheticPrivateHealthFilename","sections":["<private>Synthetic private file</private>"]},{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["<private>### Synthetic health heading SyntheticPrivateHealthCondition note</p..."]}],"conditions":[{"heading":"<private>### Synthetic health heading SyntheticPrivateHealthCondition note</p...","body":"<private>### Synthetic health heading SyntheticPrivateHealthCondition note</private>"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":null,"source":"unknown"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}'
+
+======================================================================
+FAIL: test_redirected_health_directory_refuses_external_data (test_memory_life_health.MemoryLifeHealthTests.test_redirected_health_directory_refuses_external_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 97, in test_redirected_health_directory_refuses_external_data
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"files":[{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["last_updated: 2026-10-08","SyntheticHealthCondition current note"]}],"conditions":[{"heading":"last_updated: 2026-10-08","body":"last_updated: 2026-10-08"},{"heading":"SyntheticHealthCondition current note","body":"SyntheticHealthCondition current note"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":"2026-10-08","source":"content"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}
+
+======================================================================
+FAIL: test_revoked_account_cannot_read_health_sources (test_memory_life_health.MemoryLifeHealthTests.test_revoked_account_cannot_read_health_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 50, in test_revoked_account_cannot_read_health_sources
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"files":[{"name":"FITNESS","sections":["Synthetic fitness note"]},{"name":"CONDITIONS","sections":["last_updated: 2026-10-08","SyntheticHealthCondition current note"]}],"conditions":[{"heading":"last_updated: 2026-10-08","body":"last_updated: 2026-10-08"},{"heading":"SyntheticHealthCondition current note","body":"SyntheticHealthCondition current note"}],"medications":[],"supplements":[],"fitness":[{"heading":"Synthetic fitness note","body":"Synthetic fitness note"}],"nutrition":[],"routine":[],"providers":[],"metrics":[],"history":[],"labReports":["lab_results_2026-10-01.pdf"],"freshness":{"dataDate":"2026-10-01","label":"Oct 1, 2026","daysOld":7,"tier":"fresh","perFile":[{"name":"lab_results_2026-10-01.pdf","date":"2026-10-01","source":"state"},{"name":"CONDITIONS.md","date":"2026-10-08","source":"content"},{"name":"MEDICATIONS.md","date":null,"source":"unknown"},{"name":"SUPPLEMENTS.md","date":null,"source":"unknown"},{"name":"FITNESS.md","date":null,"source":"unknown"},{"name":"NUTRITION.md","date":null,"source":"unknown"},{"name":"METRICS.md","date":null,"source":"unknown"},{"name":"HISTORY.md","date":null,"source":"unknown"}]}}
+
+----------------------------------------------------------------------
+Ran 8 tests in 8.686s
+
+FAILED (failures=7)

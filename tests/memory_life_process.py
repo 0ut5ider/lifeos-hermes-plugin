@@ -10,6 +10,7 @@ from lifeos_hook_bridge.memory_service import MemoryConfiguration
 
 configuration = MemoryConfiguration(Path(sys.argv[1]))
 mode = sys.argv[2]
+target = sys.argv[3] if len(sys.argv) > 3 else '/api/life/home'
 root = Path(configuration.load()['root'])
 original = NativeMemory._native
 rendered = False
@@ -18,12 +19,18 @@ rendered = False
 def observe(memory, action, **arguments):
     global rendered
     result = original(memory, action, **arguments)
-    if action == 'life_view':
+    if action in ('life_view', 'life_health_view'):
         rendered = True
         if mode == 'authority': configuration.update(lambda value: value['accounts'].clear())
         elif mode == 'source':
-            path = root / 'LIFEOS/USER/TELOS/GOALS.md'
-            path.write_text(path.read_text().replace('SyntheticLifeCurrentGoal', 'SyntheticLifeChangedGoal'))
+            if target == '/api/life/health':
+                path = root / 'LIFEOS/USER/HEALTH/CONDITIONS.md'
+                path.write_text(path.read_text().replace('SyntheticHealthCondition', 'SyntheticHealthChangedCondition'))
+            else:
+                path = root / 'LIFEOS/USER/TELOS/GOALS.md'
+                path.write_text(path.read_text().replace('SyntheticLifeCurrentGoal', 'SyntheticLifeChangedGoal'))
+        elif mode == 'entry':
+            (root / 'LIFEOS/USER/HEALTH/lab_results_2026-10-03.pdf').write_bytes(b'%PDF-Synthetic changed lab metadata')
     return result
 
 
@@ -31,7 +38,7 @@ NativeMemory._native = observe
 preferences = MemoryPreferences(configuration.path, root, Path(sys.executable),
     Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge/memory_rpc.py')
 try:
-    result = preferences.life_response('/api/life/home', account='dashboard:basic:synthetic-owner')
+    result = preferences.life_response(target, account='dashboard:basic:synthetic-owner')
 except (PermissionError, RuntimeError, OSError, ValueError):
     print(json.dumps({'rendered': rendered, 'withheld': True}))
 else:
