@@ -1,0 +1,14 @@
+F.
+======================================================================
+FAIL: test_unregistered_knowledge_filename_requires_source_admission (test_memory_tab_freshness.MemoryTabFreshnessTests.test_unregistered_knowledge_filename_requires_source_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_tab_freshness.py", line 221, in test_unregistered_knowledge_filename_requires_source_admission
+    self.assertNotIn('SyntheticUnregisteredIdeaClaim',response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticUnregisteredIdeaClaim' unexpectedly found in '{"tabId": "synapse", "dataDate": "2026-10-08", "label": "1 of 2 sources dated", "daysOld": 0, "tier": "fresh", "perFile": [{"name": "KNOWLEDGE/Ideas/SyntheticUnregisteredIdeaClaim.md", "date": "2026-10-08", "source": "content"}, {"name": "_X/State/", "date": null, "source": "unknown"}]}'
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.931s
+
+FAILED (failures=1)

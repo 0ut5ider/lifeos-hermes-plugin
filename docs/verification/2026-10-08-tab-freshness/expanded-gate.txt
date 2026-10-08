@@ -1,0 +1,15 @@
+...F.......
+======================================================================
+FAIL: test_directory_with_qualifying_nonfile_child_preserves_native_fallback (test_memory_tab_freshness.MemoryTabFreshnessTests.test_directory_with_qualifying_nonfile_child_preserves_native_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_tab_freshness.py", line 105, in test_directory_with_qualifying_nonfile_child_preserves_native_fallback
+    self.assertEqual({'status':response.status_code,'body':response.json()},self.original('/api/tab-freshness?tab=telos'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'sta[45 chars]te': None, 'label': 'no sources on disk', 'day[354 chars]'}]}} != {'sta[45 chars]te': '2026-10-08', 'label': '1 of 5 sources da[365 chars]'}]}}
+Diff is 1421 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 11 tests in 16.080s
+
+FAILED (failures=1)

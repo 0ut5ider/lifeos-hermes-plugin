@@ -53,6 +53,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
             'memory.ts': ('handleRequest', 'handleRequest', ''),
             'hypotheses.ts': ('handleRequest', 'handleRequest', ''),
             'upgrades.ts': ('handleRequest', 'handleRequest', ''),
+            'tab-freshness.ts': ('handleRequest', 'handleRequest', ''),
             'hermes.ts': ('handleRequest', 'handleRequest', ''),
         }[self.native_module_name()]
         program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+

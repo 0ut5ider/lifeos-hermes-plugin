@@ -1,0 +1,46 @@
+FF.FF
+======================================================================
+FAIL: test_anonymous_metadata_cannot_borrow_ambient_owner (test_memory_tab_freshness.MemoryTabFreshnessTests.test_anonymous_metadata_cannot_borrow_ambient_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_tab_freshness.py", line 54, in test_anonymous_metadata_cannot_borrow_ambient_owner
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"tabId":"telos","dataDate":"2026-10-08","label":"1 of 5 sources dated","daysOld":0,"tier":"fresh","perFile":[{"name":"TELOS.md","date":"2026-10-08","source":"content"},{"name":"PRINCIPAL_TELOS.md","date":null,"source":"unknown"},{"name":"LIFEOS_STATE.json","date":null,"source":"unknown"},{"name":"CURRENT_STATE/","date":null,"source":"unknown"},{"name":"IDEAL_STATE/","date":null,"source":"unknown"}]}
+
+======================================================================
+FAIL: test_current_owner_does_not_receive_stale_cached_review_date (test_memory_tab_freshness.MemoryTabFreshnessTests.test_current_owner_does_not_receive_stale_cached_review_date)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_tab_freshness.py", line 72, in test_current_owner_does_not_receive_stale_cached_review_date
+    self.assertEqual(response.json()['perFile'][0]['date'],'2026-10-01')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2026-10-08' != '2026-10-01'
+- 2026-10-08
+?          ^
++ 2026-10-01
+?          ^
+
+
+======================================================================
+FAIL: test_private_source_does_not_publish_review_date (test_memory_tab_freshness.MemoryTabFreshnessTests.test_private_source_does_not_publish_review_date)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_tab_freshness.py", line 82, in test_private_source_does_not_publish_review_date
+    self.assertIsNone(response.json()['perFile'][0]['date'])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2026-10-08' is not None
+
+======================================================================
+FAIL: test_revoked_owner_cannot_use_cached_metadata (test_memory_tab_freshness.MemoryTabFreshnessTests.test_revoked_owner_cannot_use_cached_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_tab_freshness.py", line 63, in test_revoked_owner_cannot_use_cached_metadata
+    self.assertEqual(response.status_code,403,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"tabId":"telos","dataDate":"2026-10-08","label":"1 of 5 sources dated","daysOld":0,"tier":"fresh","perFile":[{"name":"TELOS.md","date":"2026-10-08","source":"content"},{"name":"PRINCIPAL_TELOS.md","date":null,"source":"unknown"},{"name":"LIFEOS_STATE.json","date":null,"source":"unknown"},{"name":"CURRENT_STATE/","date":null,"source":"unknown"},{"name":"IDEAL_STATE/","date":null,"source":"unknown"}]}
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.505s
+
+FAILED (failures=4)

@@ -305,6 +305,11 @@ async def review_memory_upgrade(request: Request, account: str = Depends(_memory
     return JSONResponse(result['body'],status_code=result['status'],headers={**headers,'X-LifeOS-Memory-Installation':binding})
 
 
+@router.get('/memory/tab_freshness')
+def get_memory_tab_freshness(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('tab_freshness', request, account)
+
+
 @router.get('/memory/upgrades')
 def get_memory_upgrades(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('upgrades', request, account)
@@ -325,7 +330,7 @@ def get_memory_knowledge(request: Request, account: str = Depends(_memory_accoun
     return _memory_source_read('knowledge', request, account)
 
 
-def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades'], request: Request, account: str):
+def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness'], request: Request, account: str):
     preferences = _memory_preferences()
     module = {'hypotheses':'memory_hypothesis_queue','upgrades':'memory_upgrade_queue'}.get(view, 'memory_' + view)
     request_target = importlib.import_module('lifeos_memory_settings.' + module).request_target
@@ -340,7 +345,7 @@ def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrad
         return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
     try:
         operation = {'wiki': preferences.wiki_response, 'knowledge': preferences.knowledge_response,
-                     'hypotheses': preferences.hypothesis_response, 'upgrades': preferences.upgrade_response}[view]
+                     'hypotheses': preferences.hypothesis_response, 'upgrades': preferences.upgrade_response, 'tab_freshness': preferences.tab_freshness_response}[view]
         result, binding = operation(target, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)

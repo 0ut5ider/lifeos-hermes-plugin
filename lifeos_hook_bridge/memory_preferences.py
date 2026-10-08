@@ -288,6 +288,15 @@ class MemoryPreferences:
         return self._response(config, review(NativeMemory(self.root), self._owner_scope(config),
             target=target, note=note, request_id=request_id, check_current=check_current), account=account)
 
+    def tab_freshness_response(self, target, *, account=None):
+        from .memory_tab_freshness import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during tab freshness rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
     def upgrade_response(self, target, *, account=None):
         from .memory_upgrade_queue import view
         config = self._configuration(account=account)

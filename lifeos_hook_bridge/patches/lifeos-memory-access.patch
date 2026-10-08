@@ -8567,3 +8567,109 @@ index 87b9b83..6bb185a 100644
    if (pathname === "/api/upgrades" && req.method === "GET") {
      // Opportunistic TTL sweep keeps the queue honest without a cron.
      try { expireSweep(); } catch {}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/tab-freshness.ts b/LifeOS/install/LIFEOS/PULSE/modules/tab-freshness.ts
+index e0c593b..a88042e 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/tab-freshness.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/tab-freshness.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Reports per-tab source dates through the native freshness registry and renderer.
++// ABOUTME: Relays managed reads to the authenticated owner and accepts only admitted source metadata.
+ /**
+  * Pulse Tab Freshness Module
+  *
+@@ -29,6 +31,7 @@
+ import { existsSync, statSync, readdirSync, readFileSync } from "fs"
+ import { join } from "path"
+ import { homedir } from "node:os";
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()
+ const LIFEOS_DIR = join(HOME, ".claude", "LIFEOS")
+@@ -154,6 +157,7 @@ const CACHE_TTL_MS = 60_000
+ // ── Helpers ──
+ 
+ interface ResolvedSource {
++  content?: string | null
+   name: string
+   path: string
+   exists: boolean
+@@ -200,8 +204,11 @@ function resolveSpec(spec: SourceSpec): ResolvedSource[] {
+ // This lets the freshness pill prefer the principal-curated date over a hot
+ // auto-generated mtime where available.
+ function readFrontmatterDate(filePath: string): Date | null {
++  try { return frontmatterDate(readFileSync(filePath, "utf-8")) } catch { return null }
++}
++
++function frontmatterDate(content: string): Date | null {
+   try {
+-    const content = readFileSync(filePath, "utf-8")
+     if (!content.startsWith("---")) return null
+     const end = content.indexOf("\n---", 3)
+     if (end < 0) return null
+@@ -248,7 +255,7 @@ interface FreshnessPayload {
+   perFile: FreshnessFilePayload[]
+ }
+ 
+-function computeTabFreshness(tabId: string): FreshnessPayload {
++function computeTabFreshness(tabId: string, supplied?: ResolvedSource[]): FreshnessPayload {
+   const specs = REGISTRY[tabId]
+   if (!specs) {
+     return {
+@@ -260,7 +267,7 @@ function computeTabFreshness(tabId: string): FreshnessPayload {
+       perFile: [],
+     }
+   }
+-  const resolved = specs.flatMap((s) => resolveSpec(s))
++  const resolved = supplied ?? specs.flatMap((s) => resolveSpec(s))
+   const perFile: FreshnessFilePayload[] = []
+   let mostRecent: Date | null = null
+   let anyExist = false
+@@ -271,7 +278,8 @@ function computeTabFreshness(tabId: string): FreshnessPayload {
+     }
+     anyExist = true
+     // Prefer frontmatter date for .md files
+-    const fmDate = r.path.endsWith(".md") ? readFrontmatterDate(r.path) : null
++    const fmDate = r.path.endsWith(".md") ? (r.content === undefined
++      ? readFrontmatterDate(r.path) : frontmatterDate(r.content ?? "")) : null
+     const effective = fmDate ?? r.mtime
+     perFile.push({
+       name: r.name,
+@@ -295,6 +303,19 @@ function computeTabFreshness(tabId: string): FreshnessPayload {
+   }
+ }
+ 
++export function tabFreshnessSpecifications(tabId: string): SourceSpec[] {
++  return (REGISTRY[tabId] ?? []).map(specification => ({...specification}))
++}
++
++export function renderTabFreshness(tabId: string, sources: {
++  name: string; path: string; exists: boolean; mtime: string | null; content: string | null;
++}[]): FreshnessPayload {
++  if (!tabId) return {tabId: "", dataDate: null, label: "missing ?tab= query parameter",
++    daysOld: null, tier: "unknown", perFile: []}
++  return computeTabFreshness(tabId, sources.map(source => ({...source,
++    mtime: source.mtime === null ? null : new Date(source.mtime)})))
++}
++
+ // ── Lifecycle ──
+ 
+ export async function start(): Promise<void> {
+@@ -331,6 +352,18 @@ export function health(): { status: string; details?: Record<string, unknown> }
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+   if (pathname !== "/api/tab-freshness") return null
++  if (hasManagedMemoryHTTP()) {
++    const headers = {"content-type": "application/json", "cache-control": "no-store"}
++    if (req.method !== "GET") return new Response(JSON.stringify({error: "Choose an authenticated tab read"}), {status: 405, headers})
++    try {
++      const url = new URL(req.url)
++      const origin = req.headers.get("origin")
++      if (origin && origin !== url.origin) return new Response(JSON.stringify({error: "Tab freshness requires the current origin"}), {status: 403, headers})
++      return memoryHTTPResponse(req, "tab_freshness", pathname + url.search)
++    } catch {
++      return new Response(JSON.stringify({error: "Authenticated tab freshness is unavailable"}), {status: 503, headers})
++    }
++  }
+   const url = new URL(req.url)
+   const tabId = (url.searchParams.get("tab") ?? "").trim().toLowerCase()
+   if (!tabId) {
