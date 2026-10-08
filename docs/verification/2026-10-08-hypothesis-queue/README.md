@@ -1,0 +1,15 @@
+# Authenticated native hypothesis queue reads
+
+Date: 2026-10-08. This candidate remains staged. The checks use synthetic source notes, a real Hermes authentication provider, and separate native and dashboard HTTP listeners.
+
+The [verified baseline](verified-baseline.txt) compares list and detail fields with the pinned original and passes that comparison. It fails the anonymous refusal check: the original native module returns the synthetic claim with HTTP 200. The [first baseline](baseline.txt) also retains a missing control selector failure; the verified repeat supplies that selector.
+
+Managed native list and detail requests relay to the fixed local dashboard. Each request uses its own authenticated session credentials. The dashboard checks the installation owner binding. The service supplies admitted retained hypotheses to the native parser and renderer. It checks current source data, retirement policy, and owner authority after rendering. No ambient owner context authorizes an HTTP request. Responses use `Cache-Control: no-store`. Connector loss cannot select the raw reader while managed mode remains configured.
+
+The [final focused gate](final-gate.txt) passes ten cases. It checks paired original list and detail fields, anonymous refusal, account revocation, cross-origin refusal, invalid bearer refusal despite valid cookies, connector loss, excluded retired text, empty and nonpending queues, bounded routes, and actual authority and source changes after native rendering. These are real authenticated requests and native subprocesses. The retained note remains on disk after its text becomes unavailable through the queue.
+
+The [adjacent gate](adjacent-gate.txt) runs 82 tests. Its first run fails because the prepared tree lacks Pulse dependencies and the native control selector. The [dependency receipt](dependency-selection.json) verifies identical package manifests and frozen locks before reusing the installed dependencies. The [corrected groups](adjacent-corrected.txt) run 38 tests and leave two process tests failing because a relative Python path omits the product package. The [process repeat](process-import-repeat.txt) supplies the absolute product and test paths and passes both tests. Across these repeats, every one of the 82 cases has a passing result. Raw failed runs remain visible.
+
+Read routes accept the native generated ASCII slug form and refuse query parameters, encoded separators, and action selectors. Native parsing preserves the original field values for the selected admitted fixtures. The [source receipt](source-identity.json) records product and native module hashes. Both patch copies have identical bytes.
+
+Managed HTTP mutation requests currently refuse rather than publish raw files. Graduation, rejection, healing fixture promotion, the combined upgrades queue, and exported direct helper callers remain open work. The read gate does not complete those effects or establish installed acceptance. Fresh-store ownership remains disabled until the remaining publication and caller gates pass.

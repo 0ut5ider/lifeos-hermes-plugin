@@ -266,6 +266,16 @@ class MemoryPreferences:
         scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
         return approve(NativeMemory(self.root), scope, **request, check_current=check_current)
 
+    def hypothesis_response(self, target: str, *, account: str | None = None):
+        from .memory_hypothesis_queue import view
+        from .memory_http import installation_binding
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during hypothesis rendering')
+        return (view(NativeMemory(self.root), self._owner_scope(config), target, check_current=check_current),
+                installation_binding(config, self.configuration.path))
+
     def wiki_response(self, target: str, *, account: str | None = None):
         from .memory_wiki import view
         from .memory_http import installation_binding

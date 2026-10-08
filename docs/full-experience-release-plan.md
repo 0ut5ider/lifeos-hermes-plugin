@@ -18,6 +18,8 @@ The [staged decision gate](verification/2026-10-08-staging-writers/README.md) pa
 
 The [SessionEnd Knowledge conformance gate](verification/2026-10-08-knowledge-conformance/README.md) passes 14 focused tests and 87 adjacent tests. It preserves native diagnostics for admitted sources and journals finding publication. The [shared event publication gate](verification/2026-10-08-event-publication/README.md) passes 12 focused cases, including a native emitter that waits for finding publication. Other raw writers and remaining caller coverage stay open.
 
+The [native hypothesis queue read gate](verification/2026-10-08-hypothesis-queue/README.md) passes ten focused cases through real authenticated HTTP and native rendering. Review mutations, combined upgrades queue admission, and direct helper callers remain open.
+
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.
 
 The [outbound audience gate](verification/2026-10-08-discord-delivery/README.md) passes 168 tests across actual SDK and HTTP controls, native unit controls, and installation checks. The private channel mode requires a current policy grant for every content write. Live private-channel acceptance remains open.

@@ -1,0 +1,16 @@
+test_anonymous_queue_and_detail_do_not_borrow_ambient_owner (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_anonymous_queue_and_detail_do_not_borrow_ambient_owner) ... FAIL
+test_native_queue_and_detail_fields_match_the_pinned_original (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_native_queue_and_detail_fields_match_the_pinned_original) ... ok
+
+======================================================================
+FAIL: test_anonymous_queue_and_detail_do_not_borrow_ambient_owner (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_anonymous_queue_and_detail_do_not_borrow_ambient_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_relay.py", line 57, in test_anonymous_queue_and_detail_do_not_borrow_ambient_owner
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"hypotheses":[{"slug":"synthetic-hypothesis","claim":"SyntheticHypothesisCurrentMarker","confidence":0.7,"target_frame":"new","evidence_count":1,"generated":"2026-10-08","expires_in_days":23,"source":"ratings","enforcement_surface":"context","has_patch":false,"pending_slug":null}]}
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.814s
+
+FAILED (failures=1)

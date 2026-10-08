@@ -1,0 +1,647 @@
+test_anonymous_queue_and_detail_do_not_borrow_ambient_owner (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_anonymous_queue_and_detail_do_not_borrow_ambient_owner) ... ok
+test_authenticated_queue_and_detail_match_original_native_rendering (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_authenticated_queue_and_detail_match_original_native_rendering) ... ok
+test_authority_and_sources_change_after_actual_render_withhold_the_result (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_authority_and_sources_change_after_actual_render_withhold_the_result) ... ok
+test_connector_loss_never_uses_raw_notes (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_connector_loss_never_uses_raw_notes) ... ok
+test_cross_origin_and_invalid_bearer_refuse_despite_valid_cookies (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_cross_origin_and_invalid_bearer_refuse_despite_valid_cookies) ... ok
+test_empty_and_nonpending_notes_preserve_native_queue_contents (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_empty_and_nonpending_notes_preserve_native_queue_contents) ... ok
+test_forgotten_text_leaves_retained_note_and_disappears_from_queue (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_forgotten_text_leaves_retained_note_and_disappears_from_queue) ... ok
+test_live_account_revocation_withholds_queue_and_detail (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_live_account_revocation_withholds_queue_and_detail) ... ok
+test_native_queue_and_detail_fields_match_the_pinned_original (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_native_queue_and_detail_fields_match_the_pinned_original) ... ok
+test_query_and_encoded_path_cannot_select_another_source (test_memory_hypothesis_relay.MemoryHypothesisRelayTests.test_query_and_encoded_path_cannot_select_another_source) ... ok
+test_destination_is_literal_loopback_and_has_no_redirect_inputs (test_memory_http.MemoryHTTPTests.test_destination_is_literal_loopback_and_has_no_redirect_inputs) ... ok
+test_fixed_prefix_and_supported_session_credentials_only (test_memory_http.MemoryHTTPTests.test_fixed_prefix_and_supported_session_credentials_only) ... ok
+test_incomplete_http_body_returns_unavailable (test_memory_http.MemoryHTTPTests.test_incomplete_http_body_returns_unavailable) ... ok
+test_invalid_content_and_oversized_response_refuse (test_memory_http.MemoryHTTPTests.test_invalid_content_and_oversized_response_refuse) ... ok
+test_invalid_wiki_targets_never_receive_forwarded_credentials (test_memory_http.MemoryHTTPTests.test_invalid_wiki_targets_never_receive_forwarded_credentials) ... ok
+test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found (test_memory_http.MemoryHTTPTests.test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found) ... ok
+test_login_link_uses_configured_browser_address_instead_of_loopback (test_memory_http.MemoryHTTPTests.test_login_link_uses_configured_browser_address_instead_of_loopback) ... ok
+test_no_credentials_or_invalid_arguments_never_contact_backend (test_memory_http.MemoryHTTPTests.test_no_credentials_or_invalid_arguments_never_contact_backend) ... ok
+test_redirect_does_not_receive_forwarded_credentials (test_memory_http.MemoryHTTPTests.test_redirect_does_not_receive_forwarded_credentials) ... ok
+test_remount_uses_fixed_authenticated_post_without_caller_arguments (test_memory_http.MemoryHTTPTests.test_remount_uses_fixed_authenticated_post_without_caller_arguments) ... ok
+test_upstream_server_failures_are_sanitized (test_memory_http.MemoryHTTPTests.test_upstream_server_failures_are_sanitized) ... ok
+test_wiki_not_found_responses_require_the_current_installation_binding (test_memory_http.MemoryHTTPTests.test_wiki_not_found_responses_require_the_current_installation_binding) ... ok
+test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target (test_memory_http.MemoryHTTPTests.test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target) ... ok
+test_wrong_local_installation_cannot_supply_a_successful_snapshot (test_memory_http.MemoryHTTPTests.test_wrong_local_installation_cannot_supply_a_successful_snapshot) ... ok
+test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) ... ok
+test_backend_shutdown_never_selects_raw_reader (test_memory_pulse_relay.MemoryPulseRelayTests.test_backend_shutdown_never_selects_raw_reader) ... ok
+test_changed_installation_binding_refuses_on_the_existing_connection (test_memory_pulse_relay.MemoryPulseRelayTests.test_changed_installation_binding_refuses_on_the_existing_connection) ... ok
+test_cross_origin_read_and_unavailable_configuration_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_cross_origin_read_and_unavailable_configuration_refuse) ... ok
+test_invalid_bearer_does_not_borrow_valid_cookies_and_logout_stops_reads (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_bearer_does_not_borrow_valid_cookies_and_logout_stops_reads) ... ok
+test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) ... ok
+test_managed_marker_survives_restart_after_connector_loss (test_memory_pulse_relay.MemoryPulseRelayTests.test_managed_marker_survives_restart_after_connector_loss) ... ok
+test_missing_connector_stays_managed_and_never_reads_raw_memory (test_memory_pulse_relay.MemoryPulseRelayTests.test_missing_connector_stays_managed_and_never_reads_raw_memory) ... ok
+test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) ... ok
+test_owner_and_anonymous_requests_do_not_share_authority (test_memory_pulse_relay.MemoryPulseRelayTests.test_owner_and_anonymous_requests_do_not_share_authority) ... ok
+test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) ... ok
+test_unmanaged_native_http_preserves_snapshot_fields (test_memory_pulse_relay.MemoryPulseRelayTests.test_unmanaged_native_http_preserves_snapshot_fields) ... ok
+test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) ... ERROR
+test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) ... FAIL
+test_authenticated_documentation_excludes_forget_in_body_search_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_documentation_excludes_forget_in_body_search_and_graph) ... ERROR
+test_authenticated_documentation_excludes_forget_in_body_search_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_documentation_excludes_forget_in_body_search_and_graph) ... FAIL
+test_authenticated_native_index_search_graph_and_body_use_registered_current_notes (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_native_index_search_graph_and_body_use_registered_current_notes) ... ERROR
+test_authenticated_native_index_search_graph_and_body_use_registered_current_notes (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_native_index_search_graph_and_body_use_registered_current_notes) ... FAIL
+test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback) ... ERROR
+test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback) ... FAIL
+test_changed_local_installation_cannot_supply_a_wiki_response (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_local_installation_cannot_supply_a_wiki_response) ... ERROR
+test_changed_local_installation_cannot_supply_a_wiki_response (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_local_installation_cannot_supply_a_wiki_response) ... FAIL
+test_changed_registered_source_is_unavailable_instead_of_serving_raw_content (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_registered_source_is_unavailable_instead_of_serving_raw_content) ... ERROR
+test_changed_registered_source_is_unavailable_instead_of_serving_raw_content (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_registered_source_is_unavailable_instead_of_serving_raw_content) ... FAIL
+test_correction_and_forget_replace_live_body_search_index_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_correction_and_forget_replace_live_body_search_index_and_graph) ... ERROR
+test_correction_and_forget_replace_live_body_search_index_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_correction_and_forget_replace_live_body_search_index_and_graph) ... FAIL
+test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies) ... ERROR
+test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies) ... FAIL
+test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view) ... ERROR
+test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view) ... FAIL
+test_invalid_connector_permissions_do_not_select_the_raw_native_reader (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_connector_permissions_do_not_select_the_raw_native_reader) ... ERROR
+test_invalid_connector_permissions_do_not_select_the_raw_native_reader (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_connector_permissions_do_not_select_the_raw_native_reader) ... FAIL
+test_live_account_revocation_rechecks_every_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_account_revocation_rechecks_every_wiki_view) ... ERROR
+test_live_account_revocation_rechecks_every_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_account_revocation_rechecks_every_wiki_view) ... FAIL
+test_live_connector_loss_does_not_select_raw_wiki_or_existing_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_connector_loss_does_not_select_raw_wiki_or_existing_index) ... ERROR
+test_live_connector_loss_does_not_select_raw_wiki_or_existing_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_connector_loss_does_not_select_raw_wiki_or_existing_index) ... FAIL
+test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths (test_memory_wiki_relay.MemoryWikiRelayTests.test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths) ... ERROR
+test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths (test_memory_wiki_relay.MemoryWikiRelayTests.test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths) ... FAIL
+test_owner_and_anonymous_connections_do_not_share_the_wiki_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_owner_and_anonymous_connections_do_not_share_the_wiki_index) ... ERROR
+test_owner_and_anonymous_connections_do_not_share_the_wiki_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_owner_and_anonymous_connections_do_not_share_the_wiki_index) ... FAIL
+test_persistent_marker_refuses_raw_wiki_after_restart_without_connector (test_memory_wiki_relay.MemoryWikiRelayTests.test_persistent_marker_refuses_raw_wiki_after_restart_without_connector) ... ERROR
+test_persistent_marker_refuses_raw_wiki_after_restart_without_connector (test_memory_wiki_relay.MemoryWikiRelayTests.test_persistent_marker_refuses_raw_wiki_after_restart_without_connector) ... FAIL
+test_unavailable_dashboard_does_not_reuse_native_owner_data (test_memory_wiki_relay.MemoryWikiRelayTests.test_unavailable_dashboard_does_not_reuse_native_owner_data) ... ERROR
+test_unavailable_dashboard_does_not_reuse_native_owner_data (test_memory_wiki_relay.MemoryWikiRelayTests.test_unavailable_dashboard_does_not_reuse_native_owner_data) ... FAIL
+test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory) ... ERROR
+test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory) ... FAIL
+test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata) ... ok
+test_authenticated_index_and_note_preserve_native_metadata_from_current_sources (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_authenticated_index_and_note_preserve_native_metadata_from_current_sources) ... ok
+test_correction_and_forget_replace_current_read_shapes_without_deleting_history (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_correction_and_forget_replace_current_read_shapes_without_deleting_history) ... ok
+test_cross_origin_and_query_parameters_cannot_select_another_source (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_cross_origin_and_query_parameters_cannot_select_another_source) ... ok
+test_direct_observability_graph_handler_cannot_reopen_raw_cache (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_direct_observability_graph_handler_cannot_reopen_raw_cache) ... ok
+test_managed_put_refuses_unreviewed_file_replacement (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_managed_put_refuses_unreviewed_file_replacement) ... ok
+test_revocation_and_connector_loss_never_return_raw_notes (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_revocation_and_connector_loss_never_return_raw_notes) ... ok
+test_unmanaged_native_control_keeps_raw_index_note_and_write_behavior (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_unmanaged_native_control_keeps_raw_index_note_and_write_behavior) ... ok
+test_derivation_cannot_remove_a_registered_fact_from_a_note (test_memory_hypotheses.MemoryHypothesisTests.test_derivation_cannot_remove_a_registered_fact_from_a_note) ... ok
+test_expired_live_slug_can_create_a_current_hypothesis (test_memory_hypotheses.MemoryHypothesisTests.test_expired_live_slug_can_create_a_current_hypothesis) ... ok
+test_grouped_publication_recovers_after_process_death (test_memory_hypotheses.MemoryHypothesisTests.test_grouped_publication_recovers_after_process_death) ... FAIL
+test_installed_identity_config_retains_native_name_precedence (test_memory_hypotheses.MemoryHypothesisTests.test_installed_identity_config_retains_native_name_precedence) ... ok
+test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) ... 
+  test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) (mode='source') ... FAIL
+  test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) (mode='destination') ... FAIL
+  test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) (mode='authority') ... FAIL
+test_missing_context_cannot_publish_notes_state_or_log (test_memory_hypotheses.MemoryHypothesisTests.test_missing_context_cannot_publish_notes_state_or_log) ... ok
+test_missing_native_settings_retains_original_default_identity (test_memory_hypotheses.MemoryHypothesisTests.test_missing_native_settings_retains_original_default_identity) ... ok
+test_native_note_and_state_publications_have_private_permissions (test_memory_hypotheses.MemoryHypothesisTests.test_native_note_and_state_publications_have_private_permissions) ... ok
+test_native_principal_name_and_private_settings_policy (test_memory_hypotheses.MemoryHypothesisTests.test_native_principal_name_and_private_settings_policy) ... ok
+test_observability_intake_matches_native_public_missing_harness_behavior (test_memory_hypotheses.MemoryHypothesisTests.test_observability_intake_matches_native_public_missing_harness_behavior) ... ERROR
+test_once_daily_publishes_one_stamp_and_keeps_later_run_unchanged (test_memory_hypotheses.MemoryHypothesisTests.test_once_daily_publishes_one_stamp_and_keeps_later_run_unchanged) ... ok
+test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) ... 
+  test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) (mode='create') ... ERROR
+  test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) (mode='update') ... ERROR
+  test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) (mode='expiry') ... ERROR
+test_owner_emits_native_hypothesis_and_updates_same_note (test_memory_hypotheses.MemoryHypothesisTests.test_owner_emits_native_hypothesis_and_updates_same_note) ... ok
+test_private_ratings_cannot_create_a_hypothesis (test_memory_hypotheses.MemoryHypothesisTests.test_private_ratings_cannot_create_a_hypothesis) ... ok
+test_read_only_owner_dry_run_creates_no_files (test_memory_hypotheses.MemoryHypothesisTests.test_read_only_owner_dry_run_creates_no_files) ... ok
+test_redirected_hypotheses_directory_cannot_write_foreign_notes (test_memory_hypotheses.MemoryHypothesisTests.test_redirected_hypotheses_directory_cannot_write_foreign_notes) ... ok
+test_retired_rating_pattern_cannot_return (test_memory_hypotheses.MemoryHypothesisTests.test_retired_rating_pattern_cannot_return) ... ok
+test_revoked_account_cannot_read_or_publish (test_memory_hypotheses.MemoryHypothesisTests.test_revoked_account_cannot_read_or_publish) ... ok
+test_same_request_returns_receipt_without_another_publication (test_memory_hypotheses.MemoryHypothesisTests.test_same_request_returns_receipt_without_another_publication) ... ok
+test_snake_case_identity_user_directory_cannot_redirect_reads (test_memory_hypotheses.MemoryHypothesisTests.test_snake_case_identity_user_directory_cannot_redirect_reads) ... ok
+test_unsupported_identity_path_section_returns_a_refusal (test_memory_hypotheses.MemoryHypothesisTests.test_unsupported_identity_path_section_returns_a_refusal) ... ok
+
+======================================================================
+ERROR: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_authenticated_documentation_excludes_forget_in_body_search_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_documentation_excludes_forget_in_body_search_and_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_authenticated_native_index_search_graph_and_body_use_registered_current_notes (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_native_index_search_graph_and_body_use_registered_current_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_changed_local_installation_cannot_supply_a_wiki_response (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_local_installation_cannot_supply_a_wiki_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_changed_registered_source_is_unavailable_instead_of_serving_raw_content (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_registered_source_is_unavailable_instead_of_serving_raw_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_correction_and_forget_replace_live_body_search_index_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_correction_and_forget_replace_live_body_search_index_and_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_invalid_connector_permissions_do_not_select_the_raw_native_reader (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_connector_permissions_do_not_select_the_raw_native_reader)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_live_account_revocation_rechecks_every_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_account_revocation_rechecks_every_wiki_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_live_connector_loss_does_not_select_raw_wiki_or_existing_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_connector_loss_does_not_select_raw_wiki_or_existing_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths (test_memory_wiki_relay.MemoryWikiRelayTests.test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_owner_and_anonymous_connections_do_not_share_the_wiki_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_owner_and_anonymous_connections_do_not_share_the_wiki_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_persistent_marker_refuses_raw_wiki_after_restart_without_connector (test_memory_wiki_relay.MemoryWikiRelayTests.test_persistent_marker_refuses_raw_wiki_after_restart_without_connector)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_unavailable_dashboard_does_not_reuse_native_owner_data (test_memory_wiki_relay.MemoryWikiRelayTests.test_unavailable_dashboard_does_not_reuse_native_owner_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 67, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_observability_intake_matches_native_public_missing_harness_behavior (test_memory_hypotheses.MemoryHypothesisTests.test_observability_intake_matches_native_public_missing_harness_behavior)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 195, in test_observability_intake_matches_native_public_missing_harness_behavior
+    original = self.call(original=True, inference=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 37, in call
+    source = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) if original else self.root
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) (mode='create')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 152, in test_original_native_creation_update_and_expiry_effects_match
+    original = self.call(original=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 37, in call
+    source = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) if original else self.root
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) (mode='update')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 152, in test_original_native_creation_update_and_expiry_effects_match
+    original = self.call(original=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 37, in call
+    source = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) if original else self.root
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_original_native_creation_update_and_expiry_effects_match (test_memory_hypotheses.MemoryHypothesisTests.test_original_native_creation_update_and_expiry_effects_match) (mode='expiry')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 152, in test_original_native_creation_update_and_expiry_effects_match
+    original = self.call(original=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 37, in call
+    source = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) if original else self.root
+                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_authenticated_documentation_excludes_forget_in_body_search_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_documentation_excludes_forget_in_body_search_and_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_authenticated_native_index_search_graph_and_body_use_registered_current_notes (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_native_index_search_graph_and_body_use_registered_current_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_changed_local_installation_cannot_supply_a_wiki_response (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_local_installation_cannot_supply_a_wiki_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_changed_registered_source_is_unavailable_instead_of_serving_raw_content (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_registered_source_is_unavailable_instead_of_serving_raw_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_correction_and_forget_replace_live_body_search_index_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_correction_and_forget_replace_live_body_search_index_and_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_invalid_connector_permissions_do_not_select_the_raw_native_reader (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_connector_permissions_do_not_select_the_raw_native_reader)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_live_account_revocation_rechecks_every_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_account_revocation_rechecks_every_wiki_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_live_connector_loss_does_not_select_raw_wiki_or_existing_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_connector_loss_does_not_select_raw_wiki_or_existing_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths (test_memory_wiki_relay.MemoryWikiRelayTests.test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_owner_and_anonymous_connections_do_not_share_the_wiki_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_owner_and_anonymous_connections_do_not_share_the_wiki_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_persistent_marker_refuses_raw_wiki_after_restart_without_connector (test_memory_wiki_relay.MemoryWikiRelayTests.test_persistent_marker_refuses_raw_wiki_after_restart_without_connector)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_unavailable_dashboard_does_not_reuse_native_owner_data (test_memory_wiki_relay.MemoryWikiRelayTests.test_unavailable_dashboard_does_not_reuse_native_owner_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 84, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "error: Cannot find package 'minisearch' [154 chars]4)\n" != ''
+- error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+- 
+- Bun v1.3.14 (Linux x64)
+ : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-queue-final/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_grouped_publication_recovers_after_process_death (test_memory_hypotheses.MemoryHypothesisTests.test_grouped_publication_recovers_after_process_death)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 226, in test_grouped_publication_recovers_after_process_death
+    result = self.process('interrupt')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 204, in process
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Traceback (most recent call last):\n  Fil[232 chars]\'\n' != ''
+- Traceback (most recent call last):
+-   File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py", line 8, in <module>
+-     from lifeos_hook_bridge.memory_access import NativeMemory
+- ModuleNotFoundError: No module named 'lifeos_hook_bridge'
+
+
+======================================================================
+FAIL: test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 214, in test_later_source_authority_or_note_change_preserves_data
+    result = self.process(mode)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 204, in process
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Traceback (most recent call last):\n  Fil[232 chars]\'\n' != ''
+- Traceback (most recent call last):
+-   File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py", line 8, in <module>
+-     from lifeos_hook_bridge.memory_access import NativeMemory
+- ModuleNotFoundError: No module named 'lifeos_hook_bridge'
+
+
+======================================================================
+FAIL: test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) (mode='destination')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 214, in test_later_source_authority_or_note_change_preserves_data
+    result = self.process(mode)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 204, in process
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Traceback (most recent call last):\n  Fil[232 chars]\'\n' != ''
+- Traceback (most recent call last):
+-   File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py", line 8, in <module>
+-     from lifeos_hook_bridge.memory_access import NativeMemory
+- ModuleNotFoundError: No module named 'lifeos_hook_bridge'
+
+
+======================================================================
+FAIL: test_later_source_authority_or_note_change_preserves_data (test_memory_hypotheses.MemoryHypothesisTests.test_later_source_authority_or_note_change_preserves_data) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 214, in test_later_source_authority_or_note_change_preserves_data
+    result = self.process(mode)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypotheses.py", line 204, in process
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Traceback (most recent call last):\n  Fil[232 chars]\'\n' != ''
+- Traceback (most recent call last):
+-   File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py", line 8, in <module>
+-     from lifeos_hook_bridge.memory_access import NativeMemory
+- ModuleNotFoundError: No module named 'lifeos_hook_bridge'
+
+
+----------------------------------------------------------------------
+Ran 82 tests in 90.245s
+
+FAILED (failures=21, errors=21)

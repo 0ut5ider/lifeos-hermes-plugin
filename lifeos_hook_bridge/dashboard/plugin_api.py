@@ -257,6 +257,11 @@ def review_memory(request: dict, account: str = Depends(_memory_account)):
     return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments'], account=account))
 
 
+@router.get('/memory/hypotheses')
+def get_memory_hypotheses(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('hypotheses', request, account)
+
+
 @router.get('/memory/wiki')
 def get_memory_wiki(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('wiki', request, account)
@@ -267,9 +272,10 @@ def get_memory_knowledge(request: Request, account: str = Depends(_memory_accoun
     return _memory_source_read('knowledge', request, account)
 
 
-def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, account: str):
+def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses'], request: Request, account: str):
     preferences = _memory_preferences()
-    request_target = importlib.import_module('lifeos_memory_settings.memory_' + view).request_target
+    module = 'memory_hypothesis_queue' if view == 'hypotheses' else 'memory_' + view
+    request_target = importlib.import_module('lifeos_memory_settings.' + module).request_target
     headers = {'Cache-Control': 'no-store'}
     try:
         if list(request.query_params.keys()) != ['target'] or len(request.query_params.getlist('target')) != 1:
@@ -280,7 +286,8 @@ def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, ac
     except ValueError:
         return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
     try:
-        operation = preferences.wiki_response if view == 'wiki' else preferences.knowledge_response
+        operation = {'wiki': preferences.wiki_response, 'knowledge': preferences.knowledge_response,
+                     'hypotheses': preferences.hypothesis_response}[view]
         result, binding = operation(target, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)

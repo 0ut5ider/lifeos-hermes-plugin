@@ -27,7 +27,13 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'session_harvest') {
+  if (input.action === 'hypothesis_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
+    if (!object(module) || typeof module.renderHypothesesView !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
+        || typeof input.target !== 'string') throw new Error('Native hypothesis views require declared current sources');
+    result = module.renderHypothesesView(input.sources, input.target);
+  } else if (input.action === 'session_harvest') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/SessionHarvester.ts')).href);
     if (!object(module) || typeof module.renderSessionHarvest !== 'function' || !Array.isArray(input.sessions)
         || typeof input.mine !== 'boolean' || typeof input.now !== 'string') {
