@@ -1,0 +1,16 @@
+{
+  "id": "lifeos-dev-offserver",
+  "source_container": 101,
+  "storage": "PBS-01",
+  "mode": "snapshot",
+  "schedule": "03:00",
+  "host_timezone": "America/Atikokan",
+  "next_run_toronto": "2026-10-09T04:00:00-04:00",
+  "next_run_utc": "2026-10-09T08:00:00+00:00",
+  "enabled": true,
+  "daily_server_backup": false,
+  "limits": [
+    "Container snapshots preserve a filesystem crash state.",
+    "The final daily guest needs its own scheduled job."
+  ]
+}

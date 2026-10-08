@@ -22,6 +22,8 @@ The [outbound audience gate](verification/2026-10-08-discord-delivery/README.md)
 
 The [local owner job gate](verification/2026-10-08-owner-jobs/README.md) passes 76 adjacent tests. The selected deterministic jobs run through explicit local owner admission and current publication authority. The actual Hermes command parser publishes a private weekly synthesis. Installed Pulse activation and live background model acceptance remain open.
 
+The [installed profile recovery](verification/2026-10-08-profile-recovery/README.md) preserves identical deployed plugin code inside the selected development profile. The verified snapshot covers 551 profile files and 108 native files. Separate recovery verifies 550 unchanged profile files and keeps candidate ownership disabled. The [off-server recovery](verification/2026-10-08-offserver-recovery/README.md) restores the disposable installation container from the existing PBS destination. Development container `101` now has a daily snapshot backup schedule. The development backup completion, current-candidate acceptance, final daily guest, and its backup schedule remain open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.
