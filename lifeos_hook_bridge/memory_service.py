@@ -265,38 +265,33 @@ class MemoryService:
             if operation == 'learning_hypotheses' and set(arguments) == {'path','window','dry_run','no_inference','once_daily','request_id'}:
                 from .memory_hypotheses import derive
                 def check_current():
-                    if self.configuration.load() != configuration:
-                        raise MemoryUnavailable('Hypothesis authority changes during derivation')
+                    self._check_current_context(configuration, context, scope)
                 return derive(memory, scope, arguments, check_current=check_current)
             if (operation == 'recurrence_sources' and set(arguments) == {'base'}
                     or operation == 'recurrence_append' and set(arguments) == {'base','record','request_id'}):
                 from .memory_recurrence import sources, append
                 def check_current():
-                    if self.configuration.load() != configuration:
-                        raise MemoryUnavailable('Recurrence authority changes during the operation')
+                    self._check_current_context(configuration, context, scope)
                 if operation == 'recurrence_sources':
                     return sources(memory, scope, arguments['base'], check_current=check_current)
                 return append(memory, scope, arguments, check_current=check_current)
             if operation == 'learning_ratings' and set(arguments) == {'path','month','all','dry_run','request_id'}:
                 from .memory_learning import ratings
                 def check_current():
-                    if self.configuration.load() != configuration:
-                        raise MemoryUnavailable('Learning authority changed during analysis')
+                    self._check_current_context(configuration, context, scope)
                 return ratings(memory, scope, arguments, check_current=check_current)
             if (operation == 'wisdom_frames' and set(arguments) == {'base'}
                     or operation == 'wisdom_synthesis' and set(arguments) == {'base','health','dry_run','request_id'}):
                 from .memory_wisdom import frames, synthesize
                 def check_current():
-                    if self.configuration.load() != configuration:
-                        raise MemoryUnavailable('Wisdom authority changed during source collection')
+                    self._check_current_context(configuration, context, scope)
                 if operation == 'wisdom_frames':
                     return frames(memory, scope, arguments['base'], check_current=check_current)
                 return synthesize(memory, scope, arguments, check_current=check_current)
             if operation == 'wisdom_frame_update' and set(arguments) == {'domain','observation','type','path','request_id'}:
                 from .memory_wisdom import update_frame
                 def check_current():
-                    if self.configuration.load() != configuration:
-                        raise MemoryUnavailable('Wisdom authority changed during rendering')
+                    self._check_current_context(configuration, context, scope)
                 return update_frame(memory, scope, arguments, check_current=check_current)
             if operation == 'staged_promote' and set(arguments) == {'target','all','project','signature','request_id'}:
                 from .memory_staging import promote

@@ -10,6 +10,8 @@ The [managed session consolidation controls](docs/verification/2026-10-08-sessio
 
 The [staged decision controls](docs/verification/2026-10-08-staging-writers/README.md) govern native queue rejection and recheck promotion sources after index rendering. The gate passes 114 tests, including actual interrupted deletion and concurrent source changes. Native source mining and stale-note expiry remain open.
 
+The [learning and Wisdom audience controls](docs/verification/2026-10-08-background-audience/README.md) recheck current Discord permissions after native processing. The gate passes 96 tests. Final outbound delivery and live audience acceptance remain open.
+
 This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
 
 
