@@ -1,0 +1,45 @@
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+INFO: starting new backup job: vzdump 101 --notes-template 'LifeOS verified profile off-server acceptance 2026-10-08' --storage PBS-01 --mode snapshot
+INFO: Starting Backup of VM 101 (lxc)
+INFO: Backup started at 2026-10-08 11:23:42
+INFO: status = running
+INFO: CT Name: lifeos-dev
+INFO: including mount point rootfs ('/') in backup
+INFO: backup mode: snapshot
+INFO: ionice priority: 7
+INFO: create storage snapshot 'vzdump'
+freeze guest filesystem
+thaw guest filesystem
+INFO: creating Proxmox Backup Server archive 'ct/101/2026-10-08T16:23:42Z'
+INFO: set max number of entries in memory for file-based backups to 1048576
+INFO: run: lxc-usernsexec -m u:0:100000:65536 -m g:0:100000:65536 -- /usr/bin/proxmox-backup-client backup --crypt-mode=none pct.conf:/var/tmp/vzdumptmp164912_101/etc/vzdump/pct.conf root.pxar:/mnt/vzsnap0 --include-dev /mnt/vzsnap0/./ --skip-lost-and-found --exclude=/tmp/?* --exclude=/var/tmp/?* --exclude=/var/run/?*.pid --backup-type ct --backup-id 101 --backup-time 1791476622 --entries-max 1048576 --repository admin@pbs@192.168.8.24:PlutoNAS_Backup
+INFO: Starting backup: ct/101/2026-10-08T16:23:42Z    
+INFO: Client name: pve-tr1950x    
+INFO: Starting backup protocol: Thu Oct  8 11:23:42 2026    
+INFO: No previous manifest available.    
+INFO: Upload config file '/var/tmp/vzdumptmp164912_101/etc/vzdump/pct.conf' to 'admin@pbs@192.168.8.24:8007:PlutoNAS_Backup' as pct.conf.blob    
+INFO: Upload directory '/mnt/vzsnap0' to 'admin@pbs@192.168.8.24:8007:PlutoNAS_Backup' as root.pxar.didx    
+INFO: processed 5.315 GiB in 1m, uploaded 2.644 GiB
+INFO: processed 11.06 GiB in 2m, uploaded 6.695 GiB
+INFO: processed 15.986 GiB in 3m, uploaded 11.029 GiB
+INFO: processed 22.045 GiB in 4m, uploaded 14.38 GiB
+INFO: processed 37.246 GiB in 5m, uploaded 17.297 GiB
+INFO: processed 42.944 GiB in 6m, uploaded 19.778 GiB
+INFO: processed 51.268 GiB in 7m, uploaded 21.181 GiB
+INFO: processed 59.565 GiB in 8m, uploaded 22.619 GiB
+INFO: processed 66.817 GiB in 9m, uploaded 26.217 GiB
+INFO: processed 71.303 GiB in 10m, uploaded 28.679 GiB
+INFO: processed 77.013 GiB in 11m, uploaded 29.483 GiB
+INFO: processed 82.753 GiB in 12m, uploaded 31.91 GiB
+INFO: root.pxar: had to backup 34.492 GiB of 85.255 GiB (compressed 13.955 GiB) in 740.43 s (average 47.703 MiB/s)
+INFO: root.pxar: backup was done incrementally, reused 50.762 GiB (59.5%)
+INFO: Uploaded backup catalog (96.403 MiB)
+INFO: catalog.pcat1: backup was done incrementally, reused 24.312 MiB (25.2%)
+INFO: Duration: 740.50s    
+INFO: End Time: Thu Oct  8 11:36:03 2026    
+INFO: adding notes to backup
+INFO: cleanup temporary 'vzdump' snapshot
+INFO: Finished Backup of VM 101 (00:12:24)
+INFO: Backup finished at 2026-10-08 11:36:06
+INFO: Backup job finished successfully
+INFO: notified via target `mail-to-root`
