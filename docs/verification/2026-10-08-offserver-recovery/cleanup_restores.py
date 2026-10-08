@@ -1,5 +1,6 @@
 # ABOUTME: Removes completed isolated recovery containers after verifying their retained PBS archives.
 # ABOUTME: Preserves source guests, VM 801, backup schedules, and unrelated storage volumes.
+import atexit
 import hashlib
 import json
 from pathlib import Path
@@ -12,6 +13,14 @@ FIXTURES={102:('lifeos-recovery-probe',{'disposable','lifeos-recovery'},100,
     103:('lifeos-dev-recovery',{'lifeos-recovery-disposable'},101,
     'PBS-01:backup/ct/101/2026-10-08T16:23:42Z')}
 warnings=[]
+completed=False
+
+
+def record_completion():
+    Path(__file__).with_name('fixture-cleanup.done').write_text('0\n' if completed else '1\n')
+
+
+atexit.register(record_completion)
 
 
 def command(*arguments):
@@ -66,4 +75,5 @@ for identifier,(_,_,source,archive) in FIXTURES.items():
 print(json.dumps({'status':'removed_completed_recovery_fixtures','fixtures':checked,
     'protected_before':before,'protected_after':after,'backup_schedule_digest':schedule,
     'archives_retained':True,'source_guests_unchanged':True,'backup_schedules_unchanged':True,
-    'warnings':sorted(set(warnings))},indent=2))
+    'warnings':sorted(set(warnings))},indent=2),flush=True)
+completed=True
