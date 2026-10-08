@@ -9352,7 +9352,7 @@ index 4e74a33..ccd65ee 100755
 -console.log(parts.join(" "))
 +if (import.meta.main) main()
 diff --git a/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts b/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts
-index 5b47d90..95792ac 100644
+index 5b47d90..7ebdf79 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts
 @@ -1,4 +1,6 @@
@@ -9371,6 +9371,16 @@ index 5b47d90..95792ac 100644
    if (!raw || typeof raw !== "object") {
      throw new Error(`LifeosConfig: ${path} did not parse to an object`);
    }
+@@ -226,7 +228,8 @@ function normalizeVoice(v: any): LifeosVoiceSettings {
+ 
+ // ─────────── CLI entry ───────────
+ 
+-if (import.meta.main) {
++const entryMeta = import.meta;
++if ("main" in entryMeta && entryMeta.main === true) {
+   try {
+     const cfg = loadLifeosConfig();
+     console.log(JSON.stringify(cfg, null, 2));
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts b/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts
 index bc012ad..a844e09 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts
@@ -9629,3 +9639,22 @@ index 3846e29..04f10a0 100644
        })
        .catch((err) => {
          if (err instanceof DOMException && err.name === "AbortError") return;
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/app.tsx b/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/app.tsx
+index 5297008..1508e97 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/app.tsx
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/app/telos/_v7/app.tsx
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders the TELOS dashboard and its file editing controls.
++// ABOUTME: Coordinates goals, traces, preferences, and subordinate Life views.
+ "use client";
+ 
+ // App shell — 11 TELOS primitives, bidirectional trace, view toggle.
+@@ -393,7 +395,7 @@ function App() {
+             <Budget {...common} />
+             <Recommendations {...common} />
+             <Stranded telos={telos} showIds={showIds} openFile={openFile} />
+-            <SubTabs telos={telos} openFile={openFile} />
++            <SubTabs telos={telos} />
+             <Preferences telos={telos} openFile={openFile} />
+           </div>
+         )}
