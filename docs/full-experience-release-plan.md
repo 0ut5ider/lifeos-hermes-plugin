@@ -20,6 +20,8 @@ The [SessionEnd Knowledge conformance gate](verification/2026-10-08-knowledge-co
 
 The [native hypothesis queue read gate](verification/2026-10-08-hypothesis-queue/README.md) passes ten focused cases through real authenticated HTTP and native rendering. Review mutations, combined upgrades queue admission, and direct helper callers remain open.
 
+The [dashboard response authority gate](verification/2026-10-08-dashboard-response-authority/README.md) passes 67 tests. Wiki, Knowledge, Pulse, and hypothesis preference responses recheck the current owner binding after native rendering. Installed application acceptance remains open.
+
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.
 
 The [outbound audience gate](verification/2026-10-08-discord-delivery/README.md) passes 168 tests across actual SDK and HTTP controls, native unit controls, and installation checks. The private channel mode requires a current policy grant for every content write. Live private-channel acceptance remains open.

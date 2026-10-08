@@ -146,12 +146,17 @@ class MemoryPreferences:
         config = self._configuration(account=account)
         return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
 
+    def _response(self, config, result, *, account):
+        from .memory_http import installation_binding
+        if self._configuration(account=account) != config:
+            raise MemoryUnavailable('Current memory authority changes before the dashboard response')
+        return result, installation_binding(config, self.configuration.path)
+
     def pulse_snapshot(self, view: str, *, account: str | None = None):
         return self.pulse_response(view,account=account)[0]
 
     def pulse_response(self, view: str, *, account: str | None = None):
         from .memory_pulse import snapshot
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
         from .memory_freshness import HTTP_VIEWS
         if isinstance(view, str) and view in HTTP_VIEWS:
@@ -161,9 +166,8 @@ class MemoryPreferences:
                 if self._configuration(account=account) != config:
                     raise MemoryUnavailable('The memory configuration changed during freshness rendering')
 
-            return (freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
-                                   check_current=check_current),
-                    installation_binding(config, self.configuration.path))
+            return self._response(config, freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
+                                   check_current=check_current), account=account)
         if view == 'graph':
             from .memory_graph import view as graph_view
 
@@ -171,10 +175,10 @@ class MemoryPreferences:
                 if self._configuration(account=account) != config:
                     raise MemoryUnavailable('The memory configuration changed during graph rendering')
 
-            return (graph_view(NativeMemory(self.root), self._owner_scope(config), check_current=check_current),
-                    installation_binding(config, self.configuration.path))
-        return (snapshot(NativeMemory(self.root), self._owner_scope(config), view),
-                installation_binding(config,self.configuration.path))
+            return self._response(config, graph_view(NativeMemory(self.root), self._owner_scope(config),
+                                                    check_current=check_current), account=account)
+        return self._response(config, snapshot(NativeMemory(self.root), self._owner_scope(config), view),
+                              account=account)
 
     def preview_prompt(self, *, keep_output_format: bool = False, account: str | None = None):
         from .memory_prompt import preview
@@ -268,27 +272,24 @@ class MemoryPreferences:
 
     def hypothesis_response(self, target: str, *, account: str | None = None):
         from .memory_hypothesis_queue import view
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
         def check_current():
             if self._configuration(account=account) != config:
                 raise MemoryUnavailable('The memory configuration changes during hypothesis rendering')
-        return (view(NativeMemory(self.root), self._owner_scope(config), target, check_current=check_current),
-                installation_binding(config, self.configuration.path))
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                          check_current=check_current), account=account)
 
     def wiki_response(self, target: str, *, account: str | None = None):
         from .memory_wiki import view
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
-        return (view(NativeMemory(self.root), self._owner_scope(config), target),
-                installation_binding(config, self.configuration.path))
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target),
+                              account=account)
 
     def knowledge_response(self, target: str, *, account: str | None = None):
         from .memory_knowledge import view
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
-        return (view(NativeMemory(self.root), self._owner_scope(config), target),
-                installation_binding(config, self.configuration.path))
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target),
+                              account=account)
 
     def adopt(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
         if not isinstance(request,dict) or set(request) != {'signature','projects','request_id'}:
