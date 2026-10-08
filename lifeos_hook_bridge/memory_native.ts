@@ -40,6 +40,13 @@ async function main(): Promise<void> {
     }
     result = await module.renderHypothesisReview(input.sources, input.slug, input.verb,
       input.note === null ? undefined : input.note, input.now);
+  } else if (input.action === 'hypothesis_list') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
+    if (!object(module) || typeof module.renderHypothesisList !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native pending hypotheses require declared current sources');
+    }
+    result = {status: 200, body: {hypotheses: module.renderHypothesisList(input.sources)}};
   } else if (input.action === 'hypothesis_view') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
     if (!object(module) || typeof module.renderHypothesesView !== 'function' || !Array.isArray(input.sources)

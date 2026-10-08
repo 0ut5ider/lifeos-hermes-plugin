@@ -1,0 +1,115 @@
+test_forgotten_text_leaves_retained_note_and_exits_direct_queue (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_forgotten_text_leaves_retained_note_and_exits_direct_queue) ... FAIL
+test_native_list_matches_all_original_pending_fields (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_native_list_matches_all_original_pending_fields) ... ok
+test_owner_direct_mutations_match_original_file_effects (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_owner_direct_mutations_match_original_file_effects) ... ok
+test_read_only_owner_can_list_and_cannot_mutate (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_read_only_owner_can_list_and_cannot_mutate) ... 
+  test_read_only_owner_can_list_and_cannot_mutate (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_read_only_owner_can_list_and_cannot_mutate) (operation='graduate') ... FAIL
+  test_read_only_owner_can_list_and_cannot_mutate (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_read_only_owner_can_list_and_cannot_mutate) (operation='reject') ... FAIL
+test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) ... 
+  test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) (operation='list') ... FAIL
+  test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) (operation='graduate') ... FAIL
+  test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) (operation='reject') ... FAIL
+test_standalone_helpers_preserve_original_unbound_behavior (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_standalone_helpers_preserve_original_unbound_behavior) ... ok
+test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) ... 
+  test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) (operation='list') ... FAIL
+  test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) (operation='graduate') ... FAIL
+  test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) (operation='reject') ... FAIL
+
+======================================================================
+FAIL: test_forgotten_text_leaves_retained_note_and_exits_direct_queue (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_forgotten_text_leaves_retained_note_and_exits_direct_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 128, in test_forgotten_text_leaves_retained_note_and_exits_direct_queue
+    self.assertEqual(json.loads(result.stdout),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'slug': 'synthetic-hypothesis', 'filenam[650 chars]one}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'slug': 'synthetic-hypothesis', 'filename': '2026-10-08_synthetic-hypothesis.md', 'status': 'hypothesis', 'target_frame': 'new', 'confidence': 0.7, 'generated': '2026-10-08', 'expires': '2026-11-01', 'evidence_signals': ['synthetic-signal'], 'falsifier': 'Synthetic falsifier', 'claim': 'Synthetic direct forgotten marker', 'evidence': 'Synthetic evidence', 'suggested_action': 'Synthetic action', 'raw_body': '## Claim\nSynthetic direct forgotten marker\n\n## Evidence\nSynthetic evidence\n\n## Suggested Action\nSynthetic action\n', 'expires_in_days': 23, 'source': 'ratings', 'enforcement_surface': 'context', 'class_id': None, 'proposed_patch': '', 'has_patch': False, 'pending_slug': None}
+
+Diff is 914 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_read_only_owner_can_list_and_cannot_mutate (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_read_only_owner_can_list_and_cannot_mutate) (operation='graduate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 116, in test_read_only_owner_can_list_and_cannot_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_read_only_owner_can_list_and_cannot_mutate (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_read_only_owner_can_list_and_cannot_mutate) (operation='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 116, in test_read_only_owner_can_list_and_cannot_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) (operation='list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 102, in test_revoked_direct_helpers_cannot_read_or_publish
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : [{"slug":"synthetic-hypothesis","filename":"2026-10-08_synthetic-hypothesis.md","status":"hypothesis","target_frame":"new","confidence":0.7,"generated":"2026-10-08","expires":"2026-11-01","evidence_signals":["synthetic-signal"],"falsifier":"Synthetic falsifier","claim":"SyntheticHypothesisCurrentMarker","evidence":"Synthetic evidence","suggested_action":"Synthetic action","raw_body":"## Claim\nSyntheticHypothesisCurrentMarker\n\n## Evidence\nSynthetic evidence\n\n## Suggested Action\nSynthetic action\n","expires_in_days":23,"source":"ratings","enforcement_surface":"context","class_id":null,"proposed_patch":"","has_patch":false,"pending_slug":null}]
+
+
+======================================================================
+FAIL: test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) (operation='graduate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 102, in test_revoked_direct_helpers_cannot_read_or_publish
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_revoked_direct_helpers_cannot_read_or_publish (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_revoked_direct_helpers_cannot_read_or_publish) (operation='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 102, in test_revoked_direct_helpers_cannot_read_or_publish
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) (operation='list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 72, in test_unbound_direct_helpers_refuse_without_reading_or_publishing
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : [{"slug":"synthetic-hypothesis","filename":"2026-10-08_synthetic-hypothesis.md","status":"hypothesis","target_frame":"new","confidence":0.7,"generated":"2026-10-08","expires":"2026-11-01","evidence_signals":["synthetic-signal"],"falsifier":"Synthetic falsifier","claim":"SyntheticHypothesisCurrentMarker","evidence":"Synthetic evidence","suggested_action":"Synthetic action","raw_body":"## Claim\nSyntheticHypothesisCurrentMarker\n\n## Evidence\nSynthetic evidence\n\n## Suggested Action\nSynthetic action\n","expires_in_days":23,"source":"ratings","enforcement_surface":"context","class_id":null,"proposed_patch":"","has_patch":false,"pending_slug":null}]
+
+
+======================================================================
+FAIL: test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) (operation='graduate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 72, in test_unbound_direct_helpers_refuse_without_reading_or_publishing
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_unbound_direct_helpers_refuse_without_reading_or_publishing (test_memory_hypothesis_helpers.MemoryHypothesisHelpersTests.test_unbound_direct_helpers_refuse_without_reading_or_publishing) (operation='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_hypothesis_helpers.py", line 72, in test_unbound_direct_helpers_refuse_without_reading_or_publishing
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.366s
+
+FAILED (failures=9)

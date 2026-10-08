@@ -42,10 +42,21 @@ def _sources(memory,scope,connection):
 
 def view(memory,scope,target,*,check_current=None):
     target=request_target(target)
+    return _render(memory,scope,'hypothesis_view',{'target':target},check_current=check_current)
+
+
+def pending(memory,scope,*,check_current=None):
+    result=_render(memory,scope,'hypothesis_list',{},check_current=check_current)
+    if result['status']!=200 or not isinstance(result['body'].get('hypotheses'),list):
+        raise MemoryUnavailable('The native pending hypothesis list changes its declared response')
+    return result['body']['hypotheses']
+
+
+def _render(memory,scope,action,arguments,*,check_current=None):
     if check_current is not None:check_current()
     with memory._transaction() as connection:
         sources=_sources(memory,scope,connection)
-        result=memory._native('hypothesis_view',sources=sources,target=target)
+        result=memory._native(action,sources=sources,**arguments)
         if check_current is not None:check_current()
         if _sources(memory,scope,connection)!=sources:
             raise MemoryUnavailable('Hypothesis sources change during native rendering')
