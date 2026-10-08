@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 NODE='pve-tr1950x'
 FIXTURES={102:('lifeos-recovery-probe',{'disposable','lifeos-recovery'},100,
@@ -13,11 +14,11 @@ FIXTURES={102:('lifeos-recovery-probe',{'disposable','lifeos-recovery'},100,
     103:('lifeos-dev-recovery',{'lifeos-recovery-disposable'},101,
     'PBS-01:backup/ct/101/2026-10-08T16:23:42Z')}
 warnings=[]
-completed=False
+completion={'succeeded':False}
 
 
-def record_completion():
-    Path(__file__).with_name('fixture-cleanup.done').write_text('0\n' if completed else '1\n')
+def record_completion(path=Path(sys.argv[0]).with_name('fixture-cleanup.done'),state=completion):
+    path.write_text('0\n' if state['succeeded'] else '1\n')
 
 
 atexit.register(record_completion)
@@ -76,4 +77,4 @@ print(json.dumps({'status':'removed_completed_recovery_fixtures','fixtures':chec
     'protected_before':before,'protected_after':after,'backup_schedule_digest':schedule,
     'archives_retained':True,'source_guests_unchanged':True,'backup_schedules_unchanged':True,
     'warnings':sorted(set(warnings))},indent=2),flush=True)
-completed=True
+completion['succeeded']=True

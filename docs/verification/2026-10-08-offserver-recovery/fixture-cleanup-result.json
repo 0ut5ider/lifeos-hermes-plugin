@@ -1,0 +1,52 @@
+{
+  "status": "removed_completed_recovery_fixtures",
+  "fixtures": {
+    "102": {
+      "hostname": "lifeos-recovery-probe",
+      "configuration_digest": "93c37d8ad7dcdbb3bd9ef723c4f9b3572783c503f944df47bb258b7eafc670a5",
+      "archive": "PBS-01:backup/ct/100/2026-10-08T16:10:54Z",
+      "volume": "local-zfs:subvol-102-disk-0"
+    },
+    "103": {
+      "hostname": "lifeos-dev-recovery",
+      "configuration_digest": "c2ccc48f281c80d194e3a0fffb2797fff133fe5bbc6cdc0c08b7d0589704c272",
+      "archive": "PBS-01:backup/ct/101/2026-10-08T16:23:42Z",
+      "volume": "local-zfs:subvol-103-disk-0"
+    }
+  },
+  "protected_before": {
+    "lxc:100": {
+      "configuration": "8e5637f810d3a2f2b549a6cbc1fb0812799c199b37db606bbda01ba929f84280",
+      "status": "running"
+    },
+    "lxc:101": {
+      "configuration": "fdb617bc2508dfd76ab12dc3639be890716f0fdd85c170bb67f0128532312f98",
+      "status": "running"
+    },
+    "qemu:801": {
+      "configuration": "af7b458c064cbe367fa783ab39ffe11d0e776e51c14a6656bcc568da2a60b91f",
+      "status": "running"
+    }
+  },
+  "protected_after": {
+    "lxc:100": {
+      "configuration": "8e5637f810d3a2f2b549a6cbc1fb0812799c199b37db606bbda01ba929f84280",
+      "status": "running"
+    },
+    "lxc:101": {
+      "configuration": "fdb617bc2508dfd76ab12dc3639be890716f0fdd85c170bb67f0128532312f98",
+      "status": "running"
+    },
+    "qemu:801": {
+      "configuration": "af7b458c064cbe367fa783ab39ffe11d0e776e51c14a6656bcc568da2a60b91f",
+      "status": "running"
+    }
+  },
+  "backup_schedule_digest": "a0f25ebb8015d2bf6f459f54a50b616599f8db571e6aa24a10c654f934f420c6",
+  "archives_retained": true,
+  "source_guests_unchanged": true,
+  "backup_schedules_unchanged": true,
+  "warnings": [
+    "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended"
+  ]
+}
