@@ -2957,7 +2957,7 @@
   },
   {
     "path": "LIFEOS/PULSE/Observability/observability.ts",
-    "sha256": "4f35b39a8ef58bf3ab4e06b8e1d573df30b85a5fcb31a481a7fa93e2e79ced62",
+    "sha256": "e2feae5083adad7d1b3c8a82eb433436b13baca06fa167506f2049ef2b5f8925",
     "registered_hooks": [],
     "cli_guard": false,
     "source_evidence": [
@@ -3654,6 +3654,30 @@
         "text": "  return { updated, updatedBy, domains }"
       },
       {
+        "line": 2460,
+        "text": "function handleLifeHome(read = readMd): Response {"
+      },
+      {
+        "line": 2462,
+        "text": "    const sections = parseTelosUnified(read)"
+      },
+      {
+        "line": 2463,
+        "text": "    const current = telosSectionOrFile(sections, \"current state\", \"CURRENT.md\", read)"
+      },
+      {
+        "line": 2464,
+        "text": "    const goalsRaw = telosSectionOrFile(sections, \"goals\", \"GOALS.md\", read)"
+      },
+      {
+        "line": 2465,
+        "text": "    const sparksRaw = telosSectionOrFile(sections, \"sparks\", \"SPARKS.md\", read)"
+      },
+      {
+        "line": 2466,
+        "text": "    const timelineRaw = telosSectionOrFile(sections, \"2036\", \"2036.md\", read)"
+      },
+      {
         "line": 2469,
         "text": "    const { updated, updatedBy, domains } = parseCurrentDomains(current)"
       },
@@ -3842,8 +3866,104 @@
         "text": "        const workData = JSON.parse(readFileSync(WORK_JSON_PATH, \"utf-8\"))"
       },
       {
+        "line": 3086,
+        "text": "function handleLifeGoals(read = readMd): Response {"
+      },
+      {
+        "line": 3089,
+        "text": "    const sections = parseTelosUnified(read)"
+      },
+      {
+        "line": 3090,
+        "text": "    const mission = telosSectionOrFile(sections, \"mission\", \"MISSION.md\", read)"
+      },
+      {
+        "line": 3091,
+        "text": "    const goalsRaw = telosSectionOrFile(sections, \"goals\", \"GOALS.md\", read)"
+      },
+      {
+        "line": 3092,
+        "text": "    const strategies = telosSectionOrFile(sections, \"strategies\", \"STRATEGIES.md\", read)"
+      },
+      {
+        "line": 3093,
+        "text": "    const challenges = telosSectionOrFile(sections, \"challenges\", \"CHALLENGES.md\", read)"
+      },
+      {
+        "line": 3094,
+        "text": "    const beliefs = telosSectionOrFile(sections, \"beliefs\", \"BELIEFS.md\", read)"
+      },
+      {
+        "line": 3095,
+        "text": "    const models = telosSectionOrFile(sections, \"models\", \"MODELS.md\", read)"
+      },
+      {
+        "line": 3096,
+        "text": "    const narratives = telosSectionOrFile(sections, \"narratives\", \"NARRATIVES.md\", read)"
+      },
+      {
+        "line": 3097,
+        "text": "    const wisdom = telosSectionOrFile(sections, \"wisdom\", \"WISDOM.md\", read)"
+      },
+      {
+        "line": 3098,
+        "text": "    const problems = telosSectionOrFile(sections, \"problems\", \"PROBLEMS.md\", read)"
+      },
+      {
+        "line": 3099,
+        "text": "    const predictions = telosSectionOrFile(sections, \"predictions\", \"PREDICTIONS.md\", read)"
+      },
+      {
+        "line": 3100,
+        "text": "    const frames = telosSectionOrFile(sections, \"frames\", \"FRAMES.md\", read)"
+      },
+      {
+        "line": 3101,
+        "text": "    const wrong = telosSectionOrFile(sections, \"wrong\", \"WRONG.md\", read)"
+      },
+      {
+        "line": 3102,
+        "text": "    const learned = telosSectionOrFile(sections, \"learned\", \"LEARNED.md\", read)"
+      },
+      {
+        "line": 3103,
+        "text": "    const ideas = telosSectionOrFile(sections, \"ideas\", \"IDEAS.md\", read)"
+      },
+      {
+        "line": 3104,
+        "text": "    const sparks = telosSectionOrFile(sections, \"sparks\", \"SPARKS.md\", read)"
+      },
+      {
+        "line": 3105,
+        "text": "    const timeline2036 = telosSectionOrFile(sections, \"2036\", \"2036.md\", read)"
+      },
+      {
+        "line": 3106,
+        "text": "    const authors = telosSectionOrFile(sections, \"authors\", \"AUTHORS.md\", read)"
+      },
+      {
+        "line": 3107,
+        "text": "    const books = telosSectionOrFile(sections, \"books\", \"BOOKS.md\", read)"
+      },
+      {
+        "line": 3108,
+        "text": "    const movies = telosSectionOrFile(sections, \"movies\", \"MOVIES.md\", read)"
+      },
+      {
+        "line": 3109,
+        "text": "    const traumas = telosSectionOrFile(sections, \"traumas\", \"TRAUMAS.md\", read)"
+      },
+      {
+        "line": 3110,
+        "text": "    const status = telosSectionOrFile(sections, \"status\", \"STATUS.md\", read)"
+      },
+      {
+        "line": 3111,
+        "text": "    const telosProjects = telosSectionOrFile(sections, \"projects\", \"PROJECTS.md\", read)"
+      },
+      {
         "line": 3113,
-        "text": "    const telosMaster = readMd(join(TELOS_DIR, \"TELOS.md\"))"
+        "text": "    const telosMaster = read(join(TELOS_DIR, \"TELOS.md\"))"
       },
       {
         "line": 3292,
@@ -3866,12 +3986,20 @@
         "text": "// @xmasyx): a stock install ships ONLY TELOS.md, so any handler that reads the"
       },
       {
+        "line": 3497,
+        "text": "function telosSectionOrFile(sections: Record<string, string>, sectionKey: string, legacyFile: string, read = readMd): string {"
+      },
+      {
         "line": 3498,
-        "text": "  return sections[sectionKey] || readMd(join(TELOS_DIR, legacyFile))"
+        "text": "  return sections[sectionKey] || read(join(TELOS_DIR, legacyFile))"
+      },
+      {
+        "line": 3501,
+        "text": "function parseTelosUnified(read = readMd): Record<string, string> {"
       },
       {
         "line": 3503,
-        "text": "  const content = readMd(telosPath)"
+        "text": "  const content = read(telosPath)"
       },
       {
         "line": 3541,
@@ -4154,19 +4282,39 @@
         "text": "      const content = readFileSync(daIdentityPath, \"utf-8\")"
       },
       {
-        "line": 4556,
+        "line": 4552,
+        "text": "export function lifeViewSources(): string[] {"
+      },
+      {
+        "line": 4559,
+        "text": "export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {"
+      },
+      {
+        "line": 4563,
+        "text": "  const read = (path: string): string => {"
+      },
+      {
+        "line": 4567,
+        "text": "  if (target === \"/api/life/home\" || target === \"/api/observability/life-card\") return handleLifeHome(read);"
+      },
+      {
+        "line": 4568,
+        "text": "  if (target === \"/api/life/goals\") return handleLifeGoals(read);"
+      },
+      {
+        "line": 4576,
         "text": "export async function handleObservabilityRequest(req: Request): Promise<Response | null> {"
       },
       {
-        "line": 4582,
+        "line": 4615,
         "text": "      return Response.json({error: \"Knowledge reads require a same-origin request\"}, {status: 403, headers})"
       },
       {
-        "line": 4596,
+        "line": 4629,
         "text": "    if (noteParams) return handlePutKnowledgeNote(req, noteParams.domain, noteParams.slug)"
       },
       {
-        "line": 4658,
+        "line": 4691,
         "text": "    if (knoteParams) return handleGetKnowledgeNote(knoteParams.domain, knoteParams.slug)"
       }
     ],
@@ -4181,7 +4329,7 @@
     "entry_point": "declared_entry",
     "behavioral_status": "requires_source_policy_or_existing_test_evidence",
     "source_policy": "contains_governed_api_reference",
-    "source_sha256": "4f35b39a8ef58bf3ab4e06b8e1d573df30b85a5fcb31a481a7fa93e2e79ced62"
+    "source_sha256": "e2feae5083adad7d1b3c8a82eb433436b13baca06fa167506f2049ef2b5f8925"
   },
   {
     "path": "LIFEOS/PULSE/Observability/src/app/assistant/page.tsx",

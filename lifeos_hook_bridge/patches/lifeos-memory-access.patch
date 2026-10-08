@@ -356,15 +356,24 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..bee3f5e 100644
+index 787cf28..d00f737 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
 +// ABOUTME: Serves native LifeOS operational views and declared current Knowledge pages.
-+// ABOUTME: Delegates managed Knowledge requests to authenticated memory admission.
++// ABOUTME: Delegates managed Knowledge and Life requests to authenticated memory admission.
  // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
  // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
  for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -28,7 +30,7 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  *   GET  /, /work, /telos, /health, etc. — Static Next.js pages (fallback handler)
+  */
+ 
+-import { join, extname } from "path"
++import { join, extname, basename, dirname } from "path"
+ import { readFileSync, readdirSync, existsSync, realpathSync, statSync, watch, openSync, readSync, closeSync, type FSWatcher } from "fs"
+ import { spawnSync } from "child_process"
+ import { homedir } from "os"
 @@ -36,6 +38,7 @@ import YAML from "yaml"
  import { PULSE_BASE } from "../endpoint"
  import { RUN_ACTIVITY } from "../../TOOLS/ascent"
@@ -487,10 +496,148 @@ index 787cf28..bee3f5e 100644
  async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
    const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
    if (!existsSync(filePath)) {
-@@ -4531,6 +4560,34 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -2428,13 +2457,13 @@ function parseCurrentDomains(content: string): {
+   return { updated, updatedBy, domains }
+ }
+ 
+-function handleLifeHome(): Response {
++function handleLifeHome(read = readMd): Response {
+   try {
+-    const sections = parseTelosUnified()
+-    const current = telosSectionOrFile(sections, "current state", "CURRENT.md")
+-    const goalsRaw = telosSectionOrFile(sections, "goals", "GOALS.md")
+-    const sparksRaw = telosSectionOrFile(sections, "sparks", "SPARKS.md")
+-    const timelineRaw = telosSectionOrFile(sections, "2036", "2036.md")
++    const sections = parseTelosUnified(read)
++    const current = telosSectionOrFile(sections, "current state", "CURRENT.md", read)
++    const goalsRaw = telosSectionOrFile(sections, "goals", "GOALS.md", read)
++    const sparksRaw = telosSectionOrFile(sections, "sparks", "SPARKS.md", read)
++    const timelineRaw = telosSectionOrFile(sections, "2036", "2036.md", read)
+ 
+     const fields = parseBoldFields(current)
+     const { updated, updatedBy, domains } = parseCurrentDomains(current)
+@@ -3054,34 +3083,34 @@ function handleLifeWork(): Response {
+ 
+ // ── GET /api/life/goals ──
+ 
+-function handleLifeGoals(): Response {
++function handleLifeGoals(read = readMd): Response {
+   try {
+     // Unified sections first, legacy per-topic files as fallback (issue #1609)
+-    const sections = parseTelosUnified()
+-    const mission = telosSectionOrFile(sections, "mission", "MISSION.md")
+-    const goalsRaw = telosSectionOrFile(sections, "goals", "GOALS.md")
+-    const strategies = telosSectionOrFile(sections, "strategies", "STRATEGIES.md")
+-    const challenges = telosSectionOrFile(sections, "challenges", "CHALLENGES.md")
+-    const beliefs = telosSectionOrFile(sections, "beliefs", "BELIEFS.md")
+-    const models = telosSectionOrFile(sections, "models", "MODELS.md")
+-    const narratives = telosSectionOrFile(sections, "narratives", "NARRATIVES.md")
+-    const wisdom = telosSectionOrFile(sections, "wisdom", "WISDOM.md")
+-    const problems = telosSectionOrFile(sections, "problems", "PROBLEMS.md")
+-    const predictions = telosSectionOrFile(sections, "predictions", "PREDICTIONS.md")
+-    const frames = telosSectionOrFile(sections, "frames", "FRAMES.md")
+-    const wrong = telosSectionOrFile(sections, "wrong", "WRONG.md")
+-    const learned = telosSectionOrFile(sections, "learned", "LEARNED.md")
+-    const ideas = telosSectionOrFile(sections, "ideas", "IDEAS.md")
+-    const sparks = telosSectionOrFile(sections, "sparks", "SPARKS.md")
+-    const timeline2036 = telosSectionOrFile(sections, "2036", "2036.md")
+-    const authors = telosSectionOrFile(sections, "authors", "AUTHORS.md")
+-    const books = telosSectionOrFile(sections, "books", "BOOKS.md")
+-    const movies = telosSectionOrFile(sections, "movies", "MOVIES.md")
+-    const traumas = telosSectionOrFile(sections, "traumas", "TRAUMAS.md")
+-    const status = telosSectionOrFile(sections, "status", "STATUS.md")
+-    const telosProjects = telosSectionOrFile(sections, "projects", "PROJECTS.md")
++    const sections = parseTelosUnified(read)
++    const mission = telosSectionOrFile(sections, "mission", "MISSION.md", read)
++    const goalsRaw = telosSectionOrFile(sections, "goals", "GOALS.md", read)
++    const strategies = telosSectionOrFile(sections, "strategies", "STRATEGIES.md", read)
++    const challenges = telosSectionOrFile(sections, "challenges", "CHALLENGES.md", read)
++    const beliefs = telosSectionOrFile(sections, "beliefs", "BELIEFS.md", read)
++    const models = telosSectionOrFile(sections, "models", "MODELS.md", read)
++    const narratives = telosSectionOrFile(sections, "narratives", "NARRATIVES.md", read)
++    const wisdom = telosSectionOrFile(sections, "wisdom", "WISDOM.md", read)
++    const problems = telosSectionOrFile(sections, "problems", "PROBLEMS.md", read)
++    const predictions = telosSectionOrFile(sections, "predictions", "PREDICTIONS.md", read)
++    const frames = telosSectionOrFile(sections, "frames", "FRAMES.md", read)
++    const wrong = telosSectionOrFile(sections, "wrong", "WRONG.md", read)
++    const learned = telosSectionOrFile(sections, "learned", "LEARNED.md", read)
++    const ideas = telosSectionOrFile(sections, "ideas", "IDEAS.md", read)
++    const sparks = telosSectionOrFile(sections, "sparks", "SPARKS.md", read)
++    const timeline2036 = telosSectionOrFile(sections, "2036", "2036.md", read)
++    const authors = telosSectionOrFile(sections, "authors", "AUTHORS.md", read)
++    const books = telosSectionOrFile(sections, "books", "BOOKS.md", read)
++    const movies = telosSectionOrFile(sections, "movies", "MOVIES.md", read)
++    const traumas = telosSectionOrFile(sections, "traumas", "TRAUMAS.md", read)
++    const status = telosSectionOrFile(sections, "status", "STATUS.md", read)
++    const telosProjects = telosSectionOrFile(sections, "projects", "PROJECTS.md", read)
+     // TELOS.md is the master file — contains LESSONS and richer content than individual files
+-    const telosMaster = readMd(join(TELOS_DIR, "TELOS.md"))
++    const telosMaster = read(join(TELOS_DIR, "TELOS.md"))
+ 
+     return Response.json({
+       mission: parseSections(mission),
+@@ -3465,13 +3494,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+ // this one — TELOS_DIR has no CURRENT.md/GOALS.md). Same semantic as
+ // handleTelosOverview's local closure; lifted so every /api/life/* handler
+ // resolves sections the same way.
+-function telosSectionOrFile(sections: Record<string, string>, sectionKey: string, legacyFile: string): string {
+-  return sections[sectionKey] || readMd(join(TELOS_DIR, legacyFile))
++function telosSectionOrFile(sections: Record<string, string>, sectionKey: string, legacyFile: string, read = readMd): string {
++  return sections[sectionKey] || read(join(TELOS_DIR, legacyFile))
+ }
+ 
+-function parseTelosUnified(): Record<string, string> {
++function parseTelosUnified(read = readMd): Record<string, string> {
+   const telosPath = join(TELOS_DIR, "TELOS.md")
+-  const content = readMd(telosPath)
++  const content = read(telosPath)
+   if (!content) return {}
+   const sections: Record<string, string> = {}
+   const lines = content.split("\n")
+@@ -4520,6 +4549,26 @@ function handleOnboardingState(): Response {
+   })
+ }
+ 
++export function lifeViewSources(): string[] {
++  return ["TELOS.md", "CURRENT.md", "MISSION.md", "GOALS.md", "STRATEGIES.md", "CHALLENGES.md",
++    "BELIEFS.md", "MODELS.md", "NARRATIVES.md", "WISDOM.md", "PROBLEMS.md", "PREDICTIONS.md",
++    "FRAMES.md", "WRONG.md", "LEARNED.md", "IDEAS.md", "SPARKS.md", "2036.md", "AUTHORS.md",
++    "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "STATUS.md", "PROJECTS.md"];
++}
++
++export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {
++  const allowed = new Set(lifeViewSources());
++  if (sources.some(source => !allowed.has(source.filename))) throw new Error("Choose declared TELOS sources");
++  const contents = new Map(sources.map(source => [source.filename, source.content]));
++  const read = (path: string): string => {
++    if (dirname(path) !== TELOS_DIR) throw new Error("Life views require fixed TELOS sources");
++    return contents.get(basename(path)) ?? "";
++  };
++  if (target === "/api/life/home" || target === "/api/observability/life-card") return handleLifeHome(read);
++  if (target === "/api/life/goals") return handleLifeGoals(read);
++  throw new Error("Choose a declared Life view");
++}
++
+ // ════════════════════════════════════════
+ // Request Router
+ // ════════════════════════════════════════
+@@ -4531,6 +4580,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
++  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/observability/life-card"].includes(pathname)) {
++    const headers = {"cache-control": "no-store"};
++    if (method !== "GET") return Response.json({error: "Life views require GET"}, {status: 405, headers});
++    if (url.search) return Response.json({error: "Life views use fixed installed sources"}, {status: 400, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "Life views require the current origin"}, {status: 403, headers});
++    try {
++      return memoryHTTPResponse(req, "life", pathname);
++    } catch {
++      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers});
++    }
++  }
++
 +  if (hasManagedMemoryHTTP() && (pathname === "/api/knowledge" || pathname.startsWith("/api/knowledge/")
 +      || pathname === "/api/memory/graph")) {
 +    const headers = {"cache-control": "no-store"}

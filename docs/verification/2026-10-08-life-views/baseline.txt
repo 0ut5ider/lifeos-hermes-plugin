@@ -1,0 +1,119 @@
+test_admitted_home_goals_and_card_preserve_native_fields (test_memory_life_relay.MemoryLifeRelayTests.test_admitted_home_goals_and_card_preserve_native_fields) ... ok
+test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) ... 
+  test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) (route='/api/life/home') ... FAIL
+  test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) (route='/api/life/goals') ... FAIL
+  test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) (route='/api/observability/life-card') ... FAIL
+test_connector_loss_preserves_managed_refusal (test_memory_life_relay.MemoryLifeRelayTests.test_connector_loss_preserves_managed_refusal) ... FAIL
+test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) ... 
+  test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='GET', route='/api/life/home') ... FAIL
+  test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='GET', route='/api/life/home') ... FAIL
+  test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='GET', route='/api/life/goals?owner=other') ... FAIL
+  test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='POST', route='/api/life/goals') ... FAIL
+test_forgotten_goal_is_removed_from_views_and_retained_in_original_file (test_memory_life_relay.MemoryLifeRelayTests.test_forgotten_goal_is_removed_from_views_and_retained_in_original_file) ... FAIL
+test_private_goals_do_not_enter_home_or_master_text (test_memory_life_relay.MemoryLifeRelayTests.test_private_goals_do_not_enter_home_or_master_text) ... FAIL
+test_revoked_dashboard_binding_refuses_personal_goals (test_memory_life_relay.MemoryLifeRelayTests.test_revoked_dashboard_binding_refuses_personal_goals) ... FAIL
+test_unified_sections_and_legacy_fallback_preserve_native_precedence (test_memory_life_relay.MemoryLifeRelayTests.test_unified_sections_and_legacy_fallback_preserve_native_precedence) ... ok
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) (route='/api/life/home')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 58, in test_anonymous_and_ambient_owner_cannot_read_goals
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\n\n## Next likely actions\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) (route='/api/life/goals')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 58, in test_anonymous_and_ambient_owner_cannot_read_goals
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"mission":[],"goals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"problems":[],"strategies":[],"narratives":[],"challenges":[],"beliefs":[],"models":[],"wisdom":[],"predictions":[],"frames":[],"wrong":[],"learned":[],"ideas":[],"authors":[],"books":[],"movies":[],"traumas":[],"status":[],"telosProjects":[],"sparks":["Synthetic only spark"],"timeline2036Blocks":0,"timeline2036Raw":"","telosMasterRaw":""}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_goals (test_memory_life_relay.MemoryLifeRelayTests.test_anonymous_and_ambient_owner_cannot_read_goals) (route='/api/observability/life-card')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 58, in test_anonymous_and_ambient_owner_cannot_read_goals
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\n\n## Next likely actions\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}
+
+======================================================================
+FAIL: test_connector_loss_preserves_managed_refusal (test_memory_life_relay.MemoryLifeRelayTests.test_connector_loss_preserves_managed_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 102, in test_connector_loss_preserves_managed_refusal
+    self.assertEqual(result.status_code, 503, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\n\n## Next likely actions\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}
+
+======================================================================
+FAIL: test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='GET', route='/api/life/home')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 117, in test_cross_origin_invalid_bearer_query_and_method_refuse
+    self.assertEqual(result.status_code, expected, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\n\n## Next likely actions\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}
+
+======================================================================
+FAIL: test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='GET', route='/api/life/home')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 117, in test_cross_origin_invalid_bearer_query_and_method_refuse
+    self.assertEqual(result.status_code, expected, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\n\n## Next likely actions\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}
+
+======================================================================
+FAIL: test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='GET', route='/api/life/goals?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 117, in test_cross_origin_invalid_bearer_query_and_method_refuse
+    self.assertEqual(result.status_code, expected, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"mission":[],"goals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"problems":[],"strategies":[],"narratives":[],"challenges":[],"beliefs":[],"models":[],"wisdom":[],"predictions":[],"frames":[],"wrong":[],"learned":[],"ideas":[],"authors":[],"books":[],"movies":[],"traumas":[],"status":[],"telosProjects":[],"sparks":["Synthetic only spark"],"timeline2036Blocks":0,"timeline2036Raw":"","telosMasterRaw":""}
+
+======================================================================
+FAIL: test_cross_origin_invalid_bearer_query_and_method_refuse (test_memory_life_relay.MemoryLifeRelayTests.test_cross_origin_invalid_bearer_query_and_method_refuse) (method='POST', route='/api/life/goals')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 117, in test_cross_origin_invalid_bearer_query_and_method_refuse
+    self.assertEqual(result.status_code, expected, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405 : not found
+
+======================================================================
+FAIL: test_forgotten_goal_is_removed_from_views_and_retained_in_original_file (test_memory_life_relay.MemoryLifeRelayTests.test_forgotten_goal_is_removed_from_views_and_retained_in_original_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 93, in test_forgotten_goal_is_removed_from_views_and_retained_in_original_file
+    self.assertNotIn('SyntheticLifeCurrentGoal', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticLifeCurrentGoal' unexpectedly found in '{"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\\n\\n## Next likely actions\\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}'
+
+======================================================================
+FAIL: test_private_goals_do_not_enter_home_or_master_text (test_memory_life_relay.MemoryLifeRelayTests.test_private_goals_do_not_enter_home_or_master_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 80, in test_private_goals_do_not_enter_home_or_master_text
+    self.assertNotIn('SyntheticLifePrivate', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticLifePrivate' unexpectedly found in '{"oneSentence":null,"updated":null,"updatedBy":null,"domains":[{"name":"Synthetic domain","summary":"Synthetic current domain","body":"Synthetic current domain\\n\\n## Next likely actions\\n1. Synthetic next step"}],"current":{},"topGoals":[{"id":"G2","text":"<private>SyntheticLifePrivateMaster</private>"}],"nextActions":["Synthetic next step"],"spark":"Synthetic only spark","sparkCount":1,"timelineBlockCount":0,"topIntent":null}'
+
+======================================================================
+FAIL: test_revoked_dashboard_binding_refuses_personal_goals (test_memory_life_relay.MemoryLifeRelayTests.test_revoked_dashboard_binding_refuses_personal_goals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_relay.py", line 68, in test_revoked_dashboard_binding_refuses_personal_goals
+    self.assertEqual(result.status_code, 403, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"mission":[],"goals":[{"id":"G1","text":"SyntheticLifeCurrentGoal"}],"problems":[],"strategies":[],"narratives":[],"challenges":[],"beliefs":[],"models":[],"wisdom":[],"predictions":[],"frames":[],"wrong":[],"learned":[],"ideas":[],"authors":[],"books":[],"movies":[],"traumas":[],"status":[],"telosProjects":[],"sparks":["Synthetic only spark"],"timeline2036Blocks":0,"timeline2036Raw":"","telosMasterRaw":""}
+
+----------------------------------------------------------------------
+Ran 8 tests in 8.737s
+
+FAILED (failures=11)

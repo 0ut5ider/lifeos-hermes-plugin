@@ -65,7 +65,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
-    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness')
+    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life')
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
         {'target','note','request_id'} if review else set())
@@ -85,6 +85,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             from .memory_hypothesis_queue import request_target
         elif arguments['view']=='upgrades':
             from .memory_upgrade_queue import request_target
+        elif arguments['view']=='life':
+            from .memory_life import request_target
         else:
             from .memory_tab_freshness import request_target
         try:

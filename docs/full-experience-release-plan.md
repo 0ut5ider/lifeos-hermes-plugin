@@ -22,6 +22,10 @@ The [native hypothesis queue read gate](verification/2026-10-08-hypothesis-queue
 
 The [native tab freshness gate](verification/2026-10-08-tab-freshness/README.md) passes 18 focused cases and 174 adjacent cases. It compares all 20 registered tabs, admits current source metadata, excludes private and unregistered Knowledge labels, and rechecks bytes, timestamps, and authority after rendering. Installed application acceptance remains open.
 
+The [expanded caller inventory](verification/2026-10-08-memory-caller-current/README.md) finds 330 public source candidates, including 94 USER-only paths absent from the preceding scan. It verifies current source lines and hashes. File references do not establish complete branch coverage. The [Life home and goals gate](verification/2026-10-08-life-views/README.md) passes 14 focused cases through actual authenticated HTTP. Remaining Life routes and user-index paths still require classification.
+
+The [staged daily Pulse profile](verification/2026-10-08-daily-pulse-profile/README.md) passes eight configuration and native job execution checks. It disables the selected optional integrations and runs memory jobs through the local owner command. It leaves output local until the private Discord channel passes acceptance. Installed scheduling, restart, model routing, and Discord delivery remain open.
+
 The [dashboard response authority gate](verification/2026-10-08-dashboard-response-authority/README.md) passes 67 tests. Wiki, Knowledge, Pulse, and hypothesis preference responses recheck the current owner binding after native rendering. Installed application acceptance remains open.
 
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.

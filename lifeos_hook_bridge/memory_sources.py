@@ -15,7 +15,7 @@ PREFIXES = ('LIFEOS/MEMORY/LEARNING/', 'LIFEOS/MEMORY/WISDOM/FRAMES/',
             'LIFEOS/MEMORY/WISDOM/PRINCIPLES/', 'LIFEOS/MEMORY/WISDOM/META/', 'LIFEOS/MEMORY/RESEARCH/',
             'LIFEOS/MEMORY/RELATIONSHIP/', 'LIFEOS/MEMORY/WORK/', 'LIFEOS/MEMORY/STATE/progress/',
             'LIFEOS/MEMORY/UPGRADES/records/')
-FILES = {'LIFEOS/USER/TELOS/CURRENT.md', 'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
+FILES = {'LIFEOS/USER/TELOS/' + name + '.md' for name in ('CURRENT', 'LEARNED', '2036', 'STATUS')} | {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
          'LIFEOS/MEMORY/STATE/events.jsonl'}
 LOG_FILES = {'LIFEOS/MEMORY/OBSERVABILITY/' + name for name in
     ('verification-gate.jsonl', 'format-gate.jsonl', 'writing-gate.jsonl', 'tool-failures.jsonl', 'hook-healer.jsonl')} | {'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl',
