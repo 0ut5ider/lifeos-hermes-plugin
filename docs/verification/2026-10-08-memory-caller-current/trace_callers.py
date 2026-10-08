@@ -12,6 +12,7 @@ def capture(root, output):
     texts = {}
     for path in sorted(root.rglob('*')):
         if (path.is_symlink() or not path.is_file() or excluded.intersection(path.relative_to(root).parts)
+                or path.relative_to(root).parts[:3] == ('LIFEOS', 'PULSE', 'state')
                 or path.name.startswith('test_') or path.suffix not in {'.ts', '.tsx', '.js', '.py', '.sh', '.md', '.toml', '.json', '.conf'}):
             continue
         texts[path.relative_to(root).as_posix()] = path.read_text()

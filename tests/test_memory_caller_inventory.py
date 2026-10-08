@@ -57,6 +57,14 @@ class MemoryCallerInventoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'missing.ts'):
             self.scan()
 
+    def test_generated_pulse_state_is_not_read_as_program_source(self):
+        (self.root / 'brief.ts').write_text('const path = "LIFEOS/USER/TELOS/GOALS.md";\n')
+        cache = self.root / 'LIFEOS/PULSE/state/user-index.json'
+        cache.parent.mkdir(parents=True)
+        cache.write_bytes(b'\xffGENERATED PRIVATE CACHE MUST NOT ENTER INVENTORY')
+        rows = self.scan()
+        self.assertEqual([row['path'] for row in rows], ['brief.ts'])
+
 
 if __name__ == '__main__':
     unittest.main()

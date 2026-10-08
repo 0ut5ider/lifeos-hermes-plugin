@@ -13,3 +13,5 @@ The historical seed, `source-traces.json`, identifies earlier candidates. The sc
 The [added paths](added-user-candidates.json) retain explicit unresolved classifications. The [preceding identity](preceding-source-identity.json), [initial scan](scan-output.json), and [expanded scan](expanded-scan-output.json) preserve the discovery sequence. The [current scan](current-scan-output.json) describes the business-view candidate. Earlier seed hashes and source lines do not establish current behavior.
 
 Complete classification, installed ownership acceptance, and combined release verification remain open.
+
+The [overview refresh](../2026-10-08-memory-caller-overview/README.md) verifies the later source hashes. It also excludes the generated Pulse state directory before reading program text. The four-case scanner gate passes. This correction keeps runtime caches outside the source inventory.
