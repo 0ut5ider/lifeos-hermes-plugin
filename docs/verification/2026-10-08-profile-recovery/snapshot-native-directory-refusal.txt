@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import os, sys, runpy; os.environ.pop('PYTHONHOME', None); os.environ.pop('PYTHONPATH', None); os.environ.pop('VIRTUAL_ENV', None); sys.path.insert(0, '/home/lifeos-hermes/workspace/hermes-agent'); os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(__import__('hermes_constants').get_default_hermes_root()); import hermes_bootstrap; exec("runpy.run_path('/home/lifeos-hermes/migration/2026-10-08/complete_profile_snapshot.py', run_name='__main__')")
+                                                                                                                                                                                                                                                                                                                                                               ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+    import os, sys, runpy; os.environ.pop('PYTHONHOME', None); os.environ.pop('PYTHONPATH', None); os.environ.pop('VIRTUAL_ENV', None); sys.path.insert(0, '/home/lifeos-hermes/workspace/hermes-agent'); os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(__import__('hermes_constants').get_default_hermes_root()); import hermes_bootstrap; exec("runpy.run_path('/home/lifeos-hermes/migration/2026-10-08/complete_profile_snapshot.py', run_name='__main__')")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/lifeos-hermes/migration/2026-10-08/complete_profile_snapshot.py", line 52, in <module>
+    receipt['backup']=create(configuration,snapshot,account='dashboard:basic:release-owner')
+                      ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 196, in create
+    native, native_signature = capture(memory, scope, connection, stage / 'native')
+                               ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/memory_backup.py", line 131, in capture
+    snapshot = _collect(memory, connection, stage)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/memory_backup.py", line 69, in _collect
+    _directory(directory)
+    ~~~~~~~~~~^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/memory_backup.py", line 36, in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions

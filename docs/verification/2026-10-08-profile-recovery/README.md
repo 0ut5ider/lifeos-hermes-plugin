@@ -1,0 +1,17 @@
+# Installed development profile recovery
+
+Date: 2026-10-08. These operator checks run on `.252` as the selected `lifeos-hermes` account. They keep fresh-store ownership and sharing disabled. They do not deploy the staged candidate code.
+
+The preceding [profile admission](../2026-10-08-publication-authority/profile-admission.json) refuses the external plugin link. The operator drains the gateway, dashboard, and Pulse through `ProfileServices`. It preserves the original link and copies identical deployed plugin bytes inside the selected profile. All 143 program files match the recorded source. The copy uses private owner permissions. All three services resume.
+
+The first [snapshot attempt](installed-layout.txt) fails because the administration environment omits the installed Bun path. The next [attempt](snapshot-package-discovery.txt) fails because the installed plugin directory has a hyphenated discovery name. The completion script loads the installed package explicitly and selects the installed Bun runtime. The next [native check](snapshot-native-directory-refusal.txt) refuses three group-writable directories. A metadata probe identifies `CACHE`, `CUSTOMIZATIONS/SKILLS/LocalIntelligence`, and its `runs` directory. Each has mode `0775` and the correct operating-system owner. The operator records their modes and changes only these measured directories to `0700` while services are stopped.
+
+The [completed snapshot](installed-snapshot.txt) covers 551 profile files and 108 native files. It records 14 excluded regenerable entries. Its manifest signature is `225616abc3ec579191b2b38a7f40a9eea85fe256d2df2581851ec281a7838428`. The original deployed code remains unchanged. The current gateway, dashboard, and Pulse resume successfully.
+
+The [separate recovery](recovery.txt) reconstructs the profile and native store in another private tree. It verifies exact snapshot bytes for 550 retained profile files. The memory configuration is the remaining file: recovery changes its root and keeps ownership and sharing disabled. The live memory configuration remains unchanged. Native reference checks pass. This selected fresh store contains no registered facts. Forgotten-fact preservation therefore depends on the existing synthetic recovery tests; this installed case does not establish that effect.
+
+Private operator records remain under `/home/lifeos-hermes/migration/2026-10-08/`. `plugin-profile-layout.json` records the original link, installed code hashes, backup receipt, and service state. `native-backup-permissions.json` records the three directory modes. The complete backup and recovery artifacts remain outside the selected profile. The repository retains only operator source and metadata outputs.
+
+To undo the installation layout, drain the same services with `ProfileServices`. Move the physical plugin directory to a new retained recovery path. Move `original-plugin-link` back to `.hermes/plugins/lifeos-hook-bridge`. Resume the same services. This restores the preceding link without deleting either code copy. To undo the directory normalization, restore the three recorded modes during the same drain. Those modes will cause backup admission to refuse again.
+
+This result closes the measured external-link and directory-permission barriers for the deployed development profile. It does not close current candidate caller coverage, installed memory ownership, live private-channel acceptance, automatic backup scheduling, or the combined release gate.
