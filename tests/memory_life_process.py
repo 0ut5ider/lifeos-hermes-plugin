@@ -19,11 +19,14 @@ rendered = False
 def observe(memory, action, **arguments):
     global rendered
     result = original(memory, action, **arguments)
-    if action in ('life_view', 'life_health_view'):
+    if action in ('life_view', 'life_health_view', 'life_finance_view'):
         rendered = True
         if mode == 'authority': configuration.update(lambda value: value['accounts'].clear())
         elif mode == 'source':
-            if target == '/api/life/health':
+            if target == '/api/life/finances':
+                path = root / 'LIFEOS/USER/FINANCES/ACCOUNTS.md'
+                path.write_text(path.read_text().replace('SyntheticAccount', 'SyntheticChangedAccount'))
+            elif target == '/api/life/health':
                 path = root / 'LIFEOS/USER/HEALTH/CONDITIONS.md'
                 path.write_text(path.read_text().replace('SyntheticHealthCondition', 'SyntheticHealthChangedCondition'))
             else:

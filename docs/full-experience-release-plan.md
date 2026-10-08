@@ -28,6 +28,8 @@ The [staged daily Pulse profile](verification/2026-10-08-daily-pulse-profile/REA
 
 The [native Life health gate](verification/2026-10-08-life-health/README.md) passes 14 focused cases and 119 adjacent cases without skips. Current owner authority governs markdown contents and lab filenames. The operation rechecks content, metadata, directory entries, and account binding after rendering. Other Life routes and user-index publication remain open.
 
+The [native Life finance gate](verification/2026-10-08-life-finances/README.md) passes 14 focused cases. The native renderer consumes admitted fixed files and transaction rows. Decoded YAML, JSON, and TOML strings receive private and retired source checks. The operation rechecks exact source snapshots and current account binding before delivery. Business, local work, user-index publication, and installed acceptance remain open.
+
 The [dashboard response authority gate](verification/2026-10-08-dashboard-response-authority/README.md) passes 67 tests. Wiki, Knowledge, Pulse, and hypothesis preference responses recheck the current owner binding after native rendering. Installed application acceptance remains open.
 
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.

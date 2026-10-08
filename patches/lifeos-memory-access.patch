@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..45f6918 100644
+index 787cf28..0e4f873 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -365,7 +365,7 @@ index 787cf28..45f6918 100644
  // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
  // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
  for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
-@@ -28,7 +30,7 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -28,14 +30,15 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
   *   GET  /, /work, /telos, /health, etc. — Static Next.js pages (fallback handler)
   */
  
@@ -374,15 +374,24 @@ index 787cf28..45f6918 100644
  import { readFileSync, readdirSync, existsSync, realpathSync, statSync, watch, openSync, readSync, closeSync, type FSWatcher } from "fs"
  import { spawnSync } from "child_process"
  import { homedir } from "os"
-@@ -36,6 +38,7 @@ import YAML from "yaml"
+ import YAML from "yaml"
  import { PULSE_BASE } from "../endpoint"
  import { RUN_ACTIVITY } from "../../TOOLS/ascent"
- import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
+-import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
++import { loadLifeosConfig, validateAndNormalize } from "../../TOOLS/LifeosConfig"
 +import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess"
  
  // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
  for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
-@@ -1496,13 +1499,13 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
+@@ -53,6 +56,7 @@ type GrowthData = Record<string, unknown>
+ // tsconfig's DOM+esnext lib doesn't include bun-types, so declare the minimal
+ // surface we actually use. Narrow to what's called, not a global `any`.
+ declare const Bun: {
++  TOML: { parse(content: string): unknown }
+   file(path: string): {
+     size: number
+     exists(): Promise<boolean>
+@@ -1496,13 +1500,13 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
  // Memory Graph — serves MEMORY/GRAPH/graph.json (built by LIFEOS/TOOLS/MemoryGraph.ts)
  // shaped for the KnowledgeGraph D3 component: category = community id, backlinkCount = degree.
  // Colored/clustered by DISCOVERED community (not domain), sized by degree — all silos.
@@ -399,7 +408,7 @@ index 787cf28..45f6918 100644
        generated: string; nodeCount: number; edgeCount: number
        nodes: Array<{ id: string; silo: string; type: string; title: string; community: number; pagerank: number; degree: number; tags: string[] }>
        edges: Array<{ from: string; to: string; weight: number; kind: string }>
-@@ -1535,9 +1538,13 @@ function handleMemoryGraphApi(): Response {
+@@ -1535,9 +1539,13 @@ function handleMemoryGraphApi(): Response {
    }
  }
  
@@ -415,7 +424,7 @@ index 787cf28..45f6918 100644
        return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })
      }
  
-@@ -1548,7 +1555,7 @@ function handleKnowledgeApi(): Response {
+@@ -1548,7 +1556,7 @@ function handleKnowledgeApi(): Response {
  
      // Parse master _index.md for last harvest date
      const masterIndexPath = join(KNOWLEDGE_DIR, "_index.md")
@@ -424,7 +433,7 @@ index 787cf28..45f6918 100644
        const content = readFileSync(masterIndexPath, "utf-8")
        const harvestMatch = content.match(/\*\*Last harvest:\*\*\s*(\S+)/)
        if (harvestMatch) lastHarvest = harvestMatch[1]
-@@ -1556,14 +1563,17 @@ function handleKnowledgeApi(): Response {
+@@ -1556,14 +1564,17 @@ function handleKnowledgeApi(): Response {
  
      for (const domain of KNOWLEDGE_DOMAINS) {
        const domainDir = join(KNOWLEDGE_DIR, domain)
@@ -444,7 +453,7 @@ index 787cf28..45f6918 100644
        } catch {
          files = []
        }
-@@ -1573,7 +1583,8 @@ function handleKnowledgeApi(): Response {
+@@ -1573,7 +1584,8 @@ function handleKnowledgeApi(): Response {
        for (const file of files) {
          const filePath = join(domainDir, file)
          try {
@@ -454,7 +463,7 @@ index 787cf28..45f6918 100644
            const fm = parseFrontmatter(raw)
  
            const title = (fm.title as string) || file.replace(/\.md$/, "")
-@@ -1656,13 +1667,14 @@ function capitalizeFirst(s: string): string {
+@@ -1656,13 +1668,14 @@ function capitalizeFirst(s: string): string {
    return s.charAt(0).toUpperCase() + s.slice(1)
  }
  
@@ -472,7 +481,7 @@ index 787cf28..45f6918 100644
      const fm = parseFrontmatter(content)
      return Response.json({
        domain,
-@@ -1680,6 +1692,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
+@@ -1680,6 +1693,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
    }
  }
  
@@ -496,7 +505,52 @@ index 787cf28..45f6918 100644
  async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
    const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
    if (!existsSync(filePath)) {
-@@ -2360,12 +2389,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
+@@ -1754,10 +1784,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
+ 
+ // Load a YAML file; return null on missing or parse failure so callers can
+ // degrade gracefully (per feedback_degrade_dont_block_on_missing_creds.md).
+-function loadYaml<T = any>(path: string): T | null {
++function loadYaml<T = any>(path: string, read?: (path: string) => string): T | null {
+   try {
+-    if (!existsSync(path)) return null
+-    const raw = readFileSync(path, "utf-8")
++    if (!read && !existsSync(path)) return null
++    const raw = read ? read(path) : readFileSync(path, "utf-8")
+     return YAML.parse(raw) as T
+   } catch (err) {
+     console.error(`[finances] YAML parse failed: ${path}`, err)
+@@ -1837,11 +1867,11 @@ interface SpendAggregateBundle {
+ // (schema, generated_at, record_count, sources); subsequent lines are
+ // one JSON record per normalized merchant. Returns empty bundle if the
+ // file is missing — the analyzer hasn't been run yet.
+-function readStatementSpendJsonl(): SpendAggregateBundle {
++function readStatementSpendJsonl(read?: (path: string) => string): SpendAggregateBundle {
+   const path = join(LIFEOS_DIR, "MEMORY", "OBSERVABILITY", "statement-spend.jsonl")
+-  if (!existsSync(path)) return { generated_at: null, records: [] }
++  if (!read && !existsSync(path)) return { generated_at: null, records: [] }
+   try {
+-    const lines = readFileSync(path, "utf-8").split("\n").filter(Boolean)
++    const lines = (read ? read(path) : readFileSync(path, "utf-8")).split("\n").filter(Boolean)
+     if (lines.length === 0) return { generated_at: null, records: [] }
+     let generated_at: string | null = null
+     const records: SpendAggregate[] = []
+@@ -1995,12 +2025,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
+   return "Review for cancellation"
+ }
+ 
+-function readVendorCostsJsonl(): Map<string, CollectorEntry> {
++function readVendorCostsJsonl(read?: (path: string) => string): Map<string, CollectorEntry> {
+   const latest = new Map<string, CollectorEntry>()
+   const path = join(LIFEOS_DIR, "MEMORY", "OBSERVABILITY", "vendor-costs.jsonl")
+-  if (!existsSync(path)) return latest
++  if (!read && !existsSync(path)) return latest
+   try {
+-    const lines = readFileSync(path, "utf-8").split("\n").filter(Boolean)
++    const lines = (read ? read(path) : readFileSync(path, "utf-8")).split("\n").filter(Boolean)
+     const cutoffMs = Date.now() - 35 * 86400_000
+     for (const line of lines) {
+       try {
+@@ -2360,12 +2390,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
    return sections
  }
  
@@ -513,7 +567,7 @@ index 787cf28..45f6918 100644
      files.push({ name: f.replace(".md", ""), content: content.slice(0, 2000), sections: parseSections(content) })
    }
    return files
-@@ -2428,13 +2457,13 @@ function parseCurrentDomains(content: string): {
+@@ -2428,13 +2458,13 @@ function parseCurrentDomains(content: string): {
    return { updated, updatedBy, domains }
  }
  
@@ -533,7 +587,7 @@ index 787cf28..45f6918 100644
  
      const fields = parseBoldFields(current)
      const { updated, updatedBy, domains } = parseCurrentDomains(current)
-@@ -2470,11 +2499,11 @@ function handleLifeHome(): Response {
+@@ -2470,11 +2500,11 @@ function handleLifeHome(): Response {
  
  // ── GET /api/life/health ──
  
@@ -548,7 +602,7 @@ index 787cf28..45f6918 100644
        ? readdirSync(HEALTH_DIR).filter(f => f.startsWith("lab_results"))
        : []
  
-@@ -2485,21 +2514,21 @@ function handleLifeHealth(): Response {
+@@ -2485,21 +2515,21 @@ function handleLifeHealth(): Response {
        freshnessEntries.push({ name: lab, sourceDate: parseFilenameDate(lab) })
      }
      for (const structured of ["CONDITIONS.md", "MEDICATIONS.md", "SUPPLEMENTS.md", "FITNESS.md", "NUTRITION.md", "METRICS.md", "HISTORY.md"]) {
@@ -580,7 +634,86 @@ index 787cf28..45f6918 100644
        labReports: labFiles,
        freshness,
      })
-@@ -3054,34 +3083,34 @@ function handleLifeWork(): Response {
+@@ -2547,25 +2577,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
+   return { headers, rows }
+ }
+ 
+-function handleLifeFinances(): Response {
++function handleLifeFinances(read = readMd, currency: () => unknown = resolveFinanceCurrency): Response {
+   try {
+-    const stateJson = readMd(join(FINANCES_DIR, "state.json"))
++    const stateJson = read(join(FINANCES_DIR, "state.json"))
+     let state = {}
+     try { state = JSON.parse(stateJson) } catch {}
+ 
+-    const incomeRaw = readMd(join(FINANCES_DIR, "INCOME.md"))
+-    const expensesRaw = readMd(join(FINANCES_DIR, "EXPENSES.md"))
+-    const accountsRaw = readMd(join(FINANCES_DIR, "ACCOUNTS.md"))
+-    const investmentsRaw = readMd(join(FINANCES_DIR, "INVESTMENTS.md"))
+-    const taxesRaw = readMd(join(FINANCES_DIR, "TAXES.md"))
+-    const planRaw = readMd(join(FINANCES_DIR, "PLAN.md"))
++    const incomeRaw = read(join(FINANCES_DIR, "INCOME.md"))
++    const expensesRaw = read(join(FINANCES_DIR, "EXPENSES.md"))
++    const accountsRaw = read(join(FINANCES_DIR, "ACCOUNTS.md"))
++    const investmentsRaw = read(join(FINANCES_DIR, "INVESTMENTS.md"))
++    const taxesRaw = read(join(FINANCES_DIR, "TAXES.md"))
++    const planRaw = read(join(FINANCES_DIR, "PLAN.md"))
+ 
+     // Freshness: state.json.last_run is the authoritative statement-processing
+     // timestamp; per-file content dates are a fallback for files the user
+     // writes by hand. See freshness helpers above for the source priority.
+     const stateLastRun = (state as any)?.last_run ?? null
+-    const vendorsRaw = readMd(join(FINANCES_DIR, "vendors.yaml"))
+-    const obligationsRaw = readMd(join(FINANCES_DIR, "obligations.yaml"))
++    const vendorsRaw = read(join(FINANCES_DIR, "vendors.yaml"))
++    const obligationsRaw = read(join(FINANCES_DIR, "obligations.yaml"))
+ 
+     // Per-card freshness — each card surfaces its own indicator pulling
+     // only from the files it actually depends on. The composite `freshness`
+@@ -2637,8 +2667,8 @@ function handleLifeFinances(): Response {
+ 
+     // ── v2 envelope: Income / Outbound / Overall ──
+ 
+-    const vendorsYaml = loadYaml<{ vendors?: VendorYaml[] }>(join(FINANCES_DIR, "vendors.yaml"))
+-    const obligationsYaml = loadYaml<{ obligations?: ObligationYaml[] }>(join(FINANCES_DIR, "obligations.yaml"))
++    const vendorsYaml = loadYaml<{ vendors?: VendorYaml[] }>(join(FINANCES_DIR, "vendors.yaml"), read === readMd ? undefined : read)
++    const obligationsYaml = loadYaml<{ obligations?: ObligationYaml[] }>(join(FINANCES_DIR, "obligations.yaml"), read === readMd ? undefined : read)
+     // Normalize both known on-disk shapes (issue #1438). The shipped install
+     // templates use a legacy shape ({name, purpose, category, direction, match}
+     // and {vendor, amount: "$X", frequency}) with no `id`, which crashed the
+@@ -2684,8 +2714,8 @@ function handleLifeFinances(): Response {
+           category: o.category ?? "other",
+         }
+       })
+-    const collectorData = readVendorCostsJsonl()
+-    const spendBundle = readStatementSpendJsonl()
++    const collectorData = readVendorCostsJsonl(read === readMd ? undefined : read)
++    const spendBundle = readStatementSpendJsonl(read === readMd ? undefined : read)
+     const spendInsights = buildSpendInsights(spendBundle.records)
+ 
+     // Resolve each vendor's monthly spend.
+@@ -2871,14 +2901,14 @@ function handleLifeFinances(): Response {
+       // v2 envelope
+       ...v2,
+       // ported from public PR #1777, @takanorinishida
+-      currency: resolveFinanceCurrency(),
++      currency: currency(),
+       // v1 fields preserved (backward compat for existing page.tsx until migrated)
+-      accounts: parseSections(readMd(join(FINANCES_DIR, "ACCOUNTS.md"))),
++      accounts: parseSections(read(join(FINANCES_DIR, "ACCOUNTS.md"))),
+       expenses: parseSections(expensesRaw),
+-      investments: parseSections(readMd(join(FINANCES_DIR, "INVESTMENTS.md"))),
+-      goals: parseSections(readMd(join(FINANCES_DIR, "GOALS.md"))),
+-      taxes: parseSections(readMd(join(FINANCES_DIR, "TAXES.md"))),
+-      overview: parseSections(readMd(join(FINANCES_DIR, "FINANCES.md"))),
++      investments: parseSections(read(join(FINANCES_DIR, "INVESTMENTS.md"))),
++      goals: parseSections(read(join(FINANCES_DIR, "GOALS.md"))),
++      taxes: parseSections(read(join(FINANCES_DIR, "TAXES.md"))),
++      overview: parseSections(read(join(FINANCES_DIR, "FINANCES.md"))),
+       plan,
+       incomeStreams,
+       expenseCategories,
+@@ -3054,34 +3084,34 @@ function handleLifeWork(): Response {
  
  // ── GET /api/life/goals ──
  
@@ -640,7 +773,7 @@ index 787cf28..45f6918 100644
  
      return Response.json({
        mission: parseSections(mission),
-@@ -3465,13 +3494,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+@@ -3465,13 +3495,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
  // this one — TELOS_DIR has no CURRENT.md/GOALS.md). Same semantic as
  // handleTelosOverview's local closure; lifted so every /api/life/* handler
  // resolves sections the same way.
@@ -658,10 +791,66 @@ index 787cf28..45f6918 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -4520,6 +4549,37 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4550,93 @@ function handleOnboardingState(): Response {
    })
  }
  
++export function financeViewSources(): string[] {
++  return ["state.json", "INCOME.md", "EXPENSES.md", "ACCOUNTS.md", "INVESTMENTS.md", "TAXES.md",
++    "PLAN.md", "vendors.yaml", "obligations.yaml", "GOALS.md", "FINANCES.md"].map(name => "LIFEOS/USER/FINANCES/" + name)
++    .concat(["LIFEOS/MEMORY/OBSERVABILITY/vendor-costs.jsonl", "LIFEOS/MEMORY/OBSERVABILITY/statement-spend.jsonl",
++      "LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml"]);
++}
++
++function financeDecodedText(value: unknown): string {
++  const serialized = JSON.stringify(value);
++  if (typeof serialized !== "string") throw new Error("Finance sources require serializable values");
++  const strings: string[] = [];
++  const pending: unknown[] = [value];
++  let count = 0;
++  while (pending.length) {
++    if (++count > 10000) throw new Error("Finance values exceed their projection limit");
++    const item = pending.pop();
++    if (typeof item === "string") strings.push(item);
++    else if (Array.isArray(item)) pending.push(...item);
++    else if (item !== null && typeof item === "object") {
++      for (const [key, entry] of Object.entries(item)) pending.push(key, entry);
++    }
++  }
++  return [serialized, ...strings].join("\n");
++}
++
++export function financeSourceProjections(sources: ReadonlyArray<{relative: string; content: string}>): Array<string | null> {
++  const allowed = new Set(["LIFEOS/USER/FINANCES/vendors.yaml", "LIFEOS/USER/FINANCES/obligations.yaml",
++    "LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml"]);
++  if (sources.length > allowed.size || sources.some(source => !allowed.has(source.relative))
++      || new Set(sources.map(source => source.relative)).size !== sources.length) throw new Error("Choose fixed finance projections");
++  return sources.map(source => {
++    try {
++      const value: unknown = source.relative.endsWith(".toml") ? Bun.TOML.parse(source.content) : YAML.parse(source.content);
++      return financeDecodedText(value);
++    } catch { return null; }
++  });
++}
++
++export function renderFinanceView(sources: ReadonlyArray<{relative: string; content: string}>): Response {
++  const allowed = new Set(financeViewSources());
++  if (sources.length > allowed.size || sources.some(source => !allowed.has(source.relative))
++      || new Set(sources.map(source => source.relative)).size !== sources.length) throw new Error("Choose fixed finance sources");
++  const contents = new Map(sources.map(source => [join(dirname(LIFEOS_DIR), source.relative), source.content]));
++  const read = (path: string): string => {
++    if (!allowed.has(path.slice(dirname(LIFEOS_DIR).length + 1))) throw new Error("Finance views require fixed owner sources");
++    return contents.get(path) ?? "";
++  };
++  const currency = (): unknown => {
++    try {
++      const raw: unknown = Bun.TOML.parse(read(join(LIFEOS_DIR, "USER/CONFIG/LIFEOS_CONFIG.toml")));
++      return validateAndNormalize(raw, "LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml").principal.currency || "USD";
++    } catch { return "USD"; }
++  };
++  return handleLifeFinances(read, currency);
++}
++
 +export function renderHealthView(sources: ReadonlyArray<{filename: string; content: string}>): Response {
 +  if (sources.some(source => source.filename.includes("/") || source.filename.includes("\\")
 +      || source.filename === "." || source.filename === "..")) throw new Error("Choose fixed health filenames");
@@ -696,11 +885,11 @@ index 787cf28..45f6918 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4591,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4648,47 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
-+  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/observability/life-card"].includes(pathname)) {
++  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/observability/life-card"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "Life views require GET"}, {status: 405, headers});
 +    if (url.search) return Response.json({error: "Life views use fixed installed sources"}, {status: 400, headers});
@@ -8988,3 +9177,23 @@ index 4e74a33..ccd65ee 100755
  
 -console.log(parts.join(" "))
 +if (import.meta.main) main()
+diff --git a/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts b/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts
+index 5b47d90..95792ac 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Loads and validates the selected LifeOS user configuration.
++// ABOUTME: Supplies configuration validation for admitted native source values.
+ /**
+  * LifeosConfig.ts — typed user-config loader.
+  *
+@@ -145,7 +147,7 @@ export function paiUserDir(): string {
+ 
+ // ─────────── Validation ───────────
+ 
+-function validateAndNormalize(raw: unknown, path: string): LifeosConfig {
++export function validateAndNormalize(raw: unknown, path: string): LifeosConfig {
+   if (!raw || typeof raw !== "object") {
+     throw new Error(`LifeosConfig: ${path} did not parse to an object`);
+   }

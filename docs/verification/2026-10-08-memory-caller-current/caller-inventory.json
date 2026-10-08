@@ -2957,7 +2957,7 @@
   },
   {
     "path": "LIFEOS/PULSE/Observability/observability.ts",
-    "sha256": "6fe989e05cc2d3231bb48e65580f75c117a07b7dab910c05c3555aa69854840d",
+    "sha256": "d1b2e9cb753904a1d265a6c52469395e8dca82427bc4de6f6a68424426b64496",
     "registered_hooks": [],
     "cli_guard": false,
     "source_evidence": [
@@ -2978,1359 +2978,1435 @@
         "text": "// Growth is an OPTIONAL USER customization (USER/CUSTOMIZATIONS/TOOLS/Growth.ts): present on the"
       },
       {
-        "line": 65,
+        "line": 66,
         "text": "  write(path: string, content: string): Promise<number>"
       },
       {
-        "line": 70,
+        "line": 71,
         "text": "export interface ObservabilityConfig {"
       },
       {
-        "line": 77,
+        "line": 78,
         "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
       },
       {
-        "line": 79,
+        "line": 80,
         "text": "const MEMORY_DIR = join(LIFEOS_DIR, \"MEMORY\")"
       },
       {
-        "line": 81,
+        "line": 82,
         "text": "const WORK_JSON_PATH = join(MEMORY_DIR, \"STATE\", \"work.json\")"
       },
       {
-        "line": 82,
+        "line": 83,
         "text": "const WORK_EVENTS_PATH = join(MEMORY_DIR, \"STATE\", \"work-events.jsonl\")"
       },
       {
-        "line": 83,
+        "line": 84,
         "text": "const NOVELTY_STATE_PATH = join(MEMORY_DIR, \"STATE\", \"novelty-state.json\")"
       },
       {
-        "line": 84,
+        "line": 85,
         "text": "const SUBAGENT_EVENTS_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"subagent-events.jsonl\")"
       },
       {
-        "line": 85,
+        "line": 86,
         "text": "const VOICE_EVENTS_PATH = join(MEMORY_DIR, \"VOICE\", \"voice-events.jsonl\")"
       },
       {
-        "line": 86,
+        "line": 87,
         "text": "const TOOL_FAILURES_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"tool-failures.jsonl\")"
       },
       {
-        "line": 87,
+        "line": 88,
         "text": "const TOOL_ACTIVITY_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"tool-activity.jsonl\")"
       },
       {
-        "line": 116,
+        "line": 117,
         "text": "export function startObservability(cfg: ObservabilityConfig): void {"
       },
       {
-        "line": 121,
+        "line": 122,
         "text": "export function observabilityHealth(): Record<string, unknown> {"
       },
       {
-        "line": 131,
+        "line": 132,
         "text": "// BYTE-BOUNDED since 2026-07-26. The old body did readFileSync of the WHOLE"
       },
       {
-        "line": 137,
+        "line": 138,
         "text": "function readJsonlTail(filePath: string, maxLines = 100): any[] {"
       },
       {
-        "line": 138,
+        "line": 139,
         "text": "  const parsed = readJsonlByteTail(filePath, Math.max(1024 * 1024, maxLines * 4096))"
       },
       {
-        "line": 142,
+        "line": 143,
         "text": "// Byte-bounded JSONL tail: read only the last maxBytes of a file, drop the"
       },
       {
-        "line": 144,
+        "line": 145,
         "text": "// reading it whole per request is banned (capabilities ISA C2/A1)."
       },
       {
-        "line": 145,
+        "line": 146,
         "text": "function readJsonlByteTail(filePath: string, maxBytes: number): any[] {"
       },
       {
-        "line": 157,
+        "line": 158,
         "text": "      readSync(fd, buf, 0, buf.length, start)"
       },
       {
-        "line": 243,
+        "line": 244,
         "text": "// the 100ms SSE poll never re-reads an unchanged file."
       },
       {
-        "line": 250,
+        "line": 251,
         "text": "// Suffix-fold cache (2026-07-15 efficiency pass): the event log is append-only,"
       },
       {
-        "line": 251,
+        "line": 252,
         "text": "// so after the first full read we only parse bytes past the cached offset \u2014"
       },
       {
-        "line": 252,
+        "line": 253,
         "text": "// the same trick readLiveRegistry uses. Compaction (file shrinks below the"
       },
       {
-        "line": 253,
+        "line": 254,
         "text": "// cached offset) resets to a full re-read. A torn final line (no trailing"
       },
       {
-        "line": 254,
+        "line": 255,
         "text": "// newline yet) is left unconsumed until the writer completes it."
       },
       {
-        "line": 296,
+        "line": 297,
         "text": "// Key eviction for the two suffix-fold caches. Each per-key series is already"
       },
       {
-        "line": 305,
+        "line": 306,
         "text": "// Session ticks are genuinely ephemeral \u2014 nothing reads a session whose newest"
       },
       {
-        "line": 329,
+        "line": 330,
         "text": "export function getClimbData(): Map<string, ClimbPoint[]> {"
       },
       {
-        "line": 345,
+        "line": 346,
         "text": "      readSync(fd, buf, 0, len, climbCache.offset)"
       },
       {
-        "line": 371,
+        "line": 372,
         "text": "// parsed. Read-only over MEMORY, like everything in this module."
       },
       {
-        "line": 373,
+        "line": 374,
         "text": "export type ActivityClass = \"exploring\" | \"building\" | \"verifying\" | \"delegating\" | \"other\""
       },
       {
-        "line": 381,
+        "line": 382,
         "text": "export interface RibbonBucket {"
       },
       {
-        "line": 390,
+        "line": 391,
         "text": "export interface ActivitySummary {"
       },
       {
-        "line": 416,
+        "line": 417,
         "text": "export function classifyTool(tool: string, preview: string): ActivityClass {"
       },
       {
-        "line": 454,
+        "line": 455,
         "text": "export function getActivityData(): Map<string, ToolTick[]> {"
       },
       {
-        "line": 464,
+        "line": 465,
         "text": "    let readFrom = activityCache.offset"
       },
       {
-        "line": 465,
+        "line": 466,
         "text": "    const firstLoad = readFrom === 0"
       },
       {
-        "line": 466,
+        "line": 467,
         "text": "    if (firstLoad && st.size > ACTIVITY_TAIL_BYTES) readFrom = st.size - ACTIVITY_TAIL_BYTES"
       },
       {
-        "line": 471,
+        "line": 472,
         "text": "      const len = st.size - readFrom"
       },
       {
-        "line": 473,
+        "line": 474,
         "text": "      readSync(fd, buf, 0, len, readFrom)"
       },
       {
-        "line": 479,
+        "line": 480,
         "text": "    if (firstLoad && readFrom > 0) {"
       },
       {
-        "line": 486,
+        "line": 487,
         "text": "    const remainder = chunk.slice(lastNewline + 1)"
       },
       {
-        "line": 487,
+        "line": 488,
         "text": "    activityCache.offset = st.size - Buffer.byteLength(remainder, \"utf-8\")"
       },
       {
-        "line": 496,
+        "line": 497,
         "text": "export function buildActivitySummary(ticks: ToolTick[] | undefined, now: number): ActivitySummary | undefined {"
       },
       {
-        "line": 539,
+        "line": 540,
         "text": "export interface IscDeltas {"
       },
       {
-        "line": 546,
+        "line": 547,
         "text": "export function buildIscDeltas(points: ClimbPoint[] | undefined, now: number): IscDeltas | undefined {"
       },
       {
-        "line": 570,
+        "line": 571,
         "text": "/** Human-readable fallback title from a work slug: strip the date prefix, de-dash. */"
       },
       {
-        "line": 586,
+        "line": 587,
         "text": "    const data = JSON.parse(readFileSync(WORK_JSON_PATH, \"utf-8\"))"
       },
       {
-        "line": 772,
+        "line": 773,
         "text": "// Latency budget: file write \u2192 SSE event delivered to client \u2264100ms +"
       },
       {
-        "line": 776,
+        "line": 777,
         "text": "  writer: WritableStreamDefaultWriter<Uint8Array>"
       },
       {
-        "line": 784,
+        "line": 785,
         "text": "// never the file, because work.json is replaced by rename (watchers follow the"
       },
       {
-        "line": 801,
+        "line": 802,
         "text": "  try { sub.writer.close() } catch {}"
       },
       {
-        "line": 826,
+        "line": 827,
         "text": "    sub.writer.write(frame).catch(() => removeAlgorithmStreamSub(sub))"
       },
       {
-        "line": 834,
+        "line": 835,
         "text": "  // already receive the snapshot synchronously on connect (see handler)."
       },
       {
-        "line": 857,
+        "line": 858,
         "text": "          sub.writer.write(SSE_ENCODER.encode(\": keepalive\\n\\n\")).catch(() => removeAlgorithmStreamSub(sub))"
       },
       {
-        "line": 868,
+        "line": 869,
         "text": "  // Push path: broadcast the moment a registry write lands instead of waiting"
       },
       {
-        "line": 873,
+        "line": 874,
         "text": "      algorithmStreamWatcher = watch(join(MEMORY_DIR, \"STATE\"), (_event, filename) => {"
       },
       {
-        "line": 900,
+        "line": 901,
         "text": "      const writer: WritableStreamDefaultWriter<Uint8Array> = {"
       },
       {
-        "line": 901,
+        "line": 902,
         "text": "        async write(chunk: Uint8Array) {"
       },
       {
-        "line": 908,
+        "line": 909,
         "text": "        get ready() { return Promise.resolve() },"
       },
       {
-        "line": 913,
+        "line": 914,
         "text": "        writer,"
       },
       {
-        "line": 936,
+        "line": 937,
         "text": "      // Stream was cancelled (client disconnected) \u2014 already handled by abort."
       },
       {
-        "line": 953,
+        "line": 954,
         "text": "  return Response.json({ events: readJsonlTail(SUBAGENT_EVENTS_PATH, 100).reverse() })"
       },
       {
-        "line": 959,
+        "line": 960,
         "text": "  const voiceEvents = readJsonlTail(VOICE_EVENTS_PATH, 50).map((e) => ({"
       },
       {
-        "line": 964,
+        "line": 965,
         "text": "  const toolFailures = readJsonlTail(TOOL_FAILURES_PATH, 50).map((e) => ({"
       },
       {
-        "line": 969,
+        "line": 970,
         "text": "  const subagentEvents = readJsonlTail(SUBAGENT_EVENTS_PATH, 50).map((e) => ({"
       },
       {
-        "line": 974,
+        "line": 975,
         "text": "  const toolActivity = readJsonlTail(TOOL_ACTIVITY_PATH, 100).map((e) => ({"
       },
       {
-        "line": 995,
+        "line": 996,
         "text": "// Zero inference, zero tokens; bounded byte-tail reads only."
       },
       {
-        "line": 1006,
+        "line": 1007,
         "text": "  const activity = readJsonlByteTail(TOOL_ACTIVITY_PATH, maxBytes).filter((e) => {"
       },
       {
-        "line": 1013,
+        "line": 1014,
         "text": "  const subagents = readJsonlByteTail(SUBAGENT_EVENTS_PATH, 500_000).filter((e) => {"
       },
       {
-        "line": 1160,
+        "line": 1161,
         "text": "  return Response.json(readJsonlTail(VOICE_EVENTS_PATH, 100).reverse())"
       },
       {
-        "line": 1166,
+        "line": 1167,
         "text": "  return Response.json(readJsonlTail(TOOL_FAILURES_PATH, 100).reverse())"
       },
       {
-        "line": 1176,
+        "line": 1177,
         "text": "    const data = JSON.parse(readFileSync(NOVELTY_STATE_PATH, \"utf-8\"))"
       },
       {
-        "line": 1208,
+        "line": 1209,
         "text": "      const files = readdirSync(dirPath)"
       },
       {
-        "line": 1213,
+        "line": 1214,
         "text": "          const content = readFileSync(join(dirPath, file), \"utf-8\")"
       },
       {
-        "line": 1236,
+        "line": 1237,
         "text": "          // Skip unreadable files"
       },
       {
-        "line": 1266,
+        "line": 1267,
         "text": "      const settings = JSON.parse(readFileSync(SETTINGS_PATH, \"utf-8\"))"
       },
       {
-        "line": 1301,
+        "line": 1302,
         "text": "    console.error(\"[Observability] Failed to read settings.json for security:\", e)"
       },
       {
-        "line": 1318,
+        "line": 1319,
         "text": "// values (bearer token, worker subdomain) are read at RUNTIME from the local Arbol config, so"
       },
       {
-        "line": 1319,
+        "line": 1320,
         "text": "// no hostname or token is baked into this SYSTEM file, and the static export ships the page"
       },
       {
-        "line": 1322,
+        "line": 1323,
         "text": "  HOME, \".config\", \"LIFEOS\", \"USER\", \"CUSTOMIZATIONS\", \"ARBOL\", \"Shared\", \"attack-surface.snapshot.json\","
       },
       {
-        "line": 1326,
+        "line": 1327,
         "text": "function readArbolConfigValue(key: string): string {"
       },
       {
-        "line": 1329,
+        "line": 1330,
         "text": "    const line = readFileSync(ARBOL_CONFIG_PATH, \"utf-8\").split(\"\\n\").find((l) => l.startsWith(`${key}:`))"
       },
       {
-        "line": 1340,
+        "line": 1341,
         "text": "      const s = JSON.parse(readFileSync(ATTACK_SURFACE_SNAPSHOT, \"utf-8\"))"
       },
       {
-        "line": 1351,
+        "line": 1352,
         "text": "    console.error(\"[Observability] attack-surface snapshot read failed:\", e)"
       },
       {
-        "line": 1356,
+        "line": 1357,
         "text": "    const token = readArbolConfigValue(\"auth_token\")"
       },
       {
-        "line": 1357,
+        "line": 1358,
         "text": "    const subdomain = readArbolConfigValue(\"subdomain\")"
       },
       {
-        "line": 1358,
+        "line": 1359,
         "text": "    if (token && subdomain) {"
       },
       {
-        "line": 1359,
+        "line": 1360,
         "text": "      // Worker NAME is an install-private fact \u2014 read from config, never"
       },
       {
-        "line": 1361,
+        "line": 1362,
         "text": "      const securityWorker = readArbolConfigValue(\"security_worker\") || \"infra-security\""
       },
       {
-        "line": 1362,
+        "line": 1363,
         "text": "      const reportUrl = `https://${securityWorker}.${subdomain}.workers.dev/report`"
       },
       {
-        "line": 1396,
+        "line": 1397,
         "text": "  // read as \"Critical 0 / High 0 \u2014 no findings on the current surface\", which"
       },
       {
-        "line": 1463,
+        "line": 1464,
         "text": "          \"Validates agent spawning via Pulse HTTP route. Enforces background execution policies.\","
       },
       {
-        "line": 1476,
+        "line": 1477,
         "text": "const KNOWLEDGE_DIR = join(MEMORY_DIR, \"KNOWLEDGE\")"
       },
       {
-        "line": 1499,
+        "line": 1500,
         "text": "// Memory Graph \u2014 serves MEMORY/GRAPH/graph.json (built by LIFEOS/TOOLS/MemoryGraph.ts)"
       },
       {
-        "line": 1501,
+        "line": 1502,
         "text": "// Colored/clustered by DISCOVERED community (not domain), sized by degree \u2014 all silos."
       },
       {
-        "line": 1504,
+        "line": 1505,
         "text": "    const graphPath = join(MEMORY_DIR, \"GRAPH\", \"graph.json\")"
       },
       {
-        "line": 1508,
+        "line": 1509,
         "text": "    const g = JSON.parse(declared ?? readFileSync(graphPath, \"utf-8\")) as {"
       },
       {
-        "line": 1541,
+        "line": 1542,
         "text": "export function renderMemoryGraphView(content: string): Response {"
       },
       {
-        "line": 1548,
+        "line": 1549,
         "text": "      return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })"
       },
       {
-        "line": 1551,
+        "line": 1552,
         "text": "    const domains: { name: string; count: number; avgQuality: number; lowCount: number; midCount: number; highCount: number }[] = []"
       },
       {
-        "line": 1552,
+        "line": 1553,
         "text": "    const allNotes: { title: string; domain: string; type: string; quality: number; tags: string[]; created: string; updated: string; slug: string }[] = []"
       },
       {
-        "line": 1559,
+        "line": 1560,
         "text": "      const content = readFileSync(masterIndexPath, \"utf-8\")"
       },
       {
-        "line": 1564,
+        "line": 1565,
         "text": "    for (const domain of KNOWLEDGE_DOMAINS) {"
       },
       {
-        "line": 1565,
+        "line": 1566,
         "text": "      const domainDir = join(KNOWLEDGE_DIR, domain)"
       },
       {
-        "line": 1566,
+        "line": 1567,
         "text": "      if (declared === undefined && !existsSync(domainDir)) {"
       },
       {
-        "line": 1567,
+        "line": 1568,
         "text": "        domains.push({ name: domain, count: 0, avgQuality: 0, lowCount: 0, midCount: 0, highCount: 0 })"
       },
       {
-        "line": 1574,
+        "line": 1575,
         "text": "          ? readdirSync(domainDir).filter(f => f.endsWith(\".md\") && !f.startsWith(\"_\"))"
       },
       {
-        "line": 1575,
+        "line": 1576,
         "text": "          : [...declared.keys()].filter(path => path.startsWith(domainDir + \"/\"))"
       },
       {
-        "line": 1576,
+        "line": 1577,
         "text": "              .map(path => path.slice(domainDir.length + 1))"
       },
       {
-        "line": 1584,
+        "line": 1585,
         "text": "        const filePath = join(domainDir, file)"
       },
       {
-        "line": 1586,
+        "line": 1587,
         "text": "          const raw = declared === undefined ? readFileSync(filePath, \"utf-8\") : declared.get(filePath)"
       },
       {
-        "line": 1608,
+        "line": 1609,
         "text": "            domain: domain.toLowerCase(),"
       },
       {
-        "line": 1622,
+        "line": 1623,
         "text": "      domains.push({ name: domain, count: files.length, avgQuality, lowCount, midCount, highCount })"
       },
       {
-        "line": 1638,
+        "line": 1639,
         "text": "      domains,"
       },
       {
-        "line": 1646,
+        "line": 1647,
         "text": "    return Response.json({ error: String(err), domains: [], notes: [], totalNotes: 0 }, { status: 500 })"
       },
       {
-        "line": 1650,
+        "line": 1651,
         "text": "// \u2500\u2500 /api/knowledge/:domain/:slug (GET + PUT) \u2500\u2500"
       },
       {
-        "line": 1654,
+        "line": 1655,
         "text": "function parseKnowledgeNotePath(pathname: string): { domain: string; slug: string } | null {"
       },
       {
-        "line": 1655,
+        "line": 1656,
         "text": "  // Match /api/knowledge/:domain/:slug"
       },
       {
-        "line": 1658,
+        "line": 1659,
         "text": "  const domain = match[1].toLowerCase()"
       },
       {
-        "line": 1660,
+        "line": 1661,
         "text": "  if (!VALID_DOMAINS.has(domain)) return null"
       },
       {
-        "line": 1663,
+        "line": 1664,
         "text": "  return { domain, slug }"
       },
       {
-        "line": 1670,
+        "line": 1671,
         "text": "function handleGetKnowledgeNote(domain: string, slug: string, declared?: ReadonlyMap<string, string>): Response {"
       },
       {
-        "line": 1671,
+        "line": 1672,
         "text": "  const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)"
       },
       {
-        "line": 1676,
+        "line": 1677,
         "text": "    const content = declared === undefined ? readFileSync(filePath, \"utf-8\") : declared.get(filePath)"
       },
       {
-        "line": 1680,
+        "line": 1681,
         "text": "      domain,"
       },
       {
-        "line": 1695,
+        "line": 1696,
         "text": "export function renderKnowledgeView(sources: ReadonlyArray<{path: string; content: string}>, pathname: string): Response {"
       },
       {
-        "line": 1708,
+        "line": 1709,
         "text": "  if (note) return handleGetKnowledgeNote(note.domain, note.slug, declared)"
       },
       {
-        "line": 1709,
+        "line": 1710,
         "text": "  return Response.json({error: \"This is not a declared Knowledge read view\"}, {status: 404})"
       },
       {
-        "line": 1712,
+        "line": 1713,
         "text": "async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {"
       },
       {
-        "line": 1713,
+        "line": 1714,
         "text": "  const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)"
       },
       {
-        "line": 1730,
+        "line": 1731,
         "text": "    const { writeFileSync } = require(\"fs\")"
       },
       {
-        "line": 1731,
+        "line": 1732,
         "text": "    writeFileSync(filePath, content, \"utf-8\")"
       },
       {
-        "line": 1736,
+        "line": 1737,
         "text": "      domain,"
       },
       {
-        "line": 1752,
+        "line": 1753,
         "text": "const USER_DIR = join(LIFEOS_DIR, \"USER\")"
       },
       {
-        "line": 1753,
+        "line": 1754,
         "text": "const TELOS_DIR = join(USER_DIR, \"TELOS\")"
       },
       {
-        "line": 1754,
+        "line": 1755,
         "text": "// Post-2026-05-01 USER/ restructure: HEALTH and FINANCES live under TELOS/;"
       },
       {
-        "line": 1756,
+        "line": 1757,
         "text": "const HEALTH_DIR = join(USER_DIR, \"HEALTH\")"
       },
       {
-        "line": 1757,
+        "line": 1758,
         "text": "const FINANCES_DIR = join(USER_DIR, \"FINANCES\")"
       },
       {
-        "line": 1758,
+        "line": 1759,
         "text": "const BUSINESS_DIR = join(USER_DIR, \"WORK\", \"YOUR_COMPANIES\")"
       },
       {
-        "line": 1759,
+        "line": 1760,
         "text": "const PROJECTS_FILE = join(USER_DIR, \"PROJECTS.md\")"
       },
       {
-        "line": 1772,
+        "line": 1773,
         "text": "function readMd(path: string): string {"
       },
       {
-        "line": 1773,
+        "line": 1774,
         "text": "  try { return existsSync(path) ? readFileSync(path, \"utf-8\") : \"\" } catch { return \"\" }"
       },
       {
-        "line": 1789,
-        "text": "    const raw = readFileSync(path, \"utf-8\")"
+        "line": 1787,
+        "text": "function loadYaml<T = any>(path: string, read?: (path: string) => string): T | null {"
       },
       {
-        "line": 1864,
-        "text": "// Reads MEMORY/OBSERVABILITY/statement-spend.jsonl produced by"
+        "line": 1789,
+        "text": "    if (!read && !existsSync(path)) return null"
+      },
+      {
+        "line": 1790,
+        "text": "    const raw = read ? read(path) : readFileSync(path, \"utf-8\")"
       },
       {
         "line": 1865,
+        "text": "// Reads MEMORY/OBSERVABILITY/statement-spend.jsonl produced by"
+      },
+      {
+        "line": 1866,
         "text": "// USER/FINANCES/Tools/StatementAnalyzer.ts. First line is the header"
       },
       {
-        "line": 1869,
-        "text": "function readStatementSpendJsonl(): SpendAggregateBundle {"
+        "line": 1870,
+        "text": "function readStatementSpendJsonl(read?: (path: string) => string): SpendAggregateBundle {"
       },
       {
-        "line": 1870,
+        "line": 1871,
         "text": "  const path = join(LIFEOS_DIR, \"MEMORY\", \"OBSERVABILITY\", \"statement-spend.jsonl\")"
       },
       {
-        "line": 1873,
-        "text": "    const lines = readFileSync(path, \"utf-8\").split(\"\\n\").filter(Boolean)"
+        "line": 1872,
+        "text": "  if (!read && !existsSync(path)) return { generated_at: null, records: [] }"
       },
       {
-        "line": 2027,
-        "text": "function readVendorCostsJsonl(): Map<string, CollectorEntry> {"
+        "line": 1874,
+        "text": "    const lines = (read ? read(path) : readFileSync(path, \"utf-8\")).split(\"\\n\").filter(Boolean)"
       },
       {
-        "line": 2029,
+        "line": 2028,
+        "text": "function readVendorCostsJsonl(read?: (path: string) => string): Map<string, CollectorEntry> {"
+      },
+      {
+        "line": 2030,
         "text": "  const path = join(LIFEOS_DIR, \"MEMORY\", \"OBSERVABILITY\", \"vendor-costs.jsonl\")"
       },
       {
-        "line": 2032,
-        "text": "    const lines = readFileSync(path, \"utf-8\").split(\"\\n\").filter(Boolean)"
+        "line": 2031,
+        "text": "  if (!read && !existsSync(path)) return latest"
       },
       {
-        "line": 2155,
-        "text": "export interface FreshnessFile { name: string; date: string | null; source: \"state\"|\"content\"|\"filename\"|\"mtime\"|\"unknown\" }"
+        "line": 2033,
+        "text": "    const lines = (read ? read(path) : readFileSync(path, \"utf-8\")).split(\"\\n\").filter(Boolean)"
       },
       {
         "line": 2156,
+        "text": "export interface FreshnessFile { name: string; date: string | null; source: \"state\"|\"content\"|\"filename\"|\"mtime\"|\"unknown\" }"
+      },
+      {
+        "line": 2157,
         "text": "export interface Freshness {"
       },
       {
-        "line": 2170,
+        "line": 2171,
         "text": "  sourceDate?: string | null // domain-authoritative override (e.g. state.json.last_run)"
       },
       {
-        "line": 2213,
+        "line": 2214,
         "text": "// per-period amount instead of the cell being read as an annual figure."
       },
       {
-        "line": 2216,
+        "line": 2217,
         "text": "// the old hardcoded cells[1] read zero expenses off exactly the layout LifeOS"
       },
       {
-        "line": 2392,
+        "line": 2393,
         "text": "function readDirMdFiles(dir: string, read = readMd, entries?: ReadonlyArray<string>): { name: string, content: string, sections: { heading: string, body: string }[] }[] {"
       },
       {
-        "line": 2395,
+        "line": 2396,
         "text": "  for (const f of entries ?? readdirSync(dir)) {"
       },
       {
-        "line": 2397,
+        "line": 2398,
         "text": "    const content = read(join(dir, f))"
       },
       {
-        "line": 2418,
+        "line": 2419,
         "text": "    const text = readFileSync(indexPath, \"utf-8\")"
       },
       {
-        "line": 2433,
+        "line": 2434,
         "text": "// (<!-- updated: YYYY-MM-DD by:Name -->) followed by ### <Domain> subsections"
       },
       {
-        "line": 2435,
+        "line": 2436,
         "text": "// workflow writes; the older **Mood:** bold-field format is kept as a legacy"
       },
       {
-        "line": 2437,
+        "line": 2438,
         "text": "function parseCurrentDomains(content: string): {"
       },
       {
-        "line": 2440,
+        "line": 2441,
         "text": "  domains: { name: string, summary: string, body: string }[]"
       },
       {
-        "line": 2446,
+        "line": 2447,
         "text": "  const domains: { name: string, summary: string, body: string }[] = []"
       },
       {
-        "line": 2455,
+        "line": 2456,
         "text": "    domains.push({ name, summary, body: body.slice(0, 1500) })"
       },
       {
-        "line": 2457,
+        "line": 2458,
         "text": "  return { updated, updatedBy, domains }"
       },
       {
-        "line": 2460,
+        "line": 2461,
         "text": "function handleLifeHome(read = readMd): Response {"
       },
       {
-        "line": 2462,
-        "text": "    const sections = parseTelosUnified(read)"
-      },
-      {
         "line": 2463,
-        "text": "    const current = telosSectionOrFile(sections, \"current state\", \"CURRENT.md\", read)"
+        "text": "    const sections = parseTelosUnified(read)"
       },
       {
         "line": 2464,
-        "text": "    const goalsRaw = telosSectionOrFile(sections, \"goals\", \"GOALS.md\", read)"
+        "text": "    const current = telosSectionOrFile(sections, \"current state\", \"CURRENT.md\", read)"
       },
       {
         "line": 2465,
-        "text": "    const sparksRaw = telosSectionOrFile(sections, \"sparks\", \"SPARKS.md\", read)"
-      },
-      {
-        "line": 2466,
-        "text": "    const timelineRaw = telosSectionOrFile(sections, \"2036\", \"2036.md\", read)"
-      },
-      {
-        "line": 2469,
-        "text": "    const { updated, updatedBy, domains } = parseCurrentDomains(current)"
-      },
-      {
-        "line": 2486,
-        "text": "      domains,"
-      },
-      {
-        "line": 2502,
-        "text": "function handleLifeHealth(read = readMd, entries?: ReadonlyArray<string>): Response {"
-      },
-      {
-        "line": 2504,
-        "text": "    const files = readDirMdFiles(HEALTH_DIR, read, entries)"
-      },
-      {
-        "line": 2507,
-        "text": "      ? readdirSync(HEALTH_DIR).filter(f => f.startsWith(\"lab_results\"))"
-      },
-      {
-        "line": 2517,
-        "text": "      freshnessEntries.push({ name: structured, content: read(join(HEALTH_DIR, structured)) })"
-      },
-      {
-        "line": 2523,
-        "text": "      conditions: parseSections(read(join(HEALTH_DIR, \"CONDITIONS.md\"))),"
-      },
-      {
-        "line": 2524,
-        "text": "      medications: parseSections(read(join(HEALTH_DIR, \"MEDICATIONS.md\"))),"
-      },
-      {
-        "line": 2525,
-        "text": "      supplements: parseSections(read(join(HEALTH_DIR, \"SUPPLEMENTS.md\"))),"
-      },
-      {
-        "line": 2526,
-        "text": "      fitness: parseSections(read(join(HEALTH_DIR, \"FITNESS.md\"))),"
-      },
-      {
-        "line": 2527,
-        "text": "      nutrition: parseSections(read(join(HEALTH_DIR, \"NUTRITION.md\"))),"
-      },
-      {
-        "line": 2528,
-        "text": "      routine: parseSections(read(join(HEALTH_DIR, \"routine.md\"))),"
-      },
-      {
-        "line": 2529,
-        "text": "      providers: parseSections(read(join(HEALTH_DIR, \"PROVIDERS.md\"))),"
-      },
-      {
-        "line": 2530,
-        "text": "      metrics: parseSections(read(join(HEALTH_DIR, \"METRICS.md\"))),"
-      },
-      {
-        "line": 2531,
-        "text": "      history: parseSections(read(join(HEALTH_DIR, \"HISTORY.md\"))),"
-      },
-      {
-        "line": 2581,
-        "text": "    const stateJson = readMd(join(FINANCES_DIR, \"state.json\"))"
-      },
-      {
-        "line": 2585,
-        "text": "    const incomeRaw = readMd(join(FINANCES_DIR, \"INCOME.md\"))"
-      },
-      {
-        "line": 2586,
-        "text": "    const expensesRaw = readMd(join(FINANCES_DIR, \"EXPENSES.md\"))"
-      },
-      {
-        "line": 2587,
-        "text": "    const accountsRaw = readMd(join(FINANCES_DIR, \"ACCOUNTS.md\"))"
-      },
-      {
-        "line": 2588,
-        "text": "    const investmentsRaw = readMd(join(FINANCES_DIR, \"INVESTMENTS.md\"))"
-      },
-      {
-        "line": 2589,
-        "text": "    const taxesRaw = readMd(join(FINANCES_DIR, \"TAXES.md\"))"
-      },
-      {
-        "line": 2590,
-        "text": "    const planRaw = readMd(join(FINANCES_DIR, \"PLAN.md\"))"
-      },
-      {
-        "line": 2594,
-        "text": "    // writes by hand. See freshness helpers above for the source priority."
-      },
-      {
-        "line": 2596,
-        "text": "    const vendorsRaw = readMd(join(FINANCES_DIR, \"vendors.yaml\"))"
-      },
-      {
-        "line": 2597,
-        "text": "    const obligationsRaw = readMd(join(FINANCES_DIR, \"obligations.yaml\"))"
-      },
-      {
-        "line": 2655,
-        "text": "    // prose with no table at all, so a fresh install reads zero income here"
-      },
-      {
-        "line": 2656,
-        "text": "    // until the user runs the Finances interview or writes a table \u2014 the"
-      },
-      {
-        "line": 2716,
-        "text": "    const collectorData = readVendorCostsJsonl()"
-      },
-      {
-        "line": 2717,
-        "text": "    const spendBundle = readStatementSpendJsonl()"
-      },
-      {
-        "line": 2886,
-        "text": "        jsonl_path: \"MEMORY/OBSERVABILITY/vendor-costs.jsonl\","
-      },
-      {
-        "line": 2893,
-        "text": "          jsonl_path: \"MEMORY/OBSERVABILITY/statement-spend.jsonl\","
-      },
-      {
-        "line": 2894,
-        "text": "          tool: \"USER/FINANCES/Tools/StatementAnalyzer.ts\","
-      },
-      {
-        "line": 2905,
-        "text": "      accounts: parseSections(readMd(join(FINANCES_DIR, \"ACCOUNTS.md\"))),"
-      },
-      {
-        "line": 2907,
-        "text": "      investments: parseSections(readMd(join(FINANCES_DIR, \"INVESTMENTS.md\"))),"
-      },
-      {
-        "line": 2908,
-        "text": "      goals: parseSections(readMd(join(FINANCES_DIR, \"GOALS.md\"))),"
-      },
-      {
-        "line": 2909,
-        "text": "      taxes: parseSections(readMd(join(FINANCES_DIR, \"TAXES.md\"))),"
-      },
-      {
-        "line": 2910,
-        "text": "      overview: parseSections(readMd(join(FINANCES_DIR, \"FINANCES.md\"))),"
-      },
-      {
-        "line": 2939,
-        "text": "// BUSINESS_DIR is the generic parent (USER/WORK/YOUR_COMPANIES); each installer names"
-      },
-      {
-        "line": 2945,
-        "text": "  const dirs = readdirSync(BUSINESS_DIR, { withFileTypes: true })"
-      },
-      {
-        "line": 2960,
-        "text": "      const revFiles = readdirSync(revenueDir).filter(f => f.endsWith(\".md\")).sort().reverse()"
-      },
-      {
-        "line": 2963,
-        "text": "        latestRevenue = readMd(join(revenueDir, revFiles[0]))"
-      },
-      {
-        "line": 2977,
-        "text": "      ulOverview: ulDir ? parseSections(readMd(join(ulDir, \"README.md\"))) : [],"
-      },
-      {
-        "line": 2978,
-        "text": "      businessOverview: parseSections(readMd(join(BUSINESS_DIR, \"README.md\"))),"
-      },
-      {
-        "line": 2986,
-        "text": "// Audience growth (newsletter + YouTube + web). Data lives in the USER-zone"
-      },
-      {
-        "line": 2998,
-        "text": "    // Guarded dynamic import: Growth is an optional USER customization. Variable path defeats"
-      },
-      {
-        "line": 3000,
-        "text": "    const growthModPath = \"../../USER/CUSTOMIZATIONS/TOOLS/Growth\""
-      },
-      {
-        "line": 3028,
-        "text": "    const projectsContent = readMd(PROJECTS_FILE)"
-      },
-      {
-        "line": 3057,
-        "text": "        const workData = JSON.parse(readFileSync(WORK_JSON_PATH, \"utf-8\"))"
-      },
-      {
-        "line": 3086,
-        "text": "function handleLifeGoals(read = readMd): Response {"
-      },
-      {
-        "line": 3089,
-        "text": "    const sections = parseTelosUnified(read)"
-      },
-      {
-        "line": 3090,
-        "text": "    const mission = telosSectionOrFile(sections, \"mission\", \"MISSION.md\", read)"
-      },
-      {
-        "line": 3091,
         "text": "    const goalsRaw = telosSectionOrFile(sections, \"goals\", \"GOALS.md\", read)"
       },
       {
+        "line": 2466,
+        "text": "    const sparksRaw = telosSectionOrFile(sections, \"sparks\", \"SPARKS.md\", read)"
+      },
+      {
+        "line": 2467,
+        "text": "    const timelineRaw = telosSectionOrFile(sections, \"2036\", \"2036.md\", read)"
+      },
+      {
+        "line": 2470,
+        "text": "    const { updated, updatedBy, domains } = parseCurrentDomains(current)"
+      },
+      {
+        "line": 2487,
+        "text": "      domains,"
+      },
+      {
+        "line": 2503,
+        "text": "function handleLifeHealth(read = readMd, entries?: ReadonlyArray<string>): Response {"
+      },
+      {
+        "line": 2505,
+        "text": "    const files = readDirMdFiles(HEALTH_DIR, read, entries)"
+      },
+      {
+        "line": 2508,
+        "text": "      ? readdirSync(HEALTH_DIR).filter(f => f.startsWith(\"lab_results\"))"
+      },
+      {
+        "line": 2518,
+        "text": "      freshnessEntries.push({ name: structured, content: read(join(HEALTH_DIR, structured)) })"
+      },
+      {
+        "line": 2524,
+        "text": "      conditions: parseSections(read(join(HEALTH_DIR, \"CONDITIONS.md\"))),"
+      },
+      {
+        "line": 2525,
+        "text": "      medications: parseSections(read(join(HEALTH_DIR, \"MEDICATIONS.md\"))),"
+      },
+      {
+        "line": 2526,
+        "text": "      supplements: parseSections(read(join(HEALTH_DIR, \"SUPPLEMENTS.md\"))),"
+      },
+      {
+        "line": 2527,
+        "text": "      fitness: parseSections(read(join(HEALTH_DIR, \"FITNESS.md\"))),"
+      },
+      {
+        "line": 2528,
+        "text": "      nutrition: parseSections(read(join(HEALTH_DIR, \"NUTRITION.md\"))),"
+      },
+      {
+        "line": 2529,
+        "text": "      routine: parseSections(read(join(HEALTH_DIR, \"routine.md\"))),"
+      },
+      {
+        "line": 2530,
+        "text": "      providers: parseSections(read(join(HEALTH_DIR, \"PROVIDERS.md\"))),"
+      },
+      {
+        "line": 2531,
+        "text": "      metrics: parseSections(read(join(HEALTH_DIR, \"METRICS.md\"))),"
+      },
+      {
+        "line": 2532,
+        "text": "      history: parseSections(read(join(HEALTH_DIR, \"HISTORY.md\"))),"
+      },
+      {
+        "line": 2580,
+        "text": "function handleLifeFinances(read = readMd, currency: () => unknown = resolveFinanceCurrency): Response {"
+      },
+      {
+        "line": 2582,
+        "text": "    const stateJson = read(join(FINANCES_DIR, \"state.json\"))"
+      },
+      {
+        "line": 2586,
+        "text": "    const incomeRaw = read(join(FINANCES_DIR, \"INCOME.md\"))"
+      },
+      {
+        "line": 2587,
+        "text": "    const expensesRaw = read(join(FINANCES_DIR, \"EXPENSES.md\"))"
+      },
+      {
+        "line": 2588,
+        "text": "    const accountsRaw = read(join(FINANCES_DIR, \"ACCOUNTS.md\"))"
+      },
+      {
+        "line": 2589,
+        "text": "    const investmentsRaw = read(join(FINANCES_DIR, \"INVESTMENTS.md\"))"
+      },
+      {
+        "line": 2590,
+        "text": "    const taxesRaw = read(join(FINANCES_DIR, \"TAXES.md\"))"
+      },
+      {
+        "line": 2591,
+        "text": "    const planRaw = read(join(FINANCES_DIR, \"PLAN.md\"))"
+      },
+      {
+        "line": 2595,
+        "text": "    // writes by hand. See freshness helpers above for the source priority."
+      },
+      {
+        "line": 2597,
+        "text": "    const vendorsRaw = read(join(FINANCES_DIR, \"vendors.yaml\"))"
+      },
+      {
+        "line": 2598,
+        "text": "    const obligationsRaw = read(join(FINANCES_DIR, \"obligations.yaml\"))"
+      },
+      {
+        "line": 2656,
+        "text": "    // prose with no table at all, so a fresh install reads zero income here"
+      },
+      {
+        "line": 2657,
+        "text": "    // until the user runs the Finances interview or writes a table \u2014 the"
+      },
+      {
+        "line": 2670,
+        "text": "    const vendorsYaml = loadYaml<{ vendors?: VendorYaml[] }>(join(FINANCES_DIR, \"vendors.yaml\"), read === readMd ? undefined : read)"
+      },
+      {
+        "line": 2671,
+        "text": "    const obligationsYaml = loadYaml<{ obligations?: ObligationYaml[] }>(join(FINANCES_DIR, \"obligations.yaml\"), read === readMd ? undefined : read)"
+      },
+      {
+        "line": 2717,
+        "text": "    const collectorData = readVendorCostsJsonl(read === readMd ? undefined : read)"
+      },
+      {
+        "line": 2718,
+        "text": "    const spendBundle = readStatementSpendJsonl(read === readMd ? undefined : read)"
+      },
+      {
+        "line": 2887,
+        "text": "        jsonl_path: \"MEMORY/OBSERVABILITY/vendor-costs.jsonl\","
+      },
+      {
+        "line": 2894,
+        "text": "          jsonl_path: \"MEMORY/OBSERVABILITY/statement-spend.jsonl\","
+      },
+      {
+        "line": 2895,
+        "text": "          tool: \"USER/FINANCES/Tools/StatementAnalyzer.ts\","
+      },
+      {
+        "line": 2906,
+        "text": "      accounts: parseSections(read(join(FINANCES_DIR, \"ACCOUNTS.md\"))),"
+      },
+      {
+        "line": 2908,
+        "text": "      investments: parseSections(read(join(FINANCES_DIR, \"INVESTMENTS.md\"))),"
+      },
+      {
+        "line": 2909,
+        "text": "      goals: parseSections(read(join(FINANCES_DIR, \"GOALS.md\"))),"
+      },
+      {
+        "line": 2910,
+        "text": "      taxes: parseSections(read(join(FINANCES_DIR, \"TAXES.md\"))),"
+      },
+      {
+        "line": 2911,
+        "text": "      overview: parseSections(read(join(FINANCES_DIR, \"FINANCES.md\"))),"
+      },
+      {
+        "line": 2940,
+        "text": "// BUSINESS_DIR is the generic parent (USER/WORK/YOUR_COMPANIES); each installer names"
+      },
+      {
+        "line": 2946,
+        "text": "  const dirs = readdirSync(BUSINESS_DIR, { withFileTypes: true })"
+      },
+      {
+        "line": 2961,
+        "text": "      const revFiles = readdirSync(revenueDir).filter(f => f.endsWith(\".md\")).sort().reverse()"
+      },
+      {
+        "line": 2964,
+        "text": "        latestRevenue = readMd(join(revenueDir, revFiles[0]))"
+      },
+      {
+        "line": 2978,
+        "text": "      ulOverview: ulDir ? parseSections(readMd(join(ulDir, \"README.md\"))) : [],"
+      },
+      {
+        "line": 2979,
+        "text": "      businessOverview: parseSections(readMd(join(BUSINESS_DIR, \"README.md\"))),"
+      },
+      {
+        "line": 2987,
+        "text": "// Audience growth (newsletter + YouTube + web). Data lives in the USER-zone"
+      },
+      {
+        "line": 2999,
+        "text": "    // Guarded dynamic import: Growth is an optional USER customization. Variable path defeats"
+      },
+      {
+        "line": 3001,
+        "text": "    const growthModPath = \"../../USER/CUSTOMIZATIONS/TOOLS/Growth\""
+      },
+      {
+        "line": 3029,
+        "text": "    const projectsContent = readMd(PROJECTS_FILE)"
+      },
+      {
+        "line": 3058,
+        "text": "        const workData = JSON.parse(readFileSync(WORK_JSON_PATH, \"utf-8\"))"
+      },
+      {
+        "line": 3087,
+        "text": "function handleLifeGoals(read = readMd): Response {"
+      },
+      {
+        "line": 3090,
+        "text": "    const sections = parseTelosUnified(read)"
+      },
+      {
+        "line": 3091,
+        "text": "    const mission = telosSectionOrFile(sections, \"mission\", \"MISSION.md\", read)"
+      },
+      {
         "line": 3092,
-        "text": "    const strategies = telosSectionOrFile(sections, \"strategies\", \"STRATEGIES.md\", read)"
+        "text": "    const goalsRaw = telosSectionOrFile(sections, \"goals\", \"GOALS.md\", read)"
       },
       {
         "line": 3093,
-        "text": "    const challenges = telosSectionOrFile(sections, \"challenges\", \"CHALLENGES.md\", read)"
+        "text": "    const strategies = telosSectionOrFile(sections, \"strategies\", \"STRATEGIES.md\", read)"
       },
       {
         "line": 3094,
-        "text": "    const beliefs = telosSectionOrFile(sections, \"beliefs\", \"BELIEFS.md\", read)"
+        "text": "    const challenges = telosSectionOrFile(sections, \"challenges\", \"CHALLENGES.md\", read)"
       },
       {
         "line": 3095,
-        "text": "    const models = telosSectionOrFile(sections, \"models\", \"MODELS.md\", read)"
+        "text": "    const beliefs = telosSectionOrFile(sections, \"beliefs\", \"BELIEFS.md\", read)"
       },
       {
         "line": 3096,
-        "text": "    const narratives = telosSectionOrFile(sections, \"narratives\", \"NARRATIVES.md\", read)"
+        "text": "    const models = telosSectionOrFile(sections, \"models\", \"MODELS.md\", read)"
       },
       {
         "line": 3097,
-        "text": "    const wisdom = telosSectionOrFile(sections, \"wisdom\", \"WISDOM.md\", read)"
+        "text": "    const narratives = telosSectionOrFile(sections, \"narratives\", \"NARRATIVES.md\", read)"
       },
       {
         "line": 3098,
-        "text": "    const problems = telosSectionOrFile(sections, \"problems\", \"PROBLEMS.md\", read)"
+        "text": "    const wisdom = telosSectionOrFile(sections, \"wisdom\", \"WISDOM.md\", read)"
       },
       {
         "line": 3099,
-        "text": "    const predictions = telosSectionOrFile(sections, \"predictions\", \"PREDICTIONS.md\", read)"
+        "text": "    const problems = telosSectionOrFile(sections, \"problems\", \"PROBLEMS.md\", read)"
       },
       {
         "line": 3100,
-        "text": "    const frames = telosSectionOrFile(sections, \"frames\", \"FRAMES.md\", read)"
+        "text": "    const predictions = telosSectionOrFile(sections, \"predictions\", \"PREDICTIONS.md\", read)"
       },
       {
         "line": 3101,
-        "text": "    const wrong = telosSectionOrFile(sections, \"wrong\", \"WRONG.md\", read)"
+        "text": "    const frames = telosSectionOrFile(sections, \"frames\", \"FRAMES.md\", read)"
       },
       {
         "line": 3102,
-        "text": "    const learned = telosSectionOrFile(sections, \"learned\", \"LEARNED.md\", read)"
+        "text": "    const wrong = telosSectionOrFile(sections, \"wrong\", \"WRONG.md\", read)"
       },
       {
         "line": 3103,
-        "text": "    const ideas = telosSectionOrFile(sections, \"ideas\", \"IDEAS.md\", read)"
+        "text": "    const learned = telosSectionOrFile(sections, \"learned\", \"LEARNED.md\", read)"
       },
       {
         "line": 3104,
-        "text": "    const sparks = telosSectionOrFile(sections, \"sparks\", \"SPARKS.md\", read)"
+        "text": "    const ideas = telosSectionOrFile(sections, \"ideas\", \"IDEAS.md\", read)"
       },
       {
         "line": 3105,
-        "text": "    const timeline2036 = telosSectionOrFile(sections, \"2036\", \"2036.md\", read)"
+        "text": "    const sparks = telosSectionOrFile(sections, \"sparks\", \"SPARKS.md\", read)"
       },
       {
         "line": 3106,
-        "text": "    const authors = telosSectionOrFile(sections, \"authors\", \"AUTHORS.md\", read)"
+        "text": "    const timeline2036 = telosSectionOrFile(sections, \"2036\", \"2036.md\", read)"
       },
       {
         "line": 3107,
-        "text": "    const books = telosSectionOrFile(sections, \"books\", \"BOOKS.md\", read)"
+        "text": "    const authors = telosSectionOrFile(sections, \"authors\", \"AUTHORS.md\", read)"
       },
       {
         "line": 3108,
-        "text": "    const movies = telosSectionOrFile(sections, \"movies\", \"MOVIES.md\", read)"
+        "text": "    const books = telosSectionOrFile(sections, \"books\", \"BOOKS.md\", read)"
       },
       {
         "line": 3109,
-        "text": "    const traumas = telosSectionOrFile(sections, \"traumas\", \"TRAUMAS.md\", read)"
+        "text": "    const movies = telosSectionOrFile(sections, \"movies\", \"MOVIES.md\", read)"
       },
       {
         "line": 3110,
-        "text": "    const status = telosSectionOrFile(sections, \"status\", \"STATUS.md\", read)"
+        "text": "    const traumas = telosSectionOrFile(sections, \"traumas\", \"TRAUMAS.md\", read)"
       },
       {
         "line": 3111,
+        "text": "    const status = telosSectionOrFile(sections, \"status\", \"STATUS.md\", read)"
+      },
+      {
+        "line": 3112,
         "text": "    const telosProjects = telosSectionOrFile(sections, \"projects\", \"PROJECTS.md\", read)"
       },
       {
-        "line": 3113,
+        "line": 3114,
         "text": "    const telosMaster = read(join(TELOS_DIR, \"TELOS.md\"))"
       },
       {
-        "line": 3292,
+        "line": 3293,
         "text": "    await Bun.write(p, body.content)"
       },
       {
-        "line": 3363,
+        "line": 3364,
         "text": "  // Pass 3: ID-less prose fallback (2026-06-08 TELOS rewrite removed typed IDs)."
       },
       {
-        "line": 3445,
+        "line": 3446,
         "text": "      const parsed = JSON.parse(readFileSync(statePath, \"utf-8\")) as { dimensions?: Record<string, { pct?: number }> }"
       },
       {
-        "line": 3488,
+        "line": 3489,
         "text": "// stripped). Replaces the previous one-file-per-section read pattern. The"
       },
       {
-        "line": 3492,
+        "line": 3493,
         "text": "// @xmasyx): a stock install ships ONLY TELOS.md, so any handler that reads the"
       },
       {
-        "line": 3497,
+        "line": 3498,
         "text": "function telosSectionOrFile(sections: Record<string, string>, sectionKey: string, legacyFile: string, read = readMd): string {"
       },
       {
-        "line": 3498,
+        "line": 3499,
         "text": "  return sections[sectionKey] || read(join(TELOS_DIR, legacyFile))"
       },
       {
-        "line": 3501,
+        "line": 3502,
         "text": "function parseTelosUnified(read = readMd): Record<string, string> {"
       },
       {
-        "line": 3503,
+        "line": 3504,
         "text": "  const content = read(telosPath)"
       },
       {
-        "line": 3541,
+        "line": 3542,
         "text": "async function buildWorkNarrative(): Promise<{ summary: string; inProgress: number; done: number; ready: number; inbox: number } | null> {"
       },
       {
-        "line": 3551,
+        "line": 3552,
         "text": "    const ready = cols[\"Ready\"] ?? []"
       },
       {
-        "line": 3570,
+        "line": 3571,
         "text": "      if (ready.length + queued.length > 0) summary += ` ${ready.length + queued.length} queued for next.`"
       },
       {
-        "line": 3575,
+        "line": 3576,
         "text": "      const next = ready.length + queued.length"
       },
       {
-        "line": 3576,
+        "line": 3577,
         "text": "      if (next > 0) summary += ` ${next} ready to pick up next.`"
       },
       {
-        "line": 3577,
+        "line": 3578,
         "text": "    } else if (ready.length + queued.length > 0) {"
       },
       {
-        "line": 3578,
+        "line": 3579,
         "text": "      summary = `Nothing active. ${ready.length + queued.length} ready in the queue, ${inbox.length} in inbox.`"
       },
       {
-        "line": 3589,
+        "line": 3590,
         "text": "      ready: ready.length + queued.length,"
       },
       {
-        "line": 3599,
+        "line": 3600,
         "text": "  const content = readMd(path)"
       },
       {
-        "line": 3642,
+        "line": 3643,
         "text": "  const books = parseBullets(readMd(join(TELOS_DIR, \"BOOKS.md\"))).slice(0, 8)"
       },
       {
-        "line": 3643,
+        "line": 3644,
         "text": "  const movies = parseBullets(readMd(join(TELOS_DIR, \"MOVIES.md\"))).slice(0, 8)"
       },
       {
-        "line": 3644,
+        "line": 3645,
         "text": "  const authors = parseBullets(readMd(join(TELOS_DIR, \"AUTHORS.md\"))).slice(0, 8)"
       },
       {
-        "line": 3679,
+        "line": 3680,
         "text": "  // mood \u2014 the long mood string was leaking into prose and reading as noise."
       },
       {
-        "line": 3702,
+        "line": 3703,
         "text": "  // Hard-pick the small set of fields that read well as a card bullet list."
       },
       {
-        "line": 3704,
+        "line": 3705,
         "text": "  // glance. The label remains schema-derived (the markdown's bold key, not"
       },
       {
-        "line": 3705,
+        "line": 3706,
         "text": "  // a hardcoded string), so any rename of the source key flows through."
       },
       {
-        "line": 3727,
+        "line": 3728,
         "text": "  // read the manually-authored `### <Dimension>` subsections the same way the"
       },
       {
-        "line": 3734,
+        "line": 3735,
         "text": "// Shared subsection reader for the CURRENT card's prose-authored format. Mirrors"
       },
       {
-        "line": 3800,
+        "line": 3801,
         "text": "  // Conversational lead. \"Where you're trying to land:\" reads like a friend"
       },
       {
-        "line": 3916,
+        "line": 3917,
         "text": "      segs.push({ kind: \"work\", text: `${workNarrative.inProgress} ${workNarrative.inProgress === 1 ? \"thread\" : \"threads\"}` })"
       },
       {
-        "line": 3918,
+        "line": 3919,
         "text": "    } else if (workNarrative.ready > 0) {"
       },
       {
-        "line": 3920,
+        "line": 3921,
         "text": "      segs.push({ kind: \"work\", text: `${workNarrative.ready} ${workNarrative.ready === 1 ? \"thread is\" : \"threads are\"} queued` })"
       },
       {
-        "line": 3940,
+        "line": 3941,
         "text": "// already-parsed schema; returns null on a fresh install."
       },
       {
-        "line": 3944,
+        "line": 3945,
         "text": "  challenges: ReadonlyArray<{ id: string; title: string; blocks?: readonly string[] }>"
       },
       {
-        "line": 3947,
+        "line": 3948,
         "text": "  workNarrative: { summary: string; inProgress: number; done: number; ready: number; inbox: number } | null"
       },
       {
-        "line": 3956,
+        "line": 3957,
         "text": "  // everything which made \"Build Human 3.0 systems\" read as \"build human 3.0"
       },
       {
-        "line": 4004,
+        "line": 4005,
         "text": "      const verb = workNarrative.inProgress === 1 ? \"thread\" : \"threads\""
       },
       {
-        "line": 4006,
+        "line": 4007,
         "text": "    } else if (workNarrative.ready > 0) {"
       },
       {
-        "line": 4007,
+        "line": 4008,
         "text": "      parts.push(`Nothing's actively moving, but ${workNarrative.ready} ${workNarrative.ready === 1 ? \"thread is\" : \"threads are\"} queued and ready \u2014 pick one and let's go.`)"
       },
       {
-        "line": 4019,
+        "line": 4020,
         "text": "// posture. In-progress threads take priority; then ready/queued; then inbox."
       },
       {
-        "line": 4021,
+        "line": 4022,
         "text": "  workNarrative: { summary: string; inProgress: number; done: number; ready: number; inbox: number } | null"
       },
       {
-        "line": 4026,
+        "line": 4027,
         "text": "      ? \"Finish the in-progress thread before picking up anything new.\""
       },
       {
-        "line": 4027,
+        "line": 4028,
         "text": "      : `Pick the strongest of the ${workNarrative.inProgress} in-progress threads and finish it.`"
       },
       {
-        "line": 4029,
+        "line": 4030,
         "text": "  if (workNarrative.ready > 0) {"
       },
       {
-        "line": 4030,
+        "line": 4031,
         "text": "    return workNarrative.ready === 1"
       },
       {
-        "line": 4031,
+        "line": 4032,
         "text": "      ? \"Start the one ready thread waiting in the queue.\""
       },
       {
-        "line": 4032,
+        "line": 4033,
         "text": "      : `Pick one of the ${workNarrative.ready} ready threads and start.`"
       },
       {
-        "line": 4041,
+        "line": 4042,
         "text": "// The main page's Projects-and-Work, Metrics, and Team sections previously"
       },
       {
-        "line": 4044,
+        "line": 4045,
         "text": "// and USER identity files parsed at request time. No values are invented and"
       },
       {
-        "line": 4051,
+        "line": 4052,
         "text": "function readBunkerState(): Record<string, BunkerAppState> {"
       },
       {
-        "line": 4052,
+        "line": 4053,
         "text": "  try { return JSON.parse(readFileSync(BUNKER_STATE_FILE, \"utf8\")) } catch { return {} }"
       },
       {
-        "line": 4062,
+        "line": 4063,
         "text": "    const p = spawnSync(\"launchctl\", [\"list\"], { encoding: \"utf8\" })"
       },
       {
-        "line": 4109,
+        "line": 4110,
         "text": "  const apps = Object.entries(readBunkerState())"
       },
       {
-        "line": 4118,
+        "line": 4119,
         "text": "      // Any thread older than a week without closing gets an amber row and"
       },
       {
-        "line": 4155,
+        "line": 4156,
         "text": "  workNarrative: { inProgress: number; done: number; ready: number; inbox: number } | null,"
       },
       {
-        "line": 4158,
+        "line": 4159,
         "text": "  const apps = Object.values(readBunkerState())"
       },
       {
-        "line": 4175,
+        "line": 4176,
         "text": "      id: \"SYS2\", label: \"Threads in motion\", value: String(workNarrative.inProgress), unit: \"\","
       },
       {
-        "line": 4179,
+        "line": 4180,
         "text": "      id: \"SYS3\", label: \"Queued / inbox\", value: `${workNarrative.ready}/${workNarrative.inbox}`, unit: \"\","
       },
       {
-        "line": 4188,
+        "line": 4189,
         "text": "// Team is parsed from USER files at request time \u2014 names never live in this file."
       },
       {
-        "line": 4195,
+        "line": 4196,
         "text": "  const principal = nameFrom(readMd(join(USER_DIR, \"PRINCIPAL\", \"PRINCIPAL_IDENTITY.md\")))"
       },
       {
-        "line": 4203,
+        "line": 4204,
         "text": "  const da = nameFrom(readMd(join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_IDENTITY.md\")))"
       },
       {
-        "line": 4210,
+        "line": 4211,
         "text": "  const fleetMatch = readMd(PROJECTS_FILE).match(/Fleet:\\s*([A-Za-z /]+?)\\*\\*/)"
       },
       {
-        "line": 4224,
+        "line": 4225,
         "text": "    // Single source of truth: LIFEOS/USER/TELOS/TELOS.md, split by H2 sections."
       },
       {
-        "line": 4225,
+        "line": 4226,
         "text": "    // Falls back to legacy per-file reads if TELOS.md is absent or a section"
       },
       {
-        "line": 4229,
+        "line": 4230,
         "text": "      sections[sectionKey] || readMd(join(TELOS_DIR, legacyFile))"
       },
       {
-        "line": 4319,
+        "line": 4320,
         "text": "    // launchd, USER identity files). Null when a source has nothing."
       },
       {
-        "line": 4325,
+        "line": 4326,
         "text": "    const liveTeam = buildTeamFromUserFiles(Object.keys(readBunkerState()))"
       },
       {
-        "line": 4392,
+        "line": 4393,
         "text": "    const cachePath = join(MEMORY_DIR, \"_AIRGRADIENT\", \"latest.json\")"
       },
       {
-        "line": 4396,
+        "line": 4397,
         "text": "    const raw = readFileSync(cachePath, \"utf8\")"
       },
       {
-        "line": 4467,
+        "line": 4468,
         "text": "// has moved past the template. An empty / section-header-only TELOS reads as a"
       },
       {
-        "line": 4471,
+        "line": 4472,
         "text": "// reads the untouched template as personalized. That made template mode never"
       },
       {
-        "line": 4475,
+        "line": 4476,
         "text": "// \\b not a literal \")\": the scaffold also writes \"(sample \u2014 \u2026)\" variants (e.g."
       },
       {
-        "line": 4485,
+        "line": 4486,
         "text": "      sections[key] || readMd(join(TELOS_DIR, legacyFile))"
       },
       {
-        "line": 4507,
+        "line": 4508,
         "text": "//      build. The flag is baked into the static export via Next.js, so"
       },
       {
-        "line": 4509,
+        "line": 4510,
         "text": "//   2. Runtime marker file \u2014 `~/.claude/LIFEOS/USER/.template-mode`. Written by"
       },
       {
-        "line": 4516,
+        "line": 4517,
         "text": "// from USER/DIGITAL_ASSISTANT/DA_IDENTITY.md so the copy reads in the user's voice."
       },
       {
-        "line": 4518,
+        "line": 4519,
         "text": "  const markerPath = join(LIFEOS_DIR, \"USER\", \".template-mode\")"
       },
       {
-        "line": 4519,
+        "line": 4520,
         "text": "  // DA_IDENTITY.md lives under USER/DIGITAL_ASSISTANT/, not at the USER root \u2014"
       },
       {
-        "line": 4523,
+        "line": 4524,
         "text": "  const daIdentityPath = join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_IDENTITY.md\")"
       },
       {
-        "line": 4534,
+        "line": 4535,
         "text": "      const content = readFileSync(daIdentityPath, \"utf-8\")"
       },
       {
-        "line": 4552,
-        "text": "export function renderHealthView(sources: ReadonlyArray<{filename: string; content: string}>): Response {"
+        "line": 4553,
+        "text": "export function financeViewSources(): string[] {"
+      },
+      {
+        "line": 4555,
+        "text": "    \"PLAN.md\", \"vendors.yaml\", \"obligations.yaml\", \"GOALS.md\", \"FINANCES.md\"].map(name => \"LIFEOS/USER/FINANCES/\" + name)"
       },
       {
         "line": 4556,
-        "text": "  const read = (path: string): string => {"
+        "text": "    .concat([\"LIFEOS/MEMORY/OBSERVABILITY/vendor-costs.jsonl\", \"LIFEOS/MEMORY/OBSERVABILITY/statement-spend.jsonl\","
       },
       {
-        "line": 4560,
-        "text": "  return handleLifeHealth(read, sources.map(source => source.filename));"
-      },
-      {
-        "line": 4563,
-        "text": "export function lifeViewSources(): string[] {"
-      },
-      {
-        "line": 4570,
-        "text": "export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {"
-      },
-      {
-        "line": 4574,
-        "text": "  const read = (path: string): string => {"
+        "line": 4557,
+        "text": "      \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\"]);"
       },
       {
         "line": 4578,
-        "text": "  if (target === \"/api/life/home\" || target === \"/api/observability/life-card\") return handleLifeHome(read);"
+        "text": "export function financeSourceProjections(sources: ReadonlyArray<{relative: string; content: string}>): Array<string | null> {"
       },
       {
         "line": 4579,
+        "text": "  const allowed = new Set([\"LIFEOS/USER/FINANCES/vendors.yaml\", \"LIFEOS/USER/FINANCES/obligations.yaml\","
+      },
+      {
+        "line": 4580,
+        "text": "    \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\"]);"
+      },
+      {
+        "line": 4591,
+        "text": "export function renderFinanceView(sources: ReadonlyArray<{relative: string; content: string}>): Response {"
+      },
+      {
+        "line": 4596,
+        "text": "  const read = (path: string): string => {"
+      },
+      {
+        "line": 4602,
+        "text": "      const raw: unknown = Bun.TOML.parse(read(join(LIFEOS_DIR, \"USER/CONFIG/LIFEOS_CONFIG.toml\")));"
+      },
+      {
+        "line": 4603,
+        "text": "      return validateAndNormalize(raw, \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\").principal.currency || \"USD\";"
+      },
+      {
+        "line": 4606,
+        "text": "  return handleLifeFinances(read, currency);"
+      },
+      {
+        "line": 4609,
+        "text": "export function renderHealthView(sources: ReadonlyArray<{filename: string; content: string}>): Response {"
+      },
+      {
+        "line": 4613,
+        "text": "  const read = (path: string): string => {"
+      },
+      {
+        "line": 4617,
+        "text": "  return handleLifeHealth(read, sources.map(source => source.filename));"
+      },
+      {
+        "line": 4620,
+        "text": "export function lifeViewSources(): string[] {"
+      },
+      {
+        "line": 4627,
+        "text": "export function renderLifeView(sources: ReadonlyArray<{filename: string; content: string}>, target: string): Response {"
+      },
+      {
+        "line": 4631,
+        "text": "  const read = (path: string): string => {"
+      },
+      {
+        "line": 4635,
+        "text": "  if (target === \"/api/life/home\" || target === \"/api/observability/life-card\") return handleLifeHome(read);"
+      },
+      {
+        "line": 4636,
         "text": "  if (target === \"/api/life/goals\") return handleLifeGoals(read);"
       },
       {
-        "line": 4587,
+        "line": 4644,
         "text": "export async function handleObservabilityRequest(req: Request): Promise<Response | null> {"
       },
       {
-        "line": 4626,
+        "line": 4683,
         "text": "      return Response.json({error: \"Knowledge reads require a same-origin request\"}, {status: 403, headers})"
       },
       {
-        "line": 4640,
+        "line": 4697,
         "text": "    if (noteParams) return handlePutKnowledgeNote(req, noteParams.domain, noteParams.slug)"
       },
       {
-        "line": 4702,
+        "line": 4759,
         "text": "    if (knoteParams) return handleGetKnowledgeNote(knoteParams.domain, knoteParams.slug)"
       }
     ],
@@ -4345,7 +4421,7 @@
     "entry_point": "declared_entry",
     "behavioral_status": "requires_source_policy_or_existing_test_evidence",
     "source_policy": "contains_governed_api_reference",
-    "source_sha256": "6fe989e05cc2d3231bb48e65580f75c117a07b7dab910c05c3555aa69854840d"
+    "source_sha256": "d1b2e9cb753904a1d265a6c52469395e8dca82427bc4de6f6a68424426b64496"
   },
   {
     "path": "LIFEOS/PULSE/Observability/src/app/assistant/page.tsx",
@@ -20767,108 +20843,112 @@
   },
   {
     "path": "LIFEOS/TOOLS/LifeosConfig.ts",
-    "sha256": "5a03b53b869c16d0099b698e1e8906cb82bbbaba8c29c6e6eaf1a554dfa4c555",
+    "sha256": "2f71adffbdd561e91b82a32a6126e955f67a99abeb0a22a0c60ab4b436a996db",
     "registered_hooks": [],
     "cli_guard": true,
     "source_evidence": [
       {
-        "line": 6,
+        "line": 8,
         "text": " * USER data (the actual values, sourced from LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml)."
       },
       {
-        "line": 8,
+        "line": 10,
         "text": " * Doctrine: system code reads identity, voice IDs, integration credentials,"
       },
       {
-        "line": 10,
+        "line": 12,
         "text": " * any file under LIFEOS/USER/ for these values \u2014 the path-rooting happens here."
       },
       {
-        "line": 15,
+        "line": 17,
         "text": " *   - PULSE.user.toml already in user-config dir as precedent."
       },
       {
-        "line": 35,
+        "line": 37,
         "text": "export interface LifeosPrincipal {"
       },
       {
-        "line": 48,
+        "line": 50,
         "text": "export interface LifeosVoiceSettings {"
       },
       {
-        "line": 59,
+        "line": 61,
         "text": "export interface LifeosDa {"
       },
       {
-        "line": 65,
+        "line": 67,
         "text": "    main: LifeosVoiceSettings;"
       },
       {
-        "line": 69,
+        "line": 71,
         "text": "export interface LifeosIntegrations {"
       },
       {
-        "line": 75,
+        "line": 77,
         "text": "export interface LifeosPaths {"
       },
       {
-        "line": 84,
+        "line": 86,
         "text": "export interface LifeosConfig {"
       },
       {
-        "line": 94,
+        "line": 96,
         "text": "const DEFAULT_CONFIG_PATH = resolve(DEFAULT_HOME, \".claude/LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\");"
       },
       {
-        "line": 98,
+        "line": 100,
         "text": "export function loadLifeosConfig(opts: { path?: string; force?: boolean } = {}): LifeosConfig {"
       },
       {
-        "line": 104,
+        "line": 106,
         "text": "        `Create it (see LIFEOS/USER/CONFIG/README.md) or set LIFEOS_CONFIG_PATH.`,"
       },
       {
-        "line": 113,
+        "line": 115,
         "text": "  // Invalidate Bun's require cache so re-reads pick up mtime changes."
       },
       {
-        "line": 118,
+        "line": 120,
         "text": "    // require.resolve can throw on first read; safe to ignore."
       },
       {
-        "line": 128,
+        "line": 130,
         "text": "export function clearLifeosConfigCache(): void {"
       },
       {
-        "line": 138,
+        "line": 140,
         "text": "export function paiUserDir(): string {"
       },
       {
-        "line": 142,
+        "line": 144,
         "text": "    return resolve(DEFAULT_HOME, \".claude/LIFEOS/USER\");"
       },
       {
-        "line": 167,
+        "line": 150,
+        "text": "export function validateAndNormalize(raw: unknown, path: string): LifeosConfig {"
+      },
+      {
+        "line": 169,
         "text": "  if (!daVoices.main || typeof (daVoices.main.voice_id ?? daVoices.main.voiceId) !== \"string\") {"
       },
       {
-        "line": 168,
+        "line": 170,
         "text": "    throw new Error(`LifeosConfig: [da.voices.main] requires a voice_id \u2014 see ${path}`);"
       },
       {
-        "line": 186,
+        "line": 188,
         "text": "        main: normalizeVoice(daVoices.main),"
       },
       {
-        "line": 192,
+        "line": 194,
         "text": "      // spread stays FIRST \u2014 spreading after would clobber the normalized shape"
       },
       {
-        "line": 205,
+        "line": 207,
         "text": "        root.paths?.userDir ?? root.paths?.user_dir ?? resolve(DEFAULT_HOME, \".claude/LIFEOS/USER\"),"
       },
       {
-        "line": 229,
+        "line": 231,
         "text": "if (import.meta.main) {"
       }
     ],
@@ -20925,7 +21005,7 @@
     "entry_point": "declared_entry",
     "behavioral_status": "requires_source_policy_or_existing_test_evidence",
     "source_policy": "requires_boundary_review",
-    "source_sha256": "5a03b53b869c16d0099b698e1e8906cb82bbbaba8c29c6e6eaf1a554dfa4c555"
+    "source_sha256": "2f71adffbdd561e91b82a32a6126e955f67a99abeb0a22a0c60ab4b436a996db"
   },
   {
     "path": "LIFEOS/TOOLS/LifeosUpgrade.ts",
