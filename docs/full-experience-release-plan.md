@@ -14,7 +14,7 @@ The October 8 candidate adds [governed proposal cleanup](verification/2026-10-08
 
 The [clarification cancellation candidate](verification/2026-10-08-clarify-cancellation/README.md) passes 98 native tests with warnings treated as errors. It distinguishes `/stop` from an actual timeout, preserves earlier batch answers, and handles cancellation during card sending. The combined installed acceptance repeat remains open.
 
-The [staged decision gate](verification/2026-10-08-staging-writers/README.md) passes 114 tests. Native rejection uses recoverable owner transactions. Promotion preserves source and state changes that occur during final rendering. The [source mining and expiry gate](verification/2026-10-08-knowledge-harvest/README.md) passes 180 prepared-source tests. Native Knowledge review, status, contradictions, and index authority remain open.
+The [staged decision gate](verification/2026-10-08-staging-writers/README.md) passes 114 tests. Native rejection uses recoverable owner transactions. Promotion preserves source and state changes that occur during final rendering. The [source mining and expiry gate](verification/2026-10-08-knowledge-harvest/README.md) passes 180 prepared-source tests. The [native command view gate](verification/2026-10-08-knowledge-views/README.md) passes 189 tests. Review, status, contradictions, and index publication use current owner authority. Complete caller coverage and installed application acceptance remain open.
 
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.
 
