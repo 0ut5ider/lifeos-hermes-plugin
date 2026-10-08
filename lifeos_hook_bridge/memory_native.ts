@@ -471,6 +471,21 @@ async function main(): Promise<void> {
     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
     if (!(response instanceof Response)) throw new Error("Native wiki response is unavailable");
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === "knowledge_conformance") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "hooks/handlers/KnowledgeConformance.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeConformance !== "function" || !Array.isArray(input.sources)
+        || !Array.isArray(input.directories) || !input.directories.every(value => typeof value === "string")
+        || typeof input.exists !== "boolean") {
+      throw new Error("Native Knowledge findings need declared sources and archive directories");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge findings need declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderKnowledgeConformance(sources, input.directories, input.exists);
   } else if (input.action === "knowledge_lint") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeLint.ts")).href);
     if (!object(module) || typeof module.renderKnowledgeLint !== "function" || !Array.isArray(input.sources)

@@ -7761,3 +7761,143 @@ index 983338f..42b4222 100755
  
 -main();
 +if (import.meta.main) main();
+diff --git a/LifeOS/install/hooks/handlers/KnowledgeConformance.ts b/LifeOS/install/hooks/handlers/KnowledgeConformance.ts
+index 36069d0..1c577b9 100644
+--- a/LifeOS/install/hooks/handlers/KnowledgeConformance.ts
++++ b/LifeOS/install/hooks/handlers/KnowledgeConformance.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reports native schema conformance from admitted current Knowledge notes.
++// ABOUTME: Publishes managed finding sets through current owner authority and recovery journals.
+ /**
+  * KnowledgeConformance.ts — Knowledge Archive note conformance reporter
+  *
+@@ -26,7 +28,7 @@
+  *     clean bill of health.)
+  *
+  * SIDE EFFECTS:
+- *   None — read-only. Non-conformance is a soft warning and never blocks,
++ *   Emits one finding-set event. Non-conformance is a soft warning and never blocks,
+  *   matching MemoryDirIntegrity's contract.
+  *
+  * Ported from public PR #1686, @elhoim; routed through the shared event
+@@ -37,6 +39,8 @@ import { readdirSync, readFileSync, existsSync } from 'fs';
+ import { join } from 'path';
+ import { getLifeosDir } from '../lib/paths';
+ import { emitFindingSet } from '../lib/events';
++import { hasMemoryAccess, memoryAccess, memoryObject } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
++import { randomUUID } from 'node:crypto';
+ import {
+   parseNote,
+   validate,
+@@ -51,11 +55,17 @@ const LIFEOS_DIR = getLifeosDir();
+ const MEMORY_DIR = join(LIFEOS_DIR, 'MEMORY');
+ const KNOWLEDGE_DIR = join(MEMORY_DIR, 'KNOWLEDGE');
+ 
+-export async function handleKnowledgeConformance(): Promise<void> {
++interface ConformanceSource { path: string; content: string | null }
++type FindingSet = Parameters<typeof emitFindingSet>[0];
++
++export function renderKnowledgeConformance(sources: readonly ConformanceSource[], directories: readonly string[],
++    exists: boolean): {stderr: string; event: FindingSet | null} {
+   const startTime = Date.now();
+-  if (!existsSync(KNOWLEDGE_DIR)) return;
++  if (!exists) return {stderr: "", event: null};
++  const output: string[] = [];
++  const emit = (line: string): void => { output.push(line); };
+ 
+-  console.error(`${TAG} === Starting knowledge conformance check ===`);
++  emit(`${TAG} === Starting knowledge conformance check ===`);
+ 
+   let total = 0;
+   let conformant = 0;
+@@ -66,25 +76,16 @@ export async function handleKnowledgeConformance(): Promise<void> {
+   // is covered without editing this handler.
+   for (const dir of ALL_DIRS) {
+     const dirPath = join(KNOWLEDGE_DIR, dir);
+-    if (!existsSync(dirPath)) continue;
++    if (!directories.includes(dir)) continue;
+     const dirType = DIR_TO_TYPE[dir] as CanonicalType;
+     byDir[dir] = { n: 0, ok: 0 };
+ 
+-    let files: string[];
+-    try {
+-      files = readdirSync(dirPath);
+-    } catch {
+-      continue;
+-    }
+-
+-    for (const file of files) {
+-      // `_`-prefixed files are generated surfaces (_index.md, _schema.md), not notes.
+-      if (!file.endsWith('.md') || file.startsWith('_')) continue;
+-      const path = join(dirPath, file);
++    for (const {path, content} of sources.filter(source => join(source.path, '..') === dirPath)) {
+       total++;
+       byDir[dir].n++;
+       try {
+-        const violations = validate(parseNote(readFileSync(path, 'utf-8')), slugFromPath(path), dirType);
++        if (content === null) throw new Error('The native note is unavailable');
++        const violations = validate(parseNote(content), slugFromPath(path), dirType);
+         if (violations.length === 0) {
+           conformant++;
+           byDir[dir].ok++;
+@@ -107,7 +108,7 @@ export async function handleKnowledgeConformance(): Promise<void> {
+   // One finding per violation CLASS, not per note. The key is the violation
+   // text alone — the note tally lives in `detail`, because a key carrying a
+   // count re-fires the SessionStart digest on every run that fixes one note.
+-  emitFindingSet({
++  const event: FindingSet = {
+     type: 'doc.integrity.knowledge_conformance',
+     source: 'KnowledgeConformance',
+     findings: ranked.map(([problem, count]) => ({
+@@ -122,19 +123,46 @@ export async function handleKnowledgeConformance(): Promise<void> {
+       conformance_pct: Number(pct),
+       per_dir: byDir,
+     },
+-  });
++  };
+ 
+   if (nonConformant > 0) {
+-    console.error(
++    emit(
+       `${TAG} [WARN] ${nonConformant}/${total} notes off-schema (${pct}% conformant). Repair: bun LIFEOS/TOOLS/MigrateKnowledge.ts`,
+     );
+     for (const [problem, count] of ranked.slice(0, 3)) {
+-      console.error(`${TAG}   ${count}× ${problem}`);
++      emit(`${TAG}   ${count}× ${problem}`);
+     }
+   }
+ 
+   const elapsed = Date.now() - startTime;
+-  console.error(`${TAG} === Check complete (${elapsed}ms, ${pct}% conformant, ${total} notes) ===`);
++  emit(`${TAG} === Check complete (${elapsed}ms, ${pct}% conformant, ${total} notes) ===`);
++  return {stderr: output.join('\n') + '\n', event};
++}
++
++export async function handleKnowledgeConformance(): Promise<void> {
++  if (hasMemoryAccess()) {
++    const result = memoryAccess('knowledge_conformance', {request_id: randomUUID()}, memoryObject);
++    if (!result || result.ok !== true || typeof result.stderr !== 'string') {
++      throw new Error('Knowledge conformance is unavailable under current memory authority');
++    }
++    process.stderr.write(result.stderr);
++    return;
++  }
++  const directories = ALL_DIRS.filter(dir => existsSync(join(KNOWLEDGE_DIR, dir)));
++  const sources: ConformanceSource[] = [];
++  for (const dir of directories) {
++    let files: string[];
++    try { files = readdirSync(join(KNOWLEDGE_DIR, dir)); } catch { continue; }
++    for (const file of files) {
++      if (!file.endsWith('.md') || file.startsWith('_')) continue;
++      const path = join(KNOWLEDGE_DIR, dir, file);
++      try { sources.push({path, content: readFileSync(path, 'utf-8')}); }
++      catch { sources.push({path, content: null}); }
++    }
++  }
++  const result = renderKnowledgeConformance(sources, directories, existsSync(KNOWLEDGE_DIR));
++  if (result.event) emitFindingSet(result.event);
++  process.stderr.write(result.stderr);
+ }
+ 
+ // Allow running standalone for verification.

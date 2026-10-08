@@ -16,6 +16,8 @@ The [clarification cancellation candidate](verification/2026-10-08-clarify-cance
 
 The [staged decision gate](verification/2026-10-08-staging-writers/README.md) passes 114 tests. Native rejection uses recoverable owner transactions. Promotion preserves source and state changes that occur during final rendering. The [source mining and expiry gate](verification/2026-10-08-knowledge-harvest/README.md) passes 180 prepared-source tests. The [native command view gate](verification/2026-10-08-knowledge-views/README.md) passes 189 tests. Review, status, contradictions, and index publication use current owner authority. Complete caller coverage and installed application acceptance remain open.
 
+The [SessionEnd Knowledge conformance gate](verification/2026-10-08-knowledge-conformance/README.md) passes 14 focused tests and 87 adjacent tests. It preserves native diagnostics for admitted sources and journals finding publication. Raw event writer concurrency and remaining caller coverage stay open.
+
 The [learning and Wisdom audience gate](verification/2026-10-08-background-audience/README.md) passes 96 tests. Current Discord permissions govern seven source or publication operations. Final outbound delivery and installed audience acceptance remain open.
 
 The [outbound audience gate](verification/2026-10-08-discord-delivery/README.md) passes 168 tests across actual SDK and HTTP controls, native unit controls, and installation checks. The private channel mode requires a current policy grant for every content write. Live private-channel acceptance remains open.
