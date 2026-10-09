@@ -21,6 +21,7 @@ ROUTES = {
                           'OBSERVABILITY/subagent-events.jsonl', 'OBSERVABILITY/tool-activity.jsonl'),
     '/api/observability/voice-events': ('VOICE/voice-events.jsonl',),
     '/api/observability/tool-failures': ('OBSERVABILITY/tool-failures.jsonl',),
+    '/api/novelty': ('STATE/novelty-state.json',),
 }
 SOURCES = frozenset(PREFIX + name for names in ROUTES.values() for name in names)
 TAIL_LIMIT = 1024 * 1024
@@ -90,8 +91,8 @@ def _collect(memory, scope, connection, target, *, admit=True):
             raise MemoryUnavailable('Operational sources require valid UTF-8') from error
         if name.endswith('.json'):
             try: value = json.loads(content)
-            except (ValueError, RecursionError): value = None
-            if isinstance(value, dict):
+            except (ValueError, RecursionError): continue
+            if isinstance(value, dict) or target == '/api/novelty':
                 candidates.append((relative, content, _source_time(after), projection(content), content))
             continue
         maximum = 100 if target != '/api/events/recent' or name == 'OBSERVABILITY/tool-activity.jsonl' else 50
@@ -143,7 +144,8 @@ def view(memory, scope, target, *, check_current=None):
                 raise MemoryUnavailable('Operational sources change during native rendering')
         if (not isinstance(result, dict) or set(result) != {'status', 'body'}
                 or type(result['status']) is not int or result['status'] != 200
-                or not isinstance(result['body'], (dict, list)) or len(json.dumps(result).encode()) > CORPUS_LIMIT):
+                or target != '/api/novelty' and not isinstance(result['body'], (dict, list))
+                or len(json.dumps(result).encode()) > CORPUS_LIMIT):
             raise MemoryUnavailable('The native operational view changes its declared response')
         if memory._filter_history(connection, scope, json.dumps(result), datetime.now(timezone.utc).isoformat())['excluded']:
             raise MemoryUnavailable('The native operational view contains excluded source text')

@@ -6,6 +6,7 @@ import ipaddress
 import hashlib
 import http.client
 import json
+import math
 from pathlib import Path
 import re
 from typing import TYPE_CHECKING
@@ -180,7 +181,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             if len(payload)>RESPONSE_LIMIT or (lengths and len(payload)!=int(lengths[0])):
                 raise ValueError('Authenticated memory response exceeds its limit')
             body=json.loads(payload)
-            if status==200 and (not isinstance(body,(dict,list)) and body is not None):
+            novelty_scalar = (arguments['view'] == 'life' and target == '/api/novelty'
+                and type(body) in (str, bool, int, float) and (type(body) is not float or math.isfinite(body)))
+            if status==200 and (not isinstance(body,(dict,list)) and body is not None and not novelty_scalar):
                 raise ValueError('Invalid authenticated memory response')
             if status==401 and isinstance(body,dict):
                 body.pop('login_url',None)

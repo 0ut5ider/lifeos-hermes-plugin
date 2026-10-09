@@ -1,0 +1,5 @@
+# A native JSON scalar meets a narrower relay contract
+
+2026-10-08. The novelty characterization finds that the original native response can be an object, array, string, number, boolean, or null. The first admitted reader passes the privacy checks but rejects three scalar cases at delivery. Actual owner HTTP responses return 200 with the synthetic string, integer 17, and boolean true. A trace inside the shared relay captures Invalid authenticated memory response and a 503 relay result.
+
+The relay contract permits objects, arrays, and null across memory routes. Global scalar support would change that contract for unrelated routes. The correction permits finite scalar JSON only for the exact authenticated novelty target after the existing installation binding check. Real transport tests confirm that other routes still refuse the same scalars and that non-finite values and foreign bindings remain unavailable. The corrected gates pass 31 focused and 114 neighboring cases. Installed acceptance remains open.

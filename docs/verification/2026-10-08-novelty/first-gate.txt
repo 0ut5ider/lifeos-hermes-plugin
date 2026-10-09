@@ -1,0 +1,51 @@
+test_actual_render_rechecks_source_creation_inode_bytes_and_authority (test_memory_novelty.MemoryNoveltyTests.test_actual_render_rechecks_source_creation_inode_bytes_and_authority) ... ok
+test_anonymous_and_ambient_flags_cannot_authorize_novelty (test_memory_novelty.MemoryNoveltyTests.test_anonymous_and_ambient_flags_cannot_authorize_novelty) ... ok
+test_exact_review_restores_safe_old_state_and_keeps_original_bytes (test_memory_novelty.MemoryNoveltyTests.test_exact_review_restores_safe_old_state_and_keeps_original_bytes) ... ok
+test_forget_excludes_retained_novelty_without_changing_original (test_memory_novelty.MemoryNoveltyTests.test_forget_excludes_retained_novelty_without_changing_original) ... ok
+test_invalid_utf8_refuses_without_source_disclosure (test_memory_novelty.MemoryNoveltyTests.test_invalid_utf8_refuses_without_source_disclosure) ... ok
+test_methods_selectors_origin_and_invalid_bearer_refuse (test_memory_novelty.MemoryNoveltyTests.test_methods_selectors_origin_and_invalid_bearer_refuse) ... ok
+test_missing_and_malformed_sources_preserve_native_empty_state (test_memory_novelty.MemoryNoveltyTests.test_missing_and_malformed_sources_preserve_native_empty_state) ... ok
+test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) ... 
+  test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) (value='SyntheticNoveltyCurrent') ... FAIL
+  test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) (value=17) ... FAIL
+  test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) (value=True) ... FAIL
+test_private_and_escaped_nested_strings_do_not_enter_novelty (test_memory_novelty.MemoryNoveltyTests.test_private_and_escaped_nested_strings_do_not_enter_novelty) ... ok
+test_revocation_and_missing_connector_cannot_select_raw_reader (test_memory_novelty.MemoryNoveltyTests.test_revocation_and_missing_connector_cannot_select_raw_reader) ... ok
+test_symlink_hardlink_and_oversize_sources_refuse (test_memory_novelty.MemoryNoveltyTests.test_symlink_hardlink_and_oversize_sources_refuse) ... ok
+test_configuration_cli_emits_native_normalized_config (test_native_frontend_types.NativeFrontendTypeTests.test_configuration_cli_emits_native_normalized_config) ... ok
+test_configuration_import_does_not_run_cli (test_native_frontend_types.NativeFrontendTypeTests.test_configuration_import_does_not_run_cli) ... ok
+test_dashboard_strict_typecheck_passes (test_native_frontend_types.NativeFrontendTypeTests.test_dashboard_strict_typecheck_passes) ... ok
+test_subordinate_tabs_ignore_unused_callback (test_native_frontend_types.NativeFrontendTypeTests.test_subordinate_tabs_ignore_unused_callback) ... ok
+
+======================================================================
+FAIL: test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) (value='SyntheticNoveltyCurrent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_novelty.py", line 49, in test_owner_preserves_native_json_shapes_and_source_bytes
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) (value=17)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_novelty.py", line 49, in test_owner_preserves_native_json_shapes_and_source_bytes
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_owner_preserves_native_json_shapes_and_source_bytes (test_memory_novelty.MemoryNoveltyTests.test_owner_preserves_native_json_shapes_and_source_bytes) (value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_novelty.py", line 49, in test_owner_preserves_native_json_shapes_and_source_bytes
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 15 tests in 26.650s
+
+FAILED (failures=3)
+SubTabs markup SHA256: 85d7244cc5c904c7e98c104ddc7adcad2ccb988366012c68c70cedafdddd42b0
