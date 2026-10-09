@@ -13,6 +13,8 @@ from .memory_tab_freshness import _checked
 
 
 SOURCES = {
+    'doctor': frozenset({'LIFEOS/MEMORY/STATE/capabilities.json',
+        'LIFEOS/MEMORY/STATE/doctor-heartbeat.json', 'settings.json'}),
     'ledger': frozenset({'LIFEOS/VERSION', 'LIFEOS/ALGORITHM/LATEST', 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md',
         'LIFEOS/MEMORY/SYSTEMUPDATES/index.json', 'LIFEOS/MEMORY/SYSTEMUPDATES/deploys.jsonl',
         'LIFEOS/MEMORY/STATE/integrity/last-run.json', 'LIFEOS/MEMORY/STATE/integrity/last-pass.json',
@@ -27,7 +29,8 @@ SOURCES = {
 NETWORK = 'LIFEOS/MEMORY/_NETWORK'
 EVALS = 'LIFEOS/MEMORY/STATE/Evals-Results'
 ROUTES = frozenset('/api/' + name + suffix for name in SOURCES
-    for suffix in (('', '/') if name == 'ledger' else ('',) if name in {'evals', 'threatmodel'}
+    for suffix in (('', '/', '/state', '/status', '/health') if name == 'doctor' else
+        ('', '/') if name == 'ledger' else ('',) if name in {'evals', 'threatmodel'}
         else ('', '/list', '/status', '/health')))
 
 
@@ -42,9 +45,29 @@ def request_target(value):
     return url.path + ('?' + url.query if url.query else '')
 
 
-def _selection(memory, module):
+def _selection(memory, module, target=None):
     names = set(SOURCES[module])
     directory = None
+    if module == 'doctor':
+        if target is not None and target.endswith(('/status', '/health')):
+            return {'LIFEOS/MEMORY/STATE/doctor-heartbeat.json'}, None
+        names = sorted(names)
+        path = _checked(memory, memory.root / 'hooks')
+        if path.exists():
+            if not path.is_dir(): raise MemoryUnavailable('Doctor discovery requires the fixed owner hook directory')
+            before = path.stat()
+            entries = list(islice(path.iterdir(), SOURCE_COUNT_LIMIT + 1))
+            if len(entries) > SOURCE_COUNT_LIMIT:
+                raise MemoryUnavailable('Doctor discovery exceeds its entry limit')
+            for entry in entries:
+                if entry.name.endswith(('.hook.ts', '.hook.sh')):
+                    _checked(memory, entry)
+                    names.append('hooks/' + entry.name)
+            _checked(memory, path)
+            after = path.stat()
+            if (before.st_dev, before.st_ino, before.st_mtime_ns) != (after.st_dev, after.st_ino, after.st_mtime_ns):
+                raise MemoryUnavailable('Doctor discovery changes during selection')
+            directory = (after.st_dev, after.st_ino, after.st_mtime_ns, tuple(entry.name for entry in entries))
     if module == 'assets':
         path = _checked(memory, memory.root / NETWORK)
         if path.exists():
@@ -84,12 +107,12 @@ def _selection(memory, module):
     return names, directory
 
 
-def _collect(memory, scope, connection, module):
-    names, directory = _selection(memory, module)
+def _collect(memory, scope, connection, module, target=None):
+    names, directory = _selection(memory, module, target)
     candidates, fingerprints = [], []
     total = 0
     keys = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
-    for relative in names if module == 'evals' else sorted(names):
+    for relative in names if module in {'evals', 'doctor'} else sorted(names):
         path = _checked(memory, memory.root / relative)
         if not path.exists():
             fingerprints.append((relative, None))
@@ -114,7 +137,7 @@ def _collect(memory, scope, connection, module):
         if total > CORPUS_LIMIT: raise MemoryUnavailable('Personal module sources exceed their transport limit')
         candidates.append((relative, content, decoded, _source_time(after)))
         fingerprints.append((relative, keys(after), content))
-    if _selection(memory, module) != (names, directory):
+    if _selection(memory, module, target) != (names, directory):
         raise MemoryUnavailable('Personal module source selection changes during collection')
     checked = memory._native('validate_source_batch', contents=[decoded + '\n' + relative
         for relative, _, decoded, _ in candidates])['accepted'] if candidates else []
@@ -133,7 +156,7 @@ def view(memory, scope, target, *, check_current=None):
     if not scope.principal: raise MemoryUnavailable('Personal module views require a bound owner')
     if check_current is not None: check_current()
     with memory._transaction() as connection:
-        sources, fingerprints = _collect(memory, scope, connection, module)
+        sources, fingerprints = _collect(memory, scope, connection, module, url.path)
         modified = None
         if module == 'evals' and fingerprints[0] is not None:
             modified = fingerprints[0][2] / 1000000
@@ -143,7 +166,7 @@ def view(memory, scope, target, *, check_current=None):
         result = memory._native('personal_module_view', module=module, target=url.path, sources=sources,
             running=url.query == 'running=1', modified=modified)
         if check_current is not None: check_current()
-        if _collect(memory, scope, connection, module) != (sources, fingerprints):
+        if _collect(memory, scope, connection, module, url.path) != (sources, fingerprints):
             raise MemoryUnavailable('Personal module sources change during native rendering')
         if (not isinstance(result, dict) or set(result) != {'status', 'body'} or result['status'] != 200
                 or not isinstance(result['body'], dict) or len(json.dumps(result).encode()) > CORPUS_LIMIT):

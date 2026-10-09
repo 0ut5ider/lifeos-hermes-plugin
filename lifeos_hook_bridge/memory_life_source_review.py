@@ -22,6 +22,7 @@ def classification(relative):
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
     if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
+    if relative in PERSONAL_SOURCES['doctor'] or re.fullmatch(r'hooks/[^/]+\.hook\.(?:ts|sh)', relative): return 'life_text'
     if relative in PERFORMANCE_SOURCES: return 'life_text'
     if (relative in FINANCE_SOURCES or relative in TELOS
             or re.fullmatch(r'LIFEOS/USER/HEALTH/[^/]+\.md', relative) and Path(relative).name != 'README.md'
@@ -71,7 +72,8 @@ def projection(memory, relative, content):
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES, projection as operational_projection
     from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
-    if (relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in {SNAPSHOT, DATABASE, CACHE}
+    if (relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
+            or relative in {SNAPSHOT, DATABASE, CACHE}
             or relative in PERSONAL_SOURCES['ledger'] and relative.endswith(('.json', '.jsonl'))):
         values = [operational_projection(line) for line in content.split('\n') if line] if relative.endswith('.jsonl') else [operational_projection(content)]
         result = '\n'.join(values) if all(value is not None for value in values) else None

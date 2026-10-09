@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..b608864
+index 0000000..b0c3aca
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,326 @@
+@@ -0,0 +1,327 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8361,12 +8361,13 @@ index 0000000..b608864
 +  return renderHTTPResponse(response);
 +}
 +
-+export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets" | "/api/evals" | "/api/threatmodel" | "/api/ledger",
++export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets" | "/api/evals" | "/api/threatmodel" | "/api/ledger" | "/api/doctor",
 +                                           running: boolean): Promise<Response | null> {
 +  if (!hasManagedMemoryHTTP()) return null;
 +  const url = new URL(request.url);
 +  const headers = {"cache-control": "no-store"};
-+  const paths = prefix === "/api/ledger" ? [prefix, prefix + "/"] :
++  const paths = prefix === "/api/doctor" ? [prefix, prefix + "/", prefix + "/state", prefix + "/status", prefix + "/health"] :
++    prefix === "/api/ledger" ? [prefix, prefix + "/"] :
 +    prefix === "/api/evals" || prefix === "/api/threatmodel" ? [prefix] :
 +    [prefix, prefix + "/list", prefix + "/status", prefix + "/health"];
 +  if (!paths.includes(url.pathname)) {
@@ -11332,3 +11333,209 @@ index e1ca0e20..84948c6d 100644
      async fetch(req) {
        const url = new URL(req.url)
        const pathname = url.pathname
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts b/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts
+index 878a4aa..81e0a31 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders native Doctor diagnostics from declared current owner sources.
++// ABOUTME: Relays managed requests before raw reads and reconciles admitted hooks without a raw cache.
+ /**
+  * Doctor Pulse module — read-only "System Health" surface over the advisory
+  * caches written by LIFEOS/TOOLS/Doctor.ts. Holds ZERO truth of its own: it
+@@ -13,6 +15,7 @@
+ import { existsSync, readFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const MODULE_NAME = "doctor";
+ const CONFIG_ROOT = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+@@ -50,8 +53,14 @@ function titleFor(id: string): string {
+   return CAP_TITLES[id] || id.replace(/(^|[-_])(\w)/g, (_, __, c) => " " + c.toUpperCase()).trim();
+ }
+ 
+-function readManifest() {
+-  if (!existsSync(MANIFEST_PATH)) {
++function readSource(path: string): string | null {
++  try { return existsSync(path) ? readFileSync(path, "utf8") : null; }
++  catch { return ""; }
++}
++
++function readManifest(reader: (path: string) => string | null = readSource) {
++  const content = reader(MANIFEST_PATH);
++  if (content === null) {
+     return {
+       present: false as const,
+       hint: `no doctor run yet — bun ${DOCTOR_TS}`,
+@@ -59,7 +68,7 @@ function readManifest() {
+     };
+   }
+   try {
+-    const raw = JSON.parse(readFileSync(MANIFEST_PATH, "utf8")) as {
++    const raw = JSON.parse(content) as {
+       updatedAt?: string;
+       capabilities?: Record<string, CapResult>;
+     };
+@@ -91,12 +100,13 @@ function readManifest() {
+   }
+ }
+ 
+-function readHeartbeat() {
+-  if (!existsSync(HEARTBEAT_PATH)) {
++function readHeartbeat(reader: (path: string) => string | null = readSource) {
++  const content = reader(HEARTBEAT_PATH);
++  if (content === null) {
+     return { present: false as const, hint: `no doctor run yet — bun ${DOCTOR_TS}` };
+   }
+   try {
+-    const raw = JSON.parse(readFileSync(HEARTBEAT_PATH, "utf8")) as {
++    const raw = JSON.parse(content) as {
+       ranAt?: string;
+       network?: boolean;
+     };
+@@ -122,8 +132,8 @@ interface Reconcile {
+ }
+ let reconcileCache: { at: number; value: Reconcile } | null = null;
+ 
+-function readReconcile(): Reconcile {
+-  if (reconcileCache && Date.now() - reconcileCache.at < RECONCILE_CACHE_MS) {
++function readReconcile(sources?: ReadonlyArray<{relative: string; content: string}>): Reconcile {
++  if (sources === undefined && reconcileCache && Date.now() - reconcileCache.at < RECONCILE_CACHE_MS) {
+     return reconcileCache.value;
+   }
+   const fallback: Reconcile = {
+@@ -136,21 +146,26 @@ function readReconcile(): Reconcile {
+       stdout: "pipe",
+       stderr: "ignore",
+       timeout: RECONCILE_TIMEOUT_MS,
++      ...(sources === undefined ? {} : {
++        stdin: Buffer.from(JSON.stringify(sources.filter(source => source.relative === "settings.json" || source.relative.startsWith("hooks/")))),
++        env: {...process.env, LIFEOS_MEMORY_INTERNAL: "1", LIFEOS_DOCTOR_RECONCILE_ADMITTED: "1"},
++      }),
+     });
+     const out = new TextDecoder().decode(proc.stdout).trim();
+     const value = JSON.parse(out) as Reconcile;
+-    reconcileCache = { at: Date.now(), value };
++    if (sources === undefined) reconcileCache = { at: Date.now(), value };
+     return value;
+   } catch {
+     return fallback;
+   }
+ }
+ 
+-function read() {
++function read(reader: (path: string) => string | null = readSource,
++    sources?: ReadonlyArray<{relative: string; content: string}>) {
+   return {
+-    manifest: readManifest(),
+-    heartbeat: readHeartbeat(),
+-    reconcile: readReconcile(),
++    manifest: readManifest(reader),
++    heartbeat: readHeartbeat(reader),
++    reconcile: readReconcile(sources),
+   };
+ }
+ 
+@@ -161,16 +176,30 @@ export async function start(): Promise<void> {
+ export async function stop(): Promise<void> {
+   state.running = false;
+ }
+-export function health(): { status: string; details?: Record<string, unknown> } {
+-  const hb = readHeartbeat();
++function readHealth(reader: (path: string) => string | null = readSource,
++    running = state.running): { status: string; details?: Record<string, unknown> } {
++  const hb = readHeartbeat(reader);
+   return {
+-    status: state.running ? "healthy" : "stopped",
++    status: running ? "healthy" : "stopped",
+     details: { heartbeat: hb.present ? (hb.stale7d ? "stale" : "fresh") : "never" },
+   };
+ }
++export function health(): { status: string; details?: Record<string, unknown> } {
++  return readHealth();
++}
+ export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(_req, "/api/doctor", state.running);
++  if (admitted) return admitted;
+   const sub = pathname.replace(/^\/api\/doctor/, "") || "/";
+   if (sub === "/" || sub === "/state") return Response.json(read());
+   if (sub === "/status" || sub === "/health") return Response.json(health());
+   return null;
+ }
++
++export function renderPersonalView(sources: ReadonlyArray<{relative: string; content: string}>,
++    target: string, running: boolean): Response {
++  const admitted = new Map(sources.map(source => [source.relative, source.content]));
++  const reader = (path: string): string | null => admitted.get("LIFEOS" + path.slice(LIFEOS_DIR.length)) ?? null;
++  if (target.endsWith("/status") || target.endsWith("/health")) return Response.json(readHealth(reader, running));
++  return Response.json(read(reader, sources));
++}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Doctor.ts b/LifeOS/install/LIFEOS/TOOLS/Doctor.ts
+index 9ac4d38..a5d04fc 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/Doctor.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Doctor.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Probes native capability wiring and reconciles declared hook registrations.
++// ABOUTME: Accepts fixed admitted hook snapshots for private diagnostics without reading raw owner files.
+ /**
+  * @version 1.0.0
+  * Doctor — LifeOS capability prober and manifest writer.
+@@ -760,15 +762,17 @@ function statuslineGlyph(): string {
+ // ── reconciler: declared (hooks on disk) vs registered (settings.json) ──────
+ // v1 scope: hooks only, two inventories. "Observed" (fire evidence from
+ // observability logs) is deferred — noted in the output so absence is loud.
+-function reconcileHooks(): { unwired: string[]; missing: string[]; note: string } {
++function reconcileHooks(sources?: ReadonlyArray<{relative: string; content: string}>): { unwired: string[]; missing: string[]; note: string } {
+   const hooksDir = join(CONFIG_ROOT, 'hooks');
+   const settingsPath = join(CONFIG_ROOT, 'settings.json');
+-  const declared = existsSync(hooksDir)
++  const admitted = sources === undefined ? null : new Map(sources.map(source => [source.relative, source.content]));
++  const declared = sources === undefined ? (existsSync(hooksDir)
+     ? readdirSync(hooksDir).filter(f => f.endsWith('.hook.ts') || f.endsWith('.hook.sh'))
+-    : [];
++    : []) : sources.filter(source => source.relative.startsWith('hooks/')).map(source => source.relative.slice(6));
+   let registeredBlob = '';
+   try {
+-    const s = JSON.parse(readFileSync(settingsPath, 'utf8'));
++    const text = admitted === null ? readFileSync(settingsPath, 'utf8') : admitted.get('settings.json');
++    const s = JSON.parse(text ?? '{}');
+     registeredBlob = JSON.stringify(s.hooks || {});
+   } catch {}
+   // Direct registration by filename, then expand through dispatcher imports:
+@@ -781,7 +785,7 @@ function reconcileHooks(): { unwired: string[]; missing: string[]; note: string
+     grew = false;
+     for (const f of [...registered]) {
+       let src = '';
+-      try { src = readFileSync(join(hooksDir, f), 'utf8'); } catch { continue; }
++      try { src = admitted === null ? readFileSync(join(hooksDir, f), 'utf8') : admitted.get('hooks/' + f) ?? ''; } catch { continue; }
+       for (const g of declared) {
+         if (registered.has(g)) continue;
+         const base = g.replace(/\.hook\.(ts|sh)$/, '');
+@@ -809,7 +813,24 @@ if (flag('--statusline')) {
+ }
+ 
+ if (flag('--reconcile')) {
+-  const r = reconcileHooks();
++  let sources: Array<{relative: string; content: string}> | undefined;
++  if (process.env.LIFEOS_MEMORY_INTERNAL === '1' && process.env.LIFEOS_DOCTOR_RECONCILE_ADMITTED === '1') {
++    const raw = readFileSync(0, 'utf8');
++    if (Buffer.byteLength(raw) > 3 * 1024 * 1024) throw new Error('Doctor hook snapshots exceed their transport limit');
++    const value: unknown = JSON.parse(raw);
++    if (!Array.isArray(value) || value.length > 2048) throw new Error('Doctor hook snapshots require bounded declared sources');
++    sources = [];
++    for (const source of value) {
++      if (source === null || typeof source !== 'object' || Array.isArray(source)
++          || !('relative' in source) || typeof source.relative !== 'string'
++          || !(source.relative === 'settings.json' || /^hooks\/[^/]+\.hook\.(?:ts|sh)$/.test(source.relative))
++          || !('content' in source) || typeof source.content !== 'string'
++          || Buffer.byteLength(source.content) > 256 * 1024) throw new Error('Doctor requires fixed admitted hook sources');
++      sources.push({relative: source.relative, content: source.content});
++    }
++    if (new Set(sources.map(source => source.relative)).size !== sources.length) throw new Error('Doctor hook sources require unique paths');
++  }
++  const r = reconcileHooks(sources);
+   console.log(JSON.stringify(r, null, 2));
+   process.exit(0);
+ }

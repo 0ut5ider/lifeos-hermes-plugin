@@ -39,7 +39,7 @@ async function main(): Promise<void> {
     if (!(response instanceof Response)) throw new Error('Native Performance requires a response');
     result = {status: response.status, body: await response.json()};
   } else if (input.action === 'personal_module_view') {
-    if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel', 'ledger'].includes(input.module)
+    if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel', 'ledger', 'doctor'].includes(input.module)
         || typeof input.target !== 'string' || typeof input.running !== 'boolean' || !Array.isArray(input.sources)
         || !(input.modified === null || typeof input.modified === 'number' && Number.isFinite(input.modified))
         || input.sources.some(source => !object(source) || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
