@@ -70,12 +70,13 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     edit = arguments.get('view') == 'telos_file_edit'
     runtime = arguments.get('view') == 'pulse_runtime'
+    job = arguments.get('view') == 'conduit_job'
     delivery = runtime and 'observation' in arguments
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
         {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else
         {'observation'} if delivery else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and not runtime and arguments['view'] != 'remount')):
+            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and not runtime and not job and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
     remount = arguments['view'] == 'remount'
@@ -106,6 +107,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     data = None
     if runtime:
         route = '/memory/pulse_runtime'
+    if job:
+        route = '/memory/conduit_job'
     if delivery:
         from .memory_pulse_health import validate
         try:
@@ -169,7 +172,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
                  if 'dashboard_browser_url' in settings else None)
         if review or edit or delivery:credentials['Content-Type']='application/json'
         request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
-                                      headers=credentials,method='POST' if remount or review or edit or delivery else 'GET')
+                                      headers=credentials,method='POST' if remount or review or edit or delivery or job else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         timeout = 120 if remount else 30 if runtime else 8
         if arguments['view'] == 'life':
@@ -187,7 +190,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,503} if runtime else {200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
+            if status not in ({200,400,401,403,503} if runtime or job else {200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
                               {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
             if runtime and status == 503 and response.headers.get('x-lifeos-memory-installation') != installation_binding(config, configuration.path):

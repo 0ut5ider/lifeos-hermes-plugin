@@ -8071,16 +8071,16 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..97ebf26
+index 0000000..535b8a3
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,529 @@
+@@ -0,0 +1,587 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
 +import { lstatSync, readFileSync, realpathSync } from "node:fs";
 +import { homedir } from "node:os";
-+import { isAbsolute, resolve } from "node:path";
++import { dirname, isAbsolute, resolve } from "node:path";
 +import { spawnSync, spawn } from "node:child_process";
 +import { randomUUID } from "node:crypto";
 +
@@ -8100,6 +8100,7 @@ index 0000000..97ebf26
 +      if (!memoryObject(error) || error.code !== "ENOENT") throw error;
 +    }
 +  }
++  if ("LIFEOS_MEMORY_CONTEXT" in process.env) throw new Error("The admitted native caller lost its memory connector");
 +  return false;
 +}
 +
@@ -8405,7 +8406,53 @@ index 0000000..97ebf26
 +}
 +
 +
-+export async function memoryHTTPConduitView(request: Request, running: boolean, building: boolean): Promise<Response | null> {
++export function startConduitOwnerJob(revision: string, settled: (success: boolean) => void): {stop: () => Promise<void>} {
++  if (!/^[0-9a-f]{64}$/.test(revision)) throw new Error("Conduit requires the initiating owner revision");
++  const command = memoryServiceCommand();
++  const configuration = command.arguments[2];
++  if (command.arguments.length !== 3 || command.arguments[1] !== "--configuration"
++      || !configuration || !isAbsolute(configuration) || !configuration.endsWith("/lifeos-memory.json")) {
++    throw new Error("Conduit requires the installed selected-profile command");
++  }
++  const environment: NodeJS.ProcessEnv = {...process.env};
++  for (const key of Object.keys(environment)) {
++    if (key.startsWith("LIFEOS_MEMORY_") || key.startsWith("HERMES_SESSION_") || key.startsWith("HERMES_CRON_")) {
++      delete environment[key];
++    }
++  }
++  environment.HOME = homedir();
++  environment.HERMES_HOME = dirname(configuration);
++  environment.LIFEOS_MEMORY_CONFIGURATION = configuration;
++  environment.LIFEOS_MEMORY_CONFIGURATION_REVISION = revision;
++  const child = spawn(command.executable, ["-m", "hermes_cli.main", "lifeos-job", "conduit-insight",
++    "--configuration-revision", revision], {env: environment, stdio: ["ignore", "pipe", "pipe"]});
++  child.stdout.resume();
++  child.stderr.resume();
++  let force: ReturnType<typeof setTimeout> | undefined;
++  let finished = false;
++  const terminate = (): void => {
++    if (finished) return;
++    child.kill("SIGTERM");
++    force ??= setTimeout(() => child.kill("SIGKILL"), 1000);
++  };
++  const deadline = setTimeout(terminate, 540000);
++  const completion = new Promise<void>(resolveCompletion => {
++    const finish = (success: boolean): void => {
++      if (finished) return;
++      finished = true;
++      clearTimeout(deadline);
++      if (force !== undefined) clearTimeout(force);
++      settled(success);
++      resolveCompletion();
++    };
++    child.once("error", () => finish(false));
++    child.once("close", code => finish(code === 0));
++  });
++  return {stop: async (): Promise<void> => {terminate(); await completion;}};
++}
++
++export async function memoryHTTPConduitView(request: Request, running: boolean, building: boolean,
++    startJob?: (revision: string) => boolean): Promise<Response | null> {
 +  if (!hasManagedMemoryHTTP()) return null;
 +  const url = new URL(request.url);
 +  const headers = {"cache-control": "no-store"};
@@ -8421,8 +8468,19 @@ index 0000000..97ebf26
 +  const origin = request.headers.get("origin");
 +  if (origin && origin !== url.origin) return Response.json({error: "Conduit requires the current origin"}, {status: 403, headers});
 +  const target = url.pathname + (url.search ? url.search + "&" : "?") + "running=" + Number(running) + "&building=" + Number(building);
-+  try { return await memoryHTTPResponseAsync(request, "life", target); }
-+  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++  try {
++    if (build) {
++      const admitted = await memoryHTTPResponseAsync(request, "conduit_job");
++      if (admitted.status !== 200) return admitted;
++      const value: unknown = await admitted.json();
++      if (!memoryObject(value) || Object.keys(value).join(",") !== "configuration_revision"
++          || typeof value.configuration_revision !== "string" || !/^[0-9a-f]{64}$/.test(value.configuration_revision)
++          || startJob === undefined || request.signal.aborted) throw new Error("Conduit job preparation is unavailable");
++      const started = startJob(value.configuration_revision);
++      return Response.json(started ? {building: true} : {building: true, alreadyRunning: true}, {status: 202, headers: admitted.headers});
++    }
++    return await memoryHTTPResponseAsync(request, "life", target);
++  } catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +}
 +
 +
@@ -11547,6 +11605,14 @@ diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/
        }
  
        // Which surfaces are switched on. The dashboard reads this to avoid
+@@ -1209,6 +1213,7 @@
+   if (imessageModule) imessageModule.stopIMessage?.()
+   if (assistantModule) assistantModule.stopAssistant?.()
+   if (syslogModule) await syslogModule.stop?.()
++  if (conduitModule) await conduitModule.stop?.()
+   await writeState(STATE_PATH, state).catch(() => {})
+   log("info", "LifeOS Pulse stopped", { uptimeMs: Date.now() - state.startedAt })
+ }
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts b/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts
 index 878a4aa..81e0a31 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts
@@ -11754,7 +11820,7 @@ index 9ac4d38..a5d04fc 100644
    process.exit(0);
  }
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts b/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts
-index 5da6ec7..8340053 100644
+index 5da6ec7..e0f86f7 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts
 @@ -1,3 +1,5 @@
@@ -11770,7 +11836,7 @@ index 5da6ec7..8340053 100644
 -import { existsSync, readFileSync, readdirSync } from "node:fs"
 +import { existsSync, readFileSync, readdirSync, fstatSync, createReadStream } from "node:fs"
 +import { createInterface } from "node:readline"
-+import { memoryHTTPConduitView, memoryObject, hasManagedMemoryHTTP } from "../../TOOLS/lib/MemoryAccess"
++import { memoryHTTPConduitView, memoryObject, hasManagedMemoryHTTP, startConduitOwnerJob } from "../../TOOLS/lib/MemoryAccess"
  import { join } from "node:path"
  import { loadConfig } from "../Conduit/config.ts"
 -import { DAILY_DIR, INSIGHTS_DIR, dailyPathsFor, insightPathFor } from "../Conduit/paths.ts"
@@ -11782,7 +11848,23 @@ index 5da6ec7..8340053 100644
  import type { DailyRecord } from "../Conduit/types.ts"
  import { CONDUIT_VERSION } from "../Conduit/version.ts"
  
-@@ -60,9 +64,9 @@ function todayRecord(): DailyRecord {
+@@ -26,6 +30,7 @@ const MODULE_NAME = "conduit"
+ // — the same single-flight shape the atlas insights regenerate route uses.
+ // public PR #1647, @elhoim
+ const state = { running: false, startedAt: null as Date | null, building: false }
++let insightJob: {stop: () => Promise<void>} | null = null;
+ 
+ export async function start(): Promise<void> {
+   state.running = true
+@@ -34,6 +39,7 @@ export async function start(): Promise<void> {
+ }
+ 
+ export async function stop(): Promise<void> {
++  if (insightJob !== null) await insightJob.stop();
+   state.running = false
+   console.log(`[${MODULE_NAME}] stopped`)
+ }
+@@ -60,9 +66,9 @@ function todayRecord(): DailyRecord {
  }
  
  /** Read the last N persisted daily records (most recent first). */
@@ -11795,7 +11877,7 @@ index 5da6ec7..8340053 100644
      .filter((f) => f.endsWith(".json"))
      .sort()
      .reverse()
-@@ -70,7 +74,9 @@ function recentRecords(days: number): DailyRecord[] {
+@@ -70,7 +76,9 @@ function recentRecords(days: number): DailyRecord[] {
    const out: DailyRecord[] = []
    for (const f of files) {
      try {
@@ -11806,7 +11888,7 @@ index 5da6ec7..8340053 100644
      } catch {
        /* skip unreadable */
      }
-@@ -81,9 +87,9 @@ function recentRecords(days: number): DailyRecord[] {
+@@ -81,9 +89,9 @@ function recentRecords(days: number): DailyRecord[] {
  const EMPTY_INSIGHT_NARRATIVE = "No hourly read yet — the insight job runs on the hour."
  
  /** Most-recent insight file basename-date (YYYY-MM-DD), or null. */
@@ -11819,7 +11901,7 @@ index 5da6ec7..8340053 100644
      .map((f) => f.match(/^(\d{4}-\d{2}-\d{2})\.json$/)?.[1])
      .filter((d): d is string => Boolean(d))
      .sort()
-@@ -96,14 +102,18 @@ function latestInsightDate(): string | null {
+@@ -96,14 +104,18 @@ function latestInsightDate(): string | null {
   * A failed/empty read (contentTypes empty, or model "(failed)") is NOT a real read and is
   * served as available:false (Forge audit ISC-11) — a fallback never masquerades as a real one.
   */
@@ -11841,7 +11923,7 @@ index 5da6ec7..8340053 100644
      const isReal =
        Array.isArray(insight.contentTypes) && insight.contentTypes.length > 0 && insight.model !== "(failed)"
      if (!isReal) {
-@@ -118,11 +128,18 @@ function todayInsight(): unknown {
+@@ -118,11 +130,27 @@ function todayInsight(): unknown {
  }
  
  /** Public accessor for other Pulse modules (e.g. menubar aggregator) — today's live record. */
@@ -11856,12 +11938,21 @@ index 5da6ec7..8340053 100644
  }
  
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
-+  const managed = await memoryHTTPConduitView(req, state.running, state.building);
++  const managed = await memoryHTTPConduitView(req, state.running, state.building, revision => {
++    if (state.building) return false;
++    insightJob = startConduitOwnerJob(revision, success => {
++      state.building = false;
++      insightJob = null;
++      if (!success) console.log(`[${MODULE_NAME}] on-demand insight job refused or failed`);
++    });
++    state.building = true;
++    return true;
++  });
 +  if (managed !== null) return managed;
    const sub = pathname.replace(/^\/api\/conduit/, "") || "/"
    if (sub === "/" || sub === "/today") return Response.json(todayRecord())
    if (sub === "/recent") {
-@@ -158,3 +175,63 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+@@ -158,3 +186,63 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
    if (sub === "/status" || sub === "/health") return Response.json(health())
    return null // fall through to other routers
  }
@@ -13305,7 +13396,7 @@ index ad3d6e6..a60b0d1 100755
  
  ### 1. Copy the Template
 diff --git a/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts b/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts
-index 6890c34..4a23af3 100755
+index 6890c34..286ae79 100755
 --- a/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts
 @@ -1,4 +1,6 @@
@@ -13331,7 +13422,7 @@ index 6890c34..4a23af3 100755
  import type { ConduitEvent } from "./types.ts";
  import { CONDUIT_VERSION } from "./version.ts";
  
-@@ -148,22 +152,91 @@ function readExisting(date: string): ConduitInsight | null {
+@@ -148,22 +152,93 @@ function readExisting(date: string): ConduitInsight | null {
    }
  }
  
@@ -13406,8 +13497,10 @@ index 6890c34..4a23af3 100755
 +  const {text, since, eventsConsidered, existing, existingWasReal} = managed?.plan
 +    ?? insightPlan(readDayEvents(date), readExisting(date));
 +  function checkCurrent(): void {
-+    if (managed !== undefined) memoryAccess("conduit_check", {date, initialize, signature: managed.signature},
++    if (managed === undefined) return;
++    const checked = memoryAccess("conduit_check", {date, initialize, signature: managed.signature},
 +      (value): value is {ok: true} => memoryObject(value) && value.ok === true);
++    if (checked === undefined) throw new Error("Conduit insight lost its memory connector");
 +  }
 +  function save(value: ConduitInsight, reuse = false): ConduitInsight {
 +    if (managed === undefined) {
@@ -13434,7 +13527,7 @@ index 6890c34..4a23af3 100755
      const empty: ConduitInsight = {
        date,
        generatedAt: new Date().toISOString(),
-@@ -176,8 +249,7 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
+@@ -176,8 +251,7 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
        narrative: "No activity captured yet today.",
        contentTypes: [],
      };
@@ -13444,7 +13537,7 @@ index 6890c34..4a23af3 100755
    }
  
    const res = await inference({
-@@ -195,9 +267,11 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
+@@ -195,9 +269,11 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
  
    // Never let a failed read clobber a good one. If inference fails but we already have
    // a real read for today, keep it — a transient outage shouldn't wipe the last read.
@@ -13458,7 +13551,7 @@ index 6890c34..4a23af3 100755
    }
  
    const { narrative, contentTypes } = res.success
-@@ -211,22 +285,21 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
+@@ -211,22 +287,23 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
      level: LEVEL,
      model: res.success ? "haiku-tier" : "(failed)",
      since,
@@ -13483,7 +13576,9 @@ index 6890c34..4a23af3 100755
      .then((i) => console.log(JSON.stringify(i.contentTypes.map((t) => `${t.label} ${(t.share * 100).toFixed(0)}%`))))
      .catch((e) => {
 -      console.error("[insight] error:", e);
-+      console.error("[insight] error:", hasMemoryAccess() ? "Conduit insight unavailable under current policy" : e);
++      let managed = "LIFEOS_MEMORY_CONTEXT" in process.env;
++      try { managed ||= hasMemoryAccess(); } catch { managed = true; }
++      console.error("[insight] error:", managed ? "Conduit insight unavailable under current policy" : e);
        process.exit(1);
      });
  }

@@ -1,0 +1,54 @@
+{
+  "prepared_root": "/home/outsider/.cache/lifeos-daily-text-20261007/conduit-job-fourth/lifeos/LifeOS/install",
+  "head_before_commit": "e8120ee941c8025d34f2c20f290768c7d8ac485b",
+  "native": {
+    "LIFEOS/PULSE/pulse.ts": "4baa1b1cc37ae1d142fe7a81cf8e527d87f1440263d75705d3c7d0da4c4c3013",
+    "LIFEOS/PULSE/modules/conduit.ts": "e32691649c89e83615fb69fff591222faf31a10e9bca3d71fa2d40a06ec8eadc",
+    "LIFEOS/PULSE/Conduit/BuildInsight.ts": "de5f5c959c2b319bdf1a0cc4e2e2bc759053ce68e3d3e878199603349a4f9283",
+    "LIFEOS/TOOLS/lib/MemoryAccess.ts": "b993101ed33cd1ad2a87ac06f6a5ac462b5d9f13d049a61520ef8e165f069f59",
+    "LIFEOS/TOOLS/Inference.ts": "a4ead1bf109ad1b4fb9b41a6da054727ffbbc3a89b2d62541c5ad92e975bb0f3"
+  },
+  "plugin": {
+    "lifeos_hook_bridge/cli.py": "4f29ea32519ef0297146ebf9d28d2cde8787995d5be79cf12ee033140348c30c",
+    "lifeos_hook_bridge/dashboard/plugin_api.py": "183353651d5756dc3412a50b2f2ace47ca9f68d0f304df0d7bfe1947e507de3d",
+    "lifeos_hook_bridge/memory_http.py": "5d0c19edcda909d11ae2f805477b93fd0c7096b6c10fdb0aa3f2862d4f3f6d0f",
+    "lifeos_hook_bridge/memory_owner_jobs.py": "7e6c63f1902587bfffdc622e86a6d74efe905563c86cf26fdc401a0c6b95c446",
+    "lifeos_hook_bridge/memory_preferences.py": "46a39109eb92749c49c03dadc2f816b1d9337bae8adafea4fbe2304cf5a02d40",
+    "lifeos_hook_bridge/memory_service.py": "d38223b49264f23d5f15b8ee5e09d6645e0d900482d9357888b5cbfaee642764",
+    "lifeos_hook_bridge/memory_conduit_insight.py": "d5ae849d184b2d89a950d16366da9de9aa95fc925460ff531629ca4242e7e90b",
+    "tests/test_memory_conduit_jobs.py": "16dbca108a13c120c306066c147a8c9f583e36ed62b21096c80ebb1ccbbdeef5",
+    "tests/test_memory_conduit_insight.py": "59b266b9290c754f006001ea1794553af09302d781bc5fab19bc7c0178c7e318",
+    "tests/test_memory_sources.py": "63bef070efcb523d09cbcc9bdcccba9334aa76c0d3919a97440c09ca8f81563a",
+    "tests/test_memory_distill.py": "07c7dbc2432f811ff20d231780336fdc611a26400d3be3de46008fc453d543ca",
+    "patches/lifeos-memory-access.patch": "cd85f89118454bb2dc91227c570aec78bdbf5475ae02e375481d92585bc10db7",
+    "lifeos_hook_bridge/patches/lifeos-memory-access.patch": "cd85f89118454bb2dc91227c570aec78bdbf5475ae02e375481d92585bc10db7"
+  },
+  "server_mutation": false,
+  "first_daily_dashboard": "main Pulse only",
+  "separate_telos_application_deployed": false,
+  "focused": {
+    "cases": 35,
+    "seconds": 117.088,
+    "status": "PASS"
+  },
+  "neighbors": {
+    "cases": 221,
+    "broad_seconds": 387.143,
+    "broad_passed": 220,
+    "broad_failed": 1,
+    "corrected_repeat_cases": 30,
+    "corrected_repeat_seconds": 19.952,
+    "all_selected_cases_have_passing_evidence": true
+  },
+  "private_model": {
+    "status": "PASS",
+    "evidence": "conduit-job-private-model-current.json",
+    "model": "flashnext-w4a16-fp8ple",
+    "requested_native_level": "low",
+    "wire_effort": "low",
+    "personal_input": false
+  },
+  "dashboard_job_enabled_in_candidate": true,
+  "deployed": false,
+  "evidence_program_sha256": "d081765fe3d1023ff72ea5644f39c566aef59aff872fcf349810337503c405e4"
+}

@@ -41,7 +41,7 @@ class MemorySourceTests(unittest.TestCase):
 
     def test_unmanaged_wisdom_reader_keeps_native_behavior(self):
         self.source('WISDOM/FRAMES/synthetic.md','### Synthetic native wisdom marker [CRYSTAL: 95%]\n')
-        self.assertIn('Synthetic native wisdom marker',self.reader('loadWisdomFrames',managed=False))
+        self.assertIn('Synthetic native wisdom marker',self.reader('loadWisdomFrames',managed=False,context=False))
 
     def startup(self, *, channel='desktop', context=True, managed=True):
         from dataclasses import asdict
@@ -64,9 +64,23 @@ class MemorySourceTests(unittest.TestCase):
     def test_unmanaged_remote_startup_keeps_native_context_isolation(self):
         now = datetime.now(timezone.utc)
         self.source('RELATIONSHIP/'+now.strftime('%Y-%m/%Y-%m-%d.md'),'- Synthetic unmanaged owner marker\n')
-        output = self.startup(channel='chat-a',managed=False)
+        output = self.startup(channel='chat-a',managed=False,context=False)
         self.assertNotIn('Synthetic unmanaged owner marker',output)
         self.assertIn('LifeOS session ready',output)
+
+    def test_retained_context_without_connector_cannot_read_native_wisdom(self):
+        from dataclasses import asdict
+        self.source('WISDOM/FRAMES/synthetic.md', '### Synthetic retained context marker [CRYSTAL: 95%]\n')
+        (self.fixture.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+        environment = dict(os.environ, HOME=str(self.fixture.fixture.home),
+            LIFEOS_MEMORY_CONTEXT=json.dumps(asdict(self.fixture.context)), BUN_CONFIG_NO_AUTO_INSTALL='1')
+        environment.pop('LIFEOS_MEMORY_INTERNAL', None)
+        module = self.fixture.root / 'hooks/lib/learning-readback.ts'
+        script = 'import {loadWisdomFrames} from ' + json.dumps(str(module)) + ';try {console.log(loadWisdomFrames('
+        script += json.dumps(str(self.fixture.root / 'LIFEOS')) + '))} catch {console.log("REFUSED")}'
+        result = subprocess.run(['bun', '--no-install', '-e', script], env=environment,
+            capture_output=True, text=True, timeout=10)
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, 'null\n', ''))
 
     def test_managed_remote_startup_uses_the_same_policy_for_different_apps(self):
         from dataclasses import asdict

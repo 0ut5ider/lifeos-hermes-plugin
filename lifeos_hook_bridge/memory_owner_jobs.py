@@ -25,6 +25,7 @@ JOBS = {
                              ('LIFEOS/TOOLS/LearningPatternSynthesis.ts', '--week')),
     'life-morning-brief': (('LIFEOS/PULSE/checks/life-morning-brief.ts',),),
     'proposal-gc': (('LIFEOS/TOOLS/ProposalGC.ts', '--auto'),),
+    'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
 }
 MAX_OUTPUT = 4 * 1024 * 1024
 
@@ -64,7 +65,10 @@ class OwnerJobs:
     def __init__(self, configuration: Path):
         self.runtime = MemoryRuntime(configuration)
 
-    def run(self, name: str, *, route: dict, mapping: dict, timeout: float = 540) -> dict:
+    def run(self, name: str, *, route: dict, mapping: dict, timeout: float = 540,
+            expected_revision: str | None = None) -> dict:
+        if expected_revision is None and 'LIFEOS_MEMORY_CONFIGURATION_REVISION' in os.environ:
+            expected_revision = os.environ['LIFEOS_MEMORY_CONFIGURATION_REVISION']
         if name not in JOBS:
             raise ValueError('Choose a supported native owner job')
         if type(timeout) not in (int, float) or not math.isfinite(timeout) or not 0 < timeout <= 540:
@@ -73,6 +77,8 @@ class OwnerJobs:
         if not self.runtime.enabled():
             raise MemoryAdmissionError('Native owner jobs require activated memory ownership')
         configuration = self.runtime.configuration.load()
+        if expected_revision is not None:
+            self.runtime.configuration.check_revision(configuration, expected_revision)
         root = Path(configuration['root'])
         session = 'owner-job-' + uuid.uuid4().hex
         self.runtime.admit({'HERMES_SESSION_PLATFORM': 'cli', 'HERMES_SESSION_ID': session},
@@ -90,9 +96,13 @@ class OwnerJobs:
         environment['PATH'] = os.pathsep.join((str(Path(__file__).parent / 'bin'),
             str(Path.home() / '.bun/bin'), str(Path.home() / '.local/bin'), environment.get('PATH', '')))
         self.runtime.bind_environment(environment, session_id=session)
+        if expected_revision is not None:
+            environment['LIFEOS_MEMORY_CONFIGURATION_REVISION'] = expected_revision
         deadline = time.monotonic() + timeout
         output = []
         for command in JOBS[name]:
+            if expected_revision is not None:
+                self.runtime.configuration.check_revision(self.runtime.configuration.load(), expected_revision)
             self.runtime.check_call(request={}, **route, session_id=session, metadata={})
             result, text = _command(['bun', '--no-install', str(root / command[0]),
                 *command[1:]], environment, max(0.001, deadline - time.monotonic()))
@@ -102,6 +112,8 @@ class OwnerJobs:
         projected = MemoryService(self.runtime.configuration).native(context, 'filter_history',
             {'content': ''.join(output), 'timestamp': datetime.now(timezone.utc).isoformat()})
         self.runtime.check_call(request={}, **route, session_id=session, metadata={})
+        if expected_revision is not None:
+            self.runtime.configuration.check_revision(self.runtime.configuration.load(), expected_revision)
         if not projected.get('ok', True) or projected.get('excluded'):
             return {'status': 'response-withheld', 'job': name}
         return {'status': 'completed', 'job': name, 'output': projected['content']}

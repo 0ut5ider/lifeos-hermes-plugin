@@ -1,0 +1,129 @@
+test_anonymous_job_preparation_requires_real_authentication (test_memory_conduit_jobs.MemoryConduitJobAuthenticationTests.test_anonymous_job_preparation_requires_real_authentication) ... ok
+test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_conduit_jobs.MemoryConduitJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation) ... FAIL
+test_owner_receives_only_a_current_configuration_restriction (test_memory_conduit_jobs.MemoryConduitJobAuthenticationTests.test_owner_receives_only_a_current_configuration_restriction) ... FAIL
+test_actual_selected_profile_command_runs_idle_conduit_without_inference (test_memory_conduit_jobs.MemoryConduitJobCommandTests.test_actual_selected_profile_command_runs_idle_conduit_without_inference) ... FAIL
+test_child_configuration_revision_is_a_restriction (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_child_configuration_revision_is_a_restriction) ... FAIL
+test_current_revision_runs_native_consolidation (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_current_revision_runs_native_consolidation) ... ERROR
+test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) ... 
+  test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected='dd7dbea9870826fc1f2523a10036890ff8479d9e6f5d76bb78208826e7474251') ... ERROR
+  test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected='') ... ERROR
+  test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected='invalid') ... ERROR
+  test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected=True) ... ERROR
+
+======================================================================
+ERROR: test_current_revision_runs_native_consolidation (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_current_revision_runs_native_consolidation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 30, in test_current_revision_runs_native_consolidation
+    result = self.fixture.jobs.run('memory-consolidation', route=self.fixture.route,
+        mapping=self.fixture.mapping, expected_revision=revision)
+TypeError: OwnerJobs.run() got an unexpected keyword argument 'expected_revision'
+
+======================================================================
+ERROR: test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected='dd7dbea9870826fc1f2523a10036890ff8479d9e6f5d76bb78208826e7474251')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 39, in test_stale_or_malformed_revision_refuses_before_native_effect
+    self.fixture.jobs.run('memory-consolidation', route=self.fixture.route,
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        mapping=self.fixture.mapping, expected_revision=expected)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: OwnerJobs.run() got an unexpected keyword argument 'expected_revision'
+
+======================================================================
+ERROR: test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 39, in test_stale_or_malformed_revision_refuses_before_native_effect
+    self.fixture.jobs.run('memory-consolidation', route=self.fixture.route,
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        mapping=self.fixture.mapping, expected_revision=expected)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: OwnerJobs.run() got an unexpected keyword argument 'expected_revision'
+
+======================================================================
+ERROR: test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected='invalid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 39, in test_stale_or_malformed_revision_refuses_before_native_effect
+    self.fixture.jobs.run('memory-consolidation', route=self.fixture.route,
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        mapping=self.fixture.mapping, expected_revision=expected)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: OwnerJobs.run() got an unexpected keyword argument 'expected_revision'
+
+======================================================================
+ERROR: test_stale_or_malformed_revision_refuses_before_native_effect (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_stale_or_malformed_revision_refuses_before_native_effect) (expected=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 39, in test_stale_or_malformed_revision_refuses_before_native_effect
+    self.fixture.jobs.run('memory-consolidation', route=self.fixture.route,
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        mapping=self.fixture.mapping, expected_revision=expected)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: OwnerJobs.run() got an unexpected keyword argument 'expected_revision'
+
+======================================================================
+FAIL: test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_conduit_jobs.MemoryConduitJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 116, in test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation
+    self.assertEqual(self.fixture.client.post(self.endpoint).status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 503
+
+======================================================================
+FAIL: test_owner_receives_only_a_current_configuration_restriction (test_memory_conduit_jobs.MemoryConduitJobAuthenticationTests.test_owner_receives_only_a_current_configuration_restriction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 106, in test_owner_receives_only_a_current_configuration_restriction
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_actual_selected_profile_command_runs_idle_conduit_without_inference (test_memory_conduit_jobs.MemoryConduitJobCommandTests.test_actual_selected_profile_command_runs_idle_conduit_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 66, in test_actual_selected_profile_command_runs_idle_conduit_without_inference
+    self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (2, "usage: hermes lifeos-job [-h]\n      [245 chars])\n") != (0, '')
+
+First differing element 0:
+2
+0
+
++ (0, '')
+- (2,
+-  'usage: hermes lifeos-job [-h]\n'
+-  '                         '
+-  '{user-index,memory-consolidation,life-morning-brief,proposal-gc}\n'
+-  "hermes lifeos-job: error: argument job: invalid choice: 'conduit-insight' "
+-  "(choose from 'user-index', 'memory-consolidation', 'life-morning-brief', "
+-  "'proposal-gc')\n") : 
+
+======================================================================
+FAIL: test_child_configuration_revision_is_a_restriction (test_memory_conduit_jobs.MemoryConduitJobRestrictionTests.test_child_configuration_revision_is_a_restriction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 52, in test_child_configuration_revision_is_a_restriction
+    self.assertEqual((result.returncode, result.stdout, result.stderr), (0, 'refused\n', ''))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, 'accepted\n', '') != (0, 'refused\n', '')
+
+First differing element 1:
+'accepted\n'
+'refused\n'
+
+- (0, 'accepted\n', '')
+?      ^^^ ^^
+
++ (0, 'refused\n', '')
+?      ^ ^^^
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.363s
+
+FAILED (failures=4, errors=5)

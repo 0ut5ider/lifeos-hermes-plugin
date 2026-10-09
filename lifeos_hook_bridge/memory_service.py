@@ -159,7 +159,15 @@ class MemoryConfiguration:
             raise MemoryUnavailable("Memory configuration needs private owner permissions")
         configuration = json.loads(self.path.read_text())
         self.validate(configuration)
+        if 'LIFEOS_MEMORY_CONFIGURATION_REVISION' in os.environ:
+            self.check_revision(configuration, os.environ['LIFEOS_MEMORY_CONFIGURATION_REVISION'])
         return configuration
+
+    @staticmethod
+    def check_revision(configuration, expected):
+        if (not isinstance(expected, str) or re.fullmatch('[0-9a-f]{64}', expected) is None
+                or MemoryPolicy(configuration).revision != expected):
+            raise MemoryUnavailable('The initiating owner configuration changed before this job operation')
 
     def save(self, configuration: dict[str, Any]) -> None:
         self.validate(configuration)

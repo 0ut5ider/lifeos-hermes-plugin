@@ -96,6 +96,7 @@ def run_backup(args: argparse.Namespace) -> int:
 def configure_owner_job(parser: argparse.ArgumentParser) -> None:
     from .memory_owner_jobs import JOBS
     parser.add_argument('job', choices=tuple(JOBS), help='Run one configured native owner job.')
+    parser.add_argument('--configuration-revision', help='Require the initiating owner configuration revision.')
 
 
 def run_owner_job(args: argparse.Namespace, read_setting) -> int:
@@ -110,7 +111,8 @@ def run_owner_job(args: argparse.Namespace, read_setting) -> int:
         route = {'provider': provider['provider'], 'model': current.current_model,
                  'base_url': provider['base_url'], 'api_mode': provider['api_mode']}
         mapping = configured_model_map(read_setting, current.current_provider, current.current_model)
-        result = OwnerJobs(get_hermes_home() / 'lifeos-memory.json').run(args.job, route=route, mapping=mapping)
+        result = OwnerJobs(get_hermes_home() / 'lifeos-memory.json').run(args.job, route=route, mapping=mapping,
+            expected_revision=getattr(args, 'configuration_revision', None))
     except (ValueError, OSError, RuntimeError, KeyError, sqlite3.Error, subprocess.TimeoutExpired):
         result = {'status': 'rejected', 'job': args.job,
                   'message': 'The native job needs current local owner permission, an admitted model route, and a managed store.'}

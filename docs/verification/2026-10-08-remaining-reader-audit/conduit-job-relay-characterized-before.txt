@@ -1,0 +1,16 @@
+test_authenticated_native_button_runs_actual_idle_owner_job (test_memory_conduit_jobs.MemoryConduitJobRelayTests.test_authenticated_native_button_runs_actual_idle_owner_job) ... FAIL
+test_current_origin_account_and_method_refuse_before_start (test_memory_conduit_jobs.MemoryConduitJobRelayTests.test_current_origin_account_and_method_refuse_before_start) ... ok
+
+======================================================================
+FAIL: test_authenticated_native_button_runs_actual_idle_owner_job (test_memory_conduit_jobs.MemoryConduitJobRelayTests.test_authenticated_native_button_runs_actual_idle_owner_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 170, in test_authenticated_native_button_runs_actual_idle_owner_job
+    self.assertEqual(response.status_code, 202, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 202 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.394s
+
+FAILED (failures=1)

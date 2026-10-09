@@ -1,6 +1,6 @@
 # Daily text profile
 
-The staged `PULSE.user.toml` selects Adrian's first daily Discord release. It uses local job output until the private channel passes delivery acceptance. The [configuration gate](../../verification/2026-10-08-daily-pulse-profile/README.md) verifies native resolution and job execution. Installed scheduling and release acceptance remain open.
+The staged `PULSE.user.toml` selects Adrian's first daily Discord release. It uses local job output until the private channel passes delivery acceptance. The [configuration gate](../../verification/2026-10-08-daily-pulse-profile/README.md) verifies native resolution and job execution. Installed scheduling and release acceptance remain open. Adrian selects only the main Pulse dashboard. Do not start or expose the separate Telos application. The Telos skill template can remain in the native source package; it does not establish a separately accepted service.
 
 The operator deployment must perform these actions:
 

@@ -33,8 +33,8 @@ class MemoryDistillTests(unittest.TestCase):
         return subprocess.run(['bun', '--no-install', str(self.root / 'LIFEOS/TOOLS/KnowledgeDistill.ts'),
             *arguments], capture_output=True, text=True, env=environment, timeout=40)
 
-    def gather(self):
-        result = self.call('gather', '--days', '36500', '--limit', '100')
+    def gather(self, *, context=True):
+        result = self.call('gather', '--days', '36500', '--limit', '100', context=context)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stderr, '')
         return json.loads(result.stdout)
@@ -130,4 +130,11 @@ class MemoryDistillTests(unittest.TestCase):
     def test_unmanaged_native_reader_retains_original_output(self):
         before = self.gather()
         (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
-        self.assertEqual(self.gather(), before)
+        self.assertEqual(self.gather(context=False), before)
+
+    def test_retained_context_without_connector_cannot_gather_native_notes(self):
+        (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+        result = self.call('gather', '--days', '36500', '--limit', '100')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('The admitted native caller lost its memory connector', result.stderr)
+        self.assertNotIn('Synthetic current distill marker', result.stdout + result.stderr)

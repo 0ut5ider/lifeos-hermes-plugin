@@ -1,0 +1,21 @@
+test_connector_loss_after_actual_preparation_refuses_before_model (test_memory_conduit_insight.MemoryConduitInsightTests.test_connector_loss_after_actual_preparation_refuses_before_model) ... FAIL
+
+======================================================================
+FAIL: test_connector_loss_after_actual_preparation_refuses_before_model (test_memory_conduit_insight.MemoryConduitInsightTests.test_connector_loss_after_actual_preparation_refuses_before_model)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py", line 397, in test_connector_loss_after_actual_preparation_refuses_before_model
+    self.assertEqual(self.received, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'path': '/v1/messages', 'body': {'model'[798 chars]}]}}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'path': '/v1/messages', 'body': {'model': 'synthetic-flashnext', 'max_tokens': 4096, 'output_config': {'effort': 'low'}, 'system': 'You characterize a person\'s local computer activity into a short read + a few content-type themes. You receive ONLY metadata (app names, minutes, session slugs, git subjects) — never content. Return STRICT JSON only, no prose around it, shape: {"narrative":"<=280 chars, plain English, second person, what kind of work/activity this was","contentTypes":[{"label":"2-4 words","share":0.0,"evidence":"which metadata"}]} Rules: at most 6 themes; shares are fractions of the day that SUM TO 1.0; order by share desc; plain language, no hype.', 'messages': [{'role': 'user', 'content': 'Foreground apps today (minutes): SyntheticInsightCurrent 2min\nLifeOS coding sessions: 0\nGit commits: 0\nPull requests: 0'}]}}
+
+Diff is 1359 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.981s
+
+FAILED (failures=1)

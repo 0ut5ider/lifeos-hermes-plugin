@@ -376,6 +376,38 @@ class MemoryConduitInsightTests(unittest.TestCase):
         self.assertFalse(self.insight.exists())
         self.assertFalse(self.config.exists())
 
+    def test_connector_loss_after_actual_preparation_refuses_before_model(self):
+        self.failure_gateway()
+        self.seed()
+        self.insight.unlink()
+        connector = self.root / 'LIFEOS/USER/CONFIG/memory-access.json'
+        original = json.loads(connector.read_text())['command']
+        observer = self.fixture.fixture.home / 'conduit-connector-observer.py'
+        observer.write_text('# ABOUTME: Runs the installed memory command before observing prepared connector loss.\n'
+            '# ABOUTME: Preserves the real service response while changing only disposable control files.\n'
+            'import json,os,subprocess,sys\nfrom pathlib import Path\n'
+            'wire=sys.stdin.buffer.read()\nresult=subprocess.run(' + repr(original) + ',input=wire,capture_output=True)\n'
+            'if json.loads(wire)["operation"]=="conduit_prepare" and result.returncode==0 and json.loads(result.stdout).get("ok"):\n'
+            '    directory=Path(os.environ["HOME"])/".claude/LIFEOS/USER/CONFIG"\n'
+            '    for name in ("memory-access.json","memory-http.json"): (directory/name).unlink()\n'
+            'sys.stdout.buffer.write(result.stdout)\nsys.stderr.buffer.write(result.stderr)\nsys.exit(result.returncode)\n')
+        connector.write_text(json.dumps({'version': 1, 'command': [sys.executable, str(observer)]}))
+        result = self.call()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.received, [])
+        self.assertFalse(self.insight.exists())
+        self.assertFalse(self.config.exists())
+
+    def test_retained_context_cannot_become_unconfigured_after_connector_loss(self):
+        self.seed()
+        for name in ('memory-access.json', 'memory-http.json'):
+            (self.root / 'LIFEOS/USER/CONFIG' / name).unlink()
+        before = self.insight.read_bytes()
+        result = self.call(exported=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn('SyntheticInsightCurrent', result.stdout + result.stderr)
+        self.assertEqual(self.insight.read_bytes(), before)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,0 +1,106 @@
+{
+  "responses": [
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No hourly read yet \u2014 the insight job runs on the hour.",
+        "contentTypes": [],
+        "building": true
+      }
+    },
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No hourly read yet \u2014 the insight job runs on the hour.",
+        "contentTypes": [],
+        "building": true
+      }
+    },
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No hourly read yet \u2014 the insight job runs on the hour.",
+        "contentTypes": [],
+        "building": true
+      }
+    },
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No hourly read yet \u2014 the insight job runs on the hour.",
+        "contentTypes": [],
+        "building": true
+      }
+    },
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No hourly read yet \u2014 the insight job runs on the hour.",
+        "contentTypes": [],
+        "building": true
+      }
+    },
+    {
+      "status": 503,
+      "body": {
+        "error": "Authenticated memory is unavailable"
+      }
+    },
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No activity captured yet today.",
+        "contentTypes": [],
+        "building": true
+      }
+    },
+    {
+      "status": 200,
+      "body": {
+        "date": "2026-10-09",
+        "available": false,
+        "narrative": "No activity captured yet today.",
+        "contentTypes": [],
+        "building": false
+      }
+    }
+  ],
+  "refusals": [
+    {
+      "type": "MemoryUnavailable",
+      "message": "Conduit sources change before delivery"
+    }
+  ],
+  "preparation": {
+    "status": 200,
+    "body": {
+      "configuration_revision": "26b195398b6d65cf1c600fc4ecb4d2925cab7fd1179d8485485a96a55da38a50"
+    }
+  },
+  "owner_classes": [
+    "lifeos_memory_settings.memory_preferences",
+    "lifeos_hook_bridge.memory_preferences"
+  ],
+  "start": {
+    "status": 202,
+    "body": {
+      "building": true
+    }
+  },
+  "artifacts": [
+    "LIFEOS/USER/CONDUIT/config.json",
+    "LIFEOS/USER/CONDUIT/insights/2026-10-09.json"
+  ]
+}
