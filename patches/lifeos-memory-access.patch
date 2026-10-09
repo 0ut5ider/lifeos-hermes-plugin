@@ -12831,3 +12831,185 @@ index 2b82fe2..70c5020 100755
  
  // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
  for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Banner.ts b/LifeOS/install/LIFEOS/TOOLS/Banner.ts
+index 4d57318..fd5c946 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/Banner.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Banner.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Renders the native terminal banner from admitted owner identity and version sources.
++// ABOUTME: Keeps public layout functions independent of raw personal source reads.
+ 
+ /**
+  * LifeOS Banner - Responsive Neofetch-style launch banner (Navy theme)
+@@ -12,6 +14,7 @@ import { join } from "path";
+ import { spawnSync } from "child_process";
+ import { parse as parseYaml } from "yaml";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject, hasMemoryAccess } from "./lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const CLAUDE_DIR = join(HOME, ".claude");
+@@ -147,7 +150,7 @@ interface SystemStats {
+   algorithmVersion: string;
+ }
+ 
+-function getStats(): SystemStats {
++function getStats(sources?: Record<string, string>, admittedCounts?: {skills: number; hooks: number}): SystemStats {
+   let name = "LifeOS";
+   let paiVersion = "3.0";
+   let algorithmVersion = "0.2";
+@@ -156,8 +159,9 @@ function getStats(): SystemStats {
+   try {
+     // Identity from DA_IDENTITY.md frontmatter (canonical source)
+     const daPath = join(CLAUDE_DIR, "LIFEOS", "USER", "DIGITAL_ASSISTANT", "DA_IDENTITY.md");
+-    if (existsSync(daPath)) {
+-      const content = readFileSync(daPath, "utf-8");
++    const content = sources ? sources["LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md"]
++      : existsSync(daPath) ? readFileSync(daPath, "utf-8") : undefined;
++    if (content !== undefined) {
+       const m = content.match(/^---\n([\s\S]*?)\n---/);
+       if (m) {
+         const fm: any = parseYaml(m[1]) || {};
+@@ -171,14 +175,14 @@ function getStats(): SystemStats {
+   try {
+     // LifeOS version: ~/.claude/LIFEOS/VERSION (single source of truth)
+     const versionPath = join(CLAUDE_DIR, "LIFEOS", "VERSION");
+-    if (existsSync(versionPath)) {
+-      paiVersion = readFileSync(versionPath, "utf-8").trim() || paiVersion;
+-    }
++    const version = sources ? sources["LIFEOS/VERSION"]
++      : existsSync(versionPath) ? readFileSync(versionPath, "utf-8") : undefined;
++    if (version !== undefined) paiVersion = version.trim() || paiVersion;
+     // Algorithm version: ~/.claude/LIFEOS/ALGORITHM/LATEST
+     const latestPath = join(CLAUDE_DIR, "LIFEOS", "ALGORITHM", "LATEST");
+-    if (existsSync(latestPath)) {
+-      algorithmVersion = readFileSync(latestPath, "utf-8").trim().replace(/^v/i, "") || algorithmVersion;
+-    }
++    const latest = sources ? sources["LIFEOS/ALGORITHM/LATEST"]
++      : existsSync(latestPath) ? readFileSync(latestPath, "utf-8") : undefined;
++    if (latest !== undefined) algorithmVersion = latest.trim().replace(/^v/i, "") || algorithmVersion;
+   } catch {}
+ 
+   // Replace {name} placeholder in catchphrase
+@@ -189,15 +193,20 @@ function getStats(): SystemStats {
+   // `--single` mode (~20ms each) instead of the full multi-key walk which
+   // recursed into LIFEOS/USER/ (123k files) for keys nothing displays.
+   let skills = 0, hooks = 0;
+-  const getCountsPath = join(CLAUDE_DIR, "LIFEOS", "TOOLS", "GetCounts.ts");
+-  try {
+-    const r = spawnSync("bun", [getCountsPath, "--single", "skills"], { encoding: "utf-8", timeout: 1000 });
+-    if (r.stdout) skills = parseInt(r.stdout.trim(), 10) || 0;
+-  } catch {}
+-  try {
+-    const r = spawnSync("bun", [getCountsPath, "--single", "hooks"], { encoding: "utf-8", timeout: 1000 });
+-    if (r.stdout) hooks = parseInt(r.stdout.trim(), 10) || 0;
+-  } catch {}
++  if (admittedCounts) {
++    skills = admittedCounts.skills;
++    hooks = admittedCounts.hooks;
++  } else {
++    const getCountsPath = join(CLAUDE_DIR, "LIFEOS", "TOOLS", "GetCounts.ts");
++    try {
++      const r = spawnSync("bun", [getCountsPath, "--single", "skills"], { encoding: "utf-8", timeout: 1000 });
++      if (r.stdout) skills = parseInt(r.stdout.trim(), 10) || 0;
++    } catch {}
++    try {
++      const r = spawnSync("bun", [getCountsPath, "--single", "hooks"], { encoding: "utf-8", timeout: 1000 });
++      if (r.stdout) hooks = parseInt(r.stdout.trim(), 10) || 0;
++    } catch {}
++  }
+ 
+   return {
+     name,
+@@ -542,9 +551,9 @@ const BREAKPOINTS = {
+ type DesignName = "navy" | "navy-medium" | "navy-compact" | "navy-minimal" | "navy-ultra";
+ const ALL_DESIGNS: DesignName[] = ["navy", "navy-medium", "navy-compact", "navy-minimal", "navy-ultra"];
+ 
+-function createBanner(forceDesign?: string): string {
+-  const width = getTerminalWidth();
+-  const stats = getStats();
++function createBanner(forceDesign?: string, admittedStats?: SystemStats, admittedWidth?: number): string {
++  const width = admittedWidth ?? getTerminalWidth();
++  const stats = admittedStats ?? getStats();
+ 
+   // If a specific design is requested (for --design= flag or --test mode)
+   if (forceDesign) {
+@@ -571,25 +580,63 @@ function createBanner(forceDesign?: string): string {
+   }
+ }
+ 
++export function bannerIdentityProjection(content?: string): {name: string; catchphrase: string} {
++  const sources = content === undefined ? {} : {"LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": content};
++  const stats = getStats(sources, {skills: 0, hooks: 0});
++  return {name: stats.name, catchphrase: stats.catchphrase};
++}
++
++export function bannerSourceView(sources: Record<string, string>, counts: {skills: number; hooks: number},
++                                 args: string[], width: number): {stats: SystemStats; stdout: string} {
++  const stats = getStats(sources, counts);
++  const lines: string[] = [];
++  if (args.includes("--test")) {
++    for (const design of ALL_DESIGNS) {
++      lines.push(`\n${"═".repeat(60)}`, `  DESIGN: ${design.toUpperCase()}`, "═".repeat(60), createBanner(design, stats, width));
++    }
++  } else {
++    const design = args.find(arg => arg.startsWith("--design="))?.split("=")[1];
++    lines.push(createBanner(design, stats, width));
++  }
++  return {stats, stdout: lines.join("\n") + "\n"};
++}
++
+ // ═══════════════════════════════════════════════════════════════════════════
+ // CLI
+ // ═══════════════════════════════════════════════════════════════════════════
+ 
+-const args = process.argv.slice(2);
+-const testMode = args.includes("--test");
+-const designArg = args.find(a => a.startsWith("--design="))?.split("=")[1];
++if (import.meta.main) {
++  const args = process.argv.slice(2);
++  const testMode = args.includes("--test");
++  const designArg = args.find(a => a.startsWith("--design="))?.split("=")[1];
+ 
+-try {
+-  if (testMode) {
+-    for (const design of ALL_DESIGNS) {
+-      console.log(`\n${"═".repeat(60)}`);
+-      console.log(`  DESIGN: ${design.toUpperCase()}`);
+-      console.log(`${"═".repeat(60)}`);
+-      console.log(createBanner(design));
++  try {
++    if (hasMemoryAccess()) {
++      const governed = memoryAccess("banner", {args, width: getTerminalWidth()},
++        (value): value is {ok: boolean; stdout?: string} => memoryObject(value)
++          && typeof value.ok === "boolean" && (value.ok === false || typeof value.stdout === "string"));
++      if (governed === undefined || !governed.ok) {
++        console.error("The banner requires current owner memory access");
++        process.exit(1);
++      }
++      process.stdout.write(governed.stdout ?? "");
++      process.exit(0);
+     }
+-  } else {
+-    console.log(createBanner(designArg));
++    if (testMode) {
++      for (const design of ALL_DESIGNS) {
++        console.log(`\n${"═".repeat(60)}`);
++        console.log(`  DESIGN: ${design.toUpperCase()}`);
++        console.log(`${"═".repeat(60)}`);
++        console.log(createBanner(design));
++      }
++    } else {
++      console.log(createBanner(designArg));
++    }
++  } catch (e) {
++    if (hasMemoryAccess()) {
++      console.error("The banner requires current owner memory access");
++      process.exit(1);
++    }
++    console.error("Banner error:", e);
+   }
+-} catch (e) {
+-  console.error("Banner error:", e);
+ }

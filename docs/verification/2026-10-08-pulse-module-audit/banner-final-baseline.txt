@@ -1,0 +1,58 @@
+test_actual_retirement_refuses_retained_banner_name (test_memory_banner.MemoryBannerTests.test_actual_retirement_refuses_retained_banner_name) ... FAIL
+test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) ... ok
+test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) ... ok
+test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) ... 
+  test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='<private>SyntheticBannerHidden</private>') ... FAIL
+  test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='\\u003cprivate\\u003eSyntheticBannerHidden\\u003c/private\\u003e') ... FAIL
+test_revoked_owner_and_missing_connector_refuse (test_memory_banner.MemoryBannerTests.test_revoked_owner_and_missing_connector_refuse) ... FAIL
+test_unbound_reader_cannot_disclose_assistant_identity (test_memory_banner.MemoryBannerTests.test_unbound_reader_cannot_disclose_assistant_identity) ... FAIL
+
+======================================================================
+FAIL: test_actual_retirement_refuses_retained_banner_name (test_memory_banner.MemoryBannerTests.test_actual_retirement_refuses_retained_banner_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 72, in test_actual_retirement_refuses_retained_banner_name
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='<private>SyntheticBannerHidden</private>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 63, in test_private_and_yaml_escaped_catchphrases_cannot_reach_banner
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='\\u003cprivate\\u003eSyntheticBannerHidden\\u003c/private\\u003e')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 63, in test_private_and_yaml_escaped_catchphrases_cannot_reach_banner
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_revoked_owner_and_missing_connector_refuse (test_memory_banner.MemoryBannerTests.test_revoked_owner_and_missing_connector_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 83, in test_revoked_owner_and_missing_connector_refuse
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_reader_cannot_disclose_assistant_identity (test_memory_banner.MemoryBannerTests.test_unbound_reader_cannot_disclose_assistant_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 53, in test_unbound_reader_cannot_disclose_assistant_identity
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 6 tests in 10.359s
+
+FAILED (failures=5)

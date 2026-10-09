@@ -1,0 +1,132 @@
+test_actual_retirement_refuses_retained_banner_name (test_memory_banner.MemoryBannerTests.test_actual_retirement_refuses_retained_banner_name) ... ok
+test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) ... 
+  test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='---\ncore:\n  display_name: SyntheticBannerDisplay\n  name: SyntheticIgnoredName\n  startup_catchphrase: "Ready, {name}"\n---\n') ... FAIL
+  test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='---\ncore:\n  name: SyntheticBannerName\n  startup_catchphrase: ""\n---\n') ... FAIL
+  test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='---\ncore: [\n---\n') ... FAIL
+  test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='# No frontmatter\nSyntheticIgnoredBody\n') ... FAIL
+test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) ... FAIL
+test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) ... 
+  test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy') ... FAIL
+  test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-medium') ... FAIL
+  test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-compact') ... FAIL
+  test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-minimal') ... FAIL
+  test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-ultra') ... FAIL
+test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) ... FAIL
+test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) ... ok
+test_revoked_owner_and_missing_connector_refuse (test_memory_banner.MemoryBannerTests.test_revoked_owner_and_missing_connector_refuse) ... ok
+test_unbound_reader_cannot_disclose_assistant_identity (test_memory_banner.MemoryBannerTests.test_unbound_reader_cannot_disclose_assistant_identity) ... ok
+
+======================================================================
+FAIL: test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='---\ncore:\n  display_name: SyntheticBannerDisplay\n  name: SyntheticIgnoredName\n  startup_catchphrase: "Ready, {name}"\n---\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 96, in test_native_identity_display_name_empty_phrase_and_parse_failure_characterization
+    self.assertEqual(self.banner('--design=navy').stdout, raw.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━[2499 chars]\n\n'
+Diff is 2212 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='---\ncore:\n  name: SyntheticBannerName\n  startup_catchphrase: ""\n---\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 96, in test_native_identity_display_name_empty_phrase_and_parse_failure_characterization
+    self.assertEqual(self.banner('--design=navy').stdout, raw.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━[2507 chars]\n\n'
+Diff is 2220 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='---\ncore: [\n---\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 96, in test_native_identity_display_name_empty_phrase_and_parse_failure_characterization
+    self.assertEqual(self.banner('--design=navy').stdout, raw.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━[2494 chars]\n\n'
+Diff is 2207 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) (content='# No frontmatter\nSyntheticIgnoredBody\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 96, in test_native_identity_display_name_empty_phrase_and_parse_failure_characterization
+    self.assertEqual(self.banner('--design=navy').stdout, raw.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━[2494 chars]\n\n'
+Diff is 2207 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 99, in test_native_identity_display_name_empty_phrase_and_parse_failure_characterization
+    self.assertEqual(self.banner('--design=navy').stdout, self.original('--design=navy').stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━[2494 chars]\n\n'
+Diff is 2207 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 45, in test_original_native_designs_name_substitution_and_default_characterization
+    self.assertEqual(current.returncode, 0, current.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : The banner requires current owner memory access
+
+
+======================================================================
+FAIL: test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-medium')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 45, in test_original_native_designs_name_substitution_and_default_characterization
+    self.assertEqual(current.returncode, 0, current.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : The banner requires current owner memory access
+
+
+======================================================================
+FAIL: test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-compact')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 45, in test_original_native_designs_name_substitution_and_default_characterization
+    self.assertEqual(current.returncode, 0, current.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : The banner requires current owner memory access
+
+
+======================================================================
+FAIL: test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-minimal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 45, in test_original_native_designs_name_substitution_and_default_characterization
+    self.assertEqual(current.returncode, 0, current.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : The banner requires current owner memory access
+
+
+======================================================================
+FAIL: test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) (design='navy-ultra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 45, in test_original_native_designs_name_substitution_and_default_characterization
+    self.assertEqual(current.returncode, 0, current.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : The banner requires current owner memory access
+
+
+======================================================================
+FAIL: test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 48, in test_original_native_designs_name_substitution_and_default_characterization
+    self.assertEqual(self.banner('--design=navy').stdout, self.original('--design=navy').stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━[2494 chars]\n\n'
+Diff is 2207 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 6 tests in 14.295s
+
+FAILED (failures=11)

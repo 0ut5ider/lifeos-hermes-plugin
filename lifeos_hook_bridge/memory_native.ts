@@ -27,7 +27,27 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'algorithm_tab_sources' || input.action === 'algorithm_tab_view') {
+  if (input.action === 'banner_view' || input.action === 'banner_source_projection') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/Banner.ts')).href);
+    if (!object(module) || typeof module.bannerSourceView !== 'function' || typeof module.bannerIdentityProjection !== 'function') {
+      throw new Error('Native banner exports are unavailable');
+    }
+    if (input.action === 'banner_source_projection') {
+      if (!(input.content === null || typeof input.content === 'string')) throw new Error('Choose declared banner identity text');
+      result = module.bannerIdentityProjection(input.content === null ? undefined : input.content);
+    } else {
+      if (!object(input.sources) || Object.keys(input.sources).some(key => ![
+          'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'LIFEOS/VERSION', 'LIFEOS/ALGORITHM/LATEST'].includes(key))
+          || Object.values(input.sources).some(value => typeof value !== 'string')
+          || !object(input.counts) || Object.keys(input.counts).sort().join(',') !== 'hooks,skills'
+          || Object.values(input.counts).some(value => typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0)
+          || !Array.isArray(input.args) || input.args.some(value => typeof value !== 'string')
+          || typeof input.width !== 'number' || !Number.isSafeInteger(input.width) || input.width < 1 || input.width > 1024) {
+        throw new Error('The native banner requires declared sources, inventory, arguments, and width');
+      }
+      result = module.bannerSourceView(input.sources, input.counts, input.args, input.width);
+    }
+  } else if (input.action === 'algorithm_tab_sources' || input.action === 'algorithm_tab_view') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/algorithm-tab.ts')).href);
     if (!object(module) || typeof module.algorithmChainSources !== 'function' || typeof module.renderAlgorithmTabView !== 'function') {
       throw new Error('Native Algorithm exports are unavailable');

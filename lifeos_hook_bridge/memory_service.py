@@ -272,6 +272,10 @@ class MemoryService:
                 from .memory_manual_state import run
                 return run(memory, scope, **arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation == 'banner' and set(arguments) == {'args', 'width'}:
+                from .memory_banner import run
+                return run(memory, scope, **arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'recommend' and set(arguments) == {'args'}:
                 from .memory_recommend import run
                 return run(memory, scope, **arguments,

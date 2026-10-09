@@ -206,7 +206,11 @@ def markdown_projection(memory, relative, content):
     name = memory._native('interview_scan_name', content=content)
     if set(name) != {'name'} or not isinstance(name['name'], str):
         raise MemoryUnavailable('Native identity admission returns an invalid assistant name')
-    return content + '\n' + name['name'] if len(name['name']) <= 256 else None
+    banner = memory._native('banner_source_projection', content=content)
+    if (set(banner) != {'name', 'catchphrase'} or any(not isinstance(value, str) for value in banner.values())):
+        raise MemoryUnavailable('Native identity admission returns invalid banner fields')
+    decoded = '\n'.join(banner.values())
+    return content + '\n' + name['name'] + '\n' + decoded if len(name['name']) <= 256 and len(decoded.encode()) <= SOURCE_LIMIT else None
 
 
 def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None, review_content=None,

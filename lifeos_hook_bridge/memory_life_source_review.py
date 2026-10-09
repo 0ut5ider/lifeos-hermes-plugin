@@ -17,6 +17,7 @@ def classification(relative):
     from .memory_atlas import SNAPSHOT, CACHE, DATABASE
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES
     from .memory_manual_state import QUEUE
+    from .memory_banner import SOURCES as BANNER_SOURCES
     from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
     from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
@@ -26,6 +27,7 @@ def classification(relative):
     if relative in ALGORITHM_PERSONAL | {ALGORITHM_CACHE, 'CLAUDE.md'} or re.fullmatch(r'LIFEOS/RULES/[^/]+\.md', relative): return 'life_text'
     if relative == CONTENT_EVENTS or declared_source(relative): return 'life_text'
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
+    if relative in BANNER_SOURCES: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
     if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
     if relative in PERSONAL_SOURCES['doctor'] or re.fullmatch(r'hooks/[^/]+\.hook\.(?:ts|sh)', relative): return 'life_text'
@@ -76,6 +78,9 @@ def snapshot(memory, scope, relative):
 
 
 def projection(memory, relative, content):
+    from .memory_sources import markdown_projection
+    from .memory_banner import IDENTITY as BANNER_IDENTITY
+    if relative == BANNER_IDENTITY: return markdown_projection(memory, relative, content)
     from .memory_atlas import SNAPSHOT, DATABASE, CACHE
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES, projection as operational_projection
     from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
