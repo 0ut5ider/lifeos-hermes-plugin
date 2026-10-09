@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..0eabb6a
+index 0000000..97ebf26
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,471 @@
+@@ -0,0 +1,529 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8315,10 +8315,11 @@ index 0000000..0eabb6a
 +  return new Response(response.body, {status: response.status, headers});
 +}
 +
-+export async function memoryHTTPResponseAsync(request: Request, view: string, target?: string): Promise<Response> {
++export async function memoryHTTPResponseAsync(request: Request, view: string, target?: string, observation?: Record<string, unknown>): Promise<Response> {
 +  const command = memoryServiceCommand();
 +  const arguments_ = {view, authorization: request.headers.get("authorization") ?? "",
-+    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})};
++    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target}),
++    ...(observation === undefined ? {} : {observation})};
 +  const result = await new Promise<string>((resolveResult, rejectResult) => {
 +    const child = spawn(command.executable, command.arguments, {env: {...process.env},
 +      stdio: "pipe", signal: request.signal});
@@ -8545,6 +8546,63 @@ index 0000000..0eabb6a
 +  if (origin && origin !== url.origin) return Response.json({error: "Algorithm requires the current origin"}, {status: 403, headers});
 +  try { return await memoryHTTPResponseAsync(request, "life", url.pathname + url.search); }
 +  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++}
++
++
++export async function memoryHTTPPulseHealth(request: Request, render: () => Response): Promise<Response | null> {
++  if (!hasManagedMemoryHTTP()) return null;
++  const url = new URL(request.url);
++  const headers = {"cache-control": "no-store"};
++  if (!["/api/pulse/health", "/healthz"].includes(url.pathname)) {
++    return Response.json({error: "Choose a declared Pulse health route"}, {status: 404, headers});
++  }
++  if (request.method !== "GET") return Response.json({error: "Pulse health requires GET"}, {status: 405, headers});
++  if (url.search) return Response.json({error: "Pulse health requires fixed runtime observations"}, {status: 400, headers});
++  const origin = request.headers.get("origin");
++  if (origin && origin !== url.origin) return Response.json({error: "Pulse health requires the current origin"}, {status: 403, headers});
++  const cancellation = new AbortController();
++  const cancel = (): void => { cancellation.abort(); };
++  request.signal.addEventListener("abort", cancel, {once: true});
++  if (request.signal.aborted) cancel();
++  const deadline = setTimeout(cancel, 40_000);
++  const admittedRequest = new Request(request, {signal: cancellation.signal});
++  let cookies: string[] = [];
++  const deliver = (response: Response): Response => {
++    const updated = new Headers(response.headers);
++    const finalCookies = updated.getSetCookie();
++    updated.delete("set-cookie");
++    for (const cookie of [...cookies, ...finalCookies]) updated.append("set-cookie", cookie);
++    return new Response(response.body, {status: response.status, headers: updated});
++  };
++  try {
++    const admitted = await memoryHTTPResponseAsync(admittedRequest, "pulse_runtime");
++    if (admitted.status !== 200) return admitted;
++    cookies = admitted.headers.getSetCookie();
++    const authorization: unknown = await admitted.json();
++    if (!memoryObject(authorization) || authorization.admitted !== true) throw new Error("Pulse health requires current owner admission");
++    const nextHeaders = new Headers(request.headers);
++    const currentCookies = new Map<string, string>();
++    for (const pair of (nextHeaders.get("cookie") ?? "").split(";")) {
++      const split = pair.indexOf("=");
++      if (split > 0) currentCookies.set(pair.slice(0, split).trim(), pair.slice(split + 1).trim());
++    }
++    for (const cookie of cookies) {
++      const pair = cookie.split(";", 1)[0];
++      const split = pair.indexOf("=");
++      const name = pair.slice(0, split);
++      if (/^(?:__Host-|__Secure-)?hermes_session_(?:at|rt|provider)$/.test(name)) currentCookies.set(name, pair.slice(split + 1));
++    }
++    nextHeaders.set("cookie", [...currentCookies].map(([name, value]) => name + "=" + value).join("; "));
++    const currentRequest = new Request(request.url, {headers: nextHeaders, signal: cancellation.signal});
++    const response = render();
++    const body: unknown = await response.json();
++    const observation = {status: response.status, body, observed_at: new Date().toISOString()};
++    return deliver(await memoryHTTPResponseAsync(currentRequest, "pulse_runtime", undefined, observation));
++  } catch { return deliver(Response.json({error: "Authenticated Pulse health is unavailable"}, {status: 503, headers})); }
++  finally {
++    clearTimeout(deadline);
++    request.signal.removeEventListener("abort", cancel);
++  }
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755
@@ -11458,18 +11516,17 @@ index 79d7c3a..de6425c 100644
 +  return handleAnthropicCostApi(reader);
 +}
 diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/pulse.ts
-index e1ca0e20..84948c6d 100644
 --- a/LifeOS/install/LIFEOS/PULSE/pulse.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/pulse.ts
 @@ -16,6 +16,7 @@
  import { join } from "path"
  import { readFileSync, existsSync } from "fs"
  import { loadLifeosConfig } from "../TOOLS/LifeosConfig"
-+import { memoryHTTPServerOptions } from "../TOOLS/lib/MemoryAccess"
++import { memoryHTTPServerOptions, memoryHTTPPulseHealth } from "../TOOLS/lib/MemoryAccess"
  import { isLoopbackHostHeader } from "./lib/host-guard.ts"
  
  // ── Load .env before anything else ──
-@@ -811,6 +812,7 @@ async function main() {
+@@ -811,6 +812,7 @@
    const server = Bun.serve({
      hostname: bindAll ? "0.0.0.0" : "127.0.0.1",
      port: config.port,
@@ -11477,6 +11534,19 @@ index e1ca0e20..84948c6d 100644
      async fetch(req) {
        const url = new URL(req.url)
        const pathname = url.pathname
+@@ -824,8 +826,10 @@
+       }
+ 
+       // Health (unified) — moved to /api/pulse/health to avoid conflict with Life Dashboard /health page
+-      if (req.method === "GET" && (pathname === "/api/pulse/health" || pathname === "/healthz")) {
+-        return buildHealthResponse(state, config)
++      if (pathname === "/api/pulse/health" || pathname === "/healthz") {
++        const governed = await memoryHTTPPulseHealth(req, () => buildHealthResponse(state, config))
++        if (governed !== null) return governed
++        if (req.method === "GET") return buildHealthResponse(state, config)
+       }
+ 
+       // Which surfaces are switched on. The dashboard reads this to avoid
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts b/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts
 index 878a4aa..81e0a31 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts

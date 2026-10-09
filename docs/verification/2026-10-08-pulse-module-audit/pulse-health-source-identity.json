@@ -1,0 +1,25 @@
+{
+  "prepared_root": "/home/outsider/.cache/lifeos-daily-text-20261007/pulse-health-second/lifeos/LifeOS/install",
+  "native_files": {
+    "LIFEOS/TOOLS/lib/MemoryAccess.ts": "57851616eef05b1885062bde422b9aca4a23d478d55b53347e69144dfdb2a193",
+    "LIFEOS/PULSE/pulse.ts": "76faf6ec07b3010f33ebad15a84002b1cc89229b749a5c303708cdf747b0c284"
+  },
+  "plugin_programs": {
+    "lifeos_hook_bridge/memory_pulse_health.py": "4392e298a1a43a31c8477847718c74ee15d41dae6c28d628b7b24ae7fa608468",
+    "lifeos_hook_bridge/memory_http.py": "5da9eeccacc6ed95ac526a0bc717005c410c7bfc310861edf185a5ea443fe240",
+    "lifeos_hook_bridge/memory_preferences.py": "d6d441d7a53705aa0f34292ef96f32c7e841569e306ede65252714689aff1605",
+    "lifeos_hook_bridge/dashboard/plugin_api.py": "2596dd485813f23c8f680f525e7c0942389acffd1f6f9fec6dfdb651cbb8ccf0",
+    "tests/test_memory_pulse_health.py": "94b04cff132135235db00f5934fcbd18592a4901ce0e675f9a2f943d5e6c2f9c"
+  },
+  "patch_sha256": "a09f0974b2e3a1df64b448a09a7fbecf538e828829a92a0de462308f95381f2a",
+  "both_patch_copies_match": true,
+  "all_native_files_match_mutable": true,
+  "neighbor_gate_programs": {
+    "lifeos_hook_bridge/memory_pulse_health.py": "4392e298a1a43a31c8477847718c74ee15d41dae6c28d628b7b24ae7fa608468",
+    "lifeos_hook_bridge/memory_http.py": "5da9eeccacc6ed95ac526a0bc717005c410c7bfc310861edf185a5ea443fe240",
+    "lifeos_hook_bridge/memory_preferences.py": "d6d441d7a53705aa0f34292ef96f32c7e841569e306ede65252714689aff1605",
+    "lifeos_hook_bridge/dashboard/plugin_api.py": "75f8c9cdc4069294cba05d5ca1aa997971ce89675062512b15f9088f5a29fbfd",
+    "tests/test_memory_pulse_health.py": "574823074474ae56aa97331daed5fa342555b7b5ecec15d48dd089adeacb8389"
+  },
+  "neighbor_gate_note": "The 120-case gate precedes the health-only ClientDisconnect handler and final fixture strengthening. The final thirteen actual health cases verify both changes. Native files and both patch copies are identical across these two gates."
+}

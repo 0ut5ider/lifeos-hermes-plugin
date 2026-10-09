@@ -17,6 +17,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
+from starlette.requests import ClientDisconnect
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
 
 
@@ -229,6 +230,47 @@ async def recover_mount(request: Request, account: str = Depends(_memory_account
         raise HTTPException(status_code=403, detail='The installation owner must authorize recovery') from error
     except (OSError, ValueError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='Recovery cannot overwrite a later edit or invalid snapshot') from error
+
+
+@router.get('/memory/pulse_runtime')
+def admit_memory_pulse_runtime(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    if request.query_params:
+        return JSONResponse({'error': 'Pulse runtime admission uses fixed installed sources'}, status_code=400, headers=headers)
+    try:
+        result, binding = _memory_preferences().pulse_runtime_response(account=account)
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Pulse runtime admission is unavailable'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.post('/memory/pulse_runtime')
+async def deliver_memory_pulse_runtime(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    if request.query_params:
+        return JSONResponse({'error': 'Pulse runtime delivery uses a fixed installed route'}, status_code=400, headers=headers)
+    content = bytearray()
+    try:
+        async for chunk in request.stream():
+            content.extend(chunk)
+            if len(content) > 65536:
+                return JSONResponse({'error': 'Pulse runtime observations exceed their byte limit'}, status_code=400, headers=headers)
+    except ClientDisconnect:
+        return JSONResponse({'error': 'Pulse runtime delivery is cancelled'}, status_code=400, headers=headers)
+    try:
+        observation = json.loads(content)
+        if not isinstance(observation, dict): raise ValueError('Choose a complete Pulse runtime observation')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().pulse_runtime_response(observation, account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Choose complete current Pulse runtime observations'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Pulse runtime delivery is unavailable'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'],
+        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
 
 
 @router.get('/memory/pulse/{view}')

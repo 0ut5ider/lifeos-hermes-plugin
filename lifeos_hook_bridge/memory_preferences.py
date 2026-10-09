@@ -155,6 +155,19 @@ class MemoryPreferences:
     def pulse_snapshot(self, view: str, *, account: str | None = None):
         return self.pulse_response(view,account=account)[0]
 
+    def pulse_runtime_response(self, observation=None, *, account=None):
+        from .memory_sources import authorize
+        from .memory_pulse_health import admit
+        config = self._configuration(account=account)
+        scope = self._owner_scope(config)
+        authorize(scope)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Current owner authority changes during Pulse health delivery')
+        result = {'status': 200, 'body': {'admitted': True}} if observation is None else admit(
+            NativeMemory(self.root), scope, observation, check_current=check_current)
+        return self._response(config, result, account=account)
+
     def pulse_response(self, view: str, *, account: str | None = None):
         from .memory_pulse import snapshot
         config = self._configuration(account=account)

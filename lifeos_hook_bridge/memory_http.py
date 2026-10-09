@@ -69,10 +69,13 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file')
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     edit = arguments.get('view') == 'telos_file_edit'
+    runtime = arguments.get('view') == 'pulse_runtime'
+    delivery = runtime and 'observation' in arguments
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
-        {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else set())
+        {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else
+        {'observation'} if delivery else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and arguments['view'] != 'remount')):
+            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and not runtime and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
     remount = arguments['view'] == 'remount'
@@ -101,6 +104,15 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             return _response(400,{'error':'Invalid source read route'})
         route = '/memory/' + arguments['view'] + '?' + urllib.parse.urlencode({'target':target})
     data = None
+    if runtime:
+        route = '/memory/pulse_runtime'
+    if delivery:
+        from .memory_pulse_health import validate
+        try:
+            validate(arguments['observation'])
+            data = json.dumps(arguments['observation'], ensure_ascii=False, allow_nan=False).encode()
+        except (ValueError, TypeError):
+            return _response(400, {'error': 'Choose complete current Pulse runtime observations'})
     if edit:
         from .memory_telos_file import validate_name
         from .memory_sources import SOURCE_LIMIT
@@ -155,11 +167,11 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         base=dashboard_base(settings['dashboard_base_url'])
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
-        if review or edit:credentials['Content-Type']='application/json'
+        if review or edit or delivery:credentials['Content-Type']='application/json'
         request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
-                                      headers=credentials,method='POST' if remount or review or edit else 'GET')
+                                      headers=credentials,method='POST' if remount or review or edit or delivery else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
-        timeout = 120 if remount else 8
+        timeout = 120 if remount else 30 if runtime else 8
         if arguments['view'] == 'life':
             from .memory_operational_views import CAPABILITY_WINDOWS
             from .memory_performance import ROUTES as PERFORMANCE_ROUTES
@@ -175,10 +187,12 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
+            if status not in ({200,400,401,403,503} if runtime else {200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
                               {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
-            if (status in ({200,404,409} if review or edit else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
+            if runtime and status == 503 and response.headers.get('x-lifeos-memory-installation') != installation_binding(config, configuration.path):
+                return _response(503, {'error': 'Authenticated memory is unavailable'})
+            if (status in ({200,503} if runtime else {200,404,409} if review or edit else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):
                 raise ValueError('The authenticated response belongs to another installation')
             if response.headers.get_content_type()!='application/json':
