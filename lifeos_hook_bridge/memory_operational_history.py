@@ -33,7 +33,8 @@ def fingerprint(memory, relative, *, sources=SOURCES):
 
 
 @contextmanager
-def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, require_newline=True):
+def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, require_newline=True,
+             objects_only=True, allow_unfinished_utf8=True):
     from .memory_operational_views import projection, _timestamp
     admitted_digest = hashlib.sha256()
     fingerprints = []
@@ -84,19 +85,20 @@ def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, 
                     if require_newline and not complete: break
                     try: line = raw.decode('utf-8').rstrip('\r\n')
                     except UnicodeError as error:
-                        if not complete and error.reason == 'unexpected end of data': break
+                        if allow_unfinished_utf8 and not complete and error.reason == 'unexpected end of data': break
                         raise MemoryUnavailable('Operational history requires valid UTF-8') from error
                     if not line: continue
                     try: row = json.loads(line)
                     except (ValueError, RecursionError): continue
-                    if not isinstance(row, dict): continue
+                    if objects_only and not isinstance(row, dict): continue
                     decoded = projection(line)
                     if decoded is None: continue
                     added = len(json.dumps(decoded + '\n' + relative).encode()) + 2
                     if added > CORPUS_LIMIT - 4096:
                         raise MemoryUnavailable('An operational history projection exceeds its transport limit')
                     if batch and (len(batch) >= SOURCE_COUNT_LIMIT or size + added > CORPUS_LIMIT - 4096): flush()
-                    batch.append((line, _timestamp(row, _source_time(before)), decoded))
+                    timestamp = _timestamp(row, _source_time(before)) if isinstance(row, dict) else _source_time(before)
+                    batch.append((line, timestamp, decoded))
                     size += added
                 flush()
             expected = (relative, (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns), raw_digest.hexdigest())

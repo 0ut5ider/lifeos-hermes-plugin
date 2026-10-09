@@ -9,16 +9,20 @@ from .memory_access import MemoryUnavailable
 from .memory_sources import authorize, read_markdown, CORPUS_LIMIT, _source_path
 from .memory_operational_views import ROUTES as OPERATIONAL_ROUTES
 from .memory_personal_modules import ROUTES as PERSONAL_ROUTES
+from .memory_performance import ROUTES as PERFORMANCE_ROUTES
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
                     '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
-                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES) | PERSONAL_ROUTES
+                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES) | PERSONAL_ROUTES | frozenset(PERFORMANCE_ROUTES)
 
 
 def request_target(value):
     if not isinstance(value, str) or len(value) > 256:
         raise ValueError('Life views require a bounded installed route')
     parsed = urlsplit(value)
+    if parsed.path in PERFORMANCE_ROUTES:
+        from .memory_performance import request_target as performance_target
+        return performance_target(value)
     if parsed.path in PERSONAL_ROUTES:
         from .memory_personal_modules import request_target as personal_target
         return personal_target(value)
@@ -59,6 +63,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if urlsplit(target).path in PERFORMANCE_ROUTES:
+        from .memory_performance import view as performance_view
+        return performance_view(memory, scope, target, check_current=check_current)
     if urlsplit(target).path in PERSONAL_ROUTES:
         from .memory_personal_modules import view as personal_view
         return personal_view(memory, scope, target, check_current=check_current)

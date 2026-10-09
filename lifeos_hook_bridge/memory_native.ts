@@ -27,7 +27,18 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'personal_module_view') {
+  if (input.action === 'performance_view') {
+    if (typeof input.target !== 'string' || !/^\/api\/performance\/(?:cost(?:\?days=[1-9][0-9]{0,3})?|failures|summary|anthropic-cost)$/.test(input.target)
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3) throw new Error('Native Performance requires declared admitted histories');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Performance/module.ts')).href);
+    if (!object(module) || typeof module.renderPerformanceView !== 'function') throw new Error('Native Performance exports are unavailable');
+    const response: unknown = await module.renderPerformanceView(input.sources, input.history_descriptor, input.target);
+    if (!(response instanceof Response)) throw new Error('Native Performance requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'personal_module_view') {
     if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel', 'ledger'].includes(input.module)
         || typeof input.target !== 'string' || typeof input.running !== 'boolean' || !Array.isArray(input.sources)
         || !(input.modified === null || typeof input.modified === 'number' && Number.isFinite(input.modified))

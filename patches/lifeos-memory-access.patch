@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..02e1e28
+index 0000000..b608864
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,305 @@
+@@ -0,0 +1,326 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8379,6 +8379,27 @@ index 0000000..02e1e28
 +  const target = url.pathname + (/\/(?:status|health)$/.test(url.pathname) ? "?running=" + Number(running) : "");
 +  try { return await memoryHTTPResponseAsync(request, "life", target); }
 +  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++}
++
++export async function memoryHTTPPerformanceView(request: Request): Promise<Response | null> {
++  if (!hasManagedMemoryHTTP()) return null;
++  const url = new URL(request.url);
++  const headers = {"cache-control": "no-store"};
++  const paths = ["/api/performance/cost", "/api/performance/failures", "/api/performance/summary", "/api/performance/anthropic-cost"];
++  if (!paths.includes(url.pathname)) return Response.json({error: "Choose a declared Performance view"}, {status: 404, headers});
++  if (request.method !== "GET") return Response.json({error: "Performance views require GET"}, {status: 405, headers});
++  if (url.search && !(url.pathname === paths[0] && /^\?days=[1-9][0-9]{0,3}$/.test(url.search)
++      && Number(url.search.slice(6)) <= 3660)) {
++    return Response.json({error: "Performance views require a declared day window"}, {status: 400, headers});
++  }
++  const origin = request.headers.get("origin");
++  if (origin && origin !== url.origin) return Response.json({error: "Performance views require the current origin"}, {status: 403, headers});
++  try { return await memoryHTTPResponseAsync(request, "life", url.pathname + url.search); }
++  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++}
++
++export function memoryHTTPServerOptions(): {idleTimeout?: number} {
++  return hasManagedMemoryHTTP() ? {idleTimeout: 45} : {};
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755
@@ -11112,3 +11133,202 @@ index c8764b9..5e3f770 100644
 +  const reader = (path: string): string | null => admitted.get("LIFEOS" + path.slice(LIFEOS_DIR.length))?.trim() ?? null;
 +  return Response.json(compose(reader));
 +}
+diff --git a/LifeOS/install/LIFEOS/PULSE/Performance/module.ts b/LifeOS/install/LIFEOS/PULSE/Performance/module.ts
+index 79d7c3a..de6425c 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Performance/module.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Performance/module.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders native Performance aggregates from fixed admitted owner histories.
++// ABOUTME: Relays managed requests before raw reads and preserves complete permitted history counts.
+ /**
+  * LifeOS Pulse — Performance Module
+  *
+@@ -11,7 +13,9 @@
+  */
+ 
+ import { join } from "path"
+-import { existsSync, readFileSync } from "fs"
++import { existsSync, readFileSync, createReadStream, fstatSync } from "fs"
++import { createInterface } from "node:readline"
++import { memoryHTTPPerformanceView, memoryObject } from "../../TOOLS/lib/MemoryAccess"
+ import { homedir } from "node:os";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()
+@@ -45,10 +49,15 @@ export function performanceHealth(): Record<string, unknown> {
+ 
+ // ── JSONL Reader ──
+ 
+-function readJsonl<T = any>(filePath: string): T[] {
++function readSource(filePath: string): string | null {
++  try { return existsSync(filePath) ? readFileSync(filePath, "utf-8") : null; }
++  catch { return null; }
++}
++
++function readJsonl<T = any>(filePath: string, reader: (path: string) => string | null = readSource): T[] {
+   try {
+-    if (!existsSync(filePath)) return []
+-    const raw = readFileSync(filePath, "utf-8")
++    const raw = reader(filePath)
++    if (raw === null) return []
+     return raw
+       .trim()
+       .split("\n")
+@@ -64,8 +73,8 @@ function readJsonl<T = any>(filePath: string): T[] {
+ 
+ // ── Cost API ──
+ 
+-function handleCostApi(url: URL): Response {
+-  const sessions = readJsonl(SESSION_COSTS_PATH)
++function handleCostApi(url: URL, reader: (path: string) => string | null = readSource): Response {
++  const sessions = readJsonl(SESSION_COSTS_PATH, reader)
+   const daysParam = url.searchParams.get("days")
+   const days = daysParam ? parseInt(daysParam, 10) : 30
+ 
+@@ -151,9 +160,9 @@ function handleCostApi(url: URL): Response {
+ 
+ // ── Failures API ──
+ 
+-function handleFailuresApi(): Response {
+-  const failures = readJsonl(TOOL_FAILURES_PATH)
+-  const activity = readJsonl(TOOL_ACTIVITY_PATH)
++function handleFailuresApi(reader: (path: string) => string | null = readSource): Response {
++  const failures = readJsonl(TOOL_FAILURES_PATH, reader)
++  const activity = readJsonl(TOOL_ACTIVITY_PATH, reader)
+ 
+   // Per-tool failure counts
+   const failureCounts: Record<string, number> = {}
+@@ -222,10 +231,10 @@ function handleFailuresApi(): Response {
+ 
+ // ── Summary API ──
+ 
+-function handleSummaryApi(): Response {
+-  const sessions = readJsonl(SESSION_COSTS_PATH)
+-  const failures = readJsonl(TOOL_FAILURES_PATH)
+-  const activity = readJsonl(TOOL_ACTIVITY_PATH)
++function handleSummaryApi(reader: (path: string) => string | null = readSource): Response {
++  const sessions = readJsonl(SESSION_COSTS_PATH, reader)
++  const failures = readJsonl(TOOL_FAILURES_PATH, reader)
++  const activity = readJsonl(TOOL_ACTIVITY_PATH, reader)
+ 
+   // Last 7 days
+   const cutoff7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+@@ -255,6 +264,8 @@ function handleSummaryApi(): Response {
+ 
+ export async function handlePerformanceRequest(req: Request): Promise<Response | null> {
+   if (!config.enabled) return null
++  const admitted = await memoryHTTPPerformanceView(req)
++  if (admitted) return admitted
+ 
+   const url = new URL(req.url)
+   const pathname = url.pathname
+@@ -275,9 +286,7 @@ export async function handlePerformanceRequest(req: Request): Promise<Response |
+ // the data the /performance "Anthropic" tab needs: latest snapshot, last-24h
+ // trend, and the call-site inventory with classifications.
+ 
+-async function handleAnthropicCostApi(): Promise<Response> {
+-  const { readFileSync, existsSync } = await import("fs")
+-  const { join } = await import("path")
++async function handleAnthropicCostApi(reader: (path: string) => string | null = readSource): Promise<Response> {
+   const home = process.env.HOME ?? process.env.USERPROFILE ?? homedir()
+   const obsDir = join(home, ".claude", "LIFEOS", "MEMORY", "OBSERVABILITY")
+   const ledgerPath = join(obsDir, "anthropic-cost.jsonl")
+@@ -292,9 +301,10 @@ async function handleAnthropicCostApi(): Promise<Response> {
+   }
+ 
+   let history: Snapshot[] = []
+-  if (existsSync(ledgerPath)) {
++  const ledger = reader(ledgerPath)
++  if (ledger !== null) {
+     try {
+-      const raw = readFileSync(ledgerPath, "utf-8")
++      const raw = ledger
+       history = raw
+         .split("\n")
+         .filter((l) => l.trim())
+@@ -312,9 +322,10 @@ async function handleAnthropicCostApi(): Promise<Response> {
+ 
+   let sites: Array<{ file: string; line: number; classification: string; reason: string }> = []
+   let baselineUpdated: string | null = null
+-  if (existsSync(sitesPath)) {
++  const baseline = reader(sitesPath)
++  if (baseline !== null) {
+     try {
+-      const raw = readFileSync(sitesPath, "utf-8")
++      const raw = baseline
+       const parsed = JSON.parse(raw) as { updated?: string; sites?: typeof sites }
+       sites = parsed.sites ?? []
+       baselineUpdated = parsed.updated ?? null
+@@ -331,3 +342,53 @@ async function handleAnthropicCostApi(): Promise<Response> {
+     baseline_updated: baselineUpdated,
+   })
+ }
++
++export async function renderPerformanceView(sources: ReadonlyArray<{relative: string; content: string}>,
++    descriptor: number, target: string): Promise<Response> {
++  const url = new URL(target, "http://localhost");
++  const prefix = "LIFEOS/MEMORY/OBSERVABILITY/";
++  const names = url.pathname === "/api/performance/cost" ? ["session-costs.jsonl"] :
++    url.pathname === "/api/performance/failures" ? ["tool-failures.jsonl", "tool-activity.jsonl"] :
++    url.pathname === "/api/performance/summary" ? ["session-costs.jsonl", "tool-failures.jsonl", "tool-activity.jsonl"] :
++    url.pathname === "/api/performance/anthropic-cost" ? ["anthropic-cost.jsonl"] : [];
++  if (names.length === 0 || url.search && !(url.pathname === "/api/performance/cost"
++      && /^\?days=[1-9][0-9]{0,3}$/.test(url.search) && Number(url.search.slice(6)) <= 3660)) {
++    throw new Error("Choose a fixed Performance route and day window");
++  }
++  const metadata = prefix + "anthropic-call-sites.json";
++  if (sources.length > 1 || sources.some(source => source.relative !== metadata)
++      || sources.length > 0 && url.pathname !== "/api/performance/anthropic-cost") {
++    throw new Error("Choose fixed Performance metadata");
++  }
++  const before = fstatSync(descriptor);
++  if (!before.isFile() || before.uid !== process.getuid?.() || before.nlink !== 0 || (before.mode & 0o077) !== 0) {
++    throw new Error("Performance requires an anonymous private owner snapshot");
++  }
++  const histories = new Map<string, string[]>();
++  const input = createReadStream(`/proc/self/fd/${descriptor}`);
++  const lines = createInterface({input, crlfDelay: Infinity});
++  try {
++    for await (const line of lines) {
++      if (Buffer.byteLength(line) > 3 * 1024 * 1024) throw new Error("An admitted Performance record exceeds its byte limit");
++      const frame: unknown = JSON.parse(line);
++      if (!memoryObject(frame) || typeof frame.relative !== "string" || typeof frame.content !== "string"
++          || !names.includes(frame.relative.slice(prefix.length)) || !frame.relative.startsWith(prefix)) {
++        throw new Error("Performance requires fixed admitted history records");
++      }
++      const rows = histories.get(frame.relative) ?? [];
++      rows.push(frame.content);
++      histories.set(frame.relative, rows);
++    }
++  } finally { lines.close(); input.destroy(); }
++  const after = fstatSync(descriptor);
++  if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
++    throw new Error("The admitted Performance snapshot changes during rendering");
++  }
++  const admitted = new Map(sources.map(source => [source.relative, source.content]));
++  for (const [relative, rows] of histories) admitted.set(relative, rows.join("\n"));
++  const reader = (path: string): string | null => admitted.get("LIFEOS" + path.slice(LIFEOS_DIR.length)) ?? null;
++  if (url.pathname === "/api/performance/cost") return handleCostApi(url, reader);
++  if (url.pathname === "/api/performance/failures") return handleFailuresApi(reader);
++  if (url.pathname === "/api/performance/summary") return handleSummaryApi(reader);
++  return handleAnthropicCostApi(reader);
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/pulse.ts
+index e1ca0e20..84948c6d 100644
+--- a/LifeOS/install/LIFEOS/PULSE/pulse.ts
++++ b/LifeOS/install/LIFEOS/PULSE/pulse.ts
+@@ -16,6 +16,7 @@
+ import { join } from "path"
+ import { readFileSync, existsSync } from "fs"
+ import { loadLifeosConfig } from "../TOOLS/LifeosConfig"
++import { memoryHTTPServerOptions } from "../TOOLS/lib/MemoryAccess"
+ import { isLoopbackHostHeader } from "./lib/host-guard.ts"
+ 
+ // ── Load .env before anything else ──
+@@ -811,6 +812,7 @@ async function main() {
+   const server = Bun.serve({
+     hostname: bindAll ? "0.0.0.0" : "127.0.0.1",
+     port: config.port,
++    ...memoryHTTPServerOptions(),
+     async fetch(req) {
+       const url = new URL(req.url)
+       const pathname = url.pathname

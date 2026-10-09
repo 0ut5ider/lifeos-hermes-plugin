@@ -162,7 +162,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         timeout = 120 if remount else 8
         if arguments['view'] == 'life':
             from .memory_operational_views import CAPABILITY_WINDOWS
-            if target in CAPABILITY_WINDOWS: timeout = 30
+            from .memory_performance import ROUTES as PERFORMANCE_ROUTES
+            if target in CAPABILITY_WINDOWS or urllib.parse.urlsplit(target).path in PERFORMANCE_ROUTES: timeout = 30
         try:
             response=opener.open(request,timeout=timeout)
         except urllib.error.HTTPError as error:

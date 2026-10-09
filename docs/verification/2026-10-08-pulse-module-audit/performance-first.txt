@@ -1,0 +1,31 @@
+test_actual_native_render_rechecks_logs_authority_and_admitted_descriptor (test_memory_performance.MemoryPerformanceTests.test_actual_native_render_rechecks_logs_authority_and_admitted_descriptor) ... ok
+test_admitted_non_object_rows_preserve_native_summary_behavior (test_memory_performance.MemoryPerformanceTests.test_admitted_non_object_rows_preserve_native_summary_behavior) ... ok
+test_anonymous_and_ambient_flags_cannot_read_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_anonymous_and_ambient_flags_cannot_read_counts_or_labels) ... ok
+test_complete_large_cost_history_preserves_native_counts (test_memory_performance.MemoryPerformanceTests.test_complete_large_cost_history_preserves_native_counts) ... ok
+test_complete_terminal_record_without_newline_is_included (test_memory_performance.MemoryPerformanceTests.test_complete_terminal_record_without_newline_is_included) ... ok
+test_current_account_origin_bearer_and_connector_govern_delivery (test_memory_performance.MemoryPerformanceTests.test_current_account_origin_bearer_and_connector_govern_delivery) ... ok
+test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) ... ok
+test_decoded_private_optional_quota_records_do_not_contribute_counts (test_memory_performance.MemoryPerformanceTests.test_decoded_private_optional_quota_records_do_not_contribute_counts) ... ok
+test_exact_source_review_restores_permitted_old_log_records (test_memory_performance.MemoryPerformanceTests.test_exact_source_review_restores_permitted_old_log_records) ... ok
+test_methods_and_non_declared_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_methods_and_non_declared_selectors_refuse) ... ok
+test_native_non_object_log_rows_characterization (test_memory_performance.MemoryPerformanceTests.test_native_non_object_log_rows_characterization) ... ok
+test_original_native_fields_and_absent_logs_characterization (test_memory_performance.MemoryPerformanceTests.test_original_native_fields_and_absent_logs_characterization) ... ok
+test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) ... ok
+test_present_optional_quota_history_and_call_sites_preserve_native_fields (test_memory_performance.MemoryPerformanceTests.test_present_optional_quota_history_and_call_sites_preserve_native_fields) ... ok
+test_private_and_retired_events_do_not_contribute_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_private_and_retired_events_do_not_contribute_counts_or_labels) ... ok
+test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) ... 
+  test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8-terminal') ... FAIL
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8-terminal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 300, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days": 30, "totalSessions": 0, "totalCost": 0, "totalTokens": 0, "avgCostPerSession": 0, "costBreakdown": {"input": 0, "output": 0, "cacheWrite": 0, "cacheRead": 0}, "byModel": [], "dailyCosts": [], "topSessions": []}
+
+----------------------------------------------------------------------
+Ran 16 tests in 30.382s
+
+FAILED (failures=1)

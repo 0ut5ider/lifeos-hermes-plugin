@@ -1,0 +1,194 @@
+FFFF.FFFFFF.FFFFFFFFFFF
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_anonymous_and_ambient_flags_cannot_read_counts_or_labels) (route='/api/performance/cost')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 88, in test_anonymous_and_ambient_flags_cannot_read_counts_or_labels
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessi
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_anonymous_and_ambient_flags_cannot_read_counts_or_labels) (route='/api/performance/failures')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 88, in test_anonymous_and_ambient_flags_cannot_read_counts_or_labels
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"totalFailures":1,"totalCalls":2,"overallRate":50,"byTool":[{"tool":"SyntheticPerformanceCurrent","failures":1,"calls":2,"failureRate":50}],"trend":[{"day":"2026-10-09","failures":1,"total":2,"rate":50}]}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_anonymous_and_ambient_flags_cannot_read_counts_or_labels) (route='/api/performance/summary')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 88, in test_anonymous_and_ambient_flags_cannot_read_counts_or_labels
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"totalSessions":1,"totalCost":1.25,"last7DaysCost":1.25,"last7DaysSessions":1,"overallFailureRate":50,"topFailingTool":{"tool":"SyntheticPerformanceCurrent","failures":1}}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_anonymous_and_ambient_flags_cannot_read_counts_or_labels) (route='/api/performance/anthropic-cost')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 88, in test_anonymous_and_ambient_flags_cannot_read_counts_or_labels
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"current":null,"history":[],"total_entries":0,"sites":[],"baseline_updated":null}
+
+======================================================================
+FAIL: test_current_account_origin_bearer_and_connector_govern_delivery (test_memory_performance.MemoryPerformanceTests.test_current_account_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 130, in test_current_account_origin_bearer_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + ROUTES[0], headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_methods_and_non_declared_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_methods_and_non_declared_selectors_refuse) (target='/api/performance/cost')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 146, in test_methods_and_non_declared_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405 : not found
+
+======================================================================
+FAIL: test_methods_and_non_declared_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_methods_and_non_declared_selectors_refuse) (target='/api/performance/cost?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 146, in test_methods_and_non_declared_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessi
+
+======================================================================
+FAIL: test_methods_and_non_declared_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_methods_and_non_declared_selectors_refuse) (target='/api/performance/cost?days=0')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 146, in test_methods_and_non_declared_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":0,"totalSessions":0,"totalCost":0,"totalTokens":0,"avgCostPerSession":0,"costBreakdown":{"input":0,"output":0,"cacheWrite":0,"cacheRead":0},"byModel":[],"dailyCosts":[],"topSessions":[]}
+
+======================================================================
+FAIL: test_methods_and_non_declared_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_methods_and_non_declared_selectors_refuse) (target='/api/performance/failures?days=7')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 146, in test_methods_and_non_declared_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"totalFailures":1,"totalCalls":2,"overallRate":50,"byTool":[{"tool":"SyntheticPerformanceCurrent","failures":1,"calls":2,"failureRate":50}],"trend":[{"day":"2026-10-09","failures":1,"total":2,"rate":50}]}
+
+======================================================================
+FAIL: test_methods_and_non_declared_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_methods_and_non_declared_selectors_refuse) (target='/api/performance/unsupported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 147, in test_methods_and_non_declared_selectors_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/cost')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/failures')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/summary')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/anthropic-cost')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/cost?days=7')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/cost?days=30')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_fields_and_day_selectors_match_actual_native_aggregates (test_memory_performance.MemoryPerformanceTests.test_owner_fields_and_day_selectors_match_actual_native_aggregates) (route='/api/performance/cost?days=90')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 102, in test_owner_fields_and_day_selectors_match_actual_native_aggregates
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_and_retired_events_do_not_contribute_counts_or_labels (test_memory_performance.MemoryPerformanceTests.test_private_and_retired_events_do_not_contribute_counts_or_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 112, in test_private_and_retired_events_do_not_contribute_counts_or_labels
+    self.assertNotIn('SyntheticPerformanceHidden', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticPerformanceHidden' unexpectedly found in '{"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessions":[{"sessionId":"synthetic-0","project":"<private>SyntheticPerformanceHidden</private>","primaryModel":"SyntheticFlashNext","messageCount":2,"costTotal":1.25,"totalTokens":100,"firstTimestamp":"2026-10-09T03:19:24.735172+00:00","lastTimestamp":"2026-10-09T03:19:24.735172+00:00"}]}'
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 176, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessi
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 176, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessi
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 176, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":0,"totalCost":0,"totalTokens":0,"avgCostPerSession":0,"costBreakdown":{"input":0,"output":0,"cacheWrite":0,"cacheRead":0},"byModel":[],"dailyCosts":[],"topSessions":[]}
+
+----------------------------------------------------------------------
+Ran 8 tests in 7.965s
+
+FAILED (failures=21)

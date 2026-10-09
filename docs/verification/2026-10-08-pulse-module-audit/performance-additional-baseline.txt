@@ -1,0 +1,157 @@
+test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) ... 
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=3661') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=99999') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=-1') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=01') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=1.5') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=7&days=30') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=%37') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=7&owner=other') ... FAIL
+  test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=7junk') ... FAIL
+test_present_optional_quota_history_and_call_sites_preserve_native_fields (test_memory_performance.MemoryPerformanceTests.test_present_optional_quota_history_and_call_sites_preserve_native_fields) ... FAIL
+test_decoded_private_optional_quota_records_do_not_contribute_counts (test_memory_performance.MemoryPerformanceTests.test_decoded_private_optional_quota_records_do_not_contribute_counts) ... FAIL
+test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) ... 
+  test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='symlink') ... FAIL
+  test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='hardlink') ... FAIL
+  test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8') ... FAIL
+  test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8-terminal') ... FAIL
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=3661')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":3661,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSes
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=99999')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":99999,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSe
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=-1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":-1,"totalSessions":0,"totalCost":0,"totalTokens":0,"avgCostPerSession":0,"costBreakdown":{"input":0,"output":0,"cacheWrite":0,"cacheRead":0},"byModel":[],"dailyCosts":[],"topSessions":[]}
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":1,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessio
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=1.5')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":1,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessio
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=7&days=30')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":7,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessio
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=%37')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":7,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessio
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=7&owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":7,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessio
+
+======================================================================
+FAIL: test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse (test_memory_performance.MemoryPerformanceTests.test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse) (query='days=7junk')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 185, in test_day_window_boundaries_and_encoded_or_duplicate_selectors_refuse
+    self.assertEqual(response.status_code, 400, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"days":7,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessio
+
+======================================================================
+FAIL: test_present_optional_quota_history_and_call_sites_preserve_native_fields (test_memory_performance.MemoryPerformanceTests.test_present_optional_quota_history_and_call_sites_preserve_native_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 208, in test_present_optional_quota_history_and_call_sites_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_decoded_private_optional_quota_records_do_not_contribute_counts (test_memory_performance.MemoryPerformanceTests.test_decoded_private_optional_quota_records_do_not_contribute_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 220, in test_decoded_private_optional_quota_records_do_not_contribute_counts
+    self.assertEqual(response.json()['total_entries'], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 300, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessi
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 300, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":1,"totalCost":1.25,"totalTokens":100,"avgCostPerSession":1.25,"costBreakdown":{"input":0.5,"output":0.75,"cacheWrite":0,"cacheRead":0},"byModel":[{"model":"SyntheticFlashNext","cost":1.25,"sessions":1,"tokens":100}],"dailyCosts":[{"day":"2026-10-09","cost":1.25}],"topSessi
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 300, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":0,"totalCost":0,"totalTokens":0,"avgCostPerSession":0,"costBreakdown":{"input":0,"output":0,"cacheWrite":0,"cacheRead":0},"byModel":[],"dailyCosts":[],"topSessions":[]}
+
+======================================================================
+FAIL: test_redirected_and_invalid_utf8_log_refuses (test_memory_performance.MemoryPerformanceTests.test_redirected_and_invalid_utf8_log_refuses) (mode='utf8-terminal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_performance.py", line 300, in test_redirected_and_invalid_utf8_log_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"days":30,"totalSessions":0,"totalCost":0,"totalTokens":0,"avgCostPerSession":0,"costBreakdown":{"input":0,"output":0,"cacheWrite":0,"cacheRead":0},"byModel":[],"dailyCosts":[],"topSessions":[]}
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.105s
+
+FAILED (failures=15)

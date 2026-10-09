@@ -57,8 +57,9 @@ class MemoryPulseRelayTests(unittest.TestCase):
             'hermes.ts': ('handleRequest', 'handleRequest', ''),
             'atlas.ts': ('handleRequest', 'handleRequest', ''),
         }[self.native_module_name()]
-        program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+
-            'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){\n'
+        program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'
+            'import {memoryHTTPServerOptions} from ' + json.dumps(str(self.root / 'LIFEOS/TOOLS/lib/MemoryAccess.ts')) + ';\n' + start+
+            'const server=Bun.serve({hostname:"127.0.0.1",port:0,...memoryHTTPServerOptions(),async fetch(request){\n'
             'return await '+handler+'(request,new URL(request.url).pathname) ?? new Response("not found",{status:404});}});\n'
             'console.log(server.port);\n')
         environment = dict(os.environ, HOME=str(self.fixture.home), BUN_CONFIG_NO_AUTO_INSTALL='1',
