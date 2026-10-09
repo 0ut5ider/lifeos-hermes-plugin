@@ -55,6 +55,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
             'upgrades.ts': ('handleRequest', 'handleRequest', ''),
             'tab-freshness.ts': ('handleRequest', 'handleRequest', ''),
             'hermes.ts': ('handleRequest', 'handleRequest', ''),
+            'atlas.ts': ('handleRequest', 'handleRequest', ''),
         }[self.native_module_name()]
         program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+
             'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){\n'

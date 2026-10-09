@@ -54,6 +54,8 @@ The [native onboarding gate](verification/2026-10-08-onboarding/README.md) passe
 
 The [native state command gate](verification/2026-10-08-remaining-reader-audit/README.md) passes 20 focused checks, 476 combined checks, strict TypeScript validation, source preparation, and the dashboard build. Proposal review and publication and identity preference synchronization use admitted private snapshots and owner transactions. Recovery restores both files after intentional process termination. The current public-source inventory verifies 330 hashes. Fourteen dynamic or manual entries still need classification. Installed acceptance remains open.
 
+The [Atlas read gate](verification/2026-10-08-atlas/README.md) passes all 494 combined checks and the dashboard build. Snapshot, collector, graph, and narrative sources receive separate current owner admission. Fixed physical source and authority checks repeat after native rendering. The staged candidate refuses insights generation until governed background-job publication passes. The [enabled module audit](verification/2026-10-08-pulse-module-audit/README.md) finds eight anonymous requests that return HTTP 200, with synthetic personal labels in four data responses. Books, Projects, Assets, Evals, and other active module routes require acceptance. The fourteen manual caller entries are one static classification subset. They are not the complete remaining coverage. Do not activate ownership or deploy the daily package from the Atlas result alone.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

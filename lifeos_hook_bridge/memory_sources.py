@@ -22,6 +22,7 @@ LOG_FILES = {'LIFEOS/MEMORY/OBSERVABILITY/' + name for name in
              'LIFEOS/MEMORY/OBSERVABILITY/memory-health.jsonl'}
 CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
 CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+                 'LIFEOS/USER/GEAR.md',
                  'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
                  'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'LIFEOS/USER/PROJECTS.md'}
 STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'

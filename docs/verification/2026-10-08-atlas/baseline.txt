@@ -1,0 +1,140 @@
+FFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_anonymous_cannot_read_snapshot_or_start_insights (test_memory_atlas.MemoryAtlasTests.test_anonymous_cannot_read_snapshot_or_start_insights) (route='/api/atlas')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 44, in test_anonymous_cannot_read_snapshot_or_start_insights
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"available":true,"snapshot_age_ms":23.66357421875,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:50.078261+00:00"}
+
+======================================================================
+FAIL: test_anonymous_cannot_read_snapshot_or_start_insights (test_memory_atlas.MemoryAtlasTests.test_anonymous_cannot_read_snapshot_or_start_insights) (route='/api/atlas/insights')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 44, in test_anonymous_cannot_read_snapshot_or_start_insights
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"available":false,"error":"run an atlas sync first"}
+
+======================================================================
+FAIL: test_anonymous_cannot_read_snapshot_or_start_insights (test_memory_atlas.MemoryAtlasTests.test_anonymous_cannot_read_snapshot_or_start_insights)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 48, in test_anonymous_cannot_read_snapshot_or_start_insights
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 401 : {"error":"metrics unavailable"}
+
+======================================================================
+FAIL: test_cached_snapshot_cannot_survive_private_replacement_or_retirement (test_memory_atlas.MemoryAtlasTests.test_cached_snapshot_cannot_survive_private_replacement_or_retirement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 74, in test_cached_snapshot_cannot_survive_private_replacement_or_retirement
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":51.96435546875,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:51.052948+00:00"}
+
+======================================================================
+FAIL: test_current_collector_source_exclusion_withholds_prior_snapshot (test_memory_atlas.MemoryAtlasTests.test_current_collector_source_exclusion_withholds_prior_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 93, in test_current_collector_source_exclusion_withholds_prior_snapshot
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":43.93798828125,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:51.900984+00:00"}
+
+======================================================================
+FAIL: test_fixed_methods_selectors_and_unknown_routes_refuse (test_memory_atlas.MemoryAtlasTests.test_fixed_methods_selectors_and_unknown_routes_refuse) (route='/api/atlas')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 140, in test_fixed_methods_selectors_and_unknown_routes_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"available":true,"snapshot_age_ms":43.7490234375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:52.743162+00:00"}
+
+======================================================================
+FAIL: test_fixed_methods_selectors_and_unknown_routes_refuse (test_memory_atlas.MemoryAtlasTests.test_fixed_methods_selectors_and_unknown_routes_refuse) (route='/api/atlas?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 140, in test_fixed_methods_selectors_and_unknown_routes_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"available":true,"snapshot_age_ms":43.7490234375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:52.743162+00:00"}
+
+======================================================================
+FAIL: test_fixed_methods_selectors_and_unknown_routes_refuse (test_memory_atlas.MemoryAtlasTests.test_fixed_methods_selectors_and_unknown_routes_refuse) (route='/api/atlas/unsupported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 141, in test_fixed_methods_selectors_and_unknown_routes_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_owner_snapshot_fields_and_missing_source_match_native (test_memory_atlas.MemoryAtlasTests.test_owner_snapshot_fields_and_missing_source_match_native)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 64, in test_owner_snapshot_fields_and_missing_source_match_native
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_origin_cannot_reuse_cache (test_memory_atlas.MemoryAtlasTests.test_revocation_connector_loss_and_origin_cannot_reuse_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 102, in test_revocation_connector_loss_and_origin_cannot_reuse_cache
+    self.assertEqual(response.status_code, 403, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"available":true,"snapshot_age_ms":43.314208984375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:54.464620+00:00"}
+
+======================================================================
+FAIL: test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 129, in test_snapshot_links_invalid_encoding_and_size_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":0.91943359375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:55.371957+00:00"}
+
+======================================================================
+FAIL: test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 129, in test_snapshot_links_invalid_encoding_and_size_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":0.91943359375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:55.371957+00:00"}
+
+======================================================================
+FAIL: test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 129, in test_snapshot_links_invalid_encoding_and_size_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":0.91943359375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:55.371957+00:00"}
+
+======================================================================
+FAIL: test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 129, in test_snapshot_links_invalid_encoding_and_size_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":0.91943359375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:55.371957+00:00"}
+
+======================================================================
+FAIL: test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) (mode='malformed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 129, in test_snapshot_links_invalid_encoding_and_size_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"snapshot_age_ms":0.91943359375,"assets":[{"display_name":"SyntheticAtlasDevice"}],"edges":[],"observations":[],"generated_at":"2026-10-09T02:04:55.371957+00:00"}
+
+----------------------------------------------------------------------
+Ran 7 tests in 6.158s
+
+FAILED (failures=15)

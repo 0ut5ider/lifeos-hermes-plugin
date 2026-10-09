@@ -1,0 +1,61 @@
+.FFFF.FF
+======================================================================
+FAIL: test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) (name='Gear')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 273, in test_private_and_retired_collector_sources_refuse
+    self.assertNotEqual(self.collect(name).returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) (name='Projects')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 273, in test_private_and_retired_collector_sources_refuse
+    self.assertNotEqual(self.collect(name).returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_collectors_cannot_disclose_sources (test_memory_atlas.MemoryAtlasCollectorTests.test_unbound_collectors_cannot_disclose_sources) (name='Gear')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 247, in test_unbound_collectors_cannot_disclose_sources
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"complete":true,"assets":[{"kind":"device","key":"gear:laptop-syntheticatlasdevice","name":"SyntheticAtlasDevice","attrs":{"category":"Devices","role":"Laptop"}}],"edges":[]}
+
+
+======================================================================
+FAIL: test_unbound_collectors_cannot_disclose_sources (test_memory_atlas.MemoryAtlasCollectorTests.test_unbound_collectors_cannot_disclose_sources) (name='Projects')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 247, in test_unbound_collectors_cannot_disclose_sources
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"complete":true,"assets":[{"kind":"project","key":"project:syntheticatlasproject","name":"SyntheticAtlasProject","attrs":{"path":"/synthetic","deploy":"local"}}],"edges":[{"kind":"SERVES","srcKey":"project:syntheticatlasproject","dstKey":"domain:example.invalid","srcKind":"project","dstKind":"domain"}]}
+
+
+======================================================================
+FAIL: test_private_graph_and_cache_refuse_counts_and_narrative (test_memory_atlas.MemoryAtlasTests.test_private_graph_and_cache_refuse_counts_and_narrative)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 182, in test_private_graph_and_cache_refuse_counts_and_narrative
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"metrics":{"census":[{"kind":"device","n":1}],"edge_census":[],"unwired_workers":0,"worker_wiring":{"total":0,"served":0,"workers_dev":0,"cron":0,"service_binding_target":0},"projects_no_repo":0,"blast_zones":[],"data_stores":[],"auth_curation_gaps":0,"curated_targets":0,"stale":0,
+
+======================================================================
+FAIL: test_exact_owner_review_restores_safe_old_snapshot_and_graph (test_memory_atlas.MemoryAtlasTests.test_exact_owner_review_restores_safe_old_snapshot_and_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 205, in test_exact_owner_review_restores_safe_old_snapshot_and_graph
+    self.assertEqual(client.get(self.native + '/api/atlas').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.115s
+
+FAILED (failures=6)

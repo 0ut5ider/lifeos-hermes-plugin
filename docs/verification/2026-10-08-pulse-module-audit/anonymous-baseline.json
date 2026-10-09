@@ -1,0 +1,211 @@
+{
+  "scope": "selected public native modules, synthetic managed home, anonymous HTTP",
+  "observations": [
+    {
+      "route": "/api/books",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": true,
+      "body": {
+        "count": 1,
+        "lastUpdated": null,
+        "groups": [
+          {
+            "category": "Synthetic books",
+            "books": [
+              {
+                "title": "<private>SyntheticModulePrivateBook</private>",
+                "author": "Synthetic Author"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "route": "/api/books/status",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": false,
+      "body": {
+        "status": "stopped",
+        "details": {
+          "books": 1
+        }
+      }
+    },
+    {
+      "route": "/api/projects",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": true,
+      "body": {
+        "count": 1,
+        "source": "USER/PROJECTS.md",
+        "generatedAt": "2026-10-09T02:25:09.590Z",
+        "projects": [
+          {
+            "name": "SyntheticModulePrivateProject",
+            "rawName": "SyntheticModulePrivateProject",
+            "path": "/synthetic",
+            "url": "https://example.invalid",
+            "href": "https://example.invalid",
+            "deploy": "local",
+            "stack": "Python",
+            "badges": [],
+            "openSession": false
+          }
+        ],
+        "groups": [
+          {
+            "key": "live",
+            "label": "Live Apps",
+            "source": "USER/PROJECTS.md",
+            "count": 1,
+            "projects": [
+              {
+                "name": "SyntheticModulePrivateProject",
+                "rawName": "SyntheticModulePrivateProject",
+                "path": "/synthetic",
+                "url": "https://example.invalid",
+                "href": "https://example.invalid",
+                "deploy": "local",
+                "stack": "Python",
+                "badges": [],
+                "openSession": false
+              }
+            ]
+          },
+          {
+            "key": "telos",
+            "label": "TELOS",
+            "source": "USER/TELOS/TELOS.md \u00a7 Projects",
+            "count": 0,
+            "projects": []
+          },
+          {
+            "key": "retired",
+            "label": "Retired",
+            "source": "USER/PROJECTS_RETIRED.md",
+            "count": 0,
+            "projects": []
+          }
+        ]
+      }
+    },
+    {
+      "route": "/api/projects/status",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": false,
+      "body": {
+        "status": "stopped"
+      }
+    },
+    {
+      "route": "/api/assets",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": true,
+      "body": {
+        "count": 1,
+        "sources": [
+          "USER/GEAR.md"
+        ],
+        "generatedAt": "2026-10-09T02:25:09.600Z",
+        "categories": [
+          "Devices"
+        ],
+        "networkEndpoints": 0,
+        "assets": [
+          {
+            "name": "Laptop",
+            "category": "Devices",
+            "detail": "SyntheticModulePrivateDevice",
+            "use": "Work",
+            "source": "GEAR.md"
+          }
+        ],
+        "gear": {
+          "sections": [
+            {
+              "category": "Devices",
+              "items": [
+                {
+                  "name": "Laptop",
+                  "detail": "SyntheticModulePrivateDevice",
+                  "use": "Work"
+                }
+              ],
+              "notes": [],
+              "todos": []
+            }
+          ],
+          "updated": null
+        }
+      }
+    },
+    {
+      "route": "/api/assets/status",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": false,
+      "body": {
+        "status": "stopped",
+        "details": {
+          "assets": 1
+        }
+      }
+    },
+    {
+      "route": "/api/threatmodel",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": false,
+      "body": {
+        "available": true,
+        "register_age_ms": 83.9013671875,
+        "updated": null,
+        "grade": "green",
+        "total": 0,
+        "open": 0,
+        "overdue_review": 0,
+        "byLevel": {
+          "Critical": 0,
+          "High": 0,
+          "Medium": 0,
+          "Low": 0
+        },
+        "byStatus": {
+          "open": 0,
+          "mitigating": 0,
+          "accepted": 0,
+          "closed": 0
+        },
+        "risks": []
+      }
+    },
+    {
+      "route": "/api/evals",
+      "status": 200,
+      "cache_control": null,
+      "synthetic_private_label": true,
+      "body": {
+        "suites": [
+          {
+            "suite": "SyntheticModulePrivateSuite",
+            "type": "regression",
+            "passed": false,
+            "score": 0,
+            "pass_to_k": 0,
+            "pass_at_k": 0,
+            "summary": "",
+            "ts": null,
+            "cases": []
+          }
+        ],
+        "ts": "2026-10-09T02:25:09.526Z"
+      }
+    }
+  ]
+}

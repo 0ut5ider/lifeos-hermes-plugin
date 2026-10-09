@@ -10375,3 +10375,221 @@ index 37fce1d..0ccf42b 100644
  const HOME = homedir();
  const PRINCIPAL_PATH = join(paiUserDir(), 'PRINCIPAL/PRINCIPAL_IDENTITY.md');
  const SETTINGS_PATH = join(HOME, '.claude/settings.json');
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts b/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts
+index 8c207f4..7663e70 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Displays the native Atlas snapshot and graph insights.
++// ABOUTME: Relays managed snapshots to current authenticated owner admission.
+ /**
+  * Atlas Pulse module — read-only surface over the Atlas asset graph.
+  *
+@@ -16,6 +18,7 @@ import { createHash } from "node:crypto";
+ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { hasManagedMemoryHTTP, memoryHTTPResponseAsync, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const MODULE_NAME = "atlas";
+ const CLAUDE_DIR = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+@@ -138,7 +141,50 @@ async function regenerate(m: Record<string, unknown>): Promise<void> {
+ 
+ // ── Request handling ──────────────────────────────────────────────────
+ 
++export function renderAtlasSnapshot(snapshot: {content: string; modified_ms: number} | null): Response {
++  if (!snapshot) return Response.json({available: false, error: "no snapshot, run the Atlas sync command"});
++  const value: unknown = JSON.parse(snapshot.content);
++  if (!memoryObject(value)) throw new Error("The Atlas snapshot requires a JSON object");
++  return Response.json({available: true, snapshot_age_ms: Date.now() - snapshot.modified_ms, ...value});
++}
++
++export function renderAtlasInsights(metrics: Record<string, unknown> | null, cacheContent: string | null): Response {
++  if (!metrics) return Response.json({available: false, error: "run an atlas sync first"});
++  const cache: unknown = cacheContent === null ? null : JSON.parse(cacheContent);
++  if (!(cache === null || memoryObject(cache) && typeof cache.hash === "string"
++      && typeof cache.narrative === "string" && typeof cache.generated_at === "string")) {
++    throw new Error("The Atlas narrative cache requires its declared fields");
++  }
++  return Response.json({available: true, metrics, narrative: cache?.narrative ?? null,
++    narrative_generated_at: cache?.generated_at ?? null, stale: !cache || cache.hash !== metricHash(metrics), generating: false});
++}
++
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
++  if (hasManagedMemoryHTTP() && ["/api/atlas", "/api/atlas/insights", "/api/atlas/insights/regenerate"].includes(pathname)) {
++    const headers = {"cache-control": "no-store"};
++    if (SNAPSHOT_PATH !== join(homedir(), ".local/state/lifeos/atlas/snapshot.json")
++        || CLAUDE_DIR !== join(homedir(), ".claude")) {
++      return Response.json({error: "Atlas sources are unavailable"}, {status: 503, headers});
++    }
++    if (req.method !== (pathname === "/api/atlas/insights/regenerate" ? "POST" : "GET")) return Response.json({error: "Atlas snapshots require GET"}, {status: 405, headers});
++    const url = new URL(req.url);
++    if (url.search) return Response.json({error: "Atlas snapshots require a fixed route"}, {status: 400, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "Atlas snapshots require the current origin"}, {status: 403, headers});
++    try {
++      const response = await memoryHTTPResponseAsync(req, "life", pathname === "/api/atlas/insights/regenerate" ? "/api/atlas/insights" : pathname);
++      if (pathname === "/api/atlas/insights/regenerate" && response.ok) {
++        return Response.json({error: "Atlas insights generation is not available"}, {status: 503, headers});
++      }
++      return response;
++    }
++    catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++  }
++  if (hasManagedMemoryHTTP() && pathname.startsWith("/api/atlas/") && ![
++      "/api/atlas/insights", "/api/atlas/insights/regenerate"].includes(pathname)) {
++    return Response.json({error: "Choose a declared Atlas route"}, {status: 404, headers: {"cache-control": "no-store"}});
++  }
++
+   if (pathname === "/api/atlas/insights/regenerate" && req.method === "POST") {
+     const m = await metrics();
+     if (!m) return Response.json({ error: "metrics unavailable" }, { status: 503 });
+diff --git a/LifeOS/install/LIFEOS/ATLAS/collectors/Gear.ts b/LifeOS/install/LIFEOS/ATLAS/collectors/Gear.ts
+index d535078..66c0d6b 100644
+--- a/LifeOS/install/LIFEOS/ATLAS/collectors/Gear.ts
++++ b/LifeOS/install/LIFEOS/ATLAS/collectors/Gear.ts
+@@ -1,23 +1,23 @@
++// ABOUTME: Collects native Atlas assets from the declared owner Markdown source.
++// ABOUTME: Reads managed sources through current owner memory admission.
+ /**
+  * Gear collector — physical estate from GEAR.md (## section = category, bold-led bullets = items).
+  */
+ 
+ import { existsSync, readFileSync } from "node:fs";
++import { memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ import { join } from "node:path";
+ import { homedir } from "node:os";
+ import type { AssetObs, CollectResult, Collector } from "../Store";
+ 
+ const GEAR_PATH = join(homedir(), ".claude/LIFEOS/USER/GEAR.md");
+ 
+-export const gear: Collector = {
+-  name: "gear",
+-  async collect(): Promise<CollectResult> {
++export function collectGear(md: string | null): CollectResult {
+   // Absent source ⇒ degrade, never throw (ratchet gate 3). `atlas sync` runs
+   // every collector and turns the failure count into its exit code, so throwing
+   // because this machine simply lacks the source makes sync exit non-zero forever
+   // on most public installs. A source that EXISTS but is malformed still throws.
+-    if (!existsSync(GEAR_PATH)) return { complete: false, assets: [], edges: [] };
+-    const md = readFileSync(GEAR_PATH, "utf8");
++  if (md === null) return {complete: false, assets: [], edges: []};
+     const assets: AssetObs[] = [];
+     let category = "uncategorized";
+     for (const line of md.split("\n")) {
+@@ -41,5 +41,24 @@ export const gear: Collector = {
+       }
+     }
+     return { complete: true, assets, edges: [] };
++}
++
++function collectResult(value: unknown): value is CollectResult {
++  return memoryObject(value) && typeof value.complete === "boolean" && Array.isArray(value.assets)
++    && value.assets.every(asset => memoryObject(asset) && typeof asset.kind === "string"
++      && typeof asset.key === "string" && typeof asset.name === "string" && (asset.attrs === undefined || memoryObject(asset.attrs)))
++    && Array.isArray(value.edges) && value.edges.every(edge => memoryObject(edge) && typeof edge.kind === "string"
++      && typeof edge.srcKey === "string" && typeof edge.dstKey === "string");
++}
++
++export const gear: Collector = {
++  name: "gear",
++  async collect(): Promise<CollectResult> {
++    const admitted = memoryAccess("atlas_collect", {collector: "gear"}, memoryObject);
++    if (admitted !== undefined) {
++      if (admitted.ok !== true || !collectResult(admitted.result)) throw new Error("Atlas collector admission is unavailable");
++      return admitted.result;
++    }
++    return collectGear(existsSync(GEAR_PATH) ? readFileSync(GEAR_PATH, "utf8") : null);
+   },
+ };
+diff --git a/LifeOS/install/LIFEOS/ATLAS/collectors/Projects.ts b/LifeOS/install/LIFEOS/ATLAS/collectors/Projects.ts
+index 6ffd720..ebd6d05 100644
+--- a/LifeOS/install/LIFEOS/ATLAS/collectors/Projects.ts
++++ b/LifeOS/install/LIFEOS/ATLAS/collectors/Projects.ts
+@@ -1,9 +1,12 @@
++// ABOUTME: Collects native Atlas assets from the declared owner Markdown source.
++// ABOUTME: Reads managed sources through current owner memory admission.
+ /**
+  * Projects collector — parses PROJECTS.md's main table (deployed/live apps routing table).
+  * Observes projects and links them to the domains they serve and repos they deploy from.
+  */
+ 
+ import { existsSync, readFileSync } from "node:fs";
++import { memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ import { join } from "node:path";
+ import { homedir } from "node:os";
+ import type { AssetObs, CollectResult, Collector, EdgeObs } from "../Store";
+@@ -12,15 +15,12 @@ const PROJECTS_PATH = join(homedir(), ".claude/LIFEOS/USER/PROJECTS.md");
+ 
+ const strip = (s: string) => s.replace(/\*\*/g, "").replace(/[🟡🟢🎯🚨⚠️]/gu, "").trim();
+ 
+-export const projects: Collector = {
+-  name: "projects",
+-  async collect(): Promise<CollectResult> {
++export function collectProjects(md: string | null): CollectResult {
+   // Absent source ⇒ degrade, never throw (ratchet gate 3). `atlas sync` runs
+   // every collector and turns the failure count into its exit code, so throwing
+   // because this machine simply lacks the source makes sync exit non-zero forever
+   // on most public installs. A source that EXISTS but is malformed still throws.
+-    if (!existsSync(PROJECTS_PATH)) return { complete: false, assets: [], edges: [] };
+-    const md = readFileSync(PROJECTS_PATH, "utf8");
++  if (md === null) return {complete: false, assets: [], edges: []};
+     const assets: AssetObs[] = [];
+     const edges: EdgeObs[] = [];
+ 
+@@ -56,5 +56,24 @@ export const projects: Collector = {
+       }
+     }
+     return { complete: true, assets, edges };
++}
++
++function collectResult(value: unknown): value is CollectResult {
++  return memoryObject(value) && typeof value.complete === "boolean" && Array.isArray(value.assets)
++    && value.assets.every(asset => memoryObject(asset) && typeof asset.kind === "string"
++      && typeof asset.key === "string" && typeof asset.name === "string" && (asset.attrs === undefined || memoryObject(asset.attrs)))
++    && Array.isArray(value.edges) && value.edges.every(edge => memoryObject(edge) && typeof edge.kind === "string"
++      && typeof edge.srcKey === "string" && typeof edge.dstKey === "string");
++}
++
++export const projects: Collector = {
++  name: "projects",
++  async collect(): Promise<CollectResult> {
++    const admitted = memoryAccess("atlas_collect", {collector: "projects"}, memoryObject);
++    if (admitted !== undefined) {
++      if (admitted.ok !== true || !collectResult(admitted.result)) throw new Error("Atlas collector admission is unavailable");
++      return admitted.result;
++    }
++    return collectProjects(existsSync(PROJECTS_PATH) ? readFileSync(PROJECTS_PATH, "utf8") : null);
+   },
+ };
+diff --git a/LifeOS/install/LIFEOS/ATLAS/Store.ts b/LifeOS/install/LIFEOS/ATLAS/Store.ts
+index de134d2..1a0f304 100644
+--- a/LifeOS/install/LIFEOS/ATLAS/Store.ts
++++ b/LifeOS/install/LIFEOS/ATLAS/Store.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Stores the native Atlas asset graph and derives deterministic metrics.
++// ABOUTME: Exports bounded read transactions for current owner graph admission.
+ /**
+  * Atlas Store — SQLite system of record for the LifeOS asset graph.
+  *
+@@ -405,3 +407,20 @@ export class Store {
+     return { assets, edges, observations, lifecycle, unregistered, status: this.status(), generated_at: new Date().toISOString() };
+   }
+ }
++
++export function atlasGraphState(): {graph: Record<string, unknown[]>; metrics: unknown} {
++  const store = new Store(undefined, {readonly: true});
++  try {
++    store.db.exec("BEGIN");
++    const graph: Record<string, unknown[]> = {};
++    for (const name of ["asset", "edge", "source_observation", "edge_observation", "lifecycle_event", "sync_run"]) {
++      const rows = store.db.prepare(`SELECT * FROM ${name} ORDER BY rowid LIMIT 2049`).all();
++      if (rows.length > 2048) throw new Error("Atlas graph admission exceeds its table row limit");
++      graph[name] = rows;
++    }
++    const metrics: unknown = store.insights();
++    return {graph, metrics};
++  } finally {
++    store.close();
++  }
++}

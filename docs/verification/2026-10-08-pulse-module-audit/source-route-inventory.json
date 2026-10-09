@@ -1,0 +1,2417 @@
+{
+  "prepared_root": "/home/outsider/.cache/lifeos-daily-text-20261007/atlas-fourth/lifeos/LifeOS/install",
+  "native_selected_modules": {
+    "telos": true,
+    "work": false,
+    "content": true,
+    "health": true,
+    "finances": true,
+    "business": true,
+    "growth": true,
+    "local": true,
+    "gear": true,
+    "atlas": true,
+    "memory": true,
+    "synapse": false,
+    "books": true,
+    "conduit": true,
+    "projects": true,
+    "ledger": true,
+    "upgrades": true,
+    "hypotheses": true,
+    "usage": false,
+    "performance": true,
+    "bunker": true,
+    "algorithm": true,
+    "evals": true,
+    "threatmodel": true,
+    "hermes": true,
+    "docs": true,
+    "voice": false,
+    "imessage": false,
+    "syslog": false,
+    "da": false
+  },
+  "scope": "actual native module imports, public source only; API references do not prove admission coverage",
+  "modules": [
+    {
+      "path": "LIFEOS/PULSE/VoiceServer/voice.ts",
+      "sha256": "231963c72b9e8207ebeb9ec8f5fd5a8e5dfe3398c354069787fa711c0240d5be",
+      "routes": [],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 18,
+          "text": "import { existsSync, readFileSync, rmSync } from \"fs\""
+        },
+        {
+          "line": 171,
+          "text": "  const userPronPath = customPath ?? join(paiDir, \"USER\", \"PRINCIPAL\", \"PRONUNCIATIONS.json\")"
+        },
+        {
+          "line": 174,
+          "text": "    if (existsSync(userPronPath)) {"
+        },
+        {
+          "line": 175,
+          "text": "      const content = readFileSync(userPronPath, \"utf-8\")"
+        },
+        {
+          "line": 213,
+          "text": "    if (!existsSync(settingsPath)) {"
+        },
+        {
+          "line": 218,
+          "text": "    const content = readFileSync(settingsPath, \"utf-8\")"
+        },
+        {
+          "line": 772,
+          "text": "        const settings = JSON.parse(readFileSync(settingsFile, \"utf-8\"))"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/Observability/observability.ts",
+      "sha256": "9e337b04ddc7b9a3f1d6bfee1a92fed7b69c05b26a24273deb694f7e815d9e40",
+      "routes": [
+        "/api/agents",
+        "/api/algorithm",
+        "/api/algorithm/stream",
+        "/api/capabilities",
+        "/api/events/recent",
+        "/api/knowledge",
+        "/api/knowledge/",
+        "/api/ladder",
+        "/api/life/",
+        "/api/life/air",
+        "/api/life/business",
+        "/api/life/finances",
+        "/api/life/goals",
+        "/api/life/growth",
+        "/api/life/health",
+        "/api/life/home",
+        "/api/life/work",
+        "/api/memory/graph",
+        "/api/novelty",
+        "/api/observability/",
+        "/api/observability/life-card",
+        "/api/observability/tool-failures",
+        "/api/observability/voice-events",
+        "/api/onboarding/state",
+        "/api/security",
+        "/api/security/attack-surface",
+        "/api/security/hooks-detail",
+        "/api/security/patterns",
+        "/api/security/rules",
+        "/api/telos/file",
+        "/api/telos/overview",
+        "/api/user-index",
+        "/api/work"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 34,
+          "text": "import { readFileSync, readdirSync, existsSync, realpathSync, statSync, watch, openSync, readSync, closeSync, fstatSync, createReadStream, type FSWatcher } from \"fs\""
+        },
+        {
+          "line": 50,
+          "text": "// Growth is an OPTIONAL USER customization (USER/CUSTOMIZATIONS/TOOLS/Growth.ts): present on the"
+        },
+        {
+          "line": 79,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 81,
+          "text": "const MEMORY_DIR = join(LIFEOS_DIR, \"MEMORY\")"
+        },
+        {
+          "line": 83,
+          "text": "const WORK_JSON_PATH = join(MEMORY_DIR, \"STATE\", \"work.json\")"
+        },
+        {
+          "line": 84,
+          "text": "const WORK_EVENTS_PATH = join(MEMORY_DIR, \"STATE\", \"work-events.jsonl\")"
+        },
+        {
+          "line": 85,
+          "text": "const NOVELTY_STATE_PATH = join(MEMORY_DIR, \"STATE\", \"novelty-state.json\")"
+        },
+        {
+          "line": 86,
+          "text": "const SUBAGENT_EVENTS_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"subagent-events.jsonl\")"
+        },
+        {
+          "line": 87,
+          "text": "const VOICE_EVENTS_PATH = join(MEMORY_DIR, \"VOICE\", \"voice-events.jsonl\")"
+        },
+        {
+          "line": 88,
+          "text": "const TOOL_FAILURES_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"tool-failures.jsonl\")"
+        },
+        {
+          "line": 89,
+          "text": "const TOOL_ACTIVITY_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"tool-activity.jsonl\")"
+        },
+        {
+          "line": 133,
+          "text": "// BYTE-BOUNDED since 2026-07-26. The old body did readFileSync of the WHOLE"
+        },
+        {
+          "line": 149,
+          "text": "    if (!existsSync(filePath)) return []"
+        },
+        {
+          "line": 333,
+          "text": "    if (!existsSync(WORK_EVENTS_PATH)) return new Map()"
+        },
+        {
+          "line": 373,
+          "text": "// parsed. Read-only over MEMORY, like everything in this module."
+        },
+        {
+          "line": 458,
+          "text": "    if (!existsSync(TOOL_ACTIVITY_PATH)) return activityCache.bySession"
+        },
+        {
+          "line": 585,
+          "text": "    if (supplied ? supplied.work === undefined : !existsSync(WORK_JSON_PATH)) {"
+        },
+        {
+          "line": 588,
+          "text": "    const data = JSON.parse(supplied ? supplied.work ?? \"{}\" : readFileSync(WORK_JSON_PATH, \"utf-8\"))"
+        },
+        {
+          "line": 838,
+          "text": "    lastBroadcastMtimeMs = existsSync(WORK_JSON_PATH)"
+        },
+        {
+          "line": 875,
+          "text": "      algorithmStreamWatcher = watch(join(MEMORY_DIR, \"STATE\"), (_event, filename) => {"
+        },
+        {
+          "line": 1229,
+          "text": "    existsSync(path) ? readFileSync(path, \"utf-8\") : undefined): Response {"
+        },
+        {
+          "line": 1246,
+          "text": "    if (!existsSync(LADDER_DIR)) {"
+        },
+        {
+          "line": 1265,
+          "text": "      if (!existsSync(dirPath)) continue"
+        },
+        {
+          "line": 1272,
+          "text": "          const content = readFileSync(join(dirPath, file), \"utf-8\")"
+        },
+        {
+          "line": 1324,
+          "text": "    if (existsSync(SETTINGS_PATH)) {"
+        },
+        {
+          "line": 1325,
+          "text": "      const settings = JSON.parse(readFileSync(SETTINGS_PATH, \"utf-8\"))"
+        },
+        {
+          "line": 1350,
+          "text": "                status: existsSync(expandedPath) ? \"active\" : \"missing\","
+        },
+        {
+          "line": 1381,
+          "text": "  HOME, \".config\", \"LIFEOS\", \"USER\", \"CUSTOMIZATIONS\", \"ARBOL\", \"Shared\", \"attack-surface.snapshot.json\","
+        },
+        {
+          "line": 1387,
+          "text": "    if (!existsSync(ARBOL_CONFIG_PATH)) return \"\""
+        },
+        {
+          "line": 1388,
+          "text": "    const line = readFileSync(ARBOL_CONFIG_PATH, \"utf-8\").split(\"\\n\").find((l) => l.startsWith(`${key}:`))"
+        },
+        {
+          "line": 1398,
+          "text": "    if (existsSync(ATTACK_SURFACE_SNAPSHOT)) {"
+        },
+        {
+          "line": 1399,
+          "text": "      const s = JSON.parse(readFileSync(ATTACK_SURFACE_SNAPSHOT, \"utf-8\"))"
+        },
+        {
+          "line": 1467,
+          "text": "    existsSync(join(homedir(), \"Library\", \"LaunchAgents\", `${syncLabel}.plist`)) ||"
+        },
+        {
+          "line": 1468,
+          "text": "    existsSync(join(homedir(), \".config\", \"systemd\", \"user\", `${syncLabel}.service`))"
+        },
+        {
+          "line": 1535,
+          "text": "const KNOWLEDGE_DIR = join(MEMORY_DIR, \"KNOWLEDGE\")"
+        },
+        {
+          "line": 1558,
+          "text": "// Memory Graph \u2014 serves MEMORY/GRAPH/graph.json (built by LIFEOS/TOOLS/MemoryGraph.ts)"
+        },
+        {
+          "line": 1563,
+          "text": "    const graphPath = join(MEMORY_DIR, \"GRAPH\", \"graph.json\")"
+        },
+        {
+          "line": 1564,
+          "text": "    if (declared === undefined && !existsSync(graphPath)) {"
+        },
+        {
+          "line": 1567,
+          "text": "    const g = JSON.parse(declared ?? readFileSync(graphPath, \"utf-8\")) as {"
+        },
+        {
+          "line": 1606,
+          "text": "    if (declared === undefined && !existsSync(KNOWLEDGE_DIR)) {"
+        },
+        {
+          "line": 1617,
+          "text": "    if (declared === undefined && existsSync(masterIndexPath)) {"
+        },
+        {
+          "line": 1618,
+          "text": "      const content = readFileSync(masterIndexPath, \"utf-8\")"
+        },
+        {
+          "line": 1625,
+          "text": "      if (declared === undefined && !existsSync(domainDir)) {"
+        },
+        {
+          "line": 1645,
+          "text": "          const raw = declared === undefined ? readFileSync(filePath, \"utf-8\") : declared.get(filePath)"
+        },
+        {
+          "line": 1731,
+          "text": "  if (declared === undefined ? !existsSync(filePath) : !declared.has(filePath)) {"
+        },
+        {
+          "line": 1735,
+          "text": "    const content = declared === undefined ? readFileSync(filePath, \"utf-8\") : declared.get(filePath)"
+        },
+        {
+          "line": 1773,
+          "text": "  if (!existsSync(filePath)) {"
+        },
+        {
+          "line": 1789,
+          "text": "    const { writeFileSync } = require(\"fs\")"
+        },
+        {
+          "line": 1790,
+          "text": "    writeFileSync(filePath, content, \"utf-8\")"
+        },
+        {
+          "line": 1811,
+          "text": "const USER_DIR = join(LIFEOS_DIR, \"USER\")"
+        },
+        {
+          "line": 1812,
+          "text": "const TELOS_DIR = join(USER_DIR, \"TELOS\")"
+        },
+        {
+          "line": 1813,
+          "text": "// Post-2026-05-01 USER/ restructure: HEALTH and FINANCES live under TELOS/;"
+        },
+        {
+          "line": 1815,
+          "text": "const HEALTH_DIR = join(USER_DIR, \"HEALTH\")"
+        },
+        {
+          "line": 1816,
+          "text": "const FINANCES_DIR = join(USER_DIR, \"FINANCES\")"
+        },
+        {
+          "line": 1817,
+          "text": "const BUSINESS_DIR = join(USER_DIR, \"WORK\", \"YOUR_COMPANIES\")"
+        },
+        {
+          "line": 1818,
+          "text": "const PROJECTS_FILE = join(USER_DIR, \"PROJECTS.md\")"
+        },
+        {
+          "line": 1836,
+          "text": "  try { return existsSync(path) ? readFileSync(path, \"utf-8\") : \"\" } catch { return \"\" }"
+        },
+        {
+          "line": 1851,
+          "text": "    if (!read && !existsSync(path)) return null"
+        },
+        {
+          "line": 1852,
+          "text": "    const raw = read ? read(path) : readFileSync(path, \"utf-8\")"
+        },
+        {
+          "line": 1927,
+          "text": "// Reads MEMORY/OBSERVABILITY/statement-spend.jsonl produced by"
+        },
+        {
+          "line": 1928,
+          "text": "// USER/FINANCES/Tools/StatementAnalyzer.ts. First line is the header"
+        },
+        {
+          "line": 1933,
+          "text": "  const path = join(LIFEOS_DIR, \"MEMORY\", \"OBSERVABILITY\", \"statement-spend.jsonl\")"
+        },
+        {
+          "line": 1934,
+          "text": "  if (!read && !existsSync(path)) return { generated_at: null, records: [] }"
+        },
+        {
+          "line": 1936,
+          "text": "    const lines = (read ? read(path) : readFileSync(path, \"utf-8\")).split(\"\\n\").filter(Boolean)"
+        },
+        {
+          "line": 2092,
+          "text": "  const path = join(LIFEOS_DIR, \"MEMORY\", \"OBSERVABILITY\", \"vendor-costs.jsonl\")"
+        },
+        {
+          "line": 2093,
+          "text": "  if (!read && !existsSync(path)) return latest"
+        },
+        {
+          "line": 2095,
+          "text": "    const lines = (read ? read(path) : readFileSync(path, \"utf-8\")).split(\"\\n\").filter(Boolean)"
+        },
+        {
+          "line": 2456,
+          "text": "  if (entries === undefined && !existsSync(dir)) return []"
+        },
+        {
+          "line": 2481,
+          "text": "    const text = readFileSync(indexPath, \"utf-8\")"
+        },
+        {
+          "line": 2569,
+          "text": "    const labFiles = entries !== undefined ? entries.filter(f => f.startsWith(\"lab_results\")) : existsSync(HEALTH_DIR)"
+        },
+        {
+          "line": 2949,
+          "text": "        jsonl_path: \"MEMORY/OBSERVABILITY/vendor-costs.jsonl\","
+        },
+        {
+          "line": 2956,
+          "text": "          jsonl_path: \"MEMORY/OBSERVABILITY/statement-spend.jsonl\","
+        },
+        {
+          "line": 2957,
+          "text": "          tool: \"USER/FINANCES/Tools/StatementAnalyzer.ts\","
+        },
+        {
+          "line": 3002,
+          "text": "// BUSINESS_DIR is the generic parent (USER/WORK/YOUR_COMPANIES); each installer names"
+        },
+        {
+          "line": 3007,
+          "text": "  if (!existsSync(BUSINESS_DIR)) return \"\""
+        },
+        {
+          "line": 3011,
+          "text": "  return dirs.find(d => existsSync(join(d, \"REVENUE\"))) ?? dirs[0] ?? \"\""
+        },
+        {
+          "line": 3022,
+          "text": "    if (reports !== undefined || existsSync(revenueDir)) {"
+        },
+        {
+          "line": 3049,
+          "text": "// Audience growth (newsletter + YouTube + web). Data lives in the USER-zone"
+        },
+        {
+          "line": 3061,
+          "text": "    // Guarded dynamic import: Growth is an optional USER customization. Variable path defeats"
+        },
+        {
+          "line": 3063,
+          "text": "    const growthModPath = \"../../USER/CUSTOMIZATIONS/TOOLS/Growth\""
+        },
+        {
+          "line": 3119,
+          "text": "      if (read !== readMd || existsSync(WORK_JSON_PATH)) {"
+        },
+        {
+          "line": 3120,
+          "text": "        const workData = JSON.parse(read === readMd ? readFileSync(WORK_JSON_PATH, \"utf-8\") : read(WORK_JSON_PATH))"
+        },
+        {
+          "line": 3500,
+          "text": "function buildDimensionsFromIdealState(read = readMd, exists = (path: string): boolean => existsSync(path)): Array<{ id: string; label: string; cur: number; ideal: number; velo: number; color: string }> {"
+        },
+        {
+          "line": 4107,
+          "text": "// and USER identity files parsed at request time. No values are invented and"
+        },
+        {
+          "line": 4115,
+          "text": "  try { return JSON.parse(readFileSync(BUNKER_STATE_FILE, \"utf8\")) } catch { return {} }"
+        },
+        {
+          "line": 4251,
+          "text": "// Team is parsed from USER files at request time \u2014 names never live in this file."
+        },
+        {
+          "line": 4258,
+          "text": "  const principal = nameFrom(read(join(USER_DIR, \"PRINCIPAL\", \"PRINCIPAL_IDENTITY.md\")))"
+        },
+        {
+          "line": 4266,
+          "text": "  const da = nameFrom(read(join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_IDENTITY.md\")))"
+        },
+        {
+          "line": 4285,
+          "text": "async function handleTelosOverview(read = readMd, exists = (path: string): boolean => existsSync(path), localSources = false): Promise<Response> {"
+        },
+        {
+          "line": 4287,
+          "text": "    // Single source of truth: LIFEOS/USER/TELOS/TELOS.md, split by H2 sections."
+        },
+        {
+          "line": 4382,
+          "text": "    // launchd, USER identity files). Null when a source has nothing."
+        },
+        {
+          "line": 4455,
+          "text": "    const cachePath = join(MEMORY_DIR, \"_AIRGRADIENT\", \"latest.json\")"
+        },
+        {
+          "line": 4456,
+          "text": "    if (!existsSync(cachePath)) {"
+        },
+        {
+          "line": 4459,
+          "text": "    const raw = readFileSync(cachePath, \"utf8\")"
+        },
+        {
+          "line": 4572,
+          "text": "//   2. Runtime marker file \u2014 `~/.claude/LIFEOS/USER/.template-mode`. Written by"
+        },
+        {
+          "line": 4579,
+          "text": "// from USER/DIGITAL_ASSISTANT/DA_IDENTITY.md so the copy reads in the user's voice."
+        },
+        {
+          "line": 4581,
+          "text": "  const markerPath = join(LIFEOS_DIR, \"USER\", \".template-mode\")"
+        },
+        {
+          "line": 4582,
+          "text": "  // DA_IDENTITY.md lives under USER/DIGITAL_ASSISTANT/, not at the USER root \u2014"
+        },
+        {
+          "line": 4586,
+          "text": "  const daIdentityPath = join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_IDENTITY.md\")"
+        },
+        {
+          "line": 4617,
+          "text": "    .map(name => \"LIFEOS/USER/TELOS/\" + name + \".md\")"
+        },
+        {
+          "line": 4618,
+          "text": "    .concat([\"LIFEOS/USER/.template-mode\", \"LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\"]);"
+        },
+        {
+          "line": 4636,
+          "text": "  const parent = \"LIFEOS/USER/WORK/YOUR_COMPANIES\";"
+        },
+        {
+          "line": 4659,
+          "text": "  const allowed = new Set([\"LIFEOS/USER/PROJECTS.md\", \"LIFEOS/USER/TELOS/TELOS.md\", \"LIFEOS/USER/TELOS/CURRENT.md\","
+        },
+        {
+          "line": 4660,
+          "text": "    \"LIFEOS/MEMORY/STATE/work.json\"]);"
+        },
+        {
+          "line": 4673,
+          "text": "    \"PLAN.md\", \"vendors.yaml\", \"obligations.yaml\", \"GOALS.md\", \"FINANCES.md\"].map(name => \"LIFEOS/USER/FINANCES/\" + name)"
+        },
+        {
+          "line": 4674,
+          "text": "    .concat([\"LIFEOS/MEMORY/OBSERVABILITY/vendor-costs.jsonl\", \"LIFEOS/MEMORY/OBSERVABILITY/statement-spend.jsonl\","
+        },
+        {
+          "line": 4675,
+          "text": "      \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\"]);"
+        },
+        {
+          "line": 4697,
+          "text": "  const allowed = new Set([\"LIFEOS/USER/FINANCES/vendors.yaml\", \"LIFEOS/USER/FINANCES/obligations.yaml\","
+        },
+        {
+          "line": 4698,
+          "text": "    \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\"]);"
+        },
+        {
+          "line": 4720,
+          "text": "      const raw: unknown = Bun.TOML.parse(read(join(LIFEOS_DIR, \"USER/CONFIG/LIFEOS_CONFIG.toml\")));"
+        },
+        {
+          "line": 4721,
+          "text": "      return validateAndNormalize(raw, \"LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml\").principal.currency || \"USD\";"
+        },
+        {
+          "line": 4747,
+          "text": "  const allowed = new Set([\"LIFEOS/MEMORY/STATE/work.json\", \"LIFEOS/MEMORY/STATE/work-events.jsonl\","
+        },
+        {
+          "line": 4748,
+          "text": "    \"LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl\", \"LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl\","
+        },
+        {
+          "line": 4749,
+          "text": "    \"LIFEOS/MEMORY/OBSERVABILITY/tool-failures.jsonl\", \"LIFEOS/MEMORY/VOICE/voice-events.jsonl\","
+        },
+        {
+          "line": 4750,
+          "text": "    \"LIFEOS/MEMORY/STATE/novelty-state.json\"]);"
+        },
+        {
+          "line": 4801,
+          "text": "      if (capabilities && (frame.relative === \"LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl\""
+        },
+        {
+          "line": 4802,
+          "text": "          || frame.relative === \"LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl\")) {"
+        },
+        {
+          "line": 4808,
+          "text": "      } else if (!capabilities && frame.relative === \"LIFEOS/MEMORY/STATE/work-events.jsonl\") foldClimbLine(climb, frame.content);"
+        },
+        {
+          "line": 4809,
+          "text": "      else if (!capabilities && frame.relative === \"LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl\") foldActivityLine(frame.content, activity);"
+        },
+        {
+          "line": 4821,
+          "text": "      if (![\"LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl\", \"LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl\"].includes(relative)) {"
+        },
+        {
+          "line": 4832,
+          "text": "  return lifeViewSources().map(name => \"LIFEOS/USER/TELOS/\" + name)"
+        },
+        {
+          "line": 4834,
+          "text": "      \"LIFEOS/USER/TELOS/\" + directory + \"/\" + name + \".md\")))"
+        },
+        {
+          "line": 4835,
+          "text": "    .concat([\"LIFEOS/USER/TELOS/CURRENT_STATE/SNAPSHOT.md\", \"LIFEOS/USER/TELOS/IDEAL_STATE/FINANCES.md\","
+        },
+        {
+          "line": 4836,
+          "text": "      \"LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md\", \"LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\","
+        },
+        {
+          "line": 4837,
+          "text": "      \"LIFEOS/USER/PROJECTS.md\"]);"
+        },
+        {
+          "line": 4856,
+          "text": "    ? sources.some(source => source.relative.startsWith(\"LIFEOS/USER/TELOS/IDEAL_STATE/\"))"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/wiki.ts",
+      "sha256": "8cd6313cbd01d56c76324fb0ec048e388cba1d5e5f80549c68a9486636346104",
+      "routes": [
+        "/api/wiki",
+        "/api/wiki/",
+        "/api/wiki/arbol",
+        "/api/wiki/arbol/",
+        "/api/wiki/backlinks/",
+        "/api/wiki/doc/",
+        "/api/wiki/graph",
+        "/api/wiki/hooks",
+        "/api/wiki/hooks/",
+        "/api/wiki/knowledge/",
+        "/api/wiki/reindex",
+        "/api/wiki/search",
+        "/api/wiki/skills",
+        "/api/wiki/skills/"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 28,
+          "text": "  existsSync,"
+        },
+        {
+          "line": 29,
+          "text": "  readFileSync,"
+        },
+        {
+          "line": 33,
+          "text": "  writeFileSync,"
+        },
+        {
+          "line": 41,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 44,
+          "text": "const KNOWLEDGE_DIR = join(LIFEOS_DIR, \"MEMORY\", \"KNOWLEDGE\")"
+        },
+        {
+          "line": 49,
+          "text": "const ARBOL_WORKERS_DIR = join(LIFEOS_DIR, \"USER\", \"CUSTOMIZATIONS\", \"ARBOL\", \"Workers\")"
+        },
+        {
+          "line": 59,
+          "text": "const WORK_DIR = join(LIFEOS_DIR, \"MEMORY\", \"WORK\")"
+        },
+        {
+          "line": 60,
+          "text": "const LEARNING_DIR = join(LIFEOS_DIR, \"MEMORY\", \"LEARNING\")"
+        },
+        {
+          "line": 62,
+          "text": "const WISDOM_DIR = join(LIFEOS_DIR, \"MEMORY\", \"WISDOM\")"
+        },
+        {
+          "line": 64,
+          "text": "const RESEARCH_DIR = join(LIFEOS_DIR, \"MEMORY\", \"RESEARCH\")"
+        },
+        {
+          "line": 142,
+          "text": "  if (!existsSync(dir)) return files"
+        },
+        {
+          "line": 306,
+          "text": "    if (!supplied && !existsSync(filePath)) return null"
+        },
+        {
+          "line": 308,
+          "text": "    const raw = supplied?.content ?? readFileSync(filePath, \"utf-8\")"
+        },
+        {
+          "line": 364,
+          "text": "  if (!existsSync(ALGORITHM_DIR)) return"
+        },
+        {
+          "line": 394,
+          "text": "    if (!existsSync(domainDir)) continue"
+        },
+        {
+          "line": 422,
+          "text": "  if (!existsSync(WORK_DIR)) return"
+        },
+        {
+          "line": 432,
+          "text": "    if (!existsSync(isaPath)) continue"
+        },
+        {
+          "line": 579,
+          "text": "  // both too broad and pointless: MEMORY/ is the busiest subtree in an install"
+        },
+        {
+          "line": 584,
+          "text": "  // without the walk descending into MEMORY/. public PR #1683, @lmbagley"
+        },
+        {
+          "line": 593,
+          "text": "    if (!existsSync(watchPath)) continue"
+        },
+        {
+          "line": 643,
+          "text": "    if (!existsSync(dir)) continue"
+        },
+        {
+          "line": 819,
+          "text": "    return readFileSync(page.filePath, \"utf-8\")"
+        },
+        {
+          "line": 1134,
+          "text": "  if (!existsSync(SKILLS_DIR)) return Response.json({ skills: [], total: 0 })"
+        },
+        {
+          "line": 1142,
+          "text": "      if (!existsSync(skillMd)) continue"
+        },
+        {
+          "line": 1144,
+          "text": "      const content = readFileSync(skillMd, \"utf-8\")"
+        },
+        {
+          "line": 1152,
+          "text": "        hasWorkflows: existsSync(join(skillDir, \"Workflows\")),"
+        },
+        {
+          "line": 1166,
+          "text": "  if (!existsSync(skillMd)) {"
+        },
+        {
+          "line": 1170,
+          "text": "  const content = readFileSync(skillMd, \"utf-8\")"
+        },
+        {
+          "line": 1187,
+          "text": "  if (!existsSync(skillMd)) {"
+        },
+        {
+          "line": 1196,
+          "text": "  writeFileSync(skillMd, body.content, \"utf-8\")"
+        },
+        {
+          "line": 1212,
+          "text": "  if (!existsSync(SETTINGS_PATH)) {"
+        },
+        {
+          "line": 1217,
+          "text": "    const settings = JSON.parse(readFileSync(SETTINGS_PATH, \"utf-8\"))"
+        },
+        {
+          "line": 1249,
+          "text": "  if (!existsSync(hookPath)) hookPath = join(HOOKS_DIR, `${name}.hook.ts`)"
+        },
+        {
+          "line": 1251,
+          "text": "  if (!existsSync(hookPath)) {"
+        },
+        {
+          "line": 1255,
+          "text": "  const content = readFileSync(hookPath, \"utf-8\")"
+        },
+        {
+          "line": 1284,
+          "text": "  if (!existsSync(ARBOL_WORKERS_DIR)) {"
+        },
+        {
+          "line": 1303,
+          "text": "      if (existsSync(wranglerPath)) {"
+        },
+        {
+          "line": 1304,
+          "text": "        const raw = readFileSync(wranglerPath, \"utf-8\")"
+        },
+        {
+          "line": 1333,
+          "text": "  if (!existsSync(workerDir)) {"
+        },
+        {
+          "line": 1343,
+          "text": "  if (existsSync(wranglerPath)) {"
+        },
+        {
+          "line": 1344,
+          "text": "    wranglerContent = readFileSync(wranglerPath, \"utf-8\")"
+        },
+        {
+          "line": 1346,
+          "text": "  if (existsSync(srcPath)) {"
+        },
+        {
+          "line": 1347,
+          "text": "    srcContent = readFileSync(srcPath, \"utf-8\")"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/imessage.ts",
+      "sha256": "39ebef6b556003e95119c5b814d79c7ac09a6a8955dae9548be6f0362557ef20",
+      "routes": [],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 29,
+          "text": "import { appendFile, mkdir, rename } from \"fs/promises\""
+        },
+        {
+          "line": 67,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 129,
+          "text": "  await appendFile(chatLogPath, entry).catch(() => {})"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/siri.ts",
+      "sha256": "dd76a08b3607b7378cbb9de47df759305a2ca9bf9d4aa1bcac804f02e2c0ef5b",
+      "routes": [
+        "/api/siri/",
+        "/api/siri/turn"
+      ],
+      "governed_api_reference": false,
+      "source_lines": []
+    },
+    {
+      "path": "LIFEOS/PULSE/Performance/module.ts",
+      "sha256": "3a0af0fd4c8ac5da130776f6605049645558390e080667c1d115d956fcab6b7a",
+      "routes": [
+        "/api/performance/anthropic-cost",
+        "/api/performance/cost",
+        "/api/performance/failures",
+        "/api/performance/summary"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 14,
+          "text": "import { existsSync, readFileSync } from \"fs\""
+        },
+        {
+          "line": 17,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 19,
+          "text": "const MEMORY_DIR = join(LIFEOS_DIR, \"MEMORY\")"
+        },
+        {
+          "line": 20,
+          "text": "const SESSION_COSTS_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"session-costs.jsonl\")"
+        },
+        {
+          "line": 21,
+          "text": "const TOOL_FAILURES_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"tool-failures.jsonl\")"
+        },
+        {
+          "line": 22,
+          "text": "const TOOL_ACTIVITY_PATH = join(MEMORY_DIR, \"OBSERVABILITY\", \"tool-activity.jsonl\")"
+        },
+        {
+          "line": 41,
+          "text": "    hasCostData: existsSync(SESSION_COSTS_PATH),"
+        },
+        {
+          "line": 42,
+          "text": "    hasFailureData: existsSync(TOOL_FAILURES_PATH),"
+        },
+        {
+          "line": 50,
+          "text": "    if (!existsSync(filePath)) return []"
+        },
+        {
+          "line": 51,
+          "text": "    const raw = readFileSync(filePath, \"utf-8\")"
+        },
+        {
+          "line": 279,
+          "text": "  const { readFileSync, existsSync } = await import(\"fs\")"
+        },
+        {
+          "line": 281,
+          "text": "  const home = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 282,
+          "text": "  const obsDir = join(home, \".claude\", \"LIFEOS\", \"MEMORY\", \"OBSERVABILITY\")"
+        },
+        {
+          "line": 295,
+          "text": "  if (existsSync(ledgerPath)) {"
+        },
+        {
+          "line": 297,
+          "text": "      const raw = readFileSync(ledgerPath, \"utf-8\")"
+        },
+        {
+          "line": 315,
+          "text": "  if (existsSync(sitesPath)) {"
+        },
+        {
+          "line": 317,
+          "text": "      const raw = readFileSync(sitesPath, \"utf-8\")"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/syslog.ts",
+      "sha256": "4eca45cb2d36cf397d1518114b8a6aa88b561e63b70f96d03fbbd1930d2e292d",
+      "routes": [
+        "/api/syslog/status",
+        "/api/syslog/tail"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 5,
+          "text": " * and writing structured JSONL to MEMORY/OBSERVABILITY/unifi-syslog.jsonl."
+        },
+        {
+          "line": 16,
+          "text": "import { appendFileSync, mkdirSync, existsSync, statSync, readFileSync } from \"fs\""
+        },
+        {
+          "line": 20,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 29,
+          "text": "  \"MEMORY\","
+        },
+        {
+          "line": 136,
+          "text": "  if (!existsSync(LOG_PATH)) return"
+        },
+        {
+          "line": 165,
+          "text": "      appendFileSync(LOG_PATH, JSON.stringify({ ...parsed, sender: rinfo.address }) + \"\\n\")"
+        },
+        {
+          "line": 209,
+          "text": "      log_file_exists: existsSync(LOG_PATH),"
+        },
+        {
+          "line": 215,
+          "text": "  if (!existsSync(LOG_PATH)) return []"
+        },
+        {
+          "line": 216,
+          "text": "  const raw = readFileSync(LOG_PATH, \"utf-8\")"
+        },
+        {
+          "line": 220,
+          "text": "export async function handleRequest("
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/work.ts",
+      "sha256": "4b5d40267e8d0602437c069f2eb666b37f579a158165ca8af4d2e9087b2c6812",
+      "routes": [
+        "/api/work",
+        "/api/work/columns",
+        "/api/work/refresh",
+        "/api/work/status"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 12,
+          "text": " * WORK.REPO in USER/WORK/config.yaml. ULWorkSync.hook.ts pushes Algorithm sessions"
+        },
+        {
+          "line": 31,
+          "text": "import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync } from \"fs\";"
+        },
+        {
+          "line": 44,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();"
+        },
+        {
+          "line": 64,
+          "text": "  // v6.6.0 \u2014 literal user ask, parsed from MEMORY/WORK/{slug}/ISA.md frontmatter"
+        },
+        {
+          "line": 159,
+          "text": "// frontmatter has no principal_stated_goal field. Sync-readFileSync is fine"
+        },
+        {
+          "line": 164,
+          "text": "  const isaPath = join(HOME, \".claude\", \"LIFEOS\", \"MEMORY\", \"WORK\", slug, \"ISA.md\");"
+        },
+        {
+          "line": 165,
+          "text": "  if (!existsSync(isaPath)) return undefined;"
+        },
+        {
+          "line": 167,
+          "text": "    const content = readFileSync(isaPath, \"utf-8\");"
+        },
+        {
+          "line": 180,
+          "text": "  const proc = Bun.spawn("
+        },
+        {
+          "line": 244,
+          "text": "  if (!existsSync(CACHE_PATH)) return null;"
+        },
+        {
+          "line": 246,
+          "text": "    return JSON.parse(readFileSync(CACHE_PATH, \"utf-8\")) as CacheShape;"
+        },
+        {
+          "line": 253,
+          "text": "  if (!existsSync(PULSE_STATE_DIR)) mkdirSync(PULSE_STATE_DIR, { recursive: true });"
+        },
+        {
+          "line": 254,
+          "text": "  writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));"
+        },
+        {
+          "line": 336,
+          "text": "      \"Bind a PRIVATE GitHub repo by writing `LIFEOS/USER/WORK/work_repo.json`:\\n`{ \\\"repo\\\": \\\"owner/repo\\\", \\\"privacy\\\": { \\\"verified_private\\\": true, \\\"verified_at\\\": \\\"1970-01-01T00:00:00Z\\\", \\\"visibility\\\": \\\"private\\\" } }`\\nThe loader never trusts a hand-written attestation on its own \u2014 it re-runs `gh repo view --json visibility,isPrivate` and only enables the module if the repo is genuinely private, then writes back a fresh `verified_at`. If your install ships a work-tracking skill with a SetWorkRepo tool, use that instead; it writes the same file.\","
+        },
+        {
+          "line": 384,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/content.ts",
+      "sha256": "1a8180f44a254f46ee800ecfeab6522a923485b178f42ad9c4747a56c280916b",
+      "routes": [
+        "/api/content",
+        "/api/content/",
+        "/api/content/status",
+        "/api/content/stream"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 4,
+          "text": " * The content ledger (MEMORY/STATE/content-pipeline/events.jsonl) is the"
+        },
+        {
+          "line": 21,
+          "text": "import { existsSync, mkdirSync, renameSync, rmSync, watch } from \"fs\";"
+        },
+        {
+          "line": 147,
+          "text": "    if (item.path && existsSync(String(item.path))) {"
+        },
+        {
+          "line": 151,
+          "text": "        if (existsSync(p)) {"
+        },
+        {
+          "line": 164,
+          "text": "    \"MEMORY\", \"STATE\", \"content-pipeline\", \"artifacts\", id,"
+        },
+        {
+          "line": 177,
+          "text": "    const uid = Bun.spawnSync([\"id\", \"-u\"], { stdout: \"pipe\" }).stdout.toString().trim();"
+        },
+        {
+          "line": 178,
+          "text": "    const r = Bun.spawnSync([\"launchctl\", \"kickstart\", \"-k\", `gui/${uid}/com.lifeos.conveyor-runner`], {"
+        },
+        {
+          "line": 207,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/local-intelligence.ts",
+      "sha256": "507347439eecdb3751388eb9022de140d71d6c4b3b9e92f01aadad06854cbebb",
+      "routes": [
+        "/api/local-intelligence",
+        "/api/local-intelligence/history",
+        "/api/local-intelligence/refresh",
+        "/api/local-intelligence/status",
+        "/api/pulse/health"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 5,
+          "text": " * MEMORY/DATA/LocalIntelligence/latest.json. Serves the LOCAL dashboard tab."
+        },
+        {
+          "line": 18,
+          "text": "import { readFile, readdir, mkdir, writeFile, stat } from \"node:fs/promises\""
+        },
+        {
+          "line": 27,
+          "text": "// Fallback path: legacy MEMORY/DATA path (used when customizations file absent)."
+        },
+        {
+          "line": 28,
+          "text": "const CUSTOMIZATIONS_DIR = join(HOME, \".claude\", \"LIFEOS\", \"USER\", \"CUSTOMIZATIONS\", \"SKILLS\", \"LocalIntelligence\")"
+        },
+        {
+          "line": 29,
+          "text": "const LEGACY_DATA_DIR = join(HOME, \".claude\", \"LIFEOS\", \"MEMORY\", \"DATA\", \"LocalIntelligence\")"
+        },
+        {
+          "line": 37,
+          "text": "  try { return await readFile(LATEST_PATH, \"utf8\") } catch {}"
+        },
+        {
+          "line": 38,
+          "text": "  try { return await readFile(LEGACY_LATEST_PATH, \"utf8\") } catch {}"
+        },
+        {
+          "line": 121,
+          "text": "  await writeFile(logPath + \".started\", new Date().toISOString())"
+        },
+        {
+          "line": 127,
+          "text": "// Dated digests written by the skill to MEMORY/DATA/LocalIntelligence/ are the"
+        },
+        {
+          "line": 175,
+          "text": "      digest = JSON.parse(await readFile(join(LEGACY_DATA_DIR, f), \"utf8\"))"
+        },
+        {
+          "line": 212,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/telos.ts",
+      "sha256": "104bba6a8d1d78cdcf28c3ef0fd82dccc22dc3634b0dd52b3597e42f47ec135d",
+      "routes": [
+        "/api/freshness",
+        "/api/freshness/summary",
+        "/api/telos",
+        "/api/telos/",
+        "/api/telos/freshness",
+        "/api/telos/freshness/stale",
+        "/api/telos/freshness/summary",
+        "/api/telos/health"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 131,
+          "text": "export async function handleRequest(req: Request, pathname: string,"
+        },
+        {
+          "line": 237,
+          "text": "  const response = await handleRequest(new Request(\"http://127.0.0.1\" + pathname), pathname, sources);"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/hypotheses.ts",
+      "sha256": "fdcdff8decd344687501dbb22cd956214e771c70c7da35b9de1b5c3e7309a9c2",
+      "routes": [
+        "/api/hypotheses",
+        "/api/hypotheses/"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 16,
+          "text": " *   ~/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/YYYY-MM-DD_<slug>.md"
+        },
+        {
+          "line": 23,
+          "text": " * sources only \u2014 USER/ or MEMORY/, nothing hard-coded.\""
+        },
+        {
+          "line": 36,
+          "text": "import { existsSync, readFileSync, readdirSync, writeFileSync, unlinkSync, mkdirSync } from \"fs\";"
+        },
+        {
+          "line": 49,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();"
+        },
+        {
+          "line": 51,
+          "text": "const FRAMES_DIR = join(LIFEOS_DIR, \"MEMORY\", \"WISDOM\", \"FRAMES\");"
+        },
+        {
+          "line": 138,
+          "text": "  if (!existsSync(fp)) return null;"
+        },
+        {
+          "line": 139,
+          "text": "  const content = readFileSync(fp, \"utf-8\");"
+        },
+        {
+          "line": 198,
+          "text": "    const proc = Bun.spawn([\"bun\", join(LIFEOS_DIR, \"TOOLS\", \"PromoteFixture.ts\"), pendingSlug], {"
+        },
+        {
+          "line": 236,
+          "text": "  if (!existsSync(HYPOTHESES_DIR)) return [];"
+        },
+        {
+          "line": 257,
+          "text": "  if (!existsSync(HYPOTHESES_DIR)) return { ok: false, reason: \"directory_missing\" };"
+        },
+        {
+          "line": 267,
+          "text": "  const content = readFileSync(src, \"utf-8\");"
+        },
+        {
+          "line": 270,
+          "text": "  writeFileSync(join(ARCHIVE_DIR, target), newContent);"
+        },
+        {
+          "line": 274,
+          "text": "  if (existsSync(STATE_FILE)) {"
+        },
+        {
+          "line": 276,
+          "text": "      const st = JSON.parse(readFileSync(STATE_FILE, \"utf-8\"));"
+        },
+        {
+          "line": 280,
+          "text": "        writeFileSync(STATE_FILE, JSON.stringify(st, null, 2));"
+        },
+        {
+          "line": 319,
+          "text": "  if (target_frame === \"new\" && existsSync(framePath)) return;"
+        },
+        {
+          "line": 320,
+          "text": "  const previous = existsSync(framePath) ? readFileSync(framePath, \"utf-8\") : null;"
+        },
+        {
+          "line": 322,
+          "text": "  if (content !== null) writeFileSync(framePath, content);"
+        },
+        {
+          "line": 432,
+          "text": "    if (existsSync(join(LIFEOS_DIR, \"TOOLS\", \"PromoteFixture.ts\"))) {"
+        },
+        {
+          "line": 445,
+          "text": "    if (content !== null) publications.push({path: `LIFEOS/MEMORY/WISDOM/FRAMES/${name}`, content});"
+        },
+        {
+          "line": 449,
+          "text": "  publications.push({path: `LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/_archive/${selected.filename}`,"
+        },
+        {
+          "line": 459,
+          "text": "          publications.push({path: \"LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json\", content: JSON.stringify(state, null, 2)});"
+        },
+        {
+          "line": 464,
+          "text": "  publications.push({path: `LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/${selected.filename}`, content: null});"
+        },
+        {
+          "line": 468,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/upgrades.ts",
+      "sha256": "1ff3bb6dcf8827329a65c193975fa961a13fa3c36119fc977cebe4236152ce57",
+      "routes": [
+        "/api/upgrades",
+        "/api/upgrades/"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 14,
+          "text": " *   1. Upgrade records \u2014 LIFEOS/MEMORY/UPGRADES/records/*.md, written by"
+        },
+        {
+          "line": 23,
+          "text": " * USER/ or MEMORY/, nothing hard-coded. Every byte served comes from files."
+        },
+        {
+          "line": 144,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/tab-freshness.ts",
+      "sha256": "db4f77b4550bd11eb254eb4ac42936ccd6b730e39ddb77fbd6ae5e569cb06cc8",
+      "routes": [
+        "/api/tab-freshness"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 31,
+          "text": "import { existsSync, statSync, readdirSync, readFileSync } from \"fs\""
+        },
+        {
+          "line": 36,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()"
+        },
+        {
+          "line": 38,
+          "text": "const USER_DIR = join(LIFEOS_DIR, \"USER\")"
+        },
+        {
+          "line": 39,
+          "text": "const TELOS_DIR = join(USER_DIR, \"TELOS\")"
+        },
+        {
+          "line": 66,
+          "text": "    { name: \"STATE/work.json\", path: join(LIFEOS_DIR, \"MEMORY\", \"STATE\", \"work.json\") },"
+        },
+        {
+          "line": 67,
+          "text": "    { name: \"WORK/config.yaml\", path: join(USER_DIR, \"WORK\", \"config.yaml\") },"
+        },
+        {
+          "line": 68,
+          "text": "    { name: \"PROJECTS.md\", path: join(USER_DIR, \"PROJECTS.md\") },"
+        },
+        {
+          "line": 71,
+          "text": "    { name: \"HEALTH/\", path: join(USER_DIR, \"HEALTH\"), expand: true },"
+        },
+        {
+          "line": 75,
+          "text": "    { name: \"FINANCES/\", path: join(USER_DIR, \"FINANCES\"), expand: true },"
+        },
+        {
+          "line": 79,
+          "text": "    { name: \"BUSINESS/\", path: join(USER_DIR, \"BUSINESS\"), expand: true },"
+        },
+        {
+          "line": 82,
+          "text": "    { name: \"LOCAL/\", path: join(USER_DIR, \"LOCAL\"), expand: true },"
+        },
+        {
+          "line": 83,
+          "text": "    { name: \"PRINCIPAL_IDENTITY.md\", path: join(USER_DIR, \"PRINCIPAL\", \"PRINCIPAL_IDENTITY.md\") },"
+        },
+        {
+          "line": 86,
+          "text": "    { name: \"KNOWLEDGE/\", path: join(LIFEOS_DIR, \"MEMORY\", \"KNOWLEDGE\"), expand: true },"
+        },
+        {
+          "line": 96,
+          "text": "    { name: \"OPERATIONAL_RULES.md\", path: join(USER_DIR, \"CONFIG\", \"OPERATIONAL_RULES.md\") },"
+        },
+        {
+          "line": 108,
+          "text": "    { name: \"USER/CUSTOMIZATIONS/ARBOL/\", path: join(USER_DIR, \"CUSTOMIZATIONS\", \"ARBOL\"), expand: true },"
+        },
+        {
+          "line": 111,
+          "text": "    { name: \"USER/SECURITY/\", path: join(USER_DIR, \"SECURITY\"), expand: true },"
+        },
+        {
+          "line": 114,
+          "text": "    { name: \"MEMORY/OBSERVABILITY/\", path: join(LIFEOS_DIR, \"MEMORY\", \"OBSERVABILITY\"), expand: true },"
+        },
+        {
+          "line": 117,
+          "text": "    { name: \"KNOWLEDGE/Ideas/\", path: join(LIFEOS_DIR, \"MEMORY\", \"KNOWLEDGE\", \"Ideas\"), expand: true },"
+        },
+        {
+          "line": 121,
+          "text": "    { name: \"SYSTEMUPDATES/index.json\", path: join(LIFEOS_DIR, \"MEMORY\", \"SYSTEMUPDATES\", \"index.json\") },"
+        },
+        {
+          "line": 122,
+          "text": "    { name: \"SYSTEMUPDATES/deploys.jsonl\", path: join(LIFEOS_DIR, \"MEMORY\", \"SYSTEMUPDATES\", \"deploys.jsonl\") },"
+        },
+        {
+          "line": 124,
+          "text": "    { name: \"STATE/integrity/\", path: join(LIFEOS_DIR, \"MEMORY\", \"STATE\", \"integrity\"), expand: true },"
+        },
+        {
+          "line": 127,
+          "text": "    { name: \"DA_IDENTITY.md\", path: join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_IDENTITY.md\") },"
+        },
+        {
+          "line": 128,
+          "text": "    { name: \"PRINCIPAL_IDENTITY.md\", path: join(USER_DIR, \"PRINCIPAL\", \"PRINCIPAL_IDENTITY.md\") },"
+        },
+        {
+          "line": 131,
+          "text": "    { name: \"GEAR.md\", path: join(USER_DIR, \"GEAR.md\") },"
+        },
+        {
+          "line": 168,
+          "text": "  if (!existsSync(spec.path)) {"
+        },
+        {
+          "line": 207,
+          "text": "  try { return frontmatterDate(readFileSync(filePath, \"utf-8\")) } catch { return null }"
+        },
+        {
+          "line": 353,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/memory.ts",
+      "sha256": "10a04f35870c1f3d3685a2ad7b305b3aba64fb84b288c36b3ac144c966a219c1",
+      "routes": [
+        "/api/memory",
+        "/api/memory/",
+        "/api/memory/graph",
+        "/api/memory/health",
+        "/api/memory/runs",
+        "/api/memory/state"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 8,
+          "text": " * health status, and the current contents of both hot-layer _MEMORY.md"
+        },
+        {
+          "line": 27,
+          "text": "  existsSync,"
+        },
+        {
+          "line": 28,
+          "text": "  readFileSync,"
+        },
+        {
+          "line": 38,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();"
+        },
+        {
+          "line": 40,
+          "text": "const OBS_DIR = join(CLAUDE, \"LIFEOS/MEMORY/OBSERVABILITY\");"
+        },
+        {
+          "line": 47,
+          "text": "const PRINCIPAL_MEMORY = join(CLAUDE, \"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\");"
+        },
+        {
+          "line": 48,
+          "text": "const DA_MEMORY = join(CLAUDE, \"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\");"
+        },
+        {
+          "line": 49,
+          "text": "const CADENCE_CONFIG = join(CLAUDE, \"LIFEOS/USER/CONFIG/memory-review.json\");"
+        },
+        {
+          "line": 77,
+          "text": "      review_state_exists: existsSync(REVIEW_STATE),"
+        },
+        {
+          "line": 78,
+          "text": "      health_log_exists: existsSync(HEALTH_LOG),"
+        },
+        {
+          "line": 85,
+          "text": "    if (!existsSync(path)) return null;"
+        },
+        {
+          "line": 86,
+          "text": "    return JSON.parse(readFileSync(path, \"utf-8\"));"
+        },
+        {
+          "line": 94,
+          "text": "    if (!existsSync(path)) return [];"
+        },
+        {
+          "line": 95,
+          "text": "    const raw = readFileSync(path, \"utf-8\");"
+        },
+        {
+          "line": 116,
+          "text": "  if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };"
+        },
+        {
+          "line": 121,
+          "text": "    const { entries } = parseMemoryContent(readFileSync(path, \"utf-8\"));"
+        },
+        {
+          "line": 138,
+          "text": "  if (!existsSync(REVIEWER_RUNS)) return [];"
+        },
+        {
+          "line": 158,
+          "text": "      if (existsSync(dispatchPath)) {"
+        },
+        {
+          "line": 160,
+          "text": "          const txt = readFileSync(dispatchPath, \"utf-8\");"
+        },
+        {
+          "line": 217,
+          "text": "  const principal = readMemoryFile(PRINCIPAL_MEMORY);"
+        },
+        {
+          "line": 218,
+          "text": "  const da = readMemoryFile(DA_MEMORY);"
+        },
+        {
+          "line": 264,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/conduit.ts",
+      "sha256": "09b3b332b774cf43052e62b6a857a31a5db3ad0231e62ff482f00d77fd324167",
+      "routes": [
+        "/api/conduit/insight",
+        "/api/conduit/insight/build",
+        "/api/conduit/recent",
+        "/api/conduit/status",
+        "/api/conduit/today"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 4,
+          "text": " * Reads ONLY from USER/CONDUIT (no capture here \u2014 capture is the launchd job). Routes:"
+        },
+        {
+          "line": 13,
+          "text": "import { existsSync, readFileSync, readdirSync } from \"node:fs\""
+        },
+        {
+          "line": 64,
+          "text": "  if (!existsSync(DAILY_DIR)) return []"
+        },
+        {
+          "line": 73,
+          "text": "      out.push(JSON.parse(readFileSync(dailyPathsFor(f.replace(/\\.json$/, \"\")).json, \"utf8\")))"
+        },
+        {
+          "line": 85,
+          "text": "  if (!existsSync(INSIGHTS_DIR)) return null"
+        },
+        {
+          "line": 101,
+          "text": "  const useDate = existsSync(insightPathFor(today)) ? today : latestInsightDate()"
+        },
+        {
+          "line": 106,
+          "text": "    const insight = JSON.parse(readFileSync(join(INSIGHTS_DIR, `${useDate}.json`), \"utf8\"))"
+        },
+        {
+          "line": 125,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/menubar.ts",
+      "sha256": "821b99df228471bcef209e011235ecea4a6ea235e8e3f71f32d4a6c1727b69a6",
+      "routes": [
+        "/api/menubar",
+        "/api/menubar/"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 17,
+          "text": "import { existsSync, readFileSync, statSync } from \"node:fs\""
+        },
+        {
+          "line": 27,
+          "text": "const OBS = join(LIFEOS, \"MEMORY\", \"OBSERVABILITY\")"
+        },
+        {
+          "line": 29,
+          "text": "const WORK_JSON = join(LIFEOS, \"MEMORY\", \"STATE\", \"work.json\")"
+        },
+        {
+          "line": 82,
+          "text": "    if (!existsSync(path)) return []"
+        },
+        {
+          "line": 85,
+          "text": "    const buf = readFileSync(path)"
+        },
+        {
+          "line": 125,
+          "text": "    if (!existsSync(statePath)) return { status: \"stopped\", label: \"Stopped\", uptimeSec: 0, failingJobs: 0, jobCount: 0 }"
+        },
+        {
+          "line": 126,
+          "text": "    const st = JSON.parse(readFileSync(statePath, \"utf8\"))"
+        },
+        {
+          "line": 134,
+          "text": "      const pid = Number(readFileSync(pidPath, \"utf8\").trim())"
+        },
+        {
+          "line": 162,
+          "text": "    const m = readFileSync(cfg, \"utf8\").match(/^\\s*auth_token:\\s*[\"']?([^\"'\\n]+)[\"']?\\s*$/m)"
+        },
+        {
+          "line": 193,
+          "text": "    if (!existsSync(WORK_JSON)) return { count: 0, items: [] }"
+        },
+        {
+          "line": 194,
+          "text": "    const wj = JSON.parse(readFileSync(WORK_JSON, \"utf8\"))"
+        },
+        {
+          "line": 318,
+          "text": "      const st = JSON.parse(readFileSync(join(STATE_DIR, \"state.json\"), \"utf8\"))"
+        },
+        {
+          "line": 392,
+          "text": "export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/books.ts",
+      "sha256": "e010b1e0cfbfdf894d3fc0ffe7160aca350cd3ac9aab0880434ad0e83d4102ec",
+      "routes": [
+        "/api/books"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 2,
+          "text": " * Books Pulse module \u2014 read-only surface over USER/BOOKS.md ({{PRINCIPAL_NAME}}'s favorite books)."
+        },
+        {
+          "line": 3,
+          "text": " * Holds ZERO data: parses the USER file on each request and serves it. The dashboard"
+        },
+        {
+          "line": 8,
+          "text": "import { existsSync, readFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 13,
+          "text": "const BOOKS_PATH = join(process.env.CLAUDE_CONFIG_DIR || join(homedir(), \".claude\"), \"LIFEOS\", \"USER\", \"BOOKS.md\");"
+        },
+        {
+          "line": 69,
+          "text": "  if (!existsSync(BOOKS_PATH)) return { count: 0, lastUpdated: null, groups: [] };"
+        },
+        {
+          "line": 70,
+          "text": "  const { groups, lastUpdated } = parseBooks(readFileSync(BOOKS_PATH, \"utf8\"));"
+        },
+        {
+          "line": 86,
+          "text": "export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/synapse.ts",
+      "sha256": "054b2638455bd17e58ad73ac1594675eb910d2e8907fab42bdd9a6171057be6f",
+      "routes": [
+        "/api/synapse",
+        "/api/synapse/"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 6,
+          "text": " *   knowledge \u2014 MEMORY/KNOWLEDGE note counts by `created:` frontmatter"
+        },
+        {
+          "line": 13,
+          "text": " * Instance wiring is resolved at runtime from USER-zone sources \u2014 nothing"
+        },
+        {
+          "line": 16,
+          "text": " * namespace id from the ARBOL wrangler configs under USER/CUSTOMIZATIONS."
+        },
+        {
+          "line": 20,
+          "text": "import { existsSync, readFileSync, readdirSync } from \"node:fs\";"
+        },
+        {
+          "line": 26,
+          "text": "const KNOWLEDGE_DIR = join(HOME, \"LIFEOS\", \"MEMORY\", \"KNOWLEDGE\");"
+        },
+        {
+          "line": 30,
+          "text": "const ARBOL_WORKERS = join(HOME, \"LIFEOS\", \"USER\", \"CUSTOMIZATIONS\", \"ARBOL\", \"Workers\");"
+        },
+        {
+          "line": 42,
+          "text": "    const m = readFileSync(ARBOL_CFG, \"utf8\").match(new RegExp(`^\\\\s*${key}:\\\\s*[\"']?([^\"'\\\\n]+)[\"']?\\\\s*$`, \"m\"));"
+        },
+        {
+          "line": 49,
+          "text": "/** Every wrangler.jsonc under the USER Arbol Workers tree, discovered \u2014 this"
+        },
+        {
+          "line": 58,
+          "text": "      .filter((p) => existsSync(p));"
+        },
+        {
+          "line": 67,
+          "text": "      const name = readFileSync(cfg, \"utf8\").match(/\"name\":\\s*\"([^\"]+)\"/)?.[1];"
+        },
+        {
+          "line": 82,
+          "text": "      const m = readFileSync(cfg, \"utf8\").match(/\"binding\":\\s*\"SEEN_BOOKMARKS\",\\s*\"id\":\\s*\"([a-f0-9]+)\"/s);"
+        },
+        {
+          "line": 93,
+          "text": "    const m = readFileSync(ENV_PATH, \"utf8\").match(/^CLOUDFLARE_API_TOKEN=[\"']?([^\"'\\n]+)[\"']?/m);"
+        },
+        {
+          "line": 171,
+          "text": "    if (!existsSync(abs)) continue;"
+        },
+        {
+          "line": 179,
+          "text": "        const head = readFileSync(join(abs, f), \"utf8\").slice(0, 1200);"
+        },
+        {
+          "line": 221,
+          "text": "    const s = JSON.parse(readFileSync(join(X_STATE_DIR, \"bookmarks-state.json\"), \"utf8\"));"
+        },
+        {
+          "line": 225,
+          "text": "    const s = JSON.parse(readFileSync(join(X_STATE_DIR, \"bookmark-issues.json\"), \"utf8\"));"
+        },
+        {
+          "line": 337,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/ledger.ts",
+      "sha256": "44f6081dd357bfa6e2920b915e96489826f371e683e391cf5055f1b6b46f87ab",
+      "routes": [
+        "/api/ledger",
+        "/api/ledger/"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 6,
+          "text": " *   registry  \u2014 MEMORY/SYSTEMUPDATES/index.json (latest N entries + rollups)"
+        },
+        {
+          "line": 7,
+          "text": " *   deploys   \u2014 MEMORY/SYSTEMUPDATES/deploys.jsonl (estate deploy events)"
+        },
+        {
+          "line": 8,
+          "text": " *   integrity \u2014 MEMORY/STATE/integrity/last-run.json + last-pass.json"
+        },
+        {
+          "line": 9,
+          "text": " *   drift     \u2014 MEMORY/STATE/version-drift-nag.json"
+        },
+        {
+          "line": 16,
+          "text": "import { existsSync, readFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 22,
+          "text": "const SYSTEMUPDATES = join(LIFEOS_DIR, \"MEMORY\", \"SYSTEMUPDATES\");"
+        },
+        {
+          "line": 23,
+          "text": "const STATE_DIR = join(LIFEOS_DIR, \"MEMORY\", \"STATE\");"
+        },
+        {
+          "line": 36,
+          "text": "    return readFileSync(path, \"utf8\").trim();"
+        },
+        {
+          "line": 53,
+          "text": "  if (!existsSync(path)) return [];"
+        },
+        {
+          "line": 137,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/projects.ts",
+      "sha256": "a95024ac53d64b2505ca47ba47214f1c25ad866327111b2a16c0479e3232bc2d",
+      "routes": [
+        "/api/projects"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 3,
+          "text": " * ZERO data: parses the USER files on every request and serves them grouped by"
+        },
+        {
+          "line": 14,
+          "text": "import { existsSync, readFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 19,
+          "text": "const USER_DIR = join(process.env.CLAUDE_CONFIG_DIR || join(homedir(), \".claude\"), \"LIFEOS\", \"USER\");"
+        },
+        {
+          "line": 20,
+          "text": "const PROJECTS_PATH = join(USER_DIR, \"PROJECTS.md\");"
+        },
+        {
+          "line": 24,
+          "text": "  { key: \"live\", label: \"Live Apps\", path: PROJECTS_PATH, source: \"USER/PROJECTS.md\", kind: \"table\" },"
+        },
+        {
+          "line": 25,
+          "text": "  { key: \"telos\", label: \"TELOS\", path: join(USER_DIR, \"TELOS\", \"TELOS.md\"), source: \"USER/TELOS/TELOS.md \u00a7 Projects\", kind: \"telos\" },"
+        },
+        {
+          "line": 26,
+          "text": "  { key: \"retired\", label: \"Retired\", path: join(USER_DIR, \"PROJECTS_RETIRED.md\"), source: \"USER/PROJECTS_RETIRED.md\", kind: \"table\" },"
+        },
+        {
+          "line": 242,
+          "text": "    if (!existsSync(src.path)) return { ...base, count: 0, projects: [], error: `${src.source} not found` };"
+        },
+        {
+          "line": 243,
+          "text": "    const md = readFileSync(src.path, \"utf8\");"
+        },
+        {
+          "line": 301,
+          "text": "export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/assets.ts",
+      "sha256": "ff345eef7e7c095aaddc58423eda77d754b8bae2993b1485a843ed4eb1d1c7cd",
+      "routes": [
+        "/api/assets"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 10,
+          "text": " *   1. USER/GEAR.md                              \u2014 the curated human inventory (tables per category)"
+        },
+        {
+          "line": 11,
+          "text": " *   2. MEMORY/_NETWORK/topology-snapshot-*.md    \u2014 named network / smart-home devices (cameras, switches, gateway) with IPs"
+        },
+        {
+          "line": 12,
+          "text": " *   3. MEMORY/_NETWORK/assets.json               \u2014 raw LAN arp scan; reduced to a COUNT only (0 named entries \u2192 too noisy to card)"
+        },
+        {
+          "line": 18,
+          "text": "import { existsSync, readFileSync, readdirSync } from \"node:fs\";"
+        },
+        {
+          "line": 24,
+          "text": "const GEAR_PATH = join(CLAUDE_DIR, \"LIFEOS\", \"USER\", \"GEAR.md\");"
+        },
+        {
+          "line": 25,
+          "text": "const NETWORK_DIR = join(CLAUDE_DIR, \"LIFEOS\", \"MEMORY\", \"_NETWORK\");"
+        },
+        {
+          "line": 223,
+          "text": "    const a = JSON.parse(readFileSync(NETWORK_ASSETS_JSON, \"utf8\"));"
+        },
+        {
+          "line": 251,
+          "text": "    if (existsSync(GEAR_PATH)) {"
+        },
+        {
+          "line": 252,
+          "text": "      const md = readFileSync(GEAR_PATH, \"utf8\");"
+        },
+        {
+          "line": 256,
+          "text": "      sources.push(\"USER/GEAR.md\");"
+        },
+        {
+          "line": 264,
+          "text": "      const devices = parseTopology(readFileSync(snap, \"utf8\"));"
+        },
+        {
+          "line": 267,
+          "text": "        sources.push(\"MEMORY/_NETWORK/topology-snapshot\");"
+        },
+        {
+          "line": 301,
+          "text": "export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/atlas.ts",
+      "sha256": "fd646b6461bf2a75211353f24eb383ff7275d66dd59f63a4f333c9349fa25f88",
+      "routes": [
+        "/api/atlas",
+        "/api/atlas/",
+        "/api/atlas/insights",
+        "/api/atlas/insights/regenerate"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 13,
+          "text": " * `Inference.ts` over the metrics \u2014 cached to MEMORY/STATE/atlas-insights.json,"
+        },
+        {
+          "line": 18,
+          "text": "import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 30,
+          "text": "const INSIGHTS_CACHE = join(LIFEOS_DIR, \"MEMORY\", \"STATE\", \"atlas-insights.json\");"
+        },
+        {
+          "line": 45,
+          "text": "  return { module: MODULE_NAME, running: state.running, snapshot_present: existsSync(SNAPSHOT_PATH) };"
+        },
+        {
+          "line": 53,
+          "text": "  const proc = Bun.spawn([\"bun\", ATLAS_CLI, \"insights\"], { stdout: \"pipe\", stderr: \"pipe\" });"
+        },
+        {
+          "line": 98,
+          "text": "  const proc = Bun.spawn("
+        },
+        {
+          "line": 117,
+          "text": "  if (!existsSync(INSIGHTS_CACHE)) return null;"
+        },
+        {
+          "line": 119,
+          "text": "    return JSON.parse(readFileSync(INSIGHTS_CACHE, \"utf8\"));"
+        },
+        {
+          "line": 131,
+          "text": "      mkdirSync(join(LIFEOS_DIR, \"MEMORY\", \"STATE\"), { recursive: true });"
+        },
+        {
+          "line": 132,
+          "text": "      writeFileSync("
+        },
+        {
+          "line": 162,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        },
+        {
+          "line": 220,
+          "text": "    if (!existsSync(SNAPSHOT_PATH)) {"
+        },
+        {
+          "line": 223,
+          "text": "    const snapshot = JSON.parse(readFileSync(SNAPSHOT_PATH, \"utf8\")) as Record<string, unknown>;"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/threatmodel.ts",
+      "sha256": "d3daed880166298121aa518a8d85e39dbaefabc6c761b3d23aacb0b77a9b9b1b",
+      "routes": [
+        "/api/threatmodel"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 15,
+          "text": " * record. Data dir is the private USER tree, never bundled into the client."
+        },
+        {
+          "line": 17,
+          "text": "import { existsSync, readFileSync, statSync } from \"node:fs\";"
+        },
+        {
+          "line": 25,
+          "text": "  join(CLAUDE_DIR, \"LIFEOS\", \"USER\", \"SECURITY\", \"THREATMODEL\");"
+        },
+        {
+          "line": 46,
+          "text": "    register_present: existsSync(REGISTER_PATH),"
+        },
+        {
+          "line": 74,
+          "text": "export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {"
+        },
+        {
+          "line": 82,
+          "text": "  if (!existsSync(REGISTER_PATH)) {"
+        },
+        {
+          "line": 90,
+          "text": "    const store = JSON.parse(readFileSync(REGISTER_PATH, \"utf8\"));"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/usage.ts",
+      "sha256": "96653d95f5081b1236f1c47779a68af9077e5c04bc7f26fa424938ef6759bd49",
+      "routes": [
+        "/api/usage/models",
+        "/api/usage/summary",
+        "/api/usage/trend"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 11,
+          "text": " *   - MEMORY/OBSERVABILITY/anthropic-cost.jsonl  \u2014 live subscription 5h/7d % + admin cost_report monthly $ (CostTracker cron)"
+        },
+        {
+          "line": 12,
+          "text": " *   - MEMORY/OBSERVABILITY/usage-daily.jsonl     \u2014 DURABLE per-day token/cost/model rollup (UsageAggregator nightly launchd)"
+        },
+        {
+          "line": 16,
+          "text": "import { existsSync, readFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 22,
+          "text": "const OBS_DIR = join(CLAUDE_DIR, \"LIFEOS\", \"MEMORY\", \"OBSERVABILITY\");"
+        },
+        {
+          "line": 39,
+          "text": "    const lines = readFileSync(path, \"utf8\").trim().split(\"\\n\");"
+        },
+        {
+          "line": 48,
+          "text": "  if (!existsSync(USAGE_DAILY)) return [];"
+        },
+        {
+          "line": 50,
+          "text": "  for (const line of readFileSync(USAGE_DAILY, \"utf8\").split(\"\\n\")) {"
+        },
+        {
+          "line": 176,
+          "text": "  return { status: state.running ? \"healthy\" : \"stopped\", details: { hasDaily: existsSync(USAGE_DAILY) } };"
+        },
+        {
+          "line": 178,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/bunker.ts",
+      "sha256": "dcc45a7b5fc94a207ca7eaebf70b45e8545b5b7b93bfb44515fe94494ea30c6a",
+      "routes": [
+        "/api/bunker",
+        "/api/bunker/arbol",
+        "/api/bunker/refresh",
+        "/api/bunker/status"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 16,
+          "text": "import { existsSync, readFileSync } from \"fs\";"
+        },
+        {
+          "line": 19,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();"
+        },
+        {
+          "line": 22,
+          "text": "// the USER config tree, so shot images are read from there, never from BUNKER_DIR."
+        },
+        {
+          "line": 25,
+          "text": "const BUNKER_SHOTS_DIR = join(HOME, \".config\", \"LIFEOS\", \"USER\", \"PULSE\", \"Bunker\", \"shots\");"
+        },
+        {
+          "line": 51,
+          "text": "    const proc = Bun.spawn([\"bun\", BUNKER_BIN, \"data\"], { stdout: \"pipe\", stderr: \"pipe\" });"
+        },
+        {
+          "line": 107,
+          "text": "  return existsSync(BUNKER_BIN);"
+        },
+        {
+          "line": 154,
+          "text": "    const y = readFileSync(join(HOME, \".config\", \"arbol\", \"config.yaml\"), \"utf8\");"
+        },
+        {
+          "line": 305,
+          "text": "      const env = readFileSync(join(HOME, \".claude\", \".env\"), \"utf8\");"
+        },
+        {
+          "line": 401,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        },
+        {
+          "line": 423,
+          "text": "    // Screenshots live centrally in the USER data tree (never in an app's deploy payload, never in the code tree)."
+        },
+        {
+          "line": 427,
+          "text": "    if (!existsSync(path)) return Response.json({ error: \"no asset\" }, { status: 404 });"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/doctor.ts",
+      "sha256": "767584324b25e23da7c69d83248ea27eccd388b6241a4f96a6fa28dcca85f4b2",
+      "routes": [
+        "/api/doctor"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 13,
+          "text": "import { existsSync, readFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 20,
+          "text": "const STATE_DIR = join(LIFEOS_DIR, \"MEMORY\", \"STATE\");"
+        },
+        {
+          "line": 54,
+          "text": "  if (!existsSync(MANIFEST_PATH)) {"
+        },
+        {
+          "line": 62,
+          "text": "    const raw = JSON.parse(readFileSync(MANIFEST_PATH, \"utf8\")) as {"
+        },
+        {
+          "line": 95,
+          "text": "  if (!existsSync(HEARTBEAT_PATH)) {"
+        },
+        {
+          "line": 99,
+          "text": "    const raw = JSON.parse(readFileSync(HEARTBEAT_PATH, \"utf8\")) as {"
+        },
+        {
+          "line": 135,
+          "text": "    const proc = Bun.spawnSync([\"bun\", DOCTOR_TS, \"--reconcile\"], {"
+        },
+        {
+          "line": 171,
+          "text": "export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/hermes.ts",
+      "sha256": "7b871766d46fce90849253ba92daf2dd8fc84784c03c0b641b0ff89be17f2f47",
+      "routes": [
+        "/api/hermes",
+        "/api/hermes/",
+        "/api/hermes/file/",
+        "/api/hermes/log-analysis",
+        "/api/hermes/remount"
+      ],
+      "governed_api_reference": true,
+      "source_lines": [
+        {
+          "line": 25,
+          "text": " *   - `source`  \u2014 `LIFEOS/USER/*` plus the system prompt. The principal's real"
+        },
+        {
+          "line": 41,
+          "text": "import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from \"node:fs\";"
+        },
+        {
+          "line": 51,
+          "text": "const USER_DIR = join(LIFEOS_DIR, \"USER\");"
+        },
+        {
+          "line": 54,
+          "text": "const BACKUP_DIR = join(LIFEOS_DIR, \"MEMORY\", \"STATE\", \"hermes-edits\");"
+        },
+        {
+          "line": 174,
+          "text": "    path: join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_IDENTITY.md\"),"
+        },
+        {
+          "line": 180,
+          "text": "    label: \"DA_MEMORY.md\","
+        },
+        {
+          "line": 182,
+          "text": "    path: join(USER_DIR, \"DIGITAL_ASSISTANT\", \"DA_MEMORY.md\"),"
+        },
+        {
+          "line": 190,
+          "text": "    path: join(USER_DIR, \"PRINCIPAL\", \"PRINCIPAL_IDENTITY.md\"),"
+        },
+        {
+          "line": 196,
+          "text": "    label: \"PRINCIPAL_MEMORY.md\","
+        },
+        {
+          "line": 198,
+          "text": "    path: join(USER_DIR, \"PRINCIPAL\", \"PRINCIPAL_MEMORY.md\"),"
+        },
+        {
+          "line": 206,
+          "text": "    path: join(USER_DIR, \"TELOS\", \"PRINCIPAL_TELOS.md\"),"
+        },
+        {
+          "line": 216,
+          "text": "    path: join(USER_DIR, \"PROJECTS.md\"),"
+        },
+        {
+          "line": 332,
+          "text": "  const exists = existsSync(f.path);"
+        },
+        {
+          "line": 342,
+          "text": "        lines = readFileSync(f.path, \"utf8\").split(\"\\n\").length;"
+        },
+        {
+          "line": 397,
+          "text": "  if (!existsSync(HERMES_HOME)) return { stale: false, detail: \"no sidecar installed\", probed: false };"
+        },
+        {
+          "line": 411,
+          "text": "  if (!existsSync(f.path)) return null;"
+        },
+        {
+          "line": 415,
+          "text": "  writeFileSync(dest, readFileSync(f.path));"
+        },
+        {
+          "line": 421,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        },
+        {
+          "line": 489,
+          "text": "      if (!existsSync(f.path)) return Response.json({ error: \"not found on disk\", meta: describe(f) }, { status: 404 });"
+        },
+        {
+          "line": 494,
+          "text": "      return Response.json({ meta: describe(f), content: readFileSync(f.path, \"utf8\") });"
+        },
+        {
+          "line": 509,
+          "text": "      if (!existsSync(f.path)) return Response.json({ error: \"not found on disk\" }, { status: 404 });"
+        },
+        {
+          "line": 535,
+          "text": "      writeFileSync(f.path, content, \"utf8\");"
+        },
+        {
+          "line": 541,
+          "text": "    if (!existsSync(HERMES_HOME)) {"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/algorithm-tab.ts",
+      "sha256": "bf4064c64c8c96056d72d02d14ff71774c808587211a451866610be8fe8dfd98",
+      "routes": [
+        "/api/algorithm-tab",
+        "/api/algorithm-tab/doctrine",
+        "/api/algorithm-tab/file",
+        "/api/algorithm-tab/summary/regenerate"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 22,
+          "text": " *        repo (USER symlink targets commit in the USER repo). Kicks summary regen."
+        },
+        {
+          "line": 28,
+          "text": " * Summaries (MEMORY/STATE/algorithm-tab-summary.json, schema v2):"
+        },
+        {
+          "line": 39,
+          "text": "import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from \"node:fs\";"
+        },
+        {
+          "line": 47,
+          "text": "const STATE_PATH = join(LIFEOS_DIR, \"MEMORY\", \"STATE\", \"algorithm-tab-summary.json\");"
+        },
+        {
+          "line": 49,
+          "text": "// The USER tree is a symlink into the private USER-data repo \u2014 commits for"
+        },
+        {
+          "line": 51,
+          "text": "const USER_REPO = join(homedir(), \".config\", \"LIFEOS\", \"USER\");"
+        },
+        {
+          "line": 92,
+          "text": "    id: \"operational-rules\", name: \"Operational Rules\", rel: \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\","
+        },
+        {
+          "line": 103,
+          "text": "    role: \"Every-prompt injection of the hot-layer memory files (PRINCIPAL_MEMORY, DA_MEMORY) so each turn sees current memory.\","
+        },
+        {
+          "line": 127,
+          "text": "    role: \"How the ISA subsystem works end to end \u2014 lifecycle, homes (repo ISA vs MEMORY/WORK), sync to Pulse, resume semantics.\","
+        },
+        {
+          "line": 200,
+          "text": "    id: \"incidents\", name: \"Incidents\", rel: \"LIFEOS/MEMORY/LEARNING/INCIDENTS/README.md\","
+        },
+        {
+          "line": 210,
+          "text": "    id: \"operational-rules-expanded\", name: \"Operational Rules Expanded\", rel: \"LIFEOS/USER/CONFIG/OperationalRulesExpanded.md\","
+        },
+        {
+          "line": 215,
+          "text": "    id: \"writing-style-backstop\", name: \"Writing Style Backstop\", rel: \"LIFEOS/USER/DIGITAL_ASSISTANT/REFERENCE/WritingStyleBackstop.md\","
+        },
+        {
+          "line": 233,
+          "text": "    return readFileSync(join(ALGO_DIR, \"LATEST\"), \"utf8\").trim();"
+        },
+        {
+          "line": 309,
+          "text": "  const proc = Bun.spawn("
+        },
+        {
+          "line": 422,
+          "text": "    if (real.startsWith(realpathSync(USER_REPO))) return USER_REPO;"
+        },
+        {
+          "line": 428,
+          "text": "  const proc = Bun.spawn([\"git\", \"-C\", repo, ...args], { stdout: \"pipe\", stderr: \"pipe\" });"
+        },
+        {
+          "line": 445,
+          "text": "  return { committed: true, detail: `${sha.out} in ${repo === HOME ? \"~/.claude\" : \"USER repo\"}` };"
+        },
+        {
+          "line": 497,
+          "text": "  if (existsSync(nextPath)) {"
+        },
+        {
+          "line": 621,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        },
+        {
+          "line": 644,
+          "text": "      if (!existsSync(path)) return Response.json({ error: \"file missing on disk\" }, { status: 404 });"
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/PULSE/modules/evals.ts",
+      "sha256": "ae1d7650b597bce02a8803a4a0964906cb6ca8f2312e6b4a488c2f9aef7e7b0b",
+      "routes": [
+        "/api/evals"
+      ],
+      "governed_api_reference": false,
+      "source_lines": [
+        {
+          "line": 10,
+          "text": " * Reads MEMORY/STATE/Evals-Results/<suite>/latest.json (written by EvalRunner /"
+        },
+        {
+          "line": 18,
+          "text": "import { existsSync, readdirSync, readFileSync, statSync } from \"fs\";"
+        },
+        {
+          "line": 22,
+          "text": "const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();"
+        },
+        {
+          "line": 24,
+          "text": "const RESULTS_DIR = join(LIFEOS_DIR, \"MEMORY\", \"STATE\", \"Evals-Results\");"
+        },
+        {
+          "line": 39,
+          "text": "  if (!existsSync(RESULTS_DIR)) return [];"
+        },
+        {
+          "line": 44,
+          "text": "    if (!existsSync(latest)) continue;"
+        },
+        {
+          "line": 46,
+          "text": "      const j = JSON.parse(readFileSync(latest, \"utf-8\"));"
+        },
+        {
+          "line": 67,
+          "text": "  const n = existsSync(RESULTS_DIR) ? readdirSync(RESULTS_DIR).length : 0;"
+        },
+        {
+          "line": 71,
+          "text": "export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {"
+        },
+        {
+          "line": 74,
+          "text": "  const body = { suites, ts: existsSync(RESULTS_DIR) ? statSync(RESULTS_DIR).mtime.toISOString() : null };"
+        }
+      ]
+    }
+  ]
+}

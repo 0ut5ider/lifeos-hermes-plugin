@@ -27,7 +27,41 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'upgrade_store') {
+  if (input.action === 'atlas_collect') {
+    if (typeof input.collector !== 'string' || !['gear', 'projects'].includes(input.collector)
+        || !(input.content === null || typeof input.content === 'string')) {
+      throw new Error('Native Atlas collectors require fixed admitted source text');
+    }
+    const name = input.collector === 'gear' ? 'Gear' : 'Projects';
+    const module: unknown = await import(pathToFileURL(resolve(root, `LIFEOS/ATLAS/collectors/${name}.ts`)).href);
+    const render = object(module) ? module[`collect${name}`] : undefined;
+    if (typeof render !== 'function') throw new Error('Native Atlas collector exports are unavailable');
+    result = render(input.content);
+  } else if (input.action === 'atlas_graph_state') {
+    process.env.ATLAS_DIR = resolve(root, '../.local/state/lifeos/atlas');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/ATLAS/Store.ts')).href);
+    if (!object(module) || typeof module.atlasGraphState !== 'function') throw new Error('Native Atlas graph exports are unavailable');
+    result = module.atlasGraphState();
+  } else if (input.action === 'atlas_insights_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
+    if (!object(module) || typeof module.renderAtlasInsights !== 'function'
+        || !(input.metrics === null || object(input.metrics)) || !(input.cache === null || typeof input.cache === 'string')) {
+      throw new Error('Native Atlas insights require admitted current metrics and narrative');
+    }
+    const response: unknown = module.renderAtlasInsights(input.metrics, input.cache);
+    if (!(response instanceof Response)) throw new Error('Native Atlas insights require a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'atlas_snapshot_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
+    if (!object(module) || typeof module.renderAtlasSnapshot !== 'function'
+        || !(input.snapshot === null || object(input.snapshot) && typeof input.snapshot.content === 'string'
+          && typeof input.snapshot.modified_ms === 'number' && Number.isFinite(input.snapshot.modified_ms))) {
+      throw new Error('Native Atlas views require a declared admitted snapshot');
+    }
+    const response: unknown = module.renderAtlasSnapshot(input.snapshot);
+    if (!(response instanceof Response)) throw new Error('Native Atlas views require a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'upgrade_store') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/Upgrades.ts')).href);
     if (!object(module) || typeof module.renderUpgradeStore !== 'function' || !Array.isArray(input.sources)
         || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')

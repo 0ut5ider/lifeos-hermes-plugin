@@ -11,7 +11,7 @@ from .memory_operational_views import ROUTES as OPERATIONAL_ROUTES
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
                     '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
-                    '/api/telos/overview', '/api/onboarding/state'}) | frozenset(OPERATIONAL_ROUTES)
+                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES)
 
 
 def request_target(value):
@@ -55,6 +55,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if target in {'/api/atlas', '/api/atlas/insights'}:
+        from .memory_atlas import view as atlas_view
+        return atlas_view(memory, scope, target=target, check_current=check_current)
     if target in OPERATIONAL_ROUTES:
         from .memory_operational_views import view as operational_view
         return operational_view(memory, scope, target, check_current=check_current)
