@@ -27,7 +27,24 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'performance_view') {
+  if (input.action === 'conduit_defaults') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Conduit/config.ts')).href);
+    if (!object(module) || typeof module.defaultConfigText !== 'function') throw new Error('Native Conduit defaults are unavailable');
+    result = {content: module.defaultConfigText()};
+  } else if (input.action === 'conduit_view') {
+    if (typeof input.target !== 'string' || !/^\/api\/conduit(?:\/|\/today|\/recent(?:\?days=[1-9][0-9]?)?|\/sources|\/status|\/health|\/insight)?$/.test(input.target)
+        || typeof input.date !== 'string' || typeof input.running !== 'boolean' || typeof input.building !== 'boolean'
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3) throw new Error('Native Conduit requires fixed admitted records and events');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/conduit.ts')).href);
+    if (!object(module) || typeof module.renderConduitView !== 'function') throw new Error('Native Conduit exports are unavailable');
+    const response: unknown = await module.renderConduitView(input.sources, input.history_descriptor,
+      input.target, input.running, input.building, input.date);
+    if (!(response instanceof Response)) throw new Error('Native Conduit requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'performance_view') {
     if (typeof input.target !== 'string' || !/^\/api\/performance\/(?:cost(?:\?days=[1-9][0-9]{0,3})?|failures|summary|anthropic-cost)$/.test(input.target)
         || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
           || typeof source.relative !== 'string' || typeof source.content !== 'string')

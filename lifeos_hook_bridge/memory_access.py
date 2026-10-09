@@ -361,6 +361,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'conduit_initialize':
+            from .memory_conduit import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'manual_state':
             from .memory_manual_state import publication_paths
             return publication_paths(self, scope, payload['tool'], paths=payload['paths'])

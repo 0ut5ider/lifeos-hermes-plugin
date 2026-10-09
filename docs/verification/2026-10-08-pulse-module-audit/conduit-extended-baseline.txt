@@ -1,0 +1,365 @@
+test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) ... 
+  test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='source') ... FAIL
+  test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='metadata') ... FAIL
+  test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='created') ... FAIL
+  test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='authority') ... FAIL
+  test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='descriptor') ... FAIL
+  test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='selection') ... FAIL
+test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) ... 
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/today') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/recent') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/recent?days=1') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/recent?days=90') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/sources') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/status') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/health') ... FAIL
+  test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/insight') ... FAIL
+test_anonymous_first_read_refuses_before_native_config_creation (test_memory_conduit.MemoryConduitTests.test_anonymous_first_read_refuses_before_native_config_creation) ... FAIL
+test_complete_event_log_retains_native_counts_without_tail_truncation (test_memory_conduit.MemoryConduitTests.test_complete_event_log_retains_native_counts_without_tail_truncation) ... ok
+test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_conduit.MemoryConduitTests.test_current_owner_origin_bearer_and_connector_govern_delivery) ... FAIL
+test_exact_review_preserves_safe_old_config_and_event_bytes (test_memory_conduit.MemoryConduitTests.test_exact_review_preserves_safe_old_config_and_event_bytes) ... FAIL
+test_excluded_current_insight_cannot_use_older_fallback (test_memory_conduit.MemoryConduitTests.test_excluded_current_insight_cannot_use_older_fallback) ... FAIL
+test_original_first_read_writes_native_defaults_and_preserves_daily_fields (test_memory_conduit.MemoryConduitTests.test_original_first_read_writes_native_defaults_and_preserves_daily_fields) ... ok
+test_original_recent_insight_sources_and_missing_characterization (test_memory_conduit.MemoryConduitTests.test_original_recent_insight_sources_and_missing_characterization) ... ok
+test_owner_first_read_publishes_identical_native_defaults_privately (test_memory_conduit.MemoryConduitTests.test_owner_first_read_publishes_identical_native_defaults_privately) ... FAIL
+test_private_and_retired_events_do_not_contribute_labels_or_counts (test_memory_conduit.MemoryConduitTests.test_private_and_retired_events_do_not_contribute_labels_or_counts) ... FAIL
+test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) ... 
+  test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='symlink') ... FAIL
+  test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='hardlink') ... FAIL
+  test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='utf8') ... FAIL
+  test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='oversize') ... FAIL
+test_unknown_methods_and_selectors_refuse_without_initialization (test_memory_conduit.MemoryConduitTests.test_unknown_methods_and_selectors_refuse_without_initialization) ... FAIL
+
+======================================================================
+FAIL: test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 255, in test_actual_render_rechecks_sources_selection_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_conduit_process.py", line 50, in <module>
+    preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 65, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 40, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='metadata')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 255, in test_actual_render_rechecks_sources_selection_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_conduit_process.py", line 50, in <module>
+    preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 65, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 40, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='created')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 255, in test_actual_render_rechecks_sources_selection_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_conduit_process.py", line 50, in <module>
+    preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 65, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 40, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 255, in test_actual_render_rechecks_sources_selection_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_conduit_process.py", line 50, in <module>
+    preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 65, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 40, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='descriptor')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 255, in test_actual_render_rechecks_sources_selection_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_conduit_process.py", line 50, in <module>
+    preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 65, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 40, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_sources_selection_descriptor_and_authority (test_memory_conduit.MemoryConduitTests.test_actual_render_rechecks_sources_selection_descriptor_and_authority) (mode='selection')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 255, in test_actual_render_rechecks_sources_selection_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_conduit_process.py", line 50, in <module>
+    preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 65, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 40, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/today')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/recent?days=1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/recent?days=90')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/sources')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_all_admitted_read_routes_preserve_native_fields (test_memory_conduit.MemoryConduitTests.test_all_admitted_read_routes_preserve_native_fields) (route='/insight')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 131, in test_all_admitted_read_routes_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_anonymous_first_read_refuses_before_native_config_creation (test_memory_conduit.MemoryConduitTests.test_anonymous_first_read_refuses_before_native_config_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 77, in test_anonymous_first_read_refuses_before_native_config_creation
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"date":"2026-10-09","conduitVersion":"1.0.0","generatedAt":"2026-10-09T16:20:26.856Z","totalMinutes":2,"creationMinutes":0,"consumptionMinutes":0,"neutralMinutes":2,"blocks":[{"label":"SyntheticConduitCurrent","kind":"neutral","minutes":2}],"commits":0,"sessions":0,"narrative":null,"telosTags":{}}
+
+======================================================================
+FAIL: test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_conduit.MemoryConduitTests.test_current_owner_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 170, in test_current_owner_origin_bearer_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + '/api/conduit/today', headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_exact_review_preserves_safe_old_config_and_event_bytes (test_memory_conduit.MemoryConduitTests.test_exact_review_preserves_safe_old_config_and_event_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 230, in test_exact_review_preserves_safe_old_config_and_event_bytes
+    self.assertEqual(client.get(self.native + '/api/conduit/today').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_excluded_current_insight_cannot_use_older_fallback (test_memory_conduit.MemoryConduitTests.test_excluded_current_insight_cannot_use_older_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 161, in test_excluded_current_insight_cannot_use_older_fallback
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"stale":false,"contentTypes":["<private>SyntheticConduitHidden</private>"],"model":"synthetic","building":false}
+
+======================================================================
+FAIL: test_owner_first_read_publishes_identical_native_defaults_privately (test_memory_conduit.MemoryConduitTests.test_owner_first_read_publishes_identical_native_defaults_privately)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 92, in test_owner_first_read_publishes_identical_native_defaults_privately
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_and_retired_events_do_not_contribute_labels_or_counts (test_memory_conduit.MemoryConduitTests.test_private_and_retired_events_do_not_contribute_labels_or_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 150, in test_private_and_retired_events_do_not_contribute_labels_or_counts
+    self.assertNotIn('SyntheticConduitHidden', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticConduitHidden' unexpectedly found in '{"date":"2026-10-09","conduitVersion":"1.0.0","generatedAt":"2026-10-09T16:20:38.798Z","totalMinutes":2,"creationMinutes":0,"consumptionMinutes":0,"neutralMinutes":2,"blocks":[{"label":"<private>SyntheticConduitHidden</private>","kind":"neutral","minutes":2}],"commits":0,"sessions":0,"narrative":null,"telosTags":{}}'
+
+======================================================================
+FAIL: test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 193, in test_redirected_invalid_and_oversize_config_refuse
+    self.assertEqual(client.get(self.native + '/api/conduit/today').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 193, in test_redirected_invalid_and_oversize_config_refuse
+    self.assertEqual(client.get(self.native + '/api/conduit/today').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 193, in test_redirected_invalid_and_oversize_config_refuse
+    self.assertEqual(client.get(self.native + '/api/conduit/today').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_invalid_and_oversize_config_refuse (test_memory_conduit.MemoryConduitTests.test_redirected_invalid_and_oversize_config_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 193, in test_redirected_invalid_and_oversize_config_refuse
+    self.assertEqual(client.get(self.native + '/api/conduit/today').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_unknown_methods_and_selectors_refuse_without_initialization (test_memory_conduit.MemoryConduitTests.test_unknown_methods_and_selectors_refuse_without_initialization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 203, in test_unknown_methods_and_selectors_refuse_without_initialization
+    self.assertEqual(response.status_code, code, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"date":"2026-10-09","conduitVersion":"1.0.0","generatedAt":"2026-10-09T16:20:41.369Z","totalMinutes":0,"creationMinutes":0,"consumptionMinutes":0,"neutralMinutes":0,"blocks":[],"commits":0,"sessions":0,"narrative":null,"telosTags":{}}
+
+----------------------------------------------------------------------
+Ran 13 tests in 18.929s
+
+FAILED (failures=27)
