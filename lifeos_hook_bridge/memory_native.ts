@@ -92,6 +92,21 @@ async function main(): Promise<void> {
     }
     if (!(response instanceof Response)) throw new Error('Native operational views require a response');
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'onboarding_sources' || input.action === 'onboarding_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.onboardingViewSources !== 'function' || typeof module.renderOnboardingView !== 'function') {
+      throw new Error('Native onboarding exports are unavailable');
+    }
+    if (input.action === 'onboarding_sources') result = {sources: module.onboardingViewSources()};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+        throw new Error('Native onboarding requires declared current sources');
+      }
+      const response: unknown = module.renderOnboardingView(input.sources);
+      if (!(response instanceof Response)) throw new Error('Native onboarding requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
   } else if (input.action === 'telos_overview_sources' || input.action === 'telos_overview') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
     if (!object(module) || typeof module.telosOverviewSources !== 'function' || typeof module.renderTelosOverview !== 'function') {

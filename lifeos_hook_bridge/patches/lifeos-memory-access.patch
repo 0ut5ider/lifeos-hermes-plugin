@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..719802c 100644
+index 787cf28..199c108 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -1217,10 +1217,74 @@ index 787cf28..719802c 100644
  
      const currentStateNarrative = buildCurrentStateNarrative(currentStateRaw)
      const idealStateNarrative = buildIdealStateNarrative(idealStateRaw)
-@@ -4520,6 +4612,245 @@ function handleOnboardingState(): Response {
+@@ -4449,11 +4541,11 @@ function handleLifeCardApi(): Response {
+ // ported from public PR #1734, @elhoim
+ const SAMPLE_ENTRY_RE = /^\**\s*\(sample\b/i
+ 
+-function telosPersonalized(): boolean {
++function telosPersonalized(read = readMd): boolean {
+   try {
+-    const sections = parseTelosUnified()
++    const sections = parseTelosUnified(read)
+     const sectionOrFile = (key: string, legacyFile: string): string =>
+-      sections[key] || readMd(join(TELOS_DIR, legacyFile))
++      sections[key] || read(join(TELOS_DIR, legacyFile))
+     const realEntries = (text: string, prefix: string): number =>
+       parseIdEntries(text, prefix).filter(
+         (e) => !SAMPLE_ENTRY_RE.test((e.title || e.body || "").trim()),
+@@ -4485,7 +4577,7 @@ function telosPersonalized(): boolean {
+ // deriving the off-switch from the same isPersonalized signal the dashboard
+ // uses is self-healing and keeps the two views in agreement. DA name pulled
+ // from USER/DIGITAL_ASSISTANT/DA_IDENTITY.md so the copy reads in the user's voice.
+-function handleOnboardingState(): Response {
++function handleOnboardingState(read = readMd, exists = existsSafe): Response {
+   const markerPath = join(LIFEOS_DIR, "USER", ".template-mode")
+   // DA_IDENTITY.md lives under USER/DIGITAL_ASSISTANT/, not at the USER root —
+   // the wrong path made existsSafe() always false, so daName was permanently
+@@ -4494,15 +4586,15 @@ function handleOnboardingState(): Response {
+   const daIdentityPath = join(USER_DIR, "DIGITAL_ASSISTANT", "DA_IDENTITY.md")
+ 
+   const buildTimeFlag = process.env.LIFEOS_TEMPLATE_MODE === "1"
+-  const markerExists = existsSafe(markerPath)
++  const markerExists = exists(markerPath)
+   // Armed by marker/flag, disarmed by real TELOS content. Self-healing against
+   // the never-deleted marker (#1394).
+-  const templateMode = (buildTimeFlag || markerExists) && !telosPersonalized()
++  const templateMode = (buildTimeFlag || markerExists) && !telosPersonalized(read)
+ 
+   let daName = "your DA"
+   try {
+-    if (existsSafe(daIdentityPath)) {
+-      const content = readFileSync(daIdentityPath, "utf-8")
++    if (exists(daIdentityPath)) {
++      const content = read(daIdentityPath)
+       const nameMatch = content.match(/\*\*Name:\*\*\s*([^\s|]+(?:\s+[^\s|*]+)*)/)
+       if (nameMatch && nameMatch[1]) {
+         const candidate = nameMatch[1].trim()
+@@ -4520,6 +4612,265 @@ function handleOnboardingState(): Response {
    })
  }
  
++export function onboardingViewSources(): string[] {
++  return ["TELOS", "MISSION", "GOALS", "PROBLEMS", "STRATEGIES", "CHALLENGES"]
++    .map(name => "LIFEOS/USER/TELOS/" + name + ".md")
++    .concat(["LIFEOS/USER/.template-mode", "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md"]);
++}
++
++export function renderOnboardingView(sources: ReadonlyArray<{relative: string; content: string}>): Response {
++  const allowed = new Set(onboardingViewSources());
++  if (sources.length > allowed.size || sources.some(source => !allowed.has(source.relative))
++      || new Set(sources.map(source => source.relative)).size !== sources.length) {
++    throw new Error("Choose fixed onboarding sources");
++  }
++  const contents = new Map(sources.map(source => [join(dirname(LIFEOS_DIR), source.relative), source.content]));
++  const read = (path: string): string => {
++    if (!allowed.has(path.slice(dirname(LIFEOS_DIR).length + 1))) throw new Error("Choose fixed onboarding sources");
++    return contents.get(path) ?? "";
++  };
++  return handleOnboardingState(read, path => contents.has(path));
++}
++
 +export function renderBusinessView(sources: ReadonlyArray<{relative: string; content: string}>, company: string): Response {
 +  const parent = "LIFEOS/USER/WORK/YOUR_COMPANIES";
 +  if (company.includes("/") || company.includes("\\") || company === "." || company === "..") {
@@ -1463,7 +1527,7 @@ index 787cf28..719802c 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4862,127 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4882,137 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
@@ -1509,6 +1573,16 @@ index 787cf28..719802c 100644
 +    } catch {
 +      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers});
 +    }
++  }
++
++  if (hasManagedMemoryHTTP() && pathname === "/api/onboarding/state") {
++    const headers = {"cache-control": "no-store"};
++    if (method !== "GET") return Response.json({error: "Onboarding views require GET"}, {status: 405, headers});
++    if (url.search) return Response.json({error: "Onboarding views require fixed routes"}, {status: 400, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "Onboarding views require the current origin"}, {status: 403, headers});
++    try { return memoryHTTPResponse(req, "life", pathname); }
++    catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +  }
 +
 +  if (hasManagedMemoryHTTP() && pathname === "/api/user-index") {

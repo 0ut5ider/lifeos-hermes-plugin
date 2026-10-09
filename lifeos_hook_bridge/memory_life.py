@@ -11,7 +11,7 @@ from .memory_operational_views import ROUTES as OPERATIONAL_ROUTES
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
                     '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
-                    '/api/telos/overview'}) | frozenset(OPERATIONAL_ROUTES)
+                    '/api/telos/overview', '/api/onboarding/state'}) | frozenset(OPERATIONAL_ROUTES)
 
 
 def request_target(value):
@@ -58,6 +58,9 @@ def view(memory, scope, target, *, check_current=None):
     if target in OPERATIONAL_ROUTES:
         from .memory_operational_views import view as operational_view
         return operational_view(memory, scope, target, check_current=check_current)
+    if target == '/api/onboarding/state':
+        from .memory_onboarding import view as onboarding_view
+        return onboarding_view(memory, scope, check_current=check_current)
     if target == '/api/telos/overview':
         from .memory_telos_overview import view as overview_view
         return overview_view(memory, scope, check_current=check_current)

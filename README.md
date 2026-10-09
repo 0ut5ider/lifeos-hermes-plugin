@@ -322,3 +322,6 @@ The [complete installed acceptance controls](docs/verification/2026-10-07-step1/
 
 
 [Current owner capability telemetry](docs/verification/2026-10-08-capabilities/README.md) preserves the native 60-, 360-, and 1,440-minute aggregation windows through admitted event snapshots. It rechecks source identity and current owner authority. All 446 combined tests, the strict TypeScript check, and the dashboard build pass. A measured transport timeout uses a capability-specific deadline. Asynchronous telemetry delivery keeps concurrent native requests responsive. Onboarding, remaining caller classification, and installed acceptance stay open.
+
+
+[Current owner onboarding](docs/verification/2026-10-08-onboarding/README.md) derives the native assistant name and template state from eight fixed admitted sources. Private and retired entries cannot affect the personalization flag. It checks source bytes, marker presence, and current owner authority after rendering. All 28 focused checks and 124 neighboring checks pass, including strict TypeScript validation and source preparation. The dashboard build passes. Remaining caller coverage and installed activation stay open.

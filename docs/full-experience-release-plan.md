@@ -50,6 +50,8 @@ The [native novelty reader](verification/2026-10-08-novelty/README.md) passes 31
 
 The [native capability telemetry gate](verification/2026-10-08-capabilities/README.md) passes 446 combined tests, the strict TypeScript check, and the dashboard build. Fixed native byte windows preserve complete permitted counts. The gate verifies source changes after aggregation and actual concurrent HTTP delivery. The candidate corrects a measured eight-second relay deadline and synchronous request blocking. Onboarding, remaining caller classification, and installed activation remain open.
 
+The [native onboarding gate](verification/2026-10-08-onboarding/README.md) passes 28 focused checks, 124 neighboring checks, strict TypeScript validation, source preparation, and the dashboard build. Eight fixed admitted sources retain native assistant identity and template calculations. Private or retired inputs cannot change the personalization flag. Original source files stay unchanged. Remaining caller coverage and installed acceptance stay open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.
