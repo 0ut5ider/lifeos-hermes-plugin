@@ -177,6 +177,19 @@ class MemoryPreferences:
     def atlas_job_response(self, *, account):
         return self._owner_job_response(account=account)
 
+    def algorithm_job_response(self, *, account):
+        from .memory_algorithm_summary import synthesis
+        prepared, _ = self._owner_job_response(account=account)
+        config = self._configuration(account=account)
+        if prepared['configuration_revision'] != MemoryPolicy(config).revision:
+            raise MemoryUnavailable('Algorithm job authority changes before source preparation')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Algorithm job authority changes during source preparation')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = synthesis(NativeMemory(self.root), scope, 'algorithm_summary_prepare', {}, check_current=check_current)
+        return self._response(config, {**prepared, 'chain_hash': result['plan']['hash']}, account=account)
+
     def _owner_job_response(self, *, account):
         config = self._configuration(account=account)
         if not config.get('ownership_enabled', False):

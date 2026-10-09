@@ -28,6 +28,8 @@ JOBS = {
     'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
     'local-intelligence': (('skills/LocalIntelligence/Tools/Refresh.ts', '--fill'),),
     'atlas-insights': (('LIFEOS/PULSE/modules/atlas.ts', '--build-insights'),),
+    'algorithm-summaries': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries'),),
+    'algorithm-summaries-force': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries', '--force'),),
 }
 MAX_OUTPUT = 4 * 1024 * 1024
 

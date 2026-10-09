@@ -324,7 +324,8 @@ class MemoryConduitJobRelayTests(unittest.TestCase):
             program = self.fixture.home / 'conduit-lifetime.ts'
             module = self.root / 'LIFEOS/PULSE/modules' / self.native_module
             program.write_text('import {handleRequest,stop} from ' + json.dumps(str(module)) + ';'
-                'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){'
+                'import {memoryHTTPServerOptions} from ' + json.dumps(str(self.root / 'LIFEOS/TOOLS/lib/MemoryAccess.ts')) + ';'
+                'const server=Bun.serve({hostname:"127.0.0.1",port:0,...memoryHTTPServerOptions(),async fetch(request){'
                 'if(new URL(request.url).pathname==="/test-stop"){await stop();return new Response("stopped")};'
                 'return await handleRequest(request,new URL(request.url).pathname)??new Response("absent",{status:404})}});'
                 'console.log(server.port);')

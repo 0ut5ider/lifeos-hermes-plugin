@@ -1,0 +1,165 @@
+test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children) ... ERROR
+test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children) ... FAIL
+
+======================================================================
+ERROR: test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_transports/default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+        pool_request.request
+    )
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/connection.py", line 103, in handle_request
+    return self._connection.handle_request(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/http11.py", line 136, in handle_request
+    raise exc
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/http11.py", line 106, in handle_request
+    ) = self._receive_response_headers(**kwargs)
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/http11.py", line 177, in _receive_response_headers
+    event = self._receive_event(timeout=timeout)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpcore/_sync/http11.py", line 231, in _receive_event
+    raise RemoteProtocolError(msg)
+httpcore.RemoteProtocolError: Server disconnected without sending a response.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 192, in test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children
+    self.lifetime(daemon=False)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 164, in lifetime
+    responses = list(workers.map(lambda _: httpx.get(self.native + '/api/algorithm-tab',
+        cookies=client.cookies, timeout=40), range(3)))
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 645, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 312, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+  File "/usr/lib64/python3.14/concurrent/futures/thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "/usr/lib64/python3.14/concurrent/futures/thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 164, in <lambda>
+    responses = list(workers.map(lambda _: httpx.get(self.native + '/api/algorithm-tab',
+                                           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        cookies=client.cookies, timeout=40), range(3)))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_api.py", line 195, in get
+    return request(
+        "GET",
+    ...<9 lines>...
+        trust_env=trust_env,
+    )
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_api.py", line 109, in request
+    return client.request(
+           ~~~~~~~~~~~~~~^
+        method=method,
+        ^^^^^^^^^^^^^^
+    ...<8 lines>...
+        follow_redirects=follow_redirects,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_transports/default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: Server disconnected without sending a response.
+
+======================================================================
+FAIL: test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '[Bun.serve]: request timed out after 10 s[38 chars]e.\n' != ''
+- [Bun.serve]: request timed out after 10 seconds. Pass `idleTimeout` to configure.
+ : [Bun.serve]: request timed out after 10 seconds. Pass `idleTimeout` to configure.
+
+
+----------------------------------------------------------------------
+Ran 1 test in 19.898s
+
+FAILED (failures=1, errors=1)
+test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children) ... FAIL
+test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children) ... FAIL
+
+======================================================================
+FAIL: test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 192, in test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children
+    self.lifetime(daemon=False)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 155, in lifetime
+    self.launch_lifetime_process(environment, daemon=daemon)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 346, in launch_lifetime_process
+    self.fail('The actual Conduit lifetime listener did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The actual Conduit lifetime listener did not start
+
+======================================================================
+FAIL: test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_simultaneous_stale_reads_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '1 | import {memoryHTTPServerOptions} from[390 chars]4)\n' != ''
+- 1 | import {memoryHTTPServerOptions} from "node:fs\";import {handleRequest,stop} from \"/tmp/native-memory-jilia973/.claude
+-                                           ^
+- error: Could not resolve: "node:fs";import {handleRequest,stop} from "/tmp/native-memory-jilia973/.claude/LIFEOS/TOOLS/lib/MemoryAccess.ts". Maybe you need to "bun install"?
+-     at /tmp/native-memory-jilia973/conduit-lifetime.ts:1:39
+-
+- Bun v1.3.14 (Linux x64)
+ : 1 | import {memoryHTTPServerOptions} from "node:fs\";import {handleRequest,stop} from \"/tmp/native-memory-jilia973/.claude
+                                          ^
+error: Could not resolve: "node:fs";import {handleRequest,stop} from "/tmp/native-memory-jilia973/.claude/LIFEOS/TOOLS/lib/MemoryAccess.ts". Maybe you need to "bun install"?
+    at /tmp/native-memory-jilia973/conduit-lifetime.ts:1:39
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.420s
+
+FAILED (failures=2)

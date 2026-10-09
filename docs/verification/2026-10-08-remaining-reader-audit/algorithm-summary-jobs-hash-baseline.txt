@@ -1,0 +1,47 @@
+test_anonymous_job_preparation_requires_real_authentication (test_memory_algorithm_jobs.MemoryAlgorithmJobAuthenticationTests.test_anonymous_job_preparation_requires_real_authentication) ... ok
+test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_algorithm_jobs.MemoryAlgorithmJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation) ... FAIL
+test_owner_receives_current_revision_and_native_chain_hash_without_source_text (test_memory_algorithm_jobs.MemoryAlgorithmJobAuthenticationTests.test_owner_receives_current_revision_and_native_chain_hash_without_source_text) ... FAIL
+test_authenticated_native_forced_regeneration_starts_selected_owner_job (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_authenticated_native_forced_regeneration_starts_selected_owner_job) ... FAIL
+test_current_stale_overview_starts_native_owner_regeneration (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_current_stale_overview_starts_native_owner_regeneration) ... FAIL
+test_unbound_local_writer_preserves_read_without_generation (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_unbound_local_writer_preserves_read_without_generation) ... ok
+
+======================================================================
+FAIL: test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_algorithm_jobs.MemoryAlgorithmJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 149, in test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation
+    self.assertEqual(self.fixture.client.post(self.endpoint).status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 503
+
+======================================================================
+FAIL: test_owner_receives_current_revision_and_native_chain_hash_without_source_text (test_memory_algorithm_jobs.MemoryAlgorithmJobAuthenticationTests.test_owner_receives_current_revision_and_native_chain_hash_without_source_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 37, in test_owner_receives_current_revision_and_native_chain_hash_without_source_text
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_authenticated_native_forced_regeneration_starts_selected_owner_job (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_authenticated_native_forced_regeneration_starts_selected_owner_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 73, in test_authenticated_native_forced_regeneration_starts_selected_owner_job
+    self.assertEqual(response.status_code, 202, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 202 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_current_stale_overview_starts_native_owner_regeneration (test_memory_algorithm_jobs.MemoryAlgorithmJobRelayTests.test_current_stale_overview_starts_native_owner_regeneration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py", line 82, in test_current_stale_overview_starts_native_owner_regeneration
+    self.assertTrue(response.json()['generating'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 6 tests in 10.477s
+
+FAILED (failures=4)

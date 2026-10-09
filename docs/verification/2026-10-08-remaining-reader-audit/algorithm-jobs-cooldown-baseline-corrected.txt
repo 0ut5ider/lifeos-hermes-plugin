@@ -1,0 +1,15 @@
+test_failed_native_hash_backs_off_force_retries_and_source_change_retries (test_memory_algorithm_job_cooldown.MemoryAlgorithmCooldownTests.test_failed_native_hash_backs_off_force_retries_and_source_change_retries) ... FAIL
+
+======================================================================
+FAIL: test_failed_native_hash_backs_off_force_retries_and_source_change_retries (test_memory_algorithm_job_cooldown.MemoryAlgorithmCooldownTests.test_failed_native_hash_backs_off_force_retries_and_source_change_retries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_job_cooldown.py", line 69, in test_failed_native_hash_backs_off_force_retries_and_source_change_retries
+    self.assertTrue(started.json()['generating'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 2.561s
+
+FAILED (failures=1)
