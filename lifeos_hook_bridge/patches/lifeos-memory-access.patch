@@ -10279,3 +10279,99 @@ index 5297008..1508e97 100644
              <Preferences telos={telos} openFile={openFile} />
            </div>
          )}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/ProposeCurrentStateEntry.ts b/LifeOS/install/LIFEOS/TOOLS/ProposeCurrentStateEntry.ts
+index 0eaeb41..4a17b0c 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/ProposeCurrentStateEntry.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/ProposeCurrentStateEntry.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Runs current-state proposal commands.
++// ABOUTME: Publishes managed changes through current owner transactions.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -36,6 +38,20 @@ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ }
+ 
+ 
++// ABOUTME: Delegates selected state commands through current owner admission.
++// ABOUTME: Retains native command execution for private admitted snapshots.
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++const governedState = memoryAccess("manual_state", {tool: 'ProposeCurrentStateEntry.ts', args: process.argv.slice(2)},
++  (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++if (governedState !== undefined) {
++  if (governedState.ok !== true || typeof governedState.stdout !== "string" || typeof governedState.stderr !== "string") {
++    throw new Error("The native state command is unavailable under the current owner policy");
++  }
++  process.stdout.write(governedState.stdout);
++  process.stderr.write(governedState.stderr);
++  process.exit(0);
++}
++
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const LIFEOS_DIR = process.env.LIFEOS_DIR || join(HOME, ".claude", "LIFEOS");
+ const QUEUE_FILE = join(LIFEOS_DIR, "USER", "TELOS", "CURRENT_STATE", "proposals.jsonl");
+diff --git a/LifeOS/install/LIFEOS/TOOLS/ApproveCurrentStateEntries.ts b/LifeOS/install/LIFEOS/TOOLS/ApproveCurrentStateEntries.ts
+index 2bb8621..601de36 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/ApproveCurrentStateEntries.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/ApproveCurrentStateEntries.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Runs current-state proposal commands.
++// ABOUTME: Publishes managed changes through current owner transactions.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -34,6 +36,20 @@ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ }
+ 
+ 
++// ABOUTME: Delegates selected state commands through current owner admission.
++// ABOUTME: Retains native command execution for private admitted snapshots.
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++const governedState = memoryAccess("manual_state", {tool: 'ApproveCurrentStateEntries.ts', args: process.argv.slice(2)},
++  (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++if (governedState !== undefined) {
++  if (governedState.ok !== true || typeof governedState.stdout !== "string" || typeof governedState.stderr !== "string") {
++    throw new Error("The native state command is unavailable under the current owner policy");
++  }
++  process.stdout.write(governedState.stdout);
++  process.stderr.write(governedState.stderr);
++  process.exit(0);
++}
++
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const LIFEOS_DIR = process.env.LIFEOS_DIR || join(HOME, ".claude", "LIFEOS");
+ const QUEUE_FILE = join(LIFEOS_DIR, "USER", "TELOS", "CURRENT_STATE", "proposals.jsonl");
+diff --git a/LifeOS/install/LIFEOS/TOOLS/SyncIdentityToSettings.ts b/LifeOS/install/LIFEOS/TOOLS/SyncIdentityToSettings.ts
+index 37fce1d..0ccf42b 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/SyncIdentityToSettings.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/SyncIdentityToSettings.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Runs identity preference synchronization.
++// ABOUTME: Publishes managed changes through current owner transactions.
+ /**
+  * SyncIdentityToSettings.ts — Mirror PRINCIPAL_IDENTITY.md frontmatter
+  * `preferences` block into settings.json `.preferences`.
+@@ -20,6 +22,20 @@ import { join } from 'path';
+ import { homedir } from 'os';
+ import { paiUserDir } from './LifeosConfig';
+ 
++// ABOUTME: Delegates selected state commands through current owner admission.
++// ABOUTME: Retains native command execution for private admitted snapshots.
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++const governedState = memoryAccess("manual_state", {tool: 'SyncIdentityToSettings.ts', args: process.argv.slice(2)},
++  (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++if (governedState !== undefined) {
++  if (governedState.ok !== true || typeof governedState.stdout !== "string" || typeof governedState.stderr !== "string") {
++    throw new Error("The native state command is unavailable under the current owner policy");
++  }
++  process.stdout.write(governedState.stdout);
++  process.stderr.write(governedState.stderr);
++  process.exit(0);
++}
++
+ const HOME = homedir();
+ const PRINCIPAL_PATH = join(paiUserDir(), 'PRINCIPAL/PRINCIPAL_IDENTITY.md');
+ const SETTINGS_PATH = join(HOME, '.claude/settings.json');

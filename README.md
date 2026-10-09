@@ -325,3 +325,6 @@ The [complete installed acceptance controls](docs/verification/2026-10-07-step1/
 
 
 [Current owner onboarding](docs/verification/2026-10-08-onboarding/README.md) derives the native assistant name and template state from eight fixed admitted sources. Private and retired entries cannot affect the personalization flag. It checks source bytes, marker presence, and current owner authority after rendering. All 28 focused checks and 124 neighboring checks pass, including strict TypeScript validation and source preparation. The dashboard build passes. Remaining caller coverage and installed activation stay open.
+
+
+[Current owner state proposals and identity synchronization](docs/verification/2026-10-08-remaining-reader-audit/README.md) run the native commands on admitted private snapshots and publish changed files through recoverable owner transactions. All 20 focused checks and 476 combined checks pass. The dashboard build and strict TypeScript check pass. Recovery restores an interrupted queue and target before retry. Missing targets and invalid rendered JSONL cannot discard or corrupt the original queue. Remaining caller classification and installed acceptance stay open.

@@ -1,0 +1,24 @@
+# Remaining native reader and manual writer audit
+
+Date: 2026-10-08. The route inventory records required native readers and unselected optional integrations. A source reference does not establish behavioral acceptance. Installed acceptance remains pending.
+
+The manual writer probe uses the prepared capabilities-second candidate in a disposable authenticated-memory fixture. It removes owner context from each native subprocess. The managed connector remains present. The probe does not change installed data.
+
+The proposal command creates proposals.jsonl. The approval command discloses its synthetic payload during review and publishes it into ACTIVITY.md. Identity synchronization publishes a synthetic temperature unit into settings.json. All four subprocesses return zero without a current owner context. manual-writers.json retains the exact public program hashes, outputs, and measured effects. These three paths require governed access before ownership activation. The following candidate adds that access.
+
+The audit does not classify all 330 candidates as defects. Required paths need native effect tests. Optional integrations need selected-package absence checks. Manual commands need an explicit disposition and tested access policy.
+
+
+## Governed native state commands
+
+The candidate runs the same three native programs on admitted private snapshots. It reads only the selected proposal destinations. Private unrelated state does not block an independent proposal. Native command output and formatting remain available to the current owner. New publication uses the existing recovery journal and private file permissions. Read-only owners can review proposals but cannot enqueue, approve, reject, or synchronize settings.
+
+The twenty-case focused gate passes in 11.185 seconds. It checks unbound calls, private and retired inputs, links, missing connectors, exact source review, argument types, unchanged CRLF bytes, bulk approval, and repeat calls. After actual native rendering, source bytes, inode identity, missing-file creation, or account revocation withhold delivery. Intentional process termination after the first publication leaves a recovery journal. A fresh transaction restores the queue and target. A subsequent retry appends the target once.
+
+The original native approval control consumes a proposal when its target file is missing. The candidate refuses that approval and retains the queue. Native append can also produce invalid JSONL when a complete existing record lacks its final newline. The candidate validates the rendered queue before publication. Failed baseline and candidate observations remain in this directory.
+
+All 476 combined tests pass in 675.253 seconds with warnings treated as errors and no skips. Strict native frontend TypeScript validation and source preparation pass. The dashboard build passes with the existing workspace-root and ambiguous duration utility warnings. The source identity binds all three native commands, the dashboard source, plugin programs, tests, and both patch copies.
+
+The refreshed public-source inventory verifies all 330 recorded hashes in 1,579 scanned files. Five programs differ from the overview inventory. Seventy files contain governed API references. Those references do not establish complete branch coverage. The static scanner still reports 17 dynamic or manual entries. Three now have the behavioral evidence above. The remaining caller classifications and installed application acceptance stay open.
+
+A read-only installed-service check confirms that .252's gateway, dashboard, and Pulse remain active. Pulse retains UMask 0077 and the selected fresh-store working directory. This unit makes no server configuration change or deployment.

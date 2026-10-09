@@ -15,6 +15,8 @@ BUSINESS = 'LIFEOS/USER/WORK/YOUR_COMPANIES'
 
 def classification(relative):
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES
+    from .memory_manual_state import QUEUE
+    if relative in {QUEUE, 'settings.json'}: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
     if (relative in FINANCE_SOURCES or relative in TELOS
             or re.fullmatch(r'LIFEOS/USER/HEALTH/[^/]+\.md', relative) and Path(relative).name != 'README.md'

@@ -1,0 +1,7 @@
+# Native state commands need exact snapshot bytes and recoverable publication
+
+2026-10-08. Four subprocess observations show that proposal enqueue, proposal review, proposal approval, and identity preference synchronization succeed without owner context in a managed fixture. Two positive characterization cases preserve their normal native behavior. The correction runs those same native programs on admitted private snapshots and publishes changed files through the existing owner transaction.
+
+The first byte-focused gate finds two failures. Python read_text normalizes CRLF bytes after native execution. That rewrites an otherwise unchanged settings file and changes existing queue rows during append. Reading the rendered files as bytes and decoding UTF-8 preserves their line endings. The next fourteen-case gate passes.
+
+The original native approval control also removes a queued proposal when its target file is missing. The managed path refuses that approval and preserves the queue. A complete queue record without a final newline exposes another native append limit: the next append produces invalid JSONL. The managed path validates the rendered queue before publication and retains the original if that validation fails. A twenty-case focused gate passes, including real process termination after the first publication, recovery of both files, and a retry with one target append. All 476 combined regression cases pass in 675.253 seconds. The dashboard build passes. Installed application acceptance remains pending.

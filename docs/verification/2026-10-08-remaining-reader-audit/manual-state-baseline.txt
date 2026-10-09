@@ -1,0 +1,61 @@
+test_native_identity_sync_preserves_settings_and_repeat_bytes (test_memory_manual_state.MemoryManualStateTests.test_native_identity_sync_preserves_settings_and_repeat_bytes) ... ok
+test_native_owner_proposal_review_approval_and_rejection (test_memory_manual_state.MemoryManualStateTests.test_native_owner_proposal_review_approval_and_rejection) ... ok
+test_unbound_approval_cannot_publish_or_remove_queue (test_memory_manual_state.MemoryManualStateTests.test_unbound_approval_cannot_publish_or_remove_queue) ... FAIL
+test_unbound_identity_sync_cannot_publish_preferences (test_memory_manual_state.MemoryManualStateTests.test_unbound_identity_sync_cannot_publish_preferences) ... FAIL
+test_unbound_proposal_cannot_create_queue (test_memory_manual_state.MemoryManualStateTests.test_unbound_proposal_cannot_create_queue) ... FAIL
+test_unbound_review_cannot_disclose_queue (test_memory_manual_state.MemoryManualStateTests.test_unbound_review_cannot_disclose_queue) ... FAIL
+
+======================================================================
+FAIL: test_unbound_approval_cannot_publish_or_remove_queue (test_memory_manual_state.MemoryManualStateTests.test_unbound_approval_cannot_publish_or_remove_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_manual_state.py", line 65, in test_unbound_approval_cannot_publish_or_remove_queue
+    self.assertNotEqual(result.returncode,0,result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : ✅ Approved and committed: synthetic-proposal-id → ACTIVITY
+
+
+======================================================================
+FAIL: test_unbound_identity_sync_cannot_publish_preferences (test_memory_manual_state.MemoryManualStateTests.test_unbound_identity_sync_cannot_publish_preferences)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_manual_state.py", line 71, in test_unbound_identity_sync_cannot_publish_preferences
+    self.assertNotEqual(result.returncode,0,result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : ✓ Synced PRINCIPAL_IDENTITY → settings.json preferences: temperatureUnit=celsius, dateFormat=iso
+
+
+======================================================================
+FAIL: test_unbound_proposal_cannot_create_queue (test_memory_manual_state.MemoryManualStateTests.test_unbound_proposal_cannot_create_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_manual_state.py", line 50, in test_unbound_proposal_cannot_create_queue
+    self.assertNotEqual(result.returncode,0,result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : ✅ Proposal ad3f98c2-556f-4b70-9c08-6e03b59be9b7 enqueued (manual → ACTIVITY)
+Review with: bun ApproveCurrentStateEntries.ts --review
+
+
+======================================================================
+FAIL: test_unbound_review_cannot_disclose_queue (test_memory_manual_state.MemoryManualStateTests.test_unbound_review_cannot_disclose_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_manual_state.py", line 57, in test_unbound_review_cannot_disclose_queue
+    self.assertNotEqual(result.returncode,0,result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : ═══ Pending proposals (1) ═══
+
+ID: synthetic-proposal-id
+  Source: manual    Target: ACTIVITY    At: 2026-10-08T12:00:00+00:00
+  Payload:
+    name: "SyntheticManualProposal"
+
+Approve: bun ApproveCurrentStateEntries.ts --approve <id>
+Reject:  bun ApproveCurrentStateEntries.ts --reject <id>
+Bulk:    bun ApproveCurrentStateEntries.ts --approve-all
+
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.246s
+
+FAILED (failures=4)

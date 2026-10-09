@@ -264,6 +264,10 @@ class MemoryService:
                 from .memory_user_index_publish import run
                 return run(memory, scope, **arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation == 'manual_state' and set(arguments) == {'tool', 'args'}:
+                from .memory_manual_state import run
+                return run(memory, scope, **arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'morning_brief' and not arguments:
                 from .memory_morning_brief import run
                 return run(memory,scope,check_current=lambda:self._check_current_context(configuration,context,scope))

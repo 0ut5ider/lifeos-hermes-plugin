@@ -1,0 +1,45 @@
+{
+  "source": "/home/outsider/.cache/lifeos-daily-text-20261007/capabilities-second/lifeos/LifeOS/install",
+  "observations": [
+    {
+      "program": "ProposeCurrentStateEntry.ts",
+      "sha256": "dc184c2c36283b5a43aad7cb423cb647a993cb1799ec7f1cd786e3d40a5ffdb0",
+      "returncode": 0,
+      "stdout": "\u2705 Proposal c1b2422f-1cbf-48ee-bb2e-53f6440b745d enqueued (manual \u2192 ACTIVITY)\nReview with: bun ApproveCurrentStateEntries.ts --review\n",
+      "stderr": "",
+      "managed_connector_present": true,
+      "current_owner_context_present": false,
+      "queue_created": true
+    },
+    {
+      "program": "ApproveCurrentStateEntries.ts",
+      "sha256": "c962e1156c80dee5fd64ea66d34ca634a9d3b8ce8c2969b610b4194f609e76f0",
+      "returncode": 0,
+      "stdout": "\u2550\u2550\u2550 Pending proposals (1) \u2550\u2550\u2550\n\nID: c1b2422f-1cbf-48ee-bb2e-53f6440b745d\n  Source: manual    Target: ACTIVITY    At: 2026-10-09T01:21:49.173Z\n  Payload:\n    name: \"SyntheticManualProposal\"\n\nApprove: bun ApproveCurrentStateEntries.ts --approve <id>\nReject:  bun ApproveCurrentStateEntries.ts --reject <id>\nBulk:    bun ApproveCurrentStateEntries.ts --approve-all\n",
+      "stderr": "",
+      "managed_connector_present": true,
+      "current_owner_context_present": false,
+      "synthetic_payload_disclosed": true
+    },
+    {
+      "program": "ApproveCurrentStateEntries.ts",
+      "sha256": "c962e1156c80dee5fd64ea66d34ca634a9d3b8ce8c2969b610b4194f609e76f0",
+      "returncode": 0,
+      "stdout": "\u2705 Approved and committed: c1b2422f-1cbf-48ee-bb2e-53f6440b745d \u2192 ACTIVITY\n",
+      "stderr": "",
+      "managed_connector_present": true,
+      "current_owner_context_present": false,
+      "target_published": true
+    },
+    {
+      "program": "SyncIdentityToSettings.ts",
+      "sha256": "cd784a5c026f1c3ebd81675f4da8e3376929644ff1c4cce5f18ddbe293ae434e",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "\u2713 Synced PRINCIPAL_IDENTITY \u2192 settings.json preferences: temperatureUnit=SyntheticManualUnit\n",
+      "managed_connector_present": true,
+      "current_owner_context_present": false,
+      "settings_published": true
+    }
+  ]
+}

@@ -181,7 +181,8 @@ class NativeMemory:
         from .memory_freshness_migration import is_system_backup
         from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
         from .memory_user_index_publish import PUBLICATIONS as INDEX_PUBLICATIONS
-        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS | INDEX_PUBLICATIONS and not is_system_backup(name):
+        from .memory_manual_state import SYSTEM_PUBLICATIONS as MANUAL_PUBLICATIONS
+        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS | INDEX_PUBLICATIONS | MANUAL_PUBLICATIONS and not is_system_backup(name):
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != self.physical_root / name or path.is_symlink()
@@ -360,6 +361,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'manual_state':
+            from .memory_manual_state import publication_paths
+            return publication_paths(self, scope, payload['tool'], paths=payload['paths'])
         if payload['operation'] == 'telos_file_edit':
             from .memory_telos_file import publication_paths
             return publication_paths(self, scope, payload)

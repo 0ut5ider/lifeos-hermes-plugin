@@ -52,6 +52,8 @@ The [native capability telemetry gate](verification/2026-10-08-capabilities/READ
 
 The [native onboarding gate](verification/2026-10-08-onboarding/README.md) passes 28 focused checks, 124 neighboring checks, strict TypeScript validation, source preparation, and the dashboard build. Eight fixed admitted sources retain native assistant identity and template calculations. Private or retired inputs cannot change the personalization flag. Original source files stay unchanged. Remaining caller coverage and installed acceptance stay open.
 
+The [native state command gate](verification/2026-10-08-remaining-reader-audit/README.md) passes 20 focused checks, 476 combined checks, strict TypeScript validation, source preparation, and the dashboard build. Proposal review and publication and identity preference synchronization use admitted private snapshots and owner transactions. Recovery restores both files after intentional process termination. The current public-source inventory verifies 330 hashes. Fourteen dynamic or manual entries still need classification. Installed acceptance remains open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.
