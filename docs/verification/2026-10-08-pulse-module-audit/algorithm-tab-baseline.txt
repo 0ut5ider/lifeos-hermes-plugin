@@ -1,0 +1,109 @@
+test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) ... 
+  test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='operational-rules') ... FAIL
+  test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='operational-rules-expanded') ... FAIL
+  test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='writing-style-backstop') ... FAIL
+  test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='incidents') ... FAIL
+test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) ... 
+  test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='') ... FAIL
+  test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=operational-rules') ... FAIL
+  test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=operational-rules-expanded') ... FAIL
+  test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=writing-style-backstop') ... FAIL
+  test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=incidents') ... FAIL
+test_original_native_file_fields_missing_and_version_selection_characterization (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_original_native_file_fields_missing_and_version_selection_characterization) ... ok
+test_original_warm_cache_composition_characterization_has_no_generation (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_original_warm_cache_composition_characterization_has_no_generation) ... ok
+test_private_personal_chain_file_refuses (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_private_personal_chain_file_refuses) ... FAIL
+
+======================================================================
+FAIL: test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='operational-rules')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 139, in test_admitted_personal_file_views_preserve_actual_native_content_and_metadata
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='operational-rules-expanded')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 139, in test_admitted_personal_file_views_preserve_actual_native_content_and_metadata
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='writing-style-backstop')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 139, in test_admitted_personal_file_views_preserve_actual_native_content_and_metadata
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_personal_file_views_preserve_actual_native_content_and_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata) (identifier='incidents')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 139, in test_admitted_personal_file_views_preserve_actual_native_content_and_metadata
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 126, in test_anonymous_chain_and_personal_files_require_current_owner
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"generated_at":"2026-10-09T17:41:45.661Z","version":"3.2.1","claims":{"total":3,"hook":1,"check":1,"self":1},"stages":["context","doctrine","isa","run","ondemand"],"chain":[{"id":"system-prompt","name":"System Prompt","rel":"LIFEOS/LIFEOS_SYSTEM_PRO
+
+======================================================================
+FAIL: test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=operational-rules')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 126, in test_anonymous_chain_and_personal_files_require_current_owner
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"id":"operational-rules","content":"# Synthetic Algorithm source\n\nSyntheticAlgorithmCurrent\n","mtime":"2026-10-09T17:41:45.581Z","editable":true}
+
+======================================================================
+FAIL: test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=operational-rules-expanded')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 126, in test_anonymous_chain_and_personal_files_require_current_owner
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"id":"operational-rules-expanded","content":"# Synthetic Algorithm source\n\nSyntheticAlgorithmCurrent\n","mtime":"2026-10-09T17:41:45.581Z","editable":true}
+
+======================================================================
+FAIL: test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=writing-style-backstop')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 126, in test_anonymous_chain_and_personal_files_require_current_owner
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"id":"writing-style-backstop","content":"# Synthetic Algorithm source\n\nSyntheticAlgorithmCurrent\n","mtime":"2026-10-09T17:41:45.582Z","editable":true}
+
+======================================================================
+FAIL: test_anonymous_chain_and_personal_files_require_current_owner (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner) (target='/file?id=incidents')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 126, in test_anonymous_chain_and_personal_files_require_current_owner
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"id":"incidents","content":"# Synthetic Algorithm source\n\nSyntheticAlgorithmCurrent\n","mtime":"2026-10-09T17:41:45.582Z","editable":true}
+
+======================================================================
+FAIL: test_private_personal_chain_file_refuses (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_private_personal_chain_file_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 147, in test_private_personal_chain_file_refuses
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"id":"operational-rules","content":"# Synthetic Algorithm source\n\n<private>SyntheticAlgorithmHidden</private>\n","mtime":"2026-10-09T17:41:49.831Z","editable":true}
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.940s
+
+FAILED (failures=10)

@@ -22,6 +22,8 @@ def classification(relative):
     from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
     from .memory_local_intelligence import declared_source
     from .memory_content import EVENTS as CONTENT_EVENTS
+    from .memory_algorithm_tab import CACHE as ALGORITHM_CACHE, PERSONAL as ALGORITHM_PERSONAL
+    if relative in ALGORITHM_PERSONAL | {ALGORITHM_CACHE, 'CLAUDE.md'} or re.fullmatch(r'LIFEOS/RULES/[^/]+\.md', relative): return 'life_text'
     if relative == CONTENT_EVENTS or declared_source(relative): return 'life_text'
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
@@ -81,7 +83,8 @@ def projection(memory, relative, content):
     from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
     from .memory_local_intelligence import declared_source
     from .memory_content import EVENTS as CONTENT_EVENTS
-    if (relative == CONTENT_EVENTS or declared_source(relative) or relative in MENUBAR_SOURCES | PROFILE_SOURCES or relative.startswith('LIFEOS/USER/CONDUIT/') or relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
+    from .memory_algorithm_tab import CACHE as ALGORITHM_CACHE
+    if (relative in {CONTENT_EVENTS, ALGORITHM_CACHE} or declared_source(relative) or relative in MENUBAR_SOURCES | PROFILE_SOURCES or relative.startswith('LIFEOS/USER/CONDUIT/') or relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
             or relative in {SNAPSHOT, DATABASE, CACHE}
             or relative in PERSONAL_SOURCES['ledger'] and relative.endswith(('.json', '.jsonl'))):
         if not relative.endswith(('.json', '.jsonl')): return content

@@ -1,0 +1,31 @@
+test_unconfigured_file_error_preserves_original_native_failure_response (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_unconfigured_file_error_preserves_original_native_failure_response) ... FAIL
+
+======================================================================
+FAIL: test_unconfigured_file_error_preserves_original_native_failure_response (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_unconfigured_file_error_preserves_original_native_failure_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 323, in test_unconfigured_file_error_preserves_original_native_failure_response
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 644 |         }
+645 |       }
+646 |       const path = chainPath(spec, version, reader);
+647 |       if (reader ? !hasFile(reader, path) : !existsSync(path)) return Response.json({ error: "file missing on disk" }, { status: 404 });
+648 |       const st = reader ? reader.stat(path) : statSync(path);
+649 |       return Response.json({ id, content: reader ? reader.text(path) : await Bun.file(path).text(), mtime: st.mtime.toISOString(), editable: spec.editable && !version });
+                                                                                                  ^
+error: Directories cannot be read like files
+    path: "/tmp/native-memory-ew9fky4d/synthetic-unmanaged-algorithm/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md",
+ syscall: "read",
+   errno: 0,
+    code: "EISDIR"
+
+      at async fileView (/home/outsider/.cache/lifeos-daily-text-20261007/algorithm-tab-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:649:93)
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.098s
+
+FAILED (failures=1)

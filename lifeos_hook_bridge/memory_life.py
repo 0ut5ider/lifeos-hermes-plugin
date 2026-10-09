@@ -14,16 +14,20 @@ from .memory_conduit import ROUTES as CONDUIT_ROUTES
 from .memory_menubar import ROUTES as MENUBAR_ROUTES
 from .memory_local_intelligence import ROUTES as LOCAL_ROUTES
 from .memory_content import ROUTES as CONTENT_ROUTES
+from .memory_algorithm_tab import ROUTES as ALGORITHM_ROUTES
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
                     '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
-                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES) | PERSONAL_ROUTES | frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES | LOCAL_ROUTES | CONTENT_ROUTES
+                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES) | PERSONAL_ROUTES | frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES | LOCAL_ROUTES | CONTENT_ROUTES | ALGORITHM_ROUTES
 
 
 def request_target(value):
     if not isinstance(value, str) or len(value) > 256:
         raise ValueError('Life views require a bounded installed route')
     parsed = urlsplit(value)
+    if parsed.path in ALGORITHM_ROUTES:
+        from .memory_algorithm_tab import request_target as algorithm_target
+        return algorithm_target(value)
     if parsed.path == '/api/content' or parsed.path.startswith('/api/content/'):
         from .memory_content import request_target as content_target
         return content_target(value)
@@ -79,6 +83,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if urlsplit(target).path in ALGORITHM_ROUTES:
+        from .memory_algorithm_tab import view as algorithm_view
+        return algorithm_view(memory, scope, target, check_current=check_current)
     if urlsplit(target).path == '/api/content' or urlsplit(target).path.startswith('/api/content/'):
         from .memory_content import view as content_view
         return content_view(memory, scope, target, check_current=check_current)

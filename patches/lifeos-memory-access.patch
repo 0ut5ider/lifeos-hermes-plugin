@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..d964b93
+index 0000000..0eabb6a
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,445 @@
+@@ -0,0 +1,471 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8519,6 +8519,32 @@ index 0000000..d964b93
 +    const target = url.pathname + (url.pathname === "/api/content/status" ? "?running=" + Number(running) : "");
 +    return await memoryHTTPResponseAsync(request, "life", target);
 +  } catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++}
++
++
++export async function memoryHTTPAlgorithmTabView(request: Request): Promise<Response | null> {
++  if (!hasManagedMemoryHTTP()) return null;
++  const url = new URL(request.url);
++  const headers = {"cache-control": "no-store"};
++  const read = ["/api/algorithm-tab", "/api/algorithm-tab/", "/api/algorithm-tab/file"].includes(url.pathname);
++  const action = ["/api/algorithm-tab/file", "/api/algorithm-tab/doctrine", "/api/algorithm-tab/summary/regenerate"].includes(url.pathname);
++  if (!read && !action) return Response.json({error: "Choose a declared Algorithm route"}, {status: 404, headers});
++  if (!(read && request.method === "GET" || action && request.method === "POST")) {
++    return Response.json({error: "Choose a declared Algorithm method"}, {status: 405, headers});
++  }
++  const params = [...url.searchParams];
++  if (url.pathname === "/api/algorithm-tab/file" && request.method === "GET") {
++    if (params.some(([name]) => !["id", "version"].includes(name))
++        || url.searchParams.getAll("id").length !== 1 || url.searchParams.getAll("version").length > 1
++        || !/^[a-z][a-z-]{0,63}$/.test(url.searchParams.get("id") ?? "")
++        || url.searchParams.has("version") && !/^\d{1,10}\.\d{1,10}\.\d{1,10}$/.test(url.searchParams.get("version") ?? "")) {
++      return Response.json({error: "Choose a fixed Algorithm file and version"}, {status: 400, headers});
++    }
++  } else if (url.search) return Response.json({error: "Algorithm requires fixed source selectors"}, {status: 400, headers});
++  const origin = request.headers.get("origin");
++  if (origin && origin !== url.origin) return Response.json({error: "Algorithm requires the current origin"}, {status: 403, headers});
++  try { return await memoryHTTPResponseAsync(request, "life", url.pathname + url.search); }
++  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755
@@ -12470,3 +12496,235 @@ index ea7ccff..3f374be 100644
 +  if (target === "/api/content" || target === "/api/content/") return Response.json(buildBoard(admitted));
 +  throw new Error("Choose a declared Content read route");
 +}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
+index 54d381e..bc71142 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves the native thinking-chain catalog, doctrine, and cached summary views.
++// ABOUTME: Uses admitted owner snapshots for managed reads before generation or file actions.
+ /**
+  * Algorithm Pulse module — the complete thinking chain of the running system,
+  * visible, summarized, and editable. Everything the Algorithm pertains to:
+@@ -35,6 +37,7 @@
+  * interpolation). Tagged doctrine versions are immutable by construction: the
+  * writer refuses to overwrite an existing v*.md.
+  */
++import { memoryHTTPAlgorithmTabView } from "../../TOOLS/lib/MemoryAccess";
+ import { createHash } from "node:crypto";
+ import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
+ import { homedir } from "node:os";
+@@ -220,17 +223,28 @@ const CHAIN: ChainSpec[] = [
+ 
+ const STAGE_ORDER: Stage[] = ["context", "doctrine", "isa", "run", "ondemand"];
+ 
+-function chainPath(spec: ChainSpec, version?: string): string {
++interface AlgorithmReader {
++  text(path: string): string;
++  stat(path: string): {size: number; mtime: Date};
++  versions(): string[];
++}
++
++export function algorithmChainSources(): {id: string; relative: string}[] {
++  return CHAIN.map(spec => ({id: spec.id, relative: spec.rel}));
++}
++
++
++function chainPath(spec: ChainSpec, version?: string, reader?: AlgorithmReader): string {
+   if (spec.id === "doctrine") {
+-    const v = version ?? readLatestSync();
++    const v = version ?? readLatestSync(reader);
+     return join(ALGO_DIR, `v${v}.md`);
+   }
+   return join(HOME, spec.rel);
+ }
+ 
+-function readLatestSync(): string {
++function readLatestSync(reader?: AlgorithmReader): string {
+   try {
+-    return readFileSync(join(ALGO_DIR, "LATEST"), "utf8").trim();
++    return (reader ? reader.text(join(ALGO_DIR, "LATEST")) : readFileSync(join(ALGO_DIR, "LATEST"), "utf8")).trim();
+   } catch {
+     return "0.0.0";
+   }
+@@ -250,14 +264,14 @@ function parseClaims(doctrine: string): { total: number; hook: number; check: nu
+   };
+ }
+ 
+-function listVersions(): { version: string; mtime: string }[] {
++function listVersions(reader?: AlgorithmReader): { version: string; mtime: string }[] {
+   const out: { version: string; mtime: string; _k: number[] }[] = [];
+-  for (const f of readdirSync(ALGO_DIR)) {
++  for (const f of reader ? reader.versions() : readdirSync(ALGO_DIR)) {
+     const m = f.match(/^v(\d+)\.(\d+)\.(\d+)\.md$/);
+     if (!m) continue;
+     out.push({
+       version: `${m[1]}.${m[2]}.${m[3]}`,
+-      mtime: statSync(join(ALGO_DIR, f)).mtime.toISOString(),
++      mtime: (reader ? reader.stat(join(ALGO_DIR, f)) : statSync(join(ALGO_DIR, f))).mtime.toISOString(),
+       _k: [Number(m[1]), Number(m[2]), Number(m[3])],
+     });
+   }
+@@ -273,9 +287,9 @@ interface SummaryStore {
+   files: Record<string, FileSummary>;
+ }
+ 
+-async function readStore(): Promise<SummaryStore> {
++async function readStore(reader?: AlgorithmReader): Promise<SummaryStore> {
+   try {
+-    const raw = JSON.parse(await Bun.file(STATE_PATH).text());
++    const raw = JSON.parse(reader ? reader.text(STATE_PATH) : await Bun.file(STATE_PATH).text());
+     if (raw && typeof raw === "object" && "files" in raw) return raw as SummaryStore;
+     // v1 migration: the old file WAS the overview.
+     if (raw && raw.markdown) {
+@@ -293,11 +307,11 @@ function contentHash(text: string): string {
+   return createHash("sha256").update(text).digest("hex");
+ }
+ 
+-async function chainHash(): Promise<string> {
++async function chainHash(reader?: AlgorithmReader): Promise<string> {
+   const h = createHash("sha256");
+   for (const spec of CHAIN) {
+     try {
+-      h.update(await Bun.file(chainPath(spec)).text());
++      h.update(reader ? reader.text(chainPath(spec, undefined, reader)) : await Bun.file(chainPath(spec)).text());
+     } catch { h.update(`missing:${spec.id}`); }
+   }
+   return h.digest("hex");
+@@ -563,25 +577,25 @@ async function saveFile(body: { id?: string; content?: string; expectedMtime?: s
+ 
+ /* ── Compose the main payload ── */
+ 
+-async function compose(): Promise<unknown> {
++async function compose(reader?: AlgorithmReader): Promise<unknown> {
+   const errors: Record<string, string> = {};
+-  const version = readLatestSync();
++  const version = readLatestSync(reader);
+ 
+   let doctrine = "";
+-  try { doctrine = await Bun.file(join(ALGO_DIR, `v${version}.md`)).text(); }
++  try { doctrine = reader ? reader.text(join(ALGO_DIR, `v${version}.md`)) : await Bun.file(join(ALGO_DIR, `v${version}.md`)).text(); }
+   catch (e: any) { errors.doctrine = String(e?.message ?? e); }
+ 
+-  const store = await readStore();
+-  const hash = await chainHash();
++  const store = await readStore(reader);
++  const hash = await chainHash(reader);
+ 
+   const chain = await Promise.all(CHAIN.map(async (spec) => {
+-    const path = chainPath(spec);
++    const path = chainPath(spec, undefined, reader);
+     let bytes = 0, mtime: string | null = null, fileHash: string | null = null;
+     try {
+-      const st = statSync(path);
++      const st = reader ? reader.stat(path) : statSync(path);
+       bytes = st.size;
+       mtime = st.mtime.toISOString();
+-      fileHash = contentHash(await Bun.file(path).text());
++      fileHash = contentHash(reader ? reader.text(path) : await Bun.file(path).text());
+     } catch { errors[spec.id] = "missing on disk"; }
+     const card = store.files[spec.id] ?? null;
+     return {
+@@ -594,7 +608,7 @@ async function compose(): Promise<unknown> {
+   }));
+ 
+   // Self-updating page: a stale explanation kicks its own regeneration.
+-  kickIfStale(hash, store);
++  if (!reader) kickIfStale(hash, store);
+ 
+   return {
+     generated_at: new Date().toISOString(),
+@@ -602,7 +616,7 @@ async function compose(): Promise<unknown> {
+     claims: parseClaims(doctrine),
+     stages: STAGE_ORDER,
+     chain,
+-    versions: listVersions().slice(0, 20),
++    versions: listVersions(reader).slice(0, 20),
+     summary: store.overview
+       ? { generated_at: store.overview.generated_at, level: store.overview.level, stale: store.overview.chain_hash !== hash, markdown: store.overview.markdown }
+       : null,
+@@ -611,6 +625,51 @@ async function compose(): Promise<unknown> {
+   };
+ }
+ 
++
++function hasFile(reader: AlgorithmReader, path: string): boolean {
++  try { reader.stat(path); return true; } catch { return false; }
++}
++
++async function fileView(req: Request, reader?: AlgorithmReader): Promise<Response> {
++      const url = new URL(req.url);
++      const id = url.searchParams.get("id") ?? "";
++      const spec = CHAIN.find((s) => s.id === id);
++      if (!spec) return Response.json({ error: "unknown file id" }, { status: 404 });
++      let version: string | undefined;
++      if (spec.id === "doctrine") {
++        const v = url.searchParams.get("version");
++        if (v) {
++          if (!/^\d+\.\d+\.\d+$/.test(v)) return Response.json({ error: "bad version" }, { status: 400 });
++          version = v;
++        }
++      }
++      const path = chainPath(spec, version, reader);
++      if (reader ? !hasFile(reader, path) : !existsSync(path)) return Response.json({ error: "file missing on disk" }, { status: 404 });
++      const st = reader ? reader.stat(path) : statSync(path);
++      return Response.json({ id, content: reader ? reader.text(path) : await Bun.file(path).text(), mtime: st.mtime.toISOString(), editable: spec.editable && !version });
++}
++
++export async function renderAlgorithmTabView(sources: {relative: string; content: string}[], target: string,
++    metadata: Record<string, {size: number; modified: number}>, versions: string[]): Promise<Response> {
++  const admitted = new Map(sources.map(source => [join(HOME, source.relative), source.content]));
++  const reader: AlgorithmReader = {
++    text(path) {
++      const content = admitted.get(path);
++      if (content === undefined) throw new Error("An admitted Algorithm source is unavailable");
++      return content;
++    },
++    stat(path) {
++      const relative = path.slice(HOME.length + 1);
++      const value = metadata[relative];
++      if (!value) throw new Error("An admitted Algorithm source is unavailable");
++      return {size: value.size, mtime: new Date(value.modified)};
++    },
++    versions: () => versions,
++  };
++  const request = new Request("http://localhost" + target);
++  return new URL(request.url).pathname.endsWith("/file") ? await fileView(request, reader) : Response.json(await compose(reader));
++}
++
+ /* ── Module surface ── */
+ 
+ export function start(): void {
+@@ -620,6 +679,8 @@ export function start(): void {
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+   if (!pathname.startsWith("/api/algorithm-tab")) return null;
++  const governed = await memoryHTTPAlgorithmTabView(req);
++  if (governed !== null) return governed;
+   const sub = pathname.replace(/^\/api\/algorithm-tab/, "").replace(/\/$/, "");
+ 
+   try {
+@@ -628,22 +689,7 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+     }
+ 
+     if (sub === "/file" && req.method === "GET") {
+-      const url = new URL(req.url);
+-      const id = url.searchParams.get("id") ?? "";
+-      const spec = CHAIN.find((s) => s.id === id);
+-      if (!spec) return Response.json({ error: "unknown file id" }, { status: 404 });
+-      let version: string | undefined;
+-      if (spec.id === "doctrine") {
+-        const v = url.searchParams.get("version");
+-        if (v) {
+-          if (!/^\d+\.\d+\.\d+$/.test(v)) return Response.json({ error: "bad version" }, { status: 400 });
+-          version = v;
+-        }
+-      }
+-      const path = chainPath(spec, version);
+-      if (!existsSync(path)) return Response.json({ error: "file missing on disk" }, { status: 404 });
+-      const st = statSync(path);
+-      return Response.json({ id, content: await Bun.file(path).text(), mtime: st.mtime.toISOString(), editable: spec.editable && !version });
++      return await fileView(req);
+     }
+ 
+     if (sub === "/file" && req.method === "POST") {

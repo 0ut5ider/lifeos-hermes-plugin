@@ -167,7 +167,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             from .memory_menubar import ROUTES as MENUBAR_ROUTES
             from .memory_local_intelligence import ROUTES as LOCAL_ROUTES
             from .memory_content import ROUTES as CONTENT_ROUTES
-            if target in CAPABILITY_WINDOWS or urllib.parse.urlsplit(target).path in frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES | LOCAL_ROUTES | CONTENT_ROUTES: timeout = 30
+            from .memory_algorithm_tab import ROUTES as ALGORITHM_ROUTES
+            if target in CAPABILITY_WINDOWS or urllib.parse.urlsplit(target).path in frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES | LOCAL_ROUTES | CONTENT_ROUTES | ALGORITHM_ROUTES: timeout = 30
         try:
             response=opener.open(request,timeout=timeout)
         except urllib.error.HTTPError as error:

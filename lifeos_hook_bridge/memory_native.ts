@@ -27,7 +27,27 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'content_view') {
+  if (input.action === 'algorithm_tab_sources' || input.action === 'algorithm_tab_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/algorithm-tab.ts')).href);
+    if (!object(module) || typeof module.algorithmChainSources !== 'function' || typeof module.renderAlgorithmTabView !== 'function') {
+      throw new Error('Native Algorithm exports are unavailable');
+    }
+    if (input.action === 'algorithm_tab_sources') result = {sources: module.algorithmChainSources()};
+    else {
+      if (typeof input.target !== 'string' || !/^\/api\/algorithm-tab(?:\/|\/file(?:\?.*)?)?$/.test(input.target)
+          || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+            || typeof source.relative !== 'string' || typeof source.content !== 'string')
+          || !object(input.metadata) || Object.values(input.metadata).some(value => !object(value)
+            || typeof value.size !== 'number' || !Number.isSafeInteger(value.size) || value.size < 0
+            || typeof value.modified !== 'number' || !Number.isFinite(value.modified))
+          || !Array.isArray(input.versions) || input.versions.some(value => typeof value !== 'string' || !/^v\d{1,10}\.\d{1,10}\.\d{1,10}\.md$/.test(value))) {
+        throw new Error('Native Algorithm requires declared admitted sources and version metadata');
+      }
+      const response: unknown = await module.renderAlgorithmTabView(input.sources, input.target, input.metadata, input.versions);
+      if (!(response instanceof Response)) throw new Error('Native Algorithm requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
+  } else if (input.action === 'content_view') {
     if (typeof input.target !== 'string' || !['/api/content', '/api/content/', '/api/content/status'].includes(input.target)
         || typeof input.running !== 'boolean' || typeof input.history_descriptor !== 'number'
         || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
