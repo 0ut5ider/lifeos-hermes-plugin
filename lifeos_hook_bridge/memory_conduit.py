@@ -60,6 +60,8 @@ def _directory(memory, name):
 
 def _selection(memory, target, date):
     url = urlsplit(target)
+    if url.path == '/api/conduit/insight/build':
+        return [CONFIG, PREFIX + 'insights/' + date + '.json'], None
     if url.path in INITIALIZING: return [CONFIG], None
     if url.path == '/api/conduit/recent':
         entries, fingerprint = _directory(memory, 'daily')

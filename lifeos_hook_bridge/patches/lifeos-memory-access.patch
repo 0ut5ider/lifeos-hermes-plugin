@@ -13304,3 +13304,186 @@ index ad3d6e6..a60b0d1 100755
  ## Getting Started
  
  ### 1. Copy the Template
+diff --git a/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts b/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts
+index 6890c34..4a23af3 100755
+--- a/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Conduit/BuildInsight.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Builds native Conduit insights from admitted daily activity metadata.
++// ABOUTME: Checks current owner sources before model use and journals managed insight publication.
+ /**
+  * Conduit content-type read — the "what kind of stuff is coming in?" layer.
+  *
+@@ -17,11 +19,13 @@
+  *
+  * CLI: `bun BuildInsight.ts [date]`  (date defaults to today; also the launchd entrypoint)
+  */
+-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
++import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync, fstatSync, createReadStream } from "node:fs";
++import { createInterface } from "node:readline";
++import { memoryAccess, memoryObject, hasMemoryAccess } from "../../TOOLS/lib/MemoryAccess";
+ import { inference } from "../../TOOLS/Inference.ts";
+ import { loadConfig } from "./config.ts";
+ import { INSIGHTS_DIR, insightPathFor } from "./paths.ts";
+-import { localDate, readDayEvents } from "./store.ts";
++import { localDate, readDayEvents, parseEventLines } from "./store.ts";
+ import type { ConduitEvent } from "./types.ts";
+ import { CONDUIT_VERSION } from "./version.ts";
+ 
+@@ -148,22 +152,91 @@ function readExisting(date: string): ConduitInsight | null {
+   }
+ }
+ 
+-export async function buildInsight(date: string): Promise<ConduitInsight> {
+-  const events = readDayEvents(date);
+-  const { text, since } = summarize(events);
++export interface InsightPlan {
++  text: string;
++  since: string | null;
++  eventsConsidered: number;
++  existing: ConduitInsight | null;
++  existingWasReal: boolean;
++}
++
++function insightPlan(events: ConduitEvent[], existing: ConduitInsight | null): InsightPlan {
++  return {...summarize(events), eventsConsidered: events.length, existing,
++    existingWasReal: !!existing && existing.contentTypes.length > 0 && existing.model !== "(failed)"};
++}
+ 
+-  // Idempotency (ISC-17): no new events since the last SUCCESSFUL insight → skip the
+-  // inference call. A prior failure/empty read (contentTypes empty) never satisfies the
+-  // skip — otherwise a single timed-out hour would freeze a bad read until new events.
+-  const existing = readExisting(date);
+-  const existingWasReal = !!existing && existing.contentTypes.length > 0 && existing.model !== "(failed)";
+-  if (existing && existingWasReal && existing.since === since && events.length > 0) {
++/** Use the native event parser and summary on a complete admitted history descriptor. */
++export async function prepareInsight(descriptor: number, content: string | null): Promise<InsightPlan> {
++  const before = fstatSync(descriptor);
++  if (!before.isFile() || before.uid !== process.getuid?.() || before.nlink !== 0 || (before.mode & 0o077) !== 0) {
++    throw new Error("Conduit insight needs its anonymous private history");
++  }
++  const events: ConduitEvent[] = [];
++  const stream = createReadStream(`/proc/self/fd/${descriptor}`);
++  const lines = createInterface({input: stream, crlfDelay: Infinity});
++  try {
++    for await (const line of lines) {
++      const row: unknown = JSON.parse(line);
++      if (!memoryObject(row) || typeof row.content !== "string") throw new Error("Invalid admitted Conduit event");
++      events.push(...parseEventLines(row.content).events);
++    }
++  } finally { lines.close(); stream.destroy(); }
++  const after = fstatSync(descriptor);
++  if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
++    throw new Error("Conduit insight history changed during preparation");
++  }
++  let existing: ConduitInsight | null = null;
++  if (content !== null) {
++    const decoded: unknown = JSON.parse(content);
++    if (!validInsight(decoded)) throw new Error("Conduit insight requires its native fields");
++    existing = decoded;
++  }
++  return insightPlan(events, existing);
++}
++
++function validInsight(value: unknown): value is ConduitInsight {
++  return memoryObject(value) && typeof value.date === "string" && typeof value.generatedAt === "string"
++    && typeof value.conduitVersion === "string" && typeof value.level === "string" && typeof value.model === "string"
++    && (value.since === null || typeof value.since === "string") && typeof value.eventsConsidered === "number"
++    && typeof value.narrative === "string" && Array.isArray(value.contentTypes)
++    && value.contentTypes.every(row => memoryObject(row) && typeof row.label === "string"
++      && typeof row.share === "number" && Number.isFinite(row.share) && typeof row.evidence === "string");
++}
++
++export async function buildInsight(date: string, initialize = false): Promise<ConduitInsight> {
++  const managed = memoryAccess("conduit_prepare", {date, initialize},
++    (value): value is {ok: true; signature: string; plan: InsightPlan} => memoryObject(value) && value.ok === true
++      && typeof value.signature === "string" && memoryObject(value.plan) && typeof value.plan.text === "string"
++      && (value.plan.since === null || typeof value.plan.since === "string")
++      && typeof value.plan.eventsConsidered === "number" && typeof value.plan.existingWasReal === "boolean"
++      && (value.plan.existing === null || validInsight(value.plan.existing)));
++  if (managed === undefined && initialize) loadConfig();
++  const {text, since, eventsConsidered, existing, existingWasReal} = managed?.plan
++    ?? insightPlan(readDayEvents(date), readExisting(date));
++  function checkCurrent(): void {
++    if (managed !== undefined) memoryAccess("conduit_check", {date, initialize, signature: managed.signature},
++      (value): value is {ok: true} => memoryObject(value) && value.ok === true);
++  }
++  function save(value: ConduitInsight, reuse = false): ConduitInsight {
++    if (managed === undefined) {
++      if (!reuse) writeAtomic(insightPathFor(date), JSON.stringify(value, null, 2));
++      return value;
++    }
++    const result = memoryAccess("conduit_publish", {date, initialize, signature: managed.signature, value, reuse},
++      (response): response is {ok: true; value: ConduitInsight} => memoryObject(response) && response.ok === true
++        && validInsight(response.value));
++    if (result === undefined) throw new Error("Conduit insight publication is unavailable");
++    return result.value;
++  }
++  checkCurrent();
++  if (existing && existingWasReal && existing.since === since && eventsConsidered > 0) {
++    const retained = save(existing, true);
+     console.log(`[insight] ${date}: no new events since ${since} — skipped (no inference call).`);
+-    return existing;
++    return retained;
+   }
+ 
+   // Nothing captured yet — write an honest empty insight, no inference call.
+-  if (events.length === 0) {
++  if (eventsConsidered === 0) {
+     const empty: ConduitInsight = {
+       date,
+       generatedAt: new Date().toISOString(),
+@@ -176,8 +249,7 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
+       narrative: "No activity captured yet today.",
+       contentTypes: [],
+     };
+-    writeAtomic(insightPathFor(date), JSON.stringify(empty, null, 2));
+-    return empty;
++    return save(empty);
+   }
+ 
+   const res = await inference({
+@@ -195,9 +267,11 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
+ 
+   // Never let a failed read clobber a good one. If inference fails but we already have
+   // a real read for today, keep it — a transient outage shouldn't wipe the last read.
+-  if (!res.success && existingWasReal) {
++  checkCurrent();
++  if (!res.success && existingWasReal && existing !== null) {
++    const retained = save(existing, true);
+     console.log(`[insight] ${date}: inference failed (${res.error}) — kept prior good read.`);
+-    return existing!;
++    return retained;
+   }
+ 
+   const { narrative, contentTypes } = res.success
+@@ -211,22 +285,21 @@ export async function buildInsight(date: string): Promise<ConduitInsight> {
+     level: LEVEL,
+     model: res.success ? "haiku-tier" : "(failed)",
+     since,
+-    eventsConsidered: events.length,
++    eventsConsidered,
+     narrative,
+     contentTypes,
+   };
+-  writeAtomic(insightPathFor(date), JSON.stringify(insight, null, 2));
+-  console.log(`[insight] ${date}: ${res.success ? "wrote" : "wrote FALLBACK"} ${contentTypes.length} themes from ${events.length} events (${res.latencyMs}ms).`);
+-  return insight;
++  const published = save(insight);
++  console.log(`[insight] ${date}: ${res.success ? "wrote" : "wrote FALLBACK"} ${contentTypes.length} themes from ${eventsConsidered} events (${res.latencyMs}ms).`);
++  return published;
+ }
+ 
+ if (import.meta.main) {
+   const date = process.argv[2] ?? localDate(new Date());
+-  loadConfig(); // ensure USER dir exists
+-  buildInsight(date)
++  buildInsight(date, true)
+     .then((i) => console.log(JSON.stringify(i.contentTypes.map((t) => `${t.label} ${(t.share * 100).toFixed(0)}%`))))
+     .catch((e) => {
+-      console.error("[insight] error:", e);
++      console.error("[insight] error:", hasMemoryAccess() ? "Conduit insight unavailable under current policy" : e);
+       process.exit(1);
+     });
+ }

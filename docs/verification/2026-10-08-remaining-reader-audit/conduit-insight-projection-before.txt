@@ -1,0 +1,16 @@
+test_actual_plan_validation_rechecks_source_and_authority_before_disclosure (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_plan_validation_rechecks_source_and_authority_before_disclosure) ... 
+  test_actual_plan_validation_rechecks_source_and_authority_before_disclosure (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_plan_validation_rechecks_source_and_authority_before_disclosure) (mode='projection-source') ... FAIL
+
+======================================================================
+FAIL: test_actual_plan_validation_rechecks_source_and_authority_before_disclosure (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_plan_validation_rechecks_source_and_authority_before_disclosure) (mode='projection-source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py", line 317, in test_actual_plan_validation_rechecks_source_and_authority_before_disclosure
+    self.assertFalse(json.loads(result.stdout)['ok'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 1 test in 0.945s
+
+FAILED (failures=1)

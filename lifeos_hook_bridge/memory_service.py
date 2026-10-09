@@ -272,6 +272,10 @@ class MemoryService:
                 from .memory_manual_state import run
                 return run(memory, scope, **arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation in {'conduit_prepare', 'conduit_check', 'conduit_publish'}:
+                from .memory_conduit_insight import synthesis
+                return synthesis(memory, scope, operation, arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'telos_template' and not arguments:
                 from .memory_telos_template import view
                 return view(memory, scope,

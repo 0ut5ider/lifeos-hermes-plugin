@@ -122,6 +122,14 @@ async function main(): Promise<void> {
       input.modified, input.profile_home, input.profile_present, input.date);
     if (!(response instanceof Response)) throw new Error('Native Menubar requires a response');
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'conduit_prepare') {
+    if (typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3 || !(input.content === null || typeof input.content === 'string')) {
+      throw new Error('Native Conduit preparation requires declared admitted history and prior insight');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Conduit/BuildInsight.ts')).href);
+    if (!object(module) || typeof module.prepareInsight !== 'function') throw new Error('Native Conduit insight exports are unavailable');
+    result = {plan: await module.prepareInsight(input.history_descriptor, input.content)};
   } else if (input.action === 'conduit_defaults') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Conduit/config.ts')).href);
     if (!object(module) || typeof module.defaultConfigText !== 'function') throw new Error('Native Conduit defaults are unavailable');
