@@ -84,10 +84,11 @@ async function main(): Promise<void> {
     let response: unknown;
     if (input.history_descriptor === undefined) response = module.renderOperationalView(input.sources, input.target);
     else {
-      if (typeof module.renderOperationalHistory !== 'function' || input.target !== '/api/algorithm'
+      if (typeof module.renderOperationalHistory !== 'function'
+          || input.target !== '/api/algorithm' && !/^\/api\/capabilities(?:\?window=(?:60|360|1440))?$/.test(input.target)
           || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
           || input.history_descriptor < 3) throw new Error('Operational history requires a private inherited descriptor');
-      response = await module.renderOperationalHistory(input.sources, input.history_descriptor);
+      response = await module.renderOperationalHistory(input.sources, input.history_descriptor, input.target);
     }
     if (!(response instanceof Response)) throw new Error('Native operational views require a response');
     result = {status: response.status, body: await response.json()};

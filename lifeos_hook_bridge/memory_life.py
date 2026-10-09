@@ -18,6 +18,10 @@ def request_target(value):
     if not isinstance(value, str) or len(value) > 256:
         raise ValueError('Life views require a bounded installed route')
     parsed = urlsplit(value)
+    if parsed.path == '/api/capabilities' and not parsed.scheme and not parsed.netloc and not parsed.fragment:
+        if parsed.query not in ('', 'window=60', 'window=360', 'window=1440'):
+            raise ValueError('Capability telemetry requires a fixed declared time window')
+        return parsed.path + ('?' + parsed.query if parsed.query else '')
     if parsed.path == '/api/user-index' and not parsed.scheme and not parsed.netloc and not parsed.fragment:
         if parsed.query not in ('', 'filter=stats', 'filter=publish', 'filter=stale', 'filter=gaps'):
             raise ValueError('User indexes require a fixed declared slice')

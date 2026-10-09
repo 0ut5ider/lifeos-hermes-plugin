@@ -48,6 +48,8 @@ The [complete operational history gate](verification/2026-10-08-operational-hist
 
 The [native novelty reader](verification/2026-10-08-novelty/README.md) passes 31 focused checks, 114 neighboring checks, and the dashboard build. It preserves all native JSON shapes through one fixed admitted source. Only the exact bound novelty route permits finite scalar responses. Capability telemetry, onboarding, remaining reader and writer classification, and installed acceptance remain open.
 
+The [native capability telemetry gate](verification/2026-10-08-capabilities/README.md) passes 446 combined tests, the strict TypeScript check, and the dashboard build. Fixed native byte windows preserve complete permitted counts. The gate verifies source changes after aggregation and actual concurrent HTTP delivery. The candidate corrects a measured eight-second relay deadline and synchronous request blocking. Onboarding, remaining caller classification, and installed activation remain open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

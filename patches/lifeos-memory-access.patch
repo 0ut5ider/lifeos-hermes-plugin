@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..80aa703 100644
+index 787cf28..719802c 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -530,6 +530,31 @@ index 787cf28..80aa703 100644
      ...e,
      source: "tool-activity",
      type: e.event || e.type || "tool_use",
+@@ -993,21 +1053,21 @@ function handleEventsRecentApi(): Response {
+ 
+ const CAPABILITY_WINDOWS_MIN = [60, 360, 1440]
+ 
+-function handleCapabilitiesApi(searchParams: URLSearchParams): Response {
++function handleCapabilitiesApi(searchParams: URLSearchParams, read = readJsonlByteTail): Response {
+   const requested = parseInt(searchParams.get("window") ?? "60", 10)
+   const windowMin = CAPABILITY_WINDOWS_MIN.includes(requested) ? requested : 60
+   const cutoff = Date.now() - windowMin * 60_000
+ 
+   // Tail size scales with window; even 16MB parses in well under 500ms in Bun.
+   const maxBytes = windowMin <= 60 ? 4_000_000 : windowMin <= 360 ? 10_000_000 : 20_000_000
+-  const activity = readJsonlByteTail(TOOL_ACTIVITY_PATH, maxBytes).filter((e) => {
++  const activity = read(TOOL_ACTIVITY_PATH, maxBytes).filter((e) => {
+     if (e.event !== "tool_use" || !e.tool_name) return false
+     const t = new Date(e.timestamp || 0).getTime()
+     return t >= cutoff
+   })
+   const oldestParsed = activity.length > 0 ? activity[0].timestamp : null
+ 
+-  const subagents = readJsonlByteTail(SUBAGENT_EVENTS_PATH, 500_000).filter((e) => {
++  const subagents = read(SUBAGENT_EVENTS_PATH, 500_000).filter((e) => {
+     if (e.event !== "subagent_start") return false
+     return new Date(e.timestamp || 0).getTime() >= cutoff
+   })
 @@ -1153,24 +1213,26 @@ function handleCapabilitiesApi(searchParams: URLSearchParams): Response {
  
  // ── /api/observability/voice-events ──
@@ -1192,7 +1217,7 @@ index 787cf28..80aa703 100644
  
      const currentStateNarrative = buildCurrentStateNarrative(currentStateRaw)
      const idealStateNarrative = buildIdealStateNarrative(idealStateRaw)
-@@ -4520,6 +4612,224 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4612,245 @@ function handleOnboardingState(): Response {
    })
  }
  
@@ -1344,13 +1369,17 @@ index 787cf28..80aa703 100644
 +  throw new Error("Choose a fixed operational read route");
 +}
 +
-+export async function renderOperationalHistory(sources: ReadonlyArray<{relative: string; content: string}>, descriptor: number): Promise<Response> {
++export async function renderOperationalHistory(sources: ReadonlyArray<{relative: string; content: string}>, descriptor: number,
++    target = "/api/algorithm"): Promise<Response> {
++  const capabilities = /^\/api\/capabilities(?:\?window=(?:60|360|1440))?$/.test(target);
++  if (target !== "/api/algorithm" && !capabilities) throw new Error("Choose a fixed streamed operational route");
 +  const before = fstatSync(descriptor);
 +  if (!before.isFile() || before.uid !== process.getuid?.() || before.nlink !== 0 || (before.mode & 0o077) !== 0) {
 +    throw new Error("Operational history requires an anonymous private owner snapshot");
 +  }
 +  const climb = new Map<string, ClimbPoint[]>();
 +  const activity = new Map<string, ToolTick[]>();
++  const telemetry = new Map<string, Array<Record<string, unknown>>>();
 +  const input = createReadStream(`/proc/self/fd/${descriptor}`);
 +  const lines = createInterface({input, crlfDelay: Infinity});
 +  try {
@@ -1358,14 +1387,31 @@ index 787cf28..80aa703 100644
 +      if (Buffer.byteLength(line) > 3 * 1024 * 1024) throw new Error("An admitted history record exceeds its transport limit");
 +      const frame: unknown = JSON.parse(line);
 +      if (!memoryObject(frame) || typeof frame.content !== "string") throw new Error("Operational history requires declared event records");
-+      if (frame.relative === "LIFEOS/MEMORY/STATE/work-events.jsonl") foldClimbLine(climb, frame.content);
-+      else if (frame.relative === "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl") foldActivityLine(frame.content, activity);
++      if (capabilities && (frame.relative === "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl"
++          || frame.relative === "LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl")) {
++        const value: unknown = JSON.parse(frame.content);
++        if (!memoryObject(value)) throw new Error("Capability telemetry requires admitted event objects");
++        const rows = telemetry.get(frame.relative) ?? [];
++        rows.push(value);
++        telemetry.set(frame.relative, rows);
++      } else if (!capabilities && frame.relative === "LIFEOS/MEMORY/STATE/work-events.jsonl") foldClimbLine(climb, frame.content);
++      else if (!capabilities && frame.relative === "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl") foldActivityLine(frame.content, activity);
 +      else throw new Error("Operational history requires fixed event sources");
 +    }
 +  } finally { lines.close(); input.destroy(); }
 +  const after = fstatSync(descriptor);
 +  if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
 +    throw new Error("The admitted history snapshot changes during folding");
++  }
++  if (capabilities) {
++    if (sources.length !== 0) throw new Error("Streamed telemetry requires only its admitted descriptor");
++    return handleCapabilitiesApi(new URLSearchParams(target.split("?")[1]), path => {
++      const relative = path.slice(dirname(LIFEOS_DIR).length + 1);
++      if (!["LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl", "LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl"].includes(relative)) {
++        throw new Error("Choose fixed capability sources");
++      }
++      return telemetry.get(relative) ?? [];
++    });
 +  }
 +  return renderOperationalView(sources, "/api/algorithm", {climb, activity});
 +}
@@ -1417,7 +1463,7 @@ index 787cf28..80aa703 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4841,124 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4862,127 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
@@ -1488,13 +1534,16 @@ index 787cf28..80aa703 100644
 +  }
 +
 +  if (hasManagedMemoryHTTP() && ["/api/algorithm", "/api/agents", "/api/events/recent",
-+      "/api/observability/voice-events", "/api/observability/tool-failures", "/api/novelty"].includes(pathname)) {
++      "/api/observability/voice-events", "/api/observability/tool-failures", "/api/novelty", "/api/capabilities"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
 +    if (method !== "GET") return Response.json({error: "Operational views require GET"}, {status: 405, headers});
-+    if (url.search) return Response.json({error: "Operational views require fixed routes"}, {status: 400, headers});
++    if (url.search && !(pathname === "/api/capabilities" && /^\?window=(?:60|360|1440)$/.test(url.search))) return Response.json({error: "Operational views require fixed routes"}, {status: 400, headers});
 +    const origin = req.headers.get("origin");
 +    if (origin && origin !== url.origin) return Response.json({error: "Operational views require the current origin"}, {status: 403, headers});
-+    try { return memoryHTTPResponse(req, "life", pathname); }
++    try {
++      if (pathname === "/api/capabilities") return await memoryHTTPResponseAsync(req, "life", pathname + url.search);
++      return memoryHTTPResponse(req, "life", pathname);
++    }
 +    catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +  }
 +

@@ -1,0 +1,158 @@
+FFFFF.FFFFFFFFFFFF
+======================================================================
+FAIL: test_anonymous_request_cannot_read_capability_labels (test_memory_capabilities.MemoryCapabilitiesTests.test_anonymous_request_cannot_read_capability_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 50, in test_anonymous_request_cannot_read_capability_labels
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"generated_at":"2026-10-09T00:39:59.823Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:36:59.795002+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_current_owner_preserves_all_native_windows_and_aggregation (test_memory_capabilities.MemoryCapabilitiesTests.test_current_owner_preserves_all_native_windows_and_aggregation) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 65, in test_current_owner_preserves_all_native_windows_and_aggregation
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_current_owner_preserves_all_native_windows_and_aggregation (test_memory_capabilities.MemoryCapabilitiesTests.test_current_owner_preserves_all_native_windows_and_aggregation) (suffix='?window=60')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 65, in test_current_owner_preserves_all_native_windows_and_aggregation
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_current_owner_preserves_all_native_windows_and_aggregation (test_memory_capabilities.MemoryCapabilitiesTests.test_current_owner_preserves_all_native_windows_and_aggregation) (suffix='?window=360')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 65, in test_current_owner_preserves_all_native_windows_and_aggregation
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_current_owner_preserves_all_native_windows_and_aggregation (test_memory_capabilities.MemoryCapabilitiesTests.test_current_owner_preserves_all_native_windows_and_aggregation) (suffix='?window=1440')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 65, in test_current_owner_preserves_all_native_windows_and_aggregation
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_methods_unknown_selectors_origin_and_invalid_credentials_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_methods_unknown_selectors_origin_and_invalid_credentials_refuse) (method='POST', target='/api/capabilities')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 136, in test_methods_unknown_selectors_origin_and_invalid_credentials_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405 : not found
+
+======================================================================
+FAIL: test_methods_unknown_selectors_origin_and_invalid_credentials_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_methods_unknown_selectors_origin_and_invalid_credentials_refuse) (method='GET', target='/api/capabilities?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 136, in test_methods_unknown_selectors_origin_and_invalid_credentials_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"generated_at":"2026-10-09T00:40:03.353Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:03.302893+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_methods_unknown_selectors_origin_and_invalid_credentials_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_methods_unknown_selectors_origin_and_invalid_credentials_refuse) (method='GET', target='/api/capabilities?window=360&owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 136, in test_methods_unknown_selectors_origin_and_invalid_credentials_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"generated_at":"2026-10-09T00:40:03.355Z","window_minutes":360,"oldest_event_parsed":"2026-10-09T00:37:03.302893+00:00","totals":{"tool_calls":11,"sessions":2,"skills":2,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"S
+
+======================================================================
+FAIL: test_methods_unknown_selectors_origin_and_invalid_credentials_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_methods_unknown_selectors_origin_and_invalid_credentials_refuse) (method='GET', target='/api/capabilities?window=360&window=60')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 136, in test_methods_unknown_selectors_origin_and_invalid_credentials_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"generated_at":"2026-10-09T00:40:03.356Z","window_minutes":360,"oldest_event_parsed":"2026-10-09T00:37:03.302893+00:00","totals":{"tool_calls":11,"sessions":2,"skills":2,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"S
+
+======================================================================
+FAIL: test_methods_unknown_selectors_origin_and_invalid_credentials_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_methods_unknown_selectors_origin_and_invalid_credentials_refuse) (method='GET', target='/api/capabilities')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 136, in test_methods_unknown_selectors_origin_and_invalid_credentials_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"generated_at":"2026-10-09T00:40:03.357Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:03.302893+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_methods_unknown_selectors_origin_and_invalid_credentials_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_methods_unknown_selectors_origin_and_invalid_credentials_refuse) (method='GET', target='/api/capabilities')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 136, in test_methods_unknown_selectors_origin_and_invalid_credentials_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"generated_at":"2026-10-09T00:40:03.359Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:03.302893+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_private_and_retired_labels_do_not_change_native_counts (test_memory_capabilities.MemoryCapabilitiesTests.test_private_and_retired_labels_do_not_change_native_counts) (marker='<private>SyntheticCapabilityPrivate</private>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 94, in test_private_and_retired_labels_do_not_change_native_counts
+    self.assertEqual(response.json()['totals']['tool_calls'], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 10 != 0
+
+======================================================================
+FAIL: test_private_and_retired_labels_do_not_change_native_counts (test_memory_capabilities.MemoryCapabilitiesTests.test_private_and_retired_labels_do_not_change_native_counts) (marker='SyntheticCapabilityRetired')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 94, in test_private_and_retired_labels_do_not_change_native_counts
+    self.assertEqual(response.json()['totals']['tool_calls'], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 10 != 0
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_sources_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_revocation_connector_loss_and_redirected_sources_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 120, in test_revocation_connector_loss_and_redirected_sources_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T00:40:06.312Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:06.264673+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_sources_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_revocation_connector_loss_and_redirected_sources_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 120, in test_revocation_connector_loss_and_redirected_sources_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T00:40:06.313Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:06.264673+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_sources_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_revocation_connector_loss_and_redirected_sources_refuse) (mode='revoked')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 120, in test_revocation_connector_loss_and_redirected_sources_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"generated_at":"2026-10-09T00:40:06.315Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:06.314509+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_sources_refuse (test_memory_capabilities.MemoryCapabilitiesTests.test_revocation_connector_loss_and_redirected_sources_refuse) (mode='missing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 120, in test_revocation_connector_loss_and_redirected_sources_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T00:40:06.316Z","window_minutes":60,"oldest_event_parsed":"2026-10-09T00:37:06.314509+00:00","totals":{"tool_calls":10,"sessions":1,"skills":1,"agent_dispatches":2,"workflow_runs":1,"send_messages":1,"tool_searches":1,"web_searches":1,"web_fetches":1},"skills":[{"name":"Sy
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.521s
+
+FAILED (failures=17)

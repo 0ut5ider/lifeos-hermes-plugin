@@ -23,6 +23,10 @@ ROUTES = {
     '/api/observability/tool-failures': ('OBSERVABILITY/tool-failures.jsonl',),
     '/api/novelty': ('STATE/novelty-state.json',),
 }
+CAPABILITY_WINDOWS = {'/api/capabilities': 4_000_000, '/api/capabilities?window=60': 4_000_000,
+                     '/api/capabilities?window=360': 10_000_000, '/api/capabilities?window=1440': 20_000_000}
+ROUTES.update({target: ('OBSERVABILITY/tool-activity.jsonl', 'OBSERVABILITY/subagent-events.jsonl')
+               for target in CAPABILITY_WINDOWS})
 SOURCES = frozenset(PREFIX + name for names in ROUTES.values() for name in names)
 TAIL_LIMIT = 1024 * 1024
 
@@ -59,7 +63,7 @@ def _collect(memory, scope, connection, target, *, admit=True):
     keys = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
     for name in ROUTES[target]:
         relative = PREFIX + name
-        if target == '/api/algorithm' and relative in history.SOURCES: continue
+        if (target == '/api/algorithm' and relative in history.SOURCES) or target in CAPABILITY_WINDOWS: continue
         path = _checked(memory, memory.root / relative)
         if not path.exists():
             fingerprints.append((relative, None))
@@ -131,7 +135,11 @@ def view(memory, scope, target, *, check_current=None):
     if not scope.principal: raise MemoryUnavailable('Operational views require a bound owner')
     if check_current is not None: check_current()
     with memory._transaction() as connection:
-        current = history.snapshot(memory, scope, connection, check_current=check_current) if target == '/api/algorithm' else nullcontext((None, []))
+        streamed = history.SOURCES if target == '/api/algorithm' else ({
+            PREFIX + 'OBSERVABILITY/tool-activity.jsonl': CAPABILITY_WINDOWS[target],
+            PREFIX + 'OBSERVABILITY/subagent-events.jsonl': 500_000} if target in CAPABILITY_WINDOWS else None)
+        current = history.snapshot(memory, scope, connection, check_current=check_current,
+            sources=streamed, require_newline=target == '/api/algorithm') if streamed is not None else nullcontext((None, []))
         with current as (descriptor, history_fingerprints):
             sources, fingerprints = _collect(memory, scope, connection, target)
             arguments = {} if descriptor is None else {'history_descriptor': descriptor}
@@ -139,8 +147,8 @@ def view(memory, scope, target, *, check_current=None):
                 source_descriptors=() if descriptor is None else (descriptor,), **arguments)
             if check_current is not None: check_current()
             if (_collect(memory, scope, connection, target, admit=False)[1] != fingerprints
-                    or target == '/api/algorithm' and
-                    [history.fingerprint(memory, relative) for relative in history.SOURCES] != history_fingerprints):
+                    or streamed is not None and
+                    [history.fingerprint(memory, relative, sources=streamed) for relative in streamed] != history_fingerprints):
                 raise MemoryUnavailable('Operational sources change during native rendering')
         if (not isinstance(result, dict) or set(result) != {'status', 'body'}
                 or type(result['status']) is not int or result['status'] != 200

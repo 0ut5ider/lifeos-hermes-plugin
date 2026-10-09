@@ -1,5 +1,5 @@
-# ABOUTME: Streams complete work-event history into an anonymous private admitted snapshot.
-# ABOUTME: Bounds record validation and rechecks original bytes before native all-time folding.
+# ABOUTME: Streams fixed operational event histories into anonymous private admitted snapshots.
+# ABOUTME: Bounds record validation and rechecks original bytes before native folding or aggregation.
 import hashlib
 import json
 import os
@@ -16,14 +16,14 @@ SOURCES = {'LIFEOS/MEMORY/STATE/work-events.jsonl': None,
            'LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl': 512 * 1024}
 
 
-def fingerprint(memory, relative):
+def fingerprint(memory, relative, *, sources=SOURCES):
     path = _checked(memory, memory.root / relative)
     if not path.exists(): return (relative, None)
     if not path.is_file(): raise MemoryUnavailable('Operational history requires a regular owner file')
     before = path.stat()
     digest = hashlib.sha256()
     with path.open('rb') as stream:
-        if SOURCES[relative] is not None: stream.seek(max(0, before.st_size - SOURCES[relative]))
+        if sources[relative] is not None: stream.seek(max(0, before.st_size - sources[relative]))
         while chunk := stream.read(128 * 1024): digest.update(chunk)
     after = path.stat()
     _checked(memory, path)
@@ -33,12 +33,12 @@ def fingerprint(memory, relative):
 
 
 @contextmanager
-def snapshot(memory, scope, connection, *, check_current=None):
+def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, require_newline=True):
     from .memory_operational_views import projection, _timestamp
     admitted_digest = hashlib.sha256()
     fingerprints = []
     with tempfile.TemporaryFile(mode='w+b') as output:
-        for relative, limit in SOURCES.items():
+        for relative, limit in sources.items():
             path = _checked(memory, memory.root / relative)
             if not path.exists():
                 fingerprints.append((relative, None))
@@ -80,9 +80,11 @@ def snapshot(memory, scope, connection, *, check_current=None):
                     raw_digest.update(raw)
                     if len(raw.rstrip(b'\r\n')) > SOURCE_LIMIT:
                         raise MemoryUnavailable('An operational history event exceeds its byte limit')
-                    if not raw.endswith(b'\n'): break
+                    complete = raw.endswith(b'\n')
+                    if require_newline and not complete: break
                     try: line = raw.decode('utf-8').rstrip('\r\n')
                     except UnicodeError as error:
+                        if not complete and error.reason == 'unexpected end of data': break
                         raise MemoryUnavailable('Operational history requires valid UTF-8') from error
                     if not line: continue
                     try: row = json.loads(line)
@@ -100,7 +102,7 @@ def snapshot(memory, scope, connection, *, check_current=None):
             expected = (relative, (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns), raw_digest.hexdigest())
             if original_bytes is not None and hashlib.sha256(original_bytes).hexdigest() != raw_digest.hexdigest():
                 raise MemoryUnavailable('Operational history changes its reviewed source bytes')
-            if fingerprint(memory, relative) != expected:
+            if fingerprint(memory, relative, sources=sources) != expected:
                 raise MemoryUnavailable('Operational history changes during admission')
             fingerprints.append(expected)
         output.flush()
