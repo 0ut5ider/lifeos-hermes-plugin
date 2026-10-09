@@ -21,7 +21,10 @@ DIGEST = r'\d{4}-\d{2}-\d{2}_.*_digest\.json'
 
 
 def declared_source(relative):
-    return relative in {PRIMARY, FALLBACK, SOURCE_CONFIG} or re.fullmatch(re.escape(HISTORY) + '/' + DIGEST, relative) is not None
+    from .memory_local_runs import RUNS, RUN_ID
+    return (relative in {PRIMARY, FALLBACK, SOURCE_CONFIG}
+        or re.fullmatch(re.escape(HISTORY) + '/' + DIGEST, relative) is not None
+        or re.fullmatch(re.escape(RUNS) + '/' + RUN_ID + r'\.log(?:\.started)?', relative) is not None)
 
 
 def request_target(value):

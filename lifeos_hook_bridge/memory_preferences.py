@@ -171,6 +171,9 @@ class MemoryPreferences:
     def conduit_job_response(self, *, account):
         return self._owner_job_response(account=account)
 
+    def local_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
     def atlas_job_response(self, *, account):
         return self._owner_job_response(account=account)
 

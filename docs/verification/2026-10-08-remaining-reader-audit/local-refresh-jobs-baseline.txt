@@ -1,0 +1,60 @@
+test_anonymous_job_preparation_requires_real_authentication (test_memory_local_refresh_jobs.MemoryLocalRefreshJobAuthenticationTests.test_anonymous_job_preparation_requires_real_authentication) ... ok
+test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_local_refresh_jobs.MemoryLocalRefreshJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation) ... FAIL
+test_owner_receives_only_a_current_configuration_restriction (test_memory_local_refresh_jobs.MemoryLocalRefreshJobAuthenticationTests.test_owner_receives_only_a_current_configuration_restriction) ... FAIL
+test_actual_selected_profile_command_refuses_missing_hometown (test_memory_local_refresh_jobs.MemoryLocalRefreshJobCommandTests.test_actual_selected_profile_command_refuses_missing_hometown) ... FAIL
+test_authenticated_native_refresh_starts_selected_owner_job (test_memory_local_refresh_jobs.MemoryLocalRefreshJobRelayTests.test_authenticated_native_refresh_starts_selected_owner_job) ... FAIL
+
+======================================================================
+FAIL: test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_local_refresh_jobs.MemoryLocalRefreshJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 149, in test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation
+    self.assertEqual(self.fixture.client.post(self.endpoint).status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 503
+
+======================================================================
+FAIL: test_owner_receives_only_a_current_configuration_restriction (test_memory_local_refresh_jobs.MemoryLocalRefreshJobAuthenticationTests.test_owner_receives_only_a_current_configuration_restriction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 139, in test_owner_receives_only_a_current_configuration_restriction
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_actual_selected_profile_command_refuses_missing_hometown (test_memory_local_refresh_jobs.MemoryLocalRefreshJobCommandTests.test_actual_selected_profile_command_refuses_missing_hometown)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_jobs.py", line 48, in test_actual_selected_profile_command_refuses_missing_hometown
+    self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (2, "usage: hermes lifeos-job [-h]\n      [392 chars])\n") != (0, '')
+
+First differing element 0:
+2
+0
+
++ (0, '')
+- (2,
+-  'usage: hermes lifeos-job [-h]\n'
+-  '                         [--configuration-revision CONFIGURATION_REVISION]\n'
+-  '                         '
+-  '{user-index,memory-consolidation,life-morning-brief,proposal-gc,conduit-insight,atlas-insights}\n'
+-  "hermes lifeos-job: error: argument job: invalid choice: 'local-intelligence' "
+-  "(choose from 'user-index', 'memory-consolidation', 'life-morning-brief', "
+-  "'proposal-gc', 'conduit-insight', 'atlas-insights')\n") :
+
+======================================================================
+FAIL: test_authenticated_native_refresh_starts_selected_owner_job (test_memory_local_refresh_jobs.MemoryLocalRefreshJobRelayTests.test_authenticated_native_refresh_starts_selected_owner_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_jobs.py", line 33, in test_authenticated_native_refresh_starts_selected_owner_job
+    self.assertEqual(response.status_code, 202, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 202 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.357s
+
+FAILED (failures=4)

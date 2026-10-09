@@ -1,0 +1,36 @@
+test_arbitrary_run_identifier_refuses_without_files (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_arbitrary_run_identifier_refuses_without_files) ... ok
+test_later_log_edits_and_revoked_writer_remain_intact (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_later_log_edits_and_revoked_writer_remain_intact) ... FAIL
+test_native_run_sidecars_are_private_and_keep_actual_exit_code (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_native_run_sidecars_are_private_and_keep_actual_exit_code) ... FAIL
+test_private_and_retired_output_cannot_enter_run_log (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_private_and_retired_output_cannot_enter_run_log) ... FAIL
+
+======================================================================
+FAIL: test_later_log_edits_and_revoked_writer_remain_intact (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_later_log_edits_and_revoked_writer_remain_intact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_runs.py", line 34, in test_later_log_edits_and_revoked_writer_remain_intact
+    self.assertTrue(started['ok'], started)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_native_run_sidecars_are_private_and_keep_actual_exit_code (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_native_run_sidecars_are_private_and_keep_actual_exit_code)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_runs.py", line 23, in test_native_run_sidecars_are_private_and_keep_actual_exit_code
+    self.assertTrue(started['ok'], started)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_private_and_retired_output_cannot_enter_run_log (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_private_and_retired_output_cannot_enter_run_log)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_runs.py", line 44, in test_private_and_retired_output_cannot_enter_run_log
+    self.assertTrue(started['ok'], started)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.011s
+
+FAILED (failures=3)

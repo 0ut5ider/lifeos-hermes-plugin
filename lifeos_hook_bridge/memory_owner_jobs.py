@@ -26,6 +26,7 @@ JOBS = {
     'life-morning-brief': (('LIFEOS/PULSE/checks/life-morning-brief.ts',),),
     'proposal-gc': (('LIFEOS/TOOLS/ProposalGC.ts', '--auto'),),
     'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
+    'local-intelligence': (('skills/LocalIntelligence/Tools/Refresh.ts', '--fill'),),
     'atlas-insights': (('LIFEOS/PULSE/modules/atlas.ts', '--build-insights'),),
 }
 MAX_OUTPUT = 4 * 1024 * 1024
@@ -39,10 +40,10 @@ def _terminate(process):
     process.wait()
 
 
-def _command(arguments, environment, timeout):
+def _command(arguments, environment, timeout, *, merge_errors=False):
     # File-backed pipes keep a bounded job from retaining unbounded output in RAM.
     with tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as errors:
-        process = subprocess.Popen(arguments, env=environment, stdout=output, stderr=errors,
+        process = subprocess.Popen(arguments, env=environment, stdout=output, stderr=output if merge_errors else errors,
                                    start_new_session=True)
         previous = signal.getsignal(signal.SIGTERM)
         def stop(signum, frame):
@@ -99,14 +100,34 @@ class OwnerJobs:
         self.runtime.bind_environment(environment, session_id=session)
         if expected_revision is not None:
             environment['LIFEOS_MEMORY_CONFIGURATION_REVISION'] = expected_revision
+        service = MemoryService(self.runtime.configuration)
+        local_run = None
+        if name == 'local-intelligence':
+            from .memory_local_runs import run_paths
+            identifier = os.environ.get('LIFEOS_LOCAL_REFRESH_RUN_ID') or (
+                datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+                .replace(':', '-').replace('.', '-') + '_' + uuid.uuid4().hex[:8])
+            run_paths(identifier)
+            local_run = service.native(context, 'local_run_start', {'run_id': identifier})
+            if not local_run.get('ok'):
+                raise MemoryAdmissionError('LocalIntelligence run requires current owner diagnostics')
         deadline = time.monotonic() + timeout
         output = []
         for command in JOBS[name]:
             if expected_revision is not None:
                 self.runtime.configuration.check_revision(self.runtime.configuration.load(), expected_revision)
             self.runtime.check_call(request={}, **route, session_id=session, metadata={})
-            result, text = _command(['bun', '--no-install', str(root / command[0]),
-                *command[1:]], environment, max(0.001, deadline - time.monotonic()))
+            arguments = ['bun', '--no-install', str(root / command[0]), *command[1:]]
+            remaining = max(0.001, deadline - time.monotonic())
+            if local_run is None:
+                result, text = _command(arguments, environment, remaining)
+            else:
+                result, text = _command(arguments, environment, remaining, merge_errors=True)
+                logged = service.native(context, 'local_run_finish', {'run_id': identifier,
+                    'signature': local_run['signature'], 'content': text, 'exit_code': result})
+                if not logged.get('ok'):
+                    return {'status': 'response-withheld', 'job': name}
+
             if result:
                 return {'status': 'failed', 'job': name, 'exit_code': result}
             output.append(text)

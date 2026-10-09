@@ -280,6 +280,10 @@ class MemoryService:
                 from .memory_manual_state import run
                 return run(memory, scope, **arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation in {'local_run_start', 'local_run_finish'}:
+                from .memory_local_runs import run
+                return run(memory, scope, operation, arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'local_inputs':
                 from .memory_local_refresh import inputs
                 return inputs(memory, scope, operation, arguments,

@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..9ca3e99
+index 0000000..27b3041
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,588 @@
+@@ -0,0 +1,606 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8406,9 +8406,12 @@ index 0000000..9ca3e99
 +}
 +
 +
-+export function startOwnerMemoryJob(name: "conduit-insight" | "atlas-insights", revision: string, settled: (success: boolean) => void): {stop: () => Promise<void>} {
-+  if (!["conduit-insight", "atlas-insights"].includes(name)) throw new Error("Choose a declared owner memory job");
++export function startOwnerMemoryJob(name: "conduit-insight" | "atlas-insights" | "local-intelligence", revision: string, settled: (success: boolean) => void, runId?: string): {stop: () => Promise<void>} {
++  if (!["conduit-insight", "atlas-insights", "local-intelligence"].includes(name)) throw new Error("Choose a declared owner memory job");
 +  if (!/^[0-9a-f]{64}$/.test(revision)) throw new Error("Owner jobs require the initiating owner revision");
++  if (runId !== undefined && (name !== "local-intelligence" || !/^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z_[0-9a-f]{8}$/.test(runId))) {
++    throw new Error("LocalIntelligence requires its native run identifier");
++  }
 +  const command = memoryServiceCommand();
 +  const configuration = command.arguments[2];
 +  if (command.arguments.length !== 3 || command.arguments[1] !== "--configuration"
@@ -8425,6 +8428,8 @@ index 0000000..9ca3e99
 +  environment.HERMES_HOME = dirname(configuration);
 +  environment.LIFEOS_MEMORY_CONFIGURATION = configuration;
 +  environment.LIFEOS_MEMORY_CONFIGURATION_REVISION = revision;
++  delete environment.LIFEOS_LOCAL_REFRESH_RUN_ID;
++  if (runId !== undefined) environment.LIFEOS_LOCAL_REFRESH_RUN_ID = runId;
 +  const child = spawn(command.executable, ["-m", "hermes_cli.main", "lifeos-job", name,
 +    "--configuration-revision", revision], {env: environment, stdio: ["ignore", "pipe", "pipe"]});
 +  child.stdout.resume();
@@ -8502,7 +8507,8 @@ index 0000000..9ca3e99
 +}
 +
 +
-+export async function memoryHTTPLocalIntelligenceView(request: Request, running: boolean, started: number): Promise<Response | null> {
++export async function memoryHTTPLocalIntelligenceView(request: Request, running: boolean, started: number,
++    startJob?: (revision: string) => string): Promise<Response | null> {
 +  if (!hasManagedMemoryHTTP()) return null;
 +  const url = new URL(request.url);
 +  const headers = {"cache-control": "no-store"};
@@ -8516,7 +8522,19 @@ index 0000000..9ca3e99
 +  const origin = request.headers.get("origin");
 +  if (origin && origin !== url.origin) return Response.json({error: "LocalIntelligence requires the current origin"}, {status: 403, headers});
 +  const target = url.pathname + (url.pathname === "/api/local-intelligence/status" ? "?running=" + Number(running) + "&started=" + started : url.search);
-+  try { return await memoryHTTPResponseAsync(request, "life", target); }
++  try {
++    if (refresh) {
++      const admitted = await memoryHTTPResponseAsync(request, "local_job");
++      if (admitted.status !== 200) return admitted;
++      const value: unknown = await admitted.json();
++      if (!memoryObject(value) || Object.keys(value).join(",") !== "configuration_revision"
++          || typeof value.configuration_revision !== "string" || !/^[0-9a-f]{64}$/.test(value.configuration_revision)
++          || startJob === undefined || request.signal.aborted) throw new Error("LocalIntelligence job preparation is unavailable");
++      const runId = startJob(value.configuration_revision);
++      return Response.json({status: "started", run_id: runId}, {status: 202, headers: admitted.headers});
++    }
++    return await memoryHTTPResponseAsync(request, "life", target);
++  }
 +  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +}
 +
@@ -11710,12 +11728,13 @@ diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/
        }
  
        // Which surfaces are switched on. The dashboard reads this to avoid
-@@ -1209,6 +1213,8 @@
+@@ -1209,6 +1213,9 @@
    if (imessageModule) imessageModule.stopIMessage?.()
    if (assistantModule) assistantModule.stopAssistant?.()
    if (syslogModule) await syslogModule.stop?.()
 +  if (conduitModule) await conduitModule.stop?.()
 +  if (atlasModule) await atlasModule.stop?.()
++  if (localIntelligenceModule) await localIntelligenceModule.stop?.()
    await writeState(STATE_PATH, state).catch(() => {})
    log("info", "LifeOS Pulse stopped", { uptimeMs: Date.now() - state.startedAt })
  }
@@ -12525,7 +12544,7 @@ index 9bab5b4..566d575 100644
    const stateUpdatedAt = (state?.updated_at as string) ?? null;
    const activeAgents = typeof state?.active_agents === "number" ? (state.active_agents as number) : null;
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts b/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts
-index 7d37200..3db695c 100644
+index 7d37200..cba36bf 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts
 @@ -1,3 +1,5 @@
@@ -12538,7 +12557,7 @@ index 7d37200..3db695c 100644
   * reads the resulting JSON for serves.
   */
  
-+import { memoryHTTPLocalIntelligenceView, hasManagedMemoryHTTP } from "../../TOOLS/lib/MemoryAccess"
++import { memoryHTTPLocalIntelligenceView, hasManagedMemoryHTTP, startOwnerMemoryJob } from "../../TOOLS/lib/MemoryAccess"
  import { spawn } from "node:child_process"
  import { readFile, readdir, mkdir, writeFile, stat } from "node:fs/promises"
  import { join } from "node:path"
@@ -12554,7 +12573,7 @@ index 7d37200..3db695c 100644
    try { return await readFile(LATEST_PATH, "utf8") } catch {}
    try { return await readFile(LEGACY_LATEST_PATH, "utf8") } catch {}
    return null
-@@ -60,9 +66,11 @@ const state: ModuleState = {
+@@ -60,14 +66,17 @@ const state: ModuleState = {
  export async function start(): Promise<void> {
    state.running = true
    state.startedAt = new Date()
@@ -12569,7 +12588,13 @@ index 7d37200..3db695c 100644
    console.log(`[${MODULE_NAME}] started`)
  }
  
-@@ -86,17 +94,17 @@ export function health(): { status: string; details?: Record<string, unknown> }
+ export async function stop(): Promise<void> {
+   state.running = false
++  await refreshJob?.stop()
+   console.log(`[${MODULE_NAME}] stopped`)
+ }
+ 
+@@ -86,22 +95,36 @@ export function health(): { status: string; details?: Record<string, unknown> }
    }
  }
  
@@ -12593,7 +12618,26 @@ index 7d37200..3db695c 100644
    } catch {
      /* unparseable — empty-state path */
    }
-@@ -140,7 +148,7 @@ interface HistoryItem {
+ }
+ 
++let refreshJob: {stop: () => Promise<void>} | undefined
++let activeRunId: string | undefined
++
++function startRefresh(revision: string): string {
++  if (refreshJob !== undefined && activeRunId !== undefined) return activeRunId
++  const runId = `${new Date().toISOString().replace(/[:.]/g, "-")}_${randomUUID().slice(0, 8)}`
++  activeRunId = runId
++  refreshJob = startOwnerMemoryJob("local-intelligence", revision, () => {
++    refreshJob = undefined
++    activeRunId = undefined
++  }, runId)
++  return runId
++}
++
+ async function spawnRefresh(): Promise<string> {
+   const runId = `${new Date().toISOString().replace(/[:.]/g, "-")}_${randomUUID().slice(0, 8)}`
+   const logPath = join(RUNS_DIR, `${runId}.log`)
+@@ -140,7 +163,7 @@ interface HistoryItem {
    summary?: string; digest_date: string
  }
  
@@ -12602,7 +12646,7 @@ index 7d37200..3db695c 100644
    const days = RANGE_DAYS[range]
    if (!days) {
      return Response.json({ error: "bad_range", valid: Object.keys(RANGE_DAYS) }, { status: 400 })
-@@ -151,7 +159,7 @@ async function buildHistory(range: string): Promise<Response> {
+@@ -151,7 +174,7 @@ async function buildHistory(range: string): Promise<Response> {
  
    let files: string[] = []
    try {
@@ -12611,7 +12655,7 @@ index 7d37200..3db695c 100644
        .filter((f) => /^\d{4}-\d{2}-\d{2}_.*_digest\.json$/.test(f))
        .filter((f) => f.slice(0, 10) >= cutoff)
        .sort()
-@@ -172,7 +180,8 @@ async function buildHistory(range: string): Promise<Response> {
+@@ -172,7 +195,8 @@ async function buildHistory(range: string): Promise<Response> {
    for (const f of files) {
      let digest: Record<string, any>
      try {
@@ -12621,16 +12665,16 @@ index 7d37200..3db695c 100644
      } catch { continue }
      const digestDate = f.slice(0, 10)
      daysCovered++
-@@ -210,6 +219,8 @@ async function buildHistory(range: string): Promise<Response> {
+@@ -210,6 +234,8 @@ async function buildHistory(range: string): Promise<Response> {
  }
  
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
-+  const managed = await memoryHTTPLocalIntelligenceView(req, state.running, state.startedAt?.getTime() ?? 0)
++  const managed = await memoryHTTPLocalIntelligenceView(req, state.running, state.startedAt?.getTime() ?? 0, startRefresh)
 +  if (managed !== null) return managed
    if (req.method === "GET" && pathname === "/api/local-intelligence/history") {
      const range = new URL(req.url).searchParams.get("range") ?? "week"
      return buildHistory(range)
-@@ -246,3 +257,38 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+@@ -246,3 +272,38 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
    }
    return null
  }

@@ -352,6 +352,7 @@ def get_memory_life(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('life', request, account)
 
 
+@router.post('/memory/local_job')
 @router.post('/memory/atlas_job')
 @router.post('/memory/conduit_job')
 async def prepare_memory_owner_job(request: Request, account: str = Depends(_memory_account)):
@@ -366,7 +367,9 @@ async def prepare_memory_owner_job(request: Request, account: str = Depends(_mem
         return JSONResponse({'error': 'Native owner job preparation is cancelled'}, status_code=400, headers=headers)
     try:
         preferences = _memory_preferences()
-        method = preferences.atlas_job_response if request.url.path.endswith('/atlas_job') else preferences.conduit_job_response
+        methods = {'local_job': preferences.local_job_response, 'atlas_job': preferences.atlas_job_response,
+            'conduit_job': preferences.conduit_job_response}
+        method = methods[request.url.path.rsplit('/', 1)[-1]]
         result, binding = method(account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
