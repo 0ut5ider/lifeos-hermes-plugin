@@ -1,0 +1,127 @@
+test_admitted_daemon_job_counts_preserve_native_metadata (test_memory_menubar.MemoryMenubarTests.test_admitted_daemon_job_counts_preserve_native_metadata) ... FAIL
+test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write) ... FAIL
+test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_menubar.MemoryMenubarTests.test_current_owner_origin_bearer_and_connector_govern_delivery) ... FAIL
+test_original_native_payload_counts_feed_and_initialization_characterization (test_memory_menubar.MemoryMenubarTests.test_original_native_payload_counts_feed_and_initialization_characterization) ... ok
+test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload) ... FAIL
+test_private_gateway_metadata_refuses_without_reading_credentials (test_memory_menubar.MemoryMenubarTests.test_private_gateway_metadata_refuses_without_reading_credentials) ... FAIL
+test_private_or_retired_telemetry_does_not_contribute_counts (test_memory_menubar.MemoryMenubarTests.test_private_or_retired_telemetry_does_not_contribute_counts) ... FAIL
+test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels) ... FAIL
+test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) ... 
+  test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='symlink') ... FAIL
+  test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='hardlink') ... FAIL
+  test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='utf8') ... FAIL
+  test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='oversize') ... FAIL
+test_unknown_methods_and_public_selectors_refuse (test_memory_menubar.MemoryMenubarTests.test_unknown_methods_and_public_selectors_refuse) ... FAIL
+
+======================================================================
+FAIL: test_admitted_daemon_job_counts_preserve_native_metadata (test_memory_menubar.MemoryMenubarTests.test_admitted_daemon_job_counts_preserve_native_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 159, in test_admitted_daemon_job_counts_preserve_native_metadata
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generatedAt":"2026-10-09T16:40:24.541Z","daemon":{"status":"running","label":"Running — 20735d 16h","uptimeSec":1791564024,"failingJobs":0,"jobCount":1},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":1},"hermes":{"status":"down","summary":"gateway down","channels":""},"
+
+======================================================================
+FAIL: test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 80, in test_anonymous_reader_refuses_labels_counts_and_implicit_write
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"generatedAt":"2026-10-09T16:40:25.439Z","daemon":{"status":"stopped","label":"Stopped","uptimeSec":0,"failingJobs":0,"jobCount":0},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":1},"hermes":{"status":"down","summary":"gateway down","channels":""},"feed":[{"subsystem":"m
+
+======================================================================
+FAIL: test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_menubar.MemoryMenubarTests.test_current_owner_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 108, in test_current_owner_origin_bearer_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + '/api/menubar', headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 92, in test_owner_admitted_fields_match_actual_native_payload
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_gateway_metadata_refuses_without_reading_credentials (test_memory_menubar.MemoryMenubarTests.test_private_gateway_metadata_refuses_without_reading_credentials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 172, in test_private_gateway_metadata_refuses_without_reading_credentials
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generatedAt":"2026-10-09T16:40:29.273Z","daemon":{"status":"stopped","label":"Stopped","uptimeSec":0,"failingJobs":0,"jobCount":0},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":1},"hermes":{"status":"down","summary":"gateway down","channels":"0/1"},"feed":[{"subsystem"
+
+======================================================================
+FAIL: test_private_or_retired_telemetry_does_not_contribute_counts (test_memory_menubar.MemoryMenubarTests.test_private_or_retired_telemetry_does_not_contribute_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 185, in test_private_or_retired_telemetry_does_not_contribute_counts
+    self.assertEqual(response.json()['counts']['memory'], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 100, in test_private_work_source_refuses_cached_personal_labels
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generatedAt":"2026-10-09T16:40:31.252Z","daemon":{"status":"stopped","label":"Stopped","uptimeSec":0,"failingJobs":0,"jobCount":0},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":1},"hermes":{"status":"down","summary":"gateway down","channels":""},"feed":[{"subsystem":"m
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 141, in test_redirected_invalid_or_excessive_work_source_refuses
+    self.assertEqual(client.get(self.native + '/api/menubar').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 141, in test_redirected_invalid_or_excessive_work_source_refuses
+    self.assertEqual(client.get(self.native + '/api/menubar').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 141, in test_redirected_invalid_or_excessive_work_source_refuses
+    self.assertEqual(client.get(self.native + '/api/menubar').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 141, in test_redirected_invalid_or_excessive_work_source_refuses
+    self.assertEqual(client.get(self.native + '/api/menubar').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_unknown_methods_and_public_selectors_refuse (test_memory_menubar.MemoryMenubarTests.test_unknown_methods_and_public_selectors_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 121, in test_unknown_methods_and_public_selectors_refuse
+    self.assertEqual(response.status_code, code, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"generatedAt":"2026-10-09T16:40:33.242Z","daemon":{"status":"stopped","label":"Stopped","uptimeSec":0,"failingJobs":0,"jobCount":0},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":0},"hermes":{"status":"down","summary":"gateway down","channels":""},"feed":[{"subsystem":"m
+
+----------------------------------------------------------------------
+Ran 10 tests in 9.842s
+
+FAILED (failures=12)

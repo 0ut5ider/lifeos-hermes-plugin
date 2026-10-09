@@ -1,0 +1,36 @@
+test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write) ... FAIL
+test_original_native_payload_counts_feed_and_initialization_characterization (test_memory_menubar.MemoryMenubarTests.test_original_native_payload_counts_feed_and_initialization_characterization) ... ok
+test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload) ... FAIL
+test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels) ... FAIL
+
+======================================================================
+FAIL: test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 73, in test_anonymous_reader_refuses_labels_counts_and_implicit_write
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"generatedAt":"2026-10-09T16:30:23.959Z","daemon":{"status":"stopped","label":"Stopped","uptimeSec":0,"failingJobs":0,"jobCount":0},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":1},"hermes":{"status":"down","summary":"gateway down","channels":""},"feed":[{"subsystem":"m
+
+======================================================================
+FAIL: test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 85, in test_owner_admitted_fields_match_actual_native_payload
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 93, in test_private_work_source_refuses_cached_personal_labels
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generatedAt":"2026-10-09T16:30:26.785Z","daemon":{"status":"stopped","label":"Stopped","uptimeSec":0,"failingJobs":0,"jobCount":0},"counts":{"amber":0,"conduitMinutes":0,"memory":1,"memoryPending":0,"work":1},"hermes":{"status":"down","summary":"gateway down","channels":""},"feed":[{"subsystem":"m
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.847s
+
+FAILED (failures=3)

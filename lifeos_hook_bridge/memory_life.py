@@ -11,16 +11,20 @@ from .memory_operational_views import ROUTES as OPERATIONAL_ROUTES
 from .memory_personal_modules import ROUTES as PERSONAL_ROUTES
 from .memory_performance import ROUTES as PERFORMANCE_ROUTES
 from .memory_conduit import ROUTES as CONDUIT_ROUTES
+from .memory_menubar import ROUTES as MENUBAR_ROUTES
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
                     '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
-                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES) | PERSONAL_ROUTES | frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES
+                    '/api/telos/overview', '/api/onboarding/state', '/api/atlas', '/api/atlas/insights'}) | frozenset(OPERATIONAL_ROUTES) | PERSONAL_ROUTES | frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES
 
 
 def request_target(value):
     if not isinstance(value, str) or len(value) > 256:
         raise ValueError('Life views require a bounded installed route')
     parsed = urlsplit(value)
+    if parsed.path in MENUBAR_ROUTES:
+        from .memory_menubar import request_target as menubar_target
+        return menubar_target(value)
     if parsed.path in CONDUIT_ROUTES:
         from .memory_conduit import request_target as conduit_target
         return conduit_target(value)
@@ -67,6 +71,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if urlsplit(target).path in MENUBAR_ROUTES:
+        from .memory_menubar import view as menubar_view
+        return menubar_view(memory, scope, target, check_current=check_current)
     if urlsplit(target).path in CONDUIT_ROUTES:
         from .memory_conduit import view as conduit_view
         return conduit_view(memory, scope, target, check_current=check_current)

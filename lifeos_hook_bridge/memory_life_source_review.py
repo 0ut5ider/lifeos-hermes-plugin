@@ -19,11 +19,12 @@ def classification(relative):
     from .memory_manual_state import QUEUE
     from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
+    from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
     if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
     if relative in PERSONAL_SOURCES['doctor'] or re.fullmatch(r'hooks/[^/]+\.hook\.(?:ts|sh)', relative): return 'life_text'
-    if relative in PERFORMANCE_SOURCES: return 'life_text'
+    if relative in PERFORMANCE_SOURCES or relative in MENUBAR_SOURCES | PROFILE_SOURCES: return 'life_text'
     if re.fullmatch(r'LIFEOS/USER/CONDUIT/(?:config\.json|(?:events|daily|insights)/[^/]+\.(?:json|jsonl))', relative): return 'life_text'
     if (relative in FINANCE_SOURCES or relative in TELOS
             or re.fullmatch(r'LIFEOS/USER/HEALTH/[^/]+\.md', relative) and Path(relative).name != 'README.md'
@@ -41,7 +42,8 @@ def snapshot(memory, scope, relative):
     if kind is None:
         raise MemoryUnavailable('Source review requires a declared Life source')
     from .memory_atlas import SNAPSHOT, DATABASE, source_path
-    path = source_path(memory, relative) if relative in {SNAPSHOT, DATABASE} else _checked(memory, memory.root / relative)
+    from .memory_menubar import PROFILE_SOURCES, source_path as profile_source
+    path = profile_source(memory, relative) if relative in PROFILE_SOURCES else source_path(memory, relative) if relative in {SNAPSHOT, DATABASE} else _checked(memory, memory.root / relative)
     if not path.exists() or kind == 'life_text' and not path.is_file():
         raise MemoryUnavailable('Life source review requires existing physical owner sources')
     before = path.stat()
@@ -61,7 +63,7 @@ def snapshot(memory, scope, relative):
             raise MemoryUnavailable('A reviewed Life source exceeds its byte limit')
         with path.open('r', encoding='utf-8', newline='') as stream: content = stream.read()
     after = path.stat()
-    source_path(memory, relative) if relative in {SNAPSHOT, DATABASE} else _checked(memory, path)
+    profile_source(memory, relative) if relative in PROFILE_SOURCES else source_path(memory, relative) if relative in {SNAPSHOT, DATABASE} else _checked(memory, path)
     if keys(before) != keys(after):
         raise MemoryUnavailable('A Life source changes during review')
     return ({'path': str(path), 'relative': relative, 'content': content,
@@ -73,9 +75,11 @@ def projection(memory, relative, content):
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES, projection as operational_projection
     from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
-    if (relative.startswith('LIFEOS/USER/CONDUIT/') or relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
+    from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
+    if (relative in MENUBAR_SOURCES | PROFILE_SOURCES or relative.startswith('LIFEOS/USER/CONDUIT/') or relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
             or relative in {SNAPSHOT, DATABASE, CACHE}
             or relative in PERSONAL_SOURCES['ledger'] and relative.endswith(('.json', '.jsonl'))):
+        if not relative.endswith(('.json', '.jsonl')): return content
         values = [operational_projection(line) for line in content.split('\n') if line] if relative.endswith('.jsonl') else [operational_projection(content)]
         result = '\n'.join(values) if all(value is not None for value in values) else None
         return result if result is not None and len(result.encode()) <= CORPUS_LIMIT else None

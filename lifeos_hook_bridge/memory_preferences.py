@@ -257,7 +257,7 @@ class MemoryPreferences:
         from .memory_source_review import preview
         config = self._configuration(account=account)
         scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
-        return preview(NativeMemory(self.root), scope, paths)
+        return preview(NativeMemory(self.root, profile=self.configuration.path.parent), scope, paths)
 
     def approve_sources(self, request: dict[str, Any], *, account: str | None = None):
         from .memory_source_review import approve
@@ -268,7 +268,7 @@ class MemoryPreferences:
             if self._configuration(account=account) != config:
                 raise MemoryUnavailable('The memory configuration changed during source review')
         scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
-        return approve(NativeMemory(self.root), scope, **request, check_current=check_current)
+        return approve(NativeMemory(self.root, profile=self.configuration.path.parent), scope, **request, check_current=check_current)
 
     def review_hypothesis(self, target, note, request_id, *, account=None):
         from .memory_hypothesis_review import review
@@ -294,7 +294,7 @@ class MemoryPreferences:
         def check_current():
             if self._configuration(account=account) != config:
                 raise MemoryUnavailable('The memory configuration changes during Life rendering')
-        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+        return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
             check_current=check_current), account=account)
 
     def telos_file_response(self, target, *, account=None):

@@ -1,0 +1,21 @@
+test_managed_direct_conduit_accessor_requires_admitted_inputs (test_memory_menubar.MemoryMenubarTests.test_managed_direct_conduit_accessor_requires_admitted_inputs) ... FAIL
+
+======================================================================
+FAIL: test_managed_direct_conduit_accessor_requires_admitted_inputs (test_memory_menubar.MemoryMenubarTests.test_managed_direct_conduit_accessor_requires_admitted_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 196, in test_managed_direct_conduit_accessor_requires_admitted_inputs
+    self.assertEqual(json.loads(result.stdout), {'refused': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'refused': False} != {'refused': True}
+- {'refused': False}
+?             ^^^^
+
++ {'refused': True}
+?             ^^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.924s
+
+FAILED (failures=1)

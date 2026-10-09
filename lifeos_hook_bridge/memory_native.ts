@@ -27,7 +27,21 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'conduit_defaults') {
+  if (input.action === 'menubar_view') {
+    if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || !object(input.modified) || Object.values(input.modified).some(value => typeof value !== 'number' || !Number.isFinite(value))
+        || typeof input.profile_home !== 'string' || typeof input.profile_present !== 'boolean'
+        || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)
+        || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3) throw new Error('Native Menubar requires declared admitted sources and profile state');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/menubar.ts')).href);
+    if (!object(module) || typeof module.renderMenubarView !== 'function') throw new Error('Native Menubar exports are unavailable');
+    const response: unknown = await module.renderMenubarView(input.sources, input.history_descriptor,
+      input.modified, input.profile_home, input.profile_present, input.date);
+    if (!(response instanceof Response)) throw new Error('Native Menubar requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'conduit_defaults') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Conduit/config.ts')).href);
     if (!object(module) || typeof module.defaultConfigText !== 'function') throw new Error('Native Conduit defaults are unavailable');
     result = {content: module.defaultConfigText()};

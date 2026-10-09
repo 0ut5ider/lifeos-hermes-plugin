@@ -55,9 +55,11 @@ class MemoryConflict(MemoryUnavailable):
 
 
 class NativeMemory:
-    def __init__(self, installed_root: Path, *, bun: str | None = None):
+    def __init__(self, installed_root: Path, *, bun: str | None = None, profile: Path | None = None):
         self.root = Path(installed_root).absolute()
         self.physical_root = self.root.resolve()
+        self.profile = Path(profile or self.root.parent / ".hermes").absolute()
+        self.physical_profile = self.profile.resolve()
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
