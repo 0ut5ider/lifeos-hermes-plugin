@@ -88,14 +88,14 @@ async function main(): Promise<void> {
       }
       result = module.bannerSourceView(input.sources, input.counts, input.args, input.width);
     }
-  } else if (input.action === 'algorithm_tab_sources' || input.action === 'algorithm_tab_view') {
+  } else if (input.action === 'algorithm_tab_sources' || input.action === 'algorithm_tab_view' || input.action === 'algorithm_summary_plan') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/algorithm-tab.ts')).href);
     if (!object(module) || typeof module.algorithmChainSources !== 'function' || typeof module.renderAlgorithmTabView !== 'function') {
       throw new Error('Native Algorithm exports are unavailable');
     }
     if (input.action === 'algorithm_tab_sources') result = {sources: module.algorithmChainSources()};
     else {
-      if (typeof input.target !== 'string' || !/^\/api\/algorithm-tab(?:\/|\/file(?:\?.*)?)?$/.test(input.target)
+      if (input.action === 'algorithm_tab_view' && (typeof input.target !== 'string' || !/^\/api\/algorithm-tab(?:\/|\/file(?:\?.*)?)?$/.test(input.target))
           || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
             || typeof source.relative !== 'string' || typeof source.content !== 'string')
           || !object(input.metadata) || Object.values(input.metadata).some(value => !object(value)
@@ -104,9 +104,14 @@ async function main(): Promise<void> {
           || !Array.isArray(input.versions) || input.versions.some(value => typeof value !== 'string' || !/^v\d{1,10}\.\d{1,10}\.\d{1,10}\.md$/.test(value))) {
         throw new Error('Native Algorithm requires declared admitted sources and version metadata');
       }
-      const response: unknown = await module.renderAlgorithmTabView(input.sources, input.target, input.metadata, input.versions);
-      if (!(response instanceof Response)) throw new Error('Native Algorithm requires a response');
-      result = {status: response.status, body: await response.json()};
+      if (input.action === 'algorithm_summary_plan') {
+        if (typeof module.algorithmSummaryPlan !== 'function') throw new Error('Native Algorithm summary planning is unavailable');
+        result = await module.algorithmSummaryPlan(input.sources, input.metadata, input.versions);
+      } else {
+        const response: unknown = await module.renderAlgorithmTabView(input.sources, input.target, input.metadata, input.versions);
+        if (!(response instanceof Response)) throw new Error('Native Algorithm requires a response');
+        result = {status: response.status, body: await response.json()};
+      }
     }
   } else if (input.action === 'content_view') {
     if (typeof input.target !== 'string' || !['/api/content', '/api/content/', '/api/content/status'].includes(input.target)
@@ -633,7 +638,7 @@ async function main(): Promise<void> {
       return sources;
     }
     let observed = null;
-    if (object(input.evidence)) {
+    if (object(input.evidence) && Array.isArray(input.evidence.sources)) {
       const sources: Record<string, string> = {};
       for (const value of Object.values(declared(input.evidence.sources))) sources[value.path] = value.content;
       observed = evidence.gatherEvidence(new Date(), {sources, gitCommits: input.evidence.gitCommits});
@@ -674,7 +679,7 @@ async function main(): Promise<void> {
     const context = freshness.readContextFreshness(declared(input.context_sources));
     const state = freshness.readStateFreshness(declared(input.state_sources));
     let observed = null;
-    if (object(input.evidence_sources)) {
+    if (object(input.evidence_sources) && Array.isArray(input.evidence_sources.sources)) {
       const values: Record<string, string> = {};
       for (const source of Object.values(declared(input.evidence_sources.sources))) values[source.path] = source.content;
       observed = evidence.gatherEvidence(now, {sources: values, gitCommits: input.evidence_sources.gitCommits});
@@ -969,7 +974,8 @@ async function main(): Promise<void> {
     result = {notes: retriever.discoverAllItems(null)};
   } else if (input.action === "validate_batch") {
     if (!Array.isArray(input.items) || typeof system.sanitizeTypedItemForPersistence !== "function") throw new Error("Invalid native validation batch");
-    result = {results: input.items.map((item: unknown) => system.sanitizeTypedItemForPersistence(item))};
+    const sanitize = system.sanitizeTypedItemForPersistence;
+    result = {results: input.items.map((item: unknown) => sanitize(item))};
   } else if (input.action === "validate_source_batch") {
     const capture: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/CaptureEnvelope.ts")).href);
     if (!object(capture) || typeof capture.stripPrivateContent !== "function" || !Array.isArray(input.contents)) {

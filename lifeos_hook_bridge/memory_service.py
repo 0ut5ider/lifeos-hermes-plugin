@@ -292,6 +292,10 @@ class MemoryService:
                 from .memory_local_refresh import synthesis
                 return synthesis(memory, scope, operation, arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation in {'algorithm_summary_prepare', 'algorithm_summary_check', 'algorithm_summary_publish'}:
+                from .memory_algorithm_summary import synthesis
+                return synthesis(memory, scope, operation, arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation in {'atlas_insight_prepare', 'atlas_insight_check', 'atlas_insight_publish'}:
                 from .memory_atlas_insight import synthesis
                 return synthesis(memory, scope, operation, arguments,

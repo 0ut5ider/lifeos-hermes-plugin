@@ -1,0 +1,71 @@
+test_incremental_native_cache_is_private_and_returns_next_signature (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_incremental_native_cache_is_private_and_returns_next_signature) ... ok
+test_native_plan_preserves_complete_source_hashes_and_native_levels (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_native_plan_preserves_complete_source_hashes_and_native_levels) ... ok
+test_source_metadata_private_source_and_read_only_permission_refuse (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_source_metadata_private_source_and_read_only_permission_refuse) ... ok
+test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache) ... ok
+test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_actual_post_render_changes_and_process_death_preserve_recovery) ... ok
+test_full_source_bytes_and_inode_replacement_invalidate_native_plan (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_full_source_bytes_and_inode_replacement_invalidate_native_plan) ... ok
+test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) ...
+  test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='symlink') ... ERROR
+  test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='hardlink') ... ERROR
+  test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='utf8') ... ERROR
+  test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='oversize') ... ERROR
+test_new_retirement_invalidates_the_prepared_signature (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_new_retirement_invalidates_the_prepared_signature) ... ok
+test_unknown_cards_invalid_timestamps_empty_output_and_wrong_overview_refuse (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_unknown_cards_invalid_timestamps_empty_output_and_wrong_overview_refuse) ... ok
+test_native_failed_inference_preserves_absent_cache_and_requested_levels (test_native_algorithm_summary.NativeAlgorithmSummaryTests.test_native_failed_inference_preserves_absent_cache_and_requested_levels) ... ok
+test_prepared_native_plan_matches_original_child_prompts (test_native_algorithm_summary.NativeAlgorithmSummaryTests.test_prepared_native_plan_matches_original_child_prompts) ... ok
+
+======================================================================
+ERROR: test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary_edges.py", line 44, in test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes
+    self.cache.symlink_to(outside)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 1213, in symlink_to
+    os.symlink(target, self, target_is_directory)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-jplt_fdq/synthetic-algorithm-cache' -> '/tmp/native-memory-jplt_fdq/.claude/LIFEOS/MEMORY/STATE/algorithm-tab-summary.json'
+
+======================================================================
+ERROR: test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary_edges.py", line 46, in test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes
+    os.link(outside, self.cache)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-jplt_fdq/synthetic-algorithm-cache' -> '/tmp/native-memory-jplt_fdq/.claude/LIFEOS/MEMORY/STATE/algorithm-tab-summary.json'
+
+======================================================================
+ERROR: test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary_edges.py", line 48, in test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes
+    self.cache.write_bytes(b'{"overview":null,"files":{}}\xff')
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 796, in write_bytes
+    with self.open(mode='wb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-jplt_fdq/.claude/LIFEOS/MEMORY/STATE/algorithm-tab-summary.json'
+
+======================================================================
+ERROR: test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary_edges.py", line 50, in test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes
+    self.cache.write_text(' ' * (256 * 1024 + 1))
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-jplt_fdq/.claude/LIFEOS/MEMORY/STATE/algorithm-tab-summary.json'
+
+----------------------------------------------------------------------
+Ran 11 tests in 116.261s
+
+FAILED (errors=4)

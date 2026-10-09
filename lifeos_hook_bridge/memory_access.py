@@ -369,6 +369,9 @@ class NativeMemory:
         if payload['operation'] == 'local_refresh':
             from .memory_local_refresh import publication_paths
             return publication_paths(self, scope, payload)
+        if payload['operation'] == 'algorithm_summary':
+            from .memory_algorithm_summary import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'atlas_insight':
             from .memory_atlas_insight import publication_paths
             return publication_paths(self, scope, payload)

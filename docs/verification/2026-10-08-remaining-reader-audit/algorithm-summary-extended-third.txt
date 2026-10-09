@@ -1,0 +1,29 @@
+test_incremental_native_cache_is_private_and_returns_next_signature (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_incremental_native_cache_is_private_and_returns_next_signature) ... ok
+test_native_plan_preserves_complete_source_hashes_and_native_levels (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_native_plan_preserves_complete_source_hashes_and_native_levels) ... ok
+test_source_metadata_private_source_and_read_only_permission_refuse (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_source_metadata_private_source_and_read_only_permission_refuse) ... ok
+test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache) ... ok
+test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_actual_post_render_changes_and_process_death_preserve_recovery) ... ok
+test_full_source_bytes_and_inode_replacement_invalidate_native_plan (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_full_source_bytes_and_inode_replacement_invalidate_native_plan) ... ok
+test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_linked_invalid_utf8_and_oversized_cache_preserve_prior_bytes) ... ok
+test_new_retirement_invalidates_the_prepared_signature (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_new_retirement_invalidates_the_prepared_signature) ... ok
+test_recovery_preserves_later_owner_cache_after_actual_process_death (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_recovery_preserves_later_owner_cache_after_actual_process_death) ... FAIL
+test_unknown_cards_invalid_timestamps_empty_output_and_wrong_overview_refuse (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_unknown_cards_invalid_timestamps_empty_output_and_wrong_overview_refuse) ... ok
+test_native_failed_inference_preserves_absent_cache_and_requested_levels (test_native_algorithm_summary.NativeAlgorithmSummaryTests.test_native_failed_inference_preserves_absent_cache_and_requested_levels) ... ok
+test_prepared_native_plan_matches_original_child_prompts (test_native_algorithm_summary.NativeAlgorithmSummaryTests.test_prepared_native_plan_matches_original_child_prompts) ... ok
+
+======================================================================
+FAIL: test_recovery_preserves_later_owner_cache_after_actual_process_death (test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_recovery_preserves_later_owner_cache_after_actual_process_death)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary_edges.py", line 120, in test_recovery_preserves_later_owner_cache_after_actual_process_death
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 47, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Publication recovery preserves a later artifact edit'}
+
+----------------------------------------------------------------------
+Ran 12 tests in 128.600s
+
+FAILED (failures=1)

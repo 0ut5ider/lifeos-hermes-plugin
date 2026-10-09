@@ -12808,7 +12808,7 @@ index ea7ccff..3f374be 100644
 +  throw new Error("Choose a declared Content read route");
 +}
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
-index 54d381e..bc71142 100644
+index 54d381e..27c3fbf 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
 @@ -1,3 +1,5 @@
@@ -12954,7 +12954,7 @@ index 54d381e..bc71142 100644
      summary: store.overview
        ? { generated_at: store.overview.generated_at, level: store.overview.level, stale: store.overview.chain_hash !== hash, markdown: store.overview.markdown }
        : null,
-@@ -611,6 +625,51 @@ async function compose(): Promise<unknown> {
+@@ -611,6 +625,80 @@ async function compose(): Promise<unknown> {
    };
  }
  
@@ -12982,10 +12982,10 @@ index 54d381e..bc71142 100644
 +      return Response.json({ id, content: reader ? reader.text(path) : await Bun.file(path).text(), mtime: st.mtime.toISOString(), editable: spec.editable && !version });
 +}
 +
-+export async function renderAlgorithmTabView(sources: {relative: string; content: string}[], target: string,
-+    metadata: Record<string, {size: number; modified: number}>, versions: string[]): Promise<Response> {
++function algorithmReader(sources: {relative: string; content: string}[],
++    metadata: Record<string, {size: number; modified: number}>, versions: string[]): AlgorithmReader {
 +  const admitted = new Map(sources.map(source => [join(HOME, source.relative), source.content]));
-+  const reader: AlgorithmReader = {
++  return {
 +    text(path) {
 +      const content = admitted.get(path);
 +      if (content === undefined) throw new Error("An admitted Algorithm source is unavailable");
@@ -12999,6 +12999,35 @@ index 54d381e..bc71142 100644
 +    },
 +    versions: () => versions,
 +  };
++}
++
++export async function algorithmSummaryPlan(sources: {relative: string; content: string}[],
++    metadata: Record<string, {size: number; modified: number}>, versions: string[]): Promise<{
++      hash: string;
++      files: {id: string; hash: string; system: string; user: string; level: "low"}[];
++      overview: {system: string; user: string; level: "high"};
++      store: SummaryStore;
++    }> {
++  const reader = algorithmReader(sources, metadata, versions);
++  const files: {id: string; hash: string; system: string; user: string; level: "low"}[] = [];
++  const parts: string[] = [];
++  for (const spec of CHAIN) {
++    let content: string;
++    try { content = reader.text(chainPath(spec, undefined, reader)); } catch { continue; }
++    const body = content.length > 14000 ? `${content.slice(0, 14000)}\n\n[…truncated]` : content;
++    files.push({id: spec.id, hash: contentHash(content), system: FILE_PROMPT, level: "low",
++      user: `FILE: ${spec.rel}\nSTATED ROLE: ${spec.role}\nLOADS: ${spec.loaded}\n\n${body}`});
++    const overviewBody = spec.kind === "code" ? content.slice(0, 4000) : content;
++    parts.push(`===== FILE: ${spec.rel} (${spec.role}) =====\n${overviewBody}`);
++  }
++  return {hash: await chainHash(reader), files,
++    overview: {system: OVERVIEW_PROMPT, user: parts.join("\n\n"), level: "high"},
++    store: await readStore(reader)};
++}
++
++export async function renderAlgorithmTabView(sources: {relative: string; content: string}[], target: string,
++    metadata: Record<string, {size: number; modified: number}>, versions: string[]): Promise<Response> {
++  const reader = algorithmReader(sources, metadata, versions);
 +  const request = new Request("http://localhost" + target);
 +  return new URL(request.url).pathname.endsWith("/file") ? await fileView(request, reader) : Response.json(await compose(reader));
 +}
@@ -13006,7 +13035,7 @@ index 54d381e..bc71142 100644
  /* ── Module surface ── */
  
  export function start(): void {
-@@ -620,6 +679,8 @@ export function start(): void {
+@@ -620,6 +708,8 @@ export function start(): void {
  
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
    if (!pathname.startsWith("/api/algorithm-tab")) return null;
@@ -13015,7 +13044,7 @@ index 54d381e..bc71142 100644
    const sub = pathname.replace(/^\/api\/algorithm-tab/, "").replace(/\/$/, "");
  
    try {
-@@ -628,22 +689,7 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+@@ -628,22 +718,7 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
      }
  
      if (sub === "/file" && req.method === "GET") {
