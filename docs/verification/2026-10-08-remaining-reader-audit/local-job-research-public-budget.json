@@ -1,0 +1,760 @@
+{
+  "server_mutation": false,
+  "public_test_location_only": true,
+  "status": "PASS",
+  "actual_child": {
+    "arguments": [
+      "--print",
+      "--model",
+      "sonnet",
+      "--output-format",
+      "text",
+      "--setting-sources",
+      "",
+      "--system-prompt",
+      "",
+      "--tools",
+      "WebSearch,WebFetch",
+      "--allowedTools",
+      "WebSearch,WebFetch"
+    ],
+    "exit_code": 0,
+    "stderr": "  \u250a \ud83d\udd0d search    Austin TX new construction projects building permits October 2026  2.0s\n  \u250a \ud83d\udd0d search    Austin police department crime news October 2026  0.3s\n  \u250a \ud83d\udd0d search    Austin TX business openings closures October 2026  0.9s\n  \u250a \ud83d\udd0d search    Austin city council mayor news October 2026  1.4s\n  \u250a \ud83d\udd0d search    Austin city council ordinance agenda September October 2026 approved  0.9s\n  \u250a \ud83d\udd0d search    Travis County elections 2026 ballot propositions candidate filings November  1.6s\n  \u250a \ud83d\udd0d search    Austin police arrest news this week October 6 2026  0.2s\n  \u250a \ud83d\udd0d search    Austin Texas local news headlines October 8 2026  1.5s\n  \u250a \ud83d\udd0d search    Austin mayor Kirk Watson news October 2026  0.7s\n  \u250a \ud83d\udd0d search    Austin ISD school board news October 2026  1.0s\n  \u250a \ud83d\udd0d search    Austin business expansion opening headquarters announcement late September 2026  0.2s\n  \u250a \ud83d\udd0d search    \"York Space Systems\" Austin office Domain statesman October 2026  1.2s\n  \u250a \ud83d\udd0d search    Austin pedestrian dies hit by car northwest Austin October 2026 KXAN  0.7s\n  \u250a \ud83d\udd0d search    Firefly Aerospace Austin headquarters expansion October 2026  1.1s\n  \u250a \ud83d\udd0d search    \"Pedestrian dies after being hit by car in northwest Austin\" KXAN date  0.2s\n  \u250a \ud83d\udd0d search    KXAN \"canceled more than 60 voter-approved bond projects\" dashboard October 2026  1.3s\n  \u250a \ud83d\udd0d search    Austin Proposition I audit Statesman \"Oct\" 2026 Watson  0.7s\n",
+    "stdout_sha256": "07a56ea6eb026d9b3e0b2f4507d8bcee5d58af7e37a276c70c03d8789c55f2bf",
+    "stdout_characters": 21538
+  },
+  "wire_requests": [
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": null,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 0,
+      "tool_results": [],
+      "prior_tool_call_names": [],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "2a6daf620fec90be5fa3e0b5cfafd8ecf7ecfada935e32a8d471d05e50a98830"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": null,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 4,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-be90edf6904fb715",
+          "content_sha256": "9f7d756ec9845017c3ea685aa9d972b6105969abcc10b18f1ba633ee13b6168d",
+          "content_characters": 14398
+        },
+        {
+          "call_id": "chatcmpl-tool-bfe20256621cde96",
+          "content_sha256": "6d40015a0c99dd4058f52611d4d7b06e3a7084832180f177deefa8639dc7bac6",
+          "content_characters": 21745
+        },
+        {
+          "call_id": "chatcmpl-tool-bd53018a02471b77",
+          "content_sha256": "e9299d7b455394ec4cac431e0284dfacc44f11075a4e0985d810a3fbc22dfe37",
+          "content_characters": 26304
+        },
+        {
+          "call_id": "chatcmpl-tool-8d75be2283a1ea5a",
+          "content_sha256": "a60d25b0fdfa54c467e91485d5284b0546b7606b60a4f11cd9c38ea642f8efdb",
+          "content_characters": 3848
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "3a7d0c928255b57e5c66e88bdb1a67227dc90c80c446adcb5ca57d4e1d8b553d"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": null,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 8,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-be90edf6904fb715",
+          "content_sha256": "9f7d756ec9845017c3ea685aa9d972b6105969abcc10b18f1ba633ee13b6168d",
+          "content_characters": 14398
+        },
+        {
+          "call_id": "chatcmpl-tool-bfe20256621cde96",
+          "content_sha256": "6d40015a0c99dd4058f52611d4d7b06e3a7084832180f177deefa8639dc7bac6",
+          "content_characters": 21745
+        },
+        {
+          "call_id": "chatcmpl-tool-bd53018a02471b77",
+          "content_sha256": "e9299d7b455394ec4cac431e0284dfacc44f11075a4e0985d810a3fbc22dfe37",
+          "content_characters": 26304
+        },
+        {
+          "call_id": "chatcmpl-tool-8d75be2283a1ea5a",
+          "content_sha256": "a60d25b0fdfa54c467e91485d5284b0546b7606b60a4f11cd9c38ea642f8efdb",
+          "content_characters": 3848
+        },
+        {
+          "call_id": "chatcmpl-tool-aeb2f4b3836bcf1b",
+          "content_sha256": "21556ba47f5c08f656b566901baab57b8cebc93f61bb873f77abfebe198c3ad6",
+          "content_characters": 19262
+        },
+        {
+          "call_id": "chatcmpl-tool-a15d525cf1fd216c",
+          "content_sha256": "84639e3f4c566e95977cb484afeb68fbdbc808f027e5a4d1abb18b98e9adb690",
+          "content_characters": 20731
+        },
+        {
+          "call_id": "chatcmpl-tool-b4c44a7aa2f7b5c4",
+          "content_sha256": "154fa46746fb634413d1228d1dbbc7bb94ed8b6f8cb288342dd39d681beab493",
+          "content_characters": 12816
+        },
+        {
+          "call_id": "chatcmpl-tool-9adda755dc30e43b",
+          "content_sha256": "88f5e8e0fac2a6555e9758384d2188744da19ca3136948beebf8354bfbfeb5a9",
+          "content_characters": 15350
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "d2489d3b96485c42c3af2e7502d9596ed053a050d77f87a73c8509b41186b71f"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": null,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 11,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-be90edf6904fb715",
+          "content_sha256": "9f7d756ec9845017c3ea685aa9d972b6105969abcc10b18f1ba633ee13b6168d",
+          "content_characters": 14398
+        },
+        {
+          "call_id": "chatcmpl-tool-bfe20256621cde96",
+          "content_sha256": "6d40015a0c99dd4058f52611d4d7b06e3a7084832180f177deefa8639dc7bac6",
+          "content_characters": 21745
+        },
+        {
+          "call_id": "chatcmpl-tool-bd53018a02471b77",
+          "content_sha256": "e9299d7b455394ec4cac431e0284dfacc44f11075a4e0985d810a3fbc22dfe37",
+          "content_characters": 26304
+        },
+        {
+          "call_id": "chatcmpl-tool-8d75be2283a1ea5a",
+          "content_sha256": "a60d25b0fdfa54c467e91485d5284b0546b7606b60a4f11cd9c38ea642f8efdb",
+          "content_characters": 3848
+        },
+        {
+          "call_id": "chatcmpl-tool-aeb2f4b3836bcf1b",
+          "content_sha256": "21556ba47f5c08f656b566901baab57b8cebc93f61bb873f77abfebe198c3ad6",
+          "content_characters": 19262
+        },
+        {
+          "call_id": "chatcmpl-tool-a15d525cf1fd216c",
+          "content_sha256": "84639e3f4c566e95977cb484afeb68fbdbc808f027e5a4d1abb18b98e9adb690",
+          "content_characters": 20731
+        },
+        {
+          "call_id": "chatcmpl-tool-b4c44a7aa2f7b5c4",
+          "content_sha256": "154fa46746fb634413d1228d1dbbc7bb94ed8b6f8cb288342dd39d681beab493",
+          "content_characters": 12816
+        },
+        {
+          "call_id": "chatcmpl-tool-9adda755dc30e43b",
+          "content_sha256": "88f5e8e0fac2a6555e9758384d2188744da19ca3136948beebf8354bfbfeb5a9",
+          "content_characters": 15350
+        },
+        {
+          "call_id": "chatcmpl-tool-bdb8db7518ae000b",
+          "content_sha256": "d0b141fd207c08641fccc12a06deada690b7d285a022eda716de2666707433a4",
+          "content_characters": 21276
+        },
+        {
+          "call_id": "chatcmpl-tool-853c8e4c78c47a86",
+          "content_sha256": "de671478c50b3a9f1c8eaef95a07c9ed8ddc8480da5582f556c98ea64bdffb8d",
+          "content_characters": 5280
+        },
+        {
+          "call_id": "chatcmpl-tool-80f75eeca8efae28",
+          "content_sha256": "b4582e354042ca576021e7e4d180d2ae972b66f8844ec20eba7a69969ae643f7",
+          "content_characters": 16039
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "34fe5a823d25a72bf5b96e6402c24334245abcb65b95b6cb758a050bfe83d7bc"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": null,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 14,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-be90edf6904fb715",
+          "content_sha256": "9f7d756ec9845017c3ea685aa9d972b6105969abcc10b18f1ba633ee13b6168d",
+          "content_characters": 14398
+        },
+        {
+          "call_id": "chatcmpl-tool-bfe20256621cde96",
+          "content_sha256": "6d40015a0c99dd4058f52611d4d7b06e3a7084832180f177deefa8639dc7bac6",
+          "content_characters": 21745
+        },
+        {
+          "call_id": "chatcmpl-tool-bd53018a02471b77",
+          "content_sha256": "e9299d7b455394ec4cac431e0284dfacc44f11075a4e0985d810a3fbc22dfe37",
+          "content_characters": 26304
+        },
+        {
+          "call_id": "chatcmpl-tool-8d75be2283a1ea5a",
+          "content_sha256": "a60d25b0fdfa54c467e91485d5284b0546b7606b60a4f11cd9c38ea642f8efdb",
+          "content_characters": 3848
+        },
+        {
+          "call_id": "chatcmpl-tool-aeb2f4b3836bcf1b",
+          "content_sha256": "21556ba47f5c08f656b566901baab57b8cebc93f61bb873f77abfebe198c3ad6",
+          "content_characters": 19262
+        },
+        {
+          "call_id": "chatcmpl-tool-a15d525cf1fd216c",
+          "content_sha256": "84639e3f4c566e95977cb484afeb68fbdbc808f027e5a4d1abb18b98e9adb690",
+          "content_characters": 20731
+        },
+        {
+          "call_id": "chatcmpl-tool-b4c44a7aa2f7b5c4",
+          "content_sha256": "154fa46746fb634413d1228d1dbbc7bb94ed8b6f8cb288342dd39d681beab493",
+          "content_characters": 12816
+        },
+        {
+          "call_id": "chatcmpl-tool-9adda755dc30e43b",
+          "content_sha256": "88f5e8e0fac2a6555e9758384d2188744da19ca3136948beebf8354bfbfeb5a9",
+          "content_characters": 15350
+        },
+        {
+          "call_id": "chatcmpl-tool-bdb8db7518ae000b",
+          "content_sha256": "d0b141fd207c08641fccc12a06deada690b7d285a022eda716de2666707433a4",
+          "content_characters": 21276
+        },
+        {
+          "call_id": "chatcmpl-tool-853c8e4c78c47a86",
+          "content_sha256": "de671478c50b3a9f1c8eaef95a07c9ed8ddc8480da5582f556c98ea64bdffb8d",
+          "content_characters": 5280
+        },
+        {
+          "call_id": "chatcmpl-tool-80f75eeca8efae28",
+          "content_sha256": "b4582e354042ca576021e7e4d180d2ae972b66f8844ec20eba7a69969ae643f7",
+          "content_characters": 16039
+        },
+        {
+          "call_id": "chatcmpl-tool-bfd70c5c40c6a747",
+          "content_sha256": "3d0f99f4c800608211cc489074da0105f088d7b5dadc834acf0c33ae9b0cb79a",
+          "content_characters": 4560
+        },
+        {
+          "call_id": "chatcmpl-tool-bbb21fd55feaeeef",
+          "content_sha256": "eba70e6e78cfa63591c46eb07cc35c41a5bacbb7b0b104b06f0f6b619e2a013e",
+          "content_characters": 5543
+        },
+        {
+          "call_id": "chatcmpl-tool-8c239ed8bdd26a02",
+          "content_sha256": "104a374d086145f2fedeabb45d3d9de9ddca6c29506ac06f262d2985a91f0c49",
+          "content_characters": 2228
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "efc065f72a99c600a62e7e65d0120a734cf11c04d34132af24d6ab1c7fa37bb9"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": null,
+      "finish_reasons": [
+        "stop"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 17,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-be90edf6904fb715",
+          "content_sha256": "9f7d756ec9845017c3ea685aa9d972b6105969abcc10b18f1ba633ee13b6168d",
+          "content_characters": 14398
+        },
+        {
+          "call_id": "chatcmpl-tool-bfe20256621cde96",
+          "content_sha256": "6d40015a0c99dd4058f52611d4d7b06e3a7084832180f177deefa8639dc7bac6",
+          "content_characters": 21745
+        },
+        {
+          "call_id": "chatcmpl-tool-bd53018a02471b77",
+          "content_sha256": "e9299d7b455394ec4cac431e0284dfacc44f11075a4e0985d810a3fbc22dfe37",
+          "content_characters": 26304
+        },
+        {
+          "call_id": "chatcmpl-tool-8d75be2283a1ea5a",
+          "content_sha256": "a60d25b0fdfa54c467e91485d5284b0546b7606b60a4f11cd9c38ea642f8efdb",
+          "content_characters": 3848
+        },
+        {
+          "call_id": "chatcmpl-tool-aeb2f4b3836bcf1b",
+          "content_sha256": "21556ba47f5c08f656b566901baab57b8cebc93f61bb873f77abfebe198c3ad6",
+          "content_characters": 19262
+        },
+        {
+          "call_id": "chatcmpl-tool-a15d525cf1fd216c",
+          "content_sha256": "84639e3f4c566e95977cb484afeb68fbdbc808f027e5a4d1abb18b98e9adb690",
+          "content_characters": 20731
+        },
+        {
+          "call_id": "chatcmpl-tool-b4c44a7aa2f7b5c4",
+          "content_sha256": "154fa46746fb634413d1228d1dbbc7bb94ed8b6f8cb288342dd39d681beab493",
+          "content_characters": 12816
+        },
+        {
+          "call_id": "chatcmpl-tool-9adda755dc30e43b",
+          "content_sha256": "88f5e8e0fac2a6555e9758384d2188744da19ca3136948beebf8354bfbfeb5a9",
+          "content_characters": 15350
+        },
+        {
+          "call_id": "chatcmpl-tool-bdb8db7518ae000b",
+          "content_sha256": "d0b141fd207c08641fccc12a06deada690b7d285a022eda716de2666707433a4",
+          "content_characters": 21276
+        },
+        {
+          "call_id": "chatcmpl-tool-853c8e4c78c47a86",
+          "content_sha256": "de671478c50b3a9f1c8eaef95a07c9ed8ddc8480da5582f556c98ea64bdffb8d",
+          "content_characters": 5280
+        },
+        {
+          "call_id": "chatcmpl-tool-80f75eeca8efae28",
+          "content_sha256": "b4582e354042ca576021e7e4d180d2ae972b66f8844ec20eba7a69969ae643f7",
+          "content_characters": 16039
+        },
+        {
+          "call_id": "chatcmpl-tool-bfd70c5c40c6a747",
+          "content_sha256": "3d0f99f4c800608211cc489074da0105f088d7b5dadc834acf0c33ae9b0cb79a",
+          "content_characters": 4560
+        },
+        {
+          "call_id": "chatcmpl-tool-bbb21fd55feaeeef",
+          "content_sha256": "eba70e6e78cfa63591c46eb07cc35c41a5bacbb7b0b104b06f0f6b619e2a013e",
+          "content_characters": 5543
+        },
+        {
+          "call_id": "chatcmpl-tool-8c239ed8bdd26a02",
+          "content_sha256": "104a374d086145f2fedeabb45d3d9de9ddca6c29506ac06f262d2985a91f0c49",
+          "content_characters": 2228
+        },
+        {
+          "call_id": "chatcmpl-tool-b25e1dd636d6db0f",
+          "content_sha256": "fd21243d3ea9823e4af2dd82c3281a77e17a79ef3d91b84fb3e2bd6db226a371",
+          "content_characters": 4125
+        },
+        {
+          "call_id": "chatcmpl-tool-80e327e72b2d721e",
+          "content_sha256": "60d049be8b07d133e926a36c43792fbddb0fd0aa7ee1f2412207185a4c483112",
+          "content_characters": 7752
+        },
+        {
+          "call_id": "chatcmpl-tool-b9c5e44ae8a468bd",
+          "content_sha256": "5db2a67ed036dfe7eda9103e548a8abaf602619e395c0331595d52a4d7ddf4a1",
+          "content_characters": 9048
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "80e8960a189454189aea45677af348672bc4d64b56629aa8e63f279aecee268a"
+    }
+  ],
+  "native_status": 200,
+  "run_log_characters": 820,
+  "native_run_log": "{\n  \"city\": \"Austin\",\n  \"state\": \"TX\",\n  \"sources_used\": [\n    \"construction\",\n    \"crime\",\n    \"business\",\n    \"officials\",\n    \"legislation\",\n    \"elections\",\n    \"arrests\",\n    \"news\"\n  ],\n  \"sources_failed\": [],\n  \"user_sources_merged\": [],\n  \"claude_filled\": [\n    \"construction\",\n    \"crime\",\n    \"business\",\n    \"officials\",\n    \"legislation\",\n    \"elections\",\n    \"arrests\",\n    \"news\"\n  ],\n  \"total_items\": 35,\n  \"datedPath\": \"/tmp/native-memory-wf1ty3iw/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/2026-10-09_austin_tx_digest.json\",\n  \"latestPaths\": [\n    \"/tmp/native-memory-wf1ty3iw/.claude/LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/latest.json\",\n    \"/tmp/native-memory-wf1ty3iw/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/latest.json\"\n  ],\n  \"latest_skipped_no_clobber\": false\n}\n\n[exit] code=0\n",
+  "native_exit_zero": true,
+  "logged_child_failure": false,
+  "latest_exists": true,
+  "marker_exists": true,
+  "digest_error_count": 8,
+  "digest_errors": [
+    "construction: construction fetcher not yet implemented \u2014 TODO: Census BPS for Austin, TX",
+    "crime: crime fetcher not yet implemented \u2014 TODO: delegate to the crime-stats skill's QuickStats for Austin, TX; never call CitizenRIMS/FBI/AreaVibes from here",
+    "business: business fetcher not yet implemented \u2014 TODO: city open-data discovery for Austin, TX",
+    "officials: officials fetcher not yet implemented \u2014 TODO: Ballotpedia API for Austin, TX",
+    "legislation: legislation fetcher not yet implemented \u2014 TODO: OpenStates + Granicus discovery for Austin, TX",
+    "elections: elections fetcher not yet implemented \u2014 TODO: Ballotpedia API for Austin, TX",
+    "arrests: arrests fetcher not yet implemented \u2014 TODO: sheriff blotter discovery for Travis County",
+    "news: Patch returned 404 for https://patch.com/tx/austin/feed"
+  ],
+  "native_total_items": 35,
+  "item_sources": [
+    {
+      "title": "OHT Partners starts construction on The Barton, a 402-unit apartment community in Oak Hill",
+      "url": "https://www.bizjournals.com/austin/news/2026/10/07/oht-partners-apartments-construction-southwest-atx.html",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "1,093 building permits issued in Austin the week of Sept. 28\u2013Oct. 5, led by a $51.75M Gonzales Street project",
+      "url": "https://permitradarhq.com/permits/austin/",
+      "date": "2026-10-05"
+    },
+    {
+      "title": "1,580 housing units logged on one 288-unit project inflate District 7's 2026 permit totals",
+      "url": "https://transparent.city/c/austin/stories/GqzQTt1c",
+      "date": "2026-10-06"
+    },
+    {
+      "title": "Man found dead at Northeast Austin bus stop investigated as homicide, the city's 45th of 2026",
+      "url": "https://foxsanantonio.com/news/local/apd-investigating-homicide-in-ne-austin-10-06-2026",
+      "date": "2026-10-06"
+    },
+    {
+      "title": "Man shot and killed roommate over rent dispute at La Madrid Apartments, Austin's 46th homicide",
+      "url": "https://kwtx.com/2026/10/07/austin-man-shot-killed-roommate-over-rent-money-dispute-police-say",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "APD Chief: Local investigators still waiting for federal evidence from ICE shooting",
+      "url": "https://cbsaustin.com/news/local/apd-chief-local-investigators-still-waiting-for-federal-evidence-from-ice-shooting",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "APD detectives seek public's assistance in August aggravated assault at Gillis Neighborhood Park",
+      "url": "https://www.kxan.com/news/crime/austin-police-seek-suspect-in-august-aggravated-assault/",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "As Central Texas cuts ALPR ties, new research questions camera placement and crime prevention",
+      "url": "https://cbsaustin.com/news/local/as-central-tx-cuts-alpr-ties-new-research-questions-camera-placement-and-crime-prevention",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "York Space Systems opens new 8,400-square-foot office near the Domain, plans 10\u201315% local hiring growth",
+      "url": "https://www.statesman.com/business/technology/article/austin-york-space-systems-office-22463045.php",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "PNC opens first downtown Austin branch at ATX Tower as part of $2B network expansion",
+      "url": "https://austinbusinessdaily.com/pnc-opens-downtown-austin-branch-and-expands-local-presence-with-new-offices",
+      "date": "2026-09-28"
+    },
+    {
+      "title": "Austin drone-defense startup Allen Control Systems adding 191K-square-foot factory on north side",
+      "url": "https://therealdeal.com/texas/2026/09/16/austin-based-drone-hunting-startup-adding-191k-sf-factory",
+      "date": "2026-09-16"
+    },
+    {
+      "title": "Michelin-recognized taco truck plans first restaurant; Gus's World Famous Fried Chicken headed to Red River; Urban Egg eyeing two new locations",
+      "url": "https://whatnow.com/austin/restaurants/",
+      "date": "2026-10-06"
+    },
+    {
+      "title": "Austin's Prop I puts city spending audits at center of political fight",
+      "url": "https://www.statesman.com/news/article/austin-proposition-i-city-audits-22465541.php",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "City of Austin canceled more than 60 voter-approved bond projects, new dashboard shows",
+      "url": "https://www.kxan.com/news/local/austin/city-of-austin-canceled-more-than-60-voter-approved-bond-projects-new-dashboard-shows/",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "City launches Austin Bond Dashboard to share project status and spending of bond-funded projects",
+      "url": "https://www.austintexas.gov/capital-delivery/news/city-launches-austin-bond-dashboard-share-project-status-and-spending-bond",
+      "date": "2026-10-01"
+    },
+    {
+      "title": "Austin city council member Marc Duchen proposes 'responsible' changes to city bond spending",
+      "url": "https://www.kxan.com/news/local/austin/austin-leaders-propose-responsible-changes-to-citys-bond-spending/",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "October 8, 2026 Austin City Council Regular Meeting agenda",
+      "url": "https://www.austintexas.gov/council/2026/20261008-reg",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "October 6, 2026 City Council work session: No Wrong Door crisis-response briefing and Dog's Head TIRZ legal challenge",
+      "url": "https://www.austintexas.gov/council/2026/20261006-wrk",
+      "date": "2026-10-06"
+    },
+    {
+      "title": "Ordinance No. 20260924-006 accepts $3.86M in FEMA Public Assistance grant funds",
+      "url": "https://www.austintexas.gov/council/2026/20260924-reg",
+      "date": "2026-09-24"
+    },
+    {
+      "title": "Ordinance No. 20260910-031 allows fee-in-lieu for the Citywide Density Bonus Program outside the ETOD district",
+      "url": "https://services.austintexas.gov/edims/document.cfm?id=481651",
+      "date": "2026-09-10"
+    },
+    {
+      "title": "Austin 2026 election: Your November sample ballot",
+      "url": "https://austincurrent.org/2026/10/06/austin-2026-election-ballot-lookup-travis-county/",
+      "date": "2026-10-06"
+    },
+    {
+      "title": "DOGE in Austin? Debate over how to audit City Hall heats up ahead of Proposition I vote",
+      "url": "https://austincurrent.org/2026/10/08/austin-elections-audit-city-hall-proposition-i-save-austin-now/",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "Voter resources: November 2026 general election \u2014 Austin's $295 million bond propositions A and B",
+      "url": "https://www.austintexas.gov/voterresources",
+      "date": "2026-10-04"
+    },
+    {
+      "title": "Travis County, Texas, elections 2026: November 3 general election races",
+      "url": "https://ballotpedia.org/Travis_County,_Texas,_elections,_2026",
+      "date": "2026-11-03"
+    },
+    {
+      "title": "Austin City Council District 3 candidates for 2026 election",
+      "url": "https://www.kut.org/politics/2026-10-09/austin-city-council-district-3-election-2026",
+      "date": "2026-10-09"
+    },
+    {
+      "title": "APD robbery detectives arrest three suspects in multiple downtown aggravated robberies, including shooting of U.S. Army service member",
+      "url": "https://www.kxan.com/news/crime/three-arrested-in-connection-with-armed-robbery-of-u-s-army-service-member/",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "Suspect arrested for homicide in the 1000 block of Norwood Park Boulevard",
+      "url": "https://www.austintexas.gov/news",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "Roommate arrested on murder charge in fatal Menchaca Road shooting",
+      "url": "https://kwtx.com/2026/10/07/austin-man-shot-killed-roommate-over-rent-money-dispute-police-say",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "APD South Metro Tactical Unit announces multiple arrests in Operation 'Protect Our Parks' near Barton Springs Pool",
+      "url": "https://austintexas.gov/police/news/apd-south-metro-tactical-unit-announces-multiple-arrests-operation-protect-our-parks",
+      "date": "2026-10-02"
+    },
+    {
+      "title": "Man arrested after allegedly threatening UT Austin and a local church, police say",
+      "url": "https://cbsaustin.com/news/local/man-arrested-after-allegedly-threatening-ut-austin-local-church-police-say",
+      "date": "2026-10-02"
+    },
+    {
+      "title": "Michelin awards two new stars for Austin; La Barbecue loses its star",
+      "url": "https://www.statesman.com/entertainment/dining/article/austin-michelin-stars-fabrik-kappo-22464806.php",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "Pedestrian dies after being hit by car at Lake Creek Parkway and Pecan Park Boulevard in northwest Austin",
+      "url": "https://www.kxan.com/news/local/austin/pedestrian-dies-after-being-hit-by-car-in-northwest-austin/",
+      "date": "2026-10-07"
+    },
+    {
+      "title": "Austin asks for feedback as it considers rules for large water users",
+      "url": "https://www.austinchronicle.com/news/austin-asks-for-feedback-as-it-considers-rules-for-large-water-users/",
+      "date": "2026-10-08"
+    },
+    {
+      "title": "Austin Parks and Recreation prepares Zilker Park for ACL Fest weekend",
+      "url": "https://www.austintexas.gov/news",
+      "date": "2026-10-09"
+    },
+    {
+      "title": "City of Austin debuts new bond dashboard for residents",
+      "url": "https://communityimpact.com/central-austin/government/city-of-austin-debuts-new-bond-dashboard-for-residents/",
+      "date": "2026-10-07"
+    }
+  ],
+  "source_statuses": {
+    "construction": "ok",
+    "crime": "ok",
+    "business": "ok",
+    "officials": "ok",
+    "legislation": "ok",
+    "elections": "ok",
+    "arrests": "ok",
+    "news": "ok"
+  },
+  "selected_job_status": "completed",
+  "owner_job_input_proof_unchanged": true,
+  "separate_research_sessions": 1,
+  "configured_pin": "fable",
+  "configured_efforts": {
+    "haiku": "low",
+    "sonnet": "medium",
+    "opus": "xhigh",
+    "fable": "xhigh"
+  },
+  "requested_native_level": "medium",
+  "observer_forwards_actual_response": true,
+  "pinned_tier": "fable",
+  "tier_efforts": {
+    "haiku": "low",
+    "sonnet": "medium",
+    "opus": "xhigh",
+    "fable": "xhigh"
+  },
+  "artifact_sha256": "09e4c6445af7a25cd1fdcd728fe1b5020371cb6e5bfd8501c42e73c813c755f0",
+  "artifact_mode": "0o600",
+  "response_status": 200,
+  "raw_json_sha256": "cda62d6dfd489bff444b5d72695190bac9ce82a7595ee99b0f7e880cfdbd356c",
+  "raw_record": "local-job-research-public-budget.json.raw.gz"
+}

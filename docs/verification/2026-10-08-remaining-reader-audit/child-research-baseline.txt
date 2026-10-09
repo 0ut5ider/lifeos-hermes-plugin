@@ -1,0 +1,65 @@
+test_arbitrary_and_mismatched_tools_refuse (test_child_research_arguments.ChildResearchArgumentTests.test_arbitrary_and_mismatched_tools_refuse) ... ok
+test_native_research_text_output_and_web_tools_are_accepted (test_child_research_arguments.ChildResearchArgumentTests.test_native_research_text_output_and_web_tools_are_accepted) ... usage: python -m unittest [-h] --print --model MODEL
+                          [--effort {minimal,low,medium,high,xhigh,max,ultra}]
+                          --output-format {json}
+                          [--system-prompt SYSTEM_PROMPT]
+                          [--system-prompt-file SYSTEM_PROMPT_FILE]
+                          [--setting-sources SETTING_SOURCES]
+                          [--allowedTools ALLOWEDTOOLS] [--tools TOOLS]
+                          [--exclude-dynamic-system-prompt-sections]
+python -m unittest: error: argument --output-format: invalid choice: 'text' (choose from 'json')
+ERROR
+test_tool_free_json_contract_remains_accepted (test_child_research_arguments.ChildResearchArgumentTests.test_tool_free_json_contract_remains_accepted) ... ok
+
+======================================================================
+ERROR: test_native_research_text_output_and_web_tools_are_accepted (test_child_research_arguments.ChildResearchArgumentTests.test_native_research_text_output_and_web_tools_are_accepted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/argparse.py", line 2047, in _parse_known_args2
+    namespace, args = self._parse_known_args(args, namespace, intermixed)
+                      ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2298, in _parse_known_args
+    start_index = consume_optional(start_index)
+  File "/usr/lib64/python3.14/argparse.py", line 2222, in consume_optional
+    take_action(action, args, option_string)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2108, in take_action
+    argument_values = self._get_values(action, argument_strings)
+  File "/usr/lib64/python3.14/argparse.py", line 2625, in _get_values
+    self._check_value(action, value)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2696, in _check_value
+    raise ArgumentError(action, msg % args)
+argparse.ArgumentError: argument --output-format: invalid choice: 'text' (choose from 'json')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_research_arguments.py", line 16, in test_native_research_text_output_and_web_tools_are_accepted
+    args = self.arguments(output='text', tools='WebSearch,WebFetch', allowed='WebSearch,WebFetch')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_research_arguments.py", line 12, in arguments
+    return parser.parse_args(['--print', '--model', 'synthetic-model', '--output-format', output,
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        '--system-prompt', '', '--tools', tools, '--allowedTools', allowed])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2008, in parse_args
+    args, argv = self.parse_known_args(args, namespace)
+                 ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2018, in parse_known_args
+    return self._parse_known_args2(args, namespace, intermixed=False)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2049, in _parse_known_args2
+    self.error(str(err))
+    ~~~~~~~~~~^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2785, in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/argparse.py", line 2772, in exit
+    _sys.exit(status)
+    ~~~~~~~~~^^^^^^^^
+SystemExit: 2
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+FAILED (errors=1)

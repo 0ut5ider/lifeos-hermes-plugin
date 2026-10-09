@@ -14011,3 +14011,37 @@ index 299618d..8a67edb 100755
 +    && Object.values(plan.latest).filter(memoryObject).some(section => Array.isArray(section.items) && section.items.length > 0)
 +  return {filename: plan.filename, content: JSON.stringify(value, null, 2), latestSkipped, totalItems: items}
 +}
+diff --git a/LifeOS/install/skills/LocalIntelligence/Tools/ClaudeFill.ts b/LifeOS/install/skills/LocalIntelligence/Tools/ClaudeFill.ts
+index 9cbfc25..8e28e49 100644
+--- a/LifeOS/install/skills/LocalIntelligence/Tools/ClaudeFill.ts
++++ b/LifeOS/install/skills/LocalIntelligence/Tools/ClaudeFill.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Fills empty native digest sections through the declared child web research command.
++// ABOUTME: Validates researched items and retains failed research diagnostics in digest metadata.
+ /**
+  * ClaudeFill.ts — AI gap-filler for digest sections the deterministic
+  * fetchers couldn't populate.
+@@ -70,8 +72,9 @@ Each value: {"items": [{"title": string, "source": string (publication/site name
+ export function validateSection(raw: unknown): { items: Item[]; dropped: number } {
+   const out: Item[] = []
+   let dropped = 0
+-  const items = (raw as { items?: unknown })?.items
+-  if (!Array.isArray(items)) return { items: out, dropped }
++  if (!raw || typeof raw !== "object" || Array.isArray(raw)
++    || !("items" in raw) || !Array.isArray(raw.items)) return { items: out, dropped: 1 }
++  const items = raw.items
+   for (const it of items.slice(0, MAX_ITEMS_PER_SECTION * 2)) {
+     const o = it as Record<string, unknown>
+     const title = typeof o?.title === "string" ? o.title.trim() : ""
+@@ -156,7 +159,9 @@ export async function claudeFill(
+     parsed = extractJson(raw) as Record<string, unknown>
+   } catch (err) {
+     errors.push(`claude-fill: ${(err as Error).message}`)
+-    return { digest, filled: [], attempted, errors }
++    const failed: Digest = structuredClone(digest)
++    failed.meta.errors = [...failed.meta.errors, ...errors]
++    return { digest: failed, filled: [], attempted, errors }
+   }
+ 
+   const next: Digest = structuredClone(digest)

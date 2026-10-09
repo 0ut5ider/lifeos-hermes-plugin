@@ -1,0 +1,602 @@
+{
+  "server_mutation": false,
+  "public_test_location_only": true,
+  "status": "FAIL",
+  "actual_child": {
+    "arguments": [
+      "--print",
+      "--model",
+      "sonnet",
+      "--output-format",
+      "text",
+      "--setting-sources",
+      "",
+      "--system-prompt",
+      "",
+      "--tools",
+      "WebSearch,WebFetch",
+      "--allowedTools",
+      "WebSearch,WebFetch"
+    ],
+    "exit_code": 0,
+    "stderr": "  \u250a \ud83d\udd0d search    Austin TX new construction project building permit October 2026  0.4s\n  \u250a \ud83d\udd0d search    Austin Police Department crime news October 2026  0.2s\n  \u250a \ud83d\udd0d search    Austin TX restaurant business opening closing September October 2026  0.7s\n  \u250a \ud83d\udd0d search    Austin mayor city council news October 2026  2.1s\n  \u250a \ud83d\udd0d search    Austin TX November 2026 election candidate filings charter amendments Prop I bond  0.2s\n  \u250a \ud83d\udd0d search    Austin TX local news headlines this week October 2026  0.8s\n  \u250a \ud83d\udd0d search    Austin new apartment hotel development groundbreaking announced October 2026 CultureMap  1.3s\n  \u250a \ud83d\udd0d search    \"Austin\" City Council District 1 candidate arrested DPS October 2026  1.1s\n  \u250a \ud83d\udd0d search    Austin ISD school board trustee news October 2026  0.3s\n  \u250a \ud83d\udd0d search    Austin police arrest October 2026 charged Travis County  2.4s\n  \u250a \ud83d\udcc4 fetch     austintexasthings.com +1  1.0s\n\u26a0\ufe0f  Response truncated (finish_reason='length') - model hit max output tokens\n\u21bb Requesting continuation (1/4)...\n",
+    "stdout_sha256": "031ac43f9f2bfb1df919116b94c59c94a2449f8655d71510e0fc5c03629f6bcb",
+    "stdout_characters": 20138,
+    "section_shapes": {
+      "construction": "list",
+      "crime": "list",
+      "business": "list",
+      "officials": "list",
+      "legislation": "list",
+      "elections": "list",
+      "arrests": "list",
+      "news": "list"
+    }
+  },
+  "wire_requests": [
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": 4096,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 0,
+      "tool_results": [],
+      "prior_tool_call_names": [],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "0c3d2fb3a923bb83e44c7795f723a015ff456fc91f70915b135f1bd23674ae41"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": 4096,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 4,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-a39cbb5de07d34af",
+          "content_sha256": "71632646702311c93158f461892c7385c8599a571ed028a097ec23373f244d1f",
+          "content_characters": 4897
+        },
+        {
+          "call_id": "chatcmpl-tool-b8c4550a5ab9f739",
+          "content_sha256": "ac83ddd4388af0cad76acc97ae0add13994adfef34d9afa38c7e74945a5f1d06",
+          "content_characters": 21458
+        },
+        {
+          "call_id": "chatcmpl-tool-a2ee8bde18b20526",
+          "content_sha256": "526fd53d3978aefd2f5b99ab57d4962e55462b5c9cebb6a16450d0e2be020482",
+          "content_characters": 26278
+        },
+        {
+          "call_id": "chatcmpl-tool-ab588378fb0e4c74",
+          "content_sha256": "2a3a1b895a51e8b1aafc06bb064c908c7bbfca8db2bf1501fd71036245d27b6e",
+          "content_characters": 26562
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "e7d6e8298210be47d6b7c6fa0396f3a24c34c096d67275c0d70238789b541250"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": 4096,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 7,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-a39cbb5de07d34af",
+          "content_sha256": "71632646702311c93158f461892c7385c8599a571ed028a097ec23373f244d1f",
+          "content_characters": 4897
+        },
+        {
+          "call_id": "chatcmpl-tool-b8c4550a5ab9f739",
+          "content_sha256": "ac83ddd4388af0cad76acc97ae0add13994adfef34d9afa38c7e74945a5f1d06",
+          "content_characters": 21458
+        },
+        {
+          "call_id": "chatcmpl-tool-a2ee8bde18b20526",
+          "content_sha256": "526fd53d3978aefd2f5b99ab57d4962e55462b5c9cebb6a16450d0e2be020482",
+          "content_characters": 26278
+        },
+        {
+          "call_id": "chatcmpl-tool-ab588378fb0e4c74",
+          "content_sha256": "2a3a1b895a51e8b1aafc06bb064c908c7bbfca8db2bf1501fd71036245d27b6e",
+          "content_characters": 26562
+        },
+        {
+          "call_id": "chatcmpl-tool-8cdd786b07f5de29",
+          "content_sha256": "852289be134e8faf466b6c917e4ab7aa50d06b47f06608a4a5393a6365266acd",
+          "content_characters": 21049
+        },
+        {
+          "call_id": "chatcmpl-tool-89625c701293dfbf",
+          "content_sha256": "f75f515ce67d93bf5d3673db117ee3c0614aaf8e719162eb2e92e3d5f357dfda",
+          "content_characters": 10406
+        },
+        {
+          "call_id": "chatcmpl-tool-89ec7d68c9131d42",
+          "content_sha256": "96143bb43967ee8dc95b4bdfb6d15a28bc1bd363fc2c311707d30cb04c85271b",
+          "content_characters": 21750
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "f1731ed5ad79251200307b983eee3fa23e32156677119ead59071478c9363112"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": 4096,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 9,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-a39cbb5de07d34af",
+          "content_sha256": "71632646702311c93158f461892c7385c8599a571ed028a097ec23373f244d1f",
+          "content_characters": 4897
+        },
+        {
+          "call_id": "chatcmpl-tool-b8c4550a5ab9f739",
+          "content_sha256": "ac83ddd4388af0cad76acc97ae0add13994adfef34d9afa38c7e74945a5f1d06",
+          "content_characters": 21458
+        },
+        {
+          "call_id": "chatcmpl-tool-a2ee8bde18b20526",
+          "content_sha256": "526fd53d3978aefd2f5b99ab57d4962e55462b5c9cebb6a16450d0e2be020482",
+          "content_characters": 26278
+        },
+        {
+          "call_id": "chatcmpl-tool-ab588378fb0e4c74",
+          "content_sha256": "2a3a1b895a51e8b1aafc06bb064c908c7bbfca8db2bf1501fd71036245d27b6e",
+          "content_characters": 26562
+        },
+        {
+          "call_id": "chatcmpl-tool-8cdd786b07f5de29",
+          "content_sha256": "852289be134e8faf466b6c917e4ab7aa50d06b47f06608a4a5393a6365266acd",
+          "content_characters": 21049
+        },
+        {
+          "call_id": "chatcmpl-tool-89625c701293dfbf",
+          "content_sha256": "f75f515ce67d93bf5d3673db117ee3c0614aaf8e719162eb2e92e3d5f357dfda",
+          "content_characters": 10406
+        },
+        {
+          "call_id": "chatcmpl-tool-89ec7d68c9131d42",
+          "content_sha256": "96143bb43967ee8dc95b4bdfb6d15a28bc1bd363fc2c311707d30cb04c85271b",
+          "content_characters": 21750
+        },
+        {
+          "call_id": "chatcmpl-tool-bc8ab600e7893898",
+          "content_sha256": "24da4e0783b2204ecfd17457d647fde272cef42f26c0b6dd2ed4d319941da117",
+          "content_characters": 10656
+        },
+        {
+          "call_id": "chatcmpl-tool-a6219553e69b7458",
+          "content_sha256": "9350330bc2f84c92565e9bfedfe91ca8cec271984b9910971352685bf9d9ec8d",
+          "content_characters": 18283
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "9101fa472f63e7eb18ff37ff7ec6328f5344310d0253b86c75866ff74498fe27"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": 4096,
+      "finish_reasons": [
+        "tool_calls"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 10,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-a39cbb5de07d34af",
+          "content_sha256": "71632646702311c93158f461892c7385c8599a571ed028a097ec23373f244d1f",
+          "content_characters": 4897
+        },
+        {
+          "call_id": "chatcmpl-tool-b8c4550a5ab9f739",
+          "content_sha256": "ac83ddd4388af0cad76acc97ae0add13994adfef34d9afa38c7e74945a5f1d06",
+          "content_characters": 21458
+        },
+        {
+          "call_id": "chatcmpl-tool-a2ee8bde18b20526",
+          "content_sha256": "526fd53d3978aefd2f5b99ab57d4962e55462b5c9cebb6a16450d0e2be020482",
+          "content_characters": 26278
+        },
+        {
+          "call_id": "chatcmpl-tool-ab588378fb0e4c74",
+          "content_sha256": "2a3a1b895a51e8b1aafc06bb064c908c7bbfca8db2bf1501fd71036245d27b6e",
+          "content_characters": 26562
+        },
+        {
+          "call_id": "chatcmpl-tool-8cdd786b07f5de29",
+          "content_sha256": "852289be134e8faf466b6c917e4ab7aa50d06b47f06608a4a5393a6365266acd",
+          "content_characters": 21049
+        },
+        {
+          "call_id": "chatcmpl-tool-89625c701293dfbf",
+          "content_sha256": "f75f515ce67d93bf5d3673db117ee3c0614aaf8e719162eb2e92e3d5f357dfda",
+          "content_characters": 10406
+        },
+        {
+          "call_id": "chatcmpl-tool-89ec7d68c9131d42",
+          "content_sha256": "96143bb43967ee8dc95b4bdfb6d15a28bc1bd363fc2c311707d30cb04c85271b",
+          "content_characters": 21750
+        },
+        {
+          "call_id": "chatcmpl-tool-bc8ab600e7893898",
+          "content_sha256": "24da4e0783b2204ecfd17457d647fde272cef42f26c0b6dd2ed4d319941da117",
+          "content_characters": 10656
+        },
+        {
+          "call_id": "chatcmpl-tool-a6219553e69b7458",
+          "content_sha256": "9350330bc2f84c92565e9bfedfe91ca8cec271984b9910971352685bf9d9ec8d",
+          "content_characters": 18283
+        },
+        {
+          "call_id": "chatcmpl-tool-b2fd5f787c9ab945",
+          "content_sha256": "fc372c86d7f54316f8f490e494e19af0086a6d709394b515e11d19ee6804c8f1",
+          "content_characters": 11964
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "1cc0a2e1fd195e5cfb49e6c5b2df48caf63327ee3849992ac8f988d0e1d51fe0"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "max_tokens": 4096,
+      "finish_reasons": [
+        "length"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 11,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-a39cbb5de07d34af",
+          "content_sha256": "71632646702311c93158f461892c7385c8599a571ed028a097ec23373f244d1f",
+          "content_characters": 4897
+        },
+        {
+          "call_id": "chatcmpl-tool-b8c4550a5ab9f739",
+          "content_sha256": "ac83ddd4388af0cad76acc97ae0add13994adfef34d9afa38c7e74945a5f1d06",
+          "content_characters": 21458
+        },
+        {
+          "call_id": "chatcmpl-tool-a2ee8bde18b20526",
+          "content_sha256": "526fd53d3978aefd2f5b99ab57d4962e55462b5c9cebb6a16450d0e2be020482",
+          "content_characters": 26278
+        },
+        {
+          "call_id": "chatcmpl-tool-ab588378fb0e4c74",
+          "content_sha256": "2a3a1b895a51e8b1aafc06bb064c908c7bbfca8db2bf1501fd71036245d27b6e",
+          "content_characters": 26562
+        },
+        {
+          "call_id": "chatcmpl-tool-8cdd786b07f5de29",
+          "content_sha256": "852289be134e8faf466b6c917e4ab7aa50d06b47f06608a4a5393a6365266acd",
+          "content_characters": 21049
+        },
+        {
+          "call_id": "chatcmpl-tool-89625c701293dfbf",
+          "content_sha256": "f75f515ce67d93bf5d3673db117ee3c0614aaf8e719162eb2e92e3d5f357dfda",
+          "content_characters": 10406
+        },
+        {
+          "call_id": "chatcmpl-tool-89ec7d68c9131d42",
+          "content_sha256": "96143bb43967ee8dc95b4bdfb6d15a28bc1bd363fc2c311707d30cb04c85271b",
+          "content_characters": 21750
+        },
+        {
+          "call_id": "chatcmpl-tool-bc8ab600e7893898",
+          "content_sha256": "24da4e0783b2204ecfd17457d647fde272cef42f26c0b6dd2ed4d319941da117",
+          "content_characters": 10656
+        },
+        {
+          "call_id": "chatcmpl-tool-a6219553e69b7458",
+          "content_sha256": "9350330bc2f84c92565e9bfedfe91ca8cec271984b9910971352685bf9d9ec8d",
+          "content_characters": 18283
+        },
+        {
+          "call_id": "chatcmpl-tool-b2fd5f787c9ab945",
+          "content_sha256": "fc372c86d7f54316f8f490e494e19af0086a6d709394b515e11d19ee6804c8f1",
+          "content_characters": 11964
+        },
+        {
+          "call_id": "chatcmpl-tool-a41de28c011c9ce0",
+          "content_sha256": "65ec31c54577fcbce834f83c436e9e6be06920f63a45b8ecbcee4abe67d92073",
+          "content_characters": 7543
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "9a95165bc4ee1baea670653b2dfb83b7c9afe710199753cda9898a26eab59eb5"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "none",
+      "max_tokens": 8192,
+      "finish_reasons": [
+        "stop"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "none"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 11,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-a39cbb5de07d34af",
+          "content_sha256": "71632646702311c93158f461892c7385c8599a571ed028a097ec23373f244d1f",
+          "content_characters": 4897
+        },
+        {
+          "call_id": "chatcmpl-tool-b8c4550a5ab9f739",
+          "content_sha256": "ac83ddd4388af0cad76acc97ae0add13994adfef34d9afa38c7e74945a5f1d06",
+          "content_characters": 21458
+        },
+        {
+          "call_id": "chatcmpl-tool-a2ee8bde18b20526",
+          "content_sha256": "526fd53d3978aefd2f5b99ab57d4962e55462b5c9cebb6a16450d0e2be020482",
+          "content_characters": 26278
+        },
+        {
+          "call_id": "chatcmpl-tool-ab588378fb0e4c74",
+          "content_sha256": "2a3a1b895a51e8b1aafc06bb064c908c7bbfca8db2bf1501fd71036245d27b6e",
+          "content_characters": 26562
+        },
+        {
+          "call_id": "chatcmpl-tool-8cdd786b07f5de29",
+          "content_sha256": "852289be134e8faf466b6c917e4ab7aa50d06b47f06608a4a5393a6365266acd",
+          "content_characters": 21049
+        },
+        {
+          "call_id": "chatcmpl-tool-89625c701293dfbf",
+          "content_sha256": "f75f515ce67d93bf5d3673db117ee3c0614aaf8e719162eb2e92e3d5f357dfda",
+          "content_characters": 10406
+        },
+        {
+          "call_id": "chatcmpl-tool-89ec7d68c9131d42",
+          "content_sha256": "96143bb43967ee8dc95b4bdfb6d15a28bc1bd363fc2c311707d30cb04c85271b",
+          "content_characters": 21750
+        },
+        {
+          "call_id": "chatcmpl-tool-bc8ab600e7893898",
+          "content_sha256": "24da4e0783b2204ecfd17457d647fde272cef42f26c0b6dd2ed4d319941da117",
+          "content_characters": 10656
+        },
+        {
+          "call_id": "chatcmpl-tool-a6219553e69b7458",
+          "content_sha256": "9350330bc2f84c92565e9bfedfe91ca8cec271984b9910971352685bf9d9ec8d",
+          "content_characters": 18283
+        },
+        {
+          "call_id": "chatcmpl-tool-b2fd5f787c9ab945",
+          "content_sha256": "fc372c86d7f54316f8f490e494e19af0086a6d709394b515e11d19ee6804c8f1",
+          "content_characters": 11964
+        },
+        {
+          "call_id": "chatcmpl-tool-a41de28c011c9ce0",
+          "content_sha256": "65ec31c54577fcbce834f83c436e9e6be06920f63a45b8ecbcee4abe67d92073",
+          "content_characters": 7543
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "de81444e4595266a0c788f0b8ecc1e81f3906c76469761a4f6185e7379ecd817"
+    }
+  ],
+  "native_status": 200,
+  "run_log_characters": 688,
+  "native_run_log": "{\n  \"city\": \"Austin\",\n  \"state\": \"TX\",\n  \"sources_used\": [],\n  \"sources_failed\": [\n    \"construction\",\n    \"crime\",\n    \"business\",\n    \"officials\",\n    \"legislation\",\n    \"elections\",\n    \"arrests\",\n    \"news\"\n  ],\n  \"user_sources_merged\": [],\n  \"claude_filled\": [],\n  \"total_items\": 0,\n  \"datedPath\": \"/tmp/native-memory-3vu6uv0p/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/2026-10-09_austin_tx_digest.json\",\n  \"latestPaths\": [\n    \"/tmp/native-memory-3vu6uv0p/.claude/LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/latest.json\",\n    \"/tmp/native-memory-3vu6uv0p/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/latest.json\"\n  ],\n  \"latest_skipped_no_clobber\": false\n}\n\n[exit] code=0\n",
+  "native_exit_zero": true,
+  "logged_child_failure": false,
+  "latest_exists": true,
+  "marker_exists": true,
+  "digest_error_count": 8,
+  "digest_errors": [
+    "construction: construction fetcher not yet implemented \u2014 TODO: Census BPS for Austin, TX",
+    "crime: crime fetcher not yet implemented \u2014 TODO: delegate to the crime-stats skill's QuickStats for Austin, TX; never call CitizenRIMS/FBI/AreaVibes from here",
+    "business: business fetcher not yet implemented \u2014 TODO: city open-data discovery for Austin, TX",
+    "officials: officials fetcher not yet implemented \u2014 TODO: Ballotpedia API for Austin, TX",
+    "legislation: legislation fetcher not yet implemented \u2014 TODO: OpenStates + Granicus discovery for Austin, TX",
+    "elections: elections fetcher not yet implemented \u2014 TODO: Ballotpedia API for Austin, TX",
+    "arrests: arrests fetcher not yet implemented \u2014 TODO: sheriff blotter discovery for Travis County",
+    "news: Patch returned 404 for https://patch.com/tx/austin/feed"
+  ],
+  "native_total_items": 0,
+  "item_sources": [],
+  "source_statuses": {
+    "construction": "unavailable",
+    "crime": "unavailable",
+    "business": "unavailable",
+    "officials": "unavailable",
+    "legislation": "unavailable",
+    "elections": "unavailable",
+    "arrests": "unavailable",
+    "news": "unavailable"
+  },
+  "selected_job_status": "completed",
+  "owner_job_input_proof_unchanged": true,
+  "separate_research_sessions": 1,
+  "failure_type": "RuntimeError",
+  "failure": "The public civic probe produces no useful research items",
+  "raw_json_sha256": "e9aa07769d2a1a7776e5f8135a2afb47e4f1bb059aca5e4024481d9f6407e499",
+  "raw_record": "local-job-research-public-diagnostic.json.raw.gz"
+}

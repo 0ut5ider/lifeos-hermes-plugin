@@ -271,6 +271,35 @@ class MemoryRuntime:
                 publish(self.state_path,(json.dumps(states,sort_keys=True)+'\n').encode())
         _BOUND.set((self.key,context,stamp))
 
+    def fork_owner_job(self, session_id: str, *, route: dict[str, str]) -> None:
+        """Create a separate research turn without changing the admitted owner job."""
+        if not isinstance(session_id, str) or not session_id.startswith('owner-research-') or len(session_id) > 128:
+            raise MemoryAdmissionError('Owner research needs a bounded separate session identifier')
+        configuration = self.configuration.load()
+        parent = self.context()
+        if (not self.enabled() or parent is None or parent.transport != 'terminal'
+                or not parent.session_id.startswith('owner-job-')
+                or set(self._scope(configuration, parent).write) != CATEGORIES):
+            raise MemoryAdmissionError('Native web research requires the selected unrestricted owner job')
+        memory = NativeMemory(Path(configuration['root']))
+        with memory._transaction() as connection:
+            states = self._states()
+            previous = states.get(parent.session_id)
+            if (not isinstance(previous, dict) or previous.get('context') != json.loads(json.dumps(asdict(parent)))
+                    or self._stamp(configuration, parent, connection, previous.get('user_input')) != previous):
+                raise MemoryAdmissionError('Owner research preserves only current parent admission')
+            context = replace(parent, session_id=session_id, model_route=route_identity(**route))
+            parent_scope, child_scope = self._scope(configuration, parent), self._scope(configuration, context)
+            if any(getattr(parent_scope, name) != getattr(child_scope, name)
+                    for name in ('principal', 'writer', 'read', 'write', 'projects', 'proposals')):
+                raise MemoryAdmissionError('Owner research cannot change parent permission')
+            stamp = self._stamp(configuration, context, connection)
+            if session_id in states:
+                raise MemoryAdmissionError('Owner research preserves existing sessions')
+            states[session_id] = stamp
+            publish(self.state_path, (json.dumps(states, sort_keys=True) + '\n').encode())
+        _BOUND.set((self.key, context, stamp))
+
     def _refuse_inactive_context(self, session_id: str, inherited: str) -> None:
         if self.context() is not None or inherited or (session_id and session_id in self._states()):
             raise MemoryAdmissionError('Memory ownership changed for retained context. Start a new conversation.')

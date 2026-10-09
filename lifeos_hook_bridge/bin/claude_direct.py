@@ -32,7 +32,7 @@ def configure_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--print", action="store_true", required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--effort", choices=("minimal", "low", "medium", "high", "xhigh", "max", "ultra"), default="medium")
-    parser.add_argument("--output-format", choices=("json",), required=True)
+    parser.add_argument("--output-format", choices=("json", "text"), required=True)
     parser.add_argument("--system-prompt")
     parser.add_argument("--system-prompt-file")
     parser.add_argument("--setting-sources")
@@ -50,8 +50,9 @@ def _arguments() -> argparse.Namespace:
 def _validate_arguments(args: argparse.Namespace) -> None:
     if (args.system_prompt is None) == (args.system_prompt_file is None):
         raise ValueError("exactly one system prompt source is required")
-    if args.allowedTools not in ("", "Read") or args.tools not in ("",):
-        raise ValueError("only LifeOS inference without tools or with Read image references is supported")
+    research = args.tools == "WebSearch,WebFetch" and args.allowedTools == "WebSearch,WebFetch"
+    if not research and (args.allowedTools not in ("", "Read") or args.tools != ""):
+        raise ValueError("Choose tool-free inference, Read image references, or the declared native web tools")
 
 
 def _message_content(prompt: str, allow_images: bool) -> str | list[dict[str, object]]:
@@ -110,6 +111,15 @@ def _run_hermes_provider(args: argparse.Namespace, system_prompt: str,
         if REQUIRED_MIDDLEWARE_API_VERSION != 1 or not has_middleware('llm_admission'):
             raise ValueError('LifeOS child inference needs required model-request checks')
 
+    if args.tools == "WebSearch,WebFetch":
+        from . import claude_research
+        response = claude_research.run(args, system_prompt, content, provider, runtime)
+        if args.output_format == "text":
+            print(response)
+        else:
+            print(json.dumps({"result": response, "is_error": False}))
+        return 0
+
     response = call_llm(
         provider=provider, model=args.model,
         messages=[{"role": "system", "content": system_prompt},
@@ -123,6 +133,9 @@ def _run_hermes_provider(args: argparse.Namespace, system_prompt: str,
     model = str(_field(response, "model", args.model) or args.model)
     usage = _field(response, "usage", {})
     output_tokens = _field(usage, "completion_tokens", 0)
+    if args.output_format == "text":
+        print(extract_content_or_reasoning(response))
+        return 0
     print(json.dumps({
         "result": extract_content_or_reasoning(response),
         "is_error": False,
@@ -140,6 +153,8 @@ def main(args: argparse.Namespace | None = None) -> int:
     provider = os.environ.get("LIFEOS_CHILD_PROVIDER", "").strip()
     if provider:
         return _run_hermes_provider(args, system_prompt, content, provider)
+    if args.tools == "WebSearch,WebFetch":
+        raise ValueError("Native web research requires the selected Hermes provider")
     base_url = os.environ.get("ANTHROPIC_BASE_URL", "").rstrip("/")
     token = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
     if not base_url or not token:
@@ -180,6 +195,10 @@ def main(args: argparse.Namespace | None = None) -> int:
     )
     model = str(message.get("model") or args.model)
     output_tokens = message.get("usage", {}).get("output_tokens", 0)
+    if args.output_format == "text":
+        if message.get("type") == "error": return 1
+        print(text)
+        return 0
     print(json.dumps({
         "result": text,
         "is_error": message.get("type") == "error",

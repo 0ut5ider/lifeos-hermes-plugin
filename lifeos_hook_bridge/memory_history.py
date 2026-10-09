@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from copy import deepcopy
 import json
 import hashlib
+import sys
 from typing import Any, Callable
 
 
@@ -61,8 +62,36 @@ def user_parts(content,proof):
     return original,suffix
 
 
+def _generated_user(message):
+    # The active Hermes loop owns this classifier, including crash-restored nudges.
+    module = sys.modules.get('agent.context_compressor')
+    compressor = getattr(module, 'ContextCompressor', None)
+    if compressor is None:
+        return False
+    return (module._content_text_for_contains(message.get('content')).strip() == REMOVED
+        or compressor._is_synthetic_compression_user_turn(message))
+
+
+def _current_user(messages, user_input):
+    users = [(index, message) for index, message in enumerate(messages) if message.get('role') == 'user']
+    for index, message in reversed(users):
+        if user_input is not None:
+            try:
+                user_parts(message.get('content'), user_input)
+            except ValueError:
+                if not _generated_user(message):
+                    raise
+            else:
+                return index
+        elif not _generated_user(message):
+            return index
+    if user_input is not None and users:
+        raise ValueError('Memory history cannot verify the current user input')
+    return -1
+
+
 def retained_messages(messages,user_input=None):
-    current_user = max((index for index,message in enumerate(messages) if message.get('role')=='user'),default=-1)
+    current_user = _current_user(messages, user_input)
     retained = [(index,message) for index,message in enumerate(messages) if index != current_user]
     if current_user >= 0 and user_input is not None:
         message = messages[current_user]

@@ -298,7 +298,7 @@ class MemoryConduitJobRelayTests(unittest.TestCase):
     def launch_lifetime_process(self, environment, *, daemon):
         self.stop_pulse()
         module_name = self.native_module.removesuffix('.ts')
-        status_route = '/api/conduit/status' if module_name == 'conduit' else '/api/atlas'
+        status_route = getattr(self, 'status_route', '/api/conduit/status' if module_name == 'conduit' else '/api/atlas')
         if daemon:
             pulse = self.root / 'LIFEOS/PULSE'
             source = Path(os.environ['LIFEOS_MEMORY_SOURCE']) / 'LIFEOS/PULSE'
@@ -315,7 +315,7 @@ class MemoryConduitJobRelayTests(unittest.TestCase):
                 capture_output=True, text=True, timeout=10)
             self.assertEqual((modules.returncode, modules.stderr), (0, ''))
             pulse.joinpath('PULSE.toml').write_text('port=' + str(port) + '\n[modules]\n'
-                + ''.join(name + '=' + ('true' if name == module_name else 'false') + '\n' for name in json.loads(modules.stdout))
+                + ''.join(name + '=' + ('true' if name == getattr(self, 'module_configuration_name', module_name) else 'false') + '\n' for name in json.loads(modules.stdout))
                 + '[hooks]\nenabled=false\n[observability]\nenabled=false\n')
             pulse.joinpath('state').mkdir()
             program = pulse / 'pulse.ts'
