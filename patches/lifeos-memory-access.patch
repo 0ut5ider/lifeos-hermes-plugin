@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..d99af4a
+index 0000000..91268f1
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,285 @@
+@@ -0,0 +1,302 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8359,6 +8359,23 @@ index 0000000..d99af4a
 +  const response: unknown = JSON.parse(result);
 +  if (!validHTTPResponse(response)) throw new Error("The native memory service returned an invalid result");
 +  return renderHTTPResponse(response);
++}
++
++export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets",
++                                           running: boolean): Promise<Response | null> {
++  if (!hasManagedMemoryHTTP()) return null;
++  const url = new URL(request.url);
++  const headers = {"cache-control": "no-store"};
++  if (![prefix, prefix + "/list", prefix + "/status", prefix + "/health"].includes(url.pathname)) {
++    return Response.json({error: "Choose a declared personal view"}, {status: 404, headers});
++  }
++  if (request.method !== "GET") return Response.json({error: "Personal views require GET"}, {status: 405, headers});
++  if (url.search) return Response.json({error: "Personal views require fixed sources"}, {status: 400, headers});
++  const origin = request.headers.get("origin");
++  if (origin && origin !== url.origin) return Response.json({error: "Personal views require the current origin"}, {status: 403, headers});
++  const target = url.pathname + (/\/(?:status|health)$/.test(url.pathname) ? "?running=" + Number(running) : "");
++  try { return await memoryHTTPResponseAsync(request, "life", target); }
++  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755
@@ -10592,4 +10609,251 @@ index de134d2..1a0f304 100644
 +  } finally {
 +    store.close();
 +  }
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/books.ts b/LifeOS/install/LIFEOS/PULSE/modules/books.ts
+index c9e9faf..8381f64 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/books.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/books.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders the native personal data view from its declared owner sources.
++// ABOUTME: Relays managed requests to current owner admission before native parsing.
+ /**
+  * Books Pulse module — read-only surface over USER/BOOKS.md ({{PRINCIPAL_NAME}}'s favorite books).
+  * Holds ZERO data: parses the USER file on each request and serves it. The dashboard
+@@ -8,6 +10,7 @@
+ import { existsSync, readFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const MODULE_NAME = "books";
+ const BOOKS_PATH = join(process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude"), "LIFEOS", "USER", "BOOKS.md");
+@@ -65,9 +68,9 @@ function parseBooks(md: string): { groups: Group[]; lastUpdated: string | null }
+   return { groups: out, lastUpdated };
+ }
+ 
+-function read(): { count: number; lastUpdated: string | null; groups: Group[] } {
+-  if (!existsSync(BOOKS_PATH)) return { count: 0, lastUpdated: null, groups: [] };
+-  const { groups, lastUpdated } = parseBooks(readFileSync(BOOKS_PATH, "utf8"));
++function read(content: string | null = existsSync(BOOKS_PATH) ? readFileSync(BOOKS_PATH, "utf8") : null): { count: number; lastUpdated: string | null; groups: Group[] } {
++  if (content === null) return { count: 0, lastUpdated: null, groups: [] };
++  const { groups, lastUpdated } = parseBooks(content);
+   return { count: groups.reduce((n, g) => n + g.books.length, 0), lastUpdated, groups };
+ }
+ 
+@@ -78,14 +81,21 @@ export async function start(): Promise<void> {
+ export async function stop(): Promise<void> {
+   state.running = false;
+ }
+-export function health(): { status: string; details?: Record<string, unknown> } {
++export function health(reader: () => ReturnType<typeof read> = read, running = state.running): { status: string; details?: Record<string, unknown> } {
+   let count = 0;
+-  try { count = read().count; } catch { /* ignore */ }
+-  return { status: state.running ? "healthy" : "stopped", details: { books: count } };
++  try { count = reader().count; } catch { /* ignore */ }
++  return { status: running ? "healthy" : "stopped", details: { books: count } };
+ }
+ export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(_req, "/api/books", state.running);
++  if (admitted) return admitted;
+   const sub = pathname.replace(/^\/api\/books/, "") || "/";
+   if (sub === "/" || sub === "/list") return Response.json(read());
+   if (sub === "/status" || sub === "/health") return Response.json(health());
+   return null;
+ }
++
++export function renderPersonalView(sources: Array<{relative: string; content: string}>, target: string, running: boolean): Response {
++  const content = sources.find(source => source.relative === "LIFEOS/USER/BOOKS.md")?.content ?? null;
++  return Response.json(/\/(?:status|health)$/.test(target) ? health(() => read(content), running) : read(content));
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/projects.ts b/LifeOS/install/LIFEOS/PULSE/modules/projects.ts
+index 1bad733..d3260af 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/projects.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/projects.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders the native personal data view from its declared owner sources.
++// ABOUTME: Relays managed requests to current owner admission before native parsing.
+ /**
+  * Projects Pulse module — read-only surface over the project source files. Holds
+  * ZERO data: parses the USER files on every request and serves them grouped by
+@@ -14,6 +16,7 @@
+ import { existsSync, readFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const MODULE_NAME = "projects";
+ const USER_DIR = join(process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude"), "LIFEOS", "USER");
+@@ -235,12 +238,16 @@ interface ReadResult {
+   error?: string;
+ }
+ 
++function readSource(path: string): string | null {
++  return existsSync(path) ? readFileSync(path, "utf8") : null;
++}
++
+ /** Parse one source file into its group. Fail-soft: never throws. */
+-function readGroup(src: (typeof SOURCES)[number]): Group {
++function readGroup(src: (typeof SOURCES)[number], reader: (path: string) => string | null = readSource): Group {
+   const base = { key: src.key, label: src.label, source: src.source };
+   try {
+-    if (!existsSync(src.path)) return { ...base, count: 0, projects: [], error: `${src.source} not found` };
+-    const md = readFileSync(src.path, "utf8");
++    const md = reader(src.path);
++    if (md === null) return { ...base, count: 0, projects: [], error: `${src.source} not found` };
+     const projects = src.kind === "telos" ? parseTelosProjects(md) : parseProjects(md);
+     const group: Group = { ...base, count: projects.length, projects };
+     // Drift signal: file has content but nothing parsed → heading/format changed.
+@@ -259,9 +266,9 @@ function readGroup(src: (typeof SOURCES)[number]): Group {
+  * Read + parse every source. Fail-soft per group; top-level fields mirror the
+  * "live" group so pre-groups consumers keep working.
+  */
+-function read(): ReadResult {
++function read(reader: (path: string) => string | null = readSource): ReadResult {
+   const generatedAt = new Date().toISOString();
+-  const groups = SOURCES.map(readGroup);
++  const groups = SOURCES.map(src => readGroup(src, reader));
+   const live = groups.find((g) => g.key === "live") ?? groups[0];
+   return {
+     count: live.count,
+@@ -280,14 +287,14 @@ export async function start(): Promise<void> {
+ export async function stop(): Promise<void> {
+   state.running = false;
+ }
+-export function health(): { status: string; details?: Record<string, unknown> } {
+-  if (!state.running) return { status: "stopped" };
++export function health(reader: (path: string) => string | null = readSource, running = state.running): { status: string; details?: Record<string, unknown> } {
++  if (!running) return { status: "stopped" };
+   // Parse-drift is DEGRADED, not healthy-with-zero: a renamed column once zeroed
+   // the page for a week while health stayed green (2026-07-19 incident).
+   let counts: Record<string, number> = {};
+   let drift: string[] = [];
+   try {
+-    const r = read();
++    const r = read(reader);
+     counts = Object.fromEntries(r.groups.map((g) => [g.key, g.count]));
+     drift = r.groups.filter((g) => g.error).map((g) => g.error!);
+   } catch {
+@@ -299,8 +306,16 @@ export function health(): { status: string; details?: Record<string, unknown> }
+   };
+ }
+ export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(_req, "/api/projects", state.running);
++  if (admitted) return admitted;
+   const sub = pathname.replace(/^\/api\/projects/, "") || "/";
+   if (sub === "/" || sub === "/list") return Response.json(read());
+   if (sub === "/status" || sub === "/health") return Response.json(health());
+   return null;
+ }
++
++export function renderPersonalView(sources: Array<{relative: string; content: string}>, target: string, running: boolean): Response {
++  const admitted = new Map(sources.map(source => [source.relative, source.content]));
++  const reader = (path: string): string | null => admitted.get("LIFEOS/USER/" + path.slice(USER_DIR.length + 1)) ?? null;
++  return Response.json(/\/(?:status|health)$/.test(target) ? health(reader, running) : read(reader));
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/assets.ts b/LifeOS/install/LIFEOS/PULSE/modules/assets.ts
+index 43f67d3..2bf2607 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/assets.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/assets.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders the native personal data view from its declared owner sources.
++// ABOUTME: Relays managed requests to current owner admission before native parsing.
+ /**
+  * Assets Pulse module — read-only unified inventory surface over the user's existing
+  * asset stores. Holds ZERO data: parses the source files on every request and
+@@ -18,6 +20,7 @@
+ import { existsSync, readFileSync, readdirSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const MODULE_NAME = "assets";
+ const CLAUDE_DIR = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+@@ -217,10 +220,14 @@ export function parseTopology(md: string): Asset[] {
+   return out;
+ }
+ 
++function readSource(path: string): string | null {
++  return existsSync(path) ? readFileSync(path, "utf8") : null;
++}
++
+ /** Count of LAN endpoints in the arp scan (rendered as a stat, not cards). */
+-function networkEndpointCount(): number {
++function networkEndpointCount(reader: (path: string) => string | null = readSource): number {
+   try {
+-    const a = JSON.parse(readFileSync(NETWORK_ASSETS_JSON, "utf8"));
++    const a = JSON.parse(reader(NETWORK_ASSETS_JSON) ?? "");
+     return Object.keys(a.assets || {}).length;
+   } catch {
+     return 0;
+@@ -242,14 +249,14 @@ interface ReadResult {
+ }
+ 
+ /** Read + merge all sources. Fail-soft: never throws — degrades to what it can read. */
+-function read(): ReadResult {
++function read(reader: (path: string) => string | null = readSource, selectSnapshot: () => string | null = newestSnapshot): ReadResult {
+   const generatedAt = new Date().toISOString();
+   const assets: Asset[] = [];
+   const sources: string[] = [];
+   const gear: ReadResult["gear"] = { sections: [], updated: null };
+   try {
+-    if (existsSync(GEAR_PATH)) {
+-      const md = readFileSync(GEAR_PATH, "utf8");
++    const md = reader(GEAR_PATH);
++    if (md !== null) {
+       assets.push(...parseGear(md));
+       gear.sections = parseGearSections(md);
+       gear.updated = gearLastUpdated(md);
+@@ -259,9 +266,9 @@ function read(): ReadResult {
+     console.warn(`[${MODULE_NAME}] failed to read GEAR.md: ${String(err)}`);
+   }
+   try {
+-    const snap = newestSnapshot();
++    const snap = selectSnapshot();
+     if (snap) {
+-      const devices = parseTopology(readFileSync(snap, "utf8"));
++      const devices = parseTopology(reader(snap) ?? "");
+       if (devices.length) {
+         assets.push(...devices);
+         sources.push("MEMORY/_NETWORK/topology-snapshot");
+@@ -276,7 +283,7 @@ function read(): ReadResult {
+     sources,
+     generatedAt,
+     categories,
+-    networkEndpoints: networkEndpointCount(),
++    networkEndpoints: networkEndpointCount(reader),
+     assets,
+     gear,
+   };
+@@ -289,18 +296,28 @@ export async function start(): Promise<void> {
+ export async function stop(): Promise<void> {
+   state.running = false;
+ }
+-export function health(): { status: string; details?: Record<string, unknown> } {
++export function health(reader: (path: string) => string | null = readSource, selectSnapshot: () => string | null = newestSnapshot, running = state.running): { status: string; details?: Record<string, unknown> } {
+   let count = 0;
+   try {
+-    count = read().count;
++    count = read(reader, selectSnapshot).count;
+   } catch {
+     /* ignore */
+   }
+-  return { status: state.running ? "healthy" : "stopped", details: { assets: count } };
++  return { status: running ? "healthy" : "stopped", details: { assets: count } };
+ }
+ export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(_req, "/api/assets", state.running);
++  if (admitted) return admitted;
+   const sub = pathname.replace(/^\/api\/assets/, "") || "/";
+   if (sub === "/" || sub === "/list") return Response.json(read());
+   if (sub === "/status" || sub === "/health") return Response.json(health());
+   return null;
+ }
++
++export function renderPersonalView(sources: Array<{relative: string; content: string}>, target: string, running: boolean): Response {
++  const admitted = new Map(sources.map(source => [join(CLAUDE_DIR, source.relative), source.content]));
++  const reader = (path: string): string | null => admitted.get(path) ?? null;
++  const snapshots = [...admitted.keys()].filter(path => path.startsWith(NETWORK_DIR + "/topology-snapshot-") && path.endsWith(".md")).sort();
++  const selectSnapshot = (): string | null => snapshots[snapshots.length - 1] ?? null;
++  return Response.json(/\/(?:status|health)$/.test(target) ? health(reader, selectSnapshot, running) : read(reader, selectSnapshot));
 +}

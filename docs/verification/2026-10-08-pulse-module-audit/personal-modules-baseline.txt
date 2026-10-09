@@ -1,0 +1,478 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryAssetsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryAssetsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryAssetsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryAssetsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryAssetsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:20.200Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryAssetsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:20.206Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryAssetsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"stopped","details":{"assets":1}}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryAssetsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"stopped","details":{"assets":1}}
+
+======================================================================
+FAIL: test_current_account_connector_and_origin_govern_each_delivery (test_memory_personal_modules.MemoryAssetsModuleTests.test_current_account_connector_and_origin_govern_each_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 93, in test_current_account_connector_and_origin_govern_each_delivery
+    self.assertEqual(response.status_code, 403, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:21.134Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:22.006Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:22.009Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":0,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:22.010Z","categories":[],"networkEndpoints":0,"assets":[],"gear":{"sections":[],"updated":null}}
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":0,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:22.012Z","categories":[],"networkEndpoints":0,"assets":[],"gear":{"sections":[],"updated":null}}
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/assets')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 130, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:22.931Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/assets?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 130, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:22.934Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"SyntheticPersonalModuleCurrent","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"Devices","items":[
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryAssetsModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/assets/unsupported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 131, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_and_retired_source_cannot_reappear (test_memory_personal_modules.MemoryAssetsModuleTests.test_private_and_retired_source_cannot_reappear)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 76, in test_private_and_retired_source_cannot_reappear
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"sources":["USER/GEAR.md"],"generatedAt":"2026-10-09T02:30:23.827Z","categories":["Devices"],"networkEndpoints":0,"assets":[{"name":"Laptop","category":"Devices","detail":"<private>SyntheticPersonalModuleHidden</private>","use":"Work","source":"GEAR.md"}],"gear":{"sections":[{"category":"
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryBooksModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryBooksModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryBooksModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryBooksModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryBooksModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryBooksModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryBooksModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"stopped","details":{"books":1}}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryBooksModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"stopped","details":{"books":1}}
+
+======================================================================
+FAIL: test_current_account_connector_and_origin_govern_each_delivery (test_memory_personal_modules.MemoryBooksModuleTests.test_current_account_connector_and_origin_govern_each_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 93, in test_current_account_connector_and_origin_govern_each_delivery
+    self.assertEqual(response.status_code, 403, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":0,"lastUpdated":null,"groups":[]}
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":0,"lastUpdated":null,"groups":[]}
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/books')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 130, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/books?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 130, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"SyntheticPersonalModuleCurrent","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryBooksModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/books/unsupported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 131, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_and_retired_source_cannot_reappear (test_memory_personal_modules.MemoryBooksModuleTests.test_private_and_retired_source_cannot_reappear)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 76, in test_private_and_retired_source_cannot_reappear
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"lastUpdated":null,"groups":[{"category":"Synthetic category","books":[{"title":"<private>SyntheticPersonalModuleHidden</private>","author":"Synthetic Author","year":2026,"rating":5,"themes":["synthetic","local"],"canonical":true}]}]}
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryProjectsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryProjectsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryProjectsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_admitted_module_fields_match_original_native_parsing (test_memory_personal_modules.MemoryProjectsModuleTests.test_admitted_module_fields_match_original_native_parsing) (suffix='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 67, in test_admitted_module_fields_match_original_native_parsing
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryProjectsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:31.012Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryProjectsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:31.019Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryProjectsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"stopped"}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts (test_memory_personal_modules.MemoryProjectsModuleTests.test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts) (suffix='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 51, in test_anonymous_and_ambient_flags_cannot_read_module_data_or_counts
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"stopped"}
+
+======================================================================
+FAIL: test_current_account_connector_and_origin_govern_each_delivery (test_memory_personal_modules.MemoryProjectsModuleTests.test_current_account_connector_and_origin_govern_each_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 93, in test_current_account_connector_and_origin_govern_each_delivery
+    self.assertEqual(response.status_code, 403, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:31.953Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:32.832Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:32.835Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":0,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:32.836Z","projects":[],"groups":[{"key":"live","label":"Live Apps","source":"USER/PROJECTS.md","count":0,"projects":[],"error":"USER/PROJECTS.md present but no projects parsed — source format drifted"},{"key":"telos","label":"TEL
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_links_invalid_bytes_and_source_limits_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 120, in test_links_invalid_bytes_and_source_limits_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":0,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:32.839Z","projects":[],"groups":[{"key":"live","label":"Live Apps","source":"USER/PROJECTS.md","count":0,"projects":[],"error":"USER/PROJECTS.md present but no projects parsed — source format drifted"},{"key":"telos","label":"TEL
+
+======================================================================
+FAIL: test_links_invalid_bytes_and_source_limits_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_links_invalid_bytes_and_source_limits_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 87, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '[projects] USER/PROJECTS.md present but n[123 chars]ed\n' != ''
+- [projects] USER/PROJECTS.md present but no projects parsed — source format drifted
+- [projects] USER/PROJECTS.md present but no projects parsed — source format drifted
+ : [projects] USER/PROJECTS.md present but no projects parsed — source format drifted
+[projects] USER/PROJECTS.md present but no projects parsed — source format drifted
+
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/projects')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 130, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:33.711Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/projects?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 130, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:33.715Z","projects":[{"name":"SyntheticPersonalModuleCurrent","rawName":"**SyntheticPersonalModuleCurrent**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid","deploy":"local","stack":"Python","
+
+======================================================================
+FAIL: test_methods_unknown_routes_and_selectors_refuse (test_memory_personal_modules.MemoryProjectsModuleTests.test_methods_unknown_routes_and_selectors_refuse) (route='/api/projects/unsupported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 131, in test_methods_unknown_routes_and_selectors_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_and_retired_source_cannot_reappear (test_memory_personal_modules.MemoryProjectsModuleTests.test_private_and_retired_source_cannot_reappear)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 76, in test_private_and_retired_source_cannot_reappear
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"count":1,"source":"USER/PROJECTS.md","generatedAt":"2026-10-09T02:30:34.637Z","projects":[{"name":"<private>SyntheticPersonalModuleHidden</private>","rawName":"**<private>SyntheticPersonalModuleHidden</private>**","path":"/synthetic","url":"https://example.invalid","href":"https://example.invalid"
+
+----------------------------------------------------------------------
+Ran 18 tests in 16.403s
+
+FAILED (failures=52)

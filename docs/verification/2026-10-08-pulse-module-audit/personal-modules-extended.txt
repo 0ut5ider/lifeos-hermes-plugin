@@ -1,0 +1,53 @@
+...........E.........E......E..E
+======================================================================
+ERROR: test_started_native_runtime_and_absent_sources_match_original (test_memory_personal_modules.MemoryAssetsModuleTests.test_started_native_runtime_and_absent_sources_match_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 61, in test_started_native_runtime_and_absent_sources_match_original
+    self.start_module()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 57, in start_module
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '[assets] started\n'
+
+======================================================================
+ERROR: test_started_native_runtime_and_absent_sources_match_original (test_memory_personal_modules.MemoryBooksModuleTests.test_started_native_runtime_and_absent_sources_match_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 61, in test_started_native_runtime_and_absent_sources_match_original
+    self.start_module()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 57, in start_module
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '[books] started\n'
+
+======================================================================
+ERROR: test_native_project_drift_is_preserved (test_memory_personal_modules.MemoryProjectsModuleTests.test_native_project_drift_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 214, in test_native_project_drift_is_preserved
+    self.start_module()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 57, in start_module
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '[projects] started\n'
+
+======================================================================
+ERROR: test_started_native_runtime_and_absent_sources_match_original (test_memory_personal_modules.MemoryProjectsModuleTests.test_started_native_runtime_and_absent_sources_match_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 61, in test_started_native_runtime_and_absent_sources_match_original
+    self.start_module()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_personal_modules.py", line 57, in start_module
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '[projects] started\n'
+
+----------------------------------------------------------------------
+Ran 32 tests in 49.224s
+
+FAILED (errors=4)
