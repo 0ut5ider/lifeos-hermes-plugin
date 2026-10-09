@@ -1,0 +1,221 @@
+test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) ...
+  test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/algorithm') ... FAIL
+  test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/agents') ... FAIL
+  test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/events/recent') ... FAIL
+  test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/observability/voice-events') ... FAIL
+  test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/observability/tool-failures') ... FAIL
+test_anonymous_stream_refuses_before_sending_initial_algorithm_state (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_stream_refuses_before_sending_initial_algorithm_state) ... FAIL
+test_native_stream_initial_event_matches_current_algorithm_response (test_memory_operational_views.MemoryOperationalViewsTests.test_native_stream_initial_event_matches_current_algorithm_response) ... ok
+test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) ... Initial operational stream seconds: 0.003065
+
+  test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='POST', target='/api/algorithm', headers={}) ... FAIL
+  test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='GET', target='/api/agents?owner=other', headers={}) ... FAIL
+  test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='GET', target='/api/algorithm', headers={'Origin': 'https://outside.invalid'}) ... FAIL
+  test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='GET', target='/api/algorithm', headers={'Authorization': 'Bearer synthetic-invalid'}) ... FAIL
+test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) ...
+  test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/algorithm') ... FAIL
+  test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/agents') ... FAIL
+  test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/events/recent') ... FAIL
+  test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/observability/voice-events') ... FAIL
+  test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/observability/tool-failures') ... FAIL
+test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) ...
+  test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/algorithm') ... FAIL
+  test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/agents') ... FAIL
+  test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/events/recent') ... FAIL
+  test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/observability/voice-events') ... FAIL
+  test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/observability/tool-failures') ... FAIL
+test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions (test_memory_operational_views.MemoryOperationalViewsTests.test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions) ... FAIL
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/algorithm')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 57, in test_anonymous_and_ambient_owner_cannot_read_operational_routes
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"algorithms":[{"active":true,"sessionId":"synthetic-run","taskDescription":"SyntheticOperationalCurrent","currentPhase":"EXECUTE","phaseStartedAt":1791502561423,"algorithmStartedAt":1791502561423,"criteria":[{"id":"C1","description":"SyntheticOperationalCurrent","type":"criterion","status":"completed","createdInPhase":"OBSERVE"}],"agents":[],"capabilities":[],"progress":{"done":1,"total":2},"rawTask":"SyntheticOperationalCurrent","iteration":1,"reworkCount":0,"tracked":true,"climb":[{"ts":1791502561423,"done":1,"total":2}],"activity":{"state":"building","lastTool":"Write","lastTs":1791502561423,"ribbon":[{"t":1791502560000,"e":0,"b":1,"v":0,"d":0,"o":0}]},"iscDeltas":{"addedTotal":2,"closedTotal":1,"added1h":2,"closed1h":1},"ratings":[],"sessionUUID":"synthetic-session"}],"active":true,"pulseStrip":[]}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/agents')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 57, in test_anonymous_and_ambient_owner_cannot_read_operational_routes
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"events":[{"timestamp":"2026-10-08T23:36:01.423425+00:00","event":"subagent_start","type":"subagent_start","task":"SyntheticOperationalCurrent","session_id":"synthetic-session"}]}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/events/recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 57, in test_anonymous_and_ambient_owner_cannot_read_operational_routes
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"events":[{"timestamp":"2026-10-08T23:36:01.423425+00:00","type":"voice","text":"SyntheticOperationalCurrent","source":"voice"},{"timestamp":"2026-10-08T23:36:01.423425+00:00","type":"tool_failure","detail":"SyntheticOperationalCurrent","session_id":"synthetic-session","source":"tool-failure"},{"timestamp":"2026-10-08T23:36:01.423425+00:00","event":"subagent_start","type":"subagent_start","task":"SyntheticOperationalCurrent","session_id":"synthetic-session","source":"subagent"},{"timestamp":"2026-10-08T23:36:01.423425+00:00","type":"tool_use","event":"tool_use","session_id":"synthetic-session","tool_name":"Write","tool_input_preview":"{\"file\": \"SyntheticOperationalCurrent\"}","source":"tool-activity"}]}
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/observability/voice-events')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 57, in test_anonymous_and_ambient_owner_cannot_read_operational_routes
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : [{"timestamp":"2026-10-08T23:36:01.423425+00:00","type":"voice","text":"SyntheticOperationalCurrent"}]
+
+======================================================================
+FAIL: test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) (route='/api/observability/tool-failures')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 57, in test_anonymous_and_ambient_owner_cannot_read_operational_routes
+    self.assertEqual(result.status_code, 401, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : [{"timestamp":"2026-10-08T23:36:01.423425+00:00","type":"tool_failure","detail":"SyntheticOperationalCurrent","session_id":"synthetic-session"}]
+
+======================================================================
+FAIL: test_anonymous_stream_refuses_before_sending_initial_algorithm_state (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_stream_refuses_before_sending_initial_algorithm_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 113, in test_anonymous_stream_refuses_before_sending_initial_algorithm_state
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='POST', target='/api/algorithm', headers={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 107, in test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer
+    self.assertEqual(result.status_code, status, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405 : not found
+
+======================================================================
+FAIL: test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='GET', target='/api/agents?owner=other', headers={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 107, in test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer
+    self.assertEqual(result.status_code, status, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"events":[{"timestamp":"2026-10-08T23:36:04.300207+00:00","event":"subagent_start","type":"subagent_start","task":"SyntheticOperationalCurrent","session_id":"synthetic-session"}]}
+
+======================================================================
+FAIL: test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='GET', target='/api/algorithm', headers={'Origin': 'https://outside.invalid'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 107, in test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer
+    self.assertEqual(result.status_code, status, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"algorithms":[{"active":true,"sessionId":"synthetic-run","taskDescription":"SyntheticOperationalCurrent","currentPhase":"EXECUTE","phaseStartedAt":1791502564300,"algorithmStartedAt":1791502564300,"criteria":[{"id":"C1","description":"SyntheticOperationalCurrent","type":"criterion","status":"completed","createdInPhase":"OBSERVE"}],"agents":[],"capabilities":[],"progress":{"done":1,"total":2},"rawTask":"SyntheticOperationalCurrent","iteration":1,"reworkCount":0,"tracked":true,"climb":[{"ts":1791502564300,"done":1,"total":2}],"activity":{"state":"building","lastTool":"Write","lastTs":1791502564300,"ribbon":[{"t":1791502560000,"e":0,"b":1,"v":0,"d":0,"o":0}]},"iscDeltas":{"addedTotal":2,"closedTotal":1,"added1h":2,"closed1h":1},"ratings":[],"sessionUUID":"synthetic-session"}],"active":true,"pulseStrip":[]}
+
+======================================================================
+FAIL: test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) (method='GET', target='/api/algorithm', headers={'Authorization': 'Bearer synthetic-invalid'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 107, in test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer
+    self.assertEqual(result.status_code, status, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"algorithms":[{"active":true,"sessionId":"synthetic-run","taskDescription":"SyntheticOperationalCurrent","currentPhase":"EXECUTE","phaseStartedAt":1791502564300,"algorithmStartedAt":1791502564300,"criteria":[{"id":"C1","description":"SyntheticOperationalCurrent","type":"criterion","status":"completed","createdInPhase":"OBSERVE"}],"agents":[],"capabilities":[],"progress":{"done":1,"total":2},"rawTask":"SyntheticOperationalCurrent","iteration":1,"reworkCount":0,"tracked":true,"climb":[{"ts":1791502564300,"done":1,"total":2}],"activity":{"state":"building","lastTool":"Write","lastTs":1791502564300,"ribbon":[{"t":1791502560000,"e":0,"b":1,"v":0,"d":0,"o":0}]},"iscDeltas":{"addedTotal":2,"closedTotal":1,"added1h":2,"closed1h":1},"ratings":[],"sessionUUID":"synthetic-session"}],"active":true,"pulseStrip":[]}
+
+======================================================================
+FAIL: test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/algorithm')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 69, in test_private_and_encoded_private_sources_cannot_enter_operational_views
+    self.assertNotIn('SyntheticOperationalPrivate', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalPrivate' unexpectedly found in '{"algorithms":[{"active":true,"sessionId":"synthetic-run","taskDescription":"<private>SyntheticOperationalPrivate</private>","currentPhase":"EXECUTE","phaseStartedAt":1791502565292,"algorithmStartedAt":1791502565292,"criteria":[{"id":"C1","description":"<private>SyntheticOperationalPrivate</private>","type":"criterion","status":"completed","createdInPhase":"OBSERVE"}],"agents":[],"capabilities":[],"progress":{"done":1,"total":2},"rawTask":"<private>SyntheticOperationalPrivate</private>","iteration":1,"reworkCount":0,"tracked":true,"climb":[{"ts":1791502565292,"done":1,"total":2}],"activity":{"state":"building","lastTool":"Write","lastTs":1791502565292,"ribbon":[{"t":1791502560000,"e":0,"b":1,"v":0,"d":0,"o":0}]},"iscDeltas":{"addedTotal":2,"closedTotal":1,"added1h":2,"closed1h":1},"ratings":[],"sessionUUID":"synthetic-session"}],"active":true,"pulseStrip":[]}'
+
+======================================================================
+FAIL: test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/agents')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 69, in test_private_and_encoded_private_sources_cannot_enter_operational_views
+    self.assertNotIn('SyntheticOperationalPrivate', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalPrivate' unexpectedly found in '{"events":[{"timestamp":"2026-10-08T23:36:05.292363+00:00","event":"subagent_start","type":"subagent_start","task":"<private>SyntheticOperationalPrivate</private>","session_id":"synthetic-session"}]}'
+
+======================================================================
+FAIL: test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/events/recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 69, in test_private_and_encoded_private_sources_cannot_enter_operational_views
+    self.assertNotIn('SyntheticOperationalPrivate', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalPrivate' unexpectedly found in '{"events":[{"timestamp":"2026-10-08T23:36:05.292363+00:00","type":"voice","text":"<private>SyntheticOperationalPrivate</private>","source":"voice"},{"timestamp":"2026-10-08T23:36:05.292363+00:00","type":"tool_failure","detail":"<private>SyntheticOperationalPrivate</private>","session_id":"synthetic-session","source":"tool-failure"},{"timestamp":"2026-10-08T23:36:05.292363+00:00","event":"subagent_start","type":"subagent_start","task":"<private>SyntheticOperationalPrivate</private>","session_id":"synthetic-session","source":"subagent"},{"timestamp":"2026-10-08T23:36:05.292363+00:00","type":"tool_use","event":"tool_use","session_id":"synthetic-session","tool_name":"Write","tool_input_preview":"{\\"file\\": \\"<private>SyntheticOperationalPrivate</private>\\"}","source":"tool-activity"}]}'
+
+======================================================================
+FAIL: test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/observability/voice-events')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 69, in test_private_and_encoded_private_sources_cannot_enter_operational_views
+    self.assertNotIn('SyntheticOperationalPrivate', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalPrivate' unexpectedly found in '[{"timestamp":"2026-10-08T23:36:05.292363+00:00","type":"voice","text":"<private>SyntheticOperationalPrivate</private>"}]'
+
+======================================================================
+FAIL: test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) (route='/api/observability/tool-failures')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 69, in test_private_and_encoded_private_sources_cannot_enter_operational_views
+    self.assertNotIn('SyntheticOperationalPrivate', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalPrivate' unexpectedly found in '[{"timestamp":"2026-10-08T23:36:05.292363+00:00","type":"tool_failure","detail":"<private>SyntheticOperationalPrivate</private>","session_id":"synthetic-session"}]'
+
+======================================================================
+FAIL: test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/algorithm')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 83, in test_retired_text_cannot_return_from_original_session_or_event_files
+    self.assertNotIn('SyntheticOperationalCurrent', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalCurrent' unexpectedly found in '{"algorithms":[{"active":true,"sessionId":"synthetic-run","taskDescription":"SyntheticOperationalCurrent","currentPhase":"EXECUTE","phaseStartedAt":1791502566287,"algorithmStartedAt":1791502566287,"criteria":[{"id":"C1","description":"SyntheticOperationalCurrent","type":"criterion","status":"completed","createdInPhase":"OBSERVE"}],"agents":[],"capabilities":[],"progress":{"done":1,"total":2},"rawTask":"SyntheticOperationalCurrent","iteration":1,"reworkCount":0,"tracked":true,"climb":[{"ts":1791502566287,"done":1,"total":2}],"activity":{"state":"building","lastTool":"Write","lastTs":1791502566287,"ribbon":[{"t":1791502560000,"e":0,"b":1,"v":0,"d":0,"o":0}]},"iscDeltas":{"addedTotal":2,"closedTotal":1,"added1h":2,"closed1h":1},"ratings":[],"sessionUUID":"synthetic-session"}],"active":true,"pulseStrip":[]}'
+
+======================================================================
+FAIL: test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/agents')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 83, in test_retired_text_cannot_return_from_original_session_or_event_files
+    self.assertNotIn('SyntheticOperationalCurrent', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalCurrent' unexpectedly found in '{"events":[{"timestamp":"2026-10-08T23:36:06.287765+00:00","event":"subagent_start","type":"subagent_start","task":"SyntheticOperationalCurrent","session_id":"synthetic-session"}]}'
+
+======================================================================
+FAIL: test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/events/recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 83, in test_retired_text_cannot_return_from_original_session_or_event_files
+    self.assertNotIn('SyntheticOperationalCurrent', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalCurrent' unexpectedly found in '{"events":[{"timestamp":"2026-10-08T23:36:06.287765+00:00","type":"voice","text":"SyntheticOperationalCurrent","source":"voice"},{"timestamp":"2026-10-08T23:36:06.287765+00:00","type":"tool_failure","detail":"SyntheticOperationalCurrent","session_id":"synthetic-session","source":"tool-failure"},{"timestamp":"2026-10-08T23:36:06.287765+00:00","event":"subagent_start","type":"subagent_start","task":"SyntheticOperationalCurrent","session_id":"synthetic-session","source":"subagent"},{"timestamp":"2026-10-08T23:36:06.287765+00:00","type":"tool_use","event":"tool_use","session_id":"synthetic-session","tool_name":"Write","tool_input_preview":"{\\"file\\": \\"SyntheticOperationalCurrent\\"}","source":"tool-activity"}]}'
+
+======================================================================
+FAIL: test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/observability/voice-events')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 83, in test_retired_text_cannot_return_from_original_session_or_event_files
+    self.assertNotIn('SyntheticOperationalCurrent', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalCurrent' unexpectedly found in '[{"timestamp":"2026-10-08T23:36:06.287765+00:00","type":"voice","text":"SyntheticOperationalCurrent"}]'
+
+======================================================================
+FAIL: test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) (route='/api/observability/tool-failures')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 83, in test_retired_text_cannot_return_from_original_session_or_event_files
+    self.assertNotIn('SyntheticOperationalCurrent', result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOperationalCurrent' unexpectedly found in '[{"timestamp":"2026-10-08T23:36:06.287765+00:00","type":"tool_failure","detail":"SyntheticOperationalCurrent","session_id":"synthetic-session"}]'
+
+======================================================================
+FAIL: test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions (test_memory_operational_views.MemoryOperationalViewsTests.test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 91, in test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions
+    self.assertEqual(result.status_code, 403, result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"algorithms":[{"active":true,"sessionId":"synthetic-run","taskDescription":"SyntheticOperationalCurrent","currentPhase":"EXECUTE","phaseStartedAt":1791502568154,"algorithmStartedAt":1791502568154,"criteria":[{"id":"C1","description":"SyntheticOperationalCurrent","type":"criterion","status":"completed","createdInPhase":"OBSERVE"}],"agents":[],"capabilities":[],"progress":{"done":1,"total":2},"rawTask":"SyntheticOperationalCurrent","iteration":1,"reworkCount":0,"tracked":true,"climb":[{"ts":1791502568154,"done":1,"total":2}],"activity":{"state":"building","lastTool":"Write","lastTs":1791502568154,"ribbon":[{"t":1791502560000,"e":0,"b":1,"v":0,"d":0,"o":0}]},"iscDeltas":{"addedTotal":2,"closedTotal":1,"added1h":2,"closed1h":1},"ratings":[],"sessionUUID":"synthetic-session"}],"active":true,"pulseStrip":[]}
+
+----------------------------------------------------------------------
+Ran 7 tests in 7.784s
+
+FAILED (failures=21)

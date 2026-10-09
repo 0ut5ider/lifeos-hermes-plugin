@@ -74,6 +74,16 @@ async function main(): Promise<void> {
     const response: unknown = module.renderHealthView(input.sources);
     if (!(response instanceof Response)) throw new Error('Native health renderer requires a response');
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'operational_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.renderOperationalView !== 'function' || typeof input.target !== 'string'
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native operational views require declared current sources');
+    }
+    const response: unknown = module.renderOperationalView(input.sources, input.target);
+    if (!(response instanceof Response)) throw new Error('Native operational views require a response');
+    result = {status: response.status, body: await response.json()};
   } else if (input.action === 'telos_overview_sources' || input.action === 'telos_overview') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
     if (!object(module) || typeof module.telosOverviewSources !== 'function' || typeof module.renderTelosOverview !== 'function') {

@@ -1,0 +1,49 @@
+test_admitted_operational_views_preserve_native_fields_and_folding (test_memory_operational_views.MemoryOperationalViewsTests.test_admitted_operational_views_preserve_native_fields_and_folding) ... ok
+test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) ... ok
+test_anonymous_stream_refuses_before_sending_initial_algorithm_state (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_stream_refuses_before_sending_initial_algorithm_state) ... ok
+test_async_native_relay_preserves_owner_response_and_keeps_event_loop_running (test_memory_operational_views.MemoryOperationalViewsTests.test_async_native_relay_preserves_owner_response_and_keeps_event_loop_running) ... ok
+test_existing_synchronous_relay_records_event_loop_blocking (test_memory_operational_views.MemoryOperationalViewsTests.test_existing_synchronous_relay_records_event_loop_blocking) ... Actual synchronous relay seconds: 0.298163032
+ok
+test_log_rotation_with_equal_bytes_cannot_reuse_prior_private_activity_cache (test_memory_operational_views.MemoryOperationalViewsTests.test_log_rotation_with_equal_bytes_cannot_reuse_prior_private_activity_cache) ... Synchronous native relay observation: {"status": 200, "timerRan": false, "seconds": 0.31887142799999996}
+ok
+test_native_byte_tail_preserves_large_history_and_ignores_malformed_rows (test_memory_operational_views.MemoryOperationalViewsTests.test_native_byte_tail_preserves_large_history_and_ignores_malformed_rows) ... Equal-length rotation observation: {"bytes": 217, "prior_inode": 1575527, "current_inode": 1575534, "source_tool": "Agent", "displayed_tool": "Agent"}
+ok
+test_native_stream_initial_event_matches_current_algorithm_response (test_memory_operational_views.MemoryOperationalViewsTests.test_native_stream_initial_event_matches_current_algorithm_response) ... ok
+test_nested_json_private_spans_are_decoded_before_event_delivery (test_memory_operational_views.MemoryOperationalViewsTests.test_nested_json_private_spans_are_decoded_before_event_delivery) ... Initial operational stream seconds: 0.298775
+ok
+test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) ... ok
+test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) ... ok
+test_redirected_and_hardlinked_operational_sources_refuse (test_memory_operational_views.MemoryOperationalViewsTests.test_redirected_and_hardlinked_operational_sources_refuse) ... ok
+test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) ... ok
+test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions (test_memory_operational_views.MemoryOperationalViewsTests.test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions) ... ok
+test_stream_disconnect_stops_child_requests (test_memory_operational_views.MemoryOperationalViewsTests.test_stream_disconnect_stops_child_requests) ... ok
+test_stream_forget_clears_retained_claims_and_revocation_closes_delivery (test_memory_operational_views.MemoryOperationalViewsTests.test_stream_forget_clears_retained_claims_and_revocation_closes_delivery) ... FAIL
+test_stream_updates_then_excludes_private_replacement_text (test_memory_operational_views.MemoryOperationalViewsTests.test_stream_updates_then_excludes_private_replacement_text) ... ok
+test_torn_activity_line_waits_until_the_original_writer_completes_it (test_memory_operational_views.MemoryOperationalViewsTests.test_torn_activity_line_waits_until_the_original_writer_completes_it) ... Actual operational stream update seconds: 0.413769
+ok
+test_configuration_cli_emits_native_normalized_config (test_native_frontend_types.NativeFrontendTypeTests.test_configuration_cli_emits_native_normalized_config) ... ok
+test_configuration_import_does_not_run_cli (test_native_frontend_types.NativeFrontendTypeTests.test_configuration_import_does_not_run_cli) ... ok
+test_dashboard_strict_typecheck_passes (test_native_frontend_types.NativeFrontendTypeTests.test_dashboard_strict_typecheck_passes) ... ok
+test_subordinate_tabs_ignore_unused_callback (test_native_frontend_types.NativeFrontendTypeTests.test_subordinate_tabs_ignore_unused_callback) ... ok
+
+======================================================================
+FAIL: test_stream_forget_clears_retained_claims_and_revocation_closes_delivery (test_memory_operational_views.MemoryOperationalViewsTests.test_stream_forget_clears_retained_claims_and_revocation_closes_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 277, in test_stream_forget_clears_retained_claims_and_revocation_closes_delivery
+    self.assertEqual(list(lines), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [''] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+''
+
+- ['']
++ []
+
+----------------------------------------------------------------------
+Ran 22 tests in 39.824s
+
+FAILED (failures=1)
+SubTabs markup SHA256: 85d7244cc5c904c7e98c104ddc7adcad2ccb988366012c68c70cedafdddd42b0

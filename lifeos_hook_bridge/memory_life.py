@@ -7,10 +7,11 @@ from urllib.parse import urlsplit
 
 from .memory_access import MemoryUnavailable
 from .memory_sources import authorize, read_markdown, CORPUS_LIMIT, _source_path
+from .memory_operational_views import ROUTES as OPERATIONAL_ROUTES
 
 ROUTES = frozenset({'/api/life/home', '/api/life/goals', '/api/life/health', '/api/life/finances',
                     '/api/life/work', '/api/life/business', '/api/observability/life-card', '/api/user-index',
-                    '/api/telos/overview'})
+                    '/api/telos/overview'}) | frozenset(OPERATIONAL_ROUTES)
 
 
 def request_target(value):
@@ -50,6 +51,9 @@ def _sources(memory, scope, connection, filenames):
 
 def view(memory, scope, target, *, check_current=None):
     target = request_target(target)
+    if target in OPERATIONAL_ROUTES:
+        from .memory_operational_views import view as operational_view
+        return operational_view(memory, scope, target, check_current=check_current)
     if target == '/api/telos/overview':
         from .memory_telos_overview import view as overview_view
         return overview_view(memory, scope, check_current=check_current)

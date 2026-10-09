@@ -89,6 +89,8 @@ The [TELOS overview gate](verification/2026-10-08-telos-overview/README.md) pass
 
 ## Execution and evidence
 
+The [operational reader gate](verification/2026-10-08-operational-views/README.md) passes 26 focused reader and frontend checks and four asynchronous transport checks. Current owner authority governs five native views and each algorithm stream update. Revocation and connector loss close delivery. A 217-byte log replacement now reports the current tool. The [growth baseline](verification/2026-10-08-operational-history/baseline.txt) reproduces two complete-history limits: 2,051 records at 336,357 bytes and 5,001 records at 1,320,157 bytes. The native control retains the quiet run's curve while the managed reader refuses both files. Large-history support, remaining reader coverage, and installed activation remain required.
+
 Adrian directs work to continue through steps 2 to 7 on October 4. On October 5, he changes the immediate order to the remaining step 1 hook checks, then steps 3, 4, and 5. Resume the remaining memory activation gates before enabling ownership or memory-writing jobs. Voice remains the last feature workstream. Verify the combined package before final activation on `.252`.
 
 Adrian authorizes using existing data from `.211` and `.213` to implement and test import and reverse migration. Use isolated destinations and preserve source data. This testing authorization does not change the fresh-start selection for `.212`. Shared Cortex records still use the memory MCP tools. If that connector is unavailable, report the failure and continue independent work.

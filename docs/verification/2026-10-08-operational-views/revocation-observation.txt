@@ -1,0 +1,23 @@
+test_stream_forget_clears_retained_claims_and_revocation_closes_delivery (test_memory_operational_views.MemoryOperationalViewsTests.test_stream_forget_clears_retained_claims_and_revocation_closes_delivery) ... FAIL
+
+======================================================================
+FAIL: test_stream_forget_clears_retained_claims_and_revocation_closes_delivery (test_memory_operational_views.MemoryOperationalViewsTests.test_stream_forget_clears_retained_claims_and_revocation_closes_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 279, in test_stream_forget_clears_retained_claims_and_revocation_closes_delivery
+    self.assertEqual(remaining, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [''] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+''
+
+- ['']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 2.696s
+
+FAILED (failures=1)
+Revoked operational stream remaining lines: ['']

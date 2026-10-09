@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..1f87e37 100644
+index 787cf28..338398b 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -379,7 +379,7 @@ index 787cf28..1f87e37 100644
  import { RUN_ACTIVITY } from "../../TOOLS/ascent"
 -import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
 +import { loadLifeosConfig, validateAndNormalize } from "../../TOOLS/LifeosConfig"
-+import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryHTTPFileEdit, memoryObject } from "../../TOOLS/lib/MemoryAccess"
++import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryHTTPFileEdit, memoryHTTPResponseAsync, memoryObject } from "../../TOOLS/lib/MemoryAccess"
  
  // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
  for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
@@ -391,7 +391,163 @@ index 787cf28..1f87e37 100644
    file(path: string): {
      size: number
      exists(): Promise<boolean>
-@@ -1496,13 +1500,13 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
+@@ -431,7 +435,7 @@ const activityCache: { offset: number; bySession: Map<string, ToolTick[]> } = {
+   bySession: new Map(),
+ }
+ 
+-function foldActivityLine(line: string): void {
++function foldActivityLine(line: string, bySession = activityCache.bySession): void {
+   if (!line) return
+   let ev: any
+   try {
+@@ -442,10 +446,10 @@ function foldActivityLine(line: string): void {
+   if (ev?.type !== "tool_use" || !ev.session_id || !ev.tool_name) return
+   const ts = Date.parse(ev.timestamp)
+   if (!Number.isFinite(ts)) return
+-  const ticks = activityCache.bySession.get(ev.session_id) || []
++  const ticks = bySession.get(ev.session_id) || []
+   ticks.push({ ts, cls: classifyTool(ev.tool_name, ev.tool_input_preview || ""), tool: ev.tool_name })
+   if (ticks.length > ACTIVITY_TICK_CAP) ticks.shift()
+-  activityCache.bySession.set(ev.session_id, ticks)
++  bySession.set(ev.session_id, ticks)
+ }
+ 
+ export function getActivityData(): Map<string, ToolTick[]> {
+@@ -575,15 +579,15 @@ function humanizeSlug(slug: string): string {
+ // 2026-05-24 (realtime-phase-tracking): extracted the data-producing function
+ // from handleAlgorithmApi so the SSE channel (handleAlgorithmStreamApi) can
+ // reuse the exact same payload shape. handleAlgorithmApi just wraps this.
+-function buildAlgorithmStatePayload(): { algorithms: any[]; active: boolean; pulseStrip: any[] } {
++function buildAlgorithmStatePayload(supplied?: {work: string | undefined; climb: Map<string, ClimbPoint[]>; activity: Map<string, ToolTick[]>}): { algorithms: any[]; active: boolean; pulseStrip: any[] } {
+   try {
+-    if (!existsSync(WORK_JSON_PATH)) {
++    if (supplied ? supplied.work === undefined : !existsSync(WORK_JSON_PATH)) {
+       return { algorithms: [], active: false, pulseStrip: [] }
+     }
+-    const data = JSON.parse(readFileSync(WORK_JSON_PATH, "utf-8"))
++    const data = JSON.parse(supplied ? supplied.work ?? "{}" : readFileSync(WORK_JSON_PATH, "utf-8"))
+     const sessions: Record<string, any> = data.sessions || {}
+-    const climbMap = getClimbData()
+-    const activityMap = getActivityData()
++    const climbMap = supplied ? supplied.climb : getClimbData()
++    const activityMap = supplied ? supplied.activity : getActivityData()
+     const nowMs = Date.now()
+     // "Running" = a tool call fired in the last 5 minutes. Matches the native
+     // stale threshold so a long-running tool call can't briefly flip a session
+@@ -944,31 +948,86 @@ function handleAlgorithmStreamApi(req: Request): Response {
+   })
+ }
+ 
++async function handleManagedAlgorithmStream(req: Request): Promise<Response> {
++  if (SSE_DISABLED) return new Response("SSE disabled via LIFEOS_NO_SSE=1", {status: 503, headers: {"cache-control": "no-store"}});
++  const initial = await memoryHTTPResponseAsync(req, "life", "/api/algorithm");
++  if (initial.status !== 200) return initial;
++  const initialBody = await initial.text();
++  const cancellation = new AbortController();
++  const currentRequest = new Request(req, {signal: cancellation.signal});
++  let timer: ReturnType<typeof setTimeout> | null = null;
++  let stopped = false;
++  let closeStream = (): void => {};
++  const stream = new ReadableStream<Uint8Array>({
++    start(controller) {
++      let prior = initialBody;
++      let lastEvent = Date.now();
++      closeStream = (): void => {
++        if (stopped) return;
++        stopped = true;
++        if (timer !== null) clearTimeout(timer);
++        req.signal.removeEventListener("abort", closeStream);
++        cancellation.abort();
++        try { controller.close(); } catch {}
++      };
++      const frame = (body: string): Uint8Array => SSE_ENCODER.encode(`event: algorithm\ndata: ${body}\n\n`);
++      if (req.signal.aborted) { closeStream(); return; }
++      req.signal.addEventListener("abort", closeStream, {once: true});
++      controller.enqueue(frame(initialBody));
++      const poll = async (): Promise<void> => {
++        try {
++          const response = await memoryHTTPResponseAsync(currentRequest, "life", "/api/algorithm");
++          if (stopped) return;
++          if (response.status !== 200) { closeStream(); return; }
++          const body = await response.text();
++          if (body !== prior) {
++            controller.enqueue(frame(body));
++            prior = body;
++            lastEvent = Date.now();
++          } else if (Date.now() - lastEvent >= SSE_KEEPALIVE_INTERVAL_MS) {
++            controller.enqueue(SSE_ENCODER.encode(": keepalive\n\n"));
++            lastEvent = Date.now();
++          }
++          if (!stopped) timer = setTimeout(() => { void poll(); }, SSE_POLL_INTERVAL_MS);
++        } catch { closeStream(); }
++      };
++      timer = setTimeout(() => { void poll(); }, SSE_POLL_INTERVAL_MS);
++    },
++    cancel() { closeStream(); },
++  });
++  const headers = new Headers(initial.headers);
++  headers.set("content-type", "text/event-stream; charset=utf-8");
++  headers.set("cache-control", "no-store");
++  headers.set("connection", "keep-alive");
++  headers.set("x-accel-buffering", "no");
++  return new Response(stream, {headers});
++}
++
+ // ── /api/agents ──
+ 
+-function handleAgentsApi(): Response {
+-  return Response.json({ events: readJsonlTail(SUBAGENT_EVENTS_PATH, 100).reverse() })
++function handleAgentsApi(read = readJsonlTail): Response {
++  return Response.json({ events: read(SUBAGENT_EVENTS_PATH, 100).reverse() })
+ }
+ 
+ // ── /api/events/recent ──
+ 
+-function handleEventsRecentApi(): Response {
+-  const voiceEvents = readJsonlTail(VOICE_EVENTS_PATH, 50).map((e) => ({
++function handleEventsRecentApi(read = readJsonlTail): Response {
++  const voiceEvents = read(VOICE_EVENTS_PATH, 50).map((e) => ({
+     ...e,
+     source: "voice",
+     type: e.event || e.type || "voice",
+   }))
+-  const toolFailures = readJsonlTail(TOOL_FAILURES_PATH, 50).map((e) => ({
++  const toolFailures = read(TOOL_FAILURES_PATH, 50).map((e) => ({
+     ...e,
+     source: "tool-failure",
+     type: e.event || e.type || "tool-failure",
+   }))
+-  const subagentEvents = readJsonlTail(SUBAGENT_EVENTS_PATH, 50).map((e) => ({
++  const subagentEvents = read(SUBAGENT_EVENTS_PATH, 50).map((e) => ({
+     ...e,
+     source: "subagent",
+     type: e.event || e.type || "subagent",
+   }))
+-  const toolActivity = readJsonlTail(TOOL_ACTIVITY_PATH, 100).map((e) => ({
++  const toolActivity = read(TOOL_ACTIVITY_PATH, 100).map((e) => ({
+     ...e,
+     source: "tool-activity",
+     type: e.event || e.type || "tool_use",
+@@ -1153,14 +1212,14 @@ function handleCapabilitiesApi(searchParams: URLSearchParams): Response {
+ 
+ // ── /api/observability/voice-events ──
+ 
+-function handleVoiceEventsApi(): Response {
+-  return Response.json(readJsonlTail(VOICE_EVENTS_PATH, 100).reverse())
++function handleVoiceEventsApi(read = readJsonlTail): Response {
++  return Response.json(read(VOICE_EVENTS_PATH, 100).reverse())
+ }
+ 
+ // ── /api/observability/tool-failures ──
+ 
+-function handleToolFailuresApi(): Response {
+-  return Response.json(readJsonlTail(TOOL_FAILURES_PATH, 100).reverse())
++function handleToolFailuresApi(read = readJsonlTail): Response {
++  return Response.json(read(TOOL_FAILURES_PATH, 100).reverse())
+ }
+ 
+ // ── /api/novelty ──
+@@ -1496,13 +1555,13 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
  // Memory Graph — serves MEMORY/GRAPH/graph.json (built by LIFEOS/TOOLS/MemoryGraph.ts)
  // shaped for the KnowledgeGraph D3 component: category = community id, backlinkCount = degree.
  // Colored/clustered by DISCOVERED community (not domain), sized by degree — all silos.
@@ -408,7 +564,7 @@ index 787cf28..1f87e37 100644
        generated: string; nodeCount: number; edgeCount: number
        nodes: Array<{ id: string; silo: string; type: string; title: string; community: number; pagerank: number; degree: number; tags: string[] }>
        edges: Array<{ from: string; to: string; weight: number; kind: string }>
-@@ -1535,9 +1539,13 @@ function handleMemoryGraphApi(): Response {
+@@ -1535,9 +1594,13 @@ function handleMemoryGraphApi(): Response {
    }
  }
  
@@ -424,7 +580,7 @@ index 787cf28..1f87e37 100644
        return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })
      }
  
-@@ -1548,7 +1556,7 @@ function handleKnowledgeApi(): Response {
+@@ -1548,7 +1611,7 @@ function handleKnowledgeApi(): Response {
  
      // Parse master _index.md for last harvest date
      const masterIndexPath = join(KNOWLEDGE_DIR, "_index.md")
@@ -433,7 +589,7 @@ index 787cf28..1f87e37 100644
        const content = readFileSync(masterIndexPath, "utf-8")
        const harvestMatch = content.match(/\*\*Last harvest:\*\*\s*(\S+)/)
        if (harvestMatch) lastHarvest = harvestMatch[1]
-@@ -1556,14 +1564,17 @@ function handleKnowledgeApi(): Response {
+@@ -1556,14 +1619,17 @@ function handleKnowledgeApi(): Response {
  
      for (const domain of KNOWLEDGE_DOMAINS) {
        const domainDir = join(KNOWLEDGE_DIR, domain)
@@ -453,7 +609,7 @@ index 787cf28..1f87e37 100644
        } catch {
          files = []
        }
-@@ -1573,7 +1584,8 @@ function handleKnowledgeApi(): Response {
+@@ -1573,7 +1639,8 @@ function handleKnowledgeApi(): Response {
        for (const file of files) {
          const filePath = join(domainDir, file)
          try {
@@ -463,7 +619,7 @@ index 787cf28..1f87e37 100644
            const fm = parseFrontmatter(raw)
  
            const title = (fm.title as string) || file.replace(/\.md$/, "")
-@@ -1656,13 +1668,14 @@ function capitalizeFirst(s: string): string {
+@@ -1656,13 +1723,14 @@ function capitalizeFirst(s: string): string {
    return s.charAt(0).toUpperCase() + s.slice(1)
  }
  
@@ -481,7 +637,7 @@ index 787cf28..1f87e37 100644
      const fm = parseFrontmatter(content)
      return Response.json({
        domain,
-@@ -1680,6 +1693,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
+@@ -1680,6 +1748,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
    }
  }
  
@@ -505,7 +661,7 @@ index 787cf28..1f87e37 100644
  async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
    const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
    if (!existsSync(filePath)) {
-@@ -1740,6 +1770,10 @@ const TELOS_FILE_ALLOWLIST = new Set<string>([
+@@ -1740,6 +1825,10 @@ const TELOS_FILE_ALLOWLIST = new Set<string>([
    "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "SPARKS.md", "NEW_TEST.md",
  ])
  
@@ -516,7 +672,7 @@ index 787cf28..1f87e37 100644
  function readMd(path: string): string {
    try { return existsSync(path) ? readFileSync(path, "utf-8") : "" } catch { return "" }
  }
-@@ -1754,10 +1788,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
+@@ -1754,10 +1843,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
  
  // Load a YAML file; return null on missing or parse failure so callers can
  // degrade gracefully (per feedback_degrade_dont_block_on_missing_creds.md).
@@ -530,7 +686,7 @@ index 787cf28..1f87e37 100644
      return YAML.parse(raw) as T
    } catch (err) {
      console.error(`[finances] YAML parse failed: ${path}`, err)
-@@ -1837,11 +1871,11 @@ interface SpendAggregateBundle {
+@@ -1837,11 +1926,11 @@ interface SpendAggregateBundle {
  // (schema, generated_at, record_count, sources); subsequent lines are
  // one JSON record per normalized merchant. Returns empty bundle if the
  // file is missing — the analyzer hasn't been run yet.
@@ -545,7 +701,7 @@ index 787cf28..1f87e37 100644
      if (lines.length === 0) return { generated_at: null, records: [] }
      let generated_at: string | null = null
      const records: SpendAggregate[] = []
-@@ -1995,12 +2029,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
+@@ -1995,12 +2084,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
    return "Review for cancellation"
  }
  
@@ -561,7 +717,7 @@ index 787cf28..1f87e37 100644
      const cutoffMs = Date.now() - 35 * 86400_000
      for (const line of lines) {
        try {
-@@ -2360,12 +2394,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
+@@ -2360,12 +2449,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
    return sections
  }
  
@@ -578,7 +734,7 @@ index 787cf28..1f87e37 100644
      files.push({ name: f.replace(".md", ""), content: content.slice(0, 2000), sections: parseSections(content) })
    }
    return files
-@@ -2428,13 +2462,13 @@ function parseCurrentDomains(content: string): {
+@@ -2428,13 +2517,13 @@ function parseCurrentDomains(content: string): {
    return { updated, updatedBy, domains }
  }
  
@@ -598,7 +754,7 @@ index 787cf28..1f87e37 100644
  
      const fields = parseBoldFields(current)
      const { updated, updatedBy, domains } = parseCurrentDomains(current)
-@@ -2470,11 +2504,11 @@ function handleLifeHome(): Response {
+@@ -2470,11 +2559,11 @@ function handleLifeHome(): Response {
  
  // ── GET /api/life/health ──
  
@@ -613,7 +769,7 @@ index 787cf28..1f87e37 100644
        ? readdirSync(HEALTH_DIR).filter(f => f.startsWith("lab_results"))
        : []
  
-@@ -2485,21 +2519,21 @@ function handleLifeHealth(): Response {
+@@ -2485,21 +2574,21 @@ function handleLifeHealth(): Response {
        freshnessEntries.push({ name: lab, sourceDate: parseFilenameDate(lab) })
      }
      for (const structured of ["CONDITIONS.md", "MEDICATIONS.md", "SUPPLEMENTS.md", "FITNESS.md", "NUTRITION.md", "METRICS.md", "HISTORY.md"]) {
@@ -645,7 +801,7 @@ index 787cf28..1f87e37 100644
        labReports: labFiles,
        freshness,
      })
-@@ -2547,25 +2581,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
+@@ -2547,25 +2636,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
    return { headers, rows }
  }
  
@@ -681,7 +837,7 @@ index 787cf28..1f87e37 100644
  
      // Per-card freshness — each card surfaces its own indicator pulling
      // only from the files it actually depends on. The composite `freshness`
-@@ -2637,8 +2671,8 @@ function handleLifeFinances(): Response {
+@@ -2637,8 +2726,8 @@ function handleLifeFinances(): Response {
  
      // ── v2 envelope: Income / Outbound / Overall ──
  
@@ -692,7 +848,7 @@ index 787cf28..1f87e37 100644
      // Normalize both known on-disk shapes (issue #1438). The shipped install
      // templates use a legacy shape ({name, purpose, category, direction, match}
      // and {vendor, amount: "$X", frequency}) with no `id`, which crashed the
-@@ -2684,8 +2718,8 @@ function handleLifeFinances(): Response {
+@@ -2684,8 +2773,8 @@ function handleLifeFinances(): Response {
            category: o.category ?? "other",
          }
        })
@@ -703,7 +859,7 @@ index 787cf28..1f87e37 100644
      const spendInsights = buildSpendInsights(spendBundle.records)
  
      // Resolve each vendor's monthly spend.
-@@ -2871,14 +2905,14 @@ function handleLifeFinances(): Response {
+@@ -2871,14 +2960,14 @@ function handleLifeFinances(): Response {
        // v2 envelope
        ...v2,
        // ported from public PR #1777, @takanorinishida
@@ -724,7 +880,7 @@ index 787cf28..1f87e37 100644
        plan,
        incomeStreams,
        expenseCategories,
-@@ -2919,19 +2953,19 @@ function resolveCompanyDir(): string {
+@@ -2919,19 +3008,19 @@ function resolveCompanyDir(): string {
    return dirs.find(d => existsSync(join(d, "REVENUE"))) ?? dirs[0] ?? ""
  }
  
@@ -749,7 +905,7 @@ index 787cf28..1f87e37 100644
        }
      }
  
-@@ -2945,8 +2979,8 @@ function handleLifeBusiness(): Response {
+@@ -2945,8 +3034,8 @@ function handleLifeBusiness(): Response {
        revenueSummary: summarySection?.body || "",
        revenueByProduct: revenueByProduct?.body || "",
        revenueAllSections: revenueSections,
@@ -760,7 +916,7 @@ index 787cf28..1f87e37 100644
      })
    } catch (err: any) {
      return Response.json({ error: err.message }, { status: 500 })
-@@ -2994,9 +3028,9 @@ async function handleLifeGrowth(): Promise<Response> {
+@@ -2994,9 +3083,9 @@ async function handleLifeGrowth(): Promise<Response> {
  
  // ── GET /api/life/work ──
  
@@ -772,7 +928,7 @@ index 787cf28..1f87e37 100644
      // Parse project table rows
      let projectLines = projectsContent.split("\n")
        .filter(l => l.startsWith("|") && !l.includes("---") && !l.includes("Project"))
-@@ -3018,14 +3052,14 @@ function handleLifeWork(): Response {
+@@ -3018,14 +3107,14 @@ function handleLifeWork(): Response {
      }
  
      // Current workstreams — unified "## Current State" section, CURRENT.md legacy fallback
@@ -790,7 +946,7 @@ index 787cf28..1f87e37 100644
          const sessions = workData.sessions || {}
          activeSessions = Object.entries(sessions)
            .map(([slug, s]: [string, any]) => ({
-@@ -3054,34 +3088,34 @@ function handleLifeWork(): Response {
+@@ -3054,34 +3143,34 @@ function handleLifeWork(): Response {
  
  // ── GET /api/life/goals ──
  
@@ -850,7 +1006,7 @@ index 787cf28..1f87e37 100644
  
      return Response.json({
        mission: parseSections(mission),
-@@ -3405,15 +3439,15 @@ function pickBulletValue(content: string, key: string): string | null {
+@@ -3405,15 +3494,15 @@ function pickBulletValue(content: string, key: string): string | null {
  //
  // Composite rule for creative_freedom: average the underlying creative and
  // freedom percentages from LIFEOS_STATE.json. Missing source dimension contributes 0.
@@ -870,7 +1026,7 @@ index 787cf28..1f87e37 100644
        for (const [id, d] of Object.entries(parsed.dimensions ?? {})) {
          if (typeof d?.pct === "number") pcts[id] = d.pct
        }
-@@ -3450,7 +3484,7 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+@@ -3450,7 +3539,7 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
    ]
  
    return surfaces
@@ -879,7 +1035,7 @@ index 787cf28..1f87e37 100644
      .map(({ sources: _sources, ...rest }) => ({ ...rest, ideal: 100, velo: 0 }))
  }
  
-@@ -3465,13 +3499,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+@@ -3465,13 +3554,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
  // this one — TELOS_DIR has no CURRENT.md/GOALS.md). Same semantic as
  // handleTelosOverview's local closure; lifted so every /api/life/* handler
  // resolves sections the same way.
@@ -897,7 +1053,7 @@ index 787cf28..1f87e37 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -3565,9 +3599,9 @@ async function buildWorkNarrative(): Promise<{ summary: string; inProgress: numb
+@@ -3565,9 +3654,9 @@ async function buildWorkNarrative(): Promise<{ summary: string; inProgress: numb
    }
  }
  
@@ -909,7 +1065,7 @@ index 787cf28..1f87e37 100644
    if (!content) return null
    const fields = parseBoldFields(content)
    const parseScore = (raw: string | undefined): number | null => {
-@@ -3601,7 +3635,7 @@ function buildSnapshotFromCurrentState(): Array<{ id: string; label: string; v:
+@@ -3601,7 +3690,7 @@ function buildSnapshotFromCurrentState(): Array<{ id: string; label: string; v:
    return out.length > 0 ? out : null
  }
  
@@ -918,7 +1074,7 @@ index 787cf28..1f87e37 100644
    books: string[]
    films: string[]
    anime: string[]
-@@ -3610,9 +3644,9 @@ function buildPreferencesFromTelos(): {
+@@ -3610,9 +3699,9 @@ function buildPreferencesFromTelos(): {
    hobbies: string[]
    literature: string[]
  } | null {
@@ -931,7 +1087,7 @@ index 787cf28..1f87e37 100644
    if (books.length === 0 && movies.length === 0 && authors.length === 0) return null
    return {
      books,
-@@ -4157,13 +4191,13 @@ function buildStatusMetrics(
+@@ -4157,13 +4246,13 @@ function buildStatusMetrics(
  interface OverviewTeam { id: string; name: string; role: string; kind: "human" | "agent"; owns: string[]; avatar: string; note: string }
  
  // Team is parsed from USER files at request time — names never live in this file.
@@ -947,7 +1103,7 @@ index 787cf28..1f87e37 100644
    if (principal) {
      team.push({
        id: "T0", name: principal, role: "Principal", kind: "human", owns: [],
-@@ -4171,14 +4205,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
+@@ -4171,14 +4260,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
        avatar: principal.charAt(0), note: "Sets direction. Everything here serves their TELOS.",
      })
    }
@@ -964,7 +1120,7 @@ index 787cf28..1f87e37 100644
    if (fleetMatch) {
      fleetMatch[1].split("/").map((n) => n.trim()).filter(Boolean).forEach((n, i) => {
        team.push({
-@@ -4190,14 +4224,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
+@@ -4190,14 +4279,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
    return team.length > 0 ? team : null
  }
  
@@ -982,7 +1138,7 @@ index 787cf28..1f87e37 100644
      const missionRaw = sectionOrFile("mission", "MISSION.md")
      const goalsRaw = sectionOrFile("goals", "GOALS.md")
      const problemsRaw = sectionOrFile("problems", "PROBLEMS.md")
-@@ -4232,7 +4266,7 @@ async function handleTelosOverview(): Promise<Response> {
+@@ -4232,7 +4321,7 @@ async function handleTelosOverview(): Promise<Response> {
            dims: [],
            metrics: [],
          }))
@@ -991,7 +1147,7 @@ index 787cf28..1f87e37 100644
            id: g.id,
            title: cleanInlineMarkdown(g.title ?? g.text ?? g.id),
            summary: "",
-@@ -4281,19 +4315,19 @@ async function handleTelosOverview(): Promise<Response> {
+@@ -4281,19 +4370,19 @@ async function handleTelosOverview(): Promise<Response> {
        blocks: refsByPrefix(c.references, "G"),
      }))
  
@@ -1019,7 +1175,7 @@ index 787cf28..1f87e37 100644
  
      const currentStateNarrative = buildCurrentStateNarrative(currentStateRaw)
      const idealStateNarrative = buildIdealStateNarrative(idealStateRaw)
-@@ -4520,6 +4554,160 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4609,195 @@ function handleOnboardingState(): Response {
    })
  }
  
@@ -1133,6 +1289,41 @@ index 787cf28..1f87e37 100644
 +    "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "STATUS.md", "PROJECTS.md"];
 +}
 +
++export function renderOperationalView(sources: ReadonlyArray<{relative: string; content: string}>, target: string): Response {
++  const allowed = new Set(["LIFEOS/MEMORY/STATE/work.json", "LIFEOS/MEMORY/STATE/work-events.jsonl",
++    "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl", "LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl",
++    "LIFEOS/MEMORY/OBSERVABILITY/tool-failures.jsonl", "LIFEOS/MEMORY/VOICE/voice-events.jsonl"]);
++  if (sources.length > allowed.size || sources.some(source => !allowed.has(source.relative))
++      || new Set(sources.map(source => source.relative)).size !== sources.length) {
++    throw new Error("Choose fixed operational source snapshots");
++  }
++  const contents = new Map(sources.map(source => [join(dirname(LIFEOS_DIR), source.relative), source.content]));
++  const read = (path: string, maximum = 100): Array<Record<string, unknown>> => {
++    if (!allowed.has(path.slice(dirname(LIFEOS_DIR).length + 1))) throw new Error("Choose fixed operational sources");
++    const result: Array<Record<string, unknown>> = [];
++    for (const line of (contents.get(path) ?? "").split("\n")) {
++      if (!line) continue;
++      const value: unknown = JSON.parse(line);
++      if (memoryObject(value)) result.push(value);
++    }
++    return result.slice(-maximum);
++  };
++  if (target === "/api/agents") return handleAgentsApi(read);
++  if (target === "/api/events/recent") return handleEventsRecentApi(read);
++  if (target === "/api/observability/voice-events") return handleVoiceEventsApi(read);
++  if (target === "/api/observability/tool-failures") return handleToolFailuresApi(read);
++  if (target === "/api/algorithm") {
++    const climb = new Map<string, ClimbPoint[]>();
++    for (const line of (contents.get(WORK_EVENTS_PATH) ?? "").split("\n")) foldClimbLine(climb, line);
++    evictSeriesByCount(climb, CLIMB_SERIES_CAP);
++    const activity = new Map<string, ToolTick[]>();
++    for (const line of (contents.get(TOOL_ACTIVITY_PATH) ?? "").split("\n")) foldActivityLine(line, activity);
++    evictSeriesByAge(activity, Date.now(), ACTIVITY_RETENTION_MS);
++    return Response.json(buildAlgorithmStatePayload({work: contents.get(WORK_JSON_PATH), climb, activity}));
++  }
++  throw new Error("Choose a fixed operational read route");
++}
++
 +export function telosOverviewSources(): string[] {
 +  const stateFiles = ["HEALTH", "MONEY", "FREEDOM", "CREATIVE", "RELATIONSHIPS", "RHYTHMS", "INFRASTRUCTURE"];
 +  return lifeViewSources().map(name => "LIFEOS/USER/TELOS/" + name)
@@ -1180,7 +1371,7 @@ index 787cf28..1f87e37 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4719,103 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4809,124 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  
@@ -1238,6 +1429,27 @@ index 787cf28..1f87e37 100644
 +    } catch {
 +      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers});
 +    }
++  }
++
++  if (hasManagedMemoryHTTP() && pathname === "/api/algorithm/stream") {
++    const headers = {"cache-control": "no-store"};
++    if (method !== "GET") return Response.json({error: "Algorithm streams require GET"}, {status: 405, headers});
++    if (url.search) return Response.json({error: "Algorithm streams require fixed routes"}, {status: 400, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "Algorithm streams require the current origin"}, {status: 403, headers});
++    try { return await handleManagedAlgorithmStream(req); }
++    catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++  }
++
++  if (hasManagedMemoryHTTP() && ["/api/algorithm", "/api/agents", "/api/events/recent",
++      "/api/observability/voice-events", "/api/observability/tool-failures"].includes(pathname)) {
++    const headers = {"cache-control": "no-store"};
++    if (method !== "GET") return Response.json({error: "Operational views require GET"}, {status: 405, headers});
++    if (url.search) return Response.json({error: "Operational views require fixed routes"}, {status: 400, headers});
++    const origin = req.headers.get("origin");
++    if (origin && origin !== url.origin) return Response.json({error: "Operational views require the current origin"}, {status: 403, headers});
++    try { return memoryHTTPResponse(req, "life", pathname); }
++    catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +  }
 +
 +  if (hasManagedMemoryHTTP() && ["/api/life/home", "/api/life/goals", "/api/life/health", "/api/life/finances", "/api/life/work", "/api/life/business", "/api/observability/life-card", "/api/telos/overview"].includes(pathname)) {
@@ -7690,17 +7902,17 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..fef1ce7
+index 0000000..d99af4a
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,227 @@
+@@ -0,0 +1,285 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
 +import { lstatSync, readFileSync, realpathSync } from "node:fs";
 +import { homedir } from "node:os";
 +import { isAbsolute, resolve } from "node:path";
-+import { spawnSync } from "node:child_process";
++import { spawnSync, spawn } from "node:child_process";
 +import { randomUUID } from "node:crypto";
 +
 +const revisions = new Map<string, string>();
@@ -7726,9 +7938,7 @@ index 0000000..fef1ce7
 +  return revisions.get(resolve(path)) ?? "";
 +}
 +
-+export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,
-+                                valid: (value: unknown) => value is T): T | undefined {
-+  if (operation !== "pulse_http" && !hasMemoryAccess()) return undefined;
++function memoryServiceCommand(): {executable: string; arguments: string[]} {
 +  const path = resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json");
 +  const info = lstatSync(path);
 +  if (!info.isFile() || info.isSymbolicLink() || info.uid !== process.getuid?.() || (info.mode & 0o077) !== 0) {
@@ -7738,14 +7948,21 @@ index 0000000..fef1ce7
 +  if (!memoryObject(configuration) || configuration.version !== 1 || !Array.isArray(configuration.command)) {
 +    throw new Error("Unsupported native memory service configuration");
 +  }
-+  const command: string[] = [];
++  const arguments_: string[] = [];
 +  for (const argument of configuration.command) {
 +    if (typeof argument !== "string" || argument.length === 0) throw new Error("Invalid native memory service command");
-+    command.push(argument);
++    arguments_.push(argument);
 +  }
-+  const executable = command.shift();
++  const executable = arguments_.shift();
 +  if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
-+  const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
++  return {executable, arguments: arguments_};
++}
++
++export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,
++                                valid: (value: unknown) => value is T): T | undefined {
++  if (operation !== "pulse_http" && !hasMemoryAccess()) return undefined;
++  const command = memoryServiceCommand();
++  const result = spawnSync(command.executable, command.arguments, {input: JSON.stringify({operation, arguments: arguments_}),
 +                                               env: {...process.env},
 +                                               encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
 +  if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
@@ -7907,19 +8124,72 @@ index 0000000..fef1ce7
 +    authorization: request.headers.get("authorization") ?? "", cookie: request.headers.get("cookie") ?? ""});
 +}
 +
-+function memoryHTTP(arguments_: Record<string, unknown>): Response {
-+  const valid = (value: unknown): value is MemoryHTTPResponse => memoryObject(value)
++function validHTTPResponse(value: unknown): value is MemoryHTTPResponse {
++  return memoryObject(value)
 +    && typeof value.status === "number" && [200, 400, 401, 403, 404, 409, 503].includes(value.status)
 +    && typeof value.body === "string" && Array.isArray(value.headers)
 +    && value.headers.every(header => Array.isArray(header) && header.length === 2
 +      && typeof header[0] === "string" && typeof header[1] === "string"
 +      && ["content-type", "cache-control", "set-cookie"].includes(header[0]));
-+  const response = memoryAccess("pulse_http", arguments_, valid);
++}
++
++function memoryHTTP(arguments_: Record<string, unknown>): Response {
++  const response = memoryAccess("pulse_http", arguments_, validHTTPResponse);
 +  if (response === undefined) throw new Error("Authenticated memory is unavailable");
++  return renderHTTPResponse(response);
++}
++
++function renderHTTPResponse(response: MemoryHTTPResponse): Response {
 +  const headers = new Headers();
 +  for (const header of response.headers) headers.append(header[0], header[1]);
 +  headers.set("cache-control", "no-store");
 +  return new Response(response.body, {status: response.status, headers});
++}
++
++export async function memoryHTTPResponseAsync(request: Request, view: string, target?: string): Promise<Response> {
++  const command = memoryServiceCommand();
++  const arguments_ = {view, authorization: request.headers.get("authorization") ?? "",
++    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})};
++  const result = await new Promise<string>((resolveResult, rejectResult) => {
++    const child = spawn(command.executable, command.arguments, {env: {...process.env},
++      stdio: "pipe", signal: request.signal});
++    let output = "";
++    let bytes = 0;
++    let finished = false;
++    const fail = (): void => {
++      if (finished) return;
++      finished = true;
++      clearTimeout(timeout);
++      child.kill("SIGKILL");
++      rejectResult(new Error("The native memory service is unavailable"));
++    };
++    const timeout = setTimeout(fail, 40_000);
++    child.stdout.setEncoding("utf8");
++    child.stderr.setEncoding("utf8");
++    child.stdout.on("data", (chunk: string) => {
++      if (finished) return;
++      bytes += Buffer.byteLength(chunk);
++      if (bytes > 4 * 1024 * 1024) { fail(); return; }
++      output += chunk;
++    });
++    child.stderr.on("data", (chunk: string) => {
++      bytes += Buffer.byteLength(chunk);
++      if (bytes > 4 * 1024 * 1024) fail();
++    });
++    child.on("error", fail);
++    child.stdin.on("error", fail);
++    child.on("close", (code) => {
++      if (finished) return;
++      if (code !== 0) { fail(); return; }
++      finished = true;
++      clearTimeout(timeout);
++      resolveResult(output);
++    });
++    child.stdin.end(JSON.stringify({operation: "pulse_http", arguments: arguments_}));
++  });
++  const response: unknown = JSON.parse(result);
++  if (!validHTTPResponse(response)) throw new Error("The native memory service returned an invalid result");
++  return renderHTTPResponse(response);
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755

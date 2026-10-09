@@ -14,6 +14,8 @@ BUSINESS = 'LIFEOS/USER/WORK/YOUR_COMPANIES'
 
 
 def classification(relative):
+    from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES
+    if relative in OPERATIONAL_SOURCES: return 'life_text'
     if (relative in FINANCE_SOURCES or relative in TELOS
             or re.fullmatch(r'LIFEOS/USER/HEALTH/[^/]+\.md', relative) and Path(relative).name != 'README.md'
             or relative == BUSINESS + '/README.md'
@@ -50,6 +52,11 @@ def snapshot(memory, scope, relative):
 
 
 def projection(memory, relative, content):
+    from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES, projection as operational_projection
+    if relative in OPERATIONAL_SOURCES:
+        values = [operational_projection(line) for line in content.split('\n') if line] if relative.endswith('.jsonl') else [operational_projection(content)]
+        result = '\n'.join(values) if all(value is not None for value in values) else None
+        return result if result is not None and len(result.encode()) <= CORPUS_LIMIT else None
     if classification(relative) == 'life_metadata': return content
     if relative.endswith(('.yaml', '.toml')):
         values = memory._native('finance_source_projections', sources=[{'relative': relative, 'content': content}])['projections']
