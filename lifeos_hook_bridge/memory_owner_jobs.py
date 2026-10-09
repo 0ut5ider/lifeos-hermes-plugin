@@ -26,6 +26,7 @@ JOBS = {
     'life-morning-brief': (('LIFEOS/PULSE/checks/life-morning-brief.ts',),),
     'proposal-gc': (('LIFEOS/TOOLS/ProposalGC.ts', '--auto'),),
     'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
+    'atlas-insights': (('LIFEOS/PULSE/modules/atlas.ts', '--build-insights'),),
 }
 MAX_OUTPUT = 4 * 1024 * 1024
 

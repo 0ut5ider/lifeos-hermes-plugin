@@ -70,7 +70,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     edit = arguments.get('view') == 'telos_file_edit'
     runtime = arguments.get('view') == 'pulse_runtime'
-    job = arguments.get('view') == 'conduit_job'
+    job = arguments.get('view') in ('conduit_job', 'atlas_job')
     delivery = runtime and 'observation' in arguments
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
         {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else
@@ -108,7 +108,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     if runtime:
         route = '/memory/pulse_runtime'
     if job:
-        route = '/memory/conduit_job'
+        route = '/memory/' + arguments['view']
     if delivery:
         from .memory_pulse_health import validate
         try:

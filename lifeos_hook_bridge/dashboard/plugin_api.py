@@ -352,23 +352,26 @@ def get_memory_life(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('life', request, account)
 
 
+@router.post('/memory/atlas_job')
 @router.post('/memory/conduit_job')
-async def prepare_memory_conduit_job(request: Request, account: str = Depends(_memory_account)):
+async def prepare_memory_owner_job(request: Request, account: str = Depends(_memory_account)):
     headers = {'Cache-Control': 'no-store'}
     if request.query_params:
-        return JSONResponse({'error': 'Conduit job preparation uses fixed installed arguments'}, status_code=400, headers=headers)
+        return JSONResponse({'error': 'Native owner jobs use fixed installed arguments'}, status_code=400, headers=headers)
     try:
         async for chunk in request.stream():
             if chunk:
-                return JSONResponse({'error': 'Conduit job preparation uses fixed installed arguments'}, status_code=400, headers=headers)
+                return JSONResponse({'error': 'Native owner jobs use fixed installed arguments'}, status_code=400, headers=headers)
     except ClientDisconnect:
-        return JSONResponse({'error': 'Conduit job preparation is cancelled'}, status_code=400, headers=headers)
+        return JSONResponse({'error': 'Native owner job preparation is cancelled'}, status_code=400, headers=headers)
     try:
-        result, binding = _memory_preferences().conduit_job_response(account=account)
+        preferences = _memory_preferences()
+        method = preferences.atlas_job_response if request.url.path.endswith('/atlas_job') else preferences.conduit_job_response
+        result, binding = method(account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
     except (ValueError, OSError, RuntimeError, sqlite3.Error):
-        return JSONResponse({'error': 'Conduit job preparation is unavailable'}, status_code=503, headers=headers)
+        return JSONResponse({'error': 'Native owner job preparation is unavailable'}, status_code=503, headers=headers)
     return JSONResponse(result, headers={**headers, 'X-LifeOS-Memory-Installation': binding})
 
 

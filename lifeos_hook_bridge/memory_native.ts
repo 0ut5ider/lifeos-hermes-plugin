@@ -185,6 +185,12 @@ async function main(): Promise<void> {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/ATLAS/Store.ts')).href);
     if (!object(module) || typeof module.atlasGraphState !== 'function') throw new Error('Native Atlas graph exports are unavailable');
     result = module.atlasGraphState();
+  } else if (input.action === 'atlas_insight_plan') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
+    if (!object(module) || typeof module.atlasInsightPlan !== 'function' || !(input.metrics === null || object(input.metrics))) {
+      throw new Error('Native Atlas generation requires admitted current metrics');
+    }
+    result = module.atlasInsightPlan(input.metrics);
   } else if (input.action === 'atlas_insights_view') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
     if (!object(module) || typeof module.renderAtlasInsights !== 'function'

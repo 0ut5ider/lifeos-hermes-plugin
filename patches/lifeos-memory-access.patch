@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..535b8a3
+index 0000000..9ca3e99
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,587 @@
+@@ -0,0 +1,588 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8406,13 +8406,14 @@ index 0000000..535b8a3
 +}
 +
 +
-+export function startConduitOwnerJob(revision: string, settled: (success: boolean) => void): {stop: () => Promise<void>} {
-+  if (!/^[0-9a-f]{64}$/.test(revision)) throw new Error("Conduit requires the initiating owner revision");
++export function startOwnerMemoryJob(name: "conduit-insight" | "atlas-insights", revision: string, settled: (success: boolean) => void): {stop: () => Promise<void>} {
++  if (!["conduit-insight", "atlas-insights"].includes(name)) throw new Error("Choose a declared owner memory job");
++  if (!/^[0-9a-f]{64}$/.test(revision)) throw new Error("Owner jobs require the initiating owner revision");
 +  const command = memoryServiceCommand();
 +  const configuration = command.arguments[2];
 +  if (command.arguments.length !== 3 || command.arguments[1] !== "--configuration"
 +      || !configuration || !isAbsolute(configuration) || !configuration.endsWith("/lifeos-memory.json")) {
-+    throw new Error("Conduit requires the installed selected-profile command");
++    throw new Error("Owner jobs require the installed selected-profile command");
 +  }
 +  const environment: NodeJS.ProcessEnv = {...process.env};
 +  for (const key of Object.keys(environment)) {
@@ -8424,7 +8425,7 @@ index 0000000..535b8a3
 +  environment.HERMES_HOME = dirname(configuration);
 +  environment.LIFEOS_MEMORY_CONFIGURATION = configuration;
 +  environment.LIFEOS_MEMORY_CONFIGURATION_REVISION = revision;
-+  const child = spawn(command.executable, ["-m", "hermes_cli.main", "lifeos-job", "conduit-insight",
++  const child = spawn(command.executable, ["-m", "hermes_cli.main", "lifeos-job", name,
 +    "--configuration-revision", revision], {env: environment, stdio: ["ignore", "pipe", "pipe"]});
 +  child.stdout.resume();
 +  child.stderr.resume();
@@ -10678,7 +10679,7 @@ index 37fce1d..0ccf42b 100644
  const PRINCIPAL_PATH = join(paiUserDir(), 'PRINCIPAL/PRINCIPAL_IDENTITY.md');
  const SETTINGS_PATH = join(HOME, '.claude/settings.json');
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts b/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts
-index 8c207f4..7663e70 100644
+index 8c207f4..c6c3f35 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/atlas.ts
 @@ -1,3 +1,5 @@
@@ -10691,11 +10692,84 @@ index 8c207f4..7663e70 100644
  import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
  import { homedir } from "node:os";
  import { join } from "node:path";
-+import { hasManagedMemoryHTTP, memoryHTTPResponseAsync, memoryObject } from "../../TOOLS/lib/MemoryAccess";
++import { hasManagedMemoryHTTP, memoryHTTPResponseAsync, memoryObject, memoryAccess, startOwnerMemoryJob } from "../../TOOLS/lib/MemoryAccess";
  
  const MODULE_NAME = "atlas";
  const CLAUDE_DIR = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
-@@ -138,7 +141,50 @@ async function regenerate(m: Record<string, unknown>): Promise<void> {
+@@ -34,6 +37,13 @@ const state: {
+   generating: boolean;
+ } = { running: false, cached: null, cachedAt: 0, generating: false };
+ 
++let insightJob: {stop: () => Promise<void>} | null = null;
++
++export async function stop(): Promise<void> {
++  if (insightJob !== null) await insightJob.stop();
++  state.running = false;
++}
++
+ export function start() {
+   state.running = true;
+ }
+@@ -91,7 +101,7 @@ What the edge structure shows: which zones carry the most blast radius (blast_zo
+ 
+ Rules: 200-320 words. Every sentence tied to a number in the data. CRITICAL: never state a worker/asset is "unused", "dead", "orphaned", or "burning money" unless unwired_workers or a stale count backs it — absence of one edge type is not absence of use. No marketing register, no dramatization, no filler. Output ONLY markdown — no preamble, no closing notes.`;
+ 
+-async function inference(userJson: string): Promise<string | null> {
++async function inference(userJson: string, managed = false): Promise<string | null> {
+   const proc = Bun.spawn(
+     ["bun", INFERENCE, "--level", "high", "--timeout", "120000", SYSTEM_PROMPT, userJson],
+     { stdout: "pipe", stderr: "pipe" },
+@@ -102,7 +112,7 @@ async function inference(userJson: string): Promise<string | null> {
+     proc.exited,
+   ]);
+   if (code !== 0 || !out.trim()) {
+-    console.log(`[${MODULE_NAME}] inference failed (exit ${code}): ${err.slice(0, 200)}`);
++    console.log(managed ? `[${MODULE_NAME}] inference unavailable` : `[${MODULE_NAME}] inference failed (exit ${code}): ${err.slice(0, 200)}`);
+     return null;
+   }
+   const paras = out.trim().split(/\n{2,}/);
+@@ -110,6 +120,40 @@ async function inference(userJson: string): Promise<string | null> {
+   return paras.join("\n\n").trim();
+ }
+ 
++export function atlasInsightPlan(metrics: Record<string, unknown> | null): {metrics: Record<string, unknown> | null; hash: string | null} {
++  return {metrics, hash: metrics === null ? null : metricHash(metrics)};
++}
++
++export async function buildAtlasInsights(): Promise<unknown> {
++  const prepared = memoryAccess("atlas_insight_prepare", {}, memoryObject);
++  if (!memoryObject(prepared) || prepared.ok !== true || typeof prepared.signature !== "string"
++      || !/^[0-9a-f]{64}$/.test(prepared.signature) || !memoryObject(prepared.plan)
++      || !(prepared.plan.metrics === null || memoryObject(prepared.plan.metrics))
++      || !(prepared.plan.hash === null || typeof prepared.plan.hash === "string" && /^[0-9a-f]{16}$/.test(prepared.plan.hash))) {
++    throw new Error("Atlas generation requires admitted current owner metrics");
++  }
++  const check = (): void => {
++    const current = memoryAccess("atlas_insight_check", {signature: prepared.signature}, memoryObject);
++    if (!memoryObject(current) || current.ok !== true) throw new Error("Atlas generation authority or sources changed");
++  };
++  check();
++  if (prepared.plan.metrics === null) return {available: false, error: "run an atlas sync first"};
++  const narrative = await inference(JSON.stringify(prepared.plan.metrics), true);
++  check();
++  if (narrative === null) return {available: false, error: "Atlas inference is unavailable"};
++  const value = {hash: prepared.plan.hash, narrative, generated_at: new Date().toISOString()};
++  const published = memoryAccess("atlas_insight_publish", {signature: prepared.signature, value}, memoryObject);
++  if (!memoryObject(published) || published.ok !== true || !memoryObject(published.value)) {
++    throw new Error("Atlas generation publication requires current owner authority");
++  }
++  return published.value;
++}
++
++if (import.meta.main && process.argv[2] === "--build-insights") {
++  try { console.log(JSON.stringify(await buildAtlasInsights())); }
++  catch { console.error("Atlas insight unavailable"); process.exit(2); }
++}
++
+ function readCache(): { hash: string; narrative: string; generated_at: string } | null {
+   if (!existsSync(INSIGHTS_CACHE)) return null;
+   try {
+@@ -138,7 +182,81 @@ async function regenerate(m: Record<string, unknown>): Promise<void> {
  
  // ── Request handling ──────────────────────────────────────────────────
  
@@ -10717,6 +10791,22 @@ index 8c207f4..7663e70 100644
 +    narrative_generated_at: cache?.generated_at ?? null, stale: !cache || cache.hash !== metricHash(metrics), generating: false});
 +}
 +
++async function startManagedRegeneration(req: Request): Promise<Response> {
++const admitted = await memoryHTTPResponseAsync(req, "atlas_job");
++if (admitted.status !== 200) return admitted;
++const value: unknown = await admitted.json();
++if (!memoryObject(value) || Object.keys(value).join(",") !== "configuration_revision"
++    || typeof value.configuration_revision !== "string" || !/^[0-9a-f]{64}$/.test(value.configuration_revision)
++    || req.signal.aborted) throw new Error("Atlas generation preparation is unavailable");
++if (state.generating) return Response.json({generating: true, alreadyRunning: true}, {status: 202, headers: admitted.headers});
++insightJob = startOwnerMemoryJob("atlas-insights", value.configuration_revision, () => {
++  state.generating = false;
++  insightJob = null;
++});
++state.generating = true;
++return Response.json({generating: true}, {status: 202, headers: admitted.headers});
++}
++
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
 +  if (hasManagedMemoryHTTP() && ["/api/atlas", "/api/atlas/insights", "/api/atlas/insights/regenerate"].includes(pathname)) {
 +    const headers = {"cache-control": "no-store"};
@@ -10730,9 +10820,24 @@ index 8c207f4..7663e70 100644
 +    const origin = req.headers.get("origin");
 +    if (origin && origin !== url.origin) return Response.json({error: "Atlas snapshots require the current origin"}, {status: 403, headers});
 +    try {
-+      const response = await memoryHTTPResponseAsync(req, "life", pathname === "/api/atlas/insights/regenerate" ? "/api/atlas/insights" : pathname);
-+      if (pathname === "/api/atlas/insights/regenerate" && response.ok) {
-+        return Response.json({error: "Atlas insights generation is not available"}, {status: 503, headers});
++      if (pathname === "/api/atlas/insights/regenerate") {
++        return await startManagedRegeneration(req);
++      }
++      let response = await memoryHTTPResponseAsync(req, "life", pathname);
++      if (response.status === 200 && pathname === "/api/atlas/insights") {
++        let value: unknown = await response.json();
++        if (!memoryObject(value)) throw new Error("Atlas insights require a declared response");
++        if (value.available === true && value.stale === true && !state.generating) {
++          const started = await startManagedRegeneration(req);
++          if (started.status !== 202 && started.status !== 503) return started;
++          // Admission can change while the owner job is prepared.
++          response = await memoryHTTPResponseAsync(req, "life", pathname);
++          if (response.status !== 200) return response;
++          value = await response.json();
++          if (!memoryObject(value)) throw new Error("Atlas insights require a declared response");
++        }
++        return Response.json(value.available === true ? {...value, generating: state.generating} : value,
++          {headers: response.headers});
 +      }
 +      return response;
 +    }
@@ -11605,11 +11710,12 @@ diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/
        }
  
        // Which surfaces are switched on. The dashboard reads this to avoid
-@@ -1209,6 +1213,7 @@
+@@ -1209,6 +1213,8 @@
    if (imessageModule) imessageModule.stopIMessage?.()
    if (assistantModule) assistantModule.stopAssistant?.()
    if (syslogModule) await syslogModule.stop?.()
 +  if (conduitModule) await conduitModule.stop?.()
++  if (atlasModule) await atlasModule.stop?.()
    await writeState(STATE_PATH, state).catch(() => {})
    log("info", "LifeOS Pulse stopped", { uptimeMs: Date.now() - state.startedAt })
  }
@@ -11820,7 +11926,7 @@ index 9ac4d38..a5d04fc 100644
    process.exit(0);
  }
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts b/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts
-index 5da6ec7..e0f86f7 100644
+index 5da6ec7..7dad325 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts
 @@ -1,3 +1,5 @@
@@ -11836,7 +11942,7 @@ index 5da6ec7..e0f86f7 100644
 -import { existsSync, readFileSync, readdirSync } from "node:fs"
 +import { existsSync, readFileSync, readdirSync, fstatSync, createReadStream } from "node:fs"
 +import { createInterface } from "node:readline"
-+import { memoryHTTPConduitView, memoryObject, hasManagedMemoryHTTP, startConduitOwnerJob } from "../../TOOLS/lib/MemoryAccess"
++import { memoryHTTPConduitView, memoryObject, hasManagedMemoryHTTP, startOwnerMemoryJob } from "../../TOOLS/lib/MemoryAccess"
  import { join } from "node:path"
  import { loadConfig } from "../Conduit/config.ts"
 -import { DAILY_DIR, INSIGHTS_DIR, dailyPathsFor, insightPathFor } from "../Conduit/paths.ts"
@@ -11940,7 +12046,7 @@ index 5da6ec7..e0f86f7 100644
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
 +  const managed = await memoryHTTPConduitView(req, state.running, state.building, revision => {
 +    if (state.building) return false;
-+    insightJob = startConduitOwnerJob(revision, success => {
++    insightJob = startOwnerMemoryJob("conduit-insight", revision, success => {
 +      state.building = false;
 +      insightJob = null;
 +      if (!success) console.log(`[${MODULE_NAME}] on-demand insight job refused or failed`);

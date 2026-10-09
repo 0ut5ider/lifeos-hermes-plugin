@@ -1,0 +1,17 @@
+# Atlas insight preparation, owner jobs, and native regeneration
+
+2026-10-09, Cerebo. First daily release scope: main Pulse only. No separate Telos application.
+
+Eight native owner-job and publication baseline cases contain six failures for unsupported preparation and job selection. The first command check still fails after backend preparation succeeds. A pass-through RPC observer records the actual valid preparation result and no following check request. The caller omits the helper's required response validator. Adding the declared object validator to the three Atlas calls fixes the real selected Hermes command. Eight checks then pass in 12.425 seconds, and eleven expanded checks pass in 17.944 seconds.
+
+The managed dashboard initially loses the native automatic stale-insight regeneration behavior. Its missing-graph body also adds a generating field. A three-case baseline has two failures in 4.493 seconds. The candidate uses one fixed owner-job helper for manual and automatic initiation. After the preparation await, automatic reads collect the admitted result again. A changed dashboard account withholds the prior body. Missing-graph responses retain the native exact body. A missing local writer leaves the admitted stale reader available without inference.
+
+Eighteen focused checks pass in 97.716 seconds after correcting the lifetime fixture. Three simultaneous stale readers start one actual inference request. Module stop and actual full Pulse shutdown terminate the observed children. The inherited heartbeat timer still delays full daemon exit. The first fixture edit accidentally changes the readiness conditional instead of the configuration conditional. That run tests the wrong module and fails. The correction changes only test selection; it does not change runtime behavior.
+
+The actual private model probe passes through the native dashboard button. One request and response use flashnext-w4a16-fp8ple and reasoning_effort xhigh. This is the native high/Opus rung. All four configured efforts and the Fable pin remain unchanged. The resulting current narrative has 1,753 characters, the cache uses mode 0600, and delivery reports stale false. The observer forwards the real upstream response. Only synthetic graph data enters the model request. This probe makes no server change.
+
+The additional retired-output test first fails during preparation, before output validation. The retirement cutoff excludes the existing graph by age. Exact owner review admits that safe graph without changing its bytes or time. The corrected control then tests the generated retired narrative itself. Keep the earlier failure as evidence of the retirement boundary.
+
+Eight final edge and authentication checks pass in 8.978 seconds. The Conduit repeat passes all 35 checks in 114.269 seconds. The broad neighboring gate passes all 239 checks in 421.292 seconds, including strict main dashboard types and source preparation. Installed application acceptance, actual daily channel, schedules, current-package recovery, and final deployment remain open. No Atlas schedule is added. This unit does not activate managed ownership on .252.
+
+The commit command continues after a separate whitespace check failure. One captured baseline assertion ends in a space. The displayed baseline removes that terminal space, and atlas-job-baseline.raw.gz preserves the original capture bytes. The corrected commit body uses actual paragraph breaks. Runtime code stays unchanged.

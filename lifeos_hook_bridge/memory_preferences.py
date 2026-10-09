@@ -169,9 +169,15 @@ class MemoryPreferences:
         return self._response(config, result, account=account)
 
     def conduit_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def atlas_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def _owner_job_response(self, *, account):
         config = self._configuration(account=account)
         if not config.get('ownership_enabled', False):
-            raise MemoryUnavailable('Conduit jobs require activated owner memory')
+            raise MemoryUnavailable('Native jobs require activated owner memory')
         author = str(os.getuid())
         destination = str(self.configuration.path.parent)
         grant = config.get('destinations', {}).get('terminal:' + destination, {})
@@ -179,7 +185,7 @@ class MemoryPreferences:
                 or grant.get('visibility') != 'private' or grant.get('participants') != [config['principal']]
                 or not CATEGORIES <= set(grant.get('read', [])) or not CATEGORIES <= set(grant.get('write', []))
                 or '*' not in grant.get('projects', []) or not grant.get('model_routes')):
-            raise MemoryUnavailable('Conduit jobs require the selected local owner grant')
+            raise MemoryUnavailable('Native jobs require the selected local owner grant')
         result = {'configuration_revision': MemoryPolicy(config).revision}
         return self._response(config, result, account=account)
 

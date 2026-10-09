@@ -297,6 +297,8 @@ class MemoryConduitJobRelayTests(unittest.TestCase):
 
     def launch_lifetime_process(self, environment, *, daemon):
         self.stop_pulse()
+        module_name = self.native_module.removesuffix('.ts')
+        status_route = '/api/conduit/status' if module_name == 'conduit' else '/api/atlas'
         if daemon:
             pulse = self.root / 'LIFEOS/PULSE'
             source = Path(os.environ['LIFEOS_MEMORY_SOURCE']) / 'LIFEOS/PULSE'
@@ -313,14 +315,14 @@ class MemoryConduitJobRelayTests(unittest.TestCase):
                 capture_output=True, text=True, timeout=10)
             self.assertEqual((modules.returncode, modules.stderr), (0, ''))
             pulse.joinpath('PULSE.toml').write_text('port=' + str(port) + '\n[modules]\n'
-                + ''.join(name + '=' + ('true' if name == 'conduit' else 'false') + '\n' for name in json.loads(modules.stdout))
+                + ''.join(name + '=' + ('true' if name == module_name else 'false') + '\n' for name in json.loads(modules.stdout))
                 + '[hooks]\nenabled=false\n[observability]\nenabled=false\n')
             pulse.joinpath('state').mkdir()
             program = pulse / 'pulse.ts'
             self.native = f'http://127.0.0.1:{port}'
         else:
             program = self.fixture.home / 'conduit-lifetime.ts'
-            module = self.root / 'LIFEOS/PULSE/modules/conduit.ts'
+            module = self.root / 'LIFEOS/PULSE/modules' / self.native_module
             program.write_text('import {handleRequest,stop} from ' + json.dumps(str(module)) + ';'
                 'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){'
                 'if(new URL(request.url).pathname==="/test-stop"){await stop();return new Response("stopped")};'
@@ -337,7 +339,7 @@ class MemoryConduitJobRelayTests(unittest.TestCase):
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
             try:
-                if httpx.get(self.native + '/api/conduit/status').status_code == 401: return
+                if httpx.get(self.native + status_route).status_code == 401: return
             except httpx.ConnectError: pass
             if self.process.poll() is not None: break
             time.sleep(0.05)

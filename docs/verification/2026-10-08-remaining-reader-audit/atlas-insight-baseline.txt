@@ -1,0 +1,54 @@
+test_absent_graph_prepare_has_no_generated_cache_or_model_effect (test_memory_atlas_insight.MemoryAtlasInsightTests.test_absent_graph_prepare_has_no_generated_cache_or_model_effect) ... FAIL
+test_current_graph_prepare_and_fixed_private_publication (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_graph_prepare_and_fixed_private_publication) ... FAIL
+test_current_revision_check_refuses_changed_graph_and_later_cache (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_revision_check_refuses_changed_graph_and_later_cache) ... FAIL
+test_read_only_and_revoked_owners_cannot_prepare_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_read_only_and_revoked_owners_cannot_prepare_generation) ... ok
+test_wrong_metadata_and_private_generated_text_cannot_publish (test_memory_atlas_insight.MemoryAtlasInsightTests.test_wrong_metadata_and_private_generated_text_cannot_publish) ... FAIL
+
+======================================================================
+FAIL: test_absent_graph_prepare_has_no_generated_cache_or_model_effect (test_memory_atlas_insight.MemoryAtlasInsightTests.test_absent_graph_prepare_has_no_generated_cache_or_model_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 60, in test_absent_graph_prepare_has_no_generated_cache_or_model_effect
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 41, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_current_graph_prepare_and_fixed_private_publication (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_graph_prepare_and_fixed_private_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 50, in test_current_graph_prepare_and_fixed_private_publication
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 41, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_current_revision_check_refuses_changed_graph_and_later_cache (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_revision_check_refuses_changed_graph_and_later_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 66, in test_current_revision_check_refuses_changed_graph_and_later_cache
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 41, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_wrong_metadata_and_private_generated_text_cannot_publish (test_memory_atlas_insight.MemoryAtlasInsightTests.test_wrong_metadata_and_private_generated_text_cannot_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 76, in test_wrong_metadata_and_private_generated_text_cannot_publish
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 41, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.124s
+
+FAILED (failures=4)
