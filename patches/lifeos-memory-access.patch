@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..91268f1
+index 0000000..2a63d7c
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,302 @@
+@@ -0,0 +1,304 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8361,12 +8361,14 @@ index 0000000..91268f1
 +  return renderHTTPResponse(response);
 +}
 +
-+export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets",
++export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets" | "/api/evals" | "/api/threatmodel",
 +                                           running: boolean): Promise<Response | null> {
 +  if (!hasManagedMemoryHTTP()) return null;
 +  const url = new URL(request.url);
 +  const headers = {"cache-control": "no-store"};
-+  if (![prefix, prefix + "/list", prefix + "/status", prefix + "/health"].includes(url.pathname)) {
++  const paths = prefix === "/api/evals" || prefix === "/api/threatmodel" ? [prefix] :
++    [prefix, prefix + "/list", prefix + "/status", prefix + "/health"];
++  if (!paths.includes(url.pathname)) {
 +    return Response.json({error: "Choose a declared personal view"}, {status: 404, headers});
 +  }
 +  if (request.method !== "GET") return Response.json({error: "Personal views require GET"}, {status: 405, headers});
@@ -10856,4 +10858,136 @@ index 43f67d3..2bf2607 100644
 +  const snapshots = [...admitted.keys()].filter(path => path.startsWith(NETWORK_DIR + "/topology-snapshot-") && path.endsWith(".md")).sort();
 +  const selectSnapshot = (): string | null => snapshots[snapshots.length - 1] ?? null;
 +  return Response.json(/\/(?:status|health)$/.test(target) ? health(reader, selectSnapshot, running) : read(reader, selectSnapshot));
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/evals.ts b/LifeOS/install/LIFEOS/PULSE/modules/evals.ts
+index e4c0f30..a127ce4 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/evals.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/evals.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders native evaluation suite summaries from declared owner sources.
++// ABOUTME: Relays managed HTTP reads through current authenticated source admission.
+ // Normalize env path vars Claude Code may inject unexpanded (LifeOS#1404).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+   const __v = process.env[__k];
+@@ -18,6 +20,7 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ import { existsSync, readdirSync, readFileSync, statSync } from "fs";
+ import { join } from "path";
+ import { homedir } from "node:os";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const LIFEOS_DIR = process.env.LIFEOS_DIR || join(HOME, ".claude", "LIFEOS");
+@@ -35,15 +38,18 @@ interface SuiteStatus {
+   cases: { id: string; mean_score: number; pass_to_k: number }[];
+ }
+ 
+-function readSuites(): SuiteStatus[] {
+-  if (!existsSync(RESULTS_DIR)) return [];
++function readSuites(names: string[] = existsSync(RESULTS_DIR) ? readdirSync(RESULTS_DIR) : [],
++    reader: (name: string) => string | null = name => {
++      const latest = join(RESULTS_DIR, name, "latest.json");
++      return existsSync(latest) ? readFileSync(latest, "utf-8") : null;
++    }): SuiteStatus[] {
+   const out: SuiteStatus[] = [];
+-  for (const name of readdirSync(RESULTS_DIR)) {
++  for (const name of names) {
+     if (name.startsWith("__") || name.startsWith(".")) continue; // ephemeral/draft runs are not standing suites
+-    const latest = join(RESULTS_DIR, name, "latest.json");
+-    if (!existsSync(latest)) continue;
++    const content = reader(name);
++    if (content === null) continue;
+     try {
+-      const j = JSON.parse(readFileSync(latest, "utf-8"));
++      const j = JSON.parse(content);
+       out.push({
+         suite: j.suite ?? name,
+         type: j.type ?? "regression",
+@@ -69,8 +75,18 @@ export function health(): { status: string; details?: Record<string, unknown> }
+ }
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(req, "/api/evals", false);
++  if (admitted) return admitted;
+   if (req.method !== "GET" || pathname !== "/api/evals") return null;
+   const suites = readSuites();
+   const body = { suites, ts: existsSync(RESULTS_DIR) ? statSync(RESULTS_DIR).mtime.toISOString() : null };
+   return new Response(JSON.stringify(body), { headers: { "Content-Type": "application/json" } });
+ }
++
++export function renderPersonalView(sources: Array<{relative: string; content: string}>, _target: string,
++    _running: boolean, modified: number | null): Response {
++  const prefix = "LIFEOS/MEMORY/STATE/Evals-Results/";
++  const admitted = new Map(sources.map(source => [source.relative.slice(prefix.length).split("/")[0], source.content]));
++  const suites = readSuites([...admitted.keys()], name => admitted.get(name) ?? null);
++  return Response.json({suites, ts: modified === null ? null : new Date(modified).toISOString()});
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/threatmodel.ts b/LifeOS/install/LIFEOS/PULSE/modules/threatmodel.ts
+index 7a90386..eb57c92 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/threatmodel.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/threatmodel.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders native risk posture summaries from the fixed owner register.
++// ABOUTME: Relays managed HTTP reads before any raw source or cache access.
+ /**
+  * ThreatModel Pulse module — read-only surface over the private risk register.
+  *
+@@ -17,6 +19,7 @@
+ import { existsSync, readFileSync, statSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const MODULE_NAME = "threatmodel";
+ const CLAUDE_DIR = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+@@ -72,6 +75,8 @@ function summarize(r: any) {
+ }
+ 
+ export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(_req, "/api/threatmodel", state.running);
++  if (admitted) return admitted;
+   if (pathname !== "/api/threatmodel") return null;
+ 
+   const now = Date.now();
+@@ -79,7 +84,12 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+     return new Response(state.cached, { headers: { "Content-Type": "application/json" } });
+   }
+ 
+-  if (!existsSync(REGISTER_PATH)) {
++  return renderRegister(existsSync(REGISTER_PATH) ? () => ({content: readFileSync(REGISTER_PATH, "utf8"),
++    modified: statSync(REGISTER_PATH).mtimeMs}) : null, now);
++}
++
++function renderRegister(source: (() => {content: string; modified: number | null}) | null, now: number): Response {
++  if (source === null) {
+     return Response.json({
+       available: false,
+       error: "no risk register — run: bun ~/.claude/skills/ThreatModel/Tools/RiskRegister.ts init",
+@@ -87,7 +97,8 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+   }
+ 
+   try {
+-    const store = JSON.parse(readFileSync(REGISTER_PATH, "utf8"));
++    const {content, modified} = source();
++    const store = JSON.parse(content);
+     const risks: any[] = store.risks ?? [];
+     const open = risks.filter((r) => r.status !== "closed");
+     const byLevel = Object.fromEntries(
+@@ -106,7 +117,7 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+ 
+     const body = JSON.stringify({
+       available: true,
+-      register_age_ms: now - statSync(REGISTER_PATH).mtimeMs,
++      register_age_ms: modified === null ? null : now - modified,
+       updated: store.updated ?? null,
+       grade,
+       total: risks.length,
+@@ -123,3 +134,9 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+     return Response.json({ available: false, error: String(err) });
+   }
+ }
++
++export function renderPersonalView(sources: Array<{relative: string; content: string}>, _target: string,
++    _running: boolean, modified: number | null): Response {
++  const content = sources.find(source => source.relative === "LIFEOS/USER/SECURITY/THREATMODEL/risk-register.json")?.content ?? null;
++  return renderRegister(content === null ? null : () => ({content, modified}), Date.now());
 +}

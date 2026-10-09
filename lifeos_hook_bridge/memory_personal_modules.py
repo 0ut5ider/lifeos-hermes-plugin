@@ -13,13 +13,17 @@ from .memory_tab_freshness import _checked
 
 
 SOURCES = {
+    'evals': frozenset(),
+    'threatmodel': frozenset({'LIFEOS/USER/SECURITY/THREATMODEL/risk-register.json'}),
     'books': frozenset({'LIFEOS/USER/BOOKS.md'}),
     'projects': frozenset({'LIFEOS/USER/PROJECTS.md', 'LIFEOS/USER/PROJECTS_RETIRED.md',
                            'LIFEOS/USER/TELOS/TELOS.md'}),
     'assets': frozenset({'LIFEOS/USER/GEAR.md', 'LIFEOS/MEMORY/_NETWORK/assets.json'}),
 }
 NETWORK = 'LIFEOS/MEMORY/_NETWORK'
-ROUTES = frozenset('/api/' + name + suffix for name in SOURCES for suffix in ('', '/list', '/status', '/health'))
+EVALS = 'LIFEOS/MEMORY/STATE/Evals-Results'
+ROUTES = frozenset('/api/' + name + suffix for name in SOURCES
+    for suffix in (('',) if name in {'evals', 'threatmodel'} else ('', '/list', '/status', '/health')))
 
 
 def request_target(value):
@@ -52,6 +56,26 @@ def _selection(memory, module):
                 raise MemoryUnavailable('Asset topology discovery changes during selection')
             directory = (after.st_dev, after.st_ino, tuple(filenames))
             if filenames: names.add(NETWORK + '/' + filenames[-1])
+    if module == 'evals':
+        path = _checked(memory, memory.root / EVALS)
+        names = []
+        if path.exists():
+            if not path.is_dir(): raise MemoryUnavailable('Evaluation discovery requires the fixed owner directory')
+            before = path.stat()
+            entries = list(islice(path.iterdir(), SOURCE_COUNT_LIMIT + 1))
+            if len(entries) > SOURCE_COUNT_LIMIT:
+                raise MemoryUnavailable('Evaluation discovery exceeds its entry limit')
+            for entry in entries:
+                if entry.name.startswith(('__', '.')): continue
+                _checked(memory, entry)
+                if not entry.is_dir(): continue
+                latest = _checked(memory, entry / 'latest.json')
+                if latest.exists(): names.append(EVALS + '/' + entry.name + '/latest.json')
+            _checked(memory, path)
+            after = path.stat()
+            if (before.st_dev, before.st_ino, before.st_mtime_ns) != (after.st_dev, after.st_ino, after.st_mtime_ns):
+                raise MemoryUnavailable('Evaluation discovery changes during selection')
+            directory = (after.st_dev, after.st_ino, after.st_mtime_ns, tuple(entry.name for entry in entries))
     return names, directory
 
 
@@ -60,7 +84,7 @@ def _collect(memory, scope, connection, module):
     candidates, fingerprints = [], []
     total = 0
     keys = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
-    for relative in sorted(names):
+    for relative in names if module == 'evals' else sorted(names):
         path = _checked(memory, memory.root / relative)
         if not path.exists():
             fingerprints.append((relative, None))
@@ -102,8 +126,14 @@ def view(memory, scope, target, *, check_current=None):
     if check_current is not None: check_current()
     with memory._transaction() as connection:
         sources, fingerprints = _collect(memory, scope, connection, module)
+        modified = None
+        if module == 'evals' and fingerprints[0] is not None:
+            modified = fingerprints[0][2] / 1000000
+        if module == 'threatmodel':
+            selected = next((row for row in fingerprints[1] if row[1] is not None), None)
+            if selected is not None: modified = selected[1][3] / 1000000
         result = memory._native('personal_module_view', module=module, target=url.path, sources=sources,
-            running=url.query == 'running=1')
+            running=url.query == 'running=1', modified=modified)
         if check_current is not None: check_current()
         if _collect(memory, scope, connection, module) != (sources, fingerprints):
             raise MemoryUnavailable('Personal module sources change during native rendering')

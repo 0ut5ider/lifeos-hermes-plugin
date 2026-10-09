@@ -103,6 +103,10 @@ The [TELOS overview gate](verification/2026-10-08-telos-overview/README.md) pass
 The [Books, Projects, and Assets gate](verification/2026-10-08-pulse-module-audit/README.md) passes 32 focused checks and all 526 combined checks. It preserves native fields and runtime status under current owner admission. Strict TypeScript validation, source preparation, and the dashboard build pass. Two static entries receive evidence-based classifications: Remotion Theme contains public constants, and the Hermes guard reads generated technical policy. The guard passes its 61 native controls. Evals, ThreatModel, other active module routes, governed Atlas generation, and installed release acceptance remain open.
 
 
+
+The [Evals and ThreatModel gate](verification/2026-10-08-pulse-module-audit/README.md) passes 21 focused cases, 32 existing personal-module cases, and 128 neighboring checks. Strict TypeScript validation, source preparation, and the dashboard build pass. Current owner admission precedes native suite and risk rendering. Fixed source and authority checks repeat after rendering. Other active readers, model-triggering routes, raw writer classification, governed Atlas generation, installed acceptance, and the final combined release gate remain open.
+
+
 ## Execution and evidence
 
 The [operational reader gate](verification/2026-10-08-operational-views/README.md) passes 26 focused reader and frontend checks and four asynchronous transport checks. Current owner authority governs five native views and each algorithm stream update. Revocation and connector loss close delivery. A 217-byte log replacement now reports the current tool. The [growth baseline](verification/2026-10-08-operational-history/baseline.txt) reproduces two complete-history limits: 2,051 records at 336,357 bytes and 5,001 records at 1,320,157 bytes. The native control retains the quiet run's curve while the managed reader refuses both files. Large-history support, remaining reader coverage, and installed activation remain required.

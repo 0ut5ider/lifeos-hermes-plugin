@@ -28,14 +28,15 @@ async function main(): Promise<void> {
   }
   let result: unknown;
   if (input.action === 'personal_module_view') {
-    if (typeof input.module !== 'string' || !['books', 'projects', 'assets'].includes(input.module)
+    if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel'].includes(input.module)
         || typeof input.target !== 'string' || typeof input.running !== 'boolean' || !Array.isArray(input.sources)
+        || !(input.modified === null || typeof input.modified === 'number' && Number.isFinite(input.modified))
         || input.sources.some(source => !object(source) || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
       throw new Error('Native personal module views require declared admitted sources and runtime state');
     }
     const module: unknown = await import(pathToFileURL(resolve(root, `LIFEOS/PULSE/modules/${input.module}.ts`)).href);
     if (!object(module) || typeof module.renderPersonalView !== 'function') throw new Error('Native personal module exports are unavailable');
-    const response: unknown = module.renderPersonalView(input.sources, input.target, input.running);
+    const response: unknown = module.renderPersonalView(input.sources, input.target, input.running, input.modified);
     if (!(response instanceof Response)) throw new Error('Native personal module views require a response');
     result = {status: response.status, body: await response.json()};
   } else if (input.action === 'atlas_collect') {

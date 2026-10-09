@@ -79,7 +79,9 @@ def is_deny_source(relative):
 
 
 def is_evidence_source(relative):
-    return relative in EVIDENCE_FILES or (str(Path(relative).parent) in EVIDENCE_DIRECTORIES
+    return (relative == 'LIFEOS/USER/SECURITY/THREATMODEL/risk-register.json'
+        or re.fullmatch(r'LIFEOS/MEMORY/STATE/Evals-Results/[^/.][^/]*/latest\.json', relative) is not None
+        or relative in EVIDENCE_FILES) or (str(Path(relative).parent) in EVIDENCE_DIRECTORIES
         and re.fullmatch(r'\d{4}-\d{2}-\d{2}\.json', Path(relative).name) is not None)
 
 
