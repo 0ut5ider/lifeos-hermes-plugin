@@ -13,6 +13,10 @@ from .memory_tab_freshness import _checked
 
 
 SOURCES = {
+    'ledger': frozenset({'LIFEOS/VERSION', 'LIFEOS/ALGORITHM/LATEST', 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md',
+        'LIFEOS/MEMORY/SYSTEMUPDATES/index.json', 'LIFEOS/MEMORY/SYSTEMUPDATES/deploys.jsonl',
+        'LIFEOS/MEMORY/STATE/integrity/last-run.json', 'LIFEOS/MEMORY/STATE/integrity/last-pass.json',
+        'LIFEOS/MEMORY/STATE/version-drift-nag.json'}),
     'evals': frozenset(),
     'threatmodel': frozenset({'LIFEOS/USER/SECURITY/THREATMODEL/risk-register.json'}),
     'books': frozenset({'LIFEOS/USER/BOOKS.md'}),
@@ -23,7 +27,8 @@ SOURCES = {
 NETWORK = 'LIFEOS/MEMORY/_NETWORK'
 EVALS = 'LIFEOS/MEMORY/STATE/Evals-Results'
 ROUTES = frozenset('/api/' + name + suffix for name in SOURCES
-    for suffix in (('',) if name in {'evals', 'threatmodel'} else ('', '/list', '/status', '/health')))
+    for suffix in (('', '/') if name == 'ledger' else ('',) if name in {'evals', 'threatmodel'}
+        else ('', '/list', '/status', '/health')))
 
 
 def request_target(value):
@@ -100,7 +105,10 @@ def _collect(memory, scope, connection, module):
         _checked(memory, path)
         after = path.stat()
         if keys(before) != keys(after): raise MemoryUnavailable('A personal module source changes during collection')
-        decoded = projection(content) if relative.endswith('.json') else content
+        if relative.endswith('.jsonl'):
+            values = [projection(line) for line in content.split('\n') if line.strip()]
+            decoded = content + '\n' + '\n'.join(values) if all(value is not None for value in values) else None
+        else: decoded = projection(content) if relative.endswith('.json') else content
         if decoded is None: raise MemoryUnavailable('A personal module JSON source is incomplete')
         total += len(raw) + len(decoded.encode())
         if total > CORPUS_LIMIT: raise MemoryUnavailable('Personal module sources exceed their transport limit')

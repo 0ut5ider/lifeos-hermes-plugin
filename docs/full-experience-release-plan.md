@@ -100,12 +100,14 @@ The [native frontend type gate](verification/2026-10-08-frontend-types/README.md
 The [TELOS overview gate](verification/2026-10-08-telos-overview/README.md) passes fourteen focused cases and 357 combined cases. Current owner authority governs the fixed source registry, current dimension calculations, and response delivery. The [refreshed source inventory](verification/2026-10-08-memory-caller-overview/README.md) verifies all 330 current candidate hashes and excludes generated Pulse state. Operational readers and installed activation remain open.
 
 
-The [Books, Projects, and Assets gate](verification/2026-10-08-pulse-module-audit/README.md) passes 32 focused checks and all 526 combined checks. It preserves native fields and runtime status under current owner admission. Strict TypeScript validation, source preparation, and the dashboard build pass. Two static entries receive evidence-based classifications: Remotion Theme contains public constants, and the Hermes guard reads generated technical policy. The guard passes its 61 native controls. Evals, ThreatModel, other active module routes, governed Atlas generation, and installed release acceptance remain open.
+The [Books, Projects, and Assets gate](verification/2026-10-08-pulse-module-audit/README.md) passes 32 focused checks and all 526 combined checks. It preserves native fields and runtime status under current owner admission. Strict TypeScript validation, source preparation, and the dashboard build pass. Two static entries receive evidence-based classifications: Remotion Theme contains public constants, and the Hermes guard reads generated technical policy. The guard passes its 61 native controls. Other active module routes, governed Atlas generation, and installed release acceptance remain open.
 
 
 
 The [Evals and ThreatModel gate](verification/2026-10-08-pulse-module-audit/README.md) passes 21 focused cases, 32 existing personal-module cases, and 128 neighboring checks. Strict TypeScript validation, source preparation, and the dashboard build pass. Current owner admission precedes native suite and risk rendering. Fixed source and authority checks repeat after rendering. Other active readers, model-triggering routes, raw writer classification, governed Atlas generation, installed acceptance, and the final combined release gate remain open.
 
+
+The [Ledger gate](verification/2026-10-08-pulse-module-audit/README.md) passes 11 focused cases and 118 neighboring checks. Strict TypeScript validation, source preparation, and the dashboard build pass. Eight fixed sources retain native version, integrity, drift, registry, and deploy summaries. Current owner admission precedes raw reads and cache access. Other active routes, governed generation, installed acceptance, and the final combined release gate remain open.
 
 ## Execution and evidence
 

@@ -28,7 +28,7 @@ async function main(): Promise<void> {
   }
   let result: unknown;
   if (input.action === 'personal_module_view') {
-    if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel'].includes(input.module)
+    if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel', 'ledger'].includes(input.module)
         || typeof input.target !== 'string' || typeof input.running !== 'boolean' || !Array.isArray(input.sources)
         || !(input.modified === null || typeof input.modified === 'number' && Number.isFinite(input.modified))
         || input.sources.some(source => !object(source) || typeof source.relative !== 'string' || typeof source.content !== 'string')) {

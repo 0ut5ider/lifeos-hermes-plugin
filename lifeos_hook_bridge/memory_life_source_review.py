@@ -17,8 +17,10 @@ def classification(relative):
     from .memory_atlas import SNAPSHOT, CACHE, DATABASE
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES
     from .memory_manual_state import QUEUE
+    from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
+    if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
     if (relative in FINANCE_SOURCES or relative in TELOS
             or re.fullmatch(r'LIFEOS/USER/HEALTH/[^/]+\.md', relative) and Path(relative).name != 'README.md'
             or relative == BUSINESS + '/README.md'
@@ -65,7 +67,9 @@ def snapshot(memory, scope, relative):
 def projection(memory, relative, content):
     from .memory_atlas import SNAPSHOT, DATABASE, CACHE
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES, projection as operational_projection
-    if relative in OPERATIONAL_SOURCES or relative in {SNAPSHOT, DATABASE, CACHE}:
+    from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
+    if (relative in OPERATIONAL_SOURCES or relative in {SNAPSHOT, DATABASE, CACHE}
+            or relative in PERSONAL_SOURCES['ledger'] and relative.endswith(('.json', '.jsonl'))):
         values = [operational_projection(line) for line in content.split('\n') if line] if relative.endswith('.jsonl') else [operational_projection(content)]
         result = '\n'.join(values) if all(value is not None for value in values) else None
         return result if result is not None and len(result.encode()) <= CORPUS_LIMIT else None

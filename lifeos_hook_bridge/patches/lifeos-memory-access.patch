@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..2a63d7c
+index 0000000..02e1e28
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,304 @@
+@@ -0,0 +1,305 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8361,12 +8361,13 @@ index 0000000..2a63d7c
 +  return renderHTTPResponse(response);
 +}
 +
-+export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets" | "/api/evals" | "/api/threatmodel",
++export async function memoryHTTPPersonalView(request: Request, prefix: "/api/books" | "/api/projects" | "/api/assets" | "/api/evals" | "/api/threatmodel" | "/api/ledger",
 +                                           running: boolean): Promise<Response | null> {
 +  if (!hasManagedMemoryHTTP()) return null;
 +  const url = new URL(request.url);
 +  const headers = {"cache-control": "no-store"};
-+  const paths = prefix === "/api/evals" || prefix === "/api/threatmodel" ? [prefix] :
++  const paths = prefix === "/api/ledger" ? [prefix, prefix + "/"] :
++    prefix === "/api/evals" || prefix === "/api/threatmodel" ? [prefix] :
 +    [prefix, prefix + "/list", prefix + "/status", prefix + "/health"];
 +  if (!paths.includes(url.pathname)) {
 +    return Response.json({error: "Choose a declared personal view"}, {status: 404, headers});
@@ -10990,4 +10991,124 @@ index 7a90386..eb57c92 100644
 +    _running: boolean, modified: number | null): Response {
 +  const content = sources.find(source => source.relative === "LIFEOS/USER/SECURITY/THREATMODEL/risk-register.json")?.content ?? null;
 +  return renderRegister(content === null ? null : () => ({content, modified}), Date.now());
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts b/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts
+index c8764b9..5e3f770 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Renders native change ledger summaries from declared current owner sources.
++// ABOUTME: Relays managed HTTP before raw file reads or process cache access.
+ /**
+  * Ledger Pulse module — read-only surface over the LifeOS change-tracking system.
+  *
+@@ -13,9 +15,10 @@
+  * Canonical doc: LIFEOS/DOCUMENTATION/Ledger/LedgerSystem.md. Nothing
+  * principal-specific lives here; all paths resolve under the install home.
+  */
+-import { existsSync, readFileSync } from "node:fs";
++import { readFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
++import { memoryHTTPPersonalView } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.CLAUDE_CONFIG_DIR || join(homedir(), ".claude");
+ const LIFEOS_DIR = join(HOME, "LIFEOS");
+@@ -39,8 +42,8 @@ function readText(path: string): string | null {
+   }
+ }
+ 
+-function readJson(path: string): any | null {
+-  const raw = readText(path);
++function readJson(path: string, reader: (path: string) => string | null = readText): any | null {
++  const raw = reader(path);
+   if (raw === null) return null;
+   try {
+     return JSON.parse(raw);
+@@ -49,9 +52,8 @@ function readJson(path: string): any | null {
+   }
+ }
+ 
+-function readJsonl(path: string, lastN: number): any[] {
+-  if (!existsSync(path)) return [];
+-  const raw = readText(path);
++function readJsonl(path: string, lastN: number, reader: (path: string) => string | null = readText): any[] {
++  const raw = reader(path);
+   if (!raw) return [];
+   const lines = raw.split("\n").filter(Boolean);
+   const out: any[] = [];
+@@ -66,25 +68,25 @@ function readJsonl(path: string, lastN: number): any[] {
+ }
+ 
+ /** Frontmatter `version:` marker from a markdown file (system prompt, memory doc). */
+-function frontmatterVersion(path: string): string | null {
+-  const raw = readText(path);
++function frontmatterVersion(path: string, reader: (path: string) => string | null = readText): string | null {
++  const raw = reader(path);
+   if (!raw) return null;
+   const m = raw.match(/^version:\s*["']?(\d+\.\d+\.\d+)["']?\s*$/m);
+   return m ? m[1] : null;
+ }
+ 
+-function compose(): any {
++function compose(reader: (path: string) => string | null = readText) {
+   const errors: string[] = [];
+ 
+   const versions = {
+-    lifeos: readText(join(LIFEOS_DIR, "VERSION")),
+-    algorithm: readText(join(LIFEOS_DIR, "ALGORITHM", "LATEST")),
+-    system_prompt: frontmatterVersion(join(LIFEOS_DIR, "LIFEOS_SYSTEM_PROMPT.md")),
++    lifeos: reader(join(LIFEOS_DIR, "VERSION")),
++    algorithm: reader(join(LIFEOS_DIR, "ALGORITHM", "LATEST")),
++    system_prompt: frontmatterVersion(join(LIFEOS_DIR, "LIFEOS_SYSTEM_PROMPT.md"), reader),
+   };
+   if (!versions.lifeos) errors.push("VERSION unreadable");
+ 
+   let registry: any = null;
+-  const idx = readJson(join(SYSTEMUPDATES, "index.json"));
++  const idx = readJson(join(SYSTEMUPDATES, "index.json"), reader);
+   if (idx) {
+     registry = {
+       last_updated: idx.last_updated ?? null,
+@@ -106,17 +108,17 @@ function compose(): any {
+     errors.push("SYSTEMUPDATES/index.json unreadable");
+   }
+ 
+-  const deploys = readJsonl(join(SYSTEMUPDATES, "deploys.jsonl"), DEPLOYS_SLICE);
++  const deploys = readJsonl(join(SYSTEMUPDATES, "deploys.jsonl"), DEPLOYS_SLICE, reader);
+ 
+-  const lastRun = readJson(join(STATE_DIR, "integrity", "last-run.json"));
+-  const lastPass = readJson(join(STATE_DIR, "integrity", "last-pass.json"));
++  const lastRun = readJson(join(STATE_DIR, "integrity", "last-run.json"), reader);
++  const lastPass = readJson(join(STATE_DIR, "integrity", "last-pass.json"), reader);
+   const integrity = {
+     last_run: lastRun ? { ts: lastRun.ts, exitCode: lastRun.exitCode, blocking: lastRun.blocking, info: lastRun.info } : null,
+     last_pass: lastPass ? { ts: lastPass.ts, critical: lastPass.critical } : null,
+     clean: lastRun ? lastRun.exitCode === 0 && (lastRun.blocking ?? 0) === 0 : null,
+   };
+ 
+-  const driftNag = readJson(join(STATE_DIR, "version-drift-nag.json"));
++  const driftNag = readJson(join(STATE_DIR, "version-drift-nag.json"), reader);
+   const drift = driftNag ? { ts: driftNag.ts, count: driftNag.count, tag: driftNag.tag } : null;
+ 
+   return {
+@@ -135,6 +137,8 @@ export function start(): void {
+ }
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
++  const admitted = await memoryHTTPPersonalView(req, "/api/ledger", state.running);
++  if (admitted) return admitted;
+   if (pathname !== "/api/ledger" && pathname !== "/api/ledger/") return null;
+   if (req.method !== "GET") return new Response("method not allowed", { status: 405 });
+   const now = Date.now();
+@@ -149,3 +153,10 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+ export function health(): { running: boolean } {
+   return { running: state.running };
+ }
++
++export function renderPersonalView(sources: Array<{relative: string; content: string}>, _target: string,
++    _running: boolean): Response {
++  const admitted = new Map(sources.map(source => [source.relative, source.content]));
++  const reader = (path: string): string | null => admitted.get("LIFEOS" + path.slice(LIFEOS_DIR.length))?.trim() ?? null;
++  return Response.json(compose(reader));
 +}
