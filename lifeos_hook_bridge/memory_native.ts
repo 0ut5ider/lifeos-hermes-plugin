@@ -27,7 +27,14 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'banner_view' || input.action === 'banner_source_projection') {
+  if (input.action === 'skill_hygiene_inventory') {
+    if (!(input.skill === null || typeof input.skill === 'string')) throw new Error('Choose declared native skill selection');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/SkillHygieneGate.ts')).href);
+    if (!object(module) || typeof module.skillHygieneFiles !== 'function' || typeof module.trackedVendoredDeps !== 'function') {
+      throw new Error('Native skill scan selection is unavailable');
+    }
+    result = {files: module.skillHygieneFiles(input.skill), vendored: module.trackedVendoredDeps()};
+  } else if (input.action === 'banner_view' || input.action === 'banner_source_projection') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/Banner.ts')).href);
     if (!object(module) || typeof module.bannerSourceView !== 'function' || typeof module.bannerIdentityProjection !== 'function') {
       throw new Error('Native banner exports are unavailable');

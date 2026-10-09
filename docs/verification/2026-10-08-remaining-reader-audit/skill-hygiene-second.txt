@@ -1,0 +1,29 @@
+test_actual_git_index_retains_tracked_vendored_dependency_findings (test_memory_skill_hygiene.MemorySkillHygieneTests.test_actual_git_index_retains_tracked_vendored_dependency_findings) ... ok
+test_actual_native_scan_rechecks_bytes_inode_mtime_selection_hashes_and_authority (test_memory_skill_hygiene.MemorySkillHygieneTests.test_actual_native_scan_rechecks_bytes_inode_mtime_selection_hashes_and_authority) ... ok
+test_actual_retirement_refuses_retained_security_control (test_memory_skill_hygiene.MemorySkillHygieneTests.test_actual_retirement_refuses_retained_security_control) ... ok
+test_complete_scan_exceeds_transport_batch_and_keeps_late_findings (test_memory_skill_hygiene.MemorySkillHygieneTests.test_complete_scan_exceeds_transport_batch_and_keeps_late_findings) ... ok
+test_exact_review_preserves_safe_old_security_and_skill_sources (test_memory_skill_hygiene.MemorySkillHygieneTests.test_exact_review_preserves_safe_old_security_and_skill_sources) ... ok
+test_full_public_native_skill_tree_keeps_complete_findings (test_memory_skill_hygiene.MemorySkillHygieneTests.test_full_public_native_skill_tree_keeps_complete_findings) ... FAIL
+test_import_does_not_scan_or_disclose_security_controls (test_memory_skill_hygiene.MemorySkillHygieneTests.test_import_does_not_scan_or_disclose_security_controls) ... ok
+test_native_clean_findings_allowlist_filter_and_detail (test_memory_skill_hygiene.MemorySkillHygieneTests.test_native_clean_findings_allowlist_filter_and_detail) ... ok
+test_native_missing_hash_only_short_list_and_malformed_allowlist (test_memory_skill_hygiene.MemorySkillHygieneTests.test_native_missing_hash_only_short_list_and_malformed_allowlist) ... ok
+test_private_code_and_decoded_allowlist_refuse_without_clean_verdict (test_memory_skill_hygiene.MemorySkillHygieneTests.test_private_code_and_decoded_allowlist_refuse_without_clean_verdict) ... ok
+test_read_only_owner_and_unconfigured_behavior_preserve_native_scan (test_memory_skill_hygiene.MemorySkillHygieneTests.test_read_only_owner_and_unconfigured_behavior_preserve_native_scan) ... ok
+test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) ... ok
+test_revoked_owner_and_missing_connector_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_revoked_owner_and_missing_connector_refuse) ... ok
+test_unbound_reader_cannot_disclose_findings_or_controls (test_memory_skill_hygiene.MemorySkillHygieneTests.test_unbound_reader_cannot_disclose_findings_or_controls) ... ok
+
+======================================================================
+FAIL: test_full_public_native_skill_tree_keeps_complete_findings (test_memory_skill_hygiene.MemorySkillHygieneTests.test_full_public_native_skill_tree_keeps_complete_findings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 228, in test_full_public_native_skill_tree_keeps_complete_findings
+    self.assertEqual(current.returncode, original.returncode, current.stderr + current.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"ok":false,"exitCode":2,"error":"The skill scan requires current owner memory access"}
+
+
+----------------------------------------------------------------------
+Ran 14 tests in 17.634s
+
+FAILED (failures=1)

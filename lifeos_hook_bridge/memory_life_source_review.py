@@ -17,6 +17,7 @@ def classification(relative):
     from .memory_atlas import SNAPSHOT, CACHE, DATABASE
     from .memory_operational_views import SOURCES as OPERATIONAL_SOURCES
     from .memory_manual_state import QUEUE
+    from .memory_skill_hygiene import declared as hygiene_source
     from .memory_banner import SOURCES as BANNER_SOURCES
     from .memory_personal_modules import SOURCES as PERSONAL_SOURCES
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
@@ -28,6 +29,7 @@ def classification(relative):
     if relative == CONTENT_EVENTS or declared_source(relative): return 'life_text'
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
     if relative in BANNER_SOURCES: return 'life_text'
+    if hygiene_source(relative): return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
     if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
     if relative in PERSONAL_SOURCES['doctor'] or re.fullmatch(r'hooks/[^/]+\.hook\.(?:ts|sh)', relative): return 'life_text'

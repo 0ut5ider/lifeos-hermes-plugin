@@ -1,0 +1,89 @@
+test_actual_retirement_refuses_retained_security_control (test_memory_skill_hygiene.MemorySkillHygieneTests.test_actual_retirement_refuses_retained_security_control) ... FAIL
+test_complete_scan_exceeds_transport_batch_and_keeps_late_findings (test_memory_skill_hygiene.MemorySkillHygieneTests.test_complete_scan_exceeds_transport_batch_and_keeps_late_findings) ... ok
+test_native_clean_findings_allowlist_filter_and_detail (test_memory_skill_hygiene.MemorySkillHygieneTests.test_native_clean_findings_allowlist_filter_and_detail) ... ok
+test_native_missing_hash_only_short_list_and_malformed_allowlist (test_memory_skill_hygiene.MemorySkillHygieneTests.test_native_missing_hash_only_short_list_and_malformed_allowlist) ... ok
+test_private_code_and_decoded_allowlist_refuse_without_clean_verdict (test_memory_skill_hygiene.MemorySkillHygieneTests.test_private_code_and_decoded_allowlist_refuse_without_clean_verdict) ... FAIL
+test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) ... 
+  test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='symlink') ... FAIL
+  test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='hardlink') ... FAIL
+  test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='utf8') ... FAIL
+  test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='oversize') ... FAIL
+test_revoked_owner_and_missing_connector_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_revoked_owner_and_missing_connector_refuse) ... FAIL
+test_unbound_reader_cannot_disclose_findings_or_controls (test_memory_skill_hygiene.MemorySkillHygieneTests.test_unbound_reader_cannot_disclose_findings_or_controls) ... FAIL
+
+======================================================================
+FAIL: test_actual_retirement_refuses_retained_security_control (test_memory_skill_hygiene.MemorySkillHygieneTests.test_actual_retirement_refuses_retained_security_control)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 103, in test_actual_retirement_refuses_retained_security_control
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_private_code_and_decoded_allowlist_refuse_without_clean_verdict (test_memory_skill_hygiene.MemorySkillHygieneTests.test_private_code_and_decoded_allowlist_refuse_without_clean_verdict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 89, in test_private_code_and_decoded_allowlist_refuse_without_clean_verdict
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 127, in test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse
+    self.assertEqual(self.scan('--json').returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 127, in test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse
+    self.assertEqual(self.scan('--json').returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 127, in test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse
+    self.assertEqual(self.scan('--json').returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 127, in test_redirected_invalid_excessive_sources_and_arbitrary_roots_refuse
+    self.assertEqual(self.scan('--json').returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_revoked_owner_and_missing_connector_refuse (test_memory_skill_hygiene.MemorySkillHygieneTests.test_revoked_owner_and_missing_connector_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 136, in test_revoked_owner_and_missing_connector_refuse
+    self.assertEqual(self.scan('--json').returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_unbound_reader_cannot_disclose_findings_or_controls (test_memory_skill_hygiene.MemorySkillHygieneTests.test_unbound_reader_cannot_disclose_findings_or_controls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_skill_hygiene.py", line 82, in test_unbound_reader_cannot_disclose_findings_or_controls
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.973s
+
+FAILED (failures=8)

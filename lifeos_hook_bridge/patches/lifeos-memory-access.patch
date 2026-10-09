@@ -13013,3 +13013,196 @@ index 4d57318..fd5c946 100755
 -} catch (e) {
 -  console.error("Banner error:", e);
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/SkillHygieneGate.ts b/LifeOS/install/LIFEOS/TOOLS/SkillHygieneGate.ts
+index 6457ced..2561142 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/SkillHygieneGate.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/SkillHygieneGate.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Scans complete skill sources with admitted owner security controls.
++// ABOUTME: Preserves native findings and refuses unavailable managed scans.
+ // SkillHygieneGate.ts — deterministic code/data-separation gate for the skills tree.
+ //
+ // Verdict: is every skill (public AND private) publishable-clean code — no identity
+@@ -25,6 +27,7 @@ import { execFileSync } from "node:child_process";
+ import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
+ import { join } from "node:path";
+ import { homedir, tmpdir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { PATTERN_ALLOWLIST_FILES } from "../../hooks/lib/containment-zones";
+ 
+ const args = process.argv.slice(2);
+@@ -135,9 +138,9 @@ function runRg(patternFile: string): Violation[] {
+ 
+ // Vendored dependencies tracked in git are a structural violation (deps are
+ // installed, never committed). Disk-only node_modules is fine (runtime artifact).
+-function trackedVendoredDeps(): string[] {
++export function trackedVendoredDeps(root: string = CLAUDE_DIR): string[] {
+   try {
+-    const out = execFileSync("git", ["-C", CLAUDE_DIR, "ls-files", "--", "skills/"], { encoding: "utf8", maxBuffer: 256 * 1024 * 1024, stdio: ["pipe", "pipe", "pipe"] });
++    const out = execFileSync("git", ["-C", root, "ls-files", "--", "skills/"], { encoding: "utf8", maxBuffer: 256 * 1024 * 1024, stdio: ["pipe", "pipe", "pipe"] });
+     const dirs = new Set<string>();
+     for (const f of out.split("\n")) {
+       const i = f.indexOf("/node_modules/");
+@@ -147,63 +150,96 @@ function trackedVendoredDeps(): string[] {
+   } catch { return []; } // not a git repo (fixture mode) — skip this check
+ }
+ 
+-if (!existsSync(SKILLS_DIR)) fail(`skills dir missing at ${SKILLS_DIR}`);
+-const patterns = loadDenyPatterns();
+-const allow = loadAllowlist();
+-const tmp = mkdtempSync(join(tmpdir(), "shg-"));
+-const patternFile = join(tmp, "patterns.txt");
+-writeFileSync(patternFile, patterns.join("\n") + "\n");
+-
+-let raw: Violation[] = [];
+-let vendored: string[] = [];
+-try {
+-  raw = runRg(patternFile);
+-  vendored = trackedVendoredDeps().filter(d => !skillFilter || d.startsWith(`skills/${skillFilter}/`));
+-} finally {
+-  rmSync(tmp, { recursive: true, force: true });
++export function skillHygieneFiles(skill: string | null): string[] {
++  const selected = ["--files", "--follow", "-0"];
++  if (skill) selected.push("-g", `${skill}/**`);
++  for (const glob of EXCLUDE_GLOBS) selected.push("-g", glob);
++  selected.push(".");
++  try {
++    return execFileSync("rg", selected, {cwd: SKILLS_DIR, encoding: "utf8", maxBuffer: 3 * 1024 * 1024})
++      .split("\0").filter(Boolean).map(path => path.replace(/^\.\//, ""));
++  } catch (error: unknown) {
++    if (typeof error === "object" && error !== null && "status" in error && error.status === 1) return [];
++    throw new Error("The native skill file selection is unavailable");
++  }
+ }
+ 
+-const violations = raw.filter(v => !isAllowed(`skills/${v.file}`, allow));
+-const allowedCount = raw.length - violations.length;
++if (import.meta.main) {
++  try {
++    const governed = memoryAccess("skill_hygiene", {args},
++      (value): value is {ok: boolean; stdout?: string; stderr?: string; exit_code?: number} => memoryObject(value)
++        && typeof value.ok === "boolean" && (value.ok === false || typeof value.stdout === "string"
++          && typeof value.stderr === "string" && typeof value.exit_code === "number" && [0, 1, 2].includes(value.exit_code)));
++    if (governed !== undefined) {
++      if (!governed.ok) throw new Error("Current owner skill scan access is unavailable");
++      process.stdout.write(governed.stdout ?? "");
++      process.stderr.write(governed.stderr ?? "");
++      process.exit(governed.exit_code ?? 2);
++    }
++  } catch {
++    if (jsonOutput) console.log(JSON.stringify({ok: false, exitCode: 2, error: "The skill scan requires current owner memory access"}));
++    else console.error("SCAN ERROR: The skill scan requires current owner memory access");
++    process.exit(2);
++  }
++  if (!existsSync(SKILLS_DIR)) fail(`skills dir missing at ${SKILLS_DIR}`);
++  const patterns = loadDenyPatterns();
++  const allow = loadAllowlist();
++  const tmp = mkdtempSync(join(tmpdir(), "shg-"));
++  const patternFile = join(tmp, "patterns.txt");
++  writeFileSync(patternFile, patterns.join("\n") + "\n", {mode: 0o600});
++
++  let raw: Violation[] = [];
++  let vendored: string[] = [];
++  try {
++    raw = runRg(patternFile);
++    vendored = trackedVendoredDeps(process.env.LIFEOS_MEMORY_INTERNAL === "1"
++      ? process.env.LIFEOS_MEMORY_HYGIENE_GIT_ROOT ?? CLAUDE_DIR : CLAUDE_DIR).filter(d => !skillFilter || d.startsWith(`skills/${skillFilter}/`));
++  } finally {
++    rmSync(tmp, { recursive: true, force: true });
++  }
++
++  const violations = raw.filter(v => !isAllowed(`skills/${v.file}`, allow));
++  const allowedCount = raw.length - violations.length;
+ 
+-const bySkill = new Map<string, Violation[]>();
+-for (const v of violations) {
+-  const skill = v.file.split("/")[0];
+-  if (!bySkill.has(skill)) bySkill.set(skill, []);
+-  bySkill.get(skill)!.push(v);
+-}
++  const bySkill = new Map<string, Violation[]>();
++  for (const v of violations) {
++    const skill = v.file.split("/")[0];
++    if (!bySkill.has(skill)) bySkill.set(skill, []);
++    bySkill.get(skill)!.push(v);
++  }
+ 
+-const total = violations.length + vendored.length;
+-const exitCode = total > 0 ? 1 : 0;
+-
+-if (jsonOutput) {
+-  console.log(JSON.stringify({
+-    ok: exitCode === 0,
+-    exitCode,
+-    totalViolations: violations.length,
+-    allowedHits: allowedCount,
+-    vendoredDeps: vendored,
+-    skills: [...bySkill.entries()].map(([skill, vs]) => ({
+-      skill,
+-      count: vs.length,
+-      files: [...new Set(vs.map(v => v.file))].length,
+-      detail: vs.slice(0, maxDetail),
+-    })).sort((a, b) => b.count - a.count),
+-  }, null, 2));
+-} else {
+-  console.log(`\n🧼 Skill Hygiene Gate — deny-list: ${patterns.length} patterns · allowlist: ${allow.length} entries (+${PATTERN_ALLOWLIST_FILES.length} containment)`);
+-  console.log("─".repeat(64));
+-  if (bySkill.size === 0 && vendored.length === 0) {
+-    console.log("CLEAN — zero non-allowlisted violations in skills/");
++  const total = violations.length + vendored.length;
++  const exitCode = total > 0 ? 1 : 0;
++
++  if (jsonOutput) {
++    console.log(JSON.stringify({
++      ok: exitCode === 0,
++      exitCode,
++      totalViolations: violations.length,
++      allowedHits: allowedCount,
++      vendoredDeps: vendored,
++      skills: [...bySkill.entries()].map(([skill, vs]) => ({
++        skill,
++        count: vs.length,
++        files: [...new Set(vs.map(v => v.file))].length,
++        detail: vs.slice(0, maxDetail),
++      })).sort((a, b) => b.count - a.count),
++    }, null, 2));
+   } else {
+-    for (const [skill, vs] of [...bySkill.entries()].sort((a, b) => b[1].length - a[1].length)) {
+-      console.log(`✗ ${skill.padEnd(32)} ${String(vs.length).padStart(5)} hits in ${new Set(vs.map(v => v.file)).size} files`);
+-      for (const v of vs.slice(0, maxDetail)) console.log(`    ${v.file}:${v.line}  ${v.excerpt.trim().slice(0, 100)}`);
+-      if (vs.length > maxDetail) console.log(`    … ${vs.length - maxDetail} more (use --json or --skill ${skill})`);
++    console.log(`\n🧼 Skill Hygiene Gate — deny-list: ${patterns.length} patterns · allowlist: ${allow.length} entries (+${PATTERN_ALLOWLIST_FILES.length} containment)`);
++    console.log("─".repeat(64));
++    if (bySkill.size === 0 && vendored.length === 0) {
++      console.log("CLEAN — zero non-allowlisted violations in skills/");
++    } else {
++      for (const [skill, vs] of [...bySkill.entries()].sort((a, b) => b[1].length - a[1].length)) {
++        console.log(`✗ ${skill.padEnd(32)} ${String(vs.length).padStart(5)} hits in ${new Set(vs.map(v => v.file)).size} files`);
++        for (const v of vs.slice(0, maxDetail)) console.log(`    ${v.file}:${v.line}  ${v.excerpt.trim().slice(0, 100)}`);
++        if (vs.length > maxDetail) console.log(`    … ${vs.length - maxDetail} more (use --json or --skill ${skill})`);
++      }
++      for (const d of vendored) console.log(`✗ VENDORED DEPS tracked in git: ${d}`);
+     }
+-    for (const d of vendored) console.log(`✗ VENDORED DEPS tracked in git: ${d}`);
++    console.log("─".repeat(64));
++    console.log(`Verdict: ${total === 0 ? "CLEAN" : `${total} violations`} (${allowedCount} allowlisted hits suppressed)\n`);
+   }
+-  console.log("─".repeat(64));
+-  console.log(`Verdict: ${total === 0 ? "CLEAN" : `${total} violations`} (${allowedCount} allowlisted hits suppressed)\n`);
++  process.exit(exitCode);
+ }
+-process.exit(exitCode);
+diff --git a/LifeOS/install/skills/CreateSkill/SKILL.md b/LifeOS/install/skills/CreateSkill/SKILL.md
+index b32525d..f2464df 100644
+--- a/LifeOS/install/skills/CreateSkill/SKILL.md
++++ b/LifeOS/install/skills/CreateSkill/SKILL.md
+@@ -92,7 +92,7 @@ ONLY templated, safe, public, ready content. Period.
+ - ❌ Real names (people, products, companies, customers)
+ - ❌ Real domains, hostnames, IPs, internal URLs
+ - ❌ API keys, tokens, credentials, session cookies, OAuth secrets — even example-looking ones
+-- ❌ Private repo paths or references (`github.com/<org>/<private-repo>`)
++- ❌ Private repo paths or references (`github.com/<org>/[private-repo]`)
+ - ❌ Customer data, customer-specific workflows, customer engagement context
+ - ❌ First-person war stories tied to a specific incident, project, or person
+ - ❌ User-specific filesystem paths (`/Users/<name>/...`, `/home/<name>/...`)
