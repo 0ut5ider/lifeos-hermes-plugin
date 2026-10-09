@@ -280,6 +280,14 @@ class MemoryService:
                 from .memory_manual_state import run
                 return run(memory, scope, **arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation == 'local_inputs':
+                from .memory_local_refresh import inputs
+                return inputs(memory, scope, operation, arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation in {'local_refresh_prepare', 'local_refresh_check', 'local_refresh_publish'}:
+                from .memory_local_refresh import synthesis
+                return synthesis(memory, scope, operation, arguments,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation in {'atlas_insight_prepare', 'atlas_insight_check', 'atlas_insight_publish'}:
                 from .memory_atlas_insight import synthesis
                 return synthesis(memory, scope, operation, arguments,

@@ -27,7 +27,34 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'telos_template_view') {
+  if (input.action === 'local_refresh_inputs') {
+    if (!['hometown', 'sources', 'prepare'].includes(String(input.kind)) || !object(input.contents)
+        || Object.values(input.contents).some(value => !(value === null || typeof value === 'string'))
+        || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
+      throw new Error('Choose declared LocalIntelligence input snapshots');
+    }
+    const hometown: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/Hometown.ts')).href);
+    const sources: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/UserSources.ts')).href);
+    if (!object(hometown) || typeof hometown.parseHometown !== 'function'
+        || !object(sources) || typeof sources.parseUserSources !== 'function') {
+      throw new Error('Native LocalIntelligence input exports are unavailable');
+    }
+    const identity = input.contents['LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md'];
+    const configuration = input.contents['LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/sources.json'];
+    const home = input.kind === 'sources' ? undefined : hometown.parseHometown(identity ?? '');
+    const selected = input.kind === 'hometown' ? undefined : sources.parseUserSources(configuration ?? null);
+    if (input.kind === 'prepare') {
+      const refresh: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/Refresh.ts')).href);
+      if (!object(refresh) || typeof refresh.localRefreshPlan !== 'function') throw new Error('Native LocalIntelligence plan is unavailable');
+      result = refresh.localRefreshPlan(input.contents, input.date);
+    } else result = input.kind === 'hometown' ? {home} : {sources: selected};
+  } else if (input.action === 'local_refresh_publication') {
+    const refresh: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/Refresh.ts')).href);
+    if (!object(input.plan) || !object(refresh) || typeof refresh.localRefreshPublication !== 'function') {
+      throw new Error('Choose the native LocalIntelligence publication plan');
+    }
+    result = refresh.localRefreshPublication(input.plan, input.value);
+  } else if (input.action === 'telos_template_view') {
     if (!Array.isArray(input.files) || input.files.some(row => !object(row)
         || typeof row.name !== 'string' || typeof row.filename !== 'string' || typeof row.content !== 'string'
         || (row.type !== 'markdown' && row.type !== 'csv'))) throw new Error('Choose declared native Telos template files');

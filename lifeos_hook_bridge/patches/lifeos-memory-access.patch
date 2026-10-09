@@ -13688,3 +13688,282 @@ index 6890c34..286ae79 100755
        process.exit(1);
      });
  }
+diff --git a/LifeOS/install/skills/LocalIntelligence/Tools/Hometown.ts b/LifeOS/install/skills/LocalIntelligence/Tools/Hometown.ts
+index 9dabd18..13787c1 100755
+--- a/LifeOS/install/skills/LocalIntelligence/Tools/Hometown.ts
++++ b/LifeOS/install/skills/LocalIntelligence/Tools/Hometown.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Resolves the native hometown from admitted current owner identity text.
++// ABOUTME: Preserves native parsing and refuses unbound managed source access.
+ /**
+  * Hometown.ts — sole resolver for the principal's hometown.
+  *
+@@ -19,6 +21,7 @@
+ import { readFile } from "node:fs/promises"
+ import { join } from "node:path"
+ import { homedir } from "node:os"
++import { memoryAccess, memoryObject } from "../../../LIFEOS/TOOLS/lib/MemoryAccess"
+ 
+ export interface Hometown {
+   city: string
+@@ -108,10 +111,25 @@ function parseParenContent(paren: string | undefined): {
+   return out
+ }
+ 
++export function hometown(value: unknown): value is Hometown {
++  return memoryObject(value) && [value.city, value.state, value.citySlug, value.stateSlug].every(part => typeof part === "string")
++    && [value.stateName, value.zip, value.county].every(part => part === undefined || typeof part === "string")
++}
++
+ export async function readHometown(
+   identityPath: string = process.env.LIFEOS_PRINCIPAL_IDENTITY ?? IDENTITY_DEFAULT
+ ): Promise<Hometown> {
+-  const text = await readFile(identityPath, "utf8")
++  const admitted = memoryAccess("local_inputs", {kind: "hometown"}, memoryObject)
++  if (admitted !== undefined) {
++    if (identityPath !== IDENTITY_DEFAULT || admitted.ok !== true || !hometown(admitted.home)) {
++      throw new Error("LocalIntelligence hometown requires current owner admission")
++    }
++    return admitted.home
++  }
++  return parseHometown(await readFile(identityPath, "utf8"), identityPath)
++}
++
++export function parseHometown(text: string, identityPath = IDENTITY_DEFAULT): Hometown {
+   const match = text.match(HOMETOWN_RE)
+   if (!match || !match.groups) throw new NoHometownError(identityPath)
+   const city = match.groups.city.trim()
+diff --git a/LifeOS/install/skills/LocalIntelligence/Tools/UserSources.ts b/LifeOS/install/skills/LocalIntelligence/Tools/UserSources.ts
+index 4082b8b..4299de7 100644
+--- a/LifeOS/install/skills/LocalIntelligence/Tools/UserSources.ts
++++ b/LifeOS/install/skills/LocalIntelligence/Tools/UserSources.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Selects native deterministic LocalIntelligence sources from current owner configuration.
++// ABOUTME: Requires admitted complete configuration before managed source selection or network access.
+ /**
+  * UserSources.ts — user-configured deterministic sources for the digest.
+  *
+@@ -23,6 +25,7 @@
+ import { readFile } from "node:fs/promises"
+ import { join } from "node:path"
+ import { homedir } from "node:os"
++import { memoryAccess, memoryObject } from "../../../LIFEOS/TOOLS/lib/MemoryAccess"
+ 
+ import type { Digest, Item, SectionKey } from "./Types.ts"
+ 
+@@ -78,7 +81,41 @@ const DEFAULT_MAX_ITEMS = 7
+ const FETCH_TIMEOUT_MS = 20_000
+ const UA = "LifeOS-LocalIntelligence/1.0 (+personal civic digest)"
+ 
++function userSource(value: unknown): value is UserSource {
++  return memoryObject(value) && SECTION_KEYS.some(section => section === value.section)
++    && typeof value.name === "string" && typeof value.url === "string"
++    && (value.type === "rss" || value.type === "json")
++    && ["items_path", "link", "backfill_url", "filter_title"].every(key => value[key] === undefined || typeof value[key] === "string")
++    && ["title_case", "strip_title_suffix", "enabled"].every(key => value[key] === undefined || typeof value[key] === "boolean")
++    && ["max_items", "max_age_days"].every(key => value[key] === undefined || typeof value[key] === "number")
++    && (value.map === undefined || memoryObject(value.map)
++      && [value.map.title, value.map.date, value.map.summary].every(part => part === undefined || typeof part === "string"))
++}
++
++export function parseUserSources(raw: string | null): UserSource[] {
++  if (raw === null) return []
++  const parsed: unknown = JSON.parse(raw)
++  if (!memoryObject(parsed) || !(parsed.sources === undefined || Array.isArray(parsed.sources))) {
++    throw new Error("LocalIntelligence sources require the native configuration object")
++  }
++  const sources: UserSource[] = []
++  for (const value of parsed.sources ?? []) {
++    if (!memoryObject(value)) throw new Error("LocalIntelligence sources require native source objects")
++    if (value.enabled === false || !SECTION_KEYS.some(section => section === value.section) || !value.url || !value.name) continue
++    if (!userSource(value)) throw new Error("LocalIntelligence sources require declared native fields")
++    sources.push(value)
++  }
++  return sources
++}
++
+ export async function loadUserSources(): Promise<UserSource[]> {
++  const admitted = memoryAccess("local_inputs", {kind: "sources"}, memoryObject)
++  if (admitted !== undefined) {
++    if (admitted.ok !== true || !Array.isArray(admitted.sources) || !admitted.sources.every(userSource)) {
++      throw new Error("LocalIntelligence source selection requires current owner admission")
++    }
++    return admitted.sources
++  }
+   let raw: string
+   try {
+     raw = await readFile(CONFIG_PATH, "utf8")
+diff --git a/LifeOS/install/skills/LocalIntelligence/Tools/Refresh.ts b/LifeOS/install/skills/LocalIntelligence/Tools/Refresh.ts
+index 299618d..8a67edb 100755
+--- a/LifeOS/install/skills/LocalIntelligence/Tools/Refresh.ts
++++ b/LifeOS/install/skills/LocalIntelligence/Tools/Refresh.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Fetches the native LocalIntelligence digest and calculates owner publication.
++// ABOUTME: Keeps dated and latest digest decisions separate from file and network effects.
+ /**
+  * Refresh.ts — orchestrator for the LocalIntelligence daily digest.
+  *
+@@ -10,10 +12,11 @@
+ import { mkdir, readFile, writeFile } from "node:fs/promises"
+ import { join } from "node:path"
+ import { homedir } from "node:os"
++import { memoryAccess, memoryObject } from "../../../LIFEOS/TOOLS/lib/MemoryAccess"
+ 
+-import { readHometown, NoHometownError } from "./Hometown.ts"
++import { readHometown, parseHometown, hometown, NoHometownError } from "./Hometown.ts"
+ import { claudeFill } from "./ClaudeFill.ts"
+-import { applyUserSources } from "./UserSources.ts"
++import { applyUserSources, parseUserSources } from "./UserSources.ts"
+ import type { Digest, FetchResult, Fetcher, Hometown, SectionKey } from "./Types.ts"
+ import { fetchConstruction } from "./FetchConstruction.ts"
+ import { fetchBusiness } from "./FetchBusiness.ts"
+@@ -58,12 +61,42 @@ async function runOne(key: SectionKey, fn: Fetcher, home: Hometown): Promise<Fet
+   }
+ }
+ 
++type RefreshAdmission = {signature: string; home: Hometown}
++
++function refreshAdmission(): RefreshAdmission | undefined {
++  const prepared = memoryAccess("local_refresh_prepare", {}, memoryObject)
++  if (prepared === undefined) return undefined
++  if (prepared.ok !== true || typeof prepared.signature !== "string" || !/^[0-9a-f]{64}$/.test(prepared.signature)
++      || !memoryObject(prepared.plan) || !hometown(prepared.plan.home)) {
++    throw new Error("LocalIntelligence refresh preparation requires current owner admission")
++  }
++  return {signature: prepared.signature, home: prepared.plan.home}
++}
++
++function checkRefresh(admission: RefreshAdmission | undefined): void {
++  if (admission === undefined) return
++  const result = memoryAccess("local_refresh_check", {signature: admission.signature}, memoryObject)
++  if (result === undefined || result.ok !== true) throw new Error("LocalIntelligence inputs or authority changed")
++}
++
+ export async function refresh(home: Hometown): Promise<Digest> {
++  const admission = refreshAdmission()
++  if (admission !== undefined && (["city", "state", "stateName", "zip", "county", "citySlug", "stateSlug"] as const)
++      .some(key => home[key] !== admission.home[key])) {
++    throw new Error("LocalIntelligence fetching requires the admitted native hometown")
++  }
++  return await fetchDigest(home, () => checkRefresh(admission))
++}
++
++async function fetchDigest(home: Hometown, check: () => void): Promise<Digest> {
++  check()
+   const keys = Object.keys(fetchers) as SectionKey[]
+   const results = await Promise.allSettled(
+-    keys.map((k) => runOne(k, fetchers[k], home))
++    keys.map((k) => { check(); return runOne(k, fetchers[k], home) })
+   )
+ 
++  check()
++
+   const sections: Partial<Record<SectionKey, FetchResult>> = {}
+   const sourcesUsed: string[] = []
+   const sourcesFailed: string[] = []
+@@ -125,8 +158,18 @@ async function readExistingLatest(): Promise<Digest | null> {
+ }
+ 
+ async function persist(
+-  digest: Digest
++  digest: Digest, admission?: RefreshAdmission
+ ): Promise<{ datedPath: string; latestPaths: string[]; latestSkipped: boolean }> {
++  if (admission !== undefined) {
++    checkRefresh(admission)
++    const result = memoryAccess("local_refresh_publish", {signature: admission.signature, value: digest}, memoryObject)
++    if (result === undefined || result.ok !== true || !memoryObject(result.summary)
++        || typeof result.summary.filename !== "string" || typeof result.summary.latestSkipped !== "boolean") {
++      throw new Error("LocalIntelligence digest publication requires current owner admission")
++    }
++    return {datedPath: join(DATA_DIR, result.summary.filename), latestPaths: result.summary.latestSkipped ? []
++      : [join(CUSTOMIZATIONS_DIR, "latest.json"), join(DATA_DIR, "latest.json")], latestSkipped: result.summary.latestSkipped}
++  }
+   await mkdir(DATA_DIR, { recursive: true })
+   await mkdir(CUSTOMIZATIONS_DIR, { recursive: true })
+   const dateStr = todayDateString()
+@@ -154,18 +197,23 @@ if (import.meta.main) {
+   const args = new Set(process.argv.slice(2))
+   const withFill = args.has("--fill")
+   try {
+-    const home = await readHometown()
+-    let digest = await refresh(home)
++    const admission = refreshAdmission()
++    const home = admission?.home ?? await readHometown()
++    let digest = await fetchDigest(home, () => checkRefresh(admission))
+     // Deterministic user-configured sources run BEFORE the AI fill — a section
+     // they populate never needs (or gets) model-researched items.
++    checkRefresh(admission)
+     const userSources = await applyUserSources(digest)
++    checkRefresh(admission)
+     let filled: SectionKey[] = []
+     if (withFill) {
++      checkRefresh(admission)
+       const outcome = await claudeFill(digest, home)
++      checkRefresh(admission)
+       digest = outcome.digest
+       filled = outcome.filled
+     }
+-    const { datedPath, latestPaths, latestSkipped } = await persist(digest)
++    const { datedPath, latestPaths, latestSkipped } = await persist(digest, admission)
+     const summary = {
+       city: digest.meta.city,
+       state: digest.meta.state,
+@@ -187,3 +235,55 @@ if (import.meta.main) {
+     throw err
+   }
+ }
++
++const NATIVE_SECTIONS = ["construction", "crime", "business", "officials", "legislation", "elections", "arrests", "news"] as const
++
++export function localRefreshPlan(contents: Record<string, string | null>, date: string): Record<string, unknown> {
++  const home = parseHometown(contents["LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md"] ?? "")
++  const sources = parseUserSources(contents["LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/sources.json"] ?? null)
++  const filename = `${date}_${home.city.toLowerCase().replace(/\s+/g, "-")}_${home.state.toLowerCase()}_digest.json`
++  if (filename.includes("/") || filename.includes("\\") || Buffer.byteLength(filename) > 240) {
++    throw new Error("LocalIntelligence refresh requires its fixed native dated destination")
++  }
++  let latest: unknown = null
++  for (const relative of ["LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/latest.json", "LIFEOS/MEMORY/DATA/LocalIntelligence/latest.json"]) {
++    const content = contents[relative]
++    if (!content) continue
++    try { latest = JSON.parse(content); break }
++    catch { /* The native reader tries the fallback latest file. */ }
++  }
++  return {home, sources, date, filename, latest}
++}
++
++export function localRefreshPublication(plan: Record<string, unknown>, value: unknown): Record<string, unknown> {
++  if (!memoryObject(plan.home) || typeof plan.filename !== "string" || typeof plan.date !== "string"
++      || !memoryObject(value) || Object.keys(value).sort().join(",") !== ["meta", ...NATIVE_SECTIONS].sort().join(",")
++      || !memoryObject(value.meta) || value.meta.city !== plan.home.city || value.meta.state !== plan.home.state
++      || value.meta.county !== plan.home.county || value.meta.zip !== plan.home.zip
++      || typeof value.meta.generated_at !== "string" || !Number.isFinite(Date.parse(value.meta.generated_at))
++      || value.meta.generated_at.slice(0, 10) !== plan.date
++      || [value.meta.sources_used, value.meta.sources_failed, value.meta.errors].some(parts => !Array.isArray(parts)
++        || !parts.every(part => typeof part === "string"))) {
++    throw new Error("LocalIntelligence publication requires its native complete digest metadata")
++  }
++  let items = 0
++  for (const key of NATIVE_SECTIONS) {
++    const section = value[key]
++    if (!memoryObject(section) || !Array.isArray(section.items)
++        || !["ok", "unavailable", "empty"].includes(String(section.source_status))
++        || !(section.errors === undefined || Array.isArray(section.errors) && section.errors.every(part => typeof part === "string"))) {
++      throw new Error("LocalIntelligence publication requires native digest sections")
++    }
++    for (const item of section.items) {
++      if (!memoryObject(item) || [item.title, item.source, item.url, item.date].some(part => typeof part !== "string")
++          || !(item.summary === undefined || typeof item.summary === "string")
++          || !(item.metadata === undefined || memoryObject(item.metadata))) {
++        throw new Error("LocalIntelligence publication requires native digest items")
++      }
++    }
++    items += section.items.length
++  }
++  const latestSkipped = items === 0 && typeof plan.latest === "object" && plan.latest !== null
++    && Object.values(plan.latest).filter(memoryObject).some(section => Array.isArray(section.items) && section.items.length > 0)
++  return {filename: plan.filename, content: JSON.stringify(value, null, 2), latestSkipped, totalItems: items}
++}

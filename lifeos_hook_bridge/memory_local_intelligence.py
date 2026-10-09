@@ -14,13 +14,14 @@ from .memory_tab_freshness import _checked
 PRIMARY = 'LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/latest.json'
 HISTORY = 'LIFEOS/MEMORY/DATA/LocalIntelligence'
 FALLBACK = HISTORY + '/latest.json'
+SOURCE_CONFIG = 'LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/sources.json'
 ROUTES = frozenset('/api/local-intelligence' + suffix for suffix in ('', '/history', '/status', '/refresh'))
 RANGES = {'week': 7, 'month': 30, 'year': 365}
 DIGEST = r'\d{4}-\d{2}-\d{2}_.*_digest\.json'
 
 
 def declared_source(relative):
-    return relative in {PRIMARY, FALLBACK} or re.fullmatch(re.escape(HISTORY) + '/' + DIGEST, relative) is not None
+    return relative in {PRIMARY, FALLBACK, SOURCE_CONFIG} or re.fullmatch(re.escape(HISTORY) + '/' + DIGEST, relative) is not None
 
 
 def request_target(value):
