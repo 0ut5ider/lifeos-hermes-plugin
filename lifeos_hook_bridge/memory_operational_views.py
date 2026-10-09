@@ -1,6 +1,7 @@
 # ABOUTME: Admits fixed session and event snapshots for native operational dashboard readers.
 # ABOUTME: Rechecks physical sources and current owner authority without retaining native process caches.
 from collections import deque
+from contextlib import nullcontext
 from datetime import datetime, timezone
 import json
 
@@ -9,6 +10,7 @@ from .memory_history import project_value
 from .memory_sources import (authorize, _admit, _source_time, SOURCE_LIMIT,
                              SOURCE_COUNT_LIMIT, CORPUS_LIMIT)
 from .memory_tab_freshness import _checked
+from . import memory_operational_history as history
 
 
 PREFIX = 'LIFEOS/MEMORY/'
@@ -51,11 +53,12 @@ def _timestamp(row, fallback):
     return fallback
 
 
-def _collect(memory, scope, connection, target):
+def _collect(memory, scope, connection, target, *, admit=True):
     fingerprints, candidates = [], []
     keys = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
     for name in ROUTES[target]:
         relative = PREFIX + name
+        if target == '/api/algorithm' and relative in history.SOURCES: continue
         path = _checked(memory, memory.root / relative)
         if not path.exists():
             fingerprints.append((relative, None))
@@ -63,11 +66,11 @@ def _collect(memory, scope, connection, target):
         if not path.is_file():
             raise MemoryUnavailable('Operational sources require regular owner files')
         before = path.stat()
-        full = name in {'STATE/work.json', 'STATE/work-events.jsonl'}
+        full = name.endswith('.json')
         limit = SOURCE_LIMIT if name.endswith('.json') else TAIL_LIMIT
         if full and before.st_size > limit:
             raise MemoryUnavailable('An operational source exceeds its complete snapshot limit')
-        offset = 0 if full else max(0, before.st_size - (512 * 1024 if target == '/api/algorithm' else TAIL_LIMIT))
+        offset = 0 if full else max(0, before.st_size - TAIL_LIMIT)
         with path.open('rb') as stream:
             stream.seek(offset)
             raw = stream.read(before.st_size - offset + 1)
@@ -78,12 +81,10 @@ def _collect(memory, scope, connection, target):
         if keys(before) != keys(after):
             raise MemoryUnavailable('An operational source changes during collection')
         fingerprints.append((relative, keys(after), raw))
+        if not admit: continue
         if offset:
             newline = raw.find(b'\n')
             raw = raw[newline + 1:] if newline >= 0 else b''
-        if target == '/api/algorithm' and name.endswith('.jsonl'):
-            newline = raw.rfind(b'\n')
-            raw = raw[:newline + 1] if newline >= 0 else b''
         try: content = raw.decode('utf-8')
         except UnicodeError as error:
             raise MemoryUnavailable('Operational sources require valid UTF-8') from error
@@ -93,17 +94,14 @@ def _collect(memory, scope, connection, target):
             if isinstance(value, dict):
                 candidates.append((relative, content, _source_time(after), projection(content), content))
             continue
-        maximum = (SOURCE_COUNT_LIMIT if target == '/api/algorithm' else
-                   100 if target != '/api/events/recent' or name == 'OBSERVABILITY/tool-activity.jsonl' else 50)
-        rows = deque(maxlen=maximum if target != '/api/algorithm' else None)
+        maximum = 100 if target != '/api/events/recent' or name == 'OBSERVABILITY/tool-activity.jsonl' else 50
+        rows = deque(maxlen=maximum)
         for line in content.split('\n'):
             if not line: continue
             try: row = json.loads(line)
             except (ValueError, RecursionError): continue
             if not isinstance(row, dict): continue
             rows.append((row, line))
-            if target == '/api/algorithm' and len(rows) > SOURCE_COUNT_LIMIT:
-                raise MemoryUnavailable('Operational history exceeds its declared record limit')
         for row, line in rows:
             if len(line.encode()) > SOURCE_LIMIT:
                 raise MemoryUnavailable('An operational event exceeds its byte limit')
@@ -132,11 +130,17 @@ def view(memory, scope, target, *, check_current=None):
     if not scope.principal: raise MemoryUnavailable('Operational views require a bound owner')
     if check_current is not None: check_current()
     with memory._transaction() as connection:
-        sources, fingerprints = _collect(memory, scope, connection, target)
-        result = memory._native('operational_view', target=target, sources=sources)
-        if check_current is not None: check_current()
-        if _collect(memory, scope, connection, target) != (sources, fingerprints):
-            raise MemoryUnavailable('Operational sources change during native rendering')
+        current = history.snapshot(memory, scope, connection, check_current=check_current) if target == '/api/algorithm' else nullcontext((None, []))
+        with current as (descriptor, history_fingerprints):
+            sources, fingerprints = _collect(memory, scope, connection, target)
+            arguments = {} if descriptor is None else {'history_descriptor': descriptor}
+            result = memory._native('operational_view', target=target, sources=sources,
+                source_descriptors=() if descriptor is None else (descriptor,), **arguments)
+            if check_current is not None: check_current()
+            if (_collect(memory, scope, connection, target, admit=False)[1] != fingerprints
+                    or target == '/api/algorithm' and
+                    [history.fingerprint(memory, relative) for relative in history.SOURCES] != history_fingerprints):
+                raise MemoryUnavailable('Operational sources change during native rendering')
         if (not isinstance(result, dict) or set(result) != {'status', 'body'}
                 or type(result['status']) is not int or result['status'] != 200
                 or not isinstance(result['body'], (dict, list)) or len(json.dumps(result).encode()) > CORPUS_LIMIT):

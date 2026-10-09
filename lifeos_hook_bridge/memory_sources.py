@@ -205,13 +205,15 @@ def markdown_projection(memory, relative, content):
     return content + '\n' + name['name'] if len(name['name']) <= 256 else None
 
 
-def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None, review_content=None):
+def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None, review_content=None,
+           source_reviewed: bool | None = None):
     from .memory_source_review import is_reviewed
     labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
     return memory._filter_history(connection, scope, '\n'.join((content if projection is None else projection,
                                                               relative, labels)), timestamp,
-                                  reviewed=is_reviewed(memory, connection, scope, relative,
-                                                       content if review_content is None else review_content))
+                                  reviewed=(is_reviewed(memory, connection, scope, relative,
+                                                       content if review_content is None else review_content)
+                                            if source_reviewed is None else source_reviewed))
 
 
 def source_labels(relative: str) -> str:

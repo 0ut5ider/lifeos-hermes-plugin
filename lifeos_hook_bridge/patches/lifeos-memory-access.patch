@@ -356,7 +356,7 @@ index 2341394..8ecd924 100644
  
  if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
-index 787cf28..338398b 100644
+index 787cf28..bb381cd 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 @@ -1,3 +1,5 @@
@@ -365,13 +365,15 @@ index 787cf28..338398b 100644
  // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
  // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
  for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
-@@ -28,14 +30,15 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -28,14 +30,16 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
   *   GET  /, /work, /telos, /health, etc. — Static Next.js pages (fallback handler)
   */
  
 -import { join, extname } from "path"
+-import { readFileSync, readdirSync, existsSync, realpathSync, statSync, watch, openSync, readSync, closeSync, type FSWatcher } from "fs"
 +import { join, extname, basename, dirname } from "path"
- import { readFileSync, readdirSync, existsSync, realpathSync, statSync, watch, openSync, readSync, closeSync, type FSWatcher } from "fs"
++import { readFileSync, readdirSync, existsSync, realpathSync, statSync, watch, openSync, readSync, closeSync, fstatSync, createReadStream, type FSWatcher } from "fs"
++import { createInterface } from "node:readline"
  import { spawnSync } from "child_process"
  import { homedir } from "os"
  import YAML from "yaml"
@@ -383,7 +385,7 @@ index 787cf28..338398b 100644
  
  // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
  for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
-@@ -53,6 +56,7 @@ type GrowthData = Record<string, unknown>
+@@ -53,6 +57,7 @@ type GrowthData = Record<string, unknown>
  // tsconfig's DOM+esnext lib doesn't include bun-types, so declare the minimal
  // surface we actually use. Narrow to what's called, not a global `any`.
  declare const Bun: {
@@ -391,7 +393,7 @@ index 787cf28..338398b 100644
    file(path: string): {
      size: number
      exists(): Promise<boolean>
-@@ -431,7 +435,7 @@ const activityCache: { offset: number; bySession: Map<string, ToolTick[]> } = {
+@@ -431,7 +436,7 @@ const activityCache: { offset: number; bySession: Map<string, ToolTick[]> } = {
    bySession: new Map(),
  }
  
@@ -400,7 +402,7 @@ index 787cf28..338398b 100644
    if (!line) return
    let ev: any
    try {
-@@ -442,10 +446,10 @@ function foldActivityLine(line: string): void {
+@@ -442,10 +447,10 @@ function foldActivityLine(line: string): void {
    if (ev?.type !== "tool_use" || !ev.session_id || !ev.tool_name) return
    const ts = Date.parse(ev.timestamp)
    if (!Number.isFinite(ts)) return
@@ -413,7 +415,7 @@ index 787cf28..338398b 100644
  }
  
  export function getActivityData(): Map<string, ToolTick[]> {
-@@ -575,15 +579,15 @@ function humanizeSlug(slug: string): string {
+@@ -575,15 +580,15 @@ function humanizeSlug(slug: string): string {
  // 2026-05-24 (realtime-phase-tracking): extracted the data-producing function
  // from handleAlgorithmApi so the SSE channel (handleAlgorithmStreamApi) can
  // reuse the exact same payload shape. handleAlgorithmApi just wraps this.
@@ -434,7 +436,7 @@ index 787cf28..338398b 100644
      const nowMs = Date.now()
      // "Running" = a tool call fired in the last 5 minutes. Matches the native
      // stale threshold so a long-running tool call can't briefly flip a session
-@@ -944,31 +948,86 @@ function handleAlgorithmStreamApi(req: Request): Response {
+@@ -944,31 +949,86 @@ function handleAlgorithmStreamApi(req: Request): Response {
    })
  }
  
@@ -528,7 +530,7 @@ index 787cf28..338398b 100644
      ...e,
      source: "tool-activity",
      type: e.event || e.type || "tool_use",
-@@ -1153,14 +1212,14 @@ function handleCapabilitiesApi(searchParams: URLSearchParams): Response {
+@@ -1153,14 +1213,14 @@ function handleCapabilitiesApi(searchParams: URLSearchParams): Response {
  
  // ── /api/observability/voice-events ──
  
@@ -547,7 +549,7 @@ index 787cf28..338398b 100644
  }
  
  // ── /api/novelty ──
-@@ -1496,13 +1555,13 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
+@@ -1496,13 +1556,13 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
  // Memory Graph — serves MEMORY/GRAPH/graph.json (built by LIFEOS/TOOLS/MemoryGraph.ts)
  // shaped for the KnowledgeGraph D3 component: category = community id, backlinkCount = degree.
  // Colored/clustered by DISCOVERED community (not domain), sized by degree — all silos.
@@ -564,7 +566,7 @@ index 787cf28..338398b 100644
        generated: string; nodeCount: number; edgeCount: number
        nodes: Array<{ id: string; silo: string; type: string; title: string; community: number; pagerank: number; degree: number; tags: string[] }>
        edges: Array<{ from: string; to: string; weight: number; kind: string }>
-@@ -1535,9 +1594,13 @@ function handleMemoryGraphApi(): Response {
+@@ -1535,9 +1595,13 @@ function handleMemoryGraphApi(): Response {
    }
  }
  
@@ -580,7 +582,7 @@ index 787cf28..338398b 100644
        return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })
      }
  
-@@ -1548,7 +1611,7 @@ function handleKnowledgeApi(): Response {
+@@ -1548,7 +1612,7 @@ function handleKnowledgeApi(): Response {
  
      // Parse master _index.md for last harvest date
      const masterIndexPath = join(KNOWLEDGE_DIR, "_index.md")
@@ -589,7 +591,7 @@ index 787cf28..338398b 100644
        const content = readFileSync(masterIndexPath, "utf-8")
        const harvestMatch = content.match(/\*\*Last harvest:\*\*\s*(\S+)/)
        if (harvestMatch) lastHarvest = harvestMatch[1]
-@@ -1556,14 +1619,17 @@ function handleKnowledgeApi(): Response {
+@@ -1556,14 +1620,17 @@ function handleKnowledgeApi(): Response {
  
      for (const domain of KNOWLEDGE_DOMAINS) {
        const domainDir = join(KNOWLEDGE_DIR, domain)
@@ -609,7 +611,7 @@ index 787cf28..338398b 100644
        } catch {
          files = []
        }
-@@ -1573,7 +1639,8 @@ function handleKnowledgeApi(): Response {
+@@ -1573,7 +1640,8 @@ function handleKnowledgeApi(): Response {
        for (const file of files) {
          const filePath = join(domainDir, file)
          try {
@@ -619,7 +621,7 @@ index 787cf28..338398b 100644
            const fm = parseFrontmatter(raw)
  
            const title = (fm.title as string) || file.replace(/\.md$/, "")
-@@ -1656,13 +1723,14 @@ function capitalizeFirst(s: string): string {
+@@ -1656,13 +1724,14 @@ function capitalizeFirst(s: string): string {
    return s.charAt(0).toUpperCase() + s.slice(1)
  }
  
@@ -637,7 +639,7 @@ index 787cf28..338398b 100644
      const fm = parseFrontmatter(content)
      return Response.json({
        domain,
-@@ -1680,6 +1748,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
+@@ -1680,6 +1749,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
    }
  }
  
@@ -661,7 +663,7 @@ index 787cf28..338398b 100644
  async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
    const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
    if (!existsSync(filePath)) {
-@@ -1740,6 +1825,10 @@ const TELOS_FILE_ALLOWLIST = new Set<string>([
+@@ -1740,6 +1826,10 @@ const TELOS_FILE_ALLOWLIST = new Set<string>([
    "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "SPARKS.md", "NEW_TEST.md",
  ])
  
@@ -672,7 +674,7 @@ index 787cf28..338398b 100644
  function readMd(path: string): string {
    try { return existsSync(path) ? readFileSync(path, "utf-8") : "" } catch { return "" }
  }
-@@ -1754,10 +1843,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
+@@ -1754,10 +1844,10 @@ function validateTelosFileName(raw: unknown): { ok: true; name: string } | { ok:
  
  // Load a YAML file; return null on missing or parse failure so callers can
  // degrade gracefully (per feedback_degrade_dont_block_on_missing_creds.md).
@@ -686,7 +688,7 @@ index 787cf28..338398b 100644
      return YAML.parse(raw) as T
    } catch (err) {
      console.error(`[finances] YAML parse failed: ${path}`, err)
-@@ -1837,11 +1926,11 @@ interface SpendAggregateBundle {
+@@ -1837,11 +1927,11 @@ interface SpendAggregateBundle {
  // (schema, generated_at, record_count, sources); subsequent lines are
  // one JSON record per normalized merchant. Returns empty bundle if the
  // file is missing — the analyzer hasn't been run yet.
@@ -701,7 +703,7 @@ index 787cf28..338398b 100644
      if (lines.length === 0) return { generated_at: null, records: [] }
      let generated_at: string | null = null
      const records: SpendAggregate[] = []
-@@ -1995,12 +2084,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
+@@ -1995,12 +2085,12 @@ function cutReason(r: SpendAggregate, all: SpendAggregate[]): string {
    return "Review for cancellation"
  }
  
@@ -717,7 +719,7 @@ index 787cf28..338398b 100644
      const cutoffMs = Date.now() - 35 * 86400_000
      for (const line of lines) {
        try {
-@@ -2360,12 +2449,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
+@@ -2360,12 +2450,12 @@ function parseSections(content: string): { heading: string, body: string }[] {
    return sections
  }
  
@@ -734,7 +736,7 @@ index 787cf28..338398b 100644
      files.push({ name: f.replace(".md", ""), content: content.slice(0, 2000), sections: parseSections(content) })
    }
    return files
-@@ -2428,13 +2517,13 @@ function parseCurrentDomains(content: string): {
+@@ -2428,13 +2518,13 @@ function parseCurrentDomains(content: string): {
    return { updated, updatedBy, domains }
  }
  
@@ -754,7 +756,7 @@ index 787cf28..338398b 100644
  
      const fields = parseBoldFields(current)
      const { updated, updatedBy, domains } = parseCurrentDomains(current)
-@@ -2470,11 +2559,11 @@ function handleLifeHome(): Response {
+@@ -2470,11 +2560,11 @@ function handleLifeHome(): Response {
  
  // ── GET /api/life/health ──
  
@@ -769,7 +771,7 @@ index 787cf28..338398b 100644
        ? readdirSync(HEALTH_DIR).filter(f => f.startsWith("lab_results"))
        : []
  
-@@ -2485,21 +2574,21 @@ function handleLifeHealth(): Response {
+@@ -2485,21 +2575,21 @@ function handleLifeHealth(): Response {
        freshnessEntries.push({ name: lab, sourceDate: parseFilenameDate(lab) })
      }
      for (const structured of ["CONDITIONS.md", "MEDICATIONS.md", "SUPPLEMENTS.md", "FITNESS.md", "NUTRITION.md", "METRICS.md", "HISTORY.md"]) {
@@ -801,7 +803,7 @@ index 787cf28..338398b 100644
        labReports: labFiles,
        freshness,
      })
-@@ -2547,25 +2636,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
+@@ -2547,25 +2637,25 @@ function parseMarkdownTable(body: string): { headers: string[]; rows: string[][]
    return { headers, rows }
  }
  
@@ -837,7 +839,7 @@ index 787cf28..338398b 100644
  
      // Per-card freshness — each card surfaces its own indicator pulling
      // only from the files it actually depends on. The composite `freshness`
-@@ -2637,8 +2726,8 @@ function handleLifeFinances(): Response {
+@@ -2637,8 +2727,8 @@ function handleLifeFinances(): Response {
  
      // ── v2 envelope: Income / Outbound / Overall ──
  
@@ -848,7 +850,7 @@ index 787cf28..338398b 100644
      // Normalize both known on-disk shapes (issue #1438). The shipped install
      // templates use a legacy shape ({name, purpose, category, direction, match}
      // and {vendor, amount: "$X", frequency}) with no `id`, which crashed the
-@@ -2684,8 +2773,8 @@ function handleLifeFinances(): Response {
+@@ -2684,8 +2774,8 @@ function handleLifeFinances(): Response {
            category: o.category ?? "other",
          }
        })
@@ -859,7 +861,7 @@ index 787cf28..338398b 100644
      const spendInsights = buildSpendInsights(spendBundle.records)
  
      // Resolve each vendor's monthly spend.
-@@ -2871,14 +2960,14 @@ function handleLifeFinances(): Response {
+@@ -2871,14 +2961,14 @@ function handleLifeFinances(): Response {
        // v2 envelope
        ...v2,
        // ported from public PR #1777, @takanorinishida
@@ -880,7 +882,7 @@ index 787cf28..338398b 100644
        plan,
        incomeStreams,
        expenseCategories,
-@@ -2919,19 +3008,19 @@ function resolveCompanyDir(): string {
+@@ -2919,19 +3009,19 @@ function resolveCompanyDir(): string {
    return dirs.find(d => existsSync(join(d, "REVENUE"))) ?? dirs[0] ?? ""
  }
  
@@ -905,7 +907,7 @@ index 787cf28..338398b 100644
        }
      }
  
-@@ -2945,8 +3034,8 @@ function handleLifeBusiness(): Response {
+@@ -2945,8 +3035,8 @@ function handleLifeBusiness(): Response {
        revenueSummary: summarySection?.body || "",
        revenueByProduct: revenueByProduct?.body || "",
        revenueAllSections: revenueSections,
@@ -916,7 +918,7 @@ index 787cf28..338398b 100644
      })
    } catch (err: any) {
      return Response.json({ error: err.message }, { status: 500 })
-@@ -2994,9 +3083,9 @@ async function handleLifeGrowth(): Promise<Response> {
+@@ -2994,9 +3084,9 @@ async function handleLifeGrowth(): Promise<Response> {
  
  // ── GET /api/life/work ──
  
@@ -928,7 +930,7 @@ index 787cf28..338398b 100644
      // Parse project table rows
      let projectLines = projectsContent.split("\n")
        .filter(l => l.startsWith("|") && !l.includes("---") && !l.includes("Project"))
-@@ -3018,14 +3107,14 @@ function handleLifeWork(): Response {
+@@ -3018,14 +3108,14 @@ function handleLifeWork(): Response {
      }
  
      // Current workstreams — unified "## Current State" section, CURRENT.md legacy fallback
@@ -946,7 +948,7 @@ index 787cf28..338398b 100644
          const sessions = workData.sessions || {}
          activeSessions = Object.entries(sessions)
            .map(([slug, s]: [string, any]) => ({
-@@ -3054,34 +3143,34 @@ function handleLifeWork(): Response {
+@@ -3054,34 +3144,34 @@ function handleLifeWork(): Response {
  
  // ── GET /api/life/goals ──
  
@@ -1006,7 +1008,7 @@ index 787cf28..338398b 100644
  
      return Response.json({
        mission: parseSections(mission),
-@@ -3405,15 +3494,15 @@ function pickBulletValue(content: string, key: string): string | null {
+@@ -3405,15 +3495,15 @@ function pickBulletValue(content: string, key: string): string | null {
  //
  // Composite rule for creative_freedom: average the underlying creative and
  // freedom percentages from LIFEOS_STATE.json. Missing source dimension contributes 0.
@@ -1026,7 +1028,7 @@ index 787cf28..338398b 100644
        for (const [id, d] of Object.entries(parsed.dimensions ?? {})) {
          if (typeof d?.pct === "number") pcts[id] = d.pct
        }
-@@ -3450,7 +3539,7 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+@@ -3450,7 +3540,7 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
    ]
  
    return surfaces
@@ -1035,7 +1037,7 @@ index 787cf28..338398b 100644
      .map(({ sources: _sources, ...rest }) => ({ ...rest, ideal: 100, velo: 0 }))
  }
  
-@@ -3465,13 +3554,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
+@@ -3465,13 +3555,13 @@ function buildDimensionsFromIdealState(): Array<{ id: string; label: string; cur
  // this one — TELOS_DIR has no CURRENT.md/GOALS.md). Same semantic as
  // handleTelosOverview's local closure; lifted so every /api/life/* handler
  // resolves sections the same way.
@@ -1053,7 +1055,7 @@ index 787cf28..338398b 100644
    if (!content) return {}
    const sections: Record<string, string> = {}
    const lines = content.split("\n")
-@@ -3565,9 +3654,9 @@ async function buildWorkNarrative(): Promise<{ summary: string; inProgress: numb
+@@ -3565,9 +3655,9 @@ async function buildWorkNarrative(): Promise<{ summary: string; inProgress: numb
    }
  }
  
@@ -1065,7 +1067,7 @@ index 787cf28..338398b 100644
    if (!content) return null
    const fields = parseBoldFields(content)
    const parseScore = (raw: string | undefined): number | null => {
-@@ -3601,7 +3690,7 @@ function buildSnapshotFromCurrentState(): Array<{ id: string; label: string; v:
+@@ -3601,7 +3691,7 @@ function buildSnapshotFromCurrentState(): Array<{ id: string; label: string; v:
    return out.length > 0 ? out : null
  }
  
@@ -1074,7 +1076,7 @@ index 787cf28..338398b 100644
    books: string[]
    films: string[]
    anime: string[]
-@@ -3610,9 +3699,9 @@ function buildPreferencesFromTelos(): {
+@@ -3610,9 +3700,9 @@ function buildPreferencesFromTelos(): {
    hobbies: string[]
    literature: string[]
  } | null {
@@ -1087,7 +1089,7 @@ index 787cf28..338398b 100644
    if (books.length === 0 && movies.length === 0 && authors.length === 0) return null
    return {
      books,
-@@ -4157,13 +4246,13 @@ function buildStatusMetrics(
+@@ -4157,13 +4247,13 @@ function buildStatusMetrics(
  interface OverviewTeam { id: string; name: string; role: string; kind: "human" | "agent"; owns: string[]; avatar: string; note: string }
  
  // Team is parsed from USER files at request time — names never live in this file.
@@ -1103,7 +1105,7 @@ index 787cf28..338398b 100644
    if (principal) {
      team.push({
        id: "T0", name: principal, role: "Principal", kind: "human", owns: [],
-@@ -4171,14 +4260,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
+@@ -4171,14 +4261,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
        avatar: principal.charAt(0), note: "Sets direction. Everything here serves their TELOS.",
      })
    }
@@ -1120,7 +1122,7 @@ index 787cf28..338398b 100644
    if (fleetMatch) {
      fleetMatch[1].split("/").map((n) => n.trim()).filter(Boolean).forEach((n, i) => {
        team.push({
-@@ -4190,14 +4279,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
+@@ -4190,14 +4280,14 @@ function buildTeamFromUserFiles(appIds: string[]): OverviewTeam[] | null {
    return team.length > 0 ? team : null
  }
  
@@ -1138,7 +1140,7 @@ index 787cf28..338398b 100644
      const missionRaw = sectionOrFile("mission", "MISSION.md")
      const goalsRaw = sectionOrFile("goals", "GOALS.md")
      const problemsRaw = sectionOrFile("problems", "PROBLEMS.md")
-@@ -4232,7 +4321,7 @@ async function handleTelosOverview(): Promise<Response> {
+@@ -4232,7 +4322,7 @@ async function handleTelosOverview(): Promise<Response> {
            dims: [],
            metrics: [],
          }))
@@ -1147,7 +1149,7 @@ index 787cf28..338398b 100644
            id: g.id,
            title: cleanInlineMarkdown(g.title ?? g.text ?? g.id),
            summary: "",
-@@ -4281,19 +4370,19 @@ async function handleTelosOverview(): Promise<Response> {
+@@ -4281,19 +4371,19 @@ async function handleTelosOverview(): Promise<Response> {
        blocks: refsByPrefix(c.references, "G"),
      }))
  
@@ -1175,7 +1177,7 @@ index 787cf28..338398b 100644
  
      const currentStateNarrative = buildCurrentStateNarrative(currentStateRaw)
      const idealStateNarrative = buildIdealStateNarrative(idealStateRaw)
-@@ -4520,6 +4609,195 @@ function handleOnboardingState(): Response {
+@@ -4520,6 +4610,222 @@ function handleOnboardingState(): Response {
    })
  }
  
@@ -1289,7 +1291,8 @@ index 787cf28..338398b 100644
 +    "BOOKS.md", "MOVIES.md", "TRAUMAS.md", "STATUS.md", "PROJECTS.md"];
 +}
 +
-+export function renderOperationalView(sources: ReadonlyArray<{relative: string; content: string}>, target: string): Response {
++export function renderOperationalView(sources: ReadonlyArray<{relative: string; content: string}>, target: string,
++    folded?: {climb: Map<string, ClimbPoint[]>; activity: Map<string, ToolTick[]>}): Response {
 +  const allowed = new Set(["LIFEOS/MEMORY/STATE/work.json", "LIFEOS/MEMORY/STATE/work-events.jsonl",
 +    "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl", "LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl",
 +    "LIFEOS/MEMORY/OBSERVABILITY/tool-failures.jsonl", "LIFEOS/MEMORY/VOICE/voice-events.jsonl"]);
@@ -1313,15 +1316,41 @@ index 787cf28..338398b 100644
 +  if (target === "/api/observability/voice-events") return handleVoiceEventsApi(read);
 +  if (target === "/api/observability/tool-failures") return handleToolFailuresApi(read);
 +  if (target === "/api/algorithm") {
-+    const climb = new Map<string, ClimbPoint[]>();
++    const climb = folded?.climb ?? new Map<string, ClimbPoint[]>();
 +    for (const line of (contents.get(WORK_EVENTS_PATH) ?? "").split("\n")) foldClimbLine(climb, line);
 +    evictSeriesByCount(climb, CLIMB_SERIES_CAP);
-+    const activity = new Map<string, ToolTick[]>();
++    const activity = folded?.activity ?? new Map<string, ToolTick[]>();
 +    for (const line of (contents.get(TOOL_ACTIVITY_PATH) ?? "").split("\n")) foldActivityLine(line, activity);
 +    evictSeriesByAge(activity, Date.now(), ACTIVITY_RETENTION_MS);
 +    return Response.json(buildAlgorithmStatePayload({work: contents.get(WORK_JSON_PATH), climb, activity}));
 +  }
 +  throw new Error("Choose a fixed operational read route");
++}
++
++export async function renderOperationalHistory(sources: ReadonlyArray<{relative: string; content: string}>, descriptor: number): Promise<Response> {
++  const before = fstatSync(descriptor);
++  if (!before.isFile() || before.uid !== process.getuid?.() || before.nlink !== 0 || (before.mode & 0o077) !== 0) {
++    throw new Error("Operational history requires an anonymous private owner snapshot");
++  }
++  const climb = new Map<string, ClimbPoint[]>();
++  const activity = new Map<string, ToolTick[]>();
++  const input = createReadStream(`/proc/self/fd/${descriptor}`);
++  const lines = createInterface({input, crlfDelay: Infinity});
++  try {
++    for await (const line of lines) {
++      if (Buffer.byteLength(line) > 3 * 1024 * 1024) throw new Error("An admitted history record exceeds its transport limit");
++      const frame: unknown = JSON.parse(line);
++      if (!memoryObject(frame) || typeof frame.content !== "string") throw new Error("Operational history requires declared event records");
++      if (frame.relative === "LIFEOS/MEMORY/STATE/work-events.jsonl") foldClimbLine(climb, frame.content);
++      else if (frame.relative === "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl") foldActivityLine(frame.content, activity);
++      else throw new Error("Operational history requires fixed event sources");
++    }
++  } finally { lines.close(); input.destroy(); }
++  const after = fstatSync(descriptor);
++  if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
++    throw new Error("The admitted history snapshot changes during folding");
++  }
++  return renderOperationalView(sources, "/api/algorithm", {climb, activity});
 +}
 +
 +export function telosOverviewSources(): string[] {
@@ -1371,7 +1400,7 @@ index 787cf28..338398b 100644
  // ════════════════════════════════════════
  // Request Router
  // ════════════════════════════════════════
-@@ -4531,6 +4809,124 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+@@ -4531,6 +4837,124 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
    const pathname = url.pathname
    const method = req.method
  

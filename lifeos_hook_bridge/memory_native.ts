@@ -81,7 +81,14 @@ async function main(): Promise<void> {
           || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
       throw new Error('Native operational views require declared current sources');
     }
-    const response: unknown = module.renderOperationalView(input.sources, input.target);
+    let response: unknown;
+    if (input.history_descriptor === undefined) response = module.renderOperationalView(input.sources, input.target);
+    else {
+      if (typeof module.renderOperationalHistory !== 'function' || input.target !== '/api/algorithm'
+          || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+          || input.history_descriptor < 3) throw new Error('Operational history requires a private inherited descriptor');
+      response = await module.renderOperationalHistory(input.sources, input.history_descriptor);
+    }
     if (!(response instanceof Response)) throw new Error('Native operational views require a response');
     result = {status: response.status, body: await response.json()};
   } else if (input.action === 'telos_overview_sources' || input.action === 'telos_overview') {

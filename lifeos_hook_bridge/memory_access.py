@@ -136,7 +136,9 @@ class NativeMemory:
             finally:
                 connection.close()
 
-    def _native(self, action: str, **values: Any) -> dict[str, Any]:
+    def _native(self, action: str, *, source_descriptors: tuple[int, ...] = (), **values: Any) -> dict[str, Any]:
+        if (len(source_descriptors) > 1 or any(type(value) is not int or value < 3 for value in source_descriptors)):
+            raise MemoryUnavailable('Native snapshots require a declared source descriptor')
         environment = dict(os.environ)
         environment["HOME"] = str(self.root.parent)
         environment["LIFEOS_DIR"] = str(self.root / "LIFEOS")
@@ -149,7 +151,7 @@ class NativeMemory:
         result = subprocess.run([self.bun, "--no-install", str(self.worker), str(self.root)],
                                 input=json.dumps({"action": action, **values}), text=True,
                                 capture_output=True, timeout=30, env=environment, cwd=self.root,
-                                pass_fds=self.transaction.inherited_descriptors())
+                                pass_fds=(*self.transaction.inherited_descriptors(), *source_descriptors))
         if result.returncode:
             raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
         try:

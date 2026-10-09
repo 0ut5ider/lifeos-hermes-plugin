@@ -423,14 +423,15 @@ class MemoryOperationalViewsTests(unittest.TestCase):
         self.seed()
         with httpx.Client(timeout=30) as client:
             self.login(client)
-            for relative, content in (
-                ('STATE/work.json', json.dumps({'note': 'SyntheticOversizeOperational' + 'x' * (256 * 1024)})),
-                ('STATE/work-events.jsonl', '{"note":"SyntheticOversizeOperational"}\n' * 40000),
-                ('STATE/work-events.jsonl', '{"note":"SyntheticOversizeOperational"}\n' * 2049),
-                ('OBSERVABILITY/tool-activity.jsonl', json.dumps({'note': 'SyntheticOversizeOperational' + 'x' * (256 * 1024)}) + '\n')):
+            for relative, content, expected in (
+                ('STATE/work.json', json.dumps({'note': 'SyntheticOversizeOperational' + 'x' * (256 * 1024)}), 503),
+                ('STATE/work-events.jsonl', '{"note":"SyntheticOversizeOperational"}\n' * 40000, 200),
+                ('STATE/work-events.jsonl', '{"note":"SyntheticOversizeOperational"}\n' * 2049, 200),
+                ('OBSERVABILITY/tool-activity.jsonl', json.dumps({'note': 'SyntheticOversizeOperational' + 'x' * (256 * 1024)}) + '\n', 503)):
                 with self.subTest(relative=relative, bytes=len(content.encode())):
                     self.seed()
                     (self.root / 'LIFEOS/MEMORY' / relative).write_text(content)
                     response = client.get(self.native + '/api/algorithm')
-                    self.assertEqual(response.status_code, 503, response.text)
+                    self.assertEqual(response.status_code, expected, response.text)
+                    if expected == 200: self.assertEqual(response.json(), self.original('/api/algorithm'))
                     self.assertNotIn('SyntheticOversizeOperational', response.text)
