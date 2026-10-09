@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-09",
+  "prepared_source": "/home/outsider/.cache/lifeos-daily-text-20261007/recommend-first/lifeos/LifeOS/install",
+  "coverage_note": "This disposition report does not establish installed absence or complete native behavior acceptance. Required open callers and governed generation remain release blockers.",
+  "callers": [
+    {
+      "path": "LIFEOS/ATLAS/collectors/Gear.ts",
+      "sha256": "54b008753b3597fbce825a4584417ec7baba31f5dd00b5cd132bdc683ab7cb8a",
+      "disposition": "accepted_native_collector",
+      "reason": "2026-10-08-atlas",
+      "recorded_callers": [
+        {
+          "path": "LIFEOS/ATLAS/Atlas.ts",
+          "line": 30,
+          "kind": "import",
+          "text": "from \"./collectors/Gear\""
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/ATLAS/collectors/InfraInventory.ts",
+      "sha256": "7c2ac6eeb793689c9e126dca2c1ac622d277926c97a50bad0e89c9178c55a406",
+      "disposition": "optional_private_arbol_source",
+      "reason": "Fresh public profile has no ARBOL implementation. Installed absence must be checked before activation.",
+      "recorded_callers": [
+        {
+          "path": "LIFEOS/ATLAS/Atlas.ts",
+          "line": 27,
+          "kind": "import",
+          "text": "from \"./collectors/InfraInventory\""
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/ATLAS/collectors/Projects.ts",
+      "sha256": "305262741277fda99b89dde80ee4ac67bd97d64f950e996be951579b46618f4f",
+      "disposition": "accepted_native_collector",
+      "reason": "2026-10-08-atlas",
+      "recorded_callers": [
+        {
+          "path": "LIFEOS/ATLAS/Atlas.ts",
+          "line": 26,
+          "kind": "import",
+          "text": "from \"./collectors/Projects\""
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/HERMES/Heartbeat/ArtistScan.ts",
+      "sha256": "4bef31c7333eebf3f64f55381689c8386fa0b260b351c30fb748b7f63b2ddf8c",
+      "disposition": "optional_unselected_heartbeat_job",
+      "reason": "Neither the five selected Pulse jobs nor the configured Hermes job list includes this command. Verify the installed job list.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/HERMES/Heartbeat/Tick.ts",
+      "sha256": "a6fb5d743ca223d499d4ce9cdfd907cd292d893a9ce3cc8bef87f86dad355950",
+      "disposition": "optional_unselected_heartbeat_job",
+      "reason": "Legacy heartbeat command is outside the selected five Pulse jobs. Verify the installed Hermes scheduler before activation.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/HERMES/plugin/guard.py",
+      "sha256": "7bd912722c160efa834f254a6dfed527c3885ff754b1732891218e4d632795c9",
+      "disposition": "accepted_control_classification",
+      "reason": "The native control evidence covers the shipped command guard. No new behavior acceptance is claimed here.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/ApproveCurrentStateEntries.ts",
+      "sha256": "feb4f7429069a93413ff5cfaf015b4cd6549a4ffc679a381a4851c067fb28244",
+      "disposition": "accepted_native_state_command",
+      "reason": "2026-10-08-remaining-reader-audit, twenty-case native gate",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/Banner.ts",
+      "sha256": "49623c9aa0181c6f3827fd5805bcd6616bdcfbc62e9b2a0a74a249a78cb13821",
+      "disposition": "required_manual_caller_open",
+      "reason": "Identity name and startup catchphrase reach native terminal rendering. Admission is pending.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/MigrateTelosFreshness.ts",
+      "sha256": "a8e9290bddfaeff87256dbdf5cc6cc1d82d2f1fb7a587ff1af1f5c849d01a450",
+      "disposition": "explicitly_deferred_importer",
+      "reason": "Adrian defers import and reverse migration for the first daily text release.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/ProposeCurrentStateEntry.ts",
+      "sha256": "9889aab7cbe8e5fe67ae26a4e06f9bcda6d2ccab5fc5d8ac7f812eb15170f33f",
+      "disposition": "accepted_native_state_command",
+      "reason": "2026-10-08-remaining-reader-audit, twenty-case native gate",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/Recommend.ts",
+      "sha256": "ccc11ef2866fbdb984e87e616766209217c94a2847e7dfa3aaf37f95469b4f28",
+      "disposition": "accepted_native_recommendation",
+      "reason": "Fourteen focused native checks and seventy neighboring checks pass. Source preparation and patch checks pass. Installed caller acceptance remains open.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/SkillHygieneGate.ts",
+      "sha256": "d9cc77845748694d88f8252491f1d897a4f72a8428512f62fe49805ad1ec2969",
+      "disposition": "required_security_control_open",
+      "reason": "IntegrityCheck invokes this program. Plaintext deny patterns and allowlist reads require purpose classification and effect checks.",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/SyncIdentityToSettings.ts",
+      "sha256": "657b2e52400aa2f0c3f834fb3b9e7466847c7b3521b3c177d271c4ac99bb3c7b",
+      "disposition": "accepted_native_state_command",
+      "reason": "2026-10-08-remaining-reader-audit, twenty-case native gate",
+      "recorded_callers": []
+    },
+    {
+      "path": "LIFEOS/TOOLS/healthsync/apple.ts",
+      "sha256": "249caa7b0731685b2a26419efeb626a1b15f5787e7eeda879a4264ea93bf93a9",
+      "disposition": "optional_unselected_apple_import",
+      "reason": "Apple health, iCloud, and Cloudflare targets are omitted from the selected release. Installed credentials and trigger absence remain required.",
+      "recorded_callers": []
+    },
+    {
+      "path": "skills/CMUX/Tools/cmux.ts",
+      "sha256": "d4be7d5987830266e41f106d5d3e923b84e99c08054b6c09d5162a492cc72ec2",
+      "disposition": "optional_unselected_remote_targets",
+      "reason": "Adrian selects no optional SSH or Docker targets. Installed target and trigger absence remain required.",
+      "recorded_callers": []
+    },
+    {
+      "path": "skills/Remotion/Tools/Theme.ts",
+      "sha256": "9f2c03874470bc710d30052e03ddf5491e34a15335a72d78bb121c3cef77bc1b",
+      "disposition": "public_constant_classification",
+      "reason": "The USER path appears in documentation. The program exports public theme constants; it reads no personal preference file.",
+      "recorded_callers": []
+    },
+    {
+      "path": "skills/Telos/DashboardTemplate/lib/telos-data.ts",
+      "sha256": "0961adb8b3bdd3dd9ff99e99490d5a2c79d426ffd2a6a84d2955d810764336fd",
+      "disposition": "manual_template_reader_open",
+      "reason": "The separate dashboard template scans TELOS markdown and CSV files. Main Pulse acceptance does not cover this reader.",
+      "recorded_callers": []
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+test_actual_retirement_refuses_retained_preference_and_recency (test_memory_recommend.MemoryRecommendTests.test_actual_retirement_refuses_retained_preference_and_recency) ... FAIL
+test_native_categories_filters_blocklist_and_output_characterization (test_memory_recommend.MemoryRecommendTests.test_native_categories_filters_blocklist_and_output_characterization) ... ok
+test_native_missing_and_unseeded_movie_entry_characterization (test_memory_recommend.MemoryRecommendTests.test_native_missing_and_unseeded_movie_entry_characterization) ... ok
+test_private_selected_source_refuses_complete_recommendation (test_memory_recommend.MemoryRecommendTests.test_private_selected_source_refuses_complete_recommendation) ... 
+  test_private_selected_source_refuses_complete_recommendation (test_memory_recommend.MemoryRecommendTests.test_private_selected_source_refuses_complete_recommendation) (selected='restaurant') ... FAIL
+  test_private_selected_source_refuses_complete_recommendation (test_memory_recommend.MemoryRecommendTests.test_private_selected_source_refuses_complete_recommendation) (selected='consumption') ... FAIL
+test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) ... 
+  test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='symlink') ... FAIL
+  test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='hardlink') ... FAIL
+  test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='utf8') ... FAIL
+  test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='oversize') ... FAIL
+  test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='connector') ... FAIL
+test_revoked_owner_and_redirected_root_cannot_disclose (test_memory_recommend.MemoryRecommendTests.test_revoked_owner_and_redirected_root_cannot_disclose) ... FAIL
+test_selected_category_ignores_unrelated_private_preferences (test_memory_recommend.MemoryRecommendTests.test_selected_category_ignores_unrelated_private_preferences) ... ok
+test_unbound_reader_cannot_disclose_recommendation_or_consumption (test_memory_recommend.MemoryRecommendTests.test_unbound_reader_cannot_disclose_recommendation_or_consumption) ... FAIL
+
+======================================================================
+FAIL: test_actual_retirement_refuses_retained_preference_and_recency (test_memory_recommend.MemoryRecommendTests.test_actual_retirement_refuses_retained_preference_and_recency)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 93, in test_actual_retirement_refuses_retained_preference_and_recency
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_private_selected_source_refuses_complete_recommendation (test_memory_recommend.MemoryRecommendTests.test_private_selected_source_refuses_complete_recommendation) (selected='restaurant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 83, in test_private_selected_source_refuses_complete_recommendation
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_private_selected_source_refuses_complete_recommendation (test_memory_recommend.MemoryRecommendTests.test_private_selected_source_refuses_complete_recommendation) (selected='consumption')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 83, in test_private_selected_source_refuses_complete_recommendation
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 112, in test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 112, in test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 112, in test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 112, in test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback (test_memory_recommend.MemoryRecommendTests.test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback) (mode='connector')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 112, in test_redirected_invalid_and_excessive_source_cannot_use_raw_fallback
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_revoked_owner_and_redirected_root_cannot_disclose (test_memory_recommend.MemoryRecommendTests.test_revoked_owner_and_redirected_root_cannot_disclose)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 127, in test_revoked_owner_and_redirected_root_cannot_disclose
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_reader_cannot_disclose_recommendation_or_consumption (test_memory_recommend.MemoryRecommendTests.test_unbound_reader_cannot_disclose_recommendation_or_consumption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_recommend.py", line 73, in test_unbound_reader_cannot_disclose_recommendation_or_consumption
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.572s
+
+FAILED (failures=10)

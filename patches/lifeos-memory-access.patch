@@ -12798,3 +12798,36 @@ index 54d381e..bc71142 100644
      }
  
      if (sub === "/file" && req.method === "POST") {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Recommend.ts b/LifeOS/install/LIFEOS/TOOLS/Recommend.ts
+index 2b82fe2..70c5020 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/Recommend.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Recommend.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Ranks native personal recommendations from current admitted owner sources.
++// ABOUTME: Keeps the native picker available while refusing unbound managed reads.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -24,6 +26,21 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ import { readFileSync, existsSync } from "fs";
+ import { join } from "path";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++
++try {
++  const governed = memoryAccess("recommend", {args: process.argv.slice(2)},
++    (value): value is {ok: boolean; stdout?: string} => memoryObject(value)
++      && typeof value.ok === "boolean" && (value.ok === false || typeof value.stdout === "string"));
++  if (governed !== undefined) {
++    if (!governed.ok) throw new Error("Current owner recommendation access is unavailable");
++    process.stdout.write(governed.stdout ?? "");
++    process.exit(0);
++  }
++} catch {
++  console.error("Recommendations require current owner memory access");
++  process.exit(1);
++}
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
