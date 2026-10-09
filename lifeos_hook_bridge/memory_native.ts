@@ -27,7 +27,14 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'skill_hygiene_inventory') {
+  if (input.action === 'telos_template_view') {
+    if (!Array.isArray(input.files) || input.files.some(row => !object(row)
+        || typeof row.name !== 'string' || typeof row.filename !== 'string' || typeof row.content !== 'string'
+        || (row.type !== 'markdown' && row.type !== 'csv'))) throw new Error('Choose declared native Telos template files');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'skills/Telos/DashboardTemplate/lib/telos-data.ts')).href);
+    if (!object(module) || typeof module.getAllTelosData !== 'function') throw new Error('Native Telos template exports are unavailable');
+    result = {files: module.getAllTelosData(input.files)};
+  } else if (input.action === 'skill_hygiene_inventory') {
     if (!(input.skill === null || typeof input.skill === 'string')) throw new Error('Choose declared native skill selection');
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/SkillHygieneGate.ts')).href);
     if (!object(module) || typeof module.skillHygieneFiles !== 'function' || typeof module.trackedVendoredDeps !== 'function') {

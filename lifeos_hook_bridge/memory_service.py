@@ -272,6 +272,10 @@ class MemoryService:
                 from .memory_manual_state import run
                 return run(memory, scope, **arguments,
                     check_current=lambda:self._check_current_context(configuration,context,scope))
+            if operation == 'telos_template' and not arguments:
+                from .memory_telos_template import view
+                return view(memory, scope,
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'skill_hygiene' and set(arguments) == {'args'}:
                 from .memory_skill_hygiene import run
                 return run(memory, scope, **arguments,

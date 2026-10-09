@@ -13206,3 +13206,101 @@ index b32525d..f2464df 100644
  - ❌ Customer data, customer-specific workflows, customer engagement context
  - ❌ First-person war stories tied to a specific incident, project, or person
  - ❌ User-specific filesystem paths (`/Users/<name>/...`, `/home/<name>/...`)
+diff --git a/LifeOS/install/skills/Telos/DashboardTemplate/lib/telos-data.ts b/LifeOS/install/skills/Telos/DashboardTemplate/lib/telos-data.ts
+index a1b3d4c..7989217 100755
+--- a/LifeOS/install/skills/Telos/DashboardTemplate/lib/telos-data.ts
++++ b/LifeOS/install/skills/Telos/DashboardTemplate/lib/telos-data.ts
+@@ -1,6 +1,9 @@
++// ABOUTME: Reads complete Telos template data through current owner admission.
++// ABOUTME: Keeps copied template readers bound to the installed personal-data policy.
+ import fs from 'fs'
+ import path from 'path'
+ import os from 'os'
++import {execFileSync} from 'node:child_process'
+ 
+ export interface TelosFile {
+   name: string
+@@ -11,10 +14,47 @@ export interface TelosFile {
+ 
+ const TELOS_DIR = path.join(os.homedir(), '.claude/LIFEOS/USER/TELOS')
+ 
+-export function getAllTelosData(): TelosFile[] {
+-  const files: TelosFile[] = []
+-
++function governedTelosData(): TelosFile[] | undefined {
++  if (process.env.LIFEOS_MEMORY_INTERNAL === '1') return undefined
++  let managed = false
++  for (const marker of ['memory-access.json', 'memory-http.json']) {
++    try {
++      fs.lstatSync(path.join(os.homedir(), '.claude/LIFEOS/USER/CONFIG', marker))
++      managed = true
++    } catch (error: unknown) {
++      if (typeof error !== 'object' || error === null || !('code' in error) || error.code !== 'ENOENT') {
++        throw new Error('Telos template data is unavailable')
++      }
++    }
++  }
++  if (!managed) return undefined
+   try {
++    const response: unknown = JSON.parse(execFileSync('bun', ['--no-install',
++      path.join(os.homedir(), '.claude/LIFEOS/TOOLS/TelosTemplateData.ts')],
++      {encoding: 'utf8', timeout: 40000, maxBuffer: 4 * 1024 * 1024, stdio: ['pipe', 'pipe', 'pipe']}))
++    if (!Array.isArray(response)) throw new Error('Telos template data is unavailable')
++    const files: TelosFile[] = []
++    const rows: unknown[] = response
++    for (const row of rows) {
++      if (typeof row !== 'object' || row === null || !('name' in row) || typeof row.name !== 'string'
++          || !('filename' in row) || typeof row.filename !== 'string' || !('content' in row) || typeof row.content !== 'string'
++          || !('type' in row) || (row.type !== 'markdown' && row.type !== 'csv')) {
++        throw new Error('Telos template data is unavailable')
++      }
++      files.push({name: row.name, filename: row.filename, content: row.content, type: row.type})
++    }
++    return files
++  } catch {
++    throw new Error('Telos template data requires current owner access')
++  }
++}
++
++export function getAllTelosData(admitted?: TelosFile[]): TelosFile[] {
++  const governed = admitted === undefined ? governedTelosData() : undefined
++  if (governed !== undefined) return governed
++  const files: TelosFile[] = admitted === undefined ? [] : [...admitted]
++
++  if (admitted === undefined) try {
+     // Scan for all .md files in TELOS directory
+     if (fs.existsSync(TELOS_DIR)) {
+       const dirFiles = fs.readdirSync(TELOS_DIR)
+diff --git a/LifeOS/install/LIFEOS/TOOLS/TelosTemplateData.ts b/LifeOS/install/LIFEOS/TOOLS/TelosTemplateData.ts
+new file mode 100644
+index 0000000..7b3cf15
+--- /dev/null
++++ b/LifeOS/install/LIFEOS/TOOLS/TelosTemplateData.ts
+@@ -0,0 +1,14 @@
++#!/usr/bin/env bun
++// ABOUTME: Returns admitted native Telos template data to copied server-side readers.
++// ABOUTME: Refuses personal-data reads without current bound owner authority.
++import {memoryAccess, memoryObject} from "./lib/MemoryAccess";
++try {
++  const result = memoryAccess("telos_template", {},
++    (value): value is {ok: boolean; files?: unknown[]} => memoryObject(value)
++      && typeof value.ok === "boolean" && (value.ok === false || Array.isArray(value.files)));
++  if (result === undefined || !result.ok) throw new Error("Telos template data is unavailable");
++  console.log(JSON.stringify(result.files));
++} catch {
++  console.error("Telos template data requires current owner access");
++  process.exit(2);
++}
+diff --git a/LifeOS/install/skills/Telos/DashboardTemplate/README.md b/LifeOS/install/skills/Telos/DashboardTemplate/README.md
+index ad3d6e6..a60b0d1 100755
+--- a/LifeOS/install/skills/Telos/DashboardTemplate/README.md
++++ b/LifeOS/install/skills/Telos/DashboardTemplate/README.md
+@@ -25,6 +25,8 @@ A reusable Next.js dashboard template with Tokyo Night Day theme, shadcn/ui comp
+ 7. **Vulnerabilities** (`/vulnerabilities`) - Security vulnerability tracking (template example)
+ 8. **Progress** (`/progress`) - Progress tracking toward goals (template example)
+ 
++On a managed Hermes installation, the data readers require the installed TelosTemplateData tool and a current owner context. Bun must be on the server path. Copying the template preserves this rule. These readers do not add browser authentication. The first daily release uses the main Pulse dashboard. Deployment of this separate app requires browser authentication, governed file changes, and the selected model routing.
++
+ ## Getting Started
+ 
+ ### 1. Copy the Template

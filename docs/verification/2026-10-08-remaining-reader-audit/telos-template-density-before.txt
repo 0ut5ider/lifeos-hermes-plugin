@@ -1,0 +1,23 @@
+test_complete_selection_near_directory_limit_retains_all_native_fields (test_memory_telos_template.MemoryTelosTemplateTests.test_complete_selection_near_directory_limit_retains_all_native_fields) ... FAIL
+
+======================================================================
+FAIL: test_complete_selection_near_directory_limit_retains_all_native_fields (test_memory_telos_template.MemoryTelosTemplateTests.test_complete_selection_near_directory_limit_retains_all_native_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_telos_template.py", line 229, in test_complete_selection_near_directory_limit_retains_all_native_fields
+    self.assertEqual((result.returncode, result.stdout, result.stderr),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        (original.returncode, original.stdout, original.stderr))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (2, '', 'Telos template data is unavailable\n') != (0, '{"files":[{"name":"TELOS","filename":[360284 chars], '')
+
+First differing element 0:
+2
+0
+
+Diff is 396996 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 1 test in 2.724s
+
+FAILED (failures=1)
