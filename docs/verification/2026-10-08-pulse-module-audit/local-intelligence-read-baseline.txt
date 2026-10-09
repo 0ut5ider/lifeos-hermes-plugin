@@ -1,0 +1,134 @@
+test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) ... 
+  test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) (target='') ... FAIL
+  test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) (target='/history') ... FAIL
+  test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) (target='/status') ... FAIL
+test_current_authority_origin_bearer_and_connector_govern_delivery (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_current_authority_origin_bearer_and_connector_govern_delivery) ... FAIL
+test_excluded_primary_cannot_fall_back_and_private_history_refuses (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_excluded_primary_cannot_fall_back_and_private_history_refuses) ... FAIL
+test_methods_selectors_and_refresh_refuse_before_job_execution (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_methods_selectors_and_refresh_refuse_before_job_execution) ... FAIL
+test_original_native_history_windows_order_dedupe_and_bad_range (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_original_native_history_windows_order_dedupe_and_bad_range) ... ok
+test_original_primary_fallback_empty_and_status_characterization (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_original_primary_fallback_empty_and_status_characterization) ... ok
+test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) ... 
+  test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='') ... FAIL
+  test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history') ... FAIL
+  test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history?range=week') ... FAIL
+  test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history?range=month') ... FAIL
+  test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history?range=year') ... FAIL
+
+======================================================================
+FAIL: test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) (target='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 105, in test_anonymous_reads_refuse_personal_digest_and_history
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"meta": {"generated_at": "2026-10-09T17:11:39.370769+00:00", "sources_used": ["synthetic-a", "synthetic-b"], "sources_failed": ["synthetic-c"], "city": "SyntheticLocalCurrent", "state": "SyntheticState"}, "news": {"items": [{"title": "SyntheticLocal
+
+======================================================================
+FAIL: test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) (target='/history')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 105, in test_anonymous_reads_refuse_personal_digest_and_history
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"range":"week","window_days":7,"days_covered":2,"first_date":"2026-10-08","last_date":"2026-10-09","city":"SyntheticLocalNewest","state":"SyntheticState","sections":{"construction":{"items":[],"days_with_data":0},"crime":{"items":[],"days_with_data"
+
+======================================================================
+FAIL: test_anonymous_reads_refuse_personal_digest_and_history (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_anonymous_reads_refuse_personal_digest_and_history) (target='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 105, in test_anonymous_reads_refuse_personal_digest_and_history
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"running":false,"startedAt":null,"lastRefresh":null,"lastRefreshOk":null,"sourcesOk":0,"sourcesFailed":0,"latest_exists":true,"latest_mtime":"2026-10-09T17:11:39.371Z"}
+
+======================================================================
+FAIL: test_current_authority_origin_bearer_and_connector_govern_delivery (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_current_authority_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 147, in test_current_authority_origin_bearer_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + '/api/local-intelligence', headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_excluded_primary_cannot_fall_back_and_private_history_refuses (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_excluded_primary_cannot_fall_back_and_private_history_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 130, in test_excluded_primary_cannot_fall_back_and_private_history_refuses
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"meta": {"generated_at": "2026-10-09T17:11:41.130744+00:00", "sources_used": ["synthetic-a", "synthetic-b"], "sources_failed": ["synthetic-c"], "city": "<private>SyntheticLocalHidden</private>", "state": "SyntheticState"}, "news": {"items": [{"title
+
+======================================================================
+FAIL: test_methods_selectors_and_refresh_refuse_before_job_execution (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_methods_selectors_and_refresh_refuse_before_job_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 159, in test_methods_selectors_and_refresh_refuse_before_job_execution
+    self.assertEqual(client.get(self.native + '/api/local-intelligence/status').status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 120, in test_owner_latest_and_complete_history_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no-cache' != 'no-store'
+- no-cache
++ no-store
+
+
+======================================================================
+FAIL: test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 120, in test_owner_latest_and_complete_history_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no-cache' != 'no-store'
+- no-cache
++ no-store
+
+
+======================================================================
+FAIL: test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history?range=week')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 120, in test_owner_latest_and_complete_history_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no-cache' != 'no-store'
+- no-cache
++ no-store
+
+
+======================================================================
+FAIL: test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history?range=month')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 120, in test_owner_latest_and_complete_history_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no-cache' != 'no-store'
+- no-cache
++ no-store
+
+
+======================================================================
+FAIL: test_owner_latest_and_complete_history_preserve_native_fields (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_owner_latest_and_complete_history_preserve_native_fields) (target='/history?range=year')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 120, in test_owner_latest_and_complete_history_preserve_native_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no-cache' != 'no-store'
+- no-cache
++ no-store
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 6.452s
+
+FAILED (failures=11)

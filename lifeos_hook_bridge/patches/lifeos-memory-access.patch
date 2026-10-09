@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..951d3ee
+index 0000000..1aff355
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,365 @@
+@@ -0,0 +1,384 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8437,6 +8437,25 @@ index 0000000..951d3ee
 +  const origin = request.headers.get("origin");
 +  if (origin && origin !== url.origin) return Response.json({error: "Menubar requires the current origin"}, {status: 403, headers});
 +  const target = url.pathname + "?amber=" + Number(Boolean(process.env.AMBER_LEDGER_URL));
++  try { return await memoryHTTPResponseAsync(request, "life", target); }
++  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++}
++
++
++export async function memoryHTTPLocalIntelligenceView(request: Request, running: boolean, started: number): Promise<Response | null> {
++  if (!hasManagedMemoryHTTP()) return null;
++  const url = new URL(request.url);
++  const headers = {"cache-control": "no-store"};
++  const paths = ["/api/local-intelligence", "/api/local-intelligence/history", "/api/local-intelligence/status", "/api/local-intelligence/refresh"];
++  if (!paths.includes(url.pathname)) return Response.json({error: "Choose a declared LocalIntelligence route"}, {status: 404, headers});
++  const refresh = url.pathname === "/api/local-intelligence/refresh";
++  if (request.method !== (refresh ? "POST" : "GET")) return Response.json({error: "Choose the declared LocalIntelligence method"}, {status: 405, headers});
++  if (url.search && !(url.pathname === "/api/local-intelligence/history" && /^\?range=(?:week|month|year)$/.test(url.search))) {
++    return Response.json({error: "Choose a declared LocalIntelligence range"}, {status: 400, headers});
++  }
++  const origin = request.headers.get("origin");
++  if (origin && origin !== url.origin) return Response.json({error: "LocalIntelligence requires the current origin"}, {status: 403, headers});
++  const target = url.pathname + (url.pathname === "/api/local-intelligence/status" ? "?running=" + Number(running) + "&started=" + started : url.search);
 +  try { return await memoryHTTPResponseAsync(request, "life", target); }
 +  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +}
@@ -12151,3 +12170,148 @@ index 9bab5b4..566d575 100644
    const platforms = readPlatforms(state);
    const stateUpdatedAt = (state?.updated_at as string) ?? null;
    const activeAgents = typeof state?.active_agents === "number" ? (state.active_agents as number) : null;
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts b/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts
+index 7d37200..3db695c 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves native LocalIntelligence latest digests, history windows, and runtime metadata.
++// ABOUTME: Requires current owner admission before managed reads and refresh actions.
+ /**
+  * Pulse module: local-intelligence
+  *
+@@ -14,6 +16,7 @@
+  * reads the resulting JSON for serves.
+  */
+ 
++import { memoryHTTPLocalIntelligenceView, hasManagedMemoryHTTP } from "../../TOOLS/lib/MemoryAccess"
+ import { spawn } from "node:child_process"
+ import { readFile, readdir, mkdir, writeFile, stat } from "node:fs/promises"
+ import { join } from "node:path"
+@@ -33,7 +36,10 @@ const DATA_DIR = CUSTOMIZATIONS_DIR  // alias for existing references in this fi
+ const RUNS_DIR = join(CUSTOMIZATIONS_DIR, "runs")
+ const REFRESH_SCRIPT = join(HOME, ".claude", "skills", "LocalIntelligence", "Tools", "Refresh.ts")
+ 
+-async function readLatest(): Promise<string | null> {
++type DigestReader = (path: string) => string | null
++
++async function readLatest(reader?: DigestReader): Promise<string | null> {
++  if (reader) return reader(LATEST_PATH) ?? reader(LEGACY_LATEST_PATH)
+   try { return await readFile(LATEST_PATH, "utf8") } catch {}
+   try { return await readFile(LEGACY_LATEST_PATH, "utf8") } catch {}
+   return null
+@@ -60,9 +66,11 @@ const state: ModuleState = {
+ export async function start(): Promise<void> {
+   state.running = true
+   state.startedAt = new Date()
+-  await mkdir(DATA_DIR, { recursive: true }).catch(() => {})
+-  await mkdir(RUNS_DIR, { recursive: true }).catch(() => {})
+-  await readLatestMeta()
++  if (!hasManagedMemoryHTTP()) {
++    await mkdir(DATA_DIR, { recursive: true }).catch(() => {})
++    await mkdir(RUNS_DIR, { recursive: true }).catch(() => {})
++    await readLatestMeta()
++  }
+   console.log(`[${MODULE_NAME}] started`)
+ }
+ 
+@@ -86,17 +94,17 @@ export function health(): { status: string; details?: Record<string, unknown> }
+   }
+ }
+ 
+-async function readLatestMeta(): Promise<void> {
+-  const raw = await readLatest()
++async function readLatestMeta(reader?: DigestReader, destination: ModuleState = state): Promise<void> {
++  const raw = await readLatest(reader)
+   if (!raw) return
+   try {
+     const j = JSON.parse(raw) as {
+       meta?: { generated_at?: string; sources_used?: string[]; sources_failed?: string[] }
+     }
+-    state.lastRefresh = j.meta?.generated_at ?? null
+-    state.sourcesOk = j.meta?.sources_used?.length ?? 0
+-    state.sourcesFailed = j.meta?.sources_failed?.length ?? 0
+-    state.lastRefreshOk = state.sourcesOk > 0
++    destination.lastRefresh = j.meta?.generated_at ?? null
++    destination.sourcesOk = j.meta?.sources_used?.length ?? 0
++    destination.sourcesFailed = j.meta?.sources_failed?.length ?? 0
++    destination.lastRefreshOk = destination.sourcesOk > 0
+   } catch {
+     /* unparseable — empty-state path */
+   }
+@@ -140,7 +148,7 @@ interface HistoryItem {
+   summary?: string; digest_date: string
+ }
+ 
+-async function buildHistory(range: string): Promise<Response> {
++async function buildHistory(range: string, admitted?: {names: readonly string[]; read: DigestReader}): Promise<Response> {
+   const days = RANGE_DAYS[range]
+   if (!days) {
+     return Response.json({ error: "bad_range", valid: Object.keys(RANGE_DAYS) }, { status: 400 })
+@@ -151,7 +159,7 @@ async function buildHistory(range: string): Promise<Response> {
+ 
+   let files: string[] = []
+   try {
+-    files = (await readdir(LEGACY_DATA_DIR))
++    files = (admitted ? [...admitted.names] : await readdir(LEGACY_DATA_DIR))
+       .filter((f) => /^\d{4}-\d{2}-\d{2}_.*_digest\.json$/.test(f))
+       .filter((f) => f.slice(0, 10) >= cutoff)
+       .sort()
+@@ -172,7 +180,8 @@ async function buildHistory(range: string): Promise<Response> {
+   for (const f of files) {
+     let digest: Record<string, any>
+     try {
+-      digest = JSON.parse(await readFile(join(LEGACY_DATA_DIR, f), "utf8"))
++      const path = join(LEGACY_DATA_DIR, f)
++      digest = JSON.parse(admitted ? admitted.read(path) ?? "" : await readFile(path, "utf8"))
+     } catch { continue }
+     const digestDate = f.slice(0, 10)
+     daysCovered++
+@@ -210,6 +219,8 @@ async function buildHistory(range: string): Promise<Response> {
+ }
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
++  const managed = await memoryHTTPLocalIntelligenceView(req, state.running, state.startedAt?.getTime() ?? 0)
++  if (managed !== null) return managed
+   if (req.method === "GET" && pathname === "/api/local-intelligence/history") {
+     const range = new URL(req.url).searchParams.get("range") ?? "week"
+     return buildHistory(range)
+@@ -246,3 +257,38 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+   }
+   return null
+ }
++
++
++export async function renderLocalIntelligenceView(sources: ReadonlyArray<{relative: string; content: string}>,
++    target: string, modified: Record<string, number>, running: boolean, started: number, date: string): Promise<Response> {
++  const primary = "LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/latest.json"
++  const history = "LIFEOS/MEMORY/DATA/LocalIntelligence/"
++  if (date !== new Date().toISOString().slice(0, 10)) throw new Error("LocalIntelligence requires the current UTC date")
++  if (sources.some(source => source.relative !== primary && source.relative !== history + "latest.json"
++      && !/^LIFEOS\/MEMORY\/DATA\/LocalIntelligence\/\d{4}-\d{2}-\d{2}_[^/]*_digest\.json$/.test(source.relative))) {
++    throw new Error("LocalIntelligence requires fixed admitted digest sources")
++  }
++  const claude = join(HOME, ".claude")
++  const admitted = new Map(sources.map(source => [source.relative, source.content]))
++  const reader: DigestReader = path => admitted.get(path.slice(claude.length + 1)) ?? null
++  const url = new URL(target, "http://localhost")
++  if (url.pathname === "/api/local-intelligence/history") {
++    const names = sources.filter(source => source.relative.startsWith(history))
++      .map(source => source.relative.slice(history.length))
++    return buildHistory(url.searchParams.get("range") ?? "week", {names, read: reader})
++  }
++  if (url.pathname === "/api/local-intelligence") {
++    const raw = await readLatest(reader)
++    if (raw) return new Response(raw, {headers: {"Content-Type": "application/json"}})
++    return Response.json({error: "not_yet_generated", hint: "POST /api/local-intelligence/refresh to kick off a run"}, {status: 404})
++  }
++  if (url.pathname === "/api/local-intelligence/status") {
++    const current: ModuleState = {running, startedAt: started ? new Date(started) : null,
++      lastRefresh: null, lastRefreshOk: null, sourcesOk: 0, sourcesFailed: 0}
++    if (current.startedAt) await readLatestMeta(reader, current)
++    const timestamp = modified[primary]
++    return Response.json({...current, latest_exists: admitted.has(primary),
++      latest_mtime: timestamp === undefined ? null : new Date(timestamp).toISOString()})
++  }
++  throw new Error("Choose a declared LocalIntelligence read route")
++}

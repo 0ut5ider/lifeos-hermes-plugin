@@ -1,0 +1,46 @@
+test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) ... 
+  test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value='SyntheticLocalScalar') ... FAIL
+  test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value=True) ... FAIL
+  test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value=23) ... FAIL
+  test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value=2.5) ... FAIL
+
+======================================================================
+FAIL: test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value='SyntheticLocalScalar')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 361, in test_native_json_scalars_lists_and_null_preserve_latest_response
+    self.assertEqual(response.status_code, 200, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 361, in test_native_json_scalars_lists_and_null_preserve_latest_response
+    self.assertEqual(response.status_code, 200, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value=23)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 361, in test_native_json_scalars_lists_and_null_preserve_latest_response
+    self.assertEqual(response.status_code, 200, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_native_json_scalars_lists_and_null_preserve_latest_response (test_memory_local_intelligence.MemoryLocalIntelligenceTests.test_native_json_scalars_lists_and_null_preserve_latest_response) (value=2.5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_intelligence.py", line 361, in test_native_json_scalars_lists_and_null_preserve_latest_response
+    self.assertEqual(response.status_code, 200, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 1 test in 3.369s
+
+FAILED (failures=4)

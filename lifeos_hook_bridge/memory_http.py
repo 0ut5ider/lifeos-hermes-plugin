@@ -165,7 +165,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             from .memory_performance import ROUTES as PERFORMANCE_ROUTES
             from .memory_conduit import ROUTES as CONDUIT_ROUTES
             from .memory_menubar import ROUTES as MENUBAR_ROUTES
-            if target in CAPABILITY_WINDOWS or urllib.parse.urlsplit(target).path in frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES: timeout = 30
+            from .memory_local_intelligence import ROUTES as LOCAL_ROUTES
+            if target in CAPABILITY_WINDOWS or urllib.parse.urlsplit(target).path in frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES | LOCAL_ROUTES: timeout = 30
         try:
             response=opener.open(request,timeout=timeout)
         except urllib.error.HTTPError as error:
@@ -188,9 +189,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             if len(payload)>RESPONSE_LIMIT or (lengths and len(payload)!=int(lengths[0])):
                 raise ValueError('Authenticated memory response exceeds its limit')
             body=json.loads(payload)
-            novelty_scalar = (arguments['view'] == 'life' and target == '/api/novelty'
+            source_scalar = (arguments['view'] == 'life' and target in {'/api/novelty', '/api/local-intelligence'}
                 and type(body) in (str, bool, int, float) and (type(body) is not float or math.isfinite(body)))
-            if status==200 and (not isinstance(body,(dict,list)) and body is not None and not novelty_scalar):
+            if status==200 and (not isinstance(body,(dict,list)) and body is not None and not source_scalar):
                 raise ValueError('Invalid authenticated memory response')
             if status==401 and isinstance(body,dict):
                 body.pop('login_url',None)

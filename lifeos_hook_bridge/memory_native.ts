@@ -27,7 +27,23 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'menubar_view') {
+  if (input.action === 'local_intelligence_view') {
+    if (typeof input.target !== 'string' || !/^\/api\/local-intelligence(?:\/status|\/history(?:\?range=(?:week|month|year))?)?$/.test(input.target)
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || !object(input.modified) || Object.values(input.modified).some(value => typeof value !== 'number' || !Number.isFinite(value))
+        || typeof input.running !== 'boolean' || typeof input.started !== 'number' || !Number.isSafeInteger(input.started)
+        || input.started < 0 || input.started > 8640000000000000
+        || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
+      throw new Error('Native LocalIntelligence requires declared admitted sources and runtime state');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/local-intelligence.ts')).href);
+    if (!object(module) || typeof module.renderLocalIntelligenceView !== 'function') throw new Error('Native LocalIntelligence exports are unavailable');
+    const response: unknown = await module.renderLocalIntelligenceView(input.sources, input.target, input.modified,
+      input.running, input.started, input.date);
+    if (!(response instanceof Response)) throw new Error('Native LocalIntelligence requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'menubar_view') {
     if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
           || typeof source.relative !== 'string' || typeof source.content !== 'string')
         || !object(input.modified) || Object.values(input.modified).some(value => typeof value !== 'number' || !Number.isFinite(value))
