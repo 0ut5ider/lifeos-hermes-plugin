@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..1aff355
+index 0000000..d964b93
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,384 @@
+@@ -0,0 +1,445 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8458,6 +8458,67 @@ index 0000000..1aff355
 +  const target = url.pathname + (url.pathname === "/api/local-intelligence/status" ? "?running=" + Number(running) + "&started=" + started : url.search);
 +  try { return await memoryHTTPResponseAsync(request, "life", target); }
 +  catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
++}
++
++
++async function contentStream(request: Request): Promise<Response> {
++  const initial = await memoryHTTPResponseAsync(request, "life", "/api/content");
++  if (initial.status !== 200) return initial;
++  const first = await initial.text();
++  const cancellation = new AbortController();
++  const currentRequest = new Request(request, {signal: cancellation.signal});
++  let stopped = false;
++  let timer: ReturnType<typeof setTimeout> | null = null;
++  let closeStream = (): void => {};
++  const body = new ReadableStream<Uint8Array>({
++    start(controller) {
++      const encoder = new TextEncoder();
++      closeStream = (): void => {
++        if (stopped) return;
++        stopped = true;
++        if (timer !== null) clearTimeout(timer);
++        request.signal.removeEventListener("abort", closeStream);
++        cancellation.abort();
++        try { controller.close(); } catch {}
++      };
++      if (request.signal.aborted) { closeStream(); return; }
++      request.signal.addEventListener("abort", closeStream, {once: true});
++      controller.enqueue(encoder.encode(`data: ${first}\n\n`));
++      const poll = async (): Promise<void> => {
++        try {
++          const response = await memoryHTTPResponseAsync(currentRequest, "life", "/api/content");
++          if (stopped) return;
++          if (response.status !== 200) { closeStream(); return; }
++          controller.enqueue(encoder.encode(`data: ${await response.text()}\n\n`));
++          if (!stopped) timer = setTimeout(() => { void poll(); }, 1500);
++        } catch { closeStream(); }
++      };
++      timer = setTimeout(() => { void poll(); }, 1500);
++    },
++    cancel() { closeStream(); },
++  });
++  const headers = new Headers(initial.headers);
++  headers.set("content-type", "text/event-stream; charset=utf-8");
++  return new Response(body, {headers});
++}
++
++export async function memoryHTTPContentView(request: Request, running: boolean): Promise<Response | null> {
++  if (!hasManagedMemoryHTTP()) return null;
++  const url = new URL(request.url);
++  const headers = {"cache-control": "no-store"};
++  const read = ["/api/content", "/api/content/", "/api/content/status", "/api/content/stream"].includes(url.pathname);
++  const run = /^\/api\/content\/[A-Za-z0-9]+\/run$/.test(url.pathname);
++  const remove = !read && /^\/api\/content\/[A-Za-z0-9]+$/.test(url.pathname);
++  if (!read && !run && !remove) return Response.json({error: "Choose a declared Content route"}, {status: 404, headers});
++  if (request.method !== (read ? "GET" : run ? "POST" : "DELETE")) return Response.json({error: "Choose the declared Content method"}, {status: 405, headers});
++  if (url.search || url.pathname.length > 256) return Response.json({error: "Content requires fixed routes"}, {status: 400, headers});
++  const origin = request.headers.get("origin");
++  if (origin && origin !== url.origin) return Response.json({error: "Content requires the current origin"}, {status: 403, headers});
++  try {
++    if (url.pathname === "/api/content/stream") return await contentStream(request);
++    const target = url.pathname + (url.pathname === "/api/content/status" ? "?running=" + Number(running) : "");
++    return await memoryHTTPResponseAsync(request, "life", target);
++  } catch { return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers}); }
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755
@@ -12314,4 +12375,98 @@ index 7d37200..3db695c 100644
 +      latest_mtime: timestamp === undefined ? null : new Date(timestamp).toISOString()})
 +  }
 +  throw new Error("Choose a declared LocalIntelligence read route")
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/content.ts b/LifeOS/install/LIFEOS/PULSE/modules/content.ts
+index ea7ccff..3f374be 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/content.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/content.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Folds the native Conveyor ledger into Content boards and streams.
++// ABOUTME: Requires current owner admission for managed reads and manual actions.
+ /**
+  * Content module — feeds the Pulse "CONTENT" tab (Conveyor board).
+  *
+@@ -18,10 +20,13 @@
+  *                                 or the stage-runner (P3) picks it up. Publishing stays gated.
+  */
+ 
++import { createReadStream, fstatSync } from "node:fs";
++import { createInterface } from "node:readline";
++import { memoryHTTPContentView, hasManagedMemoryHTTP, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ import { existsSync, mkdirSync, renameSync, rmSync, watch } from "fs";
+ import { basename, dirname, join } from "path";
+ import { homedir } from "os";
+-import { LEGS, appendEvents, eventsPath, readState } from "../../TOOLS/Conveyor/Ledger";
++import { LEGS, appendEvents, eventsPath, readState, foldEvents, parseEventLines, type ContentState } from "../../TOOLS/Conveyor/Ledger";
+ 
+ const MODULE = "content";
+ const STAGES = ["inbox", "prep", "produce", "review", "publishing", "done"] as const;
+@@ -38,22 +43,22 @@ export async function stop(): Promise<void> {
+   state.running = false;
+ }
+ 
+-export function health(): { status: string; details?: Record<string, unknown> } {
++export function health(admitted?: ContentState, running: boolean = state.running): { status: string; details?: Record<string, unknown> } {
+   let items = 0;
+   try {
+-    items = Object.keys(readState().items).length;
++    items = Object.keys(admitted?.items ?? (hasManagedMemoryHTTP() ? {} : readState().items)).length;
+   } catch {
+     /* health must not throw */
+   }
+   return {
+-    status: state.running ? "healthy" : "stopped",
++    status: running ? "healthy" : "stopped",
+     details: { items, ledger: eventsPath() },
+   };
+ }
+ 
+ /** Fold the ledger into the board-shaped payload the dashboard renders. */
+-function buildBoard(): Record<string, unknown> {
+-  const items = Object.values(readState().items).sort((a, b) =>
++function buildBoard(admitted?: ContentState): Record<string, unknown> {
++  const items = Object.values(admitted?.items ?? readState().items).sort((a, b) =>
+     String(b.created ?? "").localeCompare(String(a.created ?? "")),
+   );
+   const counts: Record<string, number> = {};
+@@ -206,6 +211,8 @@ function requestRun(id: string): Response {
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+   if (!pathname.startsWith("/api/content")) return null;
++  const managed = await memoryHTTPContentView(req, state.running);
++  if (managed !== null) return managed;
+   const sub = pathname.replace(/^\/api\/content/, "") || "/";
+ 
+   if (sub === "/status") return Response.json(health());
+@@ -228,3 +235,31 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+ 
+   return Response.json({ error: "Not found" }, { status: 404 });
+ }
++
++
++export async function renderContentView(descriptor: number, target: string, running: boolean): Promise<Response> {
++  const before = fstatSync(descriptor);
++  if (!before.isFile() || before.uid !== process.getuid?.() || before.nlink !== 0 || (before.mode & 0o077) !== 0) {
++    throw new Error("Content requires an anonymous private owner snapshot");
++  }
++  const rows: string[] = [];
++  const input = createReadStream(`/proc/self/fd/${descriptor}`);
++  const lines = createInterface({input, crlfDelay: Infinity});
++  try {
++    for await (const line of lines) {
++      if (Buffer.byteLength(line) > 3 * 1024 * 1024) throw new Error("A Content frame exceeds its byte limit");
++      const frame: unknown = JSON.parse(line);
++      if (!memoryObject(frame) || frame.relative !== "LIFEOS/MEMORY/STATE/content-pipeline/events.jsonl"
++          || typeof frame.content !== "string") throw new Error("Content requires declared admitted ledger events");
++      rows.push(frame.content);
++    }
++  } finally { lines.close(); input.destroy(); }
++  const after = fstatSync(descriptor);
++  if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
++    throw new Error("The Content snapshot changes during rendering");
++  }
++  const admitted = foldEvents({items: {}}, parseEventLines(rows.join("\n")));
++  if (target === "/api/content/status") return Response.json(health(admitted, running));
++  if (target === "/api/content" || target === "/api/content/") return Response.json(buildBoard(admitted));
++  throw new Error("Choose a declared Content read route");
 +}

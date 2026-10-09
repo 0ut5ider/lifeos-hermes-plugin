@@ -27,7 +27,18 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'local_intelligence_view') {
+  if (input.action === 'content_view') {
+    if (typeof input.target !== 'string' || !['/api/content', '/api/content/', '/api/content/status'].includes(input.target)
+        || typeof input.running !== 'boolean' || typeof input.history_descriptor !== 'number'
+        || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
+      throw new Error('Native Content requires a declared admitted ledger and runtime state');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/content.ts')).href);
+    if (!object(module) || typeof module.renderContentView !== 'function') throw new Error('Native Content exports are unavailable');
+    const response: unknown = await module.renderContentView(input.history_descriptor, input.target, input.running);
+    if (!(response instanceof Response)) throw new Error('Native Content requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'local_intelligence_view') {
     if (typeof input.target !== 'string' || !/^\/api\/local-intelligence(?:\/status|\/history(?:\?range=(?:week|month|year))?)?$/.test(input.target)
         || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
           || typeof source.relative !== 'string' || typeof source.content !== 'string')

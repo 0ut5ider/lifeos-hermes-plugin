@@ -1,0 +1,284 @@
+test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) ... 
+  test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='source') ... FAIL
+  test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='metadata') ... FAIL
+  test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='created') ... FAIL
+  test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='descriptor') ... FAIL
+  test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='authority') ... FAIL
+test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) ... 
+  test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='') ... FAIL
+  test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/status') ... FAIL
+  test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/stream') ... FAIL
+test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) ... FAIL
+test_complete_history_exceeds_one_mib_without_losing_first_items (test_memory_content.MemoryContentTests.test_complete_history_exceeds_one_mib_without_losing_first_items) ... ok
+test_current_authority_origin_bearer_and_connector_govern_delivery (test_memory_content.MemoryContentTests.test_current_authority_origin_bearer_and_connector_govern_delivery) ... FAIL
+test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item (test_memory_content.MemoryContentTests.test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item) ... FAIL
+test_managed_direct_health_does_not_read_or_cache_personal_counts (test_memory_content.MemoryContentTests.test_managed_direct_health_does_not_read_or_cache_personal_counts) ... FAIL
+test_manual_actions_authenticate_then_refuse_until_governed_publication (test_memory_content.MemoryContentTests.test_manual_actions_authenticate_then_refuse_until_governed_publication) ... FAIL
+test_native_missing_corrupt_and_unterminated_valid_records_keep_original_semantics (test_memory_content.MemoryContentTests.test_native_missing_corrupt_and_unterminated_valid_records_keep_original_semantics) ... ok
+test_original_native_fold_order_delete_unset_and_torn_tail (test_memory_content.MemoryContentTests.test_original_native_fold_order_delete_unset_and_torn_tail) ... ok
+test_owner_complete_board_and_status_match_actual_native_fold (test_memory_content.MemoryContentTests.test_owner_complete_board_and_status_match_actual_native_fold) ... FAIL
+test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) ... 
+  test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='symlink') ... FAIL
+  test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='hardlink') ... FAIL
+  test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='event_limit') ... FAIL
+  test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='utf8') ... FAIL
+test_retired_update_refuses_incomplete_fold_and_exact_review_preserves_safe_log (test_memory_content.MemoryContentTests.test_retired_update_refuses_incomplete_fold_and_exact_review_preserves_safe_log) ... FAIL
+test_stream_current_owner_frames_recheck_private_updates_and_revocation (test_memory_content.MemoryContentTests.test_stream_current_owner_frames_recheck_private_updates_and_revocation) ... FAIL
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 172, in test_actual_render_rechecks_source_inode_creation_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_content_process.py", line 47, in <module>
+    try: preferences.life_response('/api/content', account='dashboard:basic:synthetic-owner')
+         ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 77, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 52, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='metadata')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 172, in test_actual_render_rechecks_source_inode_creation_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_content_process.py", line 47, in <module>
+    try: preferences.life_response('/api/content', account='dashboard:basic:synthetic-owner')
+         ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 77, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 52, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='created')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 172, in test_actual_render_rechecks_source_inode_creation_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_content_process.py", line 47, in <module>
+    try: preferences.life_response('/api/content', account='dashboard:basic:synthetic-owner')
+         ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 77, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 52, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='descriptor')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 172, in test_actual_render_rechecks_source_inode_creation_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_content_process.py", line 47, in <module>
+    try: preferences.life_response('/api/content', account='dashboard:basic:synthetic-owner')
+         ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 77, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 52, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_inode_creation_descriptor_and_authority (test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 172, in test_actual_render_rechecks_source_inode_creation_descriptor_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_content_process.py", line 47, in <module>
+    try: preferences.life_response('/api/content', account='dashboard:basic:synthetic-owner')
+         ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 77, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 52, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 77, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 77, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/stream')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 77, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 80, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(path.stat().st_atime_ns, 1000000000)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1791566533208208620 != 1000000000
+
+======================================================================
+FAIL: test_current_authority_origin_bearer_and_connector_govern_delivery (test_memory_content.MemoryContentTests.test_current_authority_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 119, in test_current_authority_origin_bearer_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + '/api/content', headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item (test_memory_content.MemoryContentTests.test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 111, in test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"columns":["inbox","prep","produce","review","publishing","done"],"legs":["youtube","shorts","social","omny","discord"],"items":[{"id":"synthetic1","title":"SyntheticContentCurrent1","path":"/synthetic/source-1","created":"2026-10-09T12:00:01Z","sta
+
+======================================================================
+FAIL: test_managed_direct_health_does_not_read_or_cache_personal_counts (test_memory_content.MemoryContentTests.test_managed_direct_health_does_not_read_or_cache_personal_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 244, in test_managed_direct_health_does_not_read_or_cache_personal_counts
+    self.assertEqual(json.loads(result.stdout)['details']['items'], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_manual_actions_authenticate_then_refuse_until_governed_publication (test_memory_content.MemoryContentTests.test_manual_actions_authenticate_then_refuse_until_governed_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 131, in test_manual_actions_authenticate_then_refuse_until_governed_publication
+    self.assertEqual(client.get(self.native + '/api/content/status').status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_owner_complete_board_and_status_match_actual_native_fold (test_memory_content.MemoryContentTests.test_owner_complete_board_and_status_match_actual_native_fold)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 89, in test_owner_complete_board_and_status_match_actual_native_fold
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 205, in test_redirected_excessive_event_and_invalid_utf8_refuse
+    self.assertEqual(client.get(self.native + '/api/content').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 205, in test_redirected_excessive_event_and_invalid_utf8_refuse
+    self.assertEqual(client.get(self.native + '/api/content').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='event_limit')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 205, in test_redirected_excessive_event_and_invalid_utf8_refuse
+    self.assertEqual(client.get(self.native + '/api/content').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_redirected_excessive_event_and_invalid_utf8_refuse (test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 205, in test_redirected_excessive_event_and_invalid_utf8_refuse
+    self.assertEqual(client.get(self.native + '/api/content').status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_retired_update_refuses_incomplete_fold_and_exact_review_preserves_safe_log (test_memory_content.MemoryContentTests.test_retired_update_refuses_incomplete_fold_and_exact_review_preserves_safe_log)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 216, in test_retired_update_refuses_incomplete_fold_and_exact_review_preserves_safe_log
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"columns":["inbox","prep","produce","review","publishing","done"],"legs":["youtube","shorts","social","omny","discord"],"items":[{"id":"synthetic1","title":"SyntheticContentRetired1","path":"/synthetic/source-1","created":"2026-10-09T12:00:01Z","sta
+
+======================================================================
+FAIL: test_stream_current_owner_frames_recheck_private_updates_and_revocation (test_memory_content.MemoryContentTests.test_stream_current_owner_frames_recheck_private_updates_and_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 152, in test_stream_current_owner_frames_recheck_private_updates_and_revocation
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'no-cache, no-transform' != 'no-store'
+- no-cache, no-transform
++ no-store
+
+
+----------------------------------------------------------------------
+Ran 13 tests in 13.692s
+
+FAILED (failures=20)

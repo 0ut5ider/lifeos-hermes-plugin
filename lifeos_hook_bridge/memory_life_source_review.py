@@ -21,7 +21,8 @@ def classification(relative):
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
     from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
     from .memory_local_intelligence import declared_source
-    if declared_source(relative): return 'life_text'
+    from .memory_content import EVENTS as CONTENT_EVENTS
+    if relative == CONTENT_EVENTS or declared_source(relative): return 'life_text'
     if relative in {QUEUE, 'settings.json', SNAPSHOT, CACHE, DATABASE}: return 'life_text'
     if relative in OPERATIONAL_SOURCES: return 'life_text'
     if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
@@ -79,7 +80,8 @@ def projection(memory, relative, content):
     from .memory_performance import SOURCES as PERFORMANCE_SOURCES
     from .memory_menubar import SOURCES as MENUBAR_SOURCES, PROFILE_SOURCES
     from .memory_local_intelligence import declared_source
-    if (declared_source(relative) or relative in MENUBAR_SOURCES | PROFILE_SOURCES or relative.startswith('LIFEOS/USER/CONDUIT/') or relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
+    from .memory_content import EVENTS as CONTENT_EVENTS
+    if (relative == CONTENT_EVENTS or declared_source(relative) or relative in MENUBAR_SOURCES | PROFILE_SOURCES or relative.startswith('LIFEOS/USER/CONDUIT/') or relative in OPERATIONAL_SOURCES or relative in PERFORMANCE_SOURCES or relative in PERSONAL_SOURCES['doctor']
             or relative in {SNAPSHOT, DATABASE, CACHE}
             or relative in PERSONAL_SOURCES['ledger'] and relative.endswith(('.json', '.jsonl'))):
         if not relative.endswith(('.json', '.jsonl')): return content

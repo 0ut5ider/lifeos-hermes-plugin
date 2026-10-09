@@ -1,0 +1,88 @@
+test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) ... 
+  test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='') ... FAIL
+  test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/status') ... FAIL
+  test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/stream') ... FAIL
+test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) ... FAIL
+test_complete_history_exceeds_one_mib_without_losing_first_items (test_memory_content.MemoryContentTests.test_complete_history_exceeds_one_mib_without_losing_first_items) ... ok
+test_current_authority_origin_bearer_and_connector_govern_delivery (test_memory_content.MemoryContentTests.test_current_authority_origin_bearer_and_connector_govern_delivery) ... FAIL
+test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item (test_memory_content.MemoryContentTests.test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item) ... FAIL
+test_manual_actions_authenticate_then_refuse_until_governed_publication (test_memory_content.MemoryContentTests.test_manual_actions_authenticate_then_refuse_until_governed_publication) ... FAIL
+test_original_native_fold_order_delete_unset_and_torn_tail (test_memory_content.MemoryContentTests.test_original_native_fold_order_delete_unset_and_torn_tail) ... ok
+test_owner_complete_board_and_status_match_actual_native_fold (test_memory_content.MemoryContentTests.test_owner_complete_board_and_status_match_actual_native_fold) ... FAIL
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 77, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 77, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads) (target='/stream')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 77, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_anonymous_board_status_and_stream_refuse_before_personal_reads (test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 80, in test_anonymous_board_status_and_stream_refuse_before_personal_reads
+    self.assertEqual(path.stat().st_atime_ns, 1000000000)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1791566421103012961 != 1000000000
+
+======================================================================
+FAIL: test_current_authority_origin_bearer_and_connector_govern_delivery (test_memory_content.MemoryContentTests.test_current_authority_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 119, in test_current_authority_origin_bearer_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + '/api/content', headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item (test_memory_content.MemoryContentTests.test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 111, in test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"columns":["inbox","prep","produce","review","publishing","done"],"legs":["youtube","shorts","social","omny","discord"],"items":[{"id":"synthetic1","title":"SyntheticContentCurrent1","path":"/synthetic/source-1","created":"2026-10-09T12:00:01Z","sta
+
+======================================================================
+FAIL: test_manual_actions_authenticate_then_refuse_until_governed_publication (test_memory_content.MemoryContentTests.test_manual_actions_authenticate_then_refuse_until_governed_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 131, in test_manual_actions_authenticate_then_refuse_until_governed_publication
+    self.assertEqual(client.get(self.native + '/api/content/status').status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_owner_complete_board_and_status_match_actual_native_fold (test_memory_content.MemoryContentTests.test_owner_complete_board_and_status_match_actual_native_fold)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 89, in test_owner_complete_board_and_status_match_actual_native_fold
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+----------------------------------------------------------------------
+Ran 7 tests in 6.420s
+
+FAILED (failures=8)

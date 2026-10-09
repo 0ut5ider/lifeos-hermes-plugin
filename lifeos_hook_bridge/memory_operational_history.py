@@ -34,7 +34,7 @@ def fingerprint(memory, relative, *, sources=SOURCES):
 
 @contextmanager
 def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, require_newline=True,
-             objects_only=True, allow_unfinished_utf8=True):
+             objects_only=True, allow_unfinished_utf8=True, require_all_admitted=False):
     from .memory_operational_views import projection, _timestamp
     admitted_digest = hashlib.sha256()
     fingerprints = []
@@ -63,8 +63,11 @@ def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, 
                 if check_current is not None: check_current()
                 checked = memory._native('validate_source_batch', contents=[item[2] + '\n' + relative for item in batch])['accepted']
                 for (line, timestamp, decoded), valid in zip(batch, checked, strict=True):
-                    if valid is True and not _admit(memory, connection, scope, line, relative, timestamp,
-                            projection=decoded, source_reviewed=reviewed)['excluded']:
+                    accepted = valid is True and not _admit(memory, connection, scope, line, relative, timestamp,
+                        projection=decoded, source_reviewed=reviewed)['excluded']
+                    if not accepted and require_all_admitted:
+                        raise MemoryUnavailable('A complete state fold cannot omit an excluded event')
+                    if accepted:
                         body = (json.dumps({'relative': relative, 'content': line}, ensure_ascii=False) + '\n').encode()
                         output.write(body)
                         admitted_digest.update(body)
@@ -92,7 +95,10 @@ def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, 
                     except (ValueError, RecursionError): continue
                     if objects_only and not isinstance(row, dict): continue
                     decoded = projection(line)
-                    if decoded is None: continue
+                    if decoded is None:
+                        if require_all_admitted:
+                            raise MemoryUnavailable('A complete state fold cannot omit an unprojectable event')
+                        continue
                     added = len(json.dumps(decoded + '\n' + relative).encode()) + 2
                     if added > CORPUS_LIMIT - 4096:
                         raise MemoryUnavailable('An operational history projection exceeds its transport limit')

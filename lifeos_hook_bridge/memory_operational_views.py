@@ -31,12 +31,12 @@ SOURCES = frozenset(PREFIX + name for names in ROUTES.values() for name in names
 TAIL_LIMIT = 1024 * 1024
 
 
-def projection(content):
+def projection(content, *, field_limit=10000):
     try:
         value = json.loads(content)
         strings = []
         def collect(text):
-            if len(strings) >= 10000:
+            if len(strings) >= field_limit:
                 raise ValueError('Operational source projections exceed their field limit')
             strings.append(text)
             return False

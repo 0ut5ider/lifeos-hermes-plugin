@@ -14,6 +14,6 @@ The operator deployment must perform these actions:
 8. Test actual job execution, restart, and the selected private model routes.
 9. Add governed Discord delivery after the private channel passes acceptance.
 
-Schedules use the guest's local timezone. The profile runs consolidation at 03:00, cleanup at 03:45, and the morning brief at 07:00. It retains the shipped cost aggregation and healthcheck schedules. It disables voice, GitHub Work, Cloudflare Synapse, and Claude quota reporting. The profile preserves the private FlashNext tier settings.
+Schedules use the guest's local timezone. The profile runs consolidation at 03:00, cleanup at 03:45, and the morning brief at 07:00. It retains the shipped cost aggregation and healthcheck schedules. It disables voice, GitHub Work, Cloudflare Synapse, Claude quota reporting, and the private Bunker integration. The public package omits the Bunker implementation. Siri remains loaded as infrastructure and refuses turns when its key is unset. The profile preserves the private FlashNext tier settings.
 
 To reverse the configuration change, stop Pulse, restore the retained user configuration, verify its policy binding, and restart the verified previous release. Do not enable raw memory job commands while managed ownership is active.
