@@ -1,6 +1,7 @@
 # ABOUTME: Verifies the fresh versioned candidate archive and pinned source manifests on the development guest.
 # ABOUTME: Compares installed dependency inputs without reading memory records or transport credentials.
 import hashlib
+import argparse
 import json
 from pathlib import Path
 import re
@@ -8,7 +9,12 @@ import subprocess
 import sys
 
 sys.dont_write_bytecode = True
-stage = Path('/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-ea4ad3c5')
+parser = argparse.ArgumentParser()
+parser.add_argument('--stage', type=Path,
+    default=Path('/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-ea4ad3c5'))
+stage = parser.parse_args().stage
+assert stage.parent == Path('/home/lifeos-hermes/migration/2026-10-09')
+assert re.fullmatch(r'daily-text-0\.2\.0-[0-9a-f]{8}', stage.name)
 package = stage / 'package'
 sys.path.insert(0, str(package))
 from lifeos_hook_bridge.install_source import validate_prepared_lifeos, validate_supported_hermes

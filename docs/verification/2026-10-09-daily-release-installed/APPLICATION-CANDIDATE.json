@@ -43,7 +43,7 @@
     "lifeos_hook_bridge/installation_selection.py": "7a90671f955d6e990aed015b55245db7eed7049e198b4c6830aa71d1dd54c838",
     "lifeos_hook_bridge/lifeos_installation.py": "f11e7e9950ab46e01d6e2c1a9de12c28147d8e62991a5ed750d0000f9377f8e5",
     "lifeos_hook_bridge/mcp_permissions.py": "8fcf7235a82258a4beecec4f662530f9a2ef125871ee147527e39de49bb6725f",
-    "lifeos_hook_bridge/memory_access.py": "bdb5068db2e6caee0e74e71c5577ecbce783e34903e9a3115c8bc56fe574035c",
+    "lifeos_hook_bridge/memory_access.py": "f989051b9ce2ef4204270be3b5aab3604b999fbab8055407d7f723eab044a084",
     "lifeos_hook_bridge/memory_administration.py": "bc880be8011147b1df4927972686789dadc063df472d2e67d191de0c163e73ea",
     "lifeos_hook_bridge/memory_adoption.py": "d5b095b404142babb813a5667e63f5938a9c5d76ab1b5c3d2c0727f35ac74b62",
     "lifeos_hook_bridge/memory_algorithm_edit.py": "c93c31f36b099f8dcadd763071704971b7d7aeb4a58ad766465cba277c8ad6de",
@@ -108,7 +108,7 @@
     "lifeos_hook_bridge/memory_onboarding.py": "5bea4e8b85ee9c14fbcb8cba7cf6e898cf263ca7a603408e7513f3fec1118c16",
     "lifeos_hook_bridge/memory_operational_history.py": "954b6983885ce4f3fad602c9aec763da0e524fd3a2f63004d4516602856f1c30",
     "lifeos_hook_bridge/memory_operational_views.py": "985d6deca1dba147eafe559e15db92b4793227c280712d01d091e881d6151cd3",
-    "lifeos_hook_bridge/memory_owner_jobs.py": "b0d7b79a5c1b281567a812175dc6cdd82cdb6c56d45569d04445ee8653aa8907",
+    "lifeos_hook_bridge/memory_owner_jobs.py": "4c0f8b1ec8b2e94a69f621e870ff368fb144e11687a41a60676fdee822874e34",
     "lifeos_hook_bridge/memory_ownership.py": "9f8aef77f2e5dc8ce9a91432a0decfac718f5f90592702f70d66a090b0621c55",
     "lifeos_hook_bridge/memory_performance.py": "9611f7bf5913444c5d8d17c227469804309496d6c84d7b9533b5599c3941ed74",
     "lifeos_hook_bridge/memory_personal_modules.py": "38a4b0af53d42d39fdc44e03ac454605ba7a561e5b6dbd2c0a6e7ad49a852b86",
@@ -128,7 +128,7 @@
     "lifeos_hook_bridge/memory_rpc.py": "4b50416269538c4335730497ce78d3b913bb7f16f42b5a619c709245d699e3e2",
     "lifeos_hook_bridge/memory_runtime.py": "c914a8221b31d0f1acb4a191a3dd63603eb122c98107052abddaa485728a3e96",
     "lifeos_hook_bridge/memory_seed.py": "baa86a1618afae080041ead8e63b638470d8237002438b414d252f6c5b0ad2ca",
-    "lifeos_hook_bridge/memory_service.py": "b2895483174e64ac312460e3f0f9408ef2b08c98625b0a29041809f044ecad54",
+    "lifeos_hook_bridge/memory_service.py": "030874ee66d2eef654676a80ed81bd1bee2bfb41b492a5f270deab48a4a1209f",
     "lifeos_hook_bridge/memory_session_harvest.py": "dcfdbbbfc452edccf5b45cac424488034b89c68c309a18a5f59d9699b917806e",
     "lifeos_hook_bridge/memory_skill_hygiene.py": "78004139aff28f6ccdd678e9bc4aa5fca811e77c34fd029d4efbabb45ef73867",
     "lifeos_hook_bridge/memory_source_review.py": "59158bbf1eaf73d6ffd6d360c0c237be2496a23f097aed3112ad22a77c45b9aa",
@@ -236,5 +236,22 @@
     "before_sha256": "a4bb57c54d11bc062e6277b915d3513374643d4347c0ed66ed1d1553344e7ed4",
     "after_sha256": "beaab83d5132b4ea30b17716add541b78de26c5ac8809a7e204cf2f22d33c765",
     "launch_assumption": "Use the actual Hermes dashboard for administration"
-  }
+  },
+  "owner_job_output_correction": [
+    {
+      "path": "lifeos_hook_bridge/memory_access.py",
+      "before_sha256": "bdb5068db2e6caee0e74e71c5577ecbce783e34903e9a3115c8bc56fe574035c",
+      "after_sha256": "f989051b9ce2ef4204270be3b5aab3604b999fbab8055407d7f723eab044a084"
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_service.py",
+      "before_sha256": "b2895483174e64ac312460e3f0f9408ef2b08c98625b0a29041809f044ecad54",
+      "after_sha256": "030874ee66d2eef654676a80ed81bd1bee2bfb41b492a5f270deab48a4a1209f"
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_owner_jobs.py",
+      "before_sha256": "b0d7b79a5c1b281567a812175dc6cdd82cdb6c56d45569d04445ee8653aa8907",
+      "after_sha256": "4c0f8b1ec8b2e94a69f621e870ff368fb144e11687a41a60676fdee822874e34"
+    }
+  ]
 }

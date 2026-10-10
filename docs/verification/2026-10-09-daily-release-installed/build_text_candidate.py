@@ -1,6 +1,7 @@
 # ABOUTME: Builds a fresh committed daily text candidate with complete pinned native source manifests.
 # ABOUTME: Records package bytes and versions without selecting a live installation or loading credentials.
 import hashlib
+import argparse
 import io
 import json
 import os
@@ -13,8 +14,12 @@ import time
 repository = Path(__file__).resolve().parents[3]
 evidence = Path(__file__).resolve().parent
 cache = Path('/home/outsider/.cache/lifeos-daily-text-20261007')
-package = cache / 'daily-text-0.2.0-candidate'
-archive = cache / 'daily-text-0.2.0-candidate.tgz'
+parser = argparse.ArgumentParser()
+parser.add_argument('--tag', choices=('candidate', 'output-fixed'), default='candidate')
+tag = parser.parse_args().tag
+label = 'fresh-text-candidate' if tag == 'candidate' else 'fresh-text-candidate-output-fixed'
+package = cache / ('daily-text-0.2.0-' + tag)
+archive = cache / ('daily-text-0.2.0-' + tag + '.tgz')
 os.umask(0o077)
 assert not package.exists() and not archive.exists()
 assert not subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=repository).strip()
@@ -65,6 +70,6 @@ report = {'status': 'PASS', 'version': version, 'head': head,
     'elapsed_seconds': round(time.monotonic() - started, 3),
     'native_manifests_verified': True, 'live_selection_changed': False,
     'combined_release_verified': False}
-(evidence / 'fresh-text-candidate-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-(evidence / 'fresh-text-candidate-build.json').write_text(json.dumps(report, indent=2) + '\n')
+(evidence / (label + '-manifest.json')).write_text(json.dumps(manifest, indent=2) + '\n')
+(evidence / (label + '-build.json')).write_text(json.dumps(report, indent=2) + '\n')
 print(json.dumps(report, indent=2))
