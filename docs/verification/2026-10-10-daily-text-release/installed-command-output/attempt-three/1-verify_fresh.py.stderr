@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-56b1af9f/release-checks/verify_fresh.py", line 17, in <module>
+    result=module('fresh_store').FreshStore(configuration).prepare(package/'lifeos',
+        principal_name='Adrian',assistant_name='Cerebo',account='dashboard:basic:acceptance-owner')
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/fresh_store.py", line 284, in prepare
+    installation=install_prepared_lifeos(candidate,installed,destination/'failed-install')
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 362, in install_prepared_lifeos
+    return install_lifeos(candidate, installed, failed, "bun", SUPPORTED_LIFEOS_COMMIT,
+                          Path(__file__).parent / "patches", LIFEOS_PATCHES)
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 293, in install_lifeos
+    raise IncompatibleLifeOS("Bun is required to install LifeOS")
+lifeos-hook-bridge.install_source.IncompatibleLifeOS: Bun is required to install LifeOS

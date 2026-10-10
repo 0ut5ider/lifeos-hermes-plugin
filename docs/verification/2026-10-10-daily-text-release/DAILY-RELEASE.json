@@ -1,0 +1,122 @@
+{
+  "status": "ACCEPTANCE_PASS_MERGE_PENDING",
+  "date": "2026-10-10",
+  "version": "0.2.0",
+  "base_main": "531f86169550ae118b1624a9cffe809211d7a3bf",
+  "code_head": "11577ed4873a0b6186a1dfa13aa44f893254cb99",
+  "archives": {
+    "programs": {
+      "path": "/home/outsider/.cache/lifeos-atlas-20261010/daily-text-0.2.0-11577ed4.tgz",
+      "bytes": 341557799,
+      "sha256": "a5546ef852e2af0f534681e2f865ea63e0210733449b9f8a65e64fa06e9d0e27"
+    },
+    "hermes_dashboard": {
+      "path": "/home/outsider/.cache/lifeos-atlas-20261010/daily-text-release-11577ed4/hermes-dashboard.tgz",
+      "bytes": 1534923,
+      "sha256": "078d6da534408339fefcb3893431835ccfc7ce9483cc85a46ebf6b917e8cb2ee"
+    }
+  },
+  "hermes_base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "patches": {
+    "hermes": 11,
+    "lifeos": 25
+  },
+  "local_test_counts": {
+    "combined-final": 490,
+    "fresh-final": 38,
+    "channel-controls": 42,
+    "native-controls": 96
+  },
+  "installed_commands": [
+    {
+      "program": "verify_runtime.py",
+      "exit_code": 0,
+      "elapsed_seconds": 5.926743397023529
+    },
+    {
+      "program": "verify_fresh.py",
+      "exit_code": 0,
+      "elapsed_seconds": 19.812860839010682
+    },
+    {
+      "program": "verify_cancellation.py",
+      "exit_code": 0,
+      "elapsed_seconds": 1.1673295709770173
+    },
+    {
+      "program": "verify_applications.py",
+      "exit_code": 0,
+      "elapsed_seconds": 40.952866550011095
+    },
+    {
+      "program": "run_owner_turn.py",
+      "exit_code": 0,
+      "elapsed_seconds": 113.05971776600927
+    },
+    {
+      "program": "verify_owner_turn.py",
+      "exit_code": 0,
+      "elapsed_seconds": 0.03206863801460713
+    },
+    {
+      "program": "verify_atlas.py",
+      "exit_code": 0,
+      "elapsed_seconds": 71.11620585399214
+    },
+    {
+      "program": "verify_schedule.py",
+      "exit_code": 0,
+      "elapsed_seconds": 181.762255884998
+    },
+    {
+      "program": "verify_active_stop.py",
+      "exit_code": 0,
+      "elapsed_seconds": 1.018234660034068
+    },
+    {
+      "program": "verify_profile_recovery.py",
+      "exit_code": 0,
+      "elapsed_seconds": 3.9230192599934526
+    },
+    {
+      "program": "verify_rollback.py",
+      "exit_code": 0,
+      "elapsed_seconds": 0.9160113889956847
+    },
+    {
+      "program": "verify_runtime.py",
+      "exit_code": 0,
+      "elapsed_seconds": 7.09241096599726
+    }
+  ],
+  "test_fixture_header_head": "56b1af9fe7a4f9b9647af920f2f2e86990613786",
+  "tested_plugin_files_equal_final_package": 200,
+  "hermes_runtime_program_files": 16525,
+  "installed_native_program_files": 771,
+  "pulse_frontend_included_in_program_archive": true,
+  "live_profile_unchanged": true,
+  "model_routes_unchanged": true,
+  "scope": "Isolated .252 acceptance profile, synthetic data, actual native services and private model.",
+  "remaining_gates": [
+    "Merge fresh-default and job-admission fixes and certify equivalent merged program bytes.",
+    "Create the separate daily VM and prepare fresh Adrian and Cerebo data.",
+    "Complete coherent off-server whole-guest backup and restore, including external Atlas.",
+    "Create and verify the private Discord channel on the daily VM.",
+    "Complete actual Discord delivery, bot cutover, and lasting-memory activation."
+  ],
+  "deferred": [
+    "Voice and media processing",
+    "Import and reverse migration",
+    "Complete installation and updates from Hermes",
+    "Governed Pulse core-file editor"
+  ],
+  "known_limits": [
+    "Existing acceptance store retains native templates and synthetic data; a separate new-store check establishes blank personal defaults.",
+    "Local digest has not been generated and returns 404. Disabled Growth integrations render unconnected.",
+    "Missing font assets and excluded Bunker polling produce nonfatal 404 resource errors. Navigation aborts prefetch or in-flight requests.",
+    "Cortex reports five warnings for absent native reviewer, retrieval, and proposal evidence, with zero critical findings.",
+    "Final daily private Discord delivery and off-server VM restoration remain untested."
+  ],
+  "recovery_scope": "Local profile reconstruction and retained-version rollback. Off-server whole-guest restore remains required."
+}

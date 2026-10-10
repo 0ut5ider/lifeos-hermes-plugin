@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "/home/outsider/.cache/hermes-upstream-runtime/uv-0.12.3-linux-x64/uv",
+        "venv",
+        "--python",
+        "3.13",
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.3121566509944387,
+      "stdout": "",
+      "stderr": "Downloading cpython-3.13.15-linux-x86_64-gnu (download) (33.2MiB)\n Downloaded cpython-3.13.15-linux-x86_64-gnu (download)\nUsing CPython 3.13.15\nCreating virtual environment at: /home/outsider/.cache/lifeos-atlas-20261010/native-test-python313\nActivate with: source /home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/activate\n"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/hermes-upstream-runtime/uv-0.12.3-linux-x64/uv",
+        "pip",
+        "install",
+        "--python",
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-r",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-10-daily-text-release/native-test-requirements.txt"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 4.908686027003569,
+      "stdout": "",
+      "stderr": "Using Python 3.13.15 environment at: /home/outsider/.cache/lifeos-atlas-20261010/native-test-python313\nResolved 95 packages in 1.19s\nDownloading nemo-relay (9.3MiB)\nDownloading cryptography (4.5MiB)\nDownloading ty (13.5MiB)\nDownloading openai (1.1MiB)\nDownloading firecrawl-anydoc (3.3MiB)\nDownloading pillow (6.6MiB)\nDownloading aiohttp (1.7MiB)\nDownloading resvg-py (1.3MiB)\nDownloading debugpy (4.1MiB)\nDownloading pip (1.7MiB)\nDownloading ruff (10.7MiB)\nDownloading pillow-heif (5.4MiB)\nDownloading discord-py (1.2MiB)\nDownloading pydantic-core (2.0MiB)\n Downloaded resvg-py\n Downloaded aiohttp\n Downloaded pydantic-core\n Downloaded discord-py\n Downloaded firecrawl-anydoc\n Downloaded pillow-heif\n Downloaded pillow\n Downloaded ruff\n Downloaded cryptography\n Downloaded nemo-relay\n Downloaded debugpy\n Downloaded ty\n Downloaded pip\n Downloaded openai\nPrepared 86 packages in 2.90s\nInstalled 95 packages in 604ms\n + aiohappyeyeballs==2.7.1\n + aiohttp==3.14.3\n + aiosignal==1.4.0\n + annotated-doc==0.0.5\n + annotated-types==0.8.0\n + anyio==4.14.2\n + attrs==26.1.0\n + audioop-lts==0.2.2\n + certifi==2026.5.20\n + cffi==2.1.1\n + charset-normalizer==3.5.2\n + click==8.5.0\n + croniter==6.0.0\n + cryptography==50.0.1\n + debugpy==1.8.20\n + discord-py==2.7.1\n + distro==1.9.0\n + fastapi==0.142.2\n + fire==0.7.1\n + firecrawl-anydoc==0.2.4\n + frozenlist==1.8.0\n + h11==0.16.0\n + httpcore==1.0.9\n + httpcore2==2.7.0\n + httptools==0.8.0\n + httpx==0.28.1\n + httpx2==2.7.0\n + idna==3.20\n + iniconfig==2.3.0\n + jinja2==3.1.6\n + jiter==0.17.0\n + jsonschema==4.26.0\n + jsonschema-specifications==2025.9.1\n + markdown==3.10.2\n + markdown-it-py==4.2.0\n + markupsafe==3.0.3\n + mcp==2.0.0\n + mcp-types==2.0.0\n + mdurl==0.1.2\n + multidict==6.9.1\n + nemo-relay==0.8.4\n + openai==2.24.0\n + opentelemetry-api==1.45.0\n + packaging==26.0\n + pathspec==1.1.1\n + pillow==12.3.0\n + pillow-heif==1.8.0\n + pip==26.0.1\n + pluggy==1.6.0\n + prompt-toolkit==3.0.52\n + propcache==0.5.4\n + psutil==7.2.2\n + ptyprocess==0.7.0\n + pycparser==3.0\n + pydantic==2.13.4\n + pydantic-core==2.46.4\n + pygments==2.21.0\n + pyjwt==2.13.0\n + pytest==9.1.1\n + pytest-asyncio==1.3.0\n + python-dateutil==2.9.0.post0\n + python-dotenv==1.2.2\n + python-multipart==0.0.32\n + pytz==2026.4\n + referencing==0.37.0\n + requests==2.33.0\n + resvg-py==0.4.0\n + rich==14.3.3\n + rpds-py==2026.6.3\n + ruamel-yaml==0.18.16\n + ruamel-yaml-clib==0.2.15\n + ruff==0.15.10\n + setuptools==83.0.0\n + six==1.17.0\n + sniffio==1.3.1\n + snowballstemmer==3.1.1\n + socksio==1.0.0\n + sse-starlette==3.5.0\n + starlette==1.3.1\n + tenacity==9.1.4\n + termcolor==3.3.0\n + tomli-w==1.2.0\n + tqdm==4.70.1\n + tree-sitter==0.26.0\n + tree-sitter-bash==0.25.1\n + truststore==0.10.4\n + ty==0.0.82\n + typing-extensions==4.16.0\n + typing-inspection==0.4.4\n + urllib3==2.8.0\n + uvicorn==0.54.0\n + watchfiles==1.3.0\n + wcwidth==0.9.1\n + websockets==15.0.1\n + yarl==1.25.1\n"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "actual_hermes_hook_events": [
+    {
+      "v": 1,
+      "ts": "2026-10-10T21:26:50.558Z",
+      "slug": "synthetic-conduit-hermes",
+      "op": "upsert",
+      "src": "EventLogger.hook.ts",
+      "fields": {
+        "lastToolActivity": "2026-10-10T21:26:50.558Z"
+      },
+      "uuid": "synthetic-conduit-hermes-work"
+    },
+    {
+      "v": 1,
+      "ts": "2026-10-10T21:27:06.222Z",
+      "slug": "synthetic-conduit-hermes",
+      "op": "upsert",
+      "src": "ISASync.hook.ts",
+      "fields": {
+        "started": "2026-10-10T21:26:30.907320+00:00",
+        "updatedAt": "2026-10-10T21:27:06.220Z"
+      },
+      "unset": [
+        "lastToolActivity"
+      ],
+      "uuid": "synthetic-conduit-hermes-work"
+    },
+    {
+      "v": 1,
+      "ts": "2026-10-10T21:27:06.307Z",
+      "slug": "synthetic-conduit-hermes",
+      "op": "upsert",
+      "src": "EventLogger.hook.ts",
+      "fields": {
+        "lastToolActivity": "2026-10-10T21:27:06.307Z"
+      },
+      "uuid": "synthetic-conduit-hermes-work"
+    }
+  ],
+  "exact_synthetic_write_approval": [
+    {
+      "command": "<write_file> (plugin approval rule)",
+      "description": "LifeOS requests review of Write for /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.config/LIFEOS/USER/MEMORY/WORK/synthetic-conduit-hermes/ISA.md",
+      "choice": "once"
+    }
+  ],
+  "native_scheduled_capture": {
+    "ts": "2026-10-10T21:28:55.727Z",
+    "type": "claude-session",
+    "source": "claudeSession",
+    "detail": {
+      "events": 3,
+      "lastSlug": "synthetic-conduit-hermes"
+    }
+  },
+  "capture_state": {
+    "lastRun": 1791667736655,
+    "lastResult": "ok",
+    "consecutiveFailures": 0
+  },
+  "actual_owner_jobs": [
+    {
+      "job": "conduit-capture",
+      "elapsed_seconds": 5.613,
+      "result": {
+        "status": "completed",
+        "job": "conduit-capture",
+        "output": "captured 0 event(s)\n"
+      }
+    },
+    {
+      "job": "memory-consolidation",
+      "elapsed_seconds": 5.076,
+      "result": {
+        "status": "completed",
+        "job": "memory-consolidation",
+        "output": "Harvested 0 learning(s)\nNo ratings file found at: /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/LEARNING/SIGNALS/ratings.jsonl\n"
+      }
+    },
+    {
+      "job": "proposal-gc",
+      "elapsed_seconds": 6.46,
+      "result": {
+        "status": "completed",
+        "job": "proposal-gc",
+        "output": "NO_ACTION\n"
+      }
+    },
+    {
+      "job": "life-morning-brief",
+      "elapsed_seconds": 4.82,
+      "result": {
+        "status": "completed",
+        "job": "life-morning-brief",
+        "output": "Good morning. Your top goals: 1, ** (sample) Ship MVP of Project X by 2026-Q2 \u2014 measurable: 100 daily active users.. 2, ** (sample) Publish 24 newsletter issues this year \u2014 measurable: one every other Sunday, no skipped weeks.. 3, ** (sample) Reach a sustainable monthly revenue target \u2014 measurable: $X MRR by end of year..\n"
+      }
+    }
+  ],
+  "restart_service_state": {
+    "state": "active",
+    "recovery_required": false,
+    "owner_turn_verified": false
+  },
+  "drain_seconds": 0.508,
+  "schedules_changed": false,
+  "model_routes_changed": false,
+  "synthetic_data_only": true,
+  "live_profile_changed": false,
+  "discord_delivery_verified": false,
+  "active_long_job_shutdown_verified": false
+}
