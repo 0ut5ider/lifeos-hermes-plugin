@@ -1,0 +1,53 @@
+test_native_daily_profile_selects_fixed_owner_capture_with_local_output (test_daily_conduit_capture.DailyConduitCaptureTests.test_native_daily_profile_selects_fixed_owner_capture_with_local_output) ... FAIL
+test_native_spawn_refuses_capture_without_current_owner_activation (test_daily_conduit_capture.DailyConduitCaptureTests.test_native_spawn_refuses_capture_without_current_owner_activation) ... FAIL
+test_native_spawn_uses_template_and_actual_hermes_parser_without_inference (test_daily_conduit_capture.DailyConduitCaptureTests.test_native_spawn_uses_template_and_actual_hermes_parser_without_inference) ... FAIL
+test_selected_native_configuration_uses_only_the_work_event_adapter (test_daily_conduit_capture.DailyConduitCaptureTests.test_selected_native_configuration_uses_only_the_work_event_adapter) ... FAIL
+test_native_job_merger_has_no_raw_memory_command_or_external_output (test_daily_pulse_profile.DailyPulseProfileTests.test_native_job_merger_has_no_raw_memory_command_or_external_output) ... ok
+test_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) ... ok
+test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis) ... ok
+test_native_spawn_and_actual_hermes_parser_render_the_morning_brief (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_render_the_morning_brief) ... ok
+test_native_spawn_cannot_borrow_a_discord_author_when_local_grant_is_removed (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_cannot_borrow_a_discord_author_when_local_grant_is_removed) ... ok
+test_native_spawn_refuses_memory_job_when_ownership_is_disabled (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_refuses_memory_job_when_ownership_is_disabled) ... ok
+test_native_spawn_runs_healthcheck_without_an_external_destination (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_healthcheck_without_an_external_destination) ... ok
+test_native_spawn_runs_proposal_cleanup_through_the_actual_owner_command (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_proposal_cleanup_through_the_actual_owner_command) ... ok
+
+======================================================================
+FAIL: test_native_daily_profile_selects_fixed_owner_capture_with_local_output (test_daily_conduit_capture.DailyConduitCaptureTests.test_native_daily_profile_selects_fixed_owner_capture_with_local_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_conduit_capture.py", line 24, in test_native_daily_profile_selects_fixed_owner_capture_with_local_output
+    self.assertEqual(len(capture), 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_native_spawn_refuses_capture_without_current_owner_activation (test_daily_conduit_capture.DailyConduitCaptureTests.test_native_spawn_refuses_capture_without_current_owner_activation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_conduit_capture.py", line 67, in test_native_spawn_refuses_capture_without_current_owner_activation
+    self.assertTrue(TEMPLATE.is_file(), 'The headless capture template must exist')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The headless capture template must exist
+
+======================================================================
+FAIL: test_native_spawn_uses_template_and_actual_hermes_parser_without_inference (test_daily_conduit_capture.DailyConduitCaptureTests.test_native_spawn_uses_template_and_actual_hermes_parser_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_conduit_capture.py", line 44, in test_native_spawn_uses_template_and_actual_hermes_parser_without_inference
+    self.assertTrue(TEMPLATE.is_file(), 'The headless capture template must exist')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The headless capture template must exist
+
+======================================================================
+FAIL: test_selected_native_configuration_uses_only_the_work_event_adapter (test_daily_conduit_capture.DailyConduitCaptureTests.test_selected_native_configuration_uses_only_the_work_event_adapter)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_conduit_capture.py", line 34, in test_selected_native_configuration_uses_only_the_work_event_adapter
+    self.assertTrue(TEMPLATE.is_file(), 'The headless capture template must exist')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The headless capture template must exist
+
+----------------------------------------------------------------------
+Ran 12 tests in 11.667s
+
+FAILED (failures=4)

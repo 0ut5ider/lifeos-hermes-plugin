@@ -40,12 +40,12 @@ class DailyPulseProfileTests(unittest.TestCase):
 
     def test_native_job_merger_has_no_raw_memory_command_or_external_output(self):
         jobs = self.config()['jobs']
-        self.assertEqual(len(jobs), 9)
-        self.assertEqual(len({job['name'] for job in jobs}), 9)
+        self.assertEqual(len(jobs), 10)
+        self.assertEqual(len({job['name'] for job in jobs}), 10)
         active = {job['name']: job for job in jobs if job['enabled']}
         self.assertEqual(set(active), {'cost-aggregation', 'healthcheck', 'memory-consolidation',
-                                      'proposal-gc', 'life-morning-brief'})
-        for name in ('memory-consolidation', 'proposal-gc', 'life-morning-brief'):
+                                      'proposal-gc', 'life-morning-brief', 'conduit-capture'})
+        for name in ('memory-consolidation', 'proposal-gc', 'life-morning-brief', 'conduit-capture'):
             self.assertEqual(active[name]['command'], 'hermes lifeos-job ' + name)
             self.assertEqual(active[name]['timeout_ms'], 600000)
             self.assertEqual(active[name]['_source'], 'user')

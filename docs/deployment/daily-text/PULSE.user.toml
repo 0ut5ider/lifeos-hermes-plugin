@@ -20,6 +20,15 @@ output = "log"
 enabled = true
 
 [[job]]
+name = "conduit-capture"
+schedule = "*/2 * * * *"
+type = "script"
+command = "hermes lifeos-job conduit-capture"
+timeout_ms = 600000
+output = "log"
+enabled = true
+
+[[job]]
 name = "memory-consolidation"
 schedule = "0 3 * * *"
 type = "script"

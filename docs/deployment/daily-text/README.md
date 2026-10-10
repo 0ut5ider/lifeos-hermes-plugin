@@ -6,14 +6,17 @@ The operator deployment must perform these actions:
 
 1. Back up the selected profile, native user configuration, and release manifest.
 2. Verify the selected LifeOS root and its current local owner grant.
-3. Verify that the installed Hermes command supports all three owner jobs.
+3. Verify that the installed Hermes command supports all four selected owner jobs.
 4. Install `PULSE.user.toml` into `LIFEOS/USER/CONFIG` within that selected root, with mode `0600`.
-5. Configure the daily guest timezone as `America/Toronto`.
-6. Leave excluded notification credentials unset.
-7. Verify the current configuration and policy binding before starting Pulse.
-8. Test actual job execution, restart, and the selected private model routes.
-9. Add governed Discord delivery after the private channel passes acceptance.
+5. For a fresh store, install `CONDUIT.config.json` as `LIFEOS/USER/CONDUIT/config.json`, with mode `0600`.
+6. Configure the daily guest timezone as `America/Toronto`.
+7. Leave excluded notification credentials unset.
+8. Verify the current configuration and policy binding before starting Pulse.
+9. Test actual job execution, restart, and the selected private model routes.
+10. Add governed Discord delivery after the private channel passes acceptance.
 
-Schedules use the guest's local timezone. The profile runs consolidation at 03:00, cleanup at 03:45, and the morning brief at 07:00. It retains the shipped cost aggregation and healthcheck schedules. It disables voice, GitHub Work, Cloudflare Synapse, Claude quota reporting, and the private Bunker integration. The public package omits the Bunker implementation. Siri remains loaded as infrastructure and refuses turns when its key is unset. The profile preserves the private FlashNext tier settings.
+Schedules use the guest's local timezone. Conduit capture runs every two minutes through the fixed owner command. The selected native adapter reads LifeOS work events from Hermes hook activity. App focus, Git, and GitHub capture remain disabled. The native adapter name `claudeSession` remains unchanged. Do not install a separate raw Conduit capture unit. The profile runs consolidation at 03:00, cleanup at 03:45, and the morning brief at 07:00. It retains the shipped cost aggregation and healthcheck schedules. It disables voice, GitHub Work, Cloudflare Synapse, Claude quota reporting, and the private Bunker integration. The public package omits the Bunker implementation. Siri remains loaded as infrastructure and refuses turns when its key is unset. The profile preserves the private FlashNext tier settings.
 
 To reverse the configuration change, stop Pulse, restore the retained user configuration, verify its policy binding, and restart the verified previous release. Do not enable raw memory job commands while managed ownership is active.
+
+The [October 9 capture schedule gate](../../verification/2026-10-08-remaining-reader-audit/README.md) passes 13 cases. Native scheduler spawning invokes the actual Hermes parser. A real Hermes file write triggers native ISASync, and capture consumes the actual work-event ledger. Events use mode `0600`, and repeat capture produces no duplicate. These results do not establish installed scheduling, restart, or Discord delivery.

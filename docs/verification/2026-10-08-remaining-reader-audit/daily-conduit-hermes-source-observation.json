@@ -1,0 +1,97 @@
+{
+  "source_report": {
+    "events": [
+      {
+        "v": 1,
+        "ts": "2026-10-10T01:31:04.023Z",
+        "slug": "synthetic-conduit-hermes",
+        "op": "upsert",
+        "src": "ISASync.hook.ts",
+        "fields": {
+          "isa": "/tmp/native-memory-d5gpgah5/.config/LIFEOS/USER/MEMORY/WORK/synthetic-conduit-hermes/ISA.md",
+          "task": "Synthetic Conduit Hermes work",
+          "sessionName": "Synthetic Conduit Hermes work",
+          "sessionUUID": "synthetic-conduit-hermes-work",
+          "phase": "observe",
+          "progress": "0/1",
+          "started": "2026-10-10T01:31:03.765996+00:00",
+          "updatedAt": "2026-10-10T01:31:04.021Z",
+          "criteria": [
+            {
+              "id": "ISC-1",
+              "description": "Record synthetic work activity",
+              "type": "criterion",
+              "status": "pending",
+              "createdInPhase": "OBSERVE"
+            }
+          ],
+          "ratings": [],
+          "intent": "- [ ] ISC-1: Record synthetic work activity",
+          "bodyHash": "312a8ef3462b63c32627cd79d6047b56a91fc39766d8024f3eee82b2d0a35fe4",
+          "lastBodySize": 171,
+          "ascent": {
+            "key": "marking",
+            "icon": "\ud83d\udcd0",
+            "label": "Marking",
+            "color": "#7aa2f7"
+          }
+        },
+        "uuid": "synthetic-conduit-hermes-work"
+      }
+    ],
+    "registry": {
+      "sessions": {
+        "synthetic-conduit-hermes": {
+          "isa": "/tmp/native-memory-d5gpgah5/.config/LIFEOS/USER/MEMORY/WORK/synthetic-conduit-hermes/ISA.md",
+          "task": "Synthetic Conduit Hermes work",
+          "sessionName": "Synthetic Conduit Hermes work",
+          "sessionUUID": "synthetic-conduit-hermes-work",
+          "phase": "observe",
+          "progress": "0/1",
+          "started": "2026-10-10T01:31:03.765996+00:00",
+          "updatedAt": "2026-10-10T01:31:04.021Z",
+          "criteria": [
+            {
+              "id": "ISC-1",
+              "description": "Record synthetic work activity",
+              "type": "criterion",
+              "status": "pending",
+              "createdInPhase": "OBSERVE"
+            }
+          ],
+          "ratings": [],
+          "intent": "- [ ] ISC-1: Record synthetic work activity",
+          "bodyHash": "312a8ef3462b63c32627cd79d6047b56a91fc39766d8024f3eee82b2d0a35fe4",
+          "lastBodySize": 171,
+          "ascent": {
+            "key": "marking",
+            "icon": "\ud83d\udcd0",
+            "label": "Marking",
+            "color": "#7aa2f7"
+          }
+        }
+      },
+      "_events_offset": 894,
+      "_folded_at": "2026-10-10T01:31:04.023Z"
+    },
+    "tool_context": "<lifeos-ascent-delta>\nThe run's derived ascent state changed (computed by ISASync through the same deriveAscent() every dashboard surface reads). Lead the next visible status note with this phase strip VERBATIM, exactly once. Never compute a strip yourself:\n\u2550\u2550\u2550\u2550 LifeOS | Algorithm | \ud83d\udcd0 Marking \u2550\u2550\u2550\u2550\n</lifeos-ascent-delta>",
+    "diagnostics": "",
+    "import_warnings": []
+  },
+  "capture_result": {
+    "status": "completed",
+    "job": "conduit-capture",
+    "output": "captured 1 event(s)\n"
+  },
+  "native_event": {
+    "ts": "2026-10-10T01:31:06.686Z",
+    "type": "claude-session",
+    "source": "claudeSession",
+    "detail": {
+      "events": 1,
+      "lastSlug": "synthetic-conduit-hermes"
+    }
+  },
+  "event_mode": "0600",
+  "model_requests": []
+}
