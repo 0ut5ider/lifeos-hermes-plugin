@@ -169,7 +169,10 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
                 check_current()
                 publish(memory._publication_path(relative), contents[relative].encode())
             check_current()
-            published_snapshot = _snapshot(memory, scope, connection, date, initialize, check_current)
+            try:
+                published_snapshot = _snapshot(memory, scope, connection, date, initialize, check_current)
+            except MemoryConflict as error:
+                raise MemoryUnavailable('Conduit insight recheck requires publication recovery') from error
             for key in snapshot.keys() - {'sources', 'plan'}:
                 if published_snapshot[key] != snapshot[key]:
                     raise MemoryUnavailable('Conduit insight inputs change during publication and require recovery')

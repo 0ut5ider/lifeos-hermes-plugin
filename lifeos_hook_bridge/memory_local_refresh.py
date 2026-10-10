@@ -172,7 +172,10 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
         for relative in paths:
             check_current()
             publish(memory._publication_path(relative), content)
-        published_snapshot = _snapshot(memory, scope, connection, check_current)
+        try:
+            published_snapshot = _snapshot(memory, scope, connection, check_current)
+        except MemoryConflict as error:
+            raise MemoryUnavailable('LocalIntelligence recheck requires publication recovery') from error
         for key in snapshot.keys() - {'sources', 'plan'}:
             if published_snapshot[key] != snapshot[key]: raise MemoryUnavailable('LocalIntelligence authority changes during publication and requires recovery')
         for key in snapshot['plan'].keys() - {'latest'}:

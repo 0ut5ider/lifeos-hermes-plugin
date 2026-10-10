@@ -83,7 +83,10 @@ def run(memory, scope, operation, arguments, *, check_current):
             check_current()
             _output(memory, scope, connection, value)
             publish(memory._publication_path(relative), value.encode())
-        published = _snapshot(memory, scope, connection, run_id, check_current)
+        try:
+            published = _snapshot(memory, scope, connection, run_id, check_current)
+        except MemoryConflict as error:
+            raise MemoryUnavailable('LocalIntelligence diagnostic recheck requires publication recovery') from error
         if any(published[key] != snapshot[key] for key in ('scope', 'root', 'retirement')):
             raise MemoryUnavailable('LocalIntelligence diagnostic authority changes during publication and requires recovery')
         expected = dict(snapshot['contents'], **contents)

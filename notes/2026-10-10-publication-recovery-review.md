@@ -8,6 +8,8 @@ The second defect comes from exception meaning. `MemoryConflict` describes an or
 
 The caller audit reproduces the same exception problem in Algorithm summary caches, LocalIntelligence digests, LocalIntelligence run logs, and Conduit insights. All four receive the same correction at their checks after publication. Checks before publication continue to return ordinary conflicts. The tests use actual native rendering, authenticated HTTP for doctrine edits, real SQLite metadata, and real synthetic file and configuration changes. Observation functions call the original publisher before inserting the deterministic concurrent change.
 
+The first correction handles the explicit checks after writing. A second experiment changes the source during the native recheck itself. All three native planners still raise a nested `MemoryConflict`, and all three remove the journal. The correction therefore also converts source conflicts from rechecks after publication into the recoverable failure path. The native results and source checks remain intact.
+
 Two standalone test fixtures also retain an admitted managed context after removing their connector. That combination must refuse access. The fixtures now remove the managed context for standalone native compatibility checks. Separate connector-loss tests retain the context and require refusal without file changes. These fixture changes preserve the runtime policy.
 
 The [verification directory](../docs/verification/2026-10-10-publication-review-fixes/) retains the combined command and output. The original review evidence remains separate from the correction evidence. No server, memory ownership setting, Discord bot, or source pin changes in this work.

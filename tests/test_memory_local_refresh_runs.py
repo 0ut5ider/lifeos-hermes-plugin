@@ -63,6 +63,38 @@ class MemoryLocalRefreshRunTests(unittest.TestCase):
         self.assertEqual((self.directory / (self.run_id+'.log')).read_bytes(), later)
         self.assertTrue(memory.transaction.journal.exists())
 
+    def test_log_change_during_collection_after_start_retains_recovery(self):
+        from lifeos_hook_bridge import memory_transaction as transaction, memory_local_refresh as refresh
+        from lifeos_hook_bridge.memory_access import MemoryUnavailable
+        original_publish, original_checked = transaction.publish, refresh._checked
+        published, reads = [], []
+        later = b'Synthetic later diagnostic edit during collection.\n'
+        def observed_publish(path, content):
+            original_publish(path, content)
+            if path.name.endswith('.log.started'): published.append(path)
+        def observed_checked(memory, path):
+            result = original_checked(memory, path)
+            if published and path.name == self.run_id+'.log':
+                reads.append(path)
+                if len(reads) == 2: path.write_bytes(later)
+            return result
+        transaction.publish, refresh._checked = observed_publish, observed_checked
+        try:
+            result = self.start()
+        finally:
+            transaction.publish, refresh._checked = original_publish, original_checked
+        self.assertFalse(result['ok'], result)
+        self.assertGreaterEqual(len(reads), 2)
+        memory = self.owner.fixture.memory
+        self.assertTrue(memory.transaction.journal.exists())
+        with closing(sqlite3.connect(memory.database)) as connection:
+            receipt = json.loads(connection.execute("SELECT receipt FROM operations WHERE request_id LIKE 'local-run-%'").fetchone()[0])
+        self.assertEqual(receipt['status'], 'unknown')
+        with self.assertRaisesRegex(MemoryUnavailable, 'preserves a later artifact edit'):
+            with memory._transaction(): pass
+        self.assertEqual((self.directory/(self.run_id+'.log')).read_bytes(), later)
+        self.assertTrue(memory.transaction.journal.exists())
+
     def test_later_log_edits_and_revoked_writer_remain_intact(self):
         started = self.start()
         self.assertTrue(started['ok'], started)

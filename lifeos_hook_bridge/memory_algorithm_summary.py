@@ -137,7 +137,10 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
             raise MemoryConflict('Algorithm summaries preserve later source and destination changes')
         _value(memory, scope, connection, value, snapshot['plan'])
         publish(memory._publication_path(CACHE), content)
-        after = _snapshot(memory, scope, connection, check_current)
+        try:
+            after = _snapshot(memory, scope, connection, check_current)
+        except MemoryConflict as error:
+            raise MemoryUnavailable('Algorithm summary recheck requires publication recovery') from error
         if any(after[key] != snapshot[key] for key in ('inputs', 'scope', 'root', 'retirement')):
             raise MemoryUnavailable('Algorithm inputs change during summary publication and require recovery')
         check_current()
