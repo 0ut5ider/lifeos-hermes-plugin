@@ -112,6 +112,20 @@ class FreshStoreTests(unittest.TestCase):
         rendered=NativeMemory(root)._native('morning_brief',sources=sources)['stdout']
         self.assertNotIn('Your top goals',rendered)
         self.assertNotIn('(sample)',rendered)
+        from ruamel.yaml import YAML
+        for name in ('vendors','obligations'):
+            path=user/'FINANCES'/(name+'.yaml')
+            self.assertEqual(YAML(typ='safe').load(path.read_text()),{name:[]})
+            self.assertEqual((retained/'FINANCES'/(name+'.yaml')).read_bytes(),
+                             (CANDIDATE/'LifeOS/install/USER/FINANCES'/(name+'.yaml')).read_bytes())
+        from lifeos_hook_bridge.memory_life_finances import view as finance_view
+        from lifeos_hook_bridge.memory_life_health import view as health_view
+        from lifeos_hook_bridge.memory_life_business import view as business_view
+        for view in (finance_view,health_view,business_view):
+            response=view(NativeMemory(root),OWNER)
+            self.assertEqual(response['status'],200)
+            self.assertNotIn('Sample ',json.dumps(response['body']))
+            self.assertNotIn('(sample)',json.dumps(response['body']))
         for path,content in self.original.items():self.assertEqual(path.read_bytes(),content)
 
 

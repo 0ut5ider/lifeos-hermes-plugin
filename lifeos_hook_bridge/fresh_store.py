@@ -60,6 +60,14 @@ def _empty_personal_templates(user,destination):
     for directory in EXAMPLE_DIRECTORIES:
         path=user/directory
         if path.exists():path.rmdir()
+    for name in ('vendors','obligations'):
+        relative=Path('FINANCES')/(name+'.yaml')
+        data,_=_read(user/relative)
+        if 'SAMPLE TEMPLATE' not in data.decode().splitlines()[0]:
+            raise MemoryUnavailable('Fresh finance lists require declared native templates')
+        publish(destination/'template-originals'/relative,data)
+        publish(user/relative,(name+': []\n').encode())
+        emptied.append(relative.as_posix())
     return emptied,omitted
 
 
