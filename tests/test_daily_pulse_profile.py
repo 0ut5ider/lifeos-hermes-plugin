@@ -1,6 +1,8 @@
 # ABOUTME: Verifies the staged daily Pulse choices with its actual native configuration loader.
 # ABOUTME: Runs governed jobs through native spawning and the actual Hermes command parser.
 import json
+from contextlib import closing
+import sqlite3
 import os
 from pathlib import Path
 import shlex
@@ -40,12 +42,12 @@ class DailyPulseProfileTests(unittest.TestCase):
 
     def test_native_job_merger_has_no_raw_memory_command_or_external_output(self):
         jobs = self.config()['jobs']
-        self.assertEqual(len(jobs), 10)
-        self.assertEqual(len({job['name'] for job in jobs}), 10)
+        self.assertEqual(len(jobs), 11)
+        self.assertEqual(len({job['name'] for job in jobs}), 11)
         active = {job['name']: job for job in jobs if job['enabled']}
         self.assertEqual(set(active), {'cost-aggregation', 'healthcheck', 'memory-consolidation',
-                                      'proposal-gc', 'life-morning-brief', 'conduit-capture'})
-        for name in ('memory-consolidation', 'proposal-gc', 'life-morning-brief', 'conduit-capture'):
+                                      'proposal-gc', 'life-morning-brief', 'conduit-capture', 'atlas-sync'})
+        for name in ('memory-consolidation', 'proposal-gc', 'life-morning-brief', 'conduit-capture', 'atlas-sync'):
             self.assertEqual(active[name]['command'], 'hermes lifeos-job ' + name)
             self.assertEqual(active[name]['timeout_ms'], 600000)
             self.assertEqual(active[name]['_source'], 'user')
@@ -54,6 +56,7 @@ class DailyPulseProfileTests(unittest.TestCase):
             self.assertEqual(job['output'], 'log')
             self.assertNotIn('scheduleError', job)
         self.assertEqual(active['life-morning-brief']['schedule'], '0 7 * * *')
+        self.assertEqual(active['atlas-sync']['schedule'], '50 6 * * *')
 
     def owner_fixture(self):
         self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
@@ -138,6 +141,27 @@ class DailyPulseProfileTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(result.stderr, '')
         self.assertEqual(json.loads(result.stdout)['output'], 'NO_ACTION')
+
+    def test_native_schedule_spawn_initializes_and_refreshes_atlas_without_inference(self):
+        fixture, environment = self.owner_fixture()
+        atlas = fixture.native.root/'LIFEOS/ATLAS'
+        atlas.symlink_to(SOURCE/'LIFEOS/ATLAS',target_is_directory=True)
+        gear = fixture.native.root/'LIFEOS/USER/GEAR.md'
+        gear.write_text('## Computing\n| **Laptop** | Synthetic scheduled device | daily |\n')
+        result = self.call(environment=environment,name='atlas-sync')
+        self.assertEqual((result.returncode,result.stderr),(0,''),result.stdout)
+        body = json.loads(json.loads(result.stdout)['output'])
+        self.assertEqual(body['status'],'completed')
+        self.assertTrue(json.loads(body['output'])['ok'])
+        graph = fixture.native.root.parent/'.local/state/lifeos/atlas/atlas.db'
+        self.assertTrue(graph.is_file())
+        gear.write_text('## Computing\n| **Laptop** | Synthetic scheduled replacement | daily |\n')
+        result = self.call(environment=environment,name='atlas-sync')
+        self.assertEqual((result.returncode,result.stderr),(0,''),result.stdout)
+        with closing(sqlite3.connect(graph)) as connection:
+            self.assertIn('Synthetic scheduled replacement',
+                [row[0] for row in connection.execute('SELECT display_name FROM asset')])
+        self.assertEqual(fixture.fixture.fixture.received,[])
 
 
 if __name__ == '__main__':

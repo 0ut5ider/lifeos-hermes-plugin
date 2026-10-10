@@ -7,7 +7,7 @@ from .memory_access import MemoryUnavailable
 from .memory_sources import (authorize, _admit, _source_time, SOURCE_LIMIT, CORPUS_LIMIT,
                              json_projection)
 from .memory_tab_freshness import _checked
-from .memory_operational_views import projection
+from .memory_operational_views import projection, project_value, PROJECTION_FIELD_LIMIT
 
 
 SNAPSHOT = 'atlas/snapshot.json'
@@ -15,6 +15,43 @@ CACHE = 'LIFEOS/MEMORY/STATE/atlas-insights.json'
 DATABASE = 'atlas/graph.json'
 COLLECTOR_SOURCES = frozenset({'LIFEOS/USER/GEAR.md', 'LIFEOS/USER/PROJECTS.md'})
 SOURCES = COLLECTOR_SOURCES | frozenset({SNAPSHOT, CACHE})
+GRAPH_TABLES = frozenset({'asset', 'edge', 'source_observation', 'edge_observation', 'lifecycle_event', 'sync_run'})
+TABLE_ROW_LIMIT = 2048
+
+
+def capacity_projection(content, label):
+    count = 0
+    def collect(text):
+        nonlocal count
+        count += 1
+        return False
+    project_value(json.loads(content), collect)
+    if count > PROJECTION_FIELD_LIMIT:
+        raise MemoryUnavailable(f'Atlas capacity: {label} projection fields {count} exceed {PROJECTION_FIELD_LIMIT}')
+    decoded = projection(content)
+    if decoded is None:
+        raise MemoryUnavailable(f'Atlas capacity: {label} projection exceeds {CORPUS_LIMIT} bytes')
+    return decoded, count
+
+
+def admit_graph(memory, scope, connection, graph, timestamp):
+    if (not isinstance(graph, dict) or set(graph) != {'graph', 'metrics'} or not isinstance(graph['graph'], dict)
+            or set(graph['graph']) != GRAPH_TABLES or not isinstance(graph['metrics'], dict)
+            or any(not isinstance(rows, list) for rows in graph['graph'].values())
+            or len(json.dumps(graph).encode()) > CORPUS_LIMIT):
+        raise MemoryUnavailable('The Atlas graph changes its declared bounded response')
+    counts = {name: len(rows) for name, rows in graph['graph'].items()}
+    for name, count in counts.items():
+        if count > TABLE_ROW_LIMIT:
+            raise MemoryUnavailable(f'Atlas capacity: {name} rows {count} exceed {TABLE_ROW_LIMIT}')
+    content = json.dumps(graph['graph'], ensure_ascii=False)
+    decoded, fields = capacity_projection(content, 'graph')
+    if (memory._native('validate_source_batch', contents=[decoded])['accepted'] != [True] or _admit(
+            memory, connection, scope, content, DATABASE, timestamp, projection=decoded)['excluded']):
+        raise MemoryUnavailable('The Atlas graph is excluded under the current owner policy')
+    return {'graph_fields': {'used': fields, 'limit': PROJECTION_FIELD_LIMIT},
+        'graph_projection_bytes': {'used': len(decoded.encode()), 'limit': CORPUS_LIMIT},
+        'tables': {name: {'used': count, 'limit': TABLE_ROW_LIMIT} for name, count in counts.items()}}
 
 
 def source_path(memory, relative):
@@ -104,14 +141,7 @@ def _graph(memory, scope, connection):
     keys = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
     if keys(before) != keys(after):
         raise MemoryUnavailable('The Atlas graph changes during collection')
-    if (not isinstance(graph, dict) or set(graph) != {'graph', 'metrics'} or not isinstance(graph['graph'], dict)
-            or not isinstance(graph['metrics'], dict) or len(json.dumps(graph).encode()) > CORPUS_LIMIT):
-        raise MemoryUnavailable('The Atlas graph changes its declared bounded response')
-    content = json.dumps(graph['graph'], ensure_ascii=False)
-    decoded = projection(content)
-    if decoded is None or memory._native('validate_source_batch', contents=[decoded])['accepted'] != [True] or _admit(
-            memory, connection, scope, content, DATABASE, _source_time(after), projection=decoded)['excluded']:
-        raise MemoryUnavailable('The Atlas graph is excluded under the current owner policy')
+    admit_graph(memory, scope, connection, graph, _source_time(after))
     return graph, keys(after)
 
 

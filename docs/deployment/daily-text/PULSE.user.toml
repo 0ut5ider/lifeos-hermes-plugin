@@ -48,6 +48,15 @@ output = "log"
 enabled = true
 
 [[job]]
+name = "atlas-sync"
+schedule = "50 6 * * *"
+type = "script"
+command = "hermes lifeos-job atlas-sync"
+timeout_ms = 600000
+output = "log"
+enabled = true
+
+[[job]]
 name = "life-morning-brief"
 schedule = "0 7 * * *"
 type = "script"

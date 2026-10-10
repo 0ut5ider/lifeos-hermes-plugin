@@ -6,6 +6,12 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Admit complete planned Atlas graphs and snapshots before publication. Refuse projection, row, and byte limits without replacing live artifacts.
+- Report Atlas capacity dimensions and warnings at 80 percent of each selected limit.
+- Synchronize Atlas daily at 06:50 through the current owner command. Refresh before dashboard narrative regeneration.
+- Keep empty Atlas graphs idle and preserve current admission for failure diagnostics.
+- Define the final daily VM backup gate for grouped Atlas state, sources, cache, governance receipts, and journals.
+
 - Add the governed Atlas sync owner command for admitted Gear and Projects sources.
 - Publish the native Atlas database and snapshot as one recoverable file group.
 - Preserve native asset identity, incomplete observations, and targeted-run sweep rules.

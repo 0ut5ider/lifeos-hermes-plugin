@@ -6,8 +6,9 @@ import json
 import re
 from uuid import uuid4
 
-from .memory_access import MemoryConflict, MemoryUnavailable
-from .memory_atlas import DATABASE, SNAPSHOT, CACHE, _collect, _graph, source_path
+from .memory_access import MemoryConflict, MemoryUnavailable, _now
+from .memory_atlas import (DATABASE, SNAPSHOT, CACHE, _collect, _graph, source_path, admit_graph,
+                          capacity_projection, PROJECTION_FIELD_LIMIT)
 from .memory_atlas_insight import _request, _admit_output
 from .memory_source_review import _retirement_digest
 from .memory_sources import SOURCE_LIMIT, CORPUS_LIMIT
@@ -87,7 +88,7 @@ def run(memory, scope, collectors, scope_name, *, check_current):
         plan = memory._native('atlas_sync_plan',
             database=base64.b64encode(before['database']).decode() if before['database'] is not None else None,
             runs=runs)
-        if (set(plan) != {'database', 'snapshot', 'runs'} or not isinstance(plan['database'], str)
+        if (set(plan) != {'database', 'snapshot', 'graph', 'runs'} or not isinstance(plan['database'], str)
                 or not isinstance(plan['snapshot'], dict) or not isinstance(plan['runs'], list)
                 or len(json.dumps(plan).encode()) > 2 * CORPUS_LIMIT):
             raise MemoryUnavailable('Native Atlas synchronization changes its bounded publication plan')
@@ -96,14 +97,26 @@ def run(memory, scope, collectors, scope_name, *, check_current):
         except ValueError as error:
             raise MemoryUnavailable('Native Atlas synchronization requires complete database bytes') from error
         snapshot = json.dumps(plan['snapshot'], ensure_ascii=False).encode()
-        if (not database.startswith(b'SQLite format 3\x00') or len(database) > DATABASE_LIMIT
-                or len(snapshot) > SOURCE_LIMIT
-                or len(plan['runs']) != len(collectors)
+        for label, count, limit in (('database bytes', len(database), DATABASE_LIMIT),
+                                   ('snapshot bytes', len(snapshot), SOURCE_LIMIT)):
+            if count > limit:
+                raise MemoryUnavailable(f'Atlas capacity: {label} {count} exceed {limit}')
+        if (not database.startswith(b'SQLite format 3\x00') or len(plan['runs']) != len(collectors)
                 or any(not isinstance(row, dict) or set(row) != {'collector', 'runId', 'swept'}
                     or row['collector'] != name or type(row['runId']) is not int or row['runId'] < 1
                     or type(row['swept']) is not bool for row, name in zip(plan['runs'], collectors))):
             raise MemoryUnavailable('Native Atlas synchronization requires declared database, snapshot, and run fields')
         _admit_output(memory, scope, connection, plan['snapshot'])
+        capacity = admit_graph(memory, scope, connection, plan['graph'], _now())
+        projected, fields = capacity_projection(snapshot.decode(), 'snapshot')
+        capacity.update(database_bytes={'used': len(database), 'limit': DATABASE_LIMIT},
+            snapshot_bytes={'used': len(snapshot), 'limit': SOURCE_LIMIT},
+            snapshot_fields={'used': fields, 'limit': PROJECTION_FIELD_LIMIT},
+            snapshot_projection_bytes={'used': len(projected.encode()), 'limit': CORPUS_LIMIT})
+        dimensions = {name: value for name, value in capacity.items() if name != 'tables'}
+        dimensions.update({'tables.'+name: value for name, value in capacity['tables'].items()})
+        capacity['warnings'] = sorted(name for name, value in dimensions.items()
+                                      if value['used'] * 5 >= value['limit'] * 4)
         if _snapshot(memory, scope, connection, check_current) != before:
             raise MemoryConflict('Atlas inputs change during native synchronization planning')
     contents = {DATABASE: database, SNAPSHOT: snapshot}
@@ -136,4 +149,4 @@ def run(memory, scope, collectors, scope_name, *, check_current):
         if _snapshot(memory, scope, connection, check_current) != after:
             raise MemoryConflict('Atlas synchronization preserves later changes before delivery')
         check_current()
-    return {'ok': True, 'runs': plan['runs']}
+    return {'ok': True, 'runs': plan['runs'], 'capacity': capacity}

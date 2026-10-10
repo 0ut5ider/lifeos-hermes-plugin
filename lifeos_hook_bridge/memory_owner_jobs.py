@@ -29,7 +29,8 @@ JOBS = {
     'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
     'local-intelligence': (('skills/LocalIntelligence/Tools/Refresh.ts', '--fill'),),
     'atlas-sync': (('LIFEOS/ATLAS/Atlas.ts', 'sync'),),
-    'atlas-insights': (('LIFEOS/PULSE/modules/atlas.ts', '--build-insights'),),
+    'atlas-insights': (('LIFEOS/ATLAS/Atlas.ts', 'sync'),
+                       ('LIFEOS/PULSE/modules/atlas.ts', '--build-insights')),
     'algorithm-summaries': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries'),),
     'algorithm-summaries-force': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries', '--force'),),
 }
@@ -117,6 +118,7 @@ class OwnerJobs:
                 raise MemoryAdmissionError('LocalIntelligence run requires current owner diagnostics')
         deadline = time.monotonic() + timeout
         output = []
+        failure = None
         for command in JOBS[name]:
             if expected_revision is not None:
                 self.runtime.configuration.check_revision(self.runtime.configuration.load(), expected_revision)
@@ -133,7 +135,11 @@ class OwnerJobs:
                     return {'status': 'response-withheld', 'job': name}
 
             if result:
-                return {'status': 'failed', 'job': name, 'exit_code': result}
+                if name not in {'atlas-sync', 'atlas-insights'}:
+                    return {'status': 'failed', 'job': name, 'exit_code': result}
+                output.append(text)
+                failure = result
+                break
             output.append(text)
         projected = MemoryService(self.runtime.configuration).native(context, 'filter_job_output',
             {'content': ''.join(output), 'timestamp': datetime.now(timezone.utc).isoformat()})
@@ -142,4 +148,6 @@ class OwnerJobs:
             self.runtime.configuration.check_revision(self.runtime.configuration.load(), expected_revision)
         if not projected.get('ok', True) or projected.get('excluded'):
             return {'status': 'response-withheld', 'job': name}
+        if failure is not None:
+            return {'status': 'failed', 'job': name, 'exit_code': failure, 'output': projected['content']}
         return {'status': 'completed', 'job': name, 'output': projected['content']}

@@ -39,7 +39,7 @@ class MemoryAtlasSyncTests(unittest.TestCase):
         result = self.sync()
         self.assertTrue(result['ok'], result)
         self.assertEqual([run['collector'] for run in result['runs']], ['gear', 'projects'])
-        with sqlite3.connect(self.graph()) as connection:
+        with closing(sqlite3.connect(self.graph())) as connection:
             kinds = [row[0] for row in connection.execute('SELECT kind FROM asset ORDER BY kind')]
             self.assertEqual(kinds, ['device', 'domain', 'project'])
             self.assertEqual(connection.execute('SELECT COUNT(*) FROM edge').fetchone()[0], 1)
@@ -52,12 +52,12 @@ class MemoryAtlasSyncTests(unittest.TestCase):
     def test_repeat_sync_preserves_native_identity_and_incomplete_observations(self):
         self.sources()
         self.assertTrue(self.sync()['ok'])
-        with sqlite3.connect(self.graph()) as connection:
+        with closing(sqlite3.connect(self.graph())) as connection:
             original = connection.execute('SELECT id, canonical_key FROM asset ORDER BY id').fetchall()
         self.assertTrue(self.sync()['ok'])
         (self.root/'LIFEOS/USER/GEAR.md').unlink()
         self.assertTrue(self.sync(['gear'])['ok'])
-        with sqlite3.connect(self.graph()) as connection:
+        with closing(sqlite3.connect(self.graph())) as connection:
             self.assertEqual(connection.execute('SELECT id, canonical_key FROM asset ORDER BY id').fetchall(), original)
             self.assertEqual(connection.execute("SELECT fresh FROM source_observation WHERE collector='gear'").fetchone()[0], 1)
             self.assertEqual(connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0], 5)

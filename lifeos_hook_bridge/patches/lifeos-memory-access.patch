@@ -10805,7 +10805,7 @@ index 8c207f4..c6c3f35 100644
      return null;
    }
    const paras = out.trim().split(/\n{2,}/);
-@@ -110,6 +120,40 @@ async function inference(userJson: string): Promise<string | null> {
+@@ -110,6 +120,41 @@ async function inference(userJson: string): Promise<string | null> {
    return paras.join("\n\n").trim();
  }
  
@@ -10827,6 +10827,7 @@ index 8c207f4..c6c3f35 100644
 +  };
 +  check();
 +  if (prepared.plan.metrics === null) return {available: false, error: "run an atlas sync first"};
++  if (memoryObject(prepared.plan.metrics.totals) && prepared.plan.metrics.totals.assets === 0) return {available: true, empty: true, narrative: null};
 +  const narrative = await inference(JSON.stringify(prepared.plan.metrics), true);
 +  check();
 +  if (narrative === null) return {available: false, error: "Atlas inference is unavailable"};
@@ -10846,7 +10847,7 @@ index 8c207f4..c6c3f35 100644
  function readCache(): { hash: string; narrative: string; generated_at: string } | null {
    if (!existsSync(INSIGHTS_CACHE)) return null;
    try {
-@@ -138,7 +182,81 @@ async function regenerate(m: Record<string, unknown>): Promise<void> {
+@@ -138,7 +182,82 @@ async function regenerate(m: Record<string, unknown>): Promise<void> {
  
  // ── Request handling ──────────────────────────────────────────────────
  
@@ -10864,8 +10865,9 @@ index 8c207f4..c6c3f35 100644
 +      && typeof cache.narrative === "string" && typeof cache.generated_at === "string")) {
 +    throw new Error("The Atlas narrative cache requires its declared fields");
 +  }
-+  return Response.json({available: true, metrics, narrative: cache?.narrative ?? null,
-+    narrative_generated_at: cache?.generated_at ?? null, stale: !cache || cache.hash !== metricHash(metrics), generating: false});
++  const empty = memoryObject(metrics.totals) && metrics.totals.assets === 0;
++  return Response.json({available: true, metrics, narrative: empty ? null : cache?.narrative ?? null,
++    narrative_generated_at: empty ? null : cache?.generated_at ?? null, stale: !empty && (!cache || cache.hash !== metricHash(metrics)), generating: false});
 +}
 +
 +async function startManagedRegeneration(req: Request): Promise<Response> {
@@ -14502,8 +14504,8 @@ index 871d2b3..549847d 100644
  async function runSync(names: string[], scope: string): Promise<number> {
 +  const admitted = memoryAccess("atlas_sync", {collectors: names, scope}, memoryObject);
 +  if (admitted !== undefined) {
-+    if (admitted.ok !== true || !Array.isArray(admitted.runs)) throw new Error("Atlas synchronization requires current owner admission");
 +    console.log(JSON.stringify(admitted));
++    if (admitted.ok !== true || !Array.isArray(admitted.runs)) throw new Error(typeof admitted.message === "string" ? admitted.message : "Atlas synchronization requires current owner admission");
 +    return 0;
 +  }
    const store = new Store();
@@ -14522,7 +14524,6 @@ index 871d2b3..549847d 100644
      const store = new Store();
      const due = Date.now() - lastFullSyncAt(store) > FULL_SYNC_INTERVAL_MS;
 diff --git a/LifeOS/install/LIFEOS/ATLAS/Store.ts b/LifeOS/install/LIFEOS/ATLAS/Store.ts
-index 1a0f304..3a7a012 100644
 --- a/LifeOS/install/LIFEOS/ATLAS/Store.ts
 +++ b/LifeOS/install/LIFEOS/ATLAS/Store.ts
 @@ -14,9 +14,10 @@
@@ -14538,7 +14539,7 @@ index 1a0f304..3a7a012 100644
  
  export const ATLAS_DIR = process.env.ATLAS_DIR ?? join(homedir(), ".local/state/lifeos/atlas");
  export const DB_PATH = join(ATLAS_DIR, "atlas.db");
-@@ -133,6 +134,7 @@ export class Store {
+@@ -133,6 +134,7 @@
    db: Database;
  
    constructor(path: string = DB_PATH, opts: { readonly?: boolean } = {}) {
@@ -14546,14 +14547,41 @@ index 1a0f304..3a7a012 100644
      mkdirSync(ATLAS_DIR, { recursive: true });
      this.db = new Database(path, opts.readonly ? { readonly: true } : { create: true });
      if (!opts.readonly) {
-@@ -424,3 +426,23 @@ export function atlasGraphState(): {graph: Record<string, unknown[]>; metrics: u
+@@ -408,19 +410,43 @@
+   }
+ }
+ 
++function graphState(store: Store): {graph: Record<string, unknown[]>; metrics: unknown} {
++  const graph: Record<string, unknown[]> = {};
++  for (const name of ["asset", "edge", "source_observation", "edge_observation", "lifecycle_event", "sync_run"]) {
++    const rows = store.db.prepare(`SELECT * FROM ${name} ORDER BY rowid LIMIT 2049`).all();
++    if (rows.length > 2048) throw new Error(`Atlas capacity: ${name} exceeds the 2048-row limit`);
++    graph[name] = rows;
++  }
++  return {graph, metrics: store.insights()};
++}
++
+ export function atlasGraphState(): {graph: Record<string, unknown[]>; metrics: unknown} {
+   const store = new Store(undefined, {readonly: true});
+   try {
+     store.db.exec("BEGIN");
+-    const graph: Record<string, unknown[]> = {};
+-    for (const name of ["asset", "edge", "source_observation", "edge_observation", "lifecycle_event", "sync_run"]) {
+-      const rows = store.db.prepare(`SELECT * FROM ${name} ORDER BY rowid LIMIT 2049`).all();
+-      if (rows.length > 2048) throw new Error("Atlas graph admission exceeds its table row limit");
+-      graph[name] = rows;
+-    }
+-    const metrics: unknown = store.insights();
+-    return {graph, metrics};
++    return graphState(store);
+   } finally {
      store.close();
    }
  }
 +
 +export function atlasSyncPlan(database: string | null,
 +    runs: Array<{collector: string; scope: string; result: CollectResult}>): {
-+      database: string; snapshot: Record<string, unknown>; runs: Array<{collector: string; runId: number; swept: boolean}>;
++      database: string; snapshot: Record<string, unknown>; graph: {graph: Record<string, unknown[]>; metrics: unknown}; runs: Array<{collector: string; runId: number; swept: boolean}>;
 +    } {
 +  if (hasMemoryAccess()) throw new Error("Atlas planning requires an internal owner operation");
 +  const directory = mkdtempSync(join(tmpdir(), "lifeos-atlas-"));
@@ -14563,10 +14591,11 @@ index 1a0f304..3a7a012 100644
 +    const store = new Store(path);
 +    try {
 +      const applied = runs.map(run => ({collector: run.collector, ...store.applyRun(run.collector, run.scope, run.result)}));
++      const graph = graphState(store);
 +      const snapshot = store.exportSnapshot();
 +      store.db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
 +      store.db.exec("PRAGMA journal_mode=DELETE");
-+      return {database: readFileSync(path).toString("base64"), snapshot, runs: applied};
++      return {database: readFileSync(path).toString("base64"), snapshot, graph, runs: applied};
 +    } finally { store.close(); }
 +  } finally { rmSync(directory, {recursive: true, force: true}); }
 +}
