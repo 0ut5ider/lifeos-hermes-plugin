@@ -99,6 +99,27 @@ class MemoryUserIndexPublishTests(unittest.TestCase):
         self.assertEqual(result['status'], 'completed', result)
         self.assertEqual((pulse / 'state/user-index.json').stat().st_mode & 0o777, 0o600)
 
+    def test_owner_job_delivers_a_complete_index_above_the_reviewer_history_limit(self):
+        fixture = job_fixture.MemoryOwnerJobsTests()
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        root = fixture.fixture.root
+        pulse = root / 'LIFEOS/PULSE'
+        pulse.mkdir()
+        for name in ('modules', 'Observability', 'node_modules'):
+            (pulse / name).symlink_to(SOURCE / 'LIFEOS/PULSE' / name, target_is_directory=True)
+        user = root / 'LIFEOS/USER/TELOS'
+        user.mkdir(parents=True, exist_ok=True)
+        for number in range(200):
+            (user / f'INDEX-{number:03}.md').write_text(
+                '# Synthetic bounded index entry ' + str(number) + ' ' + 'x' * 180 + '\nCurrent synthetic source.\n')
+        result = fixture.run_job('user-index')
+        index_path = pulse / 'state/user-index.json'
+        self.assertGreater(len(index_path.read_text()), 65536)
+        self.assertEqual(result['status'], 'completed', result)
+        self.assertEqual(json.loads(result['output']), json.loads(index_path.read_text()))
+        self.assertEqual(index_path.stat().st_mode & 0o777, 0o600)
+
     def service(self, identifier, publish=True):
         return MemoryService(self.configuration).native(self.fixture.context, 'user_index',
             {'query': None, 'publish_index': publish, 'request_id': identifier})

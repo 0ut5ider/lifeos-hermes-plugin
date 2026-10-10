@@ -677,6 +677,8 @@ class MemoryService:
                 return memory.relevant_context(scope, **arguments)
             if operation == "filter_history" and set(arguments) == {"content", "timestamp"}:
                 return memory.filter_history(scope, **arguments)
+            if operation == 'filter_job_output' and set(arguments) == {'content', 'timestamp'}:
+                return memory.filter_job_output(scope, **arguments)
             if operation in ("read", "set"):
                 if not isinstance(arguments.get("path"), str):
                     raise ValueError("A native hot-memory path is required")

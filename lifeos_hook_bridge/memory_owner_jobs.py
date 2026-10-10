@@ -13,7 +13,7 @@ import tempfile
 import time
 import uuid
 
-from .memory_access import NativeMemory
+from .memory_access import NativeMemory, JOB_OUTPUT_LIMIT
 from .memory_policy import CATEGORIES
 from .memory_runtime import MemoryAdmissionError, MemoryRuntime
 from .memory_service import MemoryService
@@ -32,7 +32,7 @@ JOBS = {
     'algorithm-summaries': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries'),),
     'algorithm-summaries-force': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries', '--force'),),
 }
-MAX_OUTPUT = 4 * 1024 * 1024
+MAX_OUTPUT = JOB_OUTPUT_LIMIT
 
 
 def _terminate(process):
@@ -134,7 +134,7 @@ class OwnerJobs:
             if result:
                 return {'status': 'failed', 'job': name, 'exit_code': result}
             output.append(text)
-        projected = MemoryService(self.runtime.configuration).native(context, 'filter_history',
+        projected = MemoryService(self.runtime.configuration).native(context, 'filter_job_output',
             {'content': ''.join(output), 'timestamp': datetime.now(timezone.utc).isoformat()})
         self.runtime.check_call(request={}, **route, session_id=session, metadata={})
         if expected_revision is not None:

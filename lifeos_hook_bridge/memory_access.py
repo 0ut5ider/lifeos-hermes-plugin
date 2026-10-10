@@ -22,6 +22,7 @@ from .memory_transaction import MemoryTransaction
 
 
 SCHEMA_VERSION = 4
+JOB_OUTPUT_LIMIT = 4 * 1024 * 1024
 HOT_FILES = {
     "principal": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
     "assistant": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
@@ -869,6 +870,16 @@ class NativeMemory:
             return {"content": "", "excluded": True}
         with self._transaction() as connection:
             return self._filter_history(connection,scope,content,timestamp)
+
+    def filter_job_output(self, scope: MemoryScope, content: str, timestamp: str) -> dict[str, Any]:
+        if (not isinstance(content, str) or not isinstance(timestamp, str)
+                or len(content.encode('utf-8')) > JOB_OUTPUT_LIMIT):
+            raise ValueError('Invalid native job output')
+        if (not CATEGORIES <= set(scope.read) or not CATEGORIES <= set(scope.write)
+                or '*' not in scope.projects):
+            return {'content': '', 'excluded': True}
+        with self._transaction() as connection:
+            return self._filter_history(connection, scope, content, timestamp)
 
     def _filter_history(self, connection: sqlite3.Connection, scope: MemoryScope, content: str, timestamp: str,
                         *, reviewed: bool = False) -> dict[str, Any]:
