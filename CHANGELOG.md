@@ -17,7 +17,7 @@ Private-channel acceptance, Atlas graph initialization, final package checks, an
 - Verify actual scheduled work-event capture and all four selected owner commands.
 - Stop an active native owner job and clear all acceptance service groups.
 - Recover the tested profile locally and from the completed Proxmox Backup Server archive.
-- Disable the optional Pulse core-file editor under the documented first-release assumption.
+- Disable the optional Pulse core-file editor under the confirmed first-release decision.
 - Correct native Mount list indentation, Pulse shutdown waiting, and strict daemon types.
 - Admit bounded owner-job output through its four MiB byte limit. Preserve reviewer limits and complete retirement filtering.
 - Send complete Algorithm overview prompts through the shared inference function. Avoid Linux argument limits.

@@ -4,7 +4,7 @@ The staged `PULSE.user.toml` selects Adrian's first daily Discord release. It us
 
 Audio and video processing move to the later voice release. Do not start the Content media runner for this text release. Main Pulse retains the governed Content board and its admitted board actions. A native run request records intent; it does not establish working extraction, transcription, or production.
 
-Use the actual Hermes dashboard for administration. The first-release profile disables the native Pulse Hermes core-file editor. Its legacy status and file routes do not have governed owner adapters. This selection is the recommended launch assumption while Adrian's editor preference is pending. It preserves the main Pulse personal dashboards and the governed gateway health readers. Do not enable the editor until its read and write routes pass current owner admission and publication checks.
+Use the actual Hermes dashboard for administration. The first-release profile disables the native Pulse Hermes core-file editor. Its legacy status and file routes do not have governed owner adapters. Adrian confirms this launch selection on October 10. It preserves the main Pulse personal dashboards and the governed gateway health readers. Do not enable the editor until its read and write routes pass current owner admission and publication checks.
 
 The operator deployment must perform these actions:
 
