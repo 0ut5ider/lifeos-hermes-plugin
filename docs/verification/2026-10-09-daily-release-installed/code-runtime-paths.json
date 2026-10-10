@@ -1,0 +1,34 @@
+{
+  "hermes-gateway.service": {
+    "interpreter": "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "programs": [],
+    "working_directory": "/home/lifeos-hermes/.hermes",
+    "environment": {
+      "HOME": "/home/lifeos-hermes",
+      "HERMES_HOME": "/home/lifeos-hermes/.hermes",
+      "PATH": "/home/lifeos-hermes/workspace/hermes-agent/node_modules/.bin:/home/lifeos-hermes/.hermes/tools/node-26.7.0-linux-x64/bin:/home/lifeos-hermes/.hermes/tools/npm-12.0.2-linux-x64/bin:/home/lifeos-hermes/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    }
+  },
+  "hermes-dashboard.service": {
+    "interpreter": "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "programs": [],
+    "working_directory": "/home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores/8b938f7fab37b32a4e7d353b/57f85fcebda64a5ab44838ecfa9c3c6a/home",
+    "environment": {
+      "HOME": "/home/lifeos-hermes",
+      "HERMES_HOME": "/home/lifeos-hermes/.hermes",
+      "PATH": "/home/lifeos-hermes/.local/bin:/home/lifeos-hermes/workspace/hermes-agent/.hermes/bin:/usr/local/bin:/usr/bin:/bin"
+    }
+  },
+  "com.lifeos.pulse.service": {
+    "interpreter": "/home/lifeos-hermes/.local/bin/bun",
+    "programs": [
+      "pulse.ts"
+    ],
+    "working_directory": "/home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores/8b938f7fab37b32a4e7d353b/57f85fcebda64a5ab44838ecfa9c3c6a/home/.claude/LIFEOS/PULSE",
+    "environment": {
+      "HOME": "/home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores/8b938f7fab37b32a4e7d353b/57f85fcebda64a5ab44838ecfa9c3c6a/home",
+      "PATH": "/home/lifeos-hermes/.local/bin:/home/lifeos-hermes/workspace/hermes-agent/.hermes/bin:/usr/bin:/bin",
+      "HERMES_HOME": "/home/lifeos-hermes/.hermes"
+    }
+  }
+}
