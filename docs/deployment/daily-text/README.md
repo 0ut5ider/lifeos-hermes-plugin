@@ -4,6 +4,8 @@ The staged `PULSE.user.toml` selects Adrian's first daily Discord release. It us
 
 Audio and video processing move to the later voice release. Do not start the Content media runner for this text release. Main Pulse retains the governed Content board and its admitted board actions. A native run request records intent; it does not establish working extraction, transcription, or production.
 
+Use the actual Hermes dashboard for administration. The first-release profile disables the native Pulse Hermes core-file editor. Its legacy status and file routes do not have governed owner adapters. This selection is the recommended launch assumption while Adrian's editor preference is pending. It preserves the main Pulse personal dashboards and the governed gateway health readers. Do not enable the editor until its read and write routes pass current owner admission and publication checks.
+
 The operator deployment must perform these actions:
 
 1. Back up the selected profile, native user configuration, and release manifest.
@@ -22,3 +24,5 @@ Schedules use the guest's local timezone. Conduit capture runs every two minutes
 To reverse the configuration change, stop Pulse, restore the retained user configuration, verify its policy binding, and restart the verified previous release. Do not enable raw memory job commands while managed ownership is active.
 
 The [October 9 capture schedule gate](../../verification/2026-10-08-remaining-reader-audit/README.md) passes 13 cases. Native scheduler spawning invokes the actual Hermes parser. A real Hermes file write triggers native ISASync, and capture consumes the actual work-event ledger. Events use mode `0600`, and repeat capture produces no duplicate. These results do not establish installed scheduling, restart, or Discord delivery.
+
+The [installed daily acceptance](../../verification/2026-10-09-daily-release-installed/README.md) now verifies actual two-minute capture, all four selected owner commands, service restart, active native job interruption, and current profile reconstruction. The morning brief still contains shipped sample goals. Private-channel delivery and the combined release remain open.

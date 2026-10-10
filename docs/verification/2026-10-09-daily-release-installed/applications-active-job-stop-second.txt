@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "observed_active_owner_job_processes": [
+    {
+      "pid": 503373,
+      "process": "hermes",
+      "selected_job": "proposal-gc"
+    }
+  ],
+  "observed_native_program_processes": [
+    {
+      "pid": 503597,
+      "process": "bun",
+      "native_program": "ProposalGC.ts"
+    }
+  ],
+  "drain_seconds": 0.551,
+  "acceptance_control_groups_verified_empty": true,
+  "exact_daily_configuration_restored": true,
+  "service_state": {
+    "state": "active",
+    "recovery_required": false,
+    "owner_turn_verified": false
+  },
+  "synthetic_acceptance_profile_only": true,
+  "live_profile_changed": false,
+  "private_model_inference_interruption_verified": false
+}

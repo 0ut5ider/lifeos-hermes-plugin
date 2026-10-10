@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/verify_installed_schedule_second.py", line 39, in <module>
+    assert work['events'] and all(item['src'] == 'ISASync.hook.ts' for item in work['events'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
