@@ -6,6 +6,22 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+## 0.2.0 (release candidate)
+
+This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
+Private-channel acceptance, remaining browser actions, final package checks, and combined review remain open.
+
+- Select the main Pulse dashboard and defer audio and video processing with voice.
+- Verify actual private-model memory write and search across separate installed Hermes sessions.
+- Verify installed governed Content actions, current owner revocation, and authenticated native dashboard reads.
+- Verify actual scheduled work-event capture and all four selected owner commands.
+- Stop an active native owner job and clear all acceptance service groups.
+- Recover the tested profile locally and from the completed Proxmox Backup Server archive.
+- Disable the optional Pulse core-file editor under the documented first-release assumption.
+- Correct native Mount list indentation, Pulse shutdown waiting, and strict daemon types.
+
+The following changes also belong to this candidate:
+
 - Preserve Discord command IDs during synchronization. Compare inherited settings without recreating unchanged commands.
 - Release pending clarification waiters when the gateway interrupts their turn.
 - Record Discord slash routing and dispatch without interaction tokens or option values.
