@@ -25,7 +25,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
         self.listener = socket.socket()
         self.listener.bind(('127.0.0.1', 0))
         self.dashboard = f'http://127.0.0.1:{self.listener.getsockname()[1]}'
-        self.server = uvicorn.Server(uvicorn.Config(self.fixture.app, log_level='error', lifespan='off'))
+        self.server = uvicorn.Server(uvicorn.Config(self.fixture.app, log_level='error', lifespan='off', ws='none'))
         self.thread = threading.Thread(target=self.server.run, kwargs={'sockets': [self.listener]}, daemon=True)
         self.thread.start()
         self.addCleanup(self.stop_dashboard)

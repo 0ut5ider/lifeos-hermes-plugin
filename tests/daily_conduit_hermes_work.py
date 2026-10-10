@@ -9,10 +9,10 @@ import warnings
 from contextlib import redirect_stdout
 from datetime import datetime, timezone
 
-from gateway.session_context import clear_session_vars, set_session_vars
-from hermes_cli import plugins
 with warnings.catch_warnings(record=True) as import_warnings:
     warnings.simplefilter('always', SyntaxWarning)
+    from gateway.session_context import clear_session_vars, set_session_vars
+    from hermes_cli import plugins
     from model_tools import handle_function_call
     from tools.terminal_tool import cleanup_all_environments
 
