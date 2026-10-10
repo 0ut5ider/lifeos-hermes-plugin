@@ -4,6 +4,8 @@
 
 The daily Discord release uses one private server text channel. The [channel restriction controls](docs/verification/2026-10-07-private-channel/README.md) verify message, command, outbound delivery, and memory admission rules. The candidate is staged for testing. The live channel configuration and managed memory activation remain open.
 
+Adrian selects private-channel setup after creation of the separate daily guest. Local application acceptance continues on `.252`. Channel delivery and audience checks must pass on the daily guest before bot cutover or lasting-memory activation.
+
 The [managed proposal cleanup controls](docs/verification/2026-10-08-proposal-gc/README.md) govern native `ProposalGC` reads and writes. The gate passes 102 tests and 102 subtests, including real publication interruption and source changes. Other native writers and installed memory activation remain release gates.
 
 The [managed session consolidation controls](docs/verification/2026-10-08-session-harvest/README.md) connect the native harvester to admitted Hermes transcripts. They preserve private capture spans, exclude retired history, and recover interrupted learning publication. The gate passes 119 tests and 71 subtests. Installed scheduled-job authority and execution remain open.

@@ -268,6 +268,10 @@ class MemoryService:
     def _native_operation(self, context, operation, arguments, configuration, scope):
         try:
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'atlas_sync' and set(arguments) == {'collectors', 'scope'}:
+                from .memory_atlas_sync import run
+                return run(memory, scope, arguments['collectors'], arguments['scope'],
+                    check_current=lambda:self._check_current_context(configuration,context,scope))
             if operation == 'atlas_collect' and set(arguments) == {'collector'}:
                 from .memory_atlas import collect
                 return collect(memory, scope, **arguments,

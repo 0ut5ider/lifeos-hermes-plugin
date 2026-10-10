@@ -14477,3 +14477,96 @@ index f416aef..2e88e34 100755
    case "capture": {
      const n = runCapture();
      console.log(`captured ${n} event(s)`);
+diff --git a/LifeOS/install/LIFEOS/ATLAS/Atlas.ts b/LifeOS/install/LIFEOS/ATLAS/Atlas.ts
+index 871d2b3..549847d 100644
+--- a/LifeOS/install/LIFEOS/ATLAS/Atlas.ts
++++ b/LifeOS/install/LIFEOS/ATLAS/Atlas.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Runs native Atlas commands and routes managed synchronization through owner admission.
++// ABOUTME: Retains native collectors and reconciliation for standalone installations.
+ /**
+  * atlas — the LifeOS asset graph CLI.
+  *
+@@ -18,6 +20,7 @@
+  */
+ 
+ import { existsSync, readFileSync, renameSync } from "node:fs";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "../TOOLS/lib/MemoryAccess";
+ // ported from public PR #1740, @elhoim
+ import { atomicWriteText } from "../PULSE/lib/atomic-write";
+ import { EVENTS_PATH, SNAPSHOT_PATH, Store, type Collector } from "./Store";
+@@ -44,6 +47,12 @@ const COLLECTORS: Record<string, Collector> = Object.fromEntries(
+ const FULL_SYNC_INTERVAL_MS = 60 * 60 * 1000;
+ 
+ async function runSync(names: string[], scope: string): Promise<number> {
++  const admitted = memoryAccess("atlas_sync", {collectors: names, scope}, memoryObject);
++  if (admitted !== undefined) {
++    if (admitted.ok !== true || !Array.isArray(admitted.runs)) throw new Error("Atlas synchronization requires current owner admission");
++    console.log(JSON.stringify(admitted));
++    return 0;
++  }
+   const store = new Store();
+   let failures = 0;
+   try {
+@@ -108,9 +117,10 @@ switch (cmd) {
+     const targetedIdx = rest.indexOf("--targeted");
+     const scope = targetedIdx >= 0 ? `targeted:${rest[targetedIdx + 1] ?? "manual"}` : "full";
+     const names = rest.filter((a, i) => !a.startsWith("--") && (targetedIdx < 0 || i !== targetedIdx + 1));
+-    process.exit(await runSync(names.length ? names : Object.keys(COLLECTORS), scope));
++    process.exit(await runSync(names.length ? names : hasMemoryAccess() ? ["gear", "projects"] : Object.keys(COLLECTORS), scope));
+   }
+   case "tick": {
++    if (hasMemoryAccess()) throw new Error("Managed Atlas tick requires an admitted event scheduler; use atlas sync");
+     const handled = await processEvents();
+     const store = new Store();
+     const due = Date.now() - lastFullSyncAt(store) > FULL_SYNC_INTERVAL_MS;
+diff --git a/LifeOS/install/LIFEOS/ATLAS/Store.ts b/LifeOS/install/LIFEOS/ATLAS/Store.ts
+index 1a0f304..3a7a012 100644
+--- a/LifeOS/install/LIFEOS/ATLAS/Store.ts
++++ b/LifeOS/install/LIFEOS/ATLAS/Store.ts
+@@ -14,9 +14,10 @@
+  */
+ 
+ import { Database } from "bun:sqlite";
+-import { mkdirSync } from "node:fs";
++import { mkdirSync, mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
++import { hasMemoryAccess } from "../TOOLS/lib/MemoryAccess";
+ import { join } from "node:path";
+-import { homedir } from "node:os";
++import { homedir, tmpdir } from "node:os";
+ 
+ export const ATLAS_DIR = process.env.ATLAS_DIR ?? join(homedir(), ".local/state/lifeos/atlas");
+ export const DB_PATH = join(ATLAS_DIR, "atlas.db");
+@@ -133,6 +134,7 @@ export class Store {
+   db: Database;
+ 
+   constructor(path: string = DB_PATH, opts: { readonly?: boolean } = {}) {
++    if (!opts.readonly && hasMemoryAccess()) throw new Error("Managed Atlas writes require governed synchronization");
+     mkdirSync(ATLAS_DIR, { recursive: true });
+     this.db = new Database(path, opts.readonly ? { readonly: true } : { create: true });
+     if (!opts.readonly) {
+@@ -424,3 +426,23 @@ export function atlasGraphState(): {graph: Record<string, unknown[]>; metrics: u
+     store.close();
+   }
+ }
++
++export function atlasSyncPlan(database: string | null,
++    runs: Array<{collector: string; scope: string; result: CollectResult}>): {
++      database: string; snapshot: Record<string, unknown>; runs: Array<{collector: string; runId: number; swept: boolean}>;
++    } {
++  if (hasMemoryAccess()) throw new Error("Atlas planning requires an internal owner operation");
++  const directory = mkdtempSync(join(tmpdir(), "lifeos-atlas-"));
++  const path = join(directory, "atlas.db");
++  try {
++    if (database !== null) writeFileSync(path, Buffer.from(database, "base64"), {mode: 0o600});
++    const store = new Store(path);
++    try {
++      const applied = runs.map(run => ({collector: run.collector, ...store.applyRun(run.collector, run.scope, run.result)}));
++      const snapshot = store.exportSnapshot();
++      store.db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
++      store.db.exec("PRAGMA journal_mode=DELETE");
++      return {database: readFileSync(path).toString("base64"), snapshot, runs: applied};
++    } finally { store.close(); }
++  } finally { rmSync(directory, {recursive: true, force: true}); }
++}

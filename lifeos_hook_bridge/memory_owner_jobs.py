@@ -28,6 +28,7 @@ JOBS = {
     'conduit-capture': (('LIFEOS/PULSE/Conduit/conduit.ts', 'capture'),),
     'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
     'local-intelligence': (('skills/LocalIntelligence/Tools/Refresh.ts', '--fill'),),
+    'atlas-sync': (('LIFEOS/ATLAS/Atlas.ts', 'sync'),),
     'atlas-insights': (('LIFEOS/PULSE/modules/atlas.ts', '--build-insights'),),
     'algorithm-summaries': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries'),),
     'algorithm-summaries-force': (('LIFEOS/PULSE/modules/algorithm-tab.ts', '--build-summaries', '--force'),),

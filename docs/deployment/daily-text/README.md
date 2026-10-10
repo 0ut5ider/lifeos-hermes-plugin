@@ -2,6 +2,8 @@
 
 The staged `PULSE.user.toml` selects Adrian's first daily Discord release. It uses local job output until the private channel passes delivery acceptance. The [configuration gate](../../verification/2026-10-08-daily-pulse-profile/README.md) verifies native resolution and job execution. Installed scheduling and release acceptance remain open. Adrian selects only the main Pulse dashboard. Do not start or expose the separate Telos application. The Telos skill template can remain in the native source package; it does not establish a separately accepted service.
 
+Adrian selects private-channel setup after creation of the daily guest. Complete local application acceptance on `.252` first. Provision the separate daily guest, then create and verify its private Discord channel. Complete channel delivery and audience checks before bot cutover or lasting-memory activation on that guest. Keep `.252` as the development server.
+
 Audio and video processing move to the later voice release. Do not start the Content media runner for this text release. Main Pulse retains the governed Content board and its admitted board actions. A native run request records intent; it does not establish working extraction, transcription, or production.
 
 Use the actual Hermes dashboard for administration. The first-release profile disables the native Pulse Hermes core-file editor. Its legacy status and file routes do not have governed owner adapters. Adrian confirms this launch selection on October 10. It preserves the main Pulse personal dashboards and the governed gateway health readers. Do not enable the editor until its read and write routes pass current owner admission and publication checks.

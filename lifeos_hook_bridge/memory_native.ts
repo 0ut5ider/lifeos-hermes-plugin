@@ -258,6 +258,18 @@ async function main(): Promise<void> {
     const render = object(module) ? module[`collect${name}`] : undefined;
     if (typeof render !== 'function') throw new Error('Native Atlas collector exports are unavailable');
     result = render(input.content);
+  } else if (input.action === 'atlas_sync_plan') {
+    if (!(input.database === null || typeof input.database === 'string') || !Array.isArray(input.runs)
+        || input.runs.length < 1 || input.runs.length > 2 || input.runs.some(run => !object(run)
+          || typeof run.collector !== 'string' || !['gear', 'projects'].includes(run.collector)
+          || typeof run.scope !== 'string' || !/^[A-Za-z0-9:_./-]{1,128}$/.test(run.scope)
+          || !object(run.result) || typeof run.result.complete !== 'boolean'
+          || !Array.isArray(run.result.assets) || !Array.isArray(run.result.edges))) {
+      throw new Error('Choose admitted Atlas synchronization inputs');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/ATLAS/Store.ts')).href);
+    if (!object(module) || typeof module.atlasSyncPlan !== 'function') throw new Error('Native Atlas synchronization is unavailable');
+    result = module.atlasSyncPlan(input.database, input.runs);
   } else if (input.action === 'atlas_graph_state') {
     process.env.ATLAS_DIR = resolve(root, '../.local/state/lifeos/atlas');
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/ATLAS/Store.ts')).href);

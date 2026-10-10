@@ -197,6 +197,9 @@ class NativeMemory:
         return path
 
     def _publication_path(self, name: str) -> Path:
+        if name in {'atlas/graph.json', 'atlas/snapshot.json'}:
+            from .memory_atlas_sync import publication_path
+            return publication_path(self, name)
         if name.startswith(("LIFEOS/USER/", "LIFEOS/MEMORY/")):
             return self._path(name)
         from .memory_freshness import SYSTEM_PUBLICATIONS
@@ -401,6 +404,9 @@ class NativeMemory:
             return publication_paths(self, scope, payload)
         if payload['operation'] == 'atlas_insight':
             from .memory_atlas_insight import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'atlas_sync':
+            from .memory_atlas_sync import publication_paths
             return publication_paths(self, scope, payload)
         if payload['operation'] == 'conduit_command':
             from .memory_conduit_capture import publication_paths

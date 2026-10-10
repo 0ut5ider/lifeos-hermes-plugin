@@ -6,6 +6,11 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Add the governed Atlas sync owner command for admitted Gear and Projects sources.
+- Publish the native Atlas database and snapshot as one recoverable file group.
+- Preserve native asset identity, incomplete observations, and targeted-run sweep rules.
+- Keep Atlas insight recovery when source or destination changes occur after publication.
+
 ## 0.2.0 (release candidate)
 
 This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.

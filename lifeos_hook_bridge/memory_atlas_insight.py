@@ -18,7 +18,7 @@ from .memory_transaction import publish
 def _request(scope):
     authorize(scope)
     if not scope.principal or not CATEGORIES <= set(scope.write):
-        raise MemoryUnavailable('Atlas insight generation requires the current unrestricted owner writer')
+        raise MemoryUnavailable('Atlas publication requires the current unrestricted owner writer')
 
 
 def publication_paths(memory, scope, payload):
@@ -100,13 +100,19 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
         check_current()
         publish(memory._publication_path(CACHE), content)
         check_current()
-        published_snapshot = _snapshot(memory, scope, connection, check_current)
+        try:
+            published_snapshot = _snapshot(memory, scope, connection, check_current)
+        except MemoryConflict as error:
+            raise MemoryUnavailable('Atlas insight recheck requires publication recovery') from error
         for key in snapshot.keys() - {'sources'}:
             if published_snapshot[key] != snapshot[key]:
-                raise MemoryConflict('Atlas generation inputs change during publication')
+                raise MemoryUnavailable('Atlas generation inputs change during publication and require recovery')
         untouched = lambda record: [row for row in record['sources'][2] if row[0] != CACHE]
         if untouched(published_snapshot) != untouched(snapshot):
-            raise MemoryConflict('Atlas sources change during cache publication')
+            raise MemoryUnavailable('Atlas sources change during cache publication and require recovery')
+        if source_path(memory, CACHE).read_bytes() != content:
+            raise MemoryUnavailable('Atlas insight destination changes during publication and requires recovery')
+        check_current()
         return {'status': 'committed'}
     receipt = memory._operation(scope, 'atlas-insight-' + uuid4().hex, payload, apply,
         publication_digests={CACHE: hashlib.sha256(content).hexdigest()})
