@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/verify_prepared_sources.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 3.007704496383667,
+  "stdout": "{\"lifeos_manifest_valid\": true, \"lifeos_tree_sha256\": \"ee4912eab9e0509e66e0c6e699c1a94bb424c642ba4738f88bb013bf38313f8a\", \"hermes_manifest_tree_valid\": true, \"hermes_tree_sha256\": \"55af6de42da102bc3f25b0d0165cd111780d9b56427afc62ef4cf51df94d76dc\"}\n",
+  "stderr": ""
+}

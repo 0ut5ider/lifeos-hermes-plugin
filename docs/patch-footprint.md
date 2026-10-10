@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The bundle uses eleven Hermes patch groups and twenty-three LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
+The current bundle uses eleven Hermes patch groups and twenty-five LifeOS patches, for 36 total patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation. The [conditional Hermes upgrade record](../notes/2026-10-10-conditional-hermes-patch-reduction.md) describes one possible removal and the checks required before reducing the count to 35.
 
 ## Hermes patch groups
 

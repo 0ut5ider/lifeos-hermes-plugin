@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/probe_batch_revocation.py",
+    "knowledge-harvest"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.4586517810821533,
+  "stdout": "{\n  \"operation\": \"knowledge_harvest\",\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"before\": {\n    \"queue\": \"{\\\"sourcePath\\\": \\\"synthetic-manual-source\\\", \\\"title\\\": \\\"Synthetic staged knowledge\\\", \\\"content\\\": \\\"Synthetic declared knowledge for source mining.\\\", \\\"domain\\\": \\\"Ideas\\\", \\\"type\\\": \\\"idea\\\", \\\"tags\\\": [\\\"synthetic\\\"]}\"\n  },\n  \"after\": {\n    \"queue_exists\": false,\n    \"note_exists\": true,\n    \"state_exists\": true\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/Ideas/synthetic-staged-knowledge.md\",\n      \"content\": \"---\\ntitle: \\\"Synthetic staged knowledge\\\"\\ntype: idea\\ndomain: ideas\\ntags: [synthetic]\\ncreated: 2026-10-10\\nupdated: 2026-10-10\\nquality: 5\\nstatus: pending-review\\nharvested_from: synthetic-manual-source\\n---\\n\\n# Synthetic staged knowledge\\n\\nSynthetic declared knowledge for source mining.\\n\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/.harvest-state.json\",\n      \"content\": \"{\\n  \\\"lastHarvest\\\": \\\"2026-10-10T13:31:33.899Z\\\",\\n  \\\"harvestedPaths\\\": [\\n    \\\"synthetic-manual-source\\\"\\n  ],\\n  \\\"totalHarvested\\\": 0\\n}\"\n    }\n  ],\n  \"accounts\": {},\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"synthetic-midpublication-revocation\",\n      \"payload_digest\": \"4e62efdde92b96d53eaaf79ae60c69bb5be37049ef94007de5df3011e91986a6\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"notes_staged\\\": 1, \\\"notes_archived\\\": 0, \\\"stdout\\\": \\\"\\\\ud83c\\\\udf3e Knowledge Harvester\\\\n\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\n  RESEARCH/: 0 candidates\\\\n  Queue: 1 candidates\\\\n\\\\n  After dedup: 1 candidates\\\\n  Harvesting: 1 (max 20/run)\\\\n\\\\n  \\\\ud83d\\\\udce5 staged: _harvest-queue/Ideas/synthetic-staged-knowledge.md\\\\n\\\\n  \\\\u2705 Harvest complete. 1 note(s) staged to _harvest-queue/.\\\\n  Review with `review`, then `promote <slug>` (or `promote --all`) / `reject <slug>`.\\\\n\\\", \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"synthetic-midpublication-revocation\\\"}\"\n    }\n  ]\n}\n",
+  "stderr": ""
+}

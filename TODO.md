@@ -1,5 +1,6 @@
 # Project todos
 
+- [ ] Qualify a coherent Hermes upgrade that can remove `hermes-protected-instruction-approval.patch`. This can reduce the bundle from 36 to 35 patches. Keep all 36 patches on the current pins. Require complete source preparation, unattended refusal, interactive approval, and integration regression checks before changing the pin or removing the patch. See the [conditional patch reduction record](notes/2026-10-10-conditional-hermes-patch-reduction.md).
 - [ ] Install and update the complete LifeOS integration from Hermes. Deferred from the first daily-use release. See the [installation and update assessment](notes/2026-10-03-hermes-managed-install-update.md).
 - [ ] Complete Discord voice input and spoken replies after the first daily-use text release.
 - [ ] Add native Content audio and video processing with the later voice release. Verify extraction, transcription, runner control, and actual media outputs before enabling the runner.

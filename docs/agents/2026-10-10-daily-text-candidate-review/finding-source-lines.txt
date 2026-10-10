@@ -1,0 +1,238 @@
+
+lifeos_hook_bridge/memory_session_harvest.py
+139:             or session is not None and (not isinstance(session, str) or re.fullmatch(r'[A-Za-z0-9._-]{1,180}', session) is None)
+140:             or projects_dir is not None):
+141:         raise ValueError('Managed consolidation uses current Hermes transcripts and bounded native selection options')
+142:     if not dry_run and not {'principal', 'assistant', 'project'} <= set(scope.write):
+143:         raise MemoryUnavailable('Session consolidation requires unrestricted owner write access')
+144:     options = {'recent':recent, 'all':all, 'session':session}
+145:     with memory._transaction() as connection:
+146:         snapshot = _collect(memory, scope, configuration, profile, options, connection, session_scope)
+147:         result = memory._native('session_harvest', sessions=[{'path':row['path'], 'content':row['content']}
+148:             for row in snapshot['sessions']], mine=mine, now=datetime.now(timezone.utc).isoformat())
+149:         if (set(result) != {'count','writes'} or type(result['count']) is not int or result['count'] < 0
+150:                 or not isinstance(result['writes'], list) or len(result['writes']) > SOURCE_COUNT_LIMIT
+151:                 or any(not isinstance(row, dict) or set(row) != {'file','content'}
+152:                        or not isinstance(row['file'], str) or not isinstance(row['content'], str)
+153:                        or len(row['content'].encode()) > SOURCE_LIMIT for row in result['writes'])):
+154:             raise MemoryUnavailable('Native session consolidation changes its publication contract')
+155:         if _collect(memory, scope, configuration, profile, options, connection, session_scope) != snapshot:
+156:             raise MemoryConflict('Session transcripts change during native consolidation')
+157:         check_current()
+158:     files = list(dict.fromkeys(row['file'] for row in result['writes']))
+159:     if dry_run:
+160:         return {'ok':True, 'count':result['count'], 'sessions':len(snapshot['sessions']), 'files':[], 'status':'preview'}
+161:     payload = {'operation':'session_harvest', 'source_revision':snapshot['source_revision'],
+162:                'states_revision':snapshot['states_revision'], 'mine':mine, 'files':files, 'scope':scope.signature}
+163: 
+164:     def commit(connection):
+165:         if _collect(memory, scope, configuration, profile, options, connection, session_scope) != snapshot:
+166:             raise MemoryConflict('Session transcripts change before consolidation publication')
+167:         check_current()
+168:         publication_paths(memory, scope, payload)
+169:         saved = []
+170:         for row in result['writes']:
+171:             path = _target(memory, row['file'])
+172:             if not path.exists():
+173:                 if memory._filter_history(connection, scope, row['content'],
+174:                         datetime.now(timezone.utc).isoformat(), reviewed=True)['excluded']:
+175:                     raise MemoryUnavailable('Native session consolidation contains retired content')
+176:                 publish(path, row['content'].encode())
+177:                 saved.append(row['file'])
+178:         return {'status':'committed' if saved else 'unchanged', 'files':saved,
+179:                 'count':result['count'], 'sessions':len(snapshot['sessions'])}
+180: 
+181:     receipt = memory._operation(scope, 'session-harvest-' + _signature(payload), payload, commit)
+182:     return {'ok':receipt['status'] in ('committed','unchanged'), 'count':receipt.get('count', 0),
+183:             'sessions':receipt.get('sessions', 0), 'files':receipt.get('files', []), 'status':receipt['status']}
+
+lifeos_hook_bridge/memory_proposal_gc.py
+88:             raise MemoryConflict('Proposal cleanup sources change before publication')
+89:         check_current()
+90:         publication_paths(memory, scope, payload)
+91:         for row in result['writes']:
+92:             publish(_target(memory, row['file']), row['content'].encode())
+93:         log = _target(memory, LOG)
+94:         previous = log.read_bytes() if log.exists() else b''
+95:         entry = {'ts':datetime.now(timezone.utc).isoformat(), 'applied':True, 'auto':auto,
+96:                  'removed':len(result['removals']), 'byReason':dict(Counter(row['reason'] for row in result['removals'])),
+97:                  'skipped':result['skipped']}
+98:         content = previous + (json.dumps(entry) + '\n').encode()
+99:         if len(content) > SOURCE_LIMIT:
+100:             raise MemoryUnavailable('Proposal cleanup log exceeds its supported size')
+101:         publish(log, content)
+102:         return {'status':'committed', 'artifacts':len(result['writes'])}
+103: 
+104:     receipt = memory._operation(scope, 'proposal-gc-' + uuid4().hex, payload, commit)
+105:     return {'ok':receipt['status'] == 'committed', 'removals':result['removals'],
+106:             'skipped':result['skipped'], 'routes':result['routes'], 'artifacts':receipt.get('artifacts', 0)}
+
+lifeos_hook_bridge/memory_knowledge_harvest.py
+232:         if any(memory._filter_history(connection, scope, text, now)['excluded'] for text in writes.values()):
+233:             raise MemoryUnavailable('Native Knowledge output contains an excluded claim')
+234:         publication = {'writes':writes, 'deletes':deletes, 'moves':moves}
+235:         payload = {**identity, 'plan':publication}
+236:         publication_paths(memory, scope, payload)
+237:     def apply(connection):
+238:         if check_current is not None:
+239:             check_current()
+240:         if _snapshot(memory) != snapshot:
+241:             return {'status':'conflict', 'reason':'Knowledge sources change before publication'}
+242:         for relative,text in writes.items():
+243:             publish(_file(memory,relative), text.encode())
+244:         for move in moves:
+245:             connection.execute("UPDATE records SET path=?,status='superseded',revision=revision+1,updated=? WHERE path=? AND status='active'",
+246:                                (move['path'],_now(),move['source']))
+247:             connection.execute('UPDATE records SET path=? WHERE path=?', (move['path'],move['source']))
+248:         for relative in deletes:
+249:             _file(memory,relative).unlink()
+250:         output = plan['stdout']
+251:         projection = output+'\n'+output.replace('_',' ').replace('-',' ')
+252:         if memory._filter_history(connection, scope, projection, datetime.now(timezone.utc).isoformat())['excluded']:
+253:             output = 'Native Knowledge publication completes under current memory policy.\n'
+254:         return {'status':'committed' if writes or deletes else 'unchanged', 'notes_staged':len(staged),
+255:                 'notes_archived':len(moves), 'stdout':output}
+256:     receipt = memory._operation(scope, request_id, payload, apply, identity_payload=identity)
+257:     return {'ok':receipt['status'] in ('committed','unchanged'), 'receipt':receipt}
+
+lifeos_hook_bridge/memory_algorithm_edit.py
+169:     def apply(connection):
+170:         check_current()
+171:         if (_retirement_digest(connection) != retired
+172:                 or _collect(memory, scope, connection, '/api/algorithm-tab', catalog) != admitted):
+173:             raise MemoryConflict('Algorithm sources change before native edit publication')
+174:         publication_paths(memory, scope, payload)
+175:         for name, text in changes.items():
+176:             check_current()
+177:             publish(memory._publication_path(name), text.encode())
+178:         check_current()
+179:         if not _matches(memory, admitted, changes):
+180:             raise MemoryConflict('Algorithm publication preserves later source edits')
+181:         if target.endswith('/file'):
+182:             name = next(iter(changes))
+183:             message = 'fix(algorithm): save file\n\nThe owner saves ' + name + '.'
+184:         else:
+185:             message = 'feat(algorithm): publish doctrine\n\nThe owner publishes version ' + response['version'] + '.\n' + body['note'].strip().split('\n')[0][:100]
+186:         response['commit'] = memory._native('algorithm_edit_commit', paths=list(changes), message=message)
+187:         check_current()
+188:         if not _matches(memory, admitted, changes) or _retirement_digest(connection) != retired:
+189:             raise MemoryConflict('Algorithm commit preserves later source and authority changes')
+190:         if target.endswith('/file'):
+191:             info = memory._publication_path(next(iter(changes))).stat()
+192:             seconds, milliseconds = divmod(int(info.st_mtime_ns / 1000000), 1000)
+193:             response['mtime'] = datetime.fromtimestamp(seconds, timezone.utc).isoformat(timespec='seconds').replace(
+194:                 '+00:00', f'.{milliseconds:03d}Z')
+195:         _output(memory, scope, connection, response)
+196:         return {'status': 'committed', 'response': response}
+197:     receipt = memory._operation(scope, 'algorithm-edit-' + uuid4().hex, payload, apply,
+198:         publication_digests={name: hashlib.sha256(text.encode()).hexdigest() for name, text in changes.items()})
+199:     check_current()
+200:     if receipt['status'] != 'committed': raise MemoryUnavailable('Algorithm edit publication needs recovery')
+201:     with memory._transaction() as connection:
+202:         check_current()
+203:         if _retirement_digest(connection) != retired or not _matches(memory, admitted, changes):
+204:             raise MemoryUnavailable('Algorithm delivery preserves later source and authority changes')
+205:         _output(memory, scope, connection, receipt['response'])
+206:         check_current()
+207:     return {'status': 200, 'body': receipt['response']}
+
+lifeos_hook_bridge/memory_access.py
+123:             os.chmod(self.database, 0o600)
+124:             return connection
+125:         except BaseException:
+126:             connection.close()
+127:             raise
+128: 
+129:     @contextmanager
+130:     def _transaction(self):
+131:         self._boundary()
+132:         with self.transaction.lock():
+133:             connection = self._connect()
+134:             try:
+135:                 self.transaction.recover(connection)
+136:                 connection.execute("BEGIN IMMEDIATE")
+137:                 yield connection
+138:                 connection.commit()
+139:                 self.transaction.finish()
+140:             except BaseException:
+141:                 connection.rollback()
+142:                 raise
+143:             finally:
+
+lifeos_hook_bridge/memory_access.py
+348:         if not isinstance(request_id, str) or not request_id or len(request_id) > 256:
+349:             return {"status": "rejected", "reason": "A bounded request identifier is required"}
+350:         payload_digest = _digest(json.dumps(payload if identity_payload is None else identity_payload, sort_keys=True))
+351:         reserved = False
+352:         try:
+353:             with self._transaction() as connection:
+354:                 prior = connection.execute("SELECT * FROM operations WHERE writer=? AND request_id=?",
+355:                                            (scope.writer, request_id)).fetchone()
+356:                 if prior is not None:
+357:                     if prior["payload_digest"] != payload_digest:
+358:                         return {"status": "conflict", "reason": "This request identifier names another operation"}
+359:                     return json.loads(prior["receipt"])
+360:                 unknown = {"status": "unknown", "reason": "The operation outcome needs recovery before retry",
+361:                            "writer": scope.writer, "request_id": request_id}
+362:                 paths = self._publication_paths(connection, scope, payload)
+363:                 self.transaction.prepare(scope.writer, request_id, paths, expected=publication_digests)
+364:                 connection.execute("INSERT INTO operations VALUES (?,?,?,?)",
+365:                                    (scope.writer, request_id, payload_digest, json.dumps(unknown)))
+366:                 connection.commit()
+367:                 reserved = True
+368:                 connection.execute("BEGIN IMMEDIATE")
+369:                 try:
+370:                     receipt = callback(connection)
+371:                 except MemoryConflict as error:
+372:                     receipt = {"status": "conflict", "reason": str(error)}
+373:                 receipt.setdefault("writer", scope.writer)
+374:                 receipt.setdefault("request_id", request_id)
+375:                 connection.execute("UPDATE operations SET receipt=? WHERE writer=? AND request_id=?",
+376:                                    (json.dumps(receipt), scope.writer, request_id))
+377:                 self.transaction.flush_publication()
+378:                 return receipt
+379:         except MemoryConflict as error:
+380:             return {"status": "conflict", "reason": str(error), "writer": scope.writer, "request_id": request_id}
+381:         except (MemoryUnavailable, OSError, sqlite3.Error, subprocess.TimeoutExpired) as error:
+382:             return {"status": "unknown" if reserved else "rejected",
+
+lifeos_hook_bridge/memory_transaction.py
+191:                     base64.b64decode(copy['data'], validate=True)
+192:             except ValueError as error:
+193:                 raise MemoryUnavailable('The publication recovery journal has invalid recovery bytes') from error
+194:             self.resolve(copy['path'])
+195:         row = connection.execute("SELECT receipt FROM operations WHERE writer=? AND request_id=?",
+196:                                  (operation["writer"], operation["request_id"])).fetchone()
+197:         if row is not None and json.loads(row["receipt"])["status"] != "unknown":
+198:             if 'moves' in operation:
+199:                 self.moves.finish(operation['moves'])
+200:             self.journal.unlink()
+201:             return
+202:         expected = any('after_digest' in copy for copy in operation['copies'])
+203:         if expected:
+204:             for copy in operation['copies']:
+205:                 self._check_restore(copy)
+206:         if 'moves' in operation:
+207:             self.moves.recovery_check(operation['moves'])
+208:         self._preserve_current(operation)
+209:         if 'moves' in operation:
+210:             self.moves.recover(operation['moves'])
+211:         for copy in operation["copies"]:
+212:             if expected:
+213:                 self._check_restore(copy)
+214:             path = self.resolve(copy["path"])
+215:             if copy["data"] is None:
+216:                 path.unlink(missing_ok=True)
+217:             else:
+218:                 publish(path, base64.b64decode(copy["data"], validate=True), mode=copy.get('mode', 0o600))
+219:         connection.execute("DELETE FROM operations WHERE writer=? AND request_id=?",
+220:                            (operation["writer"], operation["request_id"]))
+221:         connection.commit()
+222:         self.journal.unlink()
+223: 
+224:     def finish(self) -> None:
+225:         if self.journal.exists():
+226:             operation = json.loads(self.journal.read_text())
+227:             if 'moves' in operation:
+228:                 self.moves.finish(operation['moves'])
+229:         self.journal.unlink(missing_ok=True)

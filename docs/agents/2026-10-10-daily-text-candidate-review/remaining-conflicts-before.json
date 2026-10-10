@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_later_log_edit_during_start_retains_unknown_receipt_and_recovery",
+    "test_memory_conduit_insight.MemoryConduitInsightTests.test_event_change_after_insight_write_retains_recovery_and_later_events"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 2.227221965789795,
+  "stdout": "",
+  "stderr": "FF\n======================================================================\nFAIL: test_later_log_edit_during_start_retains_unknown_receipt_and_recovery (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_later_log_edit_during_start_retains_unknown_receipt_and_recovery)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_runs.py\", line 57, in test_later_log_edit_during_start_retains_unknown_receipt_and_recovery\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_event_change_after_insight_write_retains_recovery_and_later_events (test_memory_conduit_insight.MemoryConduitInsightTests.test_event_change_after_insight_write_retains_recovery_and_later_events)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py\", line 225, in test_event_change_after_insight_write_retains_recovery_and_later_events\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 2 tests in 2.106s\n\nFAILED (failures=2)\n"
+}

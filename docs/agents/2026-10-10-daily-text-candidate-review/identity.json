@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/collect_review_identity.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.17983579635620117,
+  "stdout": "{\n  \"head\": \"bf53c16dd23d72c9824843cbb85f31db5a48e723\",\n  \"tracked_status\": \"\",\n  \"patch_count\": 36,\n  \"patches_equal\": true,\n  \"registries_equal\": true,\n  \"native_comparisons\": [\n    {\n      \"relative\": \"LIFEOS/TOOLS/lib/MemoryAccess.ts\",\n      \"prepared_sha256\": \"57ff995c14f816d1cc9491127c811b90b00b125af17c0766830f784b81ff0904\",\n      \"test_source_sha256\": \"57ff995c14f816d1cc9491127c811b90b00b125af17c0766830f784b81ff0904\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/TOOLS/SessionHarvester.ts\",\n      \"prepared_sha256\": \"374f7b0d5cdda0692553614871e710fa55f0b06d7a0d1de2447e5f5d4b4b1453\",\n      \"test_source_sha256\": \"374f7b0d5cdda0692553614871e710fa55f0b06d7a0d1de2447e5f5d4b4b1453\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/TOOLS/ProposalGC.ts\",\n      \"prepared_sha256\": \"86ebc5322415d599584fa23c9ecf8230cbcb8be15a0e53b434e865fbc4879dfd\",\n      \"test_source_sha256\": \"86ebc5322415d599584fa23c9ecf8230cbcb8be15a0e53b434e865fbc4879dfd\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/TOOLS/KnowledgeHarvester.ts\",\n      \"prepared_sha256\": \"28ffbc1f91235078489de57cbddf650d105df814c6617a8ce6f74517ba55da76\",\n      \"test_source_sha256\": \"28ffbc1f91235078489de57cbddf650d105df814c6617a8ce6f74517ba55da76\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/PULSE/modules/algorithm-tab.ts\",\n      \"prepared_sha256\": \"f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f\",\n      \"test_source_sha256\": \"f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/PULSE/modules/user-index.ts\",\n      \"prepared_sha256\": \"492bc5c0200b5f4696f616452b88d85fc4aed0412d9fe60534b1c3356c533f8d\",\n      \"test_source_sha256\": \"492bc5c0200b5f4696f616452b88d85fc4aed0412d9fe60534b1c3356c533f8d\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/PULSE/modules/content.ts\",\n      \"prepared_sha256\": \"879bcf11ade72c46ca251cb9f8e61edcdb8b7cbc47f927874dbea679d2b970b1\",\n      \"test_source_sha256\": \"879bcf11ade72c46ca251cb9f8e61edcdb8b7cbc47f927874dbea679d2b970b1\",\n      \"equal\": true\n    }\n  ],\n  \"diff_check_exit\": 0\n}\n",
+  "stderr": ""
+}

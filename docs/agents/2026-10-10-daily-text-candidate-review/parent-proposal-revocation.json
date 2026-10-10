@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/probe_batch_revocation.py",
+    "proposal-gc"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.7051684856414795,
+  "stdout": "{\n  \"operation\": \"proposal_gc\",\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"before\": {\n    \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\": \"---\\nprovenance: template\\nlast_updated: 2000-01-01\\n---\\n# Synthetic rules\\n\\n## Memory-System Proposals\\n- Synthetic private cleanup marker [SUPERSEDED]\\n- Keep the distinct synthetic rule.\\n- Keep the distinct synthetic rule. <!-- applied: 2026-10-07 -->\\n\",\n    \"LIFEOS/USER/PROJECTS.md\": \"## Memory-System Proposals\\n- Synthetic expired project rule [SUPERSEDED]\\n- Keep current synthetic project rule.\\n\"\n  },\n  \"after\": {\n    \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\": \"---\\nprovenance: customized\\nlast_updated: 2026-10-10T13:31:33.924Z\\nlast_updated_by: proposal-gc\\n---\\n# Synthetic rules\\n\\n## Memory-System Proposals\\n- Keep the distinct synthetic rule. <!-- applied: 2026-10-07 -->\\n\",\n    \"LIFEOS/USER/PROJECTS.md\": \"---\\nlast_updated: 2026-10-10T13:31:33.924Z\\nlast_updated_by: proposal-gc\\n---\\n\\n## Memory-System Proposals\\n- Keep current synthetic project rule.\\n\"\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\",\n      \"content\": \"---\\nprovenance: customized\\nlast_updated: 2026-10-10T13:31:33.924Z\\nlast_updated_by: proposal-gc\\n---\\n# Synthetic rules\\n\\n## Memory-System Proposals\\n- Keep the distinct synthetic rule. <!-- applied: 2026-10-07 -->\\n\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/USER/PROJECTS.md\",\n      \"content\": \"---\\nlast_updated: 2026-10-10T13:31:33.924Z\\nlast_updated_by: proposal-gc\\n---\\n\\n## Memory-System Proposals\\n- Keep current synthetic project rule.\\n\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/OBSERVABILITY/proposal-gc.jsonl\",\n      \"content\": \"{\\\"ts\\\": \\\"2026-10-10T13:31:34.252354+00:00\\\", \\\"applied\\\": true, \\\"auto\\\": true, \\\"removed\\\": 3, \\\"byReason\\\": {\\\"superseded\\\": 2, \\\"exact-dup\\\": 1}, \\\"skipped\\\": []}\\n\"\n    }\n  ],\n  \"accounts\": {},\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"proposal-gc-4947272b43c648cd97a1afbf8bffaef6\",\n      \"payload_digest\": \"17fa781f794212893ceb042530ee85a388d89e325abba69cedac1748101168cb\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"artifacts\\\": 2, \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"proposal-gc-4947272b43c648cd97a1afbf8bffaef6\\\"}\"\n    }\n  ]\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_conflict.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 4.04692530632019,
+  "stdout": "{\n  \"result\": {\n    \"exception\": \"MemoryUnavailable\",\n    \"message\": \"Algorithm edit publication needs recovery\"\n  },\n  \"observed_publications\": [\n    \"LIFEOS/ALGORITHM/v3.2.2.md\",\n    \"LIFEOS/ALGORITHM/changelog.md\",\n    \"LIFEOS/ALGORITHM/LATEST\"\n  ],\n  \"files\": {\n    \"LATEST\": \"3.2.2\\n\",\n    \"changelog.md\": \"# Synthetic history\\n\\n- **v3.2.2 changelog (Synthetic requested version, PATCH):** edited via the Pulse Algorithm tab, 2026-10-10. Synthetic requested version. Migration: `echo 3.2.2 > LATEST` (done). Rollback: `echo 3.2.1 > LATEST`.\\n\\n\",\n    \"v3.2.2.md\": \"# The Algorithm 3.2.2\\n\\nSynthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. \",\n    \"v3.2.1.md\": \"Synthetic later owner edit to the prior source.\\n\"\n  },\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"local:owner\",\n      \"request_id\": \"algorithm-edit-71bb7b8df563490d8b69253f8897f53e\",\n      \"payload_digest\": \"6d7fe154513d614b059c02a9eef8be24fe1b99c65097db63901e6317d0b41131\",\n      \"receipt\": \"{\\\"status\\\": \\\"conflict\\\", \\\"reason\\\": \\\"Algorithm publication preserves later source edits\\\", \\\"writer\\\": \\\"local:owner\\\", \\\"request_id\\\": \\\"algorithm-edit-71bb7b8df563490d8b69253f8897f53e\\\"}\"\n    }\n  ]\n}\n",
+  "stderr": ""
+}

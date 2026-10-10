@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/probe_unmanaged_compatibility.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.21099424362182617,
+  "stdout": "[\n  {\n    \"operation\": \"reject\",\n    \"exit_code\": 0,\n    \"stdout\": \"  \\ud83d\\uddd1  rejected: Research/synthetic-staged-note.md\\n\",\n    \"stderr\": \"\"\n  },\n  {\n    \"operation\": \"promote\",\n    \"exit_code\": 0,\n    \"stdout\": \"  \\u2705 promoted: Research/synthetic-staged-note.md\\n\\n  \\ud83d\\udcd1 Regenerating MOCs...\\n     Research/_index.md\\n     _index.md (master)\\n\",\n    \"stderr\": \"\"\n  },\n  {\n    \"operation\": \"harvest\",\n    \"exit_code\": 0,\n    \"stdout\": \"\\ud83c\\udf3e Knowledge Harvester\\n\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n  RESEARCH/: 0 candidates\\n  Queue: 1 candidates\\n\\n  After dedup: 1 candidates\\n  Harvesting: 1 (max 5/run)\\n\\n  \\ud83d\\udce5 staged: _harvest-queue/Ideas/synthetic-staged-knowledge.md\\n\\n  \\u2705 Harvest complete. 1 note(s) staged to _harvest-queue/.\\n  Review with `review`, then `promote <slug>` (or `promote --all`) / `reject <slug>`.\\n\",\n    \"stderr\": \"\"\n  }\n]\n",
+  "stderr": ""
+}

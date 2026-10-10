@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/probe_harvest_revocation.py",
+    "--default"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.21520447731018066,
+  "stdout": "{\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1201_correction_syntheti.md\",\n      \"body\": \"# Correction Learning\\n\\n**Session:** synthetic-second-session\\n**Timestamp:** 2026-10-08T12:01:00+00:00\\n**Category:** ALGORITHM\\n**Source Pattern:** actually,?\\\\s+\\n**Provenance:** source=hermes channel=transcript captured_at=2026-10-08T12:01:00+00:00 session_id=synthetic-second-session\\n\\n---\\n\\n## Context\\n\\n\\n\\n## Learning\\n\\nActually, I meant to keep synthetic receipts for this lab.\\n\\n---\\n\\n*Harvested by SessionHarvester from Hermes transcript*\\n\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1200_correction_native-s.md\",\n      \"body\": \"# Correction Learning\\n\\n**Session:** native-session\\n**Timestamp:** 2026-10-08T12:00:00+00:00\\n**Category:** ALGORITHM\\n**Source Pattern:** actually,?\\\\s+\\n**Provenance:** source=hermes channel=transcript captured_at=2026-10-08T12:00:00+00:00 session_id=native-session\\n\\n---\\n\\n## Context\\n\\n\\n\\n## Learning\\n\\nActually, I meant to use the synthetic safe port for this lab.\\n\\n---\\n\\n*Harvested by SessionHarvester from Hermes transcript*\\n\"\n    }\n  ],\n  \"current_accounts\": {},\n  \"learning_files\": [\n    \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1200_correction_native-s.md\",\n    \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1201_correction_syntheti.md\"\n  ],\n  \"candidate_files\": [],\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"session-harvest-50938473ea08e1832cf52c9cb2a624f5339af10f94f09a980bb55105c56afbc4\",\n      \"payload_digest\": \"05d581b08afb9b4854b60da5dfd4dad11e45aa095ebc1b575e2762d7f23e6398\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"files\\\": [\\\"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1201_correction_syntheti.md\\\", \\\"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1200_correction_native-s.md\\\"], \\\"count\\\": 2, \\\"sessions\\\": 2, \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"session-harvest-50938473ea08e1832cf52c9cb2a624f5339af10f94f09a980bb55105c56afbc4\\\"}\"\n    }\n  ]\n}\n",
+  "stderr": ""
+}
