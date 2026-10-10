@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Start fresh personal sections without shipped example goals, health records, finances, gear, projects, or companies.
+- Retain the exact personal templates outside the active user tree for fresh-store review. Preserve existing stores.
+
 - Admit complete planned Atlas graphs and snapshots before publication. Refuse projection, row, and byte limits without replacing live artifacts.
 - Report Atlas capacity dimensions and warnings at 80 percent of each selected limit.
 - Synchronize Atlas daily at 06:50 through the current owner command. Refresh before dashboard narrative regeneration.

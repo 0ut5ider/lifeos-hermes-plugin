@@ -1,6 +1,8 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.1.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Version:** `0.2.0` (release candidate). See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+
+Fresh-store preparation leaves personal TELOS, health, finance, work, gear, and project sections empty. It retains native section headings and template metadata. It stores the exact examples outside the active user tree for review, and omits the three example company and customer directories. Existing stores keep their data.
 
 The daily Discord release uses one private server text channel. The [channel restriction controls](docs/verification/2026-10-07-private-channel/README.md) verify message, command, outbound delivery, and memory admission rules. The candidate is staged for testing. The live channel configuration and managed memory activation remain open.
 

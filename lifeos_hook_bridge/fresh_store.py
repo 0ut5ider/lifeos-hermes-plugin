@@ -31,6 +31,38 @@ IDENTITY_FILES=('CONFIG/LIFEOS_CONFIG.toml','PRINCIPAL/PRINCIPAL_IDENTITY.md',
                 'DIGITAL_ASSISTANT/DA_IDENTITY.md')
 
 
+PERSONAL_DIRECTORIES=frozenset({'TELOS','HEALTH','FINANCES','WORK'})
+EXAMPLE_DIRECTORIES=('WORK/SAMPLE_CONSULTING','WORK/SAMPLE_CUSTOMER',
+                     'WORK/YOUR_COMPANIES/SAMPLE_COMPANY')
+
+
+def _empty_personal_templates(user,destination):
+    emptied=[];omitted=[]
+    for path in sorted(user.rglob('*.md')):
+        relative=path.relative_to(user)
+        if relative.parts[0] not in PERSONAL_DIRECTORIES and relative.as_posix() not in {'GEAR.md','PROJECTS.md'}:
+            continue
+        data,_=_read(path)
+        text=data.decode()
+        front=re.match(r'\A---\n(.*?)\n---\n',text,re.S)
+        if front is None or not re.search(r'^provenance: template$',front[1],re.M):
+            raise MemoryUnavailable('Fresh personal sections require declared native templates')
+        publish(destination/'template-originals'/relative,data)
+        if any(relative.is_relative_to(Path(directory)) for directory in EXAMPLE_DIRECTORIES):
+            path.unlink()
+            omitted.append(relative.as_posix())
+            continue
+        headings=[line for line in text[front.end():].splitlines()
+                  if re.match(r'^#{1,6} ',line) and not re.search(r'sample|placeholder',line,re.I)]
+        rendered=text[:front.end()]+'\n'+'\n\n'.join(headings)+'\n'
+        publish(path,rendered.encode())
+        emptied.append(relative.as_posix())
+    for directory in EXAMPLE_DIRECTORIES:
+        path=user/directory
+        if path.exists():path.rmdir()
+    return emptied,omitted
+
+
 def _name(value):
     if (not isinstance(value,str) or not value.strip() or value!=value.strip() or len(value)>128
             or any(not (character.isalnum() or character in " .'-()") for character in value)):
@@ -271,6 +303,7 @@ class FreshStore:
                     rendered=data.decode().replace('LifeOS Assistant',assistant).replace('LifeOS',assistant)
                     rendered=re.sub(r'\bUser\b',lambda _:principal,rendered).encode()
                 publish(user/name,rendered)
+            emptied,omitted=_empty_personal_templates(user,destination)
             for path in user.rglob('*'):
                 info=path.lstat()
                 os.chmod(path,stat.S_IMODE(info.st_mode)&0o700,follow_symlinks=False)
@@ -284,6 +317,7 @@ class FreshStore:
                 raise MemoryUnavailable('The reviewed source or owner changes during fresh store preparation')
             document.update(state='review',installed=str(installed),data=str(user),
                 retained_hermes_files=['memories/MEMORY.md','memories/USER.md'],installation=installation,
+                empty_personal_templates=emptied,omitted_personal_templates=omitted,
                 active_facts=active,source_template_files=len(templates),files=_files(user),
                 activation_ready=False,return_installation=str(self.installed))
             document['signature']=hashlib.sha256((json.dumps(document,sort_keys=True,indent=2)+'\n').encode()).hexdigest()
