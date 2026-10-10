@@ -9,7 +9,7 @@ Keep it equal to the version in both plugin manifests.
 ## 0.2.0 (release candidate)
 
 This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
-Private-channel acceptance, remaining browser actions, final package checks, and combined review remain open.
+Private-channel acceptance, Atlas graph initialization, final package checks, and combined review remain open.
 
 - Select the main Pulse dashboard and defer audio and video processing with voice.
 - Verify actual private-model memory write and search across separate installed Hermes sessions.
@@ -21,6 +21,7 @@ Private-channel acceptance, remaining browser actions, final package checks, and
 - Correct native Mount list indentation, Pulse shutdown waiting, and strict daemon types.
 - Admit bounded owner-job output through its four MiB byte limit. Preserve reviewer limits and complete retirement filtering.
 - Send complete Algorithm overview prompts through the shared inference function. Avoid Linux argument limits.
+- Complete native Content action responses and display HTTP failures. Verify actual browser owner refusal and restoration.
 
 The following changes also belong to this candidate:
 

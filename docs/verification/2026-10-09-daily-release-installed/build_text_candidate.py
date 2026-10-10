@@ -15,7 +15,7 @@ repository = Path(__file__).resolve().parents[3]
 evidence = Path(__file__).resolve().parent
 cache = Path('/home/outsider/.cache/lifeos-daily-text-20261007')
 parser = argparse.ArgumentParser()
-parser.add_argument('--tag', choices=('candidate', 'output-fixed', 'prompt-fixed'), default='candidate')
+parser.add_argument('--tag', choices=('candidate', 'output-fixed', 'prompt-fixed', 'content-fixed'), default='candidate')
 tag = parser.parse_args().tag
 label = 'fresh-text-candidate' if tag == 'candidate' else 'fresh-text-candidate-' + tag
 package = cache / ('daily-text-0.2.0-' + tag)

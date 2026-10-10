@@ -1,0 +1,100 @@
+fixture_prepared
+browser_launched
+signed_in
+board_live
+response_received
+{"status": 200, "headers": {"cache-control": "no-store", "content-length": "68", "date": "Sat, 10 Oct 2026 04:24:49 GMT", "content-type": "application/json"}}
+queued_visible
+queued_screenshot
+response_received
+{"finished": [{"method": "POST", "url": "http://localhost:18837/api/content/dailysynthetic4114/run"}, {"method": "DELETE", "url": "http://localhost:18837/api/content/dailysynthetic4114"}], "wire_finished": [{"url": "http://localhost:18837/api/content/dailysynthetic4114/run", "encoded_bytes": 201}, {"url": "http://localhost:18837/api/content/dailysynthetic4114", "encoded_bytes": 237}], "diagnostic_response_consumption": [{"url": "http://localhost:18837/api/content/dailysynthetic4114/run", "status": 200, "bytes": 68}, {"url": "http://localhost:18837/api/content/dailysynthetic4114", "status": 200, "bytes": 103}], "consumption": [{"url": "http://localhost:18837/api/content/dailysynthetic4114/run", "status": 200, "bytes": 68}, {"url": "http://localhost:18837/api/content/dailysynthetic4114", "status": 200, "bytes": 103}]}
+context_closed
+browser_closed
+{
+  "status": "PASS",
+  "elapsed_seconds": 7.974,
+  "playwright_version": "1.60.0",
+  "observations": [
+    {
+      "action": "run",
+      "status": 200,
+      "body": {
+        "body_read_by_sdk": false
+      },
+      "cache_control": "no-store"
+    },
+    {
+      "action": "confirmed_delete",
+      "status": 200,
+      "body": {
+        "body_read_by_sdk": false
+      },
+      "cache_control": "no-store"
+    }
+  ],
+  "cancelled_delete_preserves_item": true,
+  "effects": {
+    "status": "PASS",
+    "run_and_disposal_events": [
+      {
+        "v": 1,
+        "ts": "2026-10-10T04:24:49.452Z",
+        "id": "dailysynthetic4114",
+        "op": "upsert",
+        "fields": {
+          "requested_run": "regular",
+          "requested_at": "2026-10-10T04:24:49.452Z",
+          "updated": "2026-10-10T04:24:49.452Z"
+        },
+        "src": "dashboard"
+      },
+      {
+        "v": 1,
+        "ts": "2026-10-10T04:24:51.766Z",
+        "id": "dailysynthetic4114",
+        "op": "delete",
+        "src": "dashboard"
+      }
+    ],
+    "prior_ledger_preserved": true,
+    "source_and_sidecar_trashed_intact": true,
+    "derivatives_removed": true,
+    "media_processing_verified": false,
+    "live_profile_changed": false
+  },
+  "page_errors": [],
+  "finished_requests": [
+    {
+      "method": "POST",
+      "url": "http://localhost:18837/api/content/dailysynthetic4114/run"
+    },
+    {
+      "method": "DELETE",
+      "url": "http://localhost:18837/api/content/dailysynthetic4114"
+    }
+  ],
+  "wire_finished": [
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4114/run",
+      "encoded_bytes": 201
+    },
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4114",
+      "encoded_bytes": 237
+    }
+  ],
+  "diagnostic_response_consumption": [
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4114/run",
+      "status": 200,
+      "bytes": 68
+    },
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4114",
+      "status": 200,
+      "bytes": 103
+    }
+  ],
+  "live_profile_changed": false,
+  "media_processing_verified": false
+}

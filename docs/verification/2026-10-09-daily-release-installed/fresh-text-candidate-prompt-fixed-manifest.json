@@ -1,9 +1,7 @@
 {
-  "head": "581d76a7eddad6acdba86b958cdf8a5ec3d7f088",
-  "prepared_manifest_files": {
-    "hermes/hermes-source-manifest.json": "45bca3dfa15d259192484e188ef98df5ab6f8bc4f6a251ae0fc29ec4a0f3455f",
-    "lifeos/lifeos-source-manifest.json": "e6d54685f8a8e2ffa3913392897732d5b2a80f7c0ffce9378d647e57becd79c1"
-  },
+  "version": "0.2.0",
+  "head": "ba20677854cd29c98a21c818e452a484376bc597",
+  "status": "release_candidate",
   "plugin_files": {
     "lifeos_hook_bridge/__init__.py": "310d963edd0d1e02d883f992ae776113511a3fc4965d587370c73f6ec1bcd67d",
     "lifeos_hook_bridge/bash_permissions.py": "63f6a2142a8232ac9907d5e3e3e6e4b47e30b976c82317e22bd12817cb09ea86",
@@ -17,7 +15,7 @@
     "lifeos_hook_bridge/carrier_probe.py": "786ade6e0bc324fd227384d87386eda2503531e900ed378441d934cf3c180e7c",
     "lifeos_hook_bridge/cli.py": "4f29ea32519ef0297146ebf9d28d2cde8787995d5be79cf12ee033140348c30c",
     "lifeos_hook_bridge/dashboard/dist/index.js": "94728035adf2808f900ccd0fa204a1f6c940918e1a92964ee3140411dc51176a",
-    "lifeos_hook_bridge/dashboard/manifest.json": "4c0204592f835f1de70737466be189bd358cbfcc6939f108e865398de480cb5d",
+    "lifeos_hook_bridge/dashboard/manifest.json": "760046569c00a1926248190b4d6e7c8d04b478e55e326fae16948298054c418b",
     "lifeos_hook_bridge/dashboard/plugin_api.py": "a3e28aad4a54ba18e7b0f25c373d5a304be707fd43092b4caa2d5a89cdef7971",
     "lifeos_hook_bridge/dependency_locks/0b910ecc5959037e628e6e43.lock": "6730998376137590a083fd4334a21693c0821f93a29766dd07dd9643a8d818f7",
     "lifeos_hook_bridge/dependency_locks/0c1b3413db5e14632bc135bf.lock": "e20d54dbcaa778c20c607a975e13e5abf2cd9678d136516e69d8937c2302045f",
@@ -38,7 +36,7 @@
     "lifeos_hook_bridge/fresh_store.py": "34402e9eeebcfbff1a698118235a554b0bd874a290b2fdda1be7b50f75009062",
     "lifeos_hook_bridge/fresh_store_worker.py": "045bc46a216baa3fb8fecc0aded98611559374abae8a272598e6254359237b2b",
     "lifeos_hook_bridge/hook_state.py": "281fef9a388f1b6482547ae084ecc4f063e37e8152f31874c4b4855c6fa162bd",
-    "lifeos_hook_bridge/install_source.py": "21815402e02647359ab105b09ce4d416aa2fd026ea197c8e5ef0dd278238d622",
+    "lifeos_hook_bridge/install_source.py": "ff5e1c6d16944c7fdc082488d642ff53587a2f07a52e990a6186f220751c4261",
     "lifeos_hook_bridge/installation_lock.py": "56fa2ea36fec3186b9954eafe34f622ecc1c230280b96a0db7bca773eb43d417",
     "lifeos_hook_bridge/installation_selection.py": "7a90671f955d6e990aed015b55245db7eed7049e198b4c6830aa71d1dd54c838",
     "lifeos_hook_bridge/lifeos_installation.py": "f11e7e9950ab46e01d6e2c1a9de12c28147d8e62991a5ed750d0000f9377f8e5",
@@ -166,6 +164,7 @@
     "lifeos_hook_bridge/patches/hermes-turn-gates.patch": "0bde030f742c7062f0d7541077a5a0a7041a46e120dcad64ef45be7012f1bd6e",
     "lifeos_hook_bridge/patches/hermes-web-result-status.patch": "629a345ced101eb06430c8d77d972e6efe4c53a3ec234f19199597f3181eca8d",
     "lifeos_hook_bridge/patches/lifeos-agent-watchdog.patch": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808",
+    "lifeos_hook_bridge/patches/lifeos-algorithm-prompt-transport.patch": "66d5647839e16218521bfface657e677adf07fb12671c16e9f1bad374e7dfe04",
     "lifeos_hook_bridge/patches/lifeos-checkpoint-verification.patch": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f",
     "lifeos_hook_bridge/patches/lifeos-completion-state.patch": "88c0e6e3e37eeb5fb9ab822d4caebdbf656872327966418ab60a3edf7188b2b4",
     "lifeos_hook_bridge/patches/lifeos-config-audit.patch": "972ec11722ccf66935d5bfa398562fbc0907aa49ba2d71d6e0fbc17c923beaff",
@@ -188,7 +187,7 @@
     "lifeos_hook_bridge/patches/lifeos-terminal-audit.patch": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886",
     "lifeos_hook_bridge/patches/lifeos-version-drift-state.patch": "33bd1d7cbeb0154ee154e8b60ab5842bccc4996d3647252ca97baff6ead9f70c",
     "lifeos_hook_bridge/patches/lifeos-work-learning-identity.patch": "66c2c7e72731fa591b0f2b6aeaac659179895a0b03ad49e2daf3e252e92ce98c",
-    "lifeos_hook_bridge/plugin.yaml": "0844131bb639de1c9ad2d83acc3adb350074a86f2108d5715c8d41e74d3a6b10",
+    "lifeos_hook_bridge/plugin.yaml": "d8e2cb02374bda3b56b602153f0c0c2757510f73fc9173a0344168f74994dd97",
     "lifeos_hook_bridge/profile_backup.py": "7775b589fdc436559cd204710c2b1d8f2b7a499b64e2596ff57c678273736829",
     "lifeos_hook_bridge/profile_backup_recovery.py": "52d410e948f2457dd83395cd8a376cef817dfa7e1c2e116ccdb2fefdf94c58f0",
     "lifeos_hook_bridge/profile_services.py": "e7da6ce79854ff35c80a222dbbddd80b058a8ea9dfc410c21b044af33481295e",
@@ -201,99 +200,19 @@
     "lifeos_hook_bridge/update_plan.py": "66d16d3da44d82d66d665b517a7b57e066cb2b79ebabe17988186adc71033063",
     "lifeos_hook_bridge/update_transaction.py": "0c90a06bd0d4dfd8b9a0b063a12e496735240d49ef973e67b95610c56a4910a3",
     "lifeos_hook_bridge/update_worker.py": "5bd9c3b0d8a1b187aa497f0292273e8c7a3bdd5521f7b4c264107e493b649403",
-    "lifeos_hook_bridge/version_drift.py": "853c66889adc9784bcc454157097535cb795fb0fdd153848aaa561e5d03d9865",
-    "lifeos_hook_bridge/patches/lifeos-algorithm-prompt-transport.patch": "66d5647839e16218521bfface657e677adf07fb12671c16e9f1bad374e7dfe04",
-    "lifeos_hook_bridge/patches/lifeos-content-response-consumption.patch": "49aaed964696ddfafb87e63fa909a76ac9b5b53093932896bd8f3ef8c8530de1"
+    "lifeos_hook_bridge/version_drift.py": "853c66889adc9784bcc454157097535cb795fb0fdd153848aaa561e5d03d9865"
   },
   "daily_configuration_files": {
     "docs/deployment/daily-text/CONDUIT.config.json": "90a1b09307bd9f4062dd09dd3ca4119785c4436b62c88d3ab4bce32f468e486f",
     "docs/deployment/daily-text/PULSE.user.toml": "beaab83d5132b4ea30b17716add541b78de26c5ac8809a7e204cf2f22d33c765",
-    "docs/deployment/daily-text/README.md": "f9c4dc0dd84ce5805f37d054e859f54ba5a4b1734183349469bab81ad84fcc66"
+    "docs/deployment/daily-text/README.md": "2106fe7caaae78f0c0754001c5ee9b3ea54d89f35caba3ef2d504b164e3c9ff8"
   },
-  "native_mount_correction": {
-    "path": "LIFEOS/HERMES/Mount.ts",
-    "before_sha256": "39828cbdce1748f1f395ed76e6a8e8301a01623c23f7c61d79ed68e4b96e6127",
-    "after_sha256": "c1f8175b95ba0447f52f484148221487b1dd8ed295f70b839b57fab6bf3f854f"
+  "prepared_manifest_files": {
+    "lifeos/lifeos-source-manifest.json": "1cae245a4de8e3b5bd453b9dc4278b5dd86504466879a696d2f42c40c13ce7eb",
+    "hermes/hermes-source-manifest.json": "45bca3dfa15d259192484e188ef98df5ab6f8bc4f6a251ae0fc29ec4a0f3455f"
   },
-  "native_source_manifest_sha256": "65adffc01978b67fc45ae40302d9f2c88bbd4505b9d37115d52a1c656d44ef09",
-  "native_pulse_correction": {
-    "path": "LIFEOS/PULSE/pulse.ts",
-    "before_sha256": "4775a265c23ec7e196fcaabf3073215fa18d243365a409c94cc5dd3987b3aa07",
-    "after_sha256": "5e8ab7cc3e5568225cf9d98ddbb59b19586dd89e608cde0f02ce8a99ed4f3a78"
-  },
-  "native_type_corrections": [
-    {
-      "path": "LIFEOS/PULSE/pulse.ts",
-      "before_sha256": "5e8ab7cc3e5568225cf9d98ddbb59b19586dd89e608cde0f02ce8a99ed4f3a78",
-      "after_sha256": "81eec653e536f06071c645d8162bfca7518a3d73f6b7f66a7b013fc566bfbbae"
-    },
-    {
-      "path": "LIFEOS/HERMES/Health.ts",
-      "before_sha256": "c636c480fa4f3b35dde2735fa14ce85af33100695b3ede1ea8438ff3eecbf318",
-      "after_sha256": "7269807a2e8855ce776d23e918affab4122234e0980a92b894ae3f1ab0362d12"
-    }
-  ],
-  "daily_core_editor_selection": {
-    "path": "docs/deployment/daily-text/PULSE.user.toml",
-    "before_sha256": "a4bb57c54d11bc062e6277b915d3513374643d4347c0ed66ed1d1553344e7ed4",
-    "after_sha256": "beaab83d5132b4ea30b17716add541b78de26c5ac8809a7e204cf2f22d33c765",
-    "launch_assumption": "Use the actual Hermes dashboard for administration"
-  },
-  "owner_job_output_correction": [
-    {
-      "path": "lifeos_hook_bridge/memory_access.py",
-      "before_sha256": "bdb5068db2e6caee0e74e71c5577ecbce783e34903e9a3115c8bc56fe574035c",
-      "after_sha256": "f989051b9ce2ef4204270be3b5aab3604b999fbab8055407d7f723eab044a084"
-    },
-    {
-      "path": "lifeos_hook_bridge/memory_service.py",
-      "before_sha256": "b2895483174e64ac312460e3f0f9408ef2b08c98625b0a29041809f044ecad54",
-      "after_sha256": "030874ee66d2eef654676a80ed81bd1bee2bfb41b492a5f270deab48a4a1209f"
-    },
-    {
-      "path": "lifeos_hook_bridge/memory_owner_jobs.py",
-      "before_sha256": "b0d7b79a5c1b281567a812175dc6cdd82cdb6c56d45569d04445ee8653aa8907",
-      "after_sha256": "4c0f8b1ec8b2e94a69f621e870ff368fb144e11687a41a60676fdee822874e34"
-    }
-  ],
-  "algorithm_prompt_transport": [
-    {
-      "path": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/PULSE/modules/algorithm-tab.ts",
-      "before_sha256": "77e3f3d237c563ad52c6eeb760f86718bbca55b84459e8270b5f68b954327ca8",
-      "after_sha256": "f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f"
-    },
-    {
-      "path": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/pulse-daemon-types-source/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts",
-      "before_sha256": "77e3f3d237c563ad52c6eeb760f86718bbca55b84459e8270b5f68b954327ca8",
-      "after_sha256": "f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f"
-    },
-    {
-      "path": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/pulse-daemon-types-source/lifeos/lifeos-source-manifest.json",
-      "before_sha256": "197ddf48c24f78d1dbaeeca8d9cd52eca81b870ff88fe5d52e8c37239b936716",
-      "after_sha256": "1cae245a4de8e3b5bd453b9dc4278b5dd86504466879a696d2f42c40c13ce7eb"
-    },
-    {
-      "path": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py",
-      "before_sha256": "76dc5af8af3509c2c89ce204f68a0f6637db01359c5e88fff931a387f7979624",
-      "after_sha256": "ff5e1c6d16944c7fdc082488d642ff53587a2f07a52e990a6186f220751c4261"
-    },
-    {
-      "path": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/patches/lifeos-algorithm-prompt-transport.patch",
-      "before_sha256": null,
-      "after_sha256": "66d5647839e16218521bfface657e677adf07fb12671c16e9f1bad374e7dfe04"
-    }
-  ],
-  "content_response_consumption": {
-    "before_export_sha256": "cd41cbb21256e822e6843652029042069430fac3776a5c4ed28562562e1b4b22",
-    "after_export_sha256": "133cac396335375dbde65161a43589b4d500545b6950d68bddf50533f5672b82",
-    "source_before_sha256": "6b92be6fd69dde2be2a51be96236036521f41d138a2570b34075686940581209",
-    "patch_before_sha256": "b54face1773c107bd79aa850e6dbd6eca34294c954594d7e5187e76f7c6a1609",
-    "files": {
-      "content-page.tsx": "e90288505e131f2fe07bcbdefe2016d26bff577b3a172e702459346d95f6c0c0",
-      "install_source.py": "21815402e02647359ab105b09ce4d416aa2fd026ea197c8e5ef0dd278238d622",
-      "lifeos-content-response-consumption.patch": "49aaed964696ddfafb87e63fa909a76ac9b5b53093932896bd8f3ef8c8530de1",
-      "lifeos-source-manifest.json": "65adffc01978b67fc45ae40302d9f2c88bbd4505b9d37115d52a1c656d44ef09"
-    },
-    "export_archive_sha256": "cb5f8c7f0c00c99e11329d33a906852db1e353a02a3194c6ebe1e2f4c2c19e4f"
-  }
+  "native_manifests_verified": true,
+  "live_selection_changed": false,
+  "channel_acceptance_verified": false,
+  "combined_release_verified": false
 }

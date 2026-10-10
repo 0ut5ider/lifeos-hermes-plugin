@@ -59,6 +59,7 @@ SOURCES = {
             "lifeos-reminder-publication.patch",
             "lifeos-review-admission.patch",
             "lifeos-algorithm-prompt-transport.patch",
+            "lifeos-content-response-consumption.patch",
         ),
     },
 }

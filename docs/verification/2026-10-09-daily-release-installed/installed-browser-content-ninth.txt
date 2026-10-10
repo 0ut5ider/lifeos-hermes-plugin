@@ -1,0 +1,112 @@
+fixture_prepared
+browser_launched
+signed_in
+board_live
+response_received
+queued_visible
+queued_screenshot
+response_received
+{"finished": [{"method": "POST", "url": "http://localhost:18837/api/content/dailysynthetic4119/run"}, {"method": "POST", "url": "http://localhost:18837/api/content/dailysynthetic4119/run"}, {"method": "DELETE", "url": "http://localhost:18837/api/content/dailysynthetic4119"}], "wire_finished": [{"url": "http://localhost:18837/api/content/dailysynthetic4119/run", "encoded_bytes": 209}, {"url": "http://localhost:18837/api/content/dailysynthetic4119/run", "encoded_bytes": 201}, {"url": "http://localhost:18837/api/content/dailysynthetic4119", "encoded_bytes": 237}]}
+context_closed
+browser_closed
+{
+  "status": "PASS",
+  "elapsed_seconds": 12.969,
+  "playwright_version": "1.60.0",
+  "observations": [
+    {
+      "action": "revoked_owner_run",
+      "status": 403,
+      "body": {
+        "error": "This dashboard account has no installation owner binding"
+      },
+      "cache_control": "no-store"
+    },
+    {
+      "action": "run",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4119",
+        "requested_run": "regular"
+      },
+      "cache_control": "no-store"
+    },
+    {
+      "action": "confirmed_delete",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4119",
+        "trashed": 2,
+        "artifactsRemoved": true,
+        "runnerKicked": false
+      },
+      "cache_control": "no-store"
+    }
+  ],
+  "cancelled_delete_preserves_item": true,
+  "real_owner_refusal_displayed": true,
+  "binding_restored": true,
+  "refusal_leaves_ledger_and_source_unchanged": true,
+  "effects": {
+    "status": "PASS",
+    "run_and_disposal_events": [
+      {
+        "v": 1,
+        "ts": "2026-10-10T04:44:34.669Z",
+        "id": "dailysynthetic4119",
+        "op": "upsert",
+        "fields": {
+          "requested_run": "regular",
+          "requested_at": "2026-10-10T04:44:34.669Z",
+          "updated": "2026-10-10T04:44:34.669Z"
+        },
+        "src": "dashboard"
+      },
+      {
+        "v": 1,
+        "ts": "2026-10-10T04:44:37.418Z",
+        "id": "dailysynthetic4119",
+        "op": "delete",
+        "src": "dashboard"
+      }
+    ],
+    "prior_ledger_preserved": true,
+    "source_and_sidecar_trashed_intact": true,
+    "derivatives_removed": true,
+    "media_processing_verified": false,
+    "live_profile_changed": false
+  },
+  "page_errors": [],
+  "finished_requests": [
+    {
+      "method": "POST",
+      "url": "http://localhost:18837/api/content/dailysynthetic4119/run"
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:18837/api/content/dailysynthetic4119/run"
+    },
+    {
+      "method": "DELETE",
+      "url": "http://localhost:18837/api/content/dailysynthetic4119"
+    }
+  ],
+  "wire_finished": [
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4119/run",
+      "encoded_bytes": 209
+    },
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4119/run",
+      "encoded_bytes": 201
+    },
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4119",
+      "encoded_bytes": 237
+    }
+  ],
+  "live_profile_changed": false,
+  "media_processing_verified": false
+}
