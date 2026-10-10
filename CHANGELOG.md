@@ -8,6 +8,7 @@ Keep it equal to the version in both plugin manifests.
 
 - Start fresh personal sections without shipped example goals, health records, finances, gear, projects, or companies.
 - Retain the exact personal templates outside the active user tree for fresh-store review. Preserve existing stores.
+- Allow bounded owner-job source checks to complete under concurrent native requests. Keep current authority checks before job launch.
 
 - Admit complete planned Atlas graphs and snapshots before publication. Refuse projection, row, and byte limits without replacing live artifacts.
 - Report Atlas capacity dimensions and warnings at 80 percent of each selected limit.
