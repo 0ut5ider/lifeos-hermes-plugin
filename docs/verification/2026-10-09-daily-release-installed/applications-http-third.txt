@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/verify_installed_applications_third.py", line 64, in <module>
+    assert result['status'] == 200, result
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'path': '/api/local-intelligence', 'method': 'GET', 'authenticated': True, 'status': 404, 'cache_control': 'no-store', 'body': {'error': 'not_yet_generated', 'hint': 'POST /api/local-intelligence/refresh to kick off a run'}}

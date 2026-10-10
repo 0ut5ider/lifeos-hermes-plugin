@@ -1,0 +1,3457 @@
+{
+  "status": "PASS",
+  "native_reads_verified": 16,
+  "observations": [
+    {
+      "path": "/api/memory",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/wiki",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/life/home",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/life/health",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/life/finances",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/life/business",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/life/growth",
+      "method": "GET",
+      "authenticated": false,
+      "status": 200,
+      "cache_control": null,
+      "body": {
+        "generatedAt": "2026-10-10T02:57:36.463Z",
+        "newsletter": null,
+        "youtube": null,
+        "web": null,
+        "errors": [],
+        "installed": false,
+        "note": "Growth is an optional customization; not installed."
+      }
+    },
+    {
+      "path": "/api/local-intelligence",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/assets",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/books",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/atlas",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/atlas/insights",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/algorithm-tab",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/telos/freshness/summary",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/content",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/conduit/status",
+      "method": "GET",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/auth/password-login",
+      "method": "POST",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": null,
+      "body": {
+        "ok": true,
+        "next": "/"
+      }
+    },
+    {
+      "path": "/api/memory",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "ts": "2026-10-10T02:57:38.232Z",
+        "derivedState": "unhealthy_warn",
+        "cadenceConfig": {
+          "turn_threshold": 8,
+          "min_minutes_between": 30,
+          "idle_threshold": 2,
+          "confidence_threshold": 0.7
+        },
+        "reviewState": {
+          "turn_count_since_last_review": 0,
+          "last_review_at": null,
+          "last_message_at": null,
+          "pending_review": false
+        },
+        "health": {
+          "ts": "2026-10-10T02:45:28.759Z",
+          "overall": "warn",
+          "counts": {
+            "critical": 0,
+            "warn": 5,
+            "ok": 22
+          },
+          "thresholds": {
+            "reviewerStaleMs": 604800000,
+            "retrievalStaleMs": 86400000,
+            "proposalBacklog": 10,
+            "observabilityMaxBytes": 268435456,
+            "observabilityMaxAgeMs": 2592000000,
+            "reviewerRunGraceMs": 600000,
+            "indexStaleMs": 604800000
+          },
+          "evidence": {
+            "nowMs": 1791600327465,
+            "thresholds": {
+              "reviewerStaleMs": 604800000,
+              "retrievalStaleMs": 86400000,
+              "proposalBacklog": 10,
+              "observabilityMaxBytes": 268435456,
+              "observabilityMaxAgeMs": 2592000000,
+              "reviewerRunGraceMs": 600000,
+              "indexStaleMs": 604800000
+            },
+            "reviewer": {
+              "status": "missing",
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"
+            },
+            "retrieval": {
+              "status": "missing",
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl"
+            },
+            "proposals": {
+              "pending": 0,
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+              "available": false,
+              "malformedLines": []
+            },
+            "observability": {
+              "bytes": 18451,
+              "oldestMs": 1791600260392.8206,
+              "files": 10,
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+              "available": true
+            },
+            "index": {
+              "status": "no-index-v1",
+              "manifest": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+              "policy": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+              "measuredAt": 1791600327465
+            }
+          },
+          "findings": [
+            {
+              "id": "state-missing",
+              "severity": "warn",
+              "message": "review-state.json does not exist yet \u2014 reviewer never fired."
+            },
+            {
+              "id": "no-runs-dir",
+              "severity": "warn",
+              "message": "reviewer-runs/ directory does not exist yet."
+            },
+            {
+              "id": "reviewer-evidence-missing",
+              "severity": "warn",
+              "message": "No latest reviewer evidence is available.",
+              "detail": {
+                "status": "missing",
+                "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs",
+                "staleThresholdMs": 604800000
+              }
+            },
+            {
+              "id": "retrieval-missing",
+              "severity": "warn",
+              "message": "No retrieval evidence within 86400000ms freshness window.",
+              "detail": {
+                "status": "missing",
+                "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl",
+                "thresholdMs": 86400000
+              }
+            },
+            {
+              "id": "proposal-evidence-missing",
+              "severity": "warn",
+              "message": "Proposal evidence is absent.",
+              "detail": {
+                "pending": 0,
+                "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+                "available": false,
+                "malformedLines": []
+              }
+            }
+          ],
+          "ok_summary": [
+            "hook-file-present:MemoryTurnStart.hook.ts",
+            "hook-file-present:LoadMemory.hook.ts",
+            "hook-file-present:MemoryDeltaSurface.hook.ts",
+            "hook-file-present:MemoryReviewFire.hook.ts",
+            "hook-file-present:MemoryHealthGate.hook.ts",
+            "tool-file-present:MemorySystem.ts",
+            "tool-file-present:MemoryReviewer.ts",
+            "tool-file-present:MemoryWriter.ts",
+            "tool-file-present:MemoryRetriever.ts",
+            "tool-file-present:MemoryTypes.ts",
+            "tool-file-present:MemoryStatus.ts",
+            "tool-file-present:MemoryHealthCheck.ts",
+            "tool-file-present:MutationTier.ts",
+            "settings-hook-present:MemoryTurnStart.hook.ts",
+            "settings-hook-present:MemoryReviewFire.hook.ts",
+            "settings-hook-present:MemoryHealthGate.hook.ts",
+            "principal-memory-present",
+            "da-memory-present",
+            "markers-ok:principal",
+            "markers-ok:da",
+            "cap-ok:principal",
+            "cap-ok:da"
+          ]
+        },
+        "lastFireCount": 0,
+        "recentFires": [],
+        "pendingProposals": 0,
+        "autoAppliedProposals": 0,
+        "proposalsRecent": [],
+        "recentRuns": [],
+        "principalMemory": {
+          "entries": [],
+          "count": 0,
+          "charsUsed": 0
+        },
+        "daMemory": {
+          "entries": [],
+          "count": 0,
+          "charsUsed": 0
+        }
+      }
+    },
+    {
+      "path": "/api/wiki",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "tree": [
+          {
+            "label": "Documentation",
+            "children": [
+              {
+                "label": "Overview",
+                "count": 6,
+                "children": [
+                  {
+                    "label": "LifeOS Architecture Summary",
+                    "slug": "ARCHITECTURE_SUMMARY",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Brand Assets",
+                    "slug": "BrandAssets",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Constitutional Rules",
+                    "slug": "LIFEOS_SYSTEM_PROMPT",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Core Components",
+                    "slug": "CoreComponents",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "System / User Boundary",
+                    "slug": "SystemUserBoundary",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "What LifeOS is and Why it Exists",
+                    "slug": "LifeosSystemArchitecture",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Agents",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "LifeOS Agent System",
+                    "slug": "Agents__AgentSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Algorithm",
+                "count": 7,
+                "children": [
+                  {
+                    "label": "Algorithm Changelog",
+                    "slug": "Algorithm__changelog",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "Ascent States \u2014 what a run is doing, everywhere",
+                    "slug": "Algorithm__AscentStates",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "eval-guide",
+                    "slug": "Algorithm__eval-guide",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "Ideate Loop Protocol \u2014 Moved",
+                    "slug": "Algorithm__ideate-loop",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "Optimize Loop Protocol \u2014 Moved",
+                    "slug": "Algorithm__optimize-loop",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "The Algorithm \u2014 the LifeOS Thinking System",
+                    "slug": "Algorithm__AlgorithmSystem",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "The Algorithm 8.20.2",
+                    "slug": "Algorithm__v8.20.2",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Arbol",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Arbol \u2014 the LifeOS Cloud Execution Layer",
+                    "slug": "Arbol__ArbolSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Atlas",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Atlas \u2014 the LifeOS Asset Graph",
+                    "slug": "Atlas__AtlasSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Bunker",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Bunker \u2014 the Universal Application Harness",
+                    "slug": "Bunker__BunkerSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Conduit",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Conduit \u2014 LifeOS's Sensory Layer",
+                    "slug": "Conduit__ConduitSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Config",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "LifeOS Configuration",
+                    "slug": "Config__ConfigSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Delegation",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Delegation & Parallelization Reference",
+                    "slug": "Delegation__DelegationSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Fabric",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Fabric Pattern System Reference",
+                    "slug": "Fabric__FabricSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Feed",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Feed \u2014 the LifeOS External Sense",
+                    "slug": "Feed__FeedSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Freshness",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Freshness System",
+                    "slug": "Freshness__FreshnessSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Hermes",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Hermes Sidecar \u2014 talk to your LifeOS as an agent",
+                    "slug": "Hermes__HermesSidecar",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Hooks",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Hook System",
+                    "slug": "Hooks__HookSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "ISA",
+                "count": 4,
+                "children": [
+                  {
+                    "label": "ISA Hierarchy & Cross-ISA Integration",
+                    "slug": "ISA__ISAHierarchy",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "ISA HTML Mirror",
+                    "slug": "ISA__ISAHtmlMirror",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS ISA Format Specification v2.21.0 (Algorithm v8.20.0)",
+                    "slug": "ISA__ISAFormat",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "The ISA \u2014 Ideal State Articulation",
+                    "slug": "ISA__ISASystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Ledger",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Ledger \u2014 the LifeOS Change-Tracking System",
+                    "slug": "Ledger__LedgerSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "LifeOs",
+                "count": 3,
+                "children": [
+                  {
+                    "label": "Life OS Schema",
+                    "slug": "LifeOs__LifeOsSchema",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS \u2014 The Life Operating System Thesis",
+                    "slug": "LifeOs__LifeOsThesis",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "RenamePlan \u2014 PAI \u2192 LifeOS",
+                    "slug": "LifeOs__RenamePlan",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Memory",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Curation Coverage \u2014 what LifeOS autonomic systems touch",
+                    "slug": "Memory__CurationCoverage",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Notifications",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "The Notification System",
+                    "slug": "Notifications__NotificationSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Observability",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "The Observability System",
+                    "slug": "Observability__ObservabilitySystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Pulse",
+                "count": 5,
+                "children": [
+                  {
+                    "label": "Custom Tooltips",
+                    "slug": "Pulse__Tooltips",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Digital Assistant Subsystem",
+                    "slug": "Pulse__DaSubsystem",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "Pulse \u2014 the Life Dashboard",
+                    "slug": "Pulse__PulseSystem",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "Pulse Metadata Surface \u2014 Badges, Strips, Panels",
+                    "slug": "Pulse__PulseMetadata",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "Terminal Tab State System",
+                    "slug": "Pulse__TerminalTabs",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Router",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "The Router",
+                    "slug": "Router__RouterSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Security",
+                "count": 3,
+                "children": [
+                  {
+                    "label": "LifeOS Data Classification & Inference-Source Routing",
+                    "slug": "Security__DataClassification",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Security \u2014 Minimal v2",
+                    "slug": "Security__README",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Security Model",
+                    "slug": "Security__SecurityModel",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Services",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "LifeOS Background Services",
+                    "slug": "Services__BackgroundServices",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Skills",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Custom Skill System",
+                    "slug": "Skills__SkillSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Spinner",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Custom Spinner Verbs",
+                    "slug": "Spinner__SpinnerSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Synapse",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Synapse \u2014 the LifeOS Input Router",
+                    "slug": "Synapse__SynapseSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Terminal",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Helm \u2014 the LifeOS Terminal (Optional)",
+                    "slug": "Terminal__Helm",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Testing",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "LifeOS Testing Doctrine",
+                    "slug": "Testing__TestingDoctrine",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Tools",
+                "count": 4,
+                "children": [
+                  {
+                    "label": "CLI-First Architecture Pattern",
+                    "slug": "Tools__CliFirstArchitecture",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Command-Line Tools",
+                    "slug": "Tools__Cli",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Containment Policy",
+                    "slug": "Tools__Containment",
+                    "category": "system-doc"
+                  },
+                  {
+                    "label": "LifeOS Tools - CLI Utilities Reference",
+                    "slug": "Tools__Tools",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Upgrades",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "The Upgrades System",
+                    "slug": "Upgrades__UpgradesSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Work",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "Work System",
+                    "slug": "Work__WorkSystem",
+                    "category": "system-doc"
+                  }
+                ]
+              },
+              {
+                "label": "Writing",
+                "count": 1,
+                "children": [
+                  {
+                    "label": "AI Writing Patterns \u2014 Detection Reference",
+                    "slug": "Writing__AIWritingPatterns",
+                    "category": "system-doc"
+                  }
+                ]
+              }
+            ],
+            "count": 58
+          },
+          {
+            "label": "People",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Companies",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Ideas",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Blogs",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Books",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Research",
+            "count": 1,
+            "children": [
+              {
+                "label": "Synthetic release acceptance",
+                "slug": "synthetic-release-acceptance",
+                "category": "research"
+              }
+            ]
+          },
+          {
+            "label": "ISAs",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Lessons",
+            "count": 0,
+            "children": []
+          },
+          {
+            "label": "Wisdom",
+            "count": 0,
+            "children": []
+          }
+        ],
+        "recentChanges": [
+          {
+            "slug": "ARCHITECTURE_SUMMARY",
+            "title": "LifeOS Architecture Summary",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T02:44:36.367000+00:00",
+            "wordCount": 441,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md",
+            "group": "Overview",
+            "related": []
+          },
+          {
+            "slug": "synthetic-release-acceptance",
+            "title": "Synthetic release acceptance",
+            "category": "research",
+            "tags": [
+              "untagged"
+            ],
+            "quality": 2,
+            "lastModified": "2026-10-10T02:44:20.391000+00:00",
+            "wordCount": 7,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.config/LIFEOS/USER/MEMORY/KNOWLEDGE/Research/synthetic-release-acceptance.md",
+            "related": []
+          },
+          {
+            "slug": "LIFEOS_SYSTEM_PROMPT",
+            "title": "LifeOS Constitutional Rules",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.624000+00:00",
+            "wordCount": 3571,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md",
+            "group": "Overview",
+            "related": []
+          },
+          {
+            "slug": "ISA__ISAFormat",
+            "title": "LifeOS ISA Format Specification v2.21.0 (Algorithm v8.20.0)",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.622000+00:00",
+            "wordCount": 13828,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/ISA/ISAFormat.md",
+            "group": "ISA",
+            "related": []
+          },
+          {
+            "slug": "ISA__ISAHierarchy",
+            "title": "ISA Hierarchy & Cross-ISA Integration",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.622000+00:00",
+            "wordCount": 952,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/ISA/ISAHierarchy.md",
+            "group": "ISA",
+            "related": []
+          },
+          {
+            "slug": "ISA__ISAHtmlMirror",
+            "title": "ISA HTML Mirror",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.622000+00:00",
+            "wordCount": 2102,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/ISA/ISAHtmlMirror.md",
+            "group": "ISA",
+            "related": []
+          },
+          {
+            "slug": "ISA__ISASystem",
+            "title": "The ISA \u2014 Ideal State Articulation",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.622000+00:00",
+            "wordCount": 6336,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/ISA/ISASystem.md",
+            "group": "ISA",
+            "related": []
+          },
+          {
+            "slug": "Terminal__Helm",
+            "title": "Helm \u2014 the LifeOS Terminal (Optional)",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.620000+00:00",
+            "wordCount": 1279,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Terminal/Helm.md",
+            "group": "Terminal",
+            "related": []
+          },
+          {
+            "slug": "Atlas__AtlasSystem",
+            "title": "Atlas \u2014 the LifeOS Asset Graph",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.619000+00:00",
+            "wordCount": 1618,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Atlas/AtlasSystem.md",
+            "group": "Atlas",
+            "related": []
+          },
+          {
+            "slug": "Config__ConfigSystem",
+            "title": "LifeOS Configuration",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.619000+00:00",
+            "wordCount": 1947,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Config/ConfigSystem.md",
+            "group": "Config",
+            "related": []
+          },
+          {
+            "slug": "Feed__FeedSystem",
+            "title": "Feed \u2014 the LifeOS External Sense",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.619000+00:00",
+            "wordCount": 3264,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Feed/FeedSystem.md",
+            "group": "Feed",
+            "related": []
+          },
+          {
+            "slug": "Notifications__NotificationSystem",
+            "title": "The Notification System",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.619000+00:00",
+            "wordCount": 2134,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Notifications/NotificationSystem.md",
+            "group": "Notifications",
+            "related": []
+          },
+          {
+            "slug": "Router__RouterSystem",
+            "title": "The Router",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.619000+00:00",
+            "wordCount": 2804,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Router/RouterSystem.md",
+            "group": "Router",
+            "related": []
+          },
+          {
+            "slug": "CoreComponents",
+            "title": "LifeOS Core Components",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.618000+00:00",
+            "wordCount": 2153,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/CoreComponents.md",
+            "group": "Overview",
+            "related": []
+          },
+          {
+            "slug": "Freshness__FreshnessSystem",
+            "title": "Freshness System",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.618000+00:00",
+            "wordCount": 2536,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Freshness/FreshnessSystem.md",
+            "group": "Freshness",
+            "related": []
+          },
+          {
+            "slug": "Hooks__HookSystem",
+            "title": "Hook System",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.618000+00:00",
+            "wordCount": 11235,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Hooks/HookSystem.md",
+            "group": "Hooks",
+            "related": []
+          },
+          {
+            "slug": "Spinner__SpinnerSystem",
+            "title": "Custom Spinner Verbs",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.618000+00:00",
+            "wordCount": 600,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Spinner/SpinnerSystem.md",
+            "group": "Spinner",
+            "related": []
+          },
+          {
+            "slug": "SystemUserBoundary",
+            "title": "System / User Boundary",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.618000+00:00",
+            "wordCount": 2027,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/SystemUserBoundary.md",
+            "group": "Overview",
+            "related": []
+          },
+          {
+            "slug": "Arbol__ArbolSystem",
+            "title": "Arbol \u2014 the LifeOS Cloud Execution Layer",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.617000+00:00",
+            "wordCount": 4065,
+            "wikilinks": [],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Arbol/ArbolSystem.md",
+            "group": "Arbol",
+            "related": []
+          },
+          {
+            "slug": "Security__DataClassification",
+            "title": "LifeOS Data Classification & Inference-Source Routing",
+            "category": "system-doc",
+            "tags": [],
+            "quality": null,
+            "lastModified": "2026-10-10T01:42:23.617000+00:00",
+            "wordCount": 1723,
+            "wikilinks": [
+              "dc:public"
+            ],
+            "filePath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/DOCUMENTATION/Security/DataClassification.md",
+            "group": "Security",
+            "related": []
+          }
+        ],
+        "stats": {
+          "totalPages": 59,
+          "totalSystem": 58,
+          "totalPeople": 0,
+          "totalCompanies": 0,
+          "totalIdeas": 0,
+          "totalBlogs": 0,
+          "totalBooks": 0,
+          "totalResearch": 1,
+          "totalIsas": 0,
+          "totalLessons": 0,
+          "totalWisdom": 0
+        },
+        "lastIndexedAt": "2026-10-10T02:57:39.027Z"
+      }
+    },
+    {
+      "path": "/api/life/home",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "oneSentence": null,
+        "updated": null,
+        "updatedBy": null,
+        "domains": [],
+        "current": {
+          "health": "(sample) TBD \u2014 describe your current health, energy, sleep.",
+          "finances": "(sample) TBD \u2014 describe your current financial state.",
+          "relationships": "(sample) TBD \u2014 describe your current relationships."
+        },
+        "topGoals": [
+          {
+            "id": "G0",
+            "text": "** (sample) Ship X by date Y \u2014 measurable: <criterion>."
+          },
+          {
+            "id": "G1",
+            "text": "** (sample) Reach <number> of <thing> this year."
+          }
+        ],
+        "nextActions": [],
+        "spark": null,
+        "sparkCount": 0,
+        "timelineBlockCount": 0,
+        "topIntent": null
+      }
+    },
+    {
+      "path": "/api/life/health",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "files": [
+          {
+            "name": "NUTRITION",
+            "sections": [
+              "Dietary Approach",
+              "Meal Preparation",
+              "Key Nutritional Considerations",
+              "Hydration",
+              "Food Sensitivities and Allergies",
+              "Notes"
+            ]
+          },
+          {
+            "name": "HEALTH",
+            "sections": [
+              "Quick Reference",
+              "Current Status",
+              "Current Focus",
+              "Recent Updates"
+            ]
+          },
+          {
+            "name": "CONDITIONS",
+            "sections": [
+              "Active Conditions",
+              "Allergies",
+              "Medical History",
+              "Vitals Snapshot (sample)",
+              "Blood Type",
+              "Notes"
+            ]
+          },
+          {
+            "name": "PROVIDERS",
+            "sections": [
+              "Primary Care",
+              "Specialists",
+              "Biomarker Testing",
+              "Pharmacy",
+              "Pending Referrals",
+              "Insurance",
+              "Notes"
+            ]
+          },
+          {
+            "name": "MEDICATIONS",
+            "sections": [
+              "Prescription Medications",
+              "Daily Supplements",
+              "As-Needed (Not Every Day)",
+              "Past Medications",
+              "Notes"
+            ]
+          },
+          {
+            "name": "METRICS",
+            "sections": [
+              "Key Numbers (Sample Panel \u2014 2026-01-01)",
+              "Trends (Sample \u2014 Two Panels Compared)",
+              "Daily Metrics (Sample \u2014 Wearable/App Snapshot)",
+              "Blood Type",
+              "Lab Sources",
+              "Notes"
+            ]
+          },
+          {
+            "name": "FITNESS",
+            "sections": [
+              "Current Routine",
+              "Goals",
+              "Current Stats (sample)",
+              "Weight History (sample)",
+              "Notes"
+            ]
+          }
+        ],
+        "conditions": [
+          {
+            "heading": "Active Conditions",
+            "body": "### Sample Condition A\n\n- Sample marker: 100 mg/dL (sample)\n- Sample marker: 120 mg/dL (sample)\n- Sample status: in or out of range (sample)\n- Sample notes: replace this block with the actual condition, what is being measured, and the current trend.\n\n### Sample Condition B\n\n- Sample marker: 100 (sample units)\n- Sample status: improving / stable / worsening (sample)\n- Sample notes: replace with real description.\n\n> If you have no active conditions, replace the sections above with: `_None._`"
+          },
+          {
+            "heading": "Allergies",
+            "body": "### Medications\n\n- Sample medication allergy \u2014 for example, penicillin (sample). Replace with real allergies, or write `_None known._`\n\n### Environmental\n\n- Sample environmental allergy \u2014 for example, seasonal pollen (sample). Replace with real allergies, or write `_None._`\n\n### Food\n\n- Sample food allergy \u2014 for example, tree nuts (sample). Replace with real allergies, or write `_None._`"
+          },
+          {
+            "heading": "Medical History",
+            "body": "### Past Conditions\n\n| Condition | Period | Treatment | Status |\n|-----------|--------|-----------|--------|\n| Sample Past Condition | 2026-01-01 to 2026-02-01 (sample) | Sample treatment | Resolved (sample) |\n\n### Surgeries and Procedures\n\n| Procedure | Date | Notes |\n|-----------|------|-------|\n| Sample Procedure | 2026-01-01 (sample) | Sample notes |\n\n> If none, replace the rows above with: `_None._`\n\n### Family History\n\n- Sample family history entry \u2014 for example, parent had condition X at age 60 (sample).\n- Sample family history entry \u2014 for example, sibling has condition Y (sample).\n\n> Replace with real family history relevant to risk assessment, or write `_None documented._`"
+          },
+          {
+            "heading": "Vitals Snapshot (sample)",
+            "body": "| Vital | Value | Date |\n|-------|-------|------|\n| Blood Pressure | 120 / 80 mmHg (sample) | 2026-01-01 (sample) |\n| Resting Heart Rate | 60 bpm (sample) | 2026-01-01 (sample) |\n| O2 Saturation | 98 % (sample) | 2026-01-01 (sample) |\n| Temperature | 36.7 \u00b0C / 98.0 \u00b0F (sample) | 2026-01-01 (sample) |"
+          },
+          {
+            "heading": "Blood Type",
+            "body": "- ABO Group: O (sample)\n- Rhesus Factor: Rh(d) Positive (sample)"
+          },
+          {
+            "heading": "Notes",
+            "body": "- Keep this file accurate. Your DA uses it to flag risks when you ask about a new medication, supplement, or procedure.\n- For each active condition, link to the lab values in `METRICS.md` and the medications in `MEDICATIONS.md` so the DA can reason across files.\n\n*This is a sample template. Replace every value above with your real data via /interview or direct edit.*"
+          }
+        ],
+        "medications": [
+          {
+            "heading": "Prescription Medications",
+            "body": "| Medication | Dose | Purpose | Notes |\n|------------|------|---------|-------|\n| Sample Med A | 10 mg daily (sample) | Sample purpose | Replace with real prescription, or delete this row if none |\n| Sample Med B | 100 mg daily (sample) | Sample purpose | Replace with real prescription, or delete this row if none |\n\n> If you take no prescription medications, replace the rows above with: `_None._`"
+          },
+          {
+            "heading": "Daily Supplements",
+            "body": "| Supplement | Dose | Purpose |\n|------------|------|---------|\n| Sample Supplement A | 1000 IU daily (sample) | Sample purpose |\n| Sample Supplement B | 100 mg daily (sample) | Sample purpose |\n| Sample Supplement C | 1 capsule daily (sample) | Sample purpose |"
+          },
+          {
+            "heading": "As-Needed (Not Every Day)",
+            "body": "| Supplement | Timing | Purpose |\n|------------|--------|---------|\n| Sample As-Needed A | Morning (sample) | Sample purpose |\n| Sample As-Needed B | Evening (sample) | Sample purpose |"
+          },
+          {
+            "heading": "Past Medications",
+            "body": "| Medication | Period | Reason | Status |\n|------------|--------|--------|--------|\n| Sample Past Med | 2026-01-01 to 2026-02-01 (sample) | Sample reason | Completed (sample) |\n\n> If you have no relevant medication history, replace the row above with: `_None recorded._`"
+          },
+          {
+            "heading": "Notes",
+            "body": "- List every medication you take regularly, even over-the-counter ones, so the DA can flag interactions when you ask about a new prescription or supplement.\n- If a dose is being adjusted, note the current dose and the target dose with dates \u2014 for example, \"10 mg daily, titrating up to 20 mg over 4 weeks starting 2026-01-01 (sample).\"\n- Allergy and sensitivity entries belong in `CONDITIONS.md`, not here.\n\n*This is a sample template. Replace every value above with your real data via /interview or direct edit.*"
+          }
+        ],
+        "supplements": [],
+        "fitness": [
+          {
+            "heading": "Current Routine",
+            "body": "### Daily Activities\n\n- **Morning movement (sample):** 10 minutes of light activity after waking \u2014 for example a short walk for sunlight exposure. Replace with your actual morning routine.\n- **Evening movement (sample):** 20 minutes of walking or light cardio in the evening. Replace with your actual evening routine.\n\n### Strength Training (sample)\n\n- **Weights:** 30 minutes, 3 days per week (sample). Replace with your actual program.\n- **Other modalities:** Sample modality \u2014 yoga, martial arts, climbing, swimming. Replace with what you actually do."
+          },
+          {
+            "heading": "Goals",
+            "body": "### Primary Goal\n\n- Sample primary fitness goal \u2014 for example, lose 5 kg, run a 10K, hit a strength target. Replace with your real goal and target date.\n\n### Secondary Goals\n\n- Sample secondary goal A \u2014 for example, raise VO2 max above 35.\n- Sample secondary goal B \u2014 for example, hit 8000 steps per day on average.\n- Sample secondary goal C \u2014 for example, maintain lean mass during a cut."
+          },
+          {
+            "heading": "Current Stats (sample)",
+            "body": "| Metric | Value | Date | Notes |\n|--------|-------|------|-------|\n| Weight | 75 kg / 165 lbs (sample) | 2026-01-01 (sample) | Replace with current weight |\n| Height | 175 cm / 69 in (sample) | 2026-01-01 (sample) | Replace with actual height |\n| VO2 Max | 35 mL/kg/min (sample) | 2026-01-01 (sample) | Replace with latest reading |\n| HRV | 50 ms (sample) | 2026-01-01 (sample) | Replace with actual baseline |\n| Resting HR | 60 bpm (sample) | 2026-01-01 (sample) | Replace with actual baseline |\n| Steps (typical) | 8000 / day (sample) | 2026-01-01 (sample) | Replace with daily average |\n| Sleep Consistency | 70 % (sample) | 2026-01-01 (sample) | Replace with current score |"
+          },
+          {
+            "heading": "Weight History (sample)",
+            "body": "| Date | Weight |\n|------|--------|\n| 2026-01-01 (sample) | 75 kg / 165 lbs (sample) |\n| 2026-02-01 (sample) | 75 kg / 165 lbs (sample) |\n| 2026-03-01 (sample) | 74 kg / 163 lbs (sample) |\n| 2026-04-01 (sample) | 73 kg / 161 lbs (sample) |"
+          },
+          {
+            "heading": "Notes",
+            "body": "- Replace the routine block above with your actual weekly schedule (days, durations, modalities).\n- Track at least one weight or body composition data point per month so the DA can detect trends.\n- If you use a wearable, link its export so daily metrics flow into `METRICS.md` automatically.\n\n*This is a sample template. Replace every value above with your real data via /interview or direct edit.*"
+          }
+        ],
+        "nutrition": [
+          {
+            "heading": "Dietary Approach",
+            "body": "Sample dietary approach \u2014 replace this paragraph with your actual eating pattern. Examples to choose from: Mediterranean, low-carb, high-protein, plant-forward, time-restricted eating, no specific named diet. Note any guiding principle (whole foods, low ultra-processed, calorie targets, macro splits) and how strictly you follow it."
+          },
+          {
+            "heading": "Meal Preparation",
+            "body": "### How Meals Get Made (sample)\n\n- Sample method \u2014 for example, home cooking 5 nights per week, meal kit service, weekly batch prep, restaurant meals, chef service.\n- Replace with your actual approach so the DA understands how friction-free or friction-heavy your food access is.\n\n### Eating Out (sample)\n\n- Frequency: sample frequency \u2014 for example, 2 times per week.\n- Type: sample mix \u2014 for example, work lunches, social dinners, travel.\n- Replace with what is actually true for you."
+          },
+          {
+            "heading": "Key Nutritional Considerations",
+            "body": "### Goals\n\n- Sample goal \u2014 for example, hit 150 g protein per day.\n- Sample goal \u2014 for example, 30 g fiber per day.\n- Sample goal \u2014 for example, three servings of vegetables daily.\n\n### Lab-Informed Priorities (sample)\n\n- **Sample priority A:** Replace with a real priority driven by your labs \u2014 for example, raise omega-3 intake if your omega-3 level is low.\n- **Sample priority B:** Replace with another lab-driven priority \u2014 for example, reduce saturated fat if LDL is elevated.\n- **Sample priority C:** Replace with a metabolic priority \u2014 for example, maintain glucose stability if HbA1c is creeping up."
+          },
+          {
+            "heading": "Hydration",
+            "body": "- Target: sample target \u2014 for example, 3 L water per day.\n- Coffee or caffeine: sample pattern \u2014 for example, 2 cups in the morning, none after noon.\n- Replace with your actual hydration pattern."
+          },
+          {
+            "heading": "Food Sensitivities and Allergies",
+            "body": "- Sample entry \u2014 for example, lactose sensitivity, gluten avoidance, tree-nut allergy.\n- Replace with anything that is actually true for you, or write \"none documented.\""
+          },
+          {
+            "heading": "Notes",
+            "body": "- The DA uses this file to give context-aware nutrition advice. Vague placeholders produce vague advice. Specific real entries produce specific real advice.\n- If you track macros or calories, link the export so daily intake can flow into `METRICS.md`.\n\n*This is a sample template. Replace every value above with your real data via /interview or direct edit.*"
+          }
+        ],
+        "routine": [],
+        "providers": [
+          {
+            "heading": "Primary Care",
+            "body": "### Sample Clinic\n\n- **Provider:** Dr. Sample Provider (sample)\n- **Practice:** Sample Clinic (sample)\n- **Location:** Sample City, Sample State (sample)\n- **Phone:** 555-0100 (sample)\n- **Patient Portal:** sample-portal.example.com (sample)\n- **Last Visit:** 2026-01-01 (sample)\n- **Next Visit:** 2026-07-01 (sample)"
+          },
+          {
+            "heading": "Specialists",
+            "body": "| Specialty | Provider | Practice | Last Visit |\n|-----------|----------|----------|------------|\n| Sample Specialty A | Dr. Sample Specialist A | Sample Specialty Clinic | 2026-01-01 (sample) |\n| Sample Specialty B | Dr. Sample Specialist B | Sample Specialty Clinic | 2026-01-01 (sample) |\n\n> If you do not see specialists, replace the rows above with: `_None._`"
+          },
+          {
+            "heading": "Biomarker Testing",
+            "body": "### Sample Lab\n\n- **Service:** Sample Lab (sample)\n- **Panel size:** 120 biomarkers (sample)\n- **Most recent panel:** 2026-01-01 (sample)\n- **Cadence:** every 6 months (sample)\n- **Notes:** Replace with the testing service you actually use \u2014 examples include any comprehensive biomarker service, your primary care lab, or a research-grade panel."
+          },
+          {
+            "heading": "Pharmacy",
+            "body": "- **Pharmacy:** Sample Pharmacy (sample)\n- **Location:** Sample City, Sample State (sample)\n- **Phone:** 555-0101 (sample)"
+          },
+          {
+            "heading": "Pending Referrals",
+            "body": "| Referral | Reason | Status |\n|----------|--------|--------|\n| Sample Referral A | Sample reason | Pending (sample) |\n| Sample Referral B | Sample reason | Scheduled 2026-01-01 (sample) |\n\n> If you have no pending referrals, replace the rows above with: `_None._`"
+          },
+          {
+            "heading": "Insurance",
+            "body": "- **Carrier:** Sample Carrier (sample)\n- **Plan:** Sample Plan Name (sample)\n- **Member ID:** 000000 (sample \u2014 never store real ID in plaintext if you can avoid it)\n- **Group:** 000 (sample)"
+          },
+          {
+            "heading": "Notes",
+            "body": "- Use generic placeholder names like \"Dr. Sample Provider\" until you replace them. The DA will not invent real providers.\n- For privacy: this file lives in a private zone, but consider whether you want full provider names and phone numbers in plaintext at all.\n\n*This is a sample template. Replace every value above with your real data via /interview or direct edit.*"
+          }
+        ],
+        "metrics": [
+          {
+            "heading": "Key Numbers (Sample Panel \u2014 2026-01-01)",
+            "body": "| Metric | Value | Status | Target |\n|--------|-------|--------|--------|\n| Biological Age | sample | sample | Maintain or improve |\n| Weight | 75 kg / 165 lbs (sample) | sample | 70 kg (sample) |\n| Biomarkers in Range | 100 / 120 (sample) | sample | Improve out-of-range items |\n| ApoB | 100 mg/dL (sample) | sample | Below 90 mg/dL (sample) |\n| LDL-Cholesterol | 120 mg/dL (sample) | sample | Below 100 mg/dL (sample) |\n| LDL Pattern | sample (A or B) | sample | Pattern A |\n| HDL-Cholesterol | 50 mg/dL (sample) | sample | Above 40 mg/dL (sample) |\n| eGFR | 100 mL/min (sample) | sample | Above 90 mL/min |\n| Omega-3 Total | 5 % by wt (sample) | sample | Above 8 % (sample) |\n| Triglycerides | 100 mg/dL (sample) | sample | Below 150 mg/dL (sample) |\n| HbA1c | 5 % (sample) | sample | Below 5.7 % |\n| Glucose | 90 mg/dL (sample) | sample | 70\u201399 mg/dL |\n| Vitamin D, 25-OH | 50 ng/mL (sample) | sample | 40\u201380 ng/mL (sample) |\n| VO2 Max | 35 mL/kg/min (sample) | sample | Above 35 (sample) |\n| Blood Pressure | 120 / 80 mmHg (sample) | sample | Below 130 / 80 |\n| Resting HR | 60 bpm (sample) | sample | 50\u201370 bpm |"
+          },
+          {
+            "heading": "Trends (Sample \u2014 Two Panels Compared)",
+            "body": "| Metric | Prior Panel (sample) | Latest Panel (sample) | Direction |\n|--------|----------------------|------------------------|-----------|\n| HDL | 40 mg/dL (sample) | 50 mg/dL (sample) | Improving |\n| eGFR | 80 mL/min (sample) | 100 mL/min (sample) | Improving |\n| Triglycerides | 150 mg/dL (sample) | 100 mg/dL (sample) | Improving |\n| LDL | 130 mg/dL (sample) | 120 mg/dL (sample) | Slight improvement |\n| HbA1c | 5 % (sample) | 5 % (sample) | Stable |"
+          },
+          {
+            "heading": "Daily Metrics (Sample \u2014 Wearable/App Snapshot)",
+            "body": "| Metric | Value | Notes |\n|--------|-------|-------|\n| Calories Burned | 2000 cals (sample) | Replace with actual daily average |\n| Exercise Time | 30 min (sample) | Replace with actual daily average |\n| HRV | 50 ms (sample) | Replace with actual baseline |\n| Steps | 8000 (sample) | Replace with actual daily average |\n| Sleep Consistency | 70 % (sample) | Replace with actual score |\n| VO2 Max | 35 mL/kg/min (sample) | Replace with actual reading |"
+          },
+          {
+            "heading": "Blood Type",
+            "body": "- ABO Group: O (sample)\n- Rhesus Factor: Rh(d) Positive (sample)"
+          },
+          {
+            "heading": "Lab Sources",
+            "body": "| Provider | Last Panel | Biomarkers |\n|----------|-----------|------------|\n| Sample Lab | 2026-01-01 (sample) | 120 biomarkers (sample) |\n| Sample Clinic | 2026-01-01 (sample) | Standard metabolic + CBC (sample) |"
+          },
+          {
+            "heading": "Notes",
+            "body": "- All values above are placeholders. Replace each row with your real lab result before relying on the DA's analysis.\n- Drop dated lab files like `lab_results_2026-01.md` in this directory and your DA will incorporate them on the next read.\n- Numbers shown use round, obvious placeholder values (100, 120, 50) so it is clear at a glance that real data has not yet been entered.\n\n*This is a sample template. Replace every value above with your real data via /interview or direct edit.*"
+          }
+        ],
+        "history": [],
+        "labReports": [],
+        "freshness": {
+          "dataDate": null,
+          "label": "No date info",
+          "daysOld": null,
+          "tier": "unknown",
+          "perFile": [
+            {
+              "name": "CONDITIONS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "MEDICATIONS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "SUPPLEMENTS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "FITNESS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "NUTRITION.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "METRICS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "HISTORY.md",
+              "date": null,
+              "source": "unknown"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/api/life/finances",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "version": 2,
+        "income": {
+          "streams": [],
+          "annual": 0,
+          "monthly": 0,
+          "mrr_monthly": 0,
+          "mrr_annual": 0
+        },
+        "outbound": {
+          "vendors": [
+            {
+              "id": "sample_employer_inc.",
+              "name": "Sample Employer Inc.",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes \u2014 semi-monthly direct deposit"
+            },
+            {
+              "id": "sample_client_llc",
+              "name": "Sample Client LLC",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes \u2014 project-based"
+            },
+            {
+              "id": "sample_landlord",
+              "name": "Sample Landlord",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_bank_mortgage",
+              "name": "Sample Bank Mortgage",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_utility_(electric)",
+              "name": "Sample Utility (Electric)",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_utility_(water)",
+              "name": "Sample Utility (Water)",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_isp",
+              "name": "Sample ISP",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_health_insurer",
+              "name": "Sample Health Insurer",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_auto_insurer",
+              "name": "Sample Auto Insurer",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_saas_vendor_1",
+              "name": "Sample SaaS Vendor 1",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_saas_vendor_2",
+              "name": "Sample SaaS Vendor 2",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_ai_vendor",
+              "name": "Sample AI Vendor",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_cloud_provider",
+              "name": "Sample Cloud Provider",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_streaming_service",
+              "name": "Sample Streaming Service",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_grocery",
+              "name": "Sample Grocery",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_brokerage",
+              "name": "Sample Brokerage",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes \u2014 outbound transfers in, inbound dividends out"
+            },
+            {
+              "id": "sample_cpa",
+              "name": "Sample CPA",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes \u2014 annual fee"
+            },
+            {
+              "id": "sample_county_assessor",
+              "name": "Sample County Assessor",
+              "scope": "mixed",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "unconfigured",
+              "cadence": "monthly",
+              "notes": "Sample notes"
+            }
+          ],
+          "obligations": [
+            {
+              "id": "sample_landlord",
+              "name": "Sample Landlord",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "housing"
+              ],
+              "notes": "Sample notes \u2014 rent or mortgage payment"
+            },
+            {
+              "id": "sample_utility_(electric)",
+              "name": "Sample Utility (Electric)",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "utilities"
+              ],
+              "notes": "Sample notes \u2014 varies seasonally"
+            },
+            {
+              "id": "sample_isp",
+              "name": "Sample ISP",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "utilities"
+              ],
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_health_insurer",
+              "name": "Sample Health Insurer",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "insurance"
+              ],
+              "notes": "Sample notes \u2014 pre-tax via payroll if applicable"
+            },
+            {
+              "id": "sample_auto_insurer",
+              "name": "Sample Auto Insurer",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "variable",
+              "tags": [
+                "insurance"
+              ],
+              "notes": "Sample notes \u2014 renews YYYY-MM-DD"
+            },
+            {
+              "id": "sample_saas_vendor_1",
+              "name": "Sample SaaS Vendor 1",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "subscription"
+              ],
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_saas_vendor_2",
+              "name": "Sample SaaS Vendor 2",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "annual",
+              "tags": [
+                "subscription"
+              ],
+              "notes": "Sample notes \u2014 renews YYYY-MM-DD"
+            },
+            {
+              "id": "sample_streaming_service",
+              "name": "Sample Streaming Service",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "subscription"
+              ],
+              "notes": "Sample notes"
+            },
+            {
+              "id": "sample_auto_loan_servicer",
+              "name": "Sample Auto Loan Servicer",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "monthly",
+              "tags": [
+                "loan"
+              ],
+              "notes": "Sample notes \u2014 see ACCOUNTS.md for principal remaining"
+            },
+            {
+              "id": "sample_county_assessor",
+              "name": "Sample County Assessor",
+              "scope": "personal",
+              "monthly_usd": 0,
+              "annual_usd": 0,
+              "source": "manual",
+              "cadence": "annual",
+              "tags": [
+                "tax"
+              ],
+              "notes": "Sample notes \u2014 property tax, due YYYY-MM-DD"
+            }
+          ],
+          "other": [],
+          "annual": 0,
+          "monthly": 0,
+          "vendors_annual": 0,
+          "obligations_annual": 0,
+          "other_annual": 0
+        },
+        "overall": {
+          "net_pre_tax_annual": 0,
+          "net_pre_tax_monthly": 0,
+          "net_post_tax_annual": 0,
+          "net_post_tax_monthly": 0,
+          "effective_tax_rate": 0.25,
+          "effective_tax_rate_source": "estimated",
+          "trend": [
+            {
+              "month": "2025-11",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2025-12",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-01",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-02",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-03",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-04",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-05",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-06",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-07",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-08",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-09",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            },
+            {
+              "month": "2026-10",
+              "income": 0,
+              "outbound": 0,
+              "net": 0
+            }
+          ]
+        },
+        "collector_status": {
+          "configured_vendors": 0,
+          "active_collectors": [],
+          "jsonl_path": "MEMORY/OBSERVABILITY/vendor-costs.jsonl"
+        },
+        "insights": {
+          "top_bills": [],
+          "top_ai_services": [],
+          "top_infrastructure_services": [],
+          "cut_candidates": [],
+          "by_category": [],
+          "total_annualized": 0,
+          "statement_spend": {
+            "generated_at": null,
+            "record_count": 0,
+            "jsonl_path": "MEMORY/OBSERVABILITY/statement-spend.jsonl",
+            "tool": "USER/FINANCES/Tools/StatementAnalyzer.ts"
+          }
+        },
+        "currency": "USD",
+        "accounts": [
+          {
+            "heading": "Checking Accounts",
+            "body": "- **Sample Bank Checking** \u2014 $X balance (sample), last 4 XXXX, primary deposit account\n- **Sample Bank Business Checking** \u2014 $X balance (sample), last 4 XXXX, business income deposit account\n- **Sample Credit Union Checking** \u2014 $X balance (sample), last 4 XXXX, secondary"
+          },
+          {
+            "heading": "Savings / High-Yield Accounts",
+            "body": "- **Sample Bank Savings** \u2014 $X balance (sample), last 4 XXXX, emergency fund target $X,XXX\n- **Sample High-Yield Savings** \u2014 $X balance (sample), last 4 XXXX, APY X% (sample), short-term savings"
+          },
+          {
+            "heading": "Credit Cards",
+            "body": "- **Sample Card 1** \u2014 $X balance / $X,XXX limit (sample), last 4 XXXX, primary spend, rewards: sample category\n- **Sample Card 2** \u2014 $X balance / $X,XXX limit (sample), last 4 XXXX, travel, rewards: sample category\n- **Sample Business Card** \u2014 $X balance / $X,XXX limit (sample), last 4 XXXX, business expenses"
+          },
+          {
+            "heading": "Brokerage / Investment",
+            "body": "- **Sample Brokerage Taxable** \u2014 $X,XXX balance (sample), last 4 XXXX, see `INVESTMENTS.md`\n- **Sample Brokerage Roth IRA** \u2014 $X,XXX balance (sample), last 4 XXXX, see `INVESTMENTS.md`\n- **Sample 401(k) Provider** \u2014 $X,XXX balance (sample), last 4 XXXX, see `INVESTMENTS.md`"
+          },
+          {
+            "heading": "Loans / Liabilities",
+            "body": "- **Sample Bank Mortgage** \u2014 $X,XXX remaining (sample), last 4 XXXX, rate X% (sample), payoff date YYYY-MM-DD (sample)\n- **Sample Auto Loan** \u2014 $X remaining (sample), last 4 XXXX, rate X% (sample)\n- **Sample Student Loan** \u2014 $X remaining (sample), last 4 XXXX, rate X% (sample)"
+          },
+          {
+            "heading": "Other / Specialty",
+            "body": "- **Sample HSA** \u2014 $X balance (sample), last 4 XXXX, contribution YTD $X\n- **Sample 529 (Education)** \u2014 $X balance (sample), last 4 XXXX, beneficiary: Sample Beneficiary\n- **Sample Crypto Custodian** \u2014 $X USD-equivalent (sample), wallet identifier last 4 XXXX"
+          },
+          {
+            "heading": "Closed Accounts (For Reference)",
+            "body": "- **Sample Old Bank Checking** \u2014 closed YYYY-MM-DD, last 4 XXXX, reason: sample reason"
+          },
+          {
+            "heading": "Notes",
+            "body": "- All last-4 digits are placeholders. Update with real last-4 only \u2014 never paste full account numbers.\n- For each account, the corresponding institution login should live in your password manager, not here.\n\n*This is a sample template. Replace every placeholder with your own data before relying on Pulse Finance views.*"
+          }
+        ],
+        "expenses": [
+          {
+            "heading": "Fixed Monthly Expenses",
+            "body": "| Category | Vendor | Amount | Frequency | Notes |\n|----------|--------|--------|-----------|-------|\n| Housing | Sample Landlord / Sample Bank Mortgage | $X,XXX | monthly | Sample notes |\n| Utilities \u2014 Electric | Sample Utility | $X | monthly | Sample notes |\n| Utilities \u2014 Internet | Sample ISP | $X | monthly | Sample notes |\n| Utilities \u2014 Water | Sample Water Co. | $X | monthly | Sample notes |\n| Insurance \u2014 Health | Sample Insurer | $X | monthly | Sample notes |\n| Insurance \u2014 Auto | Sample Auto Insurer | $X | monthly | Sample notes |\n| Phone | Sample Carrier | $X | monthly | Sample notes |\n\n**Subtotal (fixed monthly):** $X,XXX"
+          },
+          {
+            "heading": "Recurring Software / Subscriptions",
+            "body": "| Category | Vendor | Amount | Frequency | Notes |\n|----------|--------|--------|-----------|-------|\n| Productivity SaaS | Sample SaaS Vendor 1 | $X | monthly | Sample notes |\n| Productivity SaaS | Sample SaaS Vendor 2 | $X | annual | Sample notes |\n| Streaming | Sample Streaming Service | $X | monthly | Sample notes |\n| Cloud / Hosting | Sample Cloud Provider | $X | monthly | Sample notes |\n| AI Tools | Sample AI Vendor | $X | monthly | Sample notes |\n\n**Subtotal (subscriptions, normalized to monthly):** $X"
+          },
+          {
+            "heading": "Variable Expenses (Monthly Average)",
+            "body": "| Category | Average | Envelope / Budget | Notes |\n|----------|---------|-------------------|-------|\n| Groceries | $X | $X | Sample notes |\n| Dining out | $X | $X | Sample notes |\n| Transportation / Fuel | $X | $X | Sample notes |\n| Travel | $X | $X | Sample notes |\n| Entertainment | $X | $X | Sample notes |\n| Health / Fitness | $X | $X | Sample notes |\n| Clothing / Personal | $X | $X | Sample notes |\n| Gifts / Charitable | $X | $X | Sample notes |\n\n**Subtotal (variable, monthly avg):** $X,XXX"
+          },
+          {
+            "heading": "Annual / Periodic Expenses",
+            "body": "| Category | Vendor | Amount | When | Notes |\n|----------|--------|--------|------|-------|\n| Property tax | Sample County Assessor | $X,XXX | annually | Sample notes |\n| Auto registration | Sample DMV | $X | annually | Sample notes |\n| Domain / DNS | Sample Registrar | $X | annually | Sample notes |\n| Professional dues | Sample Org | $X | annually | Sample notes |"
+          },
+          {
+            "heading": "Total Expenses",
+            "body": "- **Monthly total (fixed + subscriptions + variable avg):** $X,XXX\n- **Annualized total:** $X,XXX"
+          },
+          {
+            "heading": "Optimization Candidates",
+            "body": "- Sample candidate 1 \u2014 e.g., consolidate overlapping SaaS\n- Sample candidate 2 \u2014 e.g., renegotiate insurance at renewal\n- Sample candidate 3 \u2014 e.g., audit subscriptions quarterly\n\n*This is a sample template. Replace every placeholder with your own data before relying on Pulse Finance views.*"
+          }
+        ],
+        "investments": [
+          {
+            "heading": "Total Invested",
+            "body": "- **Total invested (all accounts):** $X,XXX\n- **As of:** YYYY-MM-DD (sample)\n- **YTD return (estimate):** X% (sample)"
+          },
+          {
+            "heading": "Accounts",
+            "body": "### Sample Brokerage 1 \u2014 Taxable\n\n- **Custodian:** Sample Brokerage\n- **Account type:** taxable individual (sample)\n- **Balance:** $X,XXX\n- **Last 4 of account:** XXXX\n- **Strategy:** sample strategy (e.g., broad-market index)\n- **Cost basis (approx):** $X,XXX\n- **Notes:** Sample notes.\n\n### Sample Brokerage 2 \u2014 Roth IRA\n\n- **Custodian:** Sample Brokerage\n- **Account type:** Roth IRA (sample)\n- **Balance:** $X,XXX\n- **Last 4 of account:** XXXX\n- **YTD contributions:** $X (annual cap: $X,XXX sample)\n- **Strategy:** sample strategy\n- **Notes:** Sample notes.\n\n### Sample Brokerage 3 \u2014 Traditional 401(k)\n\n- **Custodian:** Sample 401(k) Provider\n- **Account type:** Traditional 401(k) (sample)\n- **Balance:** $X,XXX\n- **Last 4 of account:** XXXX\n- **Contribution rate:** X% of paycheck (sample)\n- **Employer match:** X% up to Y% (sample)\n- **YTD contributions:** $X\n- **Strategy:** sample strategy\n- **Notes:** Sample notes.\n\n### Sample Crypto Wallet\n\n- **Custodian / Wallet:** Sample Custodian\n- **Balance (USD equivalent):** $X\n- **Notes:** Sample notes (e.g., self-custody vs. exchange split)."
+          },
+          {
+            "heading": "Allocation (Approximate)",
+            "body": "| Asset Class | % | $ Value (sample) |\n|-------------|----|------------------|\n| US equities | X% | $X,XXX |\n| International equities | X% | $X,XXX |\n| Bonds / fixed income | X% | $X,XXX |\n| Cash / equivalents | X% | $X,XXX |\n| Alternatives / crypto | X% | $X,XXX |\n| **Total** | 100% | $X,XXX |"
+          },
+          {
+            "heading": "Strategy Notes",
+            "body": "- Sample strategy note 1 \u2014 e.g., target allocation X/Y/Z\n- Sample strategy note 2 \u2014 e.g., rebalance threshold \u00b1X%\n- Sample strategy note 3 \u2014 e.g., contribution priority order"
+          },
+          {
+            "heading": "Open Questions / Decisions Pending",
+            "body": "- Sample question \u2014 e.g., consolidate Sample Brokerage 1 and 2?\n- Sample question \u2014 e.g., increase international allocation?\n\n*This is a sample template. Replace every placeholder with your own data before relying on Pulse Finance views.*"
+          }
+        ],
+        "goals": [
+          {
+            "heading": "Active Goals",
+            "body": "### G1 \u2014 Build Emergency Fund\n\n- **Target:** Save $X,XXX by date YYYY-MM-DD \u2014 sample\n- **Current:** $X (X% complete) \u2014 sample\n- **Source account:** Sample High-Yield Savings (...XXXX)\n- **Monthly contribution:** $X\n- **Status:** on track / behind / ahead \u2014 sample\n- **Notes:** Sample notes \u2014 e.g., target equals N months of fixed expenses.\n\n### G2 \u2014 Pay Off Sample Loan\n\n- **Target:** Eliminate $X,XXX in sample loan principal by date YYYY-MM-DD \u2014 sample\n- **Current remaining:** $X (X% paid down) \u2014 sample\n- **Strategy:** sample strategy (e.g., $X extra principal monthly)\n- **Status:** on track / behind / ahead \u2014 sample\n- **Notes:** Sample notes.\n\n### G3 \u2014 Max Sample Retirement Account\n\n- **Target:** Contribute $X,XXX to Sample Brokerage Roth IRA by date YYYY-MM-DD \u2014 sample\n- **Current YTD:** $X (X% of cap) \u2014 sample\n- **Monthly contribution:** $X\n- **Status:** on track \u2014 sample\n- **Notes:** Sample notes \u2014 annual contribution cap.\n\n### G4 \u2014 Save for Sample Large Purchase\n\n- **Target:** Save $X,XXX by date YYYY-MM-DD for sample purchase (e.g., home down payment, vehicle, sabbatical) \u2014 sample\n- **Current:** $X (X% complete) \u2014 sample\n- **Source account:** Sample Bank Savings (...XXXX)\n- **Monthly contribution:** $X\n- **Status:** sample status\n- **Notes:** Sample notes.\n\n### G5 \u2014 Reach Sample Net Worth Milestone\n\n- **Target:** Net worth of $X,XXX by date YYYY-MM-DD \u2014 sample\n- **Current net worth:** $X,XXX \u2014 sample\n- **Status:** sample status\n- **Notes:** Sample notes \u2014 see `FINANCES.md` for net worth snapshot."
+          },
+          {
+            "heading": "Completed Goals (For Memory)",
+            "body": "- YYYY-MM-DD \u2014 Sample completed goal (e.g., \"Closed last high-interest credit card balance\")\n- YYYY-MM-DD \u2014 Sample completed goal"
+          },
+          {
+            "heading": "Long-Horizon Goals (5+ Years)",
+            "body": "- Sample long-horizon goal \u2014 e.g., financial independence target $X,XXX by year YYYY\n- Sample long-horizon goal \u2014 e.g., fully fund Sample 529 by year YYYY\n\n*This is a sample template. Replace every placeholder with your own data before relying on Pulse Finance views.*"
+          }
+        ],
+        "taxes": [
+          {
+            "heading": "Filing Profile",
+            "body": "- **Filing status:** Sample (e.g., single / married filing jointly / head of household)\n- **State:** Sample State\n- **Tax year (current):** YYYY\n- **Preparer:** Sample CPA / self-prepared (sample)\n- **Tax software:** Sample Software (sample)"
+          },
+          {
+            "heading": "Estimated Tax (Quarterly)",
+            "body": "For 1099 / self-employment income.\n\n| Quarter | Due Date | Federal Estimate | State Estimate | Status |\n|---------|----------|------------------|----------------|--------|\n| Q1 | YYYY-04-15 | $X,XXX | $X | sample status |\n| Q2 | YYYY-06-15 | $X,XXX | $X | sample status |\n| Q3 | YYYY-09-15 | $X,XXX | $X | sample status |\n| Q4 | YYYY-01-15 (next year) | $X,XXX | $X | sample status |\n\n**Total estimated for year:** $X,XXX (federal) + $X (state) \u2014 sample"
+          },
+          {
+            "heading": "YTD Withholding (W-2)",
+            "body": "- **Federal withheld YTD:** $X,XXX\n- **State withheld YTD:** $X,XXX\n- **Social Security YTD:** $X,XXX\n- **Medicare YTD:** $X"
+          },
+          {
+            "heading": "Deductions To Track",
+            "body": "- **Home office** \u2014 sample square footage, sample method (simplified / actual)\n- **Business mileage** \u2014 Sample log, $X miles YTD\n- **Health insurance premiums (self-employed)** \u2014 $X YTD\n- **Retirement contributions (deductible)** \u2014 $X YTD to Sample Account\n- **HSA contributions** \u2014 $X YTD\n- **Charitable giving** \u2014 $X YTD across Sample Charity 1, Sample Charity 2\n- **Sample state-specific deduction** \u2014 sample notes"
+          },
+          {
+            "heading": "Credits To Watch",
+            "body": "- Sample credit 1 (e.g., child / dependent) \u2014 sample notes\n- Sample credit 2 (e.g., energy / EV) \u2014 sample notes"
+          },
+          {
+            "heading": "Carry-Forward Items",
+            "body": "- **Capital loss carry-forward:** $X (sample)\n- **Charitable contribution carry-forward:** $X (sample)"
+          },
+          {
+            "heading": "Last Year (For Reference)",
+            "body": "- **Total tax:** $X,XXX (sample)\n- **Refund / owed:** $X owed (sample)\n- **Effective rate:** X% (sample)"
+          },
+          {
+            "heading": "Open Questions / Notes",
+            "body": "- Sample tax question \u2014 e.g., entity restructure timing\n- Sample tax question \u2014 e.g., backdoor Roth eligibility\n- Sample tax question \u2014 e.g., state residency edge case\n\n*This is a sample template. Replace every placeholder with your own data before relying on Pulse Finance views.*"
+          }
+        ],
+        "overview": [
+          {
+            "heading": "Net Worth Snapshot",
+            "body": "- **Total assets:** $X,XXX\n- **Total liabilities:** $X,XXX\n- **Net worth:** $X,XXX\n- **As of:** YYYY-MM-DD (sample)"
+          },
+          {
+            "heading": "Monthly Cash Flow",
+            "body": "- **Income (monthly):** $X,XXX\n- **Fixed expenses (monthly):** $X,XXX\n- **Variable expenses (monthly):** $X,XXX\n- **Net (monthly):** $X,XXX\n- **Savings rate:** X% (sample)"
+          },
+          {
+            "heading": "Current Focus",
+            "body": "- Sample focus area 1 \u2014 e.g., reducing recurring software costs\n- Sample focus area 2 \u2014 e.g., building emergency fund to $X,XXX\n- Sample focus area 3 \u2014 e.g., maximizing pre-tax retirement contributions"
+          },
+          {
+            "heading": "Key Numbers To Track",
+            "body": "| Metric | Current | Target | Notes |\n|--------|---------|--------|-------|\n| Emergency fund | $X,XXX | $X,XXX | Sample target = N months of expenses |\n| Retirement contributions YTD | $X,XXX | $X,XXX | Sample annual cap |\n| Discretionary spend (monthly avg) | $X | $X | Sample envelope |\n| Debt principal remaining | $X,XXX | $X | Sample payoff goal |"
+          },
+          {
+            "heading": "Recent Changes",
+            "body": "- YYYY-MM-DD \u2014 Sample event (e.g., closed Sample Bank Savings account)\n- YYYY-MM-DD \u2014 Sample event (e.g., opened Sample Brokerage IRA)\n- YYYY-MM-DD \u2014 Sample event (e.g., increased 401(k) contribution to X%)"
+          },
+          {
+            "heading": "Linked Files",
+            "body": "- Income detail \u2192 `INCOME.md`\n- Expense detail \u2192 `EXPENSES.md`\n- Account list \u2192 `ACCOUNTS.md`\n- Goals \u2192 `GOALS.md`\n- Investments \u2192 `INVESTMENTS.md`\n- Taxes \u2192 `TAXES.md`\n- Recurring bills \u2192 `obligations.yaml`\n- Vendors \u2192 `vendors.yaml`\n\n*This is a sample template. Replace every placeholder with your own data before relying on Pulse Finance views.*"
+          }
+        ],
+        "plan": {
+          "present": false,
+          "flywheel": [],
+          "targets": null,
+          "sections": []
+        },
+        "incomeStreams": [],
+        "expenseCategories": [],
+        "annualIncome": 0,
+        "annualExpenses": 0,
+        "monthlyIncome": 0,
+        "monthlyExpenses": 0,
+        "net": 0,
+        "freshness": {
+          "dataDate": null,
+          "label": "No date info",
+          "daysOld": null,
+          "tier": "unknown",
+          "perFile": [
+            {
+              "name": "Statement imports (state.json)",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "INCOME.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "EXPENSES.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "ACCOUNTS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "INVESTMENTS.md",
+              "date": null,
+              "source": "unknown"
+            },
+            {
+              "name": "TAXES.md",
+              "date": null,
+              "source": "unknown"
+            }
+          ]
+        },
+        "freshness_per_card": {
+          "income": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "Statement imports (state.json)",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "INCOME.md",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          },
+          "outbound": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "EXPENSES.md",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "vendors.yaml",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "obligations.yaml",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          },
+          "overall": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "Statement imports (state.json)",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "INCOME.md",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "EXPENSES.md",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "ACCOUNTS.md",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "INVESTMENTS.md",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "TAXES.md",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          },
+          "accounts": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "Statement imports (state.json)",
+                "date": null,
+                "source": "unknown"
+              },
+              {
+                "name": "ACCOUNTS.md",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          },
+          "investments": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "INVESTMENTS.md",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          },
+          "taxes": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "TAXES.md",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          },
+          "plan": {
+            "dataDate": null,
+            "label": "No date info",
+            "daysOld": null,
+            "tier": "unknown",
+            "perFile": [
+              {
+                "name": "PLAN.md",
+                "date": null,
+                "source": "unknown"
+              }
+            ]
+          }
+        },
+        "state": {}
+      }
+    },
+    {
+      "path": "/api/life/business",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "latestRevenueReport": "",
+        "revenueSummary": "",
+        "revenueByProduct": "",
+        "revenueAllSections": [],
+        "ulOverview": [
+          {
+            "heading": "What goes here",
+            "body": "Entity-specific records and reference material:\n\n- **`README.md`** (this file) \u2014 overview of the company: what it does, who runs it, key facts.\n- **`REVENUE/`** \u2014 revenue records, invoices, quarterly/annual summaries. Files in here are how your DA answers \"how is the business doing financially this year.\"\n- **Formation documents** \u2014 EIN, articles of incorporation, operating agreement, W9, etc.\n- **Customer-facing materials** \u2014 media kit, one-pager, pricing sheet.\n- **Anything else specific to this entity** that your DA should be able to reference."
+          },
+          {
+            "heading": "Sample fields to populate",
+            "body": "- **Legal name:** (interview \u2014 sample company legal name)\n- **DBA / brand name:** (interview \u2014 sample brand name, if different)\n- **EIN / tax ID:** (interview \u2014 store actual EIN in a separate file, not in this README)\n- **State of formation:** (interview \u2014 sample state)\n- **Founder / owner:** (interview \u2014 name)\n- **What it does:** (interview \u2014 one-sentence description)\n- **Primary revenue source:** (interview \u2014 e.g. consulting, subscriptions, products)"
+          },
+          {
+            "heading": "How to use",
+            "body": "1. Rename this directory to your actual company name in PascalCase or UPPER_SNAKE_CASE \u2014 match how you'd reference it in conversation.\n2. Replace every `(interview \u2014 ...)` placeholder above.\n3. Add a `REVENUE/` subdirectory and populate it with your revenue records.\n4. Drop formation documents and customer-facing materials directly into this directory."
+          },
+          {
+            "heading": "Privacy",
+            "body": "This directory is part of your private USER/ tree and is **not** included in LifeOS public releases."
+          }
+        ],
+        "businessOverview": [
+          {
+            "heading": "What goes here",
+            "body": "- **`AOS.md`** \u2014 Annual Operating System / business plan: mission, vision, goals, strategy, metrics, key initiatives for the current year. The single document your DA reads to understand where the business is heading.\n- **`<COMPANY_NAME>/`** \u2014 One subdirectory per company or business entity you operate. Each subdir holds entity-specific context (revenue records, formation docs, tax IDs, media kits, customer-facing materials, etc.). The included `SAMPLE_COMPANY/` is a stub \u2014 rename it to your actual company name and populate it."
+          },
+          {
+            "heading": "Add your own",
+            "body": "Either:\n\n1. Run `/interview` and choose the BUSINESS scope \u2014 your DA will walk you through populating these files conversationally.\n2. Edit these files directly. Replace every `(interview \u2014 ...)` placeholder with your real value."
+          },
+          {
+            "heading": "Privacy",
+            "body": "This directory is part of your private USER/ tree. It is **not** included in LifeOS public releases. Keep sensitive entity information (tax IDs, account numbers, financial figures) here rather than in any documentation or skill file."
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/life/growth",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": null,
+      "body": {
+        "generatedAt": "2026-10-10T02:57:41.296Z",
+        "newsletter": null,
+        "youtube": null,
+        "web": null,
+        "errors": [],
+        "installed": false,
+        "note": "Growth is an optional customization; not installed."
+      }
+    },
+    {
+      "path": "/api/local-intelligence",
+      "method": "GET",
+      "authenticated": true,
+      "status": 404,
+      "cache_control": "no-store",
+      "body": {
+        "error": "not_yet_generated",
+        "hint": "POST /api/local-intelligence/refresh to kick off a run"
+      }
+    },
+    {
+      "path": "/api/assets",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "count": 12,
+        "sources": [
+          "USER/GEAR.md"
+        ],
+        "generatedAt": "2026-10-10T02:57:42.006Z",
+        "categories": [
+          "Computers & Displays",
+          "Audio / Studio Chain",
+          "Networking",
+          "Smart Home (devices)",
+          "Software",
+          "Tech Stack"
+        ],
+        "networkEndpoints": 0,
+        "assets": [
+          {
+            "name": "Workstation",
+            "category": "Computers & Displays",
+            "detail": "(your machine)",
+            "use": "Primary computer",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Monitor",
+            "category": "Computers & Displays",
+            "detail": "(your display)",
+            "use": "Primary display",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Mic",
+            "category": "Audio / Studio Chain",
+            "detail": "(your microphone)",
+            "use": "Voice / recording",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Headphones / Monitors",
+            "category": "Audio / Studio Chain",
+            "detail": "(your model)",
+            "use": "Listening / mixing",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Router / Firewall",
+            "category": "Networking",
+            "detail": "(your gateway)",
+            "use": "",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Internet",
+            "category": "Networking",
+            "detail": "(your plan)",
+            "use": "",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Lighting",
+            "category": "Smart Home (devices)",
+            "detail": "(brand)",
+            "use": "(count / hub)",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "Cameras",
+            "category": "Smart Home (devices)",
+            "detail": "(brand)",
+            "use": "(count / integration)",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "(your app)",
+            "category": "Software",
+            "detail": "(what for)",
+            "use": "",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "(your language)",
+            "category": "Tech Stack",
+            "detail": "(your projects)",
+            "use": "",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "(your framework)",
+            "category": "Tech Stack",
+            "detail": "(your projects)",
+            "use": "",
+            "source": "GEAR.md"
+          },
+          {
+            "name": "(your infra)",
+            "category": "Tech Stack",
+            "detail": "(your projects)",
+            "use": "",
+            "source": "GEAR.md"
+          }
+        ],
+        "gear": {
+          "sections": [
+            {
+              "category": "Computers & Displays",
+              "items": [
+                {
+                  "name": "Workstation",
+                  "detail": "(your machine)",
+                  "use": "Primary computer"
+                },
+                {
+                  "name": "Monitor",
+                  "detail": "(your display)",
+                  "use": "Primary display"
+                }
+              ],
+              "notes": [],
+              "todos": [
+                "laptops, tablets, secondary machines, peripherals."
+              ]
+            },
+            {
+              "category": "Audio / Studio Chain",
+              "items": [
+                {
+                  "name": "Mic",
+                  "detail": "(your microphone)",
+                  "use": "Voice / recording",
+                  "subgroup": "Capture"
+                },
+                {
+                  "name": "Headphones / Monitors",
+                  "detail": "(your model)",
+                  "use": "Listening / mixing",
+                  "subgroup": "Monitoring"
+                }
+              ],
+              "notes": [
+                "Describe your capture and monitoring chain here if you have one."
+              ],
+              "todos": []
+            },
+            {
+              "category": "Studio / Office",
+              "items": [],
+              "notes": [],
+              "todos": [
+                "desk, chair, lighting, keyboard, mouse."
+              ]
+            },
+            {
+              "category": "Networking",
+              "items": [
+                {
+                  "name": "Router / Firewall",
+                  "detail": "(your gateway)",
+                  "use": ""
+                },
+                {
+                  "name": "Internet",
+                  "detail": "(your plan)",
+                  "use": ""
+                }
+              ],
+              "notes": [],
+              "todos": []
+            },
+            {
+              "category": "Smart Home (devices)",
+              "items": [
+                {
+                  "name": "Lighting",
+                  "detail": "(brand)",
+                  "use": "(count / hub)"
+                },
+                {
+                  "name": "Cameras",
+                  "detail": "(brand)",
+                  "use": "(count / integration)"
+                }
+              ],
+              "notes": [],
+              "todos": [
+                "sensors, locks, thermostats, hubs. A network skill can populate a device topology that the Assets tab reads."
+              ]
+            },
+            {
+              "category": "House",
+              "items": [],
+              "notes": [],
+              "todos": [
+                "appliances, TVs, furniture, tools."
+              ]
+            },
+            {
+              "category": "Health & Sleep",
+              "items": [],
+              "notes": [],
+              "todos": [
+                "wearables, sleep tech, lab memberships."
+              ]
+            },
+            {
+              "category": "Everyday Carry (EDC)",
+              "items": [],
+              "notes": [],
+              "todos": [
+                "wallet, phone, watch, bag, keys, pen."
+              ]
+            },
+            {
+              "category": "Coffee",
+              "items": [],
+              "notes": [],
+              "todos": [
+                "grinders, brewers, kettle, scale \u2014 if coffee is your thing."
+              ]
+            },
+            {
+              "category": "Car",
+              "items": [],
+              "notes": [],
+              "todos": [
+                "make, model, year."
+              ]
+            },
+            {
+              "category": "Software",
+              "items": [
+                {
+                  "name": "(your app)",
+                  "detail": "(what for)",
+                  "use": ""
+                }
+              ],
+              "notes": [],
+              "todos": []
+            },
+            {
+              "category": "Tech Stack",
+              "items": [
+                {
+                  "name": "(your language)",
+                  "detail": "(your projects)",
+                  "use": "",
+                  "subgroup": "Languages"
+                },
+                {
+                  "name": "(your framework)",
+                  "detail": "(your projects)",
+                  "use": "",
+                  "subgroup": "Frameworks & Runtimes"
+                },
+                {
+                  "name": "(your infra)",
+                  "detail": "(your projects)",
+                  "use": "",
+                  "subgroup": "Infrastructure"
+                }
+              ],
+              "notes": [
+                "The software/framework/infra stack you build on."
+              ],
+              "todos": []
+            },
+            {
+              "category": "Maintenance",
+              "items": [],
+              "notes": [
+                "Built to grow. When gear changes \u2014 new kit, upgrades, retirements \u2014 update the right section here and date the change. Skills point at this file; keeping it current keeps every gear-aware skill correct. New top-level categories are fine as your life expands."
+              ],
+              "todos": []
+            }
+          ],
+          "updated": "2026-01-01"
+        }
+      }
+    },
+    {
+      "path": "/api/books",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "count": 0,
+        "lastUpdated": null,
+        "groups": []
+      }
+    },
+    {
+      "path": "/api/atlas",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "available": false,
+        "error": "no snapshot, run the Atlas sync command"
+      }
+    },
+    {
+      "path": "/api/atlas/insights",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "available": false,
+        "error": "run an atlas sync first"
+      }
+    },
+    {
+      "path": "/api/algorithm-tab",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "generated_at": "2026-10-10T02:57:56.868Z",
+        "version": "8.20.2",
+        "claims": {
+          "total": 16,
+          "hook": 1,
+          "check": 9,
+          "self": 5
+        },
+        "stages": [
+          "context",
+          "doctrine",
+          "isa",
+          "run",
+          "ondemand"
+        ],
+        "chain": [
+          {
+            "id": "system-prompt",
+            "name": "System Prompt",
+            "rel": "LIFEOS/LIFEOS_SYSTEM_PROMPT.md",
+            "role": "The constitutional layer \u2014 the five constitutional rules, the ONE output format, verification doctrine, security protocol, hard prohibitions. Highest authority; wins every conflict.",
+            "loaded": "Every turn (appended system prompt)",
+            "stage": "context",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 25584,
+            "mtime": "2026-10-10T01:42:23.624Z",
+            "summary": null
+          },
+          {
+            "id": "claude-md",
+            "name": "CLAUDE.md",
+            "rel": "CLAUDE.md",
+            "role": "The routing table \u2014 where everything lives. Pulls the always-on @-imports: architecture summary, TELOS, principal + DA identity, projects, operational rules.",
+            "loaded": "Every turn (auto-loaded + @-imports)",
+            "stage": "context",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 7283,
+            "mtime": "2026-10-10T01:42:35.616Z",
+            "summary": null
+          },
+          {
+            "id": "operational-rules",
+            "name": "Operational Rules",
+            "rel": "LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md",
+            "role": "Principal-specific operating rules \u2014 model selection, versioning, deploy doctrine, design variety, releases, autonomy boundaries. @-imported every turn.",
+            "loaded": "Every turn (@-import via CLAUDE.md)",
+            "stage": "context",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 2680,
+            "mtime": "2026-10-10T01:42:35.415Z",
+            "summary": null
+          },
+          {
+            "id": "load-context-hook",
+            "name": "LoadContext hook",
+            "rel": "hooks/LoadContext.hook.ts",
+            "role": "SessionStart injection \u2014 builds the LifeOS dynamic context block (learning frames, active work, architecture pointers) the session opens with.",
+            "loaded": "SessionStart (every new session)",
+            "stage": "context",
+            "editable": true,
+            "kind": "code",
+            "bytes": 22451,
+            "mtime": "2026-10-10T01:42:35.484Z",
+            "summary": null
+          },
+          {
+            "id": "load-memory-hook",
+            "name": "LoadMemory hook",
+            "rel": "hooks/LoadMemory.hook.ts",
+            "role": "Every-prompt injection of the hot-layer memory files (PRINCIPAL_MEMORY, DA_MEMORY) so each turn sees current memory.",
+            "loaded": "Every prompt (UserPromptSubmit)",
+            "stage": "context",
+            "editable": true,
+            "kind": "code",
+            "bytes": 3666,
+            "mtime": "2026-10-10T01:42:35.481Z",
+            "summary": null
+          },
+          {
+            "id": "doctrine",
+            "name": "The Algorithm (doctrine)",
+            "rel": "LIFEOS/ALGORITHM/v8.20.2.md",
+            "role": "The thinking loop itself \u2014 euphoric surprise as the target, the ISA as hill + instrument, the 16 done-claims with their teeth (HOOK/CHECK/SELF), the event nudge table, spend doctrine. Read at the start of any substantial run.",
+            "loaded": "On any substantial run (first action)",
+            "stage": "doctrine",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 28302,
+            "mtime": "2026-10-10T01:42:23.606Z",
+            "summary": null
+          },
+          {
+            "id": "changelog",
+            "name": "Algorithm Changelog",
+            "rel": "LIFEOS/ALGORITHM/changelog.md",
+            "role": "Every doctrine version's full history: what changed, why, migration and rollback recipes. Doctrine files stay lean; history lives here.",
+            "loaded": "On demand",
+            "stage": "doctrine",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 145192,
+            "mtime": "2026-10-10T01:42:23.607Z",
+            "summary": null
+          },
+          {
+            "id": "isa-format",
+            "name": "ISA Format Spec",
+            "rel": "LIFEOS/DOCUMENTATION/ISA/ISAFormat.md",
+            "role": "The contract for the Ideal State Artifact \u2014 section order, claim shapes, ID stability, the Splitting and Variation tests. The ISA is where 'done' gets written down before building.",
+            "loaded": "During a run (ISA work)",
+            "stage": "isa",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 94639,
+            "mtime": "2026-10-10T01:42:23.622Z",
+            "summary": null
+          },
+          {
+            "id": "isa-system",
+            "name": "ISA System doc",
+            "rel": "LIFEOS/DOCUMENTATION/ISA/ISASystem.md",
+            "role": "How the ISA subsystem works end to end \u2014 lifecycle, homes (repo ISA vs MEMORY/WORK), sync to Pulse, resume semantics.",
+            "loaded": "On demand (ISA architecture)",
+            "stage": "isa",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 40351,
+            "mtime": "2026-10-10T01:42:23.622Z",
+            "summary": null
+          },
+          {
+            "id": "isa-skill",
+            "name": "ISA skill",
+            "rel": "skills/ISA/SKILL.md",
+            "role": "The skill that scaffolds, interviews, scores completeness, reconciles, and appends to ISAs \u2014 the operational front door to the ISA system.",
+            "loaded": "On invocation (ISA operations)",
+            "stage": "isa",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 28117,
+            "mtime": "2026-10-10T01:42:23.553Z",
+            "summary": null
+          },
+          {
+            "id": "isasync-hook",
+            "name": "ISASync hook",
+            "rel": "hooks/ISASync.hook.ts",
+            "role": "Mirrors every ISA write to the work registry (work.json) \u2192 Pulse. This write IS the run telemetry \u2014 claim 13's carrier.",
+            "loaded": "Event-driven (ISA writes)",
+            "stage": "isa",
+            "editable": true,
+            "kind": "code",
+            "bytes": 10504,
+            "mtime": "2026-10-10T01:42:35.489Z",
+            "summary": null
+          },
+          {
+            "id": "checkpoint-hook",
+            "name": "CheckpointPerISC hook",
+            "rel": "hooks/CheckpointPerISC.hook.ts",
+            "role": "Auto git-commit on every claim close (`[ ]`\u2192`[x]`) \u2014 evidence trail per closed claim, part of claim 8's teeth.",
+            "loaded": "Event-driven (ISA claim edits)",
+            "stage": "isa",
+            "editable": true,
+            "kind": "code",
+            "bytes": 15450,
+            "mtime": "2026-10-10T01:42:35.483Z",
+            "summary": null
+          },
+          {
+            "id": "isa-render-hook",
+            "name": "ISARenderOnStop hook",
+            "rel": "hooks/ISARenderOnStop.hook.ts",
+            "role": "Re-renders edited ISAs at end-of-turn so the HTML mirror stays current with the artifact.",
+            "loaded": "Stop (turn end, when ISAs changed)",
+            "stage": "isa",
+            "editable": true,
+            "kind": "code",
+            "bytes": 4301,
+            "mtime": "2026-10-10T01:42:35.489Z",
+            "summary": null
+          },
+          {
+            "id": "nudge-hook",
+            "name": "AlgorithmNudge hook",
+            "rel": "hooks/AlgorithmNudge.hook.ts",
+            "role": "The live event layer \u2014 deterministic nudges fired at the moment they're answerable: skill-routing, late-ISA, depth directives (always-on); probe-failure, mid-run messages, spend checks (run-scoped).",
+            "loaded": "Event-driven (every prompt / tool result)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 48700,
+            "mtime": "2026-10-10T01:42:35.479Z",
+            "summary": null
+          },
+          {
+            "id": "verification-gate",
+            "name": "VerificationGate hook",
+            "rel": "hooks/VerificationGate.hook.ts",
+            "role": "Mechanical teeth for claim 8 \u2014 no claim closes without tool evidence of the right modality; web/UI claims need a real browser, appearance claims need viewed pixels.",
+            "loaded": "Event-driven (claim close / stop)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 29996,
+            "mtime": "2026-10-10T01:42:35.479Z",
+            "summary": null
+          },
+          {
+            "id": "stop-gates",
+            "name": "StopGates hook",
+            "rel": "hooks/StopGates.hook.ts",
+            "role": "The ONE Stop-event gate runner \u2014 merges the per-turn gate spawns into a single process reading stdin once; each gate file stays owner of its logic.",
+            "loaded": "Stop (every turn end)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 4470,
+            "mtime": "2026-10-10T01:42:35.480Z",
+            "summary": null
+          },
+          {
+            "id": "format-gate",
+            "name": "FormatGate hook",
+            "rel": "hooks/FormatGate.hook.ts",
+            "role": "Deterministic Stop-hook teeth for the ONE output format \u2014 banner first, closer last, hook-fed memory lines echoed verbatim.",
+            "loaded": "Stop (every turn end)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 8555,
+            "mtime": "2026-10-10T01:42:35.482Z",
+            "summary": null
+          },
+          {
+            "id": "spend-auditor",
+            "name": "SpendAuditor hook",
+            "rel": "hooks/SpendAuditor.hook.ts",
+            "role": "Outcome-side spend verification (claim 15) \u2014 catches the heavy ask answered inline with zero capability use and no stated reason.",
+            "loaded": "Event-driven (turn analysis)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 18298,
+            "mtime": "2026-10-10T01:42:35.488Z",
+            "summary": null
+          },
+          {
+            "id": "writing-gate",
+            "name": "WritingGate hook",
+            "rel": "hooks/WritingGate.hook.ts",
+            "role": "Publication gate \u2014 prose authored for the principal that will be published must pass the _WRITING audit + a real Pangram run, SHA-verified; typing the audit line without running the tool does not pass.",
+            "loaded": "Stop (publication signals)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 13125,
+            "mtime": "2026-10-10T01:42:35.482Z",
+            "summary": null
+          },
+          {
+            "id": "drift-reminder",
+            "name": "DriftReminder hook",
+            "rel": "hooks/DriftReminder.hook.ts",
+            "role": "Voice/format drift nudge \u2014 flags when output slides away from the DA voice contract so the next turn corrects.",
+            "loaded": "Every prompt (UserPromptSubmit)",
+            "stage": "run",
+            "editable": true,
+            "kind": "code",
+            "bytes": 9955,
+            "mtime": "2026-10-10T01:42:35.481Z",
+            "summary": null
+          },
+          {
+            "id": "philosophy",
+            "name": "Philosophy",
+            "rel": "LIFEOS/RULES/Philosophy.md",
+            "role": "Why the system works this way \u2014 Deutsch epistemology, hard-to-vary claims, ideal-state prompting, the bitter-lesson stance on scaffolding.",
+            "loaded": "On demand (explaining / documenting)",
+            "stage": "ondemand",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 10778,
+            "mtime": "2026-10-10T01:42:23.690Z",
+            "summary": null
+          },
+          {
+            "id": "verification-expanded",
+            "name": "Verification Doctrine",
+            "rel": "LIFEOS/RULES/Verification.md",
+            "role": "The ONE home of the six incident-derived verification rules (modality fidelity, defer-never-substitute, appearance \u2260 existence, reproduce-before-fixing, temporal fidelity, restore-parity). Cites incidents by INC-ID.",
+            "loaded": "On demand (web/UI verification)",
+            "stage": "ondemand",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 9876,
+            "mtime": "2026-10-10T01:42:23.690Z",
+            "summary": null
+          },
+          {
+            "id": "incidents",
+            "name": "Incidents",
+            "rel": "LIFEOS/MEMORY/LEARNING/INCIDENTS/README.md",
+            "role": "The self-improvement loop's evidence base \u2014 one INC-YYYYMMDD-<slug>.md per verified LifeOS failure, cited by ID from rules and doctrine; narratives live here and only here.",
+            "loaded": "On demand (following an INC citation)",
+            "stage": "ondemand",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 0,
+            "mtime": null,
+            "summary": null
+          },
+          {
+            "id": "self-healing",
+            "name": "Self-Healing",
+            "rel": "LIFEOS/RULES/SelfHealing.md",
+            "role": "Where a new rule or fix structurally lives \u2014 hooks for enforcement, CLAUDE.md for routing, skills for domain behavior, KNOWLEDGE for facts. Fix the system, not your notes.",
+            "loaded": "On demand (encoding a learning / degraded state)",
+            "stage": "ondemand",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 7307,
+            "mtime": "2026-10-10T01:42:23.690Z",
+            "summary": null
+          },
+          {
+            "id": "operational-rules-expanded",
+            "name": "Operational Rules Expanded",
+            "rel": "LIFEOS/USER/CONFIG/OperationalRulesExpanded.md",
+            "role": "The mechanics behind every operational rule \u2014 full rationale, incident history, procedures, same section names as the operative core. Read when a rule fires and you need the how.",
+            "loaded": "On demand (a rule fires)",
+            "stage": "ondemand",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 0,
+            "mtime": null,
+            "summary": null
+          },
+          {
+            "id": "writing-style-backstop",
+            "name": "Writing Style Backstop",
+            "rel": "LIFEOS/USER/DIGITAL_ASSISTANT/REFERENCE/WritingStyleBackstop.md",
+            "role": "The complete voice doctrine \u2014 ban lists, banned rhythms, the pre-emit checks, long-form exemplars. Loaded when auditing writing or a drift flag fires.",
+            "loaded": "On demand (writing audit / drift flag)",
+            "stage": "ondemand",
+            "editable": true,
+            "kind": "markdown",
+            "bytes": 2389,
+            "mtime": "2026-10-10T01:42:35.412Z",
+            "summary": null
+          }
+        ],
+        "versions": [
+          {
+            "version": "8.20.2",
+            "mtime": "2026-10-10T01:42:23.606Z"
+          }
+        ],
+        "summary": null,
+        "generating": true,
+        "errors": {
+          "incidents": "missing on disk",
+          "operational-rules-expanded": "missing on disk"
+        }
+      }
+    },
+    {
+      "path": "/api/telos/freshness/summary",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "file_updated": "2026-01-01T00:00:00.000Z",
+        "file_age_days": 282,
+        "total": 10,
+        "stale_count": 3,
+        "most_stale_section": {
+          "name": "Current State (where you are now)",
+          "slug": "current_state",
+          "age_days": null,
+          "threshold_days": 7
+        }
+      }
+    },
+    {
+      "path": "/api/content",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "columns": [
+          "inbox",
+          "prep",
+          "produce",
+          "review",
+          "publishing",
+          "done"
+        ],
+        "legs": [
+          "youtube",
+          "shorts",
+          "social",
+          "omny",
+          "discord"
+        ],
+        "items": [],
+        "counts": {
+          "inbox": 0,
+          "prep": 0,
+          "produce": 0,
+          "review": 0,
+          "publishing": 0,
+          "done": 0
+        },
+        "generatedAt": "2026-10-10T02:58:05.115Z"
+      }
+    },
+    {
+      "path": "/api/conduit/status",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "status": "healthy",
+        "details": {
+          "version": "1.0.0",
+          "eventsToday": 2
+        }
+      }
+    },
+    {
+      "path": "/api/content/dailysynthetic4109/run",
+      "method": "POST",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/content/dailysynthetic4109",
+      "method": "DELETE",
+      "authenticated": false,
+      "status": 401,
+      "cache_control": "no-store",
+      "body": {
+        "error": "An authenticated Hermes session is required"
+      }
+    },
+    {
+      "path": "/api/content/dailysynthetic4109/run",
+      "method": "POST",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4109",
+        "requested_run": "regular"
+      }
+    },
+    {
+      "path": "/api/content/dailysynthetic4109/run",
+      "method": "POST",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4109",
+        "already": true
+      }
+    },
+    {
+      "path": "/api/content",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "columns": [
+          "inbox",
+          "prep",
+          "produce",
+          "review",
+          "publishing",
+          "done"
+        ],
+        "legs": [
+          "youtube",
+          "shorts",
+          "social",
+          "omny",
+          "discord"
+        ],
+        "items": [
+          {
+            "id": "dailysynthetic4109",
+            "title": "Synthetic installed Content acceptance",
+            "path": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/Recordings/Inbox/daily-installed-synthetic.wav",
+            "created": "2026-10-10T02:58:10.887314+00:00",
+            "stage": "inbox",
+            "stage_status": "pending",
+            "requested_run": "regular",
+            "requested_at": "2026-10-10T02:58:11.503Z",
+            "updated": "2026-10-10T02:58:11.503Z"
+          }
+        ],
+        "counts": {
+          "inbox": 1,
+          "prep": 0,
+          "produce": 0,
+          "review": 0,
+          "publishing": 0,
+          "done": 0
+        },
+        "generatedAt": "2026-10-10T02:58:12.752Z"
+      }
+    },
+    {
+      "path": "/api/content/dailysynthetic4109",
+      "method": "DELETE",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4109",
+        "trashed": 2,
+        "artifactsRemoved": true,
+        "runnerKicked": false
+      }
+    },
+    {
+      "path": "/api/content/dailysynthetic4109",
+      "method": "DELETE",
+      "authenticated": true,
+      "status": 404,
+      "cache_control": "no-store",
+      "body": {
+        "error": "no item dailysynthetic4109"
+      }
+    },
+    {
+      "path": "/api/content",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "columns": [
+          "inbox",
+          "prep",
+          "produce",
+          "review",
+          "publishing",
+          "done"
+        ],
+        "legs": [
+          "youtube",
+          "shorts",
+          "social",
+          "omny",
+          "discord"
+        ],
+        "items": [],
+        "counts": {
+          "inbox": 0,
+          "prep": 0,
+          "produce": 0,
+          "review": 0,
+          "publishing": 0,
+          "done": 0
+        },
+        "generatedAt": "2026-10-10T02:58:14.480Z"
+      }
+    },
+    {
+      "path": "/api/memory",
+      "method": "GET",
+      "authenticated": true,
+      "status": 403,
+      "cache_control": "no-store",
+      "body": {
+        "error": "This dashboard account has no installation owner binding"
+      }
+    },
+    {
+      "path": "/api/content",
+      "method": "GET",
+      "authenticated": true,
+      "status": 403,
+      "cache_control": "no-store",
+      "body": {
+        "error": "This dashboard account has no installation owner binding"
+      }
+    },
+    {
+      "path": "/api/memory",
+      "method": "GET",
+      "authenticated": true,
+      "status": 200,
+      "cache_control": "no-store",
+      "body": {
+        "ts": "2026-10-10T02:58:15.316Z",
+        "derivedState": "unhealthy_warn",
+        "cadenceConfig": {
+          "turn_threshold": 8,
+          "min_minutes_between": 30,
+          "idle_threshold": 2,
+          "confidence_threshold": 0.7
+        },
+        "reviewState": {
+          "turn_count_since_last_review": 0,
+          "last_review_at": null,
+          "last_message_at": null,
+          "pending_review": false
+        },
+        "health": {
+          "ts": "2026-10-10T02:45:28.759Z",
+          "overall": "warn",
+          "counts": {
+            "critical": 0,
+            "warn": 5,
+            "ok": 22
+          },
+          "thresholds": {
+            "reviewerStaleMs": 604800000,
+            "retrievalStaleMs": 86400000,
+            "proposalBacklog": 10,
+            "observabilityMaxBytes": 268435456,
+            "observabilityMaxAgeMs": 2592000000,
+            "reviewerRunGraceMs": 600000,
+            "indexStaleMs": 604800000
+          },
+          "evidence": {
+            "nowMs": 1791600327465,
+            "thresholds": {
+              "reviewerStaleMs": 604800000,
+              "retrievalStaleMs": 86400000,
+              "proposalBacklog": 10,
+              "observabilityMaxBytes": 268435456,
+              "observabilityMaxAgeMs": 2592000000,
+              "reviewerRunGraceMs": 600000,
+              "indexStaleMs": 604800000
+            },
+            "reviewer": {
+              "status": "missing",
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"
+            },
+            "retrieval": {
+              "status": "missing",
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl"
+            },
+            "proposals": {
+              "pending": 0,
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+              "available": false,
+              "malformedLines": []
+            },
+            "observability": {
+              "bytes": 18451,
+              "oldestMs": 1791600260392.8206,
+              "files": 10,
+              "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+              "available": true
+            },
+            "index": {
+              "status": "no-index-v1",
+              "manifest": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+              "policy": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+              "measuredAt": 1791600327465
+            }
+          },
+          "findings": [
+            {
+              "id": "state-missing",
+              "severity": "warn",
+              "message": "review-state.json does not exist yet \u2014 reviewer never fired."
+            },
+            {
+              "id": "no-runs-dir",
+              "severity": "warn",
+              "message": "reviewer-runs/ directory does not exist yet."
+            },
+            {
+              "id": "reviewer-evidence-missing",
+              "severity": "warn",
+              "message": "No latest reviewer evidence is available.",
+              "detail": {
+                "status": "missing",
+                "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs",
+                "staleThresholdMs": 604800000
+              }
+            },
+            {
+              "id": "retrieval-missing",
+              "severity": "warn",
+              "message": "No retrieval evidence within 86400000ms freshness window.",
+              "detail": {
+                "status": "missing",
+                "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl",
+                "thresholdMs": 86400000
+              }
+            },
+            {
+              "id": "proposal-evidence-missing",
+              "severity": "warn",
+              "message": "Proposal evidence is absent.",
+              "detail": {
+                "pending": 0,
+                "evidence": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+                "available": false,
+                "malformedLines": []
+              }
+            }
+          ],
+          "ok_summary": [
+            "hook-file-present:MemoryTurnStart.hook.ts",
+            "hook-file-present:LoadMemory.hook.ts",
+            "hook-file-present:MemoryDeltaSurface.hook.ts",
+            "hook-file-present:MemoryReviewFire.hook.ts",
+            "hook-file-present:MemoryHealthGate.hook.ts",
+            "tool-file-present:MemorySystem.ts",
+            "tool-file-present:MemoryReviewer.ts",
+            "tool-file-present:MemoryWriter.ts",
+            "tool-file-present:MemoryRetriever.ts",
+            "tool-file-present:MemoryTypes.ts",
+            "tool-file-present:MemoryStatus.ts",
+            "tool-file-present:MemoryHealthCheck.ts",
+            "tool-file-present:MutationTier.ts",
+            "settings-hook-present:MemoryTurnStart.hook.ts",
+            "settings-hook-present:MemoryReviewFire.hook.ts",
+            "settings-hook-present:MemoryHealthGate.hook.ts",
+            "principal-memory-present",
+            "da-memory-present",
+            "markers-ok:principal",
+            "markers-ok:da",
+            "cap-ok:principal",
+            "cap-ok:da"
+          ]
+        },
+        "lastFireCount": 0,
+        "recentFires": [],
+        "pendingProposals": 0,
+        "autoAppliedProposals": 0,
+        "proposalsRecent": [],
+        "recentRuns": [],
+        "principalMemory": {
+          "entries": [],
+          "count": 0,
+          "charsUsed": 0
+        },
+        "daMemory": {
+          "entries": [],
+          "count": 0,
+          "charsUsed": 0
+        }
+      }
+    }
+  ],
+  "content_run_intent_and_repeat_verified": true,
+  "content_disposal_and_repeat_verified": true,
+  "current_owner_revocation_and_restoration_verified": true,
+  "synthetic_data_only": true,
+  "media_processing_verified": false,
+  "browser_interactions_verified": false,
+  "live_profile_changed": false
+}
