@@ -8,7 +8,7 @@ A destination mismatch raises a recoverable failure. The unknown SQLite receipt 
 
 ## Failure and correction evidence
 
-The [baseline output](before.stderr.txt) contains 12 expected failures across three test methods. Its [record](before.json) retains exit status 1. Each failure concerns success or a removed journal before destination verification. The baseline contains no test setup error.
+The [baseline output](before.json) contains 12 expected failures across three test methods. Its [record](before.json) retains exit status 1. Each failure concerns success or a removed journal before destination verification. The baseline contains no test setup error.
 
 The same tests pass after the correction. They change all six output destinations at two boundaries: after the actual publisher returns, and after the actual post-write snapshot returns. They keep actual native planning, file publication, authorization, and SQLite receipts.
 
