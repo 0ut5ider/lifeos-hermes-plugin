@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_staging",
+    "test_memory_staging_writers",
+    "test_memory_publication_recovery",
+    "test_memory_native_response_authority"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  }
+}

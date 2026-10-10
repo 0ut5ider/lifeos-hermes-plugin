@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-pr5-publication-targeted-review/probe_destination.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "revision": "cc14475fe36cf170d0afcffb1208b38044dfccaf",
+  "stdout": "{\n  \"response\": {\n    \"ok\": true,\n    \"signature\": \"495f26d2883c904acd4b3a290193dd308304586612668e3357277cf86bc499da\"\n  },\n  \"journal\": false,\n  \"receipts\": [\n    {\n      \"status\": \"committed\",\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"algorithm-summary-3f28baa2d1fb4854af59adb02a94d699\"\n    }\n  ],\n  \"cache_matches_requested\": false,\n  \"cache_matches_later\": true,\n  \"events\": [\n    \"/tmp/native-memory-hk4uisos/.claude/LIFEOS/MEMORY/STATE/algorithm-tab-summary.json\"\n  ]\n}\n",
+  "stderr": "",
+  "exit_code": 0
+}

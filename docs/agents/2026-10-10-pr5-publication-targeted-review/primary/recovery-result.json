@@ -1,0 +1,47 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_publication_revocation",
+    "test_memory_publication_rechecks",
+    "test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_source_conflict_after_doctrine_publication_retains_recovery",
+    "test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_source_change_after_cache_write_retains_recovery_and_later_source",
+    "test_memory_local_refresh_publication.MemoryLocalRefreshPublicationTests.test_source_change_after_digest_write_retains_recovery_and_later_identity",
+    "test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_later_log_edit_during_start_retains_unknown_receipt_and_recovery",
+    "test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_log_change_during_collection_after_start_retains_recovery",
+    "test_memory_conduit_insight.MemoryConduitInsightTests.test_event_change_after_insight_write_retains_recovery_and_later_events"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "revision": "cc14475fe36cf170d0afcffb1208b38044dfccaf",
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_algorithm_edit.py": "2e32dd185b4b639ec518549ad9e8dea935fd430d8b860ed34b114582c3c6ec81",
+    "lifeos_hook_bridge/memory_algorithm_summary.py": "5e0652a088e4387141ae56744c78f326006362d86d96e7022fec1f90833bdee7",
+    "lifeos_hook_bridge/memory_conduit_insight.py": "46244492ab7fe4c03f60ac11560ab79e0f5ca2a8f1c87247d26ad018e2259e73",
+    "lifeos_hook_bridge/memory_knowledge_harvest.py": "8556c0a3ee96fc190b3798567e4e93ee6e4851b7d6e5c21d4bfc55ee61acc050",
+    "lifeos_hook_bridge/memory_local_refresh.py": "b91164f3466b45d3707b67ed8dd460b026770635bb3f0555b7993f79754ade6b",
+    "lifeos_hook_bridge/memory_local_runs.py": "845dad6e8947638f9120fd9930435f541568a90e48adc79d5747eadba4e31ee8",
+    "lifeos_hook_bridge/memory_proposal_gc.py": "b738f79d9d07c804fbc993069e11bb767bfe308cd17d3cdbb3ed1c1b2747e89e",
+    "lifeos_hook_bridge/memory_session_harvest.py": "18450e300a0e6f6eedf45ff4532c373b537a0cfb01259e2255febe57ccfaff49",
+    "tests/test_memory_algorithm_edits.py": "448ca8de6be801ecc1cac61c4d172edbf08c3700570e9fd5339077e22bc87c75",
+    "tests/test_memory_algorithm_summary_edges.py": "10dbb5c4237e405fdbbb1c61127748da8055dc39eabf7b1fac310a0d396f59d7",
+    "tests/test_memory_conduit_insight.py": "1d0ddd1826dfa4cc2eb1c4e259237251f777ac555db06f3b172029ca05c95283",
+    "tests/test_memory_knowledge_harvest.py": "d08e2e376265fd59c81f4fc3cf4ed678ee5a1351373694db32e75bee166774ec",
+    "tests/test_memory_local_refresh_publication.py": "65600d5a21a27b0a6f1d25cb324f0bab38dea40e0e0e13df2970192b29133ea1",
+    "tests/test_memory_local_refresh_runs.py": "44366f8d25636009655f547b9ec22cdc59ab6acb1ee8f96f7091d764dcfe5dc0",
+    "tests/test_memory_publication_rechecks.py": "bca45dab75f7d442330729cce8002a0f1fb83f6006025385c1f8a913a8933b03",
+    "tests/test_memory_publication_revocation.py": "0f6272a0c6669681efc92a4ec9b3c02d20daa652c7e263248306de234f1874bf",
+    "tests/test_memory_staging.py": "c2743c18f5e0fc4a49e034e8f3da99da45adb954d8404847cda7e8f80eaa3943",
+    "tests/test_memory_staging_writers.py": "3806e1cea3a98dcfe628964ab5c85612e7f125c87680ffdee6f786988f71bdcd"
+  },
+  "exit_code": 0,
+  "duration_seconds": 42.7861533164978
+}

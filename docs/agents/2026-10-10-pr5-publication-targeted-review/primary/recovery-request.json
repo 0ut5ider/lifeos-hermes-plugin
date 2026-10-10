@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_publication_revocation",
+    "test_memory_publication_rechecks",
+    "test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_source_conflict_after_doctrine_publication_retains_recovery",
+    "test_memory_algorithm_summary_edges.MemoryAlgorithmSummaryEdgeTests.test_source_change_after_cache_write_retains_recovery_and_later_source",
+    "test_memory_local_refresh_publication.MemoryLocalRefreshPublicationTests.test_source_change_after_digest_write_retains_recovery_and_later_identity",
+    "test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_later_log_edit_during_start_retains_unknown_receipt_and_recovery",
+    "test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_log_change_during_collection_after_start_retains_recovery",
+    "test_memory_conduit_insight.MemoryConduitInsightTests.test_event_change_after_insight_write_retains_recovery_and_later_events"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  }
+}

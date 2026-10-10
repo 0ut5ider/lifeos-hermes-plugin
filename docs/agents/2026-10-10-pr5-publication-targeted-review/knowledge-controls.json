@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_admitted_caller_cannot_mine_after_connector_loss",
+    "test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_standalone_mining_preserves_native_staging_and_state"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "revision": "cc14475fe36cf170d0afcffb1208b38044dfccaf",
+  "stdout": "",
+  "stderr": "test_admitted_caller_cannot_mine_after_connector_loss (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_admitted_caller_cannot_mine_after_connector_loss) ... ok\ntest_standalone_mining_preserves_native_staging_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_standalone_mining_preserves_native_staging_and_state) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.100s\n\nOK\n",
+  "exit_code": 0,
+  "duration_seconds": 0.2317655086517334
+}
