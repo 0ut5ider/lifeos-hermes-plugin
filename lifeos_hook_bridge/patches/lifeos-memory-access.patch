@@ -11766,7 +11766,19 @@ diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/
  import { isLoopbackHostHeader } from "./lib/host-guard.ts"
  
  // ── Load .env before anything else ──
-@@ -811,6 +812,7 @@
+@@ -688,9 +689,11 @@
+   // Graceful shutdown
+   let shuttingDown = false
+   const isShuttingDown = () => shuttingDown
++  let wakeScheduler: (() => void) | null = null
+   const shutdown = () => {
+     if (shuttingDown) return
+     shuttingDown = true
++    wakeScheduler?.()
+     log("info", "Shutting down gracefully")
+   }
+   process.on("SIGTERM", shutdown)
+@@ -811,6 +814,7 @@
    const server = Bun.serve({
      hostname: bindAll ? "0.0.0.0" : "127.0.0.1",
      port: config.port,
@@ -11774,7 +11786,7 @@ diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/
      async fetch(req) {
        const url = new URL(req.url)
        const pathname = url.pathname
-@@ -824,8 +826,10 @@
+@@ -824,8 +828,10 @@
        }
  
        // Health (unified) — moved to /api/pulse/health to avoid conflict with Life Dashboard /health page
@@ -11787,7 +11799,26 @@ diff --git a/LifeOS/install/LIFEOS/PULSE/pulse.ts b/LifeOS/install/LIFEOS/PULSE/
        }
  
        // Which surfaces are switched on. The dashboard reads this to avoid
-@@ -1209,6 +1213,10 @@
+@@ -1200,7 +1206,17 @@
+     const sleepMs = Math.max(MIN_SLEEP_MS, Math.min(nextDueMs - elapsed, MAX_SLEEP_MS))
+ 
+     if (!shuttingDown) {
+-      await Bun.sleep(sleepMs)
++      await new Promise<void>((resolve) => {
++        const timer = setTimeout(() => {
++          wakeScheduler = null
++          resolve()
++        }, sleepMs)
++        wakeScheduler = () => {
++          clearTimeout(timer)
++          wakeScheduler = null
++          resolve()
++        }
++      })
+     }
+   }
+ 
+@@ -1209,6 +1225,10 @@
    if (imessageModule) imessageModule.stopIMessage?.()
    if (assistantModule) assistantModule.stopAssistant?.()
    if (syslogModule) await syslogModule.stop?.()

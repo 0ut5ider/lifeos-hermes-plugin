@@ -2,6 +2,8 @@
 
 The staged `PULSE.user.toml` selects Adrian's first daily Discord release. It uses local job output until the private channel passes delivery acceptance. The [configuration gate](../../verification/2026-10-08-daily-pulse-profile/README.md) verifies native resolution and job execution. Installed scheduling and release acceptance remain open. Adrian selects only the main Pulse dashboard. Do not start or expose the separate Telos application. The Telos skill template can remain in the native source package; it does not establish a separately accepted service.
 
+Audio and video processing move to the later voice release. Do not start the Content media runner for this text release. Main Pulse retains the governed Content board and its admitted board actions. A native run request records intent; it does not establish working extraction, transcription, or production.
+
 The operator deployment must perform these actions:
 
 1. Back up the selected profile, native user configuration, and release manifest.

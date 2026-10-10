@@ -1,0 +1,39 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/profile_services.py", line 31, in _run
+    result = subprocess.run(['systemctl', '--user', *arguments], text=True,
+        capture_output=True, timeout=45)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['systemctl', '--user', 'stop', 'lifeos-daily-acceptance-pulse.service']' timed out after 45 seconds
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/activate_installed_acceptance.py", line 35, in <module>
+    receipt = setup.apply(plan['signature'], account=account)
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/ownership_setup.py", line 157, in apply
+    services.drain(signature=document['service_signature'])
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/profile_services.py", line 249, in drain
+    self._drain(document)
+    ~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/profile_services.py", line 207, in _drain
+    self._drain_unit(document, role)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/profile_services.py", line 202, in _drain_unit
+    _run('stop', self.units[role])
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/profile_services.py", line 34, in _run
+    raise MemoryUnavailable('The owner service manager does not complete the selected operation') from error
+lifeos-hook-bridge.memory_access.MemoryUnavailable: The owner service manager does not complete the selected operation
