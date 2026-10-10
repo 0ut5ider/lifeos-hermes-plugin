@@ -13,6 +13,7 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import signal
 from typing import Any, Callable
 from uuid import uuid4
 
@@ -145,15 +146,30 @@ class NativeMemory:
         environment["HOME"] = str(self.root.parent)
         environment["LIFEOS_DIR"] = str(self.root / "LIFEOS")
         environment["LIFEOS_CONFIG_DIR"] = str(self.root / "LIFEOS/USER/CONFIG")
+        if action == 'algorithm_edit_commit':
+            environment['CLAUDE_CONFIG_DIR'] = str(self.root)
         environment.pop("LIFEOS_MEMORY_PUBLICATION_JOURNAL", None)
         if self.transaction.inherited_descriptors():
             environment["LIFEOS_MEMORY_PUBLICATION_JOURNAL"] = str(self.transaction.journal)
         environment["LIFEOS_MEMORY_INTERNAL"] = "1"
         environment["BUN_CONFIG_NO_AUTO_INSTALL"] = "1"
-        result = subprocess.run([self.bun, "--no-install", str(self.worker), str(self.root)],
-                                input=json.dumps({"action": action, **values}), text=True,
-                                capture_output=True, timeout=30, env=environment, cwd=self.root,
-                                pass_fds=(*self.transaction.inherited_descriptors(), *source_descriptors))
+        arguments = [self.bun, "--no-install", str(self.worker), str(self.root)]
+        content = json.dumps({"action": action, **values})
+        descriptors = (*self.transaction.inherited_descriptors(), *source_descriptors)
+        if action == 'algorithm_edit_commit':
+            # The commit group must end before the enclosing HTTP relay reaches its deadline.
+            with subprocess.Popen(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True, env=environment, cwd=self.root, pass_fds=descriptors, start_new_session=True) as process:
+                try:
+                    output, errors = process.communicate(content, timeout=20)
+                finally:
+                    try: os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError: pass
+                    process.wait()
+                result = subprocess.CompletedProcess(arguments, process.returncode, output, errors)
+        else:
+            result = subprocess.run(arguments, input=content, text=True, capture_output=True,
+                timeout=30, env=environment, cwd=self.root, pass_fds=descriptors)
         if result.returncode:
             raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
         try:
@@ -184,7 +200,8 @@ class NativeMemory:
         from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
         from .memory_user_index_publish import PUBLICATIONS as INDEX_PUBLICATIONS
         from .memory_manual_state import SYSTEM_PUBLICATIONS as MANUAL_PUBLICATIONS
-        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS | INDEX_PUBLICATIONS | MANUAL_PUBLICATIONS and not is_system_backup(name):
+        from .memory_algorithm_edit import system_publication
+        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS | INDEX_PUBLICATIONS | MANUAL_PUBLICATIONS and not is_system_backup(name) and not system_publication(name):
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != self.physical_root / name or path.is_symlink()
@@ -368,6 +385,9 @@ class NativeMemory:
             return publication_paths(self, scope, payload)
         if payload['operation'] == 'local_refresh':
             from .memory_local_refresh import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'algorithm_edit':
+            from .memory_algorithm_edit import publication_paths
             return publication_paths(self, scope, payload)
         if payload['operation'] == 'algorithm_summary':
             from .memory_algorithm_summary import publication_paths

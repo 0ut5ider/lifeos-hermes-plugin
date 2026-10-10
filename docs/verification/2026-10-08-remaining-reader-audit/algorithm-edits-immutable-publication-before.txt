@@ -1,0 +1,15 @@
+test_later_immutable_tag_at_publication_is_not_overwritten (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_later_immutable_tag_at_publication_is_not_overwritten) ... FAIL
+
+======================================================================
+FAIL: test_later_immutable_tag_at_publication_is_not_overwritten (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_later_immutable_tag_at_publication_is_not_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 443, in test_later_immutable_tag_at_publication_is_not_overwritten
+    self.assertEqual(result.status_code,503,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"ok": true, "version": "3.2.2", "previous": "3.2.1", "commit": {"committed": false, "detail": "git repository failed: fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set)."}}
+
+----------------------------------------------------------------------
+Ran 1 test in 5.671s
+
+FAILED (failures=1)

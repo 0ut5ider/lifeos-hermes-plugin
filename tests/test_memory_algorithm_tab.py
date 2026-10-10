@@ -192,14 +192,14 @@ console.log(JSON.stringify({status: response?.status, body: response ? await res
         path = self.seed()
         before = path.read_bytes()
         with httpx.Client(timeout=30) as client:
-            # The unmodified baseline stops before it can execute a write or generation action.
+            # Owner admission precedes field validation and generation authority.
             self.assertEqual(client.get(self.native + '/api/algorithm-tab/file?id=operational-rules').status_code, 401)
             for target in ('/file', '/doctrine', '/summary/regenerate'):
                 self.assertEqual(client.post(self.native + '/api/algorithm-tab' + target, json={}).status_code, 401)
             self.login(client)
-            for target in ('/file', '/doctrine', '/summary/regenerate'):
+            for target, expected in (('/file', 400), ('/doctrine', 400), ('/summary/regenerate', 503)):
                 response = client.post(self.native + '/api/algorithm-tab' + target, json={})
-                self.assertEqual(response.status_code, 503, response.text[:250])
+                self.assertEqual(response.status_code, expected, response.text[:250])
                 self.assertEqual(response.headers.get('cache-control'), 'no-store')
             for target, code in (('/file?id=unknown', 404), ('/file?id=doctrine&version=../outside', 400),
                     ('/file?id=operational-rules&path=other', 400), ('?source=other', 400), ('/unsupported/path', 404)):

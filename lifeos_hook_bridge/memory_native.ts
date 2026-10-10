@@ -113,6 +113,27 @@ async function main(): Promise<void> {
         result = {status: response.status, body: await response.json()};
       }
     }
+  } else if (input.action === 'algorithm_edit_render' || input.action === 'algorithm_edit_commit') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/algorithm-tab.ts')).href);
+    if (!object(module)) throw new Error('Native Algorithm edits are unavailable');
+    if (input.action === 'algorithm_edit_render') {
+      if (typeof module.renderAlgorithmEdit !== 'function' || typeof input.target !== 'string'
+          || !['/api/algorithm-tab/file', '/api/algorithm-tab/doctrine'].includes(input.target) || !object(input.body)) {
+        throw new Error('Choose declared Algorithm edit fields');
+      }
+      const response: unknown = await module.renderAlgorithmEdit(input.target, input.body);
+      if (!(response instanceof Response)) throw new Error('Native Algorithm edits require a response');
+      result = {status: response.status, body: await response.json()};
+      process.stdout.write(JSON.stringify(result) + "\n", () => process.exit(0));
+      return;
+    }
+    if (typeof module.commitAlgorithmEdit !== 'function' || !Array.isArray(input.paths) || input.paths.length < 1
+        || input.paths.length > 3 || input.paths.some(path => typeof path !== 'string'
+          || path.startsWith('/') || path.split('/').some(part => ['', '.', '..'].includes(part)))
+        || typeof input.message !== 'string' || input.message.length > 512) {
+      throw new Error('Choose bounded Algorithm checkpoint fields');
+    }
+    result = await module.commitAlgorithmEdit(input.paths, input.message);
   } else if (input.action === 'content_view') {
     if (typeof input.target !== 'string' || !['/api/content', '/api/content/', '/api/content/status'].includes(input.target)
         || typeof input.running !== 'boolean' || typeof input.history_descriptor !== 'number'

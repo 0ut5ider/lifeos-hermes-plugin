@@ -39,7 +39,8 @@ def main() -> None:
         if not isinstance(request, dict) or set(request) != {"operation", "arguments"} or not isinstance(request["arguments"], dict):
             raise ValueError("Invalid native memory request")
         operation = request["operation"]
-        if operation != 'filter_diagnostic' and len(wire) > REQUEST_LIMIT:
+        algorithm_edit = operation == 'pulse_http' and request['arguments'].get('view') == 'algorithm_edit'
+        if operation != 'filter_diagnostic' and not algorithm_edit and len(wire) > REQUEST_LIMIT:
             raise ValueError('The native memory request exceeds the input limit')
         if operation == 'pulse_http':
             http = importlib.import_module((__package__ or 'lifeos_memory_plugin') + '.memory_http')

@@ -177,6 +177,16 @@ class MemoryPreferences:
     def atlas_job_response(self, *, account):
         return self._owner_job_response(account=account)
 
+    def edit_algorithm(self, target, body, *, account):
+        from .memory_algorithm_edit import edit
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Algorithm edit authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = edit(NativeMemory(self.root), scope, target, body, check_current=check_current)
+        return self._response(config, result, account=account)
+
     def algorithm_job_response(self, *, account):
         from .memory_algorithm_summary import synthesis
         prepared, _ = self._owner_job_response(account=account)

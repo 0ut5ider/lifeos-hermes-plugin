@@ -1,0 +1,18 @@
+test_git_environment_cannot_redirect_snapshot_or_owner_commits (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_git_environment_cannot_redirect_snapshot_or_owner_commits) ... FAIL
+
+======================================================================
+FAIL: test_git_environment_cannot_redirect_snapshot_or_owner_commits (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_git_environment_cannot_redirect_snapshot_or_owner_commits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 297, in test_git_environment_cannot_redirect_snapshot_or_owner_commits
+    self.assertEqual(current_external,initial_external,json.dumps(observation))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'e052d65a3635d780e27fa90cf5b5e82706241c94\n' != '49ae19704d1e2986fbd5be5ec00d0e3236f2bddf\n'
+- e052d65a3635d780e27fa90cf5b5e82706241c94
++ 49ae19704d1e2986fbd5be5ec00d0e3236f2bddf
+ : {"response": {"ok": true, "mtime": "2026-10-09T23:44:29.908Z", "commit": {"committed": false, "detail": "git commit: error: pathspec '/tmp/native-memory-5vd2o6sj/.config/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md' did not match any file(s) known to git"}}, "external_changed": true, "owner_changed": false}
+
+----------------------------------------------------------------------
+Ran 1 test in 5.548s
+
+FAILED (failures=1)

@@ -1,0 +1,36 @@
+test_anonymous_edits_refuse_before_source_or_version_change (__main__.Diagnostics.test_anonymous_edits_refuse_before_source_or_version_change) ... ok
+test_invalid_hook_syntax_refuses_without_source_change (__main__.Diagnostics.test_invalid_hook_syntax_refuses_without_source_change) ... FAIL
+test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag (__main__.Diagnostics.test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag) ... FAIL
+test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal (__main__.Diagnostics.test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal) ... FAIL
+
+======================================================================
+FAIL: test_invalid_hook_syntax_refuses_without_source_change (__main__.Diagnostics.test_invalid_hook_syntax_refuses_without_source_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 66, in test_invalid_hook_syntax_refuses_without_source_change
+    self.assertEqual(result.status_code,422,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 422 : {"error":"Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag (__main__.Diagnostics.test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 76, in test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag
+    self.assertEqual(result.status_code,200,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Algorithm editing is unavailable under the current policy"}
+
+======================================================================
+FAIL: test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal (__main__.Diagnostics.test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 47, in test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal
+    self.assertEqual(result.status_code,200,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Algorithm editing is unavailable under the current policy"}
+
+----------------------------------------------------------------------
+Ran 4 tests in 16.015s
+
+FAILED (failures=3)

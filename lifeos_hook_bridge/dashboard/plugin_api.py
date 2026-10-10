@@ -352,6 +352,31 @@ def get_memory_life(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('life', request, account)
 
 
+@router.post('/memory/algorithm_edit')
+async def edit_memory_algorithm(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content) > 3 * 1024 * 1024:
+            return JSONResponse({'error': 'Algorithm edit exceeds its request limit'}, status_code=400, headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body, dict) or set(body) != {'target', 'body'}:
+            raise ValueError('Choose declared Algorithm edit arguments')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().edit_algorithm(
+            body['target'], body['body'], account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except LookupError:
+        return JSONResponse({'error': 'Choose a declared Algorithm edit route'}, status_code=404, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Choose declared Algorithm edit fields'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Algorithm editing is unavailable under the current policy'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'], headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
 @router.post('/memory/algorithm_job')
 @router.post('/memory/local_job')
 @router.post('/memory/atlas_job')

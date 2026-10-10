@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..e2b5027
+index 0000000..1d4f077
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,635 @@
+@@ -0,0 +1,664 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8296,7 +8296,7 @@ index 0000000..e2b5027
 +
 +function validHTTPResponse(value: unknown): value is MemoryHTTPResponse {
 +  return memoryObject(value)
-+    && typeof value.status === "number" && [200, 400, 401, 403, 404, 409, 503].includes(value.status)
++    && typeof value.status === "number" && [200, 400, 401, 403, 404, 409, 422, 503].includes(value.status)
 +    && typeof value.body === "string" && Array.isArray(value.headers)
 +    && value.headers.every(header => Array.isArray(header) && header.length === 2
 +      && typeof header[0] === "string" && typeof header[1] === "string"
@@ -8635,6 +8635,35 @@ index 0000000..e2b5027
 +      : Response.json({ok: true, started}, {status: 202, headers: admitted.headers});
 +  };
 +  try {
++    if (request.method === "POST" && ["/api/algorithm-tab/file", "/api/algorithm-tab/doctrine"].includes(url.pathname)) {
++      const admitted = await memoryHTTPResponseAsync(request, "pulse_runtime");
++      if (admitted.status !== 200) return admitted;
++      const chunks: Uint8Array[] = [];
++      let size = 0;
++      const reader = request.body?.getReader();
++      if (reader) {
++        try {
++          while (true) {
++            const row = await reader.read();
++            if (row.done) break;
++            size += row.value.byteLength;
++            if (size > 3 * 1024 * 1024) {
++              await reader.cancel();
++              return Response.json({error: "Algorithm edit exceeds its request limit"}, {status: 400, headers});
++            }
++            chunks.push(row.value);
++          }
++        } finally { reader.releaseLock(); }
++      }
++      const bytes = new Uint8Array(size);
++      let offset = 0;
++      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
++      let body: unknown;
++      try { body = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes)); }
++      catch { return Response.json({error: "Choose declared Algorithm edit fields"}, {status: 400, headers}); }
++      if (!memoryObject(body)) return Response.json({error: "Choose declared Algorithm edit fields"}, {status: 400, headers});
++      return await memoryHTTPResponseAsync(request, "algorithm_edit", url.pathname, body);
++    }
 +    if (url.pathname === "/api/algorithm-tab/summary/regenerate") return await start(true);
 +    let response = await memoryHTTPResponseAsync(request, "life", url.pathname + url.search);
 +    if (response.status !== 200 || request.method !== "GET" || url.pathname.endsWith("/file")) return response;
@@ -12838,7 +12867,7 @@ index ea7ccff..3f374be 100644
 +  throw new Error("Choose a declared Content read route");
 +}
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
-index 54d381e..3e229cb 100644
+index 54d381e..08736a6 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
 @@ -1,3 +1,5 @@
@@ -13086,7 +13115,7 @@ index 54d381e..3e229cb 100644
      summary: store.overview
        ? { generated_at: store.overview.generated_at, level: store.overview.level, stale: store.overview.chain_hash !== hash, markdown: store.overview.markdown }
        : null,
-@@ -611,6 +702,80 @@ async function compose(): Promise<unknown> {
+@@ -611,6 +702,128 @@ async function compose(): Promise<unknown> {
    };
  }
  
@@ -13157,6 +13186,54 @@ index 54d381e..3e229cb 100644
 +    store: await readStore(reader)};
 +}
 +
++export async function renderAlgorithmEdit(target: string, value: unknown): Promise<Response> {
++  if (!memoryObject(value)) return Response.json({error: "Choose a declared Algorithm edit"}, {status: 400});
++  if (target === "/api/algorithm-tab/file") {
++    if (Object.keys(value).some(key => !["id", "content", "expectedMtime"].includes(key))
++        || typeof value.id !== "string" || typeof value.content !== "string"
++        || value.expectedMtime !== undefined && typeof value.expectedMtime !== "string") {
++      return Response.json({error: "Choose declared Algorithm file fields"}, {status: 400});
++    }
++    return await saveFile({id: value.id, content: value.content, expectedMtime: value.expectedMtime});
++  }
++  if (target === "/api/algorithm-tab/doctrine") {
++    if (Object.keys(value).some(key => !["content", "bump", "note"].includes(key))
++        || typeof value.content !== "string" || typeof value.bump !== "string" || typeof value.note !== "string") {
++      return Response.json({error: "Choose declared Algorithm doctrine fields"}, {status: 400});
++    }
++    return await saveDoctrine({content: value.content, bump: value.bump, note: value.note});
++  }
++  return Response.json({error: "Choose a declared Algorithm edit route"}, {status: 404});
++}
++
++export async function commitAlgorithmEdit(paths: string[], message: string): Promise<{committed: boolean; detail: string}> {
++  const absolute = paths.map(relative => join(HOME, relative));
++  const repo = repoFor(absolute[0]);
++  const real = absolute.map(path => realpathSync(path));
++  const environment: Record<string, string> = {};
++  for (const [name, value] of Object.entries(process.env)) {
++    if (!name.startsWith("GIT_") && value !== undefined) environment[name] = value;
++  }
++  const run = async (...args: string[]): Promise<{code: number; out: string; err: string}> => {
++    const process = Bun.spawn(["git", "-C", repo, ...args], {env: environment, stdout: "pipe", stderr: "pipe"});
++    const [out, err, code] = await Promise.all([
++      new Response(process.stdout).text(), new Response(process.stderr).text(), process.exited,
++    ]);
++    return {code, out: out.trim(), err: err.trim()};
++  };
++  const selected = await run("rev-parse", "--show-toplevel");
++  if (selected.code !== 0) return {committed: false, detail: `git repository failed: ${selected.err}`};
++  if (realpathSync(selected.out) !== realpathSync(repo)) {
++    return {committed: false, detail: "Git requires the selected owner repository"};
++  }
++  const added = await run("add", "--", ...real);
++  if (added.code !== 0) return {committed: false, detail: `git add failed: ${added.err}`};
++  const result = await run("commit", "--only", "-m", message, "--", ...real);
++  if (result.code !== 0) return {committed: false, detail: `git commit: ${result.err || result.out}`};
++  const sha = await run( "rev-parse", "--short", "HEAD");
++  return {committed: true, detail: `${sha.out} in ${repo === HOME ? "~/.claude" : "USER repo"}`};
++}
++
 +export async function renderAlgorithmTabView(sources: {relative: string; content: string}[], target: string,
 +    metadata: Record<string, {size: number; modified: number}>, versions: string[]): Promise<Response> {
 +  const reader = algorithmReader(sources, metadata, versions);
@@ -13167,7 +13244,7 @@ index 54d381e..3e229cb 100644
  /* ── Module surface ── */
  
  export function start(): void {
-@@ -618,8 +783,30 @@ export function start(): void {
+@@ -618,8 +831,30 @@ export function start(): void {
    console.log(`[${MODULE_NAME}] Started — serving /api/algorithm-tab (${CHAIN.length} chain files)`);
  }
  
@@ -13198,7 +13275,7 @@ index 54d381e..3e229cb 100644
    const sub = pathname.replace(/^\/api\/algorithm-tab/, "").replace(/\/$/, "");
  
    try {
-@@ -628,22 +815,7 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+@@ -628,22 +863,7 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
      }
  
      if (sub === "/file" && req.method === "GET") {
