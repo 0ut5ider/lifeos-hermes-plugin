@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-atlas-limits-review/managed-measure.py", line 34, in <module>
+    assert f.sync()['ok']; prepared=f.prepare();assert f.call('atlas_insight_publish',signature=prepared['signature'],value=f.value(prepared))['ok']
+                                    ^^^^^^^^^
+AttributeError: 'MemoryAtlasSyncTests' object has no attribute 'prepare'

@@ -1,0 +1,63 @@
+{
+  "native_backup": {
+    "status": "committed",
+    "signature": "94abf1e2c7a0e9fd04a42e09478f9496c94f3ff4d4d2671b613f6f1ed890ff52",
+    "files": 10,
+    "schema": 4
+  },
+  "manifest_files": [
+    "GEAR.md",
+    "PROJECTS.md",
+    "TELOS/CURRENT_STATE/ACTIVITY.md",
+    "PRINCIPAL/PRINCIPAL_IDENTITY.md",
+    "PRINCIPAL/PRINCIPAL_MEMORY.md",
+    "MEMORY/STATE/atlas-insights.json",
+    "MEMORY/STATE/memory-access.sqlite",
+    "DIGITAL_ASSISTANT/DA_MEMORY.md",
+    "CONFIG/memory-access.json",
+    "CONFIG/memory-http.json"
+  ],
+  "recovery": {
+    "status": "recovered",
+    "atlas_db_present": false,
+    "atlas_snapshot_present": false,
+    "narrative_bytes_retained": true
+  },
+  "retained_rebuild": {
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 1,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 2,
+          "swept": true
+        }
+      ]
+    },
+    "current_keys": [
+      [
+        "domain:atlas.example.invalid"
+      ],
+      [
+        "gear:laptop-synthetic-atlas-machine"
+      ],
+      [
+        "project:synthetic-atlas-project"
+      ]
+    ],
+    "runs": 2,
+    "all_prior_bytes_retained": true,
+    "exact_group_return": true
+  },
+  "state_location_relative_to_home": ".local/state/lifeos/atlas",
+  "artifacts_sha256": {
+    "atlas.db": "316f86cde3198fc7ea70c763bbbe1a12d7057dba502d8fbff8443848cb1bf835",
+    "snapshot.json": "bad74f8f0f04edca8ac1fbf088c3a50186d0d45871ad706e048b20c4bfc058bd",
+    "atlas-insights.json": "8efefb5880e8462781798e32593d1f993d78960e1dd7d76508f78c63c46767a2"
+  }
+}

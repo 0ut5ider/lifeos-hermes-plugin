@@ -47,7 +47,7 @@ class MemoryAtlasTests(unittest.TestCase):
                 'assets': [{'kind': 'device', 'key': 'gear:synthetic', 'name': marker, 'attrs': attrs or {}}], 'edges': []}) + ');\n'
             'console.log(JSON.stringify(store.insights()));store.close();')
         result = subprocess.run(['bun', '--no-install', '-e', script], capture_output=True, text=True,
-            timeout=20, env=dict(os.environ, HOME=str(self.fixture.home)))
+            timeout=20, env=dict(os.environ, HOME=str(self.fixture.home), LIFEOS_MEMORY_INTERNAL="1"))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stderr, '')
         metrics = json.loads(result.stdout)

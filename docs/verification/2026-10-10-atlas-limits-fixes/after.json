@@ -1,0 +1,38 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_atlas_capacity",
+    "test_memory_atlas_sync",
+    "test_daily_pulse_profile"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_atlas_sync.py": "73d56536b9a44de716eb9e85c2f979d3ed092307e477066c4c88e5d6da10330a",
+    "lifeos_hook_bridge/memory_atlas_insight.py": "9a73481125ae69722fe3036bc80a7b95d2ab972a3b7b2b55eb88e31f39d23dc6",
+    "lifeos_hook_bridge/memory_access.py": "dccc65123be7a5114c4438b2657fe4d83a863559648db71c92f4300b5f7850cc",
+    "lifeos_hook_bridge/memory_service.py": "0e1b1b9df65a05973c2f4a9c581ad320590dd3f9738720d2294cff19438ddc7b",
+    "lifeos_hook_bridge/memory_owner_jobs.py": "e2f7eecdc6abeb7c24044169f2b8b4b35e74b83cd3b5ac3c5690f35fd184e05f",
+    "lifeos_hook_bridge/memory_native.ts": "fde1a09c8074d059f77c95f3bbf91d0a0668d80185e561418e2753cbf3b07a90",
+    "lifeos_hook_bridge/patches/lifeos-memory-access.patch": "8fc36c722d34221a3b4a2dad9aabe2498a5cf43bb6e7648095fa5050e59daaee",
+    "tests/test_memory_atlas_sync.py": "2e5267d407801f65484314675d60ec06f84f58d026cf7b2aecd2decdc1162b80",
+    "tests/memory_atlas_sync_process.py": "5841f3a36bfa2e70c72df0f7a24b7a6e53bab5a5e7195c9bd79f2005c3063a77",
+    "tests/test_memory_atlas_capacity.py": "afdde2fadfa621a1c6711a9d0869da14c54b1470c667b31c15cf501df766a2c6",
+    "lifeos_hook_bridge/memory_atlas.py": "767d597c2837f5cd452d06c1ef340b570560c2d797cd2626a107102ee1795836",
+    "lifeos_hook_bridge/memory_operational_views.py": "189800a9b9ed02fed6df4b245fccfbc402c352e369afcc3b72fb3db2286c684f",
+    "docs/deployment/daily-text/PULSE.user.toml": "112bef056043bc09f4581118293f4b98f566a080c0d413c70160b2ec3aa5183b"
+  },
+  "exit_code": 0,
+  "duration_seconds": 83.07240440200258,
+  "stdout": "",
+  "stderr": "test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts) ... ok\ntest_retained_history_refuses_before_any_live_publication (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_retained_history_refuses_before_any_live_publication) ... ok\ntest_success_reports_bounded_capacity_and_warning_without_source_text (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_success_reports_bounded_capacity_and_warning_without_source_text) ... ok\ntest_table_limit_refuses_before_publication_and_preserves_previous_graph (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_table_limit_refuses_before_publication_and_preserves_previous_graph) ... ok\ntest_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) ... ok\ntest_actual_owner_job_initializes_graph_without_inference (test_memory_atlas_sync.MemoryAtlasOwnerSyncTests.test_actual_owner_job_initializes_graph_without_inference) ... ok\ntest_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes (test_memory_atlas_sync.MemoryAtlasSyncTests.test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes) ... ok\ntest_database_companions_and_aliases_refuse_without_replacing_files (test_memory_atlas_sync.MemoryAtlasSyncTests.test_database_companions_and_aliases_refuse_without_replacing_files) ... ok\ntest_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph (test_memory_atlas_sync.MemoryAtlasSyncTests.test_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph) ... ok\ntest_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules) ... ok\ntest_fresh_sync_uses_native_graph_and_snapshot (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_sync_uses_native_graph_and_snapshot) ... ok\ntest_inherited_atlas_directory_cannot_redirect_planner_effects (test_memory_atlas_sync.MemoryAtlasSyncTests.test_inherited_atlas_directory_cannot_redirect_planner_effects) ... ok\ntest_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) ... ok\ntest_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) ... ok\ntest_repeat_sync_preserves_native_identity_and_incomplete_observations (test_memory_atlas_sync.MemoryAtlasSyncTests.test_repeat_sync_preserves_native_identity_and_incomplete_observations) ... ok\ntest_native_job_merger_has_no_raw_memory_command_or_external_output (test_daily_pulse_profile.DailyPulseProfileTests.test_native_job_merger_has_no_raw_memory_command_or_external_output) ... ok\ntest_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) ... ok\ntest_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis) ... /usr/lib64/python3.14/shutil.py:165: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7f215215c310>\n  raise _GiveupOnFastCopy(err)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/usr/lib64/python3.14/shutil.py:165: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7f21522bbf10>\n  raise _GiveupOnFastCopy(err)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/usr/lib64/python3.14/shutil.py:165: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7f21522bbe20>\n  raise _GiveupOnFastCopy(err)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\nok\ntest_native_spawn_and_actual_hermes_parser_render_the_morning_brief (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_render_the_morning_brief) ... ok\ntest_native_spawn_cannot_borrow_a_discord_author_when_local_grant_is_removed (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_cannot_borrow_a_discord_author_when_local_grant_is_removed) ... ok\ntest_native_spawn_refuses_memory_job_when_ownership_is_disabled (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_refuses_memory_job_when_ownership_is_disabled) ... ok\ntest_native_spawn_runs_healthcheck_without_an_external_destination (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_healthcheck_without_an_external_destination) ... ok\ntest_native_spawn_runs_proposal_cleanup_through_the_actual_owner_command (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_proposal_cleanup_through_the_actual_owner_command) ... ok\n\n----------------------------------------------------------------------\nRan 23 tests in 82.874s\n\nOK\n"
+}

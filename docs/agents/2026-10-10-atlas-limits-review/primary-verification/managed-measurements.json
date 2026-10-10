@@ -1,0 +1,569 @@
+[
+  {
+    "name": "projection-history-limit",
+    "near_result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 401,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 402,
+          "swept": true
+        }
+      ]
+    },
+    "before": {
+      "atlas.db": {
+        "size": 131072,
+        "sha256": "81047097f62f47077e9c7d6b4af78c8746e7ee06f2ae2204eca17f89b7097336",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49096,
+        "sha256": "20210bd5e6d2fb502290372f5320864876c89bdc8ad24d4461f90cb442108056",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "ccd27b230ac088f4e67c2eb53ebbd875e2b14214e734ebb91fad5ec9148d38e9",
+        "mode": "0o600"
+      }
+    },
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Atlas synchronization needs recovery or a current retry"
+    },
+    "after_publication": {
+      "atlas.db": {
+        "size": 131072,
+        "sha256": "2f22a78b9eb98f3e34614a32bfe4d83adb9b0a8c25b5d7f155270b4aaf0fedd1",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49096,
+        "sha256": "e7a899b882ca81da14465b4d0847cfee58a7188475300e34c0e5fca3a996ddaf",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "ccd27b230ac088f4e67c2eb53ebbd875e2b14214e734ebb91fad5ec9148d38e9",
+        "mode": "0o600"
+      }
+    },
+    "rows_after_publication": {
+      "asset": 110,
+      "edge": 40,
+      "source_observation": 110,
+      "edge_observation": 40,
+      "sync_run": 404,
+      "lifecycle_event": 0
+    },
+    "journal_bytes": 240606,
+    "recovered": {
+      "atlas.db": {
+        "size": 131072,
+        "sha256": "81047097f62f47077e9c7d6b4af78c8746e7ee06f2ae2204eca17f89b7097336",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49096,
+        "sha256": "20210bd5e6d2fb502290372f5320864876c89bdc8ad24d4461f90cb442108056",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "ccd27b230ac088f4e67c2eb53ebbd875e2b14214e734ebb91fad5ec9148d38e9",
+        "mode": "0o600"
+      }
+    },
+    "exact_recovery": true,
+    "rows_recovered": {
+      "asset": 110,
+      "edge": 40,
+      "source_observation": 110,
+      "edge_observation": 40,
+      "sync_run": 402,
+      "lifecycle_event": 0
+    },
+    "view_before_status": 200,
+    "view_after_recovery_status": 200
+  },
+  {
+    "name": "inventory-100-50",
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 1,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 2,
+          "swept": true
+        }
+      ]
+    },
+    "artifacts_after_operation": {
+      "atlas.db": {
+        "size": 163840,
+        "sha256": "893eae040938d8c5bca6f39bd14c6e33f05d273c217ca6258c6e72425ddb4a5d",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 112465,
+        "sha256": "15ad7e11faa51c7f10d48b37bc8ce57abd4070d22d2028e120b4c3c09ca10100",
+        "mode": "0o600"
+      }
+    },
+    "rows_after_operation": {
+      "asset": 250,
+      "edge": 100,
+      "source_observation": 250,
+      "edge_observation": 100,
+      "sync_run": 2,
+      "lifecycle_event": 0
+    },
+    "journal_bytes": null,
+    "artifacts_after_recovery": {
+      "atlas.db": {
+        "size": 163840,
+        "sha256": "893eae040938d8c5bca6f39bd14c6e33f05d273c217ca6258c6e72425ddb4a5d",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 112465,
+        "sha256": "15ad7e11faa51c7f10d48b37bc8ce57abd4070d22d2028e120b4c3c09ca10100",
+        "mode": "0o600"
+      }
+    },
+    "source_bytes": {
+      "gear": 5093,
+      "projects": 5867
+    }
+  },
+  {
+    "name": "inventory-100-100",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Atlas synchronization needs recovery or a current retry"
+    },
+    "artifacts_after_operation": {
+      "atlas.db": {
+        "size": 237568,
+        "sha256": "2ff81855cdb9e854fc06a2d86fbe143320f78be165cf948da774c95e7ac0d329",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 184218,
+        "sha256": "545ba1d03d9eeeb532445d03747c0ef5cfb3184e751acc0bc43a2aa4b583d798",
+        "mode": "0o600"
+      }
+    },
+    "rows_after_operation": {
+      "asset": 400,
+      "edge": 200,
+      "source_observation": 400,
+      "edge_observation": 200,
+      "sync_run": 2,
+      "lifecycle_event": 0
+    },
+    "journal_bytes": 384,
+    "artifacts_after_recovery": {},
+    "source_bytes": {
+      "gear": 5093,
+      "projects": 11717
+    }
+  },
+  {
+    "name": "inventory-300-150",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Native Atlas synchronization requires declared database, snapshot, and run fields"
+    },
+    "artifacts_after_operation": {},
+    "rows_after_operation": null,
+    "journal_bytes": null,
+    "artifacts_after_recovery": {},
+    "source_bytes": {
+      "gear": 15693,
+      "projects": 17767
+    }
+  },
+  {
+    "name": "inventory-0-80",
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 1,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 2,
+          "swept": true
+        }
+      ]
+    },
+    "artifacts_after_operation": {
+      "atlas.db": {
+        "size": 163840,
+        "sha256": "e7f21fd5249454d07cc388ef6bccdd58f7722b69a086d87779dd9d47bbeac335",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 114808,
+        "sha256": "66fbdad54cc5c343ce309d10538b702f7b2828462d9830c5ee2ba53077c3dddb",
+        "mode": "0o600"
+      }
+    },
+    "rows_after_operation": {
+      "asset": 240,
+      "edge": 160,
+      "source_observation": 240,
+      "edge_observation": 160,
+      "sync_run": 2,
+      "lifecycle_event": 0
+    },
+    "journal_bytes": null,
+    "artifacts_after_recovery": {
+      "atlas.db": {
+        "size": 163840,
+        "sha256": "e7f21fd5249454d07cc388ef6bccdd58f7722b69a086d87779dd9d47bbeac335",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 114808,
+        "sha256": "66fbdad54cc5c343ce309d10538b702f7b2828462d9830c5ee2ba53077c3dddb",
+        "mode": "0o600"
+      }
+    },
+    "source_bytes": {
+      "gear": 13,
+      "projects": 9377
+    }
+  },
+  {
+    "name": "inventory-0-85",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Atlas synchronization needs recovery or a current retry"
+    },
+    "artifacts_after_operation": {
+      "atlas.db": {
+        "size": 167936,
+        "sha256": "fb8b01a9dda3f52adab168a49c5298d08243ea0548b95d874a2d14ac750f9d75",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 121978,
+        "sha256": "6bdf001512cb2f0556bef74d450154514fbbc2b82afdaa72b677c0d5433cedba",
+        "mode": "0o600"
+      }
+    },
+    "rows_after_operation": {
+      "asset": 255,
+      "edge": 170,
+      "source_observation": 255,
+      "edge_observation": 170,
+      "sync_run": 2,
+      "lifecycle_event": 0
+    },
+    "journal_bytes": 384,
+    "artifacts_after_recovery": {},
+    "source_bytes": {
+      "gear": 13,
+      "projects": 9962
+    }
+  },
+  {
+    "name": "inventory-0-100",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Atlas synchronization needs recovery or a current retry"
+    },
+    "artifacts_after_operation": {
+      "atlas.db": {
+        "size": 196608,
+        "sha256": "5137f69275f8554b74aa49af005ac1e72c2b250a7253262eb69d42079a80f630",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 143492,
+        "sha256": "aae88f271a119a819663ba9dd883a29139db28e2eaecc3b8ef8849c97469eeac",
+        "mode": "0o600"
+      }
+    },
+    "rows_after_operation": {
+      "asset": 300,
+      "edge": 200,
+      "source_observation": 300,
+      "edge_observation": 200,
+      "sync_run": 2,
+      "lifecycle_event": 0
+    },
+    "journal_bytes": 384,
+    "artifacts_after_recovery": {},
+    "source_bytes": {
+      "gear": 13,
+      "projects": 11717
+    }
+  },
+  {
+    "name": "snapshot-plan-refusal",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Native Atlas synchronization requires declared database, snapshot, and run fields"
+    },
+    "before": {
+      "atlas.db": {
+        "size": 90112,
+        "sha256": "a7525753c20b6dac180b352749acb9d8c248c2b6aa48d56f594c139bc3e1aeed",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "77a038d92110d30641a9c824b6d57b21dabdc7e9a1c41511a4ab8f054644c6dd",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "atlas.db": {
+        "size": 90112,
+        "sha256": "a7525753c20b6dac180b352749acb9d8c248c2b6aa48d56f594c139bc3e1aeed",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "77a038d92110d30641a9c824b6d57b21dabdc7e9a1c41511a4ab8f054644c6dd",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "journal_exists": false,
+    "changed_source_prepare_hash_matches_prior": true,
+    "changed_source_insight_stale": false
+  },
+  {
+    "name": "source-262144",
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 3,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 4,
+          "swept": true
+        }
+      ]
+    },
+    "before": {
+      "atlas.db": {
+        "size": 90112,
+        "sha256": "a7525753c20b6dac180b352749acb9d8c248c2b6aa48d56f594c139bc3e1aeed",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "77a038d92110d30641a9c824b6d57b21dabdc7e9a1c41511a4ab8f054644c6dd",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "atlas.db": {
+        "size": 90112,
+        "sha256": "439bd3962f07967b730584b6c369f811014efc9849a529f0b321d621a7d7248a",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "cbfbdfa1521ceb797a923995f934820d86dfa7102179b4f06691c959e90c936b",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "bytes_preserved": false
+  },
+  {
+    "name": "source-262145",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "An Atlas source exceeds its byte limit"
+    },
+    "before": {
+      "atlas.db": {
+        "size": 90112,
+        "sha256": "439bd3962f07967b730584b6c369f811014efc9849a529f0b321d621a7d7248a",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "cbfbdfa1521ceb797a923995f934820d86dfa7102179b4f06691c959e90c936b",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "atlas.db": {
+        "size": 90112,
+        "sha256": "439bd3962f07967b730584b6c369f811014efc9849a529f0b321d621a7d7248a",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "cbfbdfa1521ceb797a923995f934820d86dfa7102179b4f06691c959e90c936b",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "bytes_preserved": true
+  },
+  {
+    "name": "database-2097152",
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 5,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 6,
+          "swept": true
+        }
+      ]
+    },
+    "before": {
+      "atlas.db": {
+        "size": 2097152,
+        "sha256": "63ce67aa594b94667adf72db32cefd7e5f086f617635b66981d82089297b5c11",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "cbfbdfa1521ceb797a923995f934820d86dfa7102179b4f06691c959e90c936b",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "atlas.db": {
+        "size": 2097152,
+        "sha256": "7fefb9a972e25bf5507cba9944466d3f85e3b2e42587545afbd6ea550f996d7c",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "1482d7c2d3df13c0a5295bb966d10c2371c5e307e7e488469ce660fe5715b6ad",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "bytes_preserved": false
+  },
+  {
+    "name": "database-2097153",
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Atlas synchronization requires a bounded database"
+    },
+    "before": {
+      "atlas.db": {
+        "size": 2097153,
+        "sha256": "2f440520c39ffeea63cbc9b1f43b22d952619a3127f281da71859d4817c304b4",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "1482d7c2d3df13c0a5295bb966d10c2371c5e307e7e488469ce660fe5715b6ad",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "atlas.db": {
+        "size": 2097153,
+        "sha256": "2f440520c39ffeea63cbc9b1f43b22d952619a3127f281da71859d4817c304b4",
+        "mode": "0o600"
+      },
+      "snapshot.json": {
+        "size": 49094,
+        "sha256": "1482d7c2d3df13c0a5295bb966d10c2371c5e307e7e488469ce660fe5715b6ad",
+        "mode": "0o600"
+      },
+      "atlas-insights.json": {
+        "size": 140,
+        "sha256": "6a03a2e5743eefa504d1edcadfb00550e6da91ba5696217ebb76daf687797a0f",
+        "mode": "0o600"
+      }
+    },
+    "bytes_preserved": true
+  },
+  {
+    "name": "test_process_death_and_post_publication_changes_keep_recovery",
+    "passed": true
+  },
+  {
+    "name": "test_later_edits_preserve_the_whole_publication_group_and_recovery",
+    "passed": true
+  }
+]

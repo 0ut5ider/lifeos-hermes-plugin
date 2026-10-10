@@ -1,0 +1,94 @@
+{
+  "url": "http://localhost:18837/atlas",
+  "visibleText": "PULSE\nLIFE\nTELOS\nCONTENT\nHEALTH\nFINANCES\nBUSINESS\nGROWTH\nLOCAL\nGEAR\nBOOKS\nATLAS\nCORTEX\nAGENTS\nSYSTEM\nOBSERVER\nYou're looking at template content.\nThis is what Pulse looks like before you've made it yours.\nTalk to\nCerebo\n— run\n/interview\nto walk through your TELOS, identity, goals, and projects.\nOr edit\n~/.claude/LIFEOS/USER/\ndirectly.\nAtlas\n\nGraph-based current-state asset management · snapshot 5m ago\n\nASSETS\n4\nEDGES\n1\nNO AUTH-CURATION\n1\nSTALE\n0\nGraph\nInsights\nBrowse\nGaps\nWORKERS SERVED\n0/0\ndomain · workers.dev · route\nUNWIRED WORKERS\n0\nno invocation path at all\nCURATED TARGETS\n0\nauth-boundary scanned\nDATA STORES\n0\nd1 · r2 · kv\nAI INSIGHTS\ngenerated 10/10/2026, 11:33:23\nRegenerate\nrunning the system\n\nThe graph contains 4 total assets: 2 devices, 1 domain, and 1 project. worker_wiring reports total 0 workers, so served, workers_dev, cron, and service_binding_target are all 0. That means there are no workers in this snapshot to invoke, and unwired_workers is 0, so no worker-level dead-deploy signal is present. data_stores reports 0 data stores, which is recorded capacity available to the system, not unused excess. projects_no_repo is 1, so the 1 project currently has no repo edge in the graph. The 0 stale count and 0 unwired_workers count produce 0 warning signals in this snapshot.\n\nsecurity\n\nThe graph shows 1 domain with 1 auth_curation_gaps and curated_targets 0, giving a curated-target ratio of 0/1. The 1 gap means the domain is served but lacks a curated auth-boundary target. The 1 gap is still hygiene-scanned hourly, and that matters when the 1 domain carries auth-bearing apps rather than static content. stale is 0, so no stale assets are recorded.\n\nhow things interconnect\n\nThe edge census records 1 SERVES edge among 4 assets, so the interconnection density is 1 edge per 4 assets. blast_zones contains 0 zones, so there are no top blast zones to name and no owned-record counts to list. data_stores is empty with 0 entries, so no data-store fan-in or blast-radius path is visible from this metric. The 1 SERVES edge alone does not support CALLS fan-in or RUNS_ON concentration claims.\n\nBLAST-RADIUS ZONES\ndeleting these orphans the most — owned-record count",
+  "atlasRequests": [
+    {
+      "url": "http://localhost:18837/api/atlas",
+      "method": "GET",
+      "status": 200,
+      "failed": false,
+      "timestamp": "2026-10-10T15:35:46.531Z"
+    },
+    {
+      "url": "http://localhost:18837/api/atlas",
+      "method": "GET",
+      "status": 200,
+      "failed": false,
+      "timestamp": "2026-10-10T15:36:45.488Z"
+    },
+    {
+      "url": "http://localhost:18837/api/atlas",
+      "method": "GET",
+      "status": 200,
+      "failed": false,
+      "timestamp": "2026-10-10T15:37:45.483Z"
+    },
+    {
+      "url": "http://localhost:18837/api/atlas/insights",
+      "method": "GET",
+      "status": 200,
+      "failed": false,
+      "timestamp": "2026-10-10T15:38:42.498Z"
+    },
+    {
+      "url": "http://localhost:18837/api/atlas",
+      "method": "GET",
+      "status": 200,
+      "failed": false,
+      "timestamp": "2026-10-10T15:38:45.522Z"
+    }
+  ],
+  "consoleEntries": [
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "timestamp": "2026-10-10T15:35:25.958Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:35:44.983Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:35:44.985Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:35:45.086Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:35:46.548Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:35:46.590Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:36:45.065Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:37:45.064Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:38:42.517Z"
+    },
+    {
+      "level": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2026-10-10T15:38:45.063Z"
+    }
+  ],
+  "knownErrors": "Earlier rejected forwarded Host port, missing native fonts, and excluded Bunker route. Atlas requests return HTTP 200."
+}

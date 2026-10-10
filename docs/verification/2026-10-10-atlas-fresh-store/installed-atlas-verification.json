@@ -1,0 +1,188 @@
+{
+  "status": "PASS",
+  "isolated_acceptance_profile_only": true,
+  "live_profile_changed": false,
+  "wire_requests": [
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "xhigh",
+      "upstream_status": 200,
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "266d62dc8468a5abcdf07ab2aceb441f5cf94ef1568804d078d0f600342cbba9",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "xhigh",
+      "upstream_status": 200,
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "b7188c17e91b76e2078adf62707061af353e9acde397743a78971e1ded81986c",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ]
+    }
+  ],
+  "tier_efforts": {
+    "haiku": "low",
+    "sonnet": "medium",
+    "opus": "xhigh",
+    "fable": "xhigh"
+  },
+  "pinned_tier": "fable",
+  "model_configuration_sha256": "db397e27d76475e121fbe333dde75a6b2a21539c9aa2757676c2c1f113049a20",
+  "model_configuration_changed": false,
+  "configuration_route_changed": false,
+  "initial_assets": 3,
+  "updated_assets": 4,
+  "narrative_characters": 1434,
+  "native_snapshot_verified": true,
+  "repeat_identity_verified": true,
+  "cache_reuse_without_inference_verified": true,
+  "old_signature_refused": true,
+  "owner_refusal_modes": [
+    "disabled",
+    "read-only",
+    "unbound"
+  ],
+  "authenticated_views_verified": true,
+  "anonymous_and_revoked_readers_refused": true,
+  "installed_process_death_exit_code": 73,
+  "exact_publication_group_recovery_verified": true,
+  "source_originals": {
+    "GEAR.md": "b70e133797d24ac68019d901aa111c21a34ecc6349375b8a9ca38d8d5b397347",
+    "PROJECTS.md": "960571aad8cb309fa1db3d52329238f771a80a0658238d45cc494fabb464b07e"
+  },
+  "artifact_sha256": {
+    "atlas.db": "0c0e2fa0fbe5f3272ddbb47bdded3c87c787e6ee607134bbadde9a09cbe6b4e2",
+    "snapshot.json": "9f10f0218262d91818f60cfde1ac27f2ce7e4d78407daff5f4d1b2e141f04e73",
+    "atlas-insights.json": "e49b1f597e83503351c9fd81c076cb600c1f259fc04f4e05f5a7fca6d525a3f1"
+  },
+  "jobs": [
+    {
+      "job": "atlas-sync",
+      "exit_code": 0,
+      "elapsed_seconds": 6.246661951998249,
+      "stdout": "{\"status\": \"completed\", \"job\": \"atlas-sync\", \"output\": \"{\\\"ok\\\":true,\\\"runs\\\":[{\\\"collector\\\":\\\"gear\\\",\\\"runId\\\":1,\\\"swept\\\":true},{\\\"collector\\\":\\\"projects\\\",\\\"runId\\\":2,\\\"swept\\\":true}]}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-insights",
+      "exit_code": 0,
+      "elapsed_seconds": 58.26788892998593,
+      "stdout": "{\"status\": \"completed\", \"job\": \"atlas-insights\", \"output\": \"{\\\"hash\\\":\\\"f8620d661882223e\\\",\\\"narrative\\\":\\\"## Running the system\\\\n0 workers appear in the graph, so there are 0 served workers, 0 workers.dev workers, 0 cron workers, and 0 service-binding targets. The 0 unwired_workers count means none of the 0 workers lacks an invocation path. 1 device, 1 domain, and 1 project give a 3-asset footprint connected by 1 edge. 1 project has no repo link, while 0 data stores are present, leaving no recorded data-store capacity to manage.\\\\n\\\\n## Security\\\\nThe graph shows 1 auth-curation gap against 1 domain, meaning 1 served domain has no curated auth-boundary target. The curated-target ratio is 0/1. That matters only if the 1 domain fronts auth-bearing apps; it is less material for static sites. The 0 stale count shows no stale signals in this snapshot. The 1 gap remains within hourly hygiene scanning.\\\\n\\\\n## How things interconnect\\\\n1 SERVES edge connects two of the 3 assets, so the only observable serving relationship is 1-to-1. Edge density is 1 edge across 3 assets, or 0.33 edges per asset. No blast_zones are recorded, so 0 zones are measured as deletion points with owned records. The top zone owned-count list is empty, and the highest owned-record count in the provided metrics is 0. 1 device and 1 domain create a concentration profile where the one edge depends on one device and one domain. With 0 data stores, there are 0 data-store fan-in points.\\\",\\\"generated_at\\\":\\\"2026-10-10T15:32:20.801Z\\\"}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-sync",
+      "exit_code": 0,
+      "elapsed_seconds": 6.805026251007803,
+      "stdout": "{\"status\": \"completed\", \"job\": \"atlas-sync\", \"output\": \"{\\\"ok\\\":true,\\\"runs\\\":[{\\\"collector\\\":\\\"gear\\\",\\\"runId\\\":3,\\\"swept\\\":true},{\\\"collector\\\":\\\"projects\\\",\\\"runId\\\":4,\\\"swept\\\":true}]}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-sync",
+      "exit_code": 0,
+      "elapsed_seconds": 6.785622985975351,
+      "stdout": "{\"status\": \"completed\", \"job\": \"atlas-sync\", \"output\": \"{\\\"ok\\\":true,\\\"runs\\\":[{\\\"collector\\\":\\\"gear\\\",\\\"runId\\\":5,\\\"swept\\\":true},{\\\"collector\\\":\\\"projects\\\",\\\"runId\\\":6,\\\"swept\\\":true}]}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-insights",
+      "exit_code": 0,
+      "elapsed_seconds": 47.12293932103785,
+      "stdout": "{\"status\": \"completed\", \"job\": \"atlas-insights\", \"output\": \"{\\\"hash\\\":\\\"de11f56719430c82\\\",\\\"narrative\\\":\\\"## Running the system\\\\nThe graph contains 4 total assets: 2 devices, 1 domain, and 1 project. worker_wiring reports total 0 workers, so served, workers_dev, cron, and service_binding_target are all 0. That means there are no workers in this snapshot to invoke, and unwired_workers is 0, so no worker-level dead-deploy signal is present. data_stores reports 0 data stores, which is recorded capacity available to the system, not unused excess. projects_no_repo is 1, so the 1 project currently has no repo edge in the graph. The 0 stale count and 0 unwired_workers count produce 0 warning signals in this snapshot.\\\\n\\\\n## Security\\\\nThe graph shows 1 domain with 1 auth_curation_gaps and curated_targets 0, giving a curated-target ratio of 0/1. The 1 gap means the domain is served but lacks a curated auth-boundary target. The 1 gap is still hygiene-scanned hourly, and that matters when the 1 domain carries auth-bearing apps rather than static content. stale is 0, so no stale assets are recorded.\\\\n\\\\n## How things interconnect\\\\nThe edge census records 1 SERVES edge among 4 assets, so the interconnection density is 1 edge per 4 assets. blast_zones contains 0 zones, so there are no top blast zones to name and no owned-record counts to list. data_stores is empty with 0 entries, so no data-store fan-in or blast-radius path is visible from this metric. The 1 SERVES edge alone does not support CALLS fan-in or RUNS_ON concentration claims.\\\",\\\"generated_at\\\":\\\"2026-10-10T15:33:23.109Z\\\"}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-sync",
+      "exit_code": 1,
+      "elapsed_seconds": 4.230326548975427,
+      "stdout": "{\"status\": \"rejected\", \"job\": \"atlas-sync\", \"message\": \"The native job needs current local owner permission, an admitted model route, and a managed store.\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-sync",
+      "exit_code": 1,
+      "elapsed_seconds": 4.213336817978416,
+      "stdout": "{\"status\": \"rejected\", \"job\": \"atlas-sync\", \"message\": \"The native job needs current local owner permission, an admitted model route, and a managed store.\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-sync",
+      "exit_code": 1,
+      "elapsed_seconds": 4.243661142943893,
+      "stdout": "{\"status\": \"rejected\", \"job\": \"atlas-sync\", \"message\": \"The native job needs current local owner permission, an admitted model route, and a managed store.\"}\n",
+      "stderr": ""
+    }
+  ],
+  "observations": [
+    {
+      "path": "/api/atlas",
+      "status": 401,
+      "authenticated": false,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 401,
+      "authenticated": false,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/auth/password-login",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": null
+    },
+    {
+      "path": "/api/atlas",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas",
+      "status": 403,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 403,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    }
+  ]
+}

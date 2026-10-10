@@ -1,0 +1,47 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_atlas_capacity",
+    "test_memory_atlas_guest_recovery",
+    "test_memory_atlas_sync",
+    "test_memory_atlas",
+    "test_memory_atlas_insight",
+    "test_memory_atlas_insight_edges",
+    "test_memory_atlas_jobs",
+    "test_memory_owner_job_command",
+    "test_memory_owner_jobs",
+    "test_memory_publication_recovery",
+    "test_memory_operational_views",
+    "test_daily_pulse_profile",
+    "test_patch_bundle"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits-refresh/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_atlas_sync.py": "73d56536b9a44de716eb9e85c2f979d3ed092307e477066c4c88e5d6da10330a",
+    "lifeos_hook_bridge/memory_atlas_insight.py": "9a73481125ae69722fe3036bc80a7b95d2ab972a3b7b2b55eb88e31f39d23dc6",
+    "lifeos_hook_bridge/memory_access.py": "dccc65123be7a5114c4438b2657fe4d83a863559648db71c92f4300b5f7850cc",
+    "lifeos_hook_bridge/memory_service.py": "0e1b1b9df65a05973c2f4a9c581ad320590dd3f9738720d2294cff19438ddc7b",
+    "lifeos_hook_bridge/memory_owner_jobs.py": "a25a643cd100c3232e34ab3be4e7ce3e5036a617cc02c0edaa8140aff9e65b5b",
+    "lifeos_hook_bridge/memory_native.ts": "fde1a09c8074d059f77c95f3bbf91d0a0668d80185e561418e2753cbf3b07a90",
+    "lifeos_hook_bridge/patches/lifeos-memory-access.patch": "6bbca9c481c7df23efa31afd8e22c74c93dc12bcf8f2ee7e757d261d896a524c",
+    "tests/test_memory_atlas_sync.py": "3f340e15c9f3c8e1a6dbf10754da2d62d2db805fdcaddb5f61de87da9a06d9ee",
+    "tests/memory_atlas_sync_process.py": "5841f3a36bfa2e70c72df0f7a24b7a6e53bab5a5e7195c9bd79f2005c3063a77",
+    "tests/test_memory_atlas_capacity.py": "afcf16e5aa661d44ccc49cf08b85380f0deb8cd514f8fe82eaab25ca645bb5af",
+    "lifeos_hook_bridge/memory_atlas.py": "767d597c2837f5cd452d06c1ef340b570560c2d797cd2626a107102ee1795836",
+    "lifeos_hook_bridge/memory_operational_views.py": "189800a9b9ed02fed6df4b245fccfbc402c352e369afcc3b72fb3db2286c684f",
+    "docs/deployment/daily-text/PULSE.user.toml": "112bef056043bc09f4581118293f4b98f566a080c0d413c70160b2ec3aa5183b",
+    "tests/test_memory_atlas_guest_recovery.py": "dc93b7070be4c7477716ce789eb6ef87e73afaa338889fa2e807714da66d27d7",
+    "tests/test_daily_pulse_profile.py": "c4af8e90871483bc8722b3e28f93e2c2b313a423302eba0624537ffbeb9b8ede",
+    "tests/test_memory_atlas_jobs.py": "305599ea27279250a941ed0b2afb57f63c4b9ffb54af63dbfd17df3630b66566"
+  }
+}

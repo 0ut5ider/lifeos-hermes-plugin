@@ -1,0 +1,93 @@
+[
+  {
+    "padding_bytes_per_name": 4600,
+    "source_bytes": 232493,
+    "planned_database_bytes": 311296,
+    "planned_snapshot_python_bytes": 252897,
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 1,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 2,
+          "swept": true
+        }
+      ]
+    },
+    "artifacts_preserved": false,
+    "before": {},
+    "after": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "journal_present": false
+  },
+  {
+    "padding_bytes_per_name": 4800,
+    "source_bytes": 242493,
+    "planned_database_bytes": 323584,
+    "planned_snapshot_python_bytes": 262897,
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Native Atlas synchronization requires declared database, snapshot, and run fields"
+    },
+    "artifacts_preserved": true,
+    "before": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "after": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "journal_present": false
+  },
+  {
+    "padding_bytes_per_name": 4900,
+    "source_bytes": 247493,
+    "planned_database_bytes": 339968,
+    "planned_snapshot_python_bytes": 267897,
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Native Atlas synchronization requires declared database, snapshot, and run fields"
+    },
+    "artifacts_preserved": true,
+    "before": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "after": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "journal_present": false
+  },
+  {
+    "padding_bytes_per_name": 5000,
+    "source_bytes": 252493,
+    "planned_database_bytes": 339968,
+    "planned_snapshot_python_bytes": 272897,
+    "result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Native Atlas synchronization requires declared database, snapshot, and run fields"
+    },
+    "artifacts_preserved": true,
+    "before": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "after": {
+      "atlas.db": "4af917bec1ea857c826a26722eb5a34556495bbd307b19c5fd1e976aa20dbfa2",
+      "snapshot.json": "90b88ad0d930aec493406039695f9d92ad048377029a03bebfee333ac267b6e5"
+    },
+    "journal_present": false
+  }
+]

@@ -31,7 +31,10 @@ SOURCES = frozenset(PREFIX + name for names in ROUTES.values() for name in names
 TAIL_LIMIT = 1024 * 1024
 
 
-def projection(content, *, field_limit=10000):
+PROJECTION_FIELD_LIMIT = 10000
+
+
+def projection(content, *, field_limit=PROJECTION_FIELD_LIMIT):
     try:
         value = json.loads(content)
         strings = []

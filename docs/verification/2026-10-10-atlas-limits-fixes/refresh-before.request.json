@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_atlas_capacity.MemoryAtlasRefreshJobTests"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_atlas_sync.py": "73d56536b9a44de716eb9e85c2f979d3ed092307e477066c4c88e5d6da10330a",
+    "lifeos_hook_bridge/memory_atlas_insight.py": "9a73481125ae69722fe3036bc80a7b95d2ab972a3b7b2b55eb88e31f39d23dc6",
+    "lifeos_hook_bridge/memory_access.py": "dccc65123be7a5114c4438b2657fe4d83a863559648db71c92f4300b5f7850cc",
+    "lifeos_hook_bridge/memory_service.py": "0e1b1b9df65a05973c2f4a9c581ad320590dd3f9738720d2294cff19438ddc7b",
+    "lifeos_hook_bridge/memory_owner_jobs.py": "e2f7eecdc6abeb7c24044169f2b8b4b35e74b83cd3b5ac3c5690f35fd184e05f",
+    "lifeos_hook_bridge/memory_native.ts": "fde1a09c8074d059f77c95f3bbf91d0a0668d80185e561418e2753cbf3b07a90",
+    "lifeos_hook_bridge/patches/lifeos-memory-access.patch": "8fc36c722d34221a3b4a2dad9aabe2498a5cf43bb6e7648095fa5050e59daaee",
+    "tests/test_memory_atlas_sync.py": "2e5267d407801f65484314675d60ec06f84f58d026cf7b2aecd2decdc1162b80",
+    "tests/memory_atlas_sync_process.py": "5841f3a36bfa2e70c72df0f7a24b7a6e53bab5a5e7195c9bd79f2005c3063a77",
+    "tests/test_memory_atlas_capacity.py": "d69438bdb23041eaa49523463f690d3c7027efa9f0d7f0de7580783f1c62e013",
+    "lifeos_hook_bridge/memory_atlas.py": "767d597c2837f5cd452d06c1ef340b570560c2d797cd2626a107102ee1795836",
+    "lifeos_hook_bridge/memory_operational_views.py": "189800a9b9ed02fed6df4b245fccfbc402c352e369afcc3b72fb3db2286c684f",
+    "docs/deployment/daily-text/PULSE.user.toml": "112bef056043bc09f4581118293f4b98f566a080c0d413c70160b2ec3aa5183b"
+  }
+}

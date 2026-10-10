@@ -1,0 +1,23 @@
+{
+  "status": "FAIL",
+  "isolated_acceptance_profile_only": true,
+  "live_profile_changed": false,
+  "jobs": [
+    {
+      "job": "atlas-sync",
+      "exit_code": 1,
+      "elapsed_seconds": 5.238938041031361,
+      "stdout": "{\"status\": \"failed\", \"job\": \"atlas-sync\", \"exit_code\": 1, \"output\": \"{\\\"ok\\\":false,\\\"code\\\":\\\"EINVAL_PATH\\\",\\\"message\\\":\\\"Atlas capacity: graph projection fields 10323 exceed 10000\\\"}\\n\"}\n",
+      "stderr": ""
+    }
+  ],
+  "observations": [
+    {
+      "path": "/auth/password-login",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": null
+    }
+  ],
+  "wire_requests": []
+}

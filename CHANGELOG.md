@@ -6,10 +6,23 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Admit complete planned Atlas graphs and snapshots before publication. Refuse projection, row, and byte limits without replacing live artifacts.
+- Report Atlas capacity dimensions and warnings at 80 percent of each selected limit.
+- Synchronize Atlas daily at 06:50 through the current owner command. Refresh before dashboard narrative regeneration.
+- Keep empty Atlas graphs idle and preserve current admission for failure diagnostics.
+- Define the final daily VM backup gate for grouped Atlas state, sources, cache, governance receipts, and journals.
+
+- Add the governed Atlas sync owner command for admitted Gear and Projects sources.
+- Publish the native Atlas database and snapshot as one recoverable file group.
+- Preserve native asset identity, incomplete observations, and targeted-run sweep rules.
+- Keep Atlas insight recovery when source or destination changes occur after publication.
+- Bind the Atlas planner directory before loading native code. Ignore inherited directory overrides.
+
 ## 0.2.0 (release candidate)
 
 This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
-Private-channel acceptance, Atlas graph initialization, final package checks, and combined review remain open.
+Private-channel acceptance, final release backup, daily guest deployment, and combined review remain open.
+Atlas initialization and fresh-store acceptance pass on the isolated development profile.
 
 - Select the main Pulse dashboard and defer audio and video processing with voice.
 - Verify actual private-model memory write and search across separate installed Hermes sessions.

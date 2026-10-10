@@ -5,12 +5,15 @@ import os
 import importlib
 import signal
 import time
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import unittest
 import httpx
 import test_memory_conduit_jobs as job_fixture
 import test_memory_atlas as atlas_fixture
+from lifeos_hook_bridge.memory_policy import SessionContext
+from lifeos_hook_bridge.memory_service import MemoryService
 
 
 class MemoryAtlasJobAuthenticationTests(unittest.TestCase):
@@ -139,10 +142,21 @@ class MemoryAtlasJobRelayTests(unittest.TestCase):
         self.assertEqual(cache.read_bytes(), before)
 
     def lifetime(self, *, daemon):
-        _, cache = self.seed_graph('SyntheticAtlasHeldJob')
-        value = json.loads(cache.read_text())
-        value['hash'] = '0' * 16
-        cache.write_text(json.dumps(value))
+        (self.root/'LIFEOS/USER/GEAR.md').write_text(
+            '## Computing\n| **Laptop** | SyntheticAtlasHeldJob | daily |\n')
+        configuration = self.fixture.configuration.load()
+        destination = str(self.fixture.profile)
+        grant = configuration['destinations']['terminal:'+destination]
+        context = SessionContext('terminal',str(os.getuid()),destination,'private',
+            (configuration['principal'],),grant['model_routes'][0],'synthetic-atlas-lifetime')
+        service = MemoryService(self.fixture.configuration)
+        synced = service.native(context,'atlas_sync',{'collectors':['gear','projects'],'scope':'full'})
+        self.assertTrue(synced['ok'],synced)
+        cache = self.root/'LIFEOS/MEMORY/STATE/atlas-insights.json'
+        cache.parent.mkdir(parents=True,exist_ok=True)
+        cache.write_text(json.dumps({'hash':'0'*16,'narrative':'SyntheticAtlasNarrative',
+            'generated_at':datetime.now(timezone.utc).isoformat()}))
+        cache.chmod(0o600)
         before = cache.read_bytes()
         environment, received, requests = self.held_inference()
         self.launch_lifetime_process(environment, daemon=daemon)
@@ -201,10 +215,11 @@ class MemoryAtlasJobCommandTests(unittest.TestCase):
         native = self.fixture.fixture.native
         (native.root / 'LIFEOS/ATLAS').symlink_to(Path(os.environ['LIFEOS_MEMORY_SOURCE']) / 'LIFEOS/ATLAS')
 
-    def test_actual_selected_profile_command_reports_absent_graph_without_inference(self):
+    def test_actual_selected_profile_command_initializes_empty_graph_without_inference(self):
         result = self.fixture.fixture.call('atlas-insights')
         self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout)
         body = json.loads(result.stdout)
         self.assertEqual(body['status'], 'completed')
+        self.assertTrue((self.fixture.fixture.native.root.parent/'.local/state/lifeos/atlas/atlas.db').is_file())
         self.assertFalse((self.fixture.fixture.native.root / 'LIFEOS/MEMORY/STATE/atlas-insights.json').exists())
         self.assertEqual(self.fixture.fixture.fixture.fixture.received, [])

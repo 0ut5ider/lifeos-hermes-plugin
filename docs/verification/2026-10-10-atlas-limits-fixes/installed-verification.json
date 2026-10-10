@@ -1,0 +1,140 @@
+{
+  "status": "PASS",
+  "isolated_acceptance_profile_only": true,
+  "live_profile_changed": false,
+  "head": "5163a0ceb9c570c9fd8b1f865954e6aad508f367",
+  "capacity_refusal_before_publication": true,
+  "no_recovery_journal_for_capacity_refusal": true,
+  "exact_artifacts_preserved_on_refusal": true,
+  "actual_native_schedule_spawn_verified": true,
+  "capacity": {
+    "graph_fields": {
+      "used": 293,
+      "limit": 10000
+    },
+    "graph_projection_bytes": {
+      "used": 12442,
+      "limit": 3145728
+    },
+    "tables": {
+      "asset": {
+        "used": 4,
+        "limit": 2048
+      },
+      "edge": {
+        "used": 1,
+        "limit": 2048
+      },
+      "source_observation": {
+        "used": 4,
+        "limit": 2048
+      },
+      "edge_observation": {
+        "used": 1,
+        "limit": 2048
+      },
+      "lifecycle_event": {
+        "used": 0,
+        "limit": 2048
+      },
+      "sync_run": {
+        "used": 10,
+        "limit": 2048
+      }
+    },
+    "database_bytes": {
+      "used": 49152,
+      "limit": 2097152
+    },
+    "snapshot_bytes": {
+      "used": 2363,
+      "limit": 262144
+    },
+    "snapshot_fields": {
+      "used": 146,
+      "limit": 10000
+    },
+    "snapshot_projection_bytes": {
+      "used": 6500,
+      "limit": 3145728
+    },
+    "warnings": []
+  },
+  "native_schedule_loader_sha256": "72aec51246164a0661aff7732e0cbd1477fbdd9a021f3cd37d54b88735bf02fd",
+  "regeneration_reconciles_source_before_model": true,
+  "current_narrative_verified": true,
+  "disabled_owner_refuses_without_changes": true,
+  "model_configuration_changed": false,
+  "model_configuration_sha256": "db397e27d76475e121fbe333dde75a6b2a21539c9aa2757676c2c1f113049a20",
+  "pinned_tier": "fable",
+  "tier_efforts": {
+    "haiku": "low",
+    "sonnet": "medium",
+    "opus": "xhigh",
+    "fable": "xhigh"
+  },
+  "daily_profile_sha256": "112bef056043bc09f4581118293f4b98f566a080c0d413c70160b2ec3aa5183b",
+  "artifact_sha256": {
+    "atlas.db": "6544d4d779ff3924eb0a2263e1b6feb8d1b28daf8e63125e08b90b267d3196b6",
+    "snapshot.json": "7b0a06ed8b2be2ec9d7b05a7b10966a4b14a69925efad0b73600559c0a9c5239",
+    "atlas-insights.json": "2342315c03fc56530ce71592fb661b12109209096e5cf1527ffe2832751ac6c4"
+  },
+  "jobs": [
+    {
+      "job": "atlas-sync",
+      "exit_code": 1,
+      "elapsed_seconds": 5.215363116003573,
+      "stdout": "{\"status\": \"failed\", \"job\": \"atlas-sync\", \"exit_code\": 1, \"output\": \"{\\\"ok\\\":false,\\\"code\\\":\\\"EINVAL_PATH\\\",\\\"message\\\":\\\"Atlas capacity: graph projection fields 10323 exceed 10000\\\"}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-insights",
+      "exit_code": 0,
+      "elapsed_seconds": 55.77297275798628,
+      "stdout": "{\"status\": \"completed\", \"job\": \"atlas-insights\", \"output\": \"{\\\"ok\\\":true,\\\"runs\\\":[{\\\"collector\\\":\\\"gear\\\",\\\"runId\\\":11,\\\"swept\\\":true},{\\\"collector\\\":\\\"projects\\\",\\\"runId\\\":12,\\\"swept\\\":true}],\\\"capacity\\\":{\\\"graph_fields\\\":{\\\"used\\\":355,\\\"limit\\\":10000},\\\"graph_projection_bytes\\\":{\\\"used\\\":15124,\\\"limit\\\":3145728},\\\"tables\\\":{\\\"asset\\\":{\\\"used\\\":5,\\\"limit\\\":2048},\\\"edge\\\":{\\\"used\\\":1,\\\"limit\\\":2048},\\\"source_observation\\\":{\\\"used\\\":5,\\\"limit\\\":2048},\\\"edge_observation\\\":{\\\"used\\\":1,\\\"limit\\\":2048},\\\"lifecycle_event\\\":{\\\"used\\\":0,\\\"limit\\\":2048},\\\"sync_run\\\":{\\\"used\\\":12,\\\"limit\\\":2048}},\\\"database_bytes\\\":{\\\"used\\\":49152,\\\"limit\\\":2097152},\\\"snapshot_bytes\\\":{\\\"used\\\":2798,\\\"limit\\\":262144},\\\"snapshot_fields\\\":{\\\"used\\\":170,\\\"limit\\\":10000},\\\"snapshot_projection_bytes\\\":{\\\"used\\\":7711,\\\"limit\\\":3145728},\\\"warnings\\\":[]}}\\n{\\\"hash\\\":\\\"46ad731cc588ab91\\\",\\\"narrative\\\":\\\"## Running the system\\\\nFive assets exist across three devices, one domain, and one project. The single edge is a SERVES edge, so the current graph describes one serving relationship. worker_wiring total is 0, and served, workers.dev, cron, and service-binding target counts are all 0. unwired_workers is 0, so the graph gives no worker-deploy hygiene signal. data_stores count 0, so this graph records no owned data-store capacity. stale is 0, so no stale asset signal appears.\\\\n\\\\n## Security\\\\nauth_curation_gaps is 1, curated_targets is 0, and total domains is 1, so the curated-target ratio is 0:1. The 1 gap domain is still hygiene-scanned hourly, but that does not create curated coverage. That gap matters for auth-bearing apps, not static sites, and the graph has 0 records of the domain\\u2019s purpose. The single SERVES edge confirms 1 serving relationship exists for this gap. stale 0 and unwired_workers 0 mean no additional stale or worker-based security signal is present. The three devices are the only other device assets in the graph.\\\\n\\\\n## How things interconnect\\\\nblast_zones contains 0 entries, so no zone has a nonzero owned-record count to rank as blast radius. The one SERVES edge is the only connectivity record, and its source-target detail is not represented as a blast zone or edge fan-in metric in this snapshot. With one domain, one project, three devices, and five assets total, the graph is too sparse for convergence risk. With 1 SERVES edge and 0 CALLS edges, CALLS fan-in is 0. RUNS_ON concentration also cannot be inferred because the edge census contains 0 RUNS_ON entries. The only measurable interconnection is the single SERVES edge linking one of the five assets to another.\\\",\\\"generated_at\\\":\\\"2026-10-10T17:03:59.153Z\\\"}\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "job": "atlas-sync",
+      "exit_code": 1,
+      "elapsed_seconds": 4.187343237048481,
+      "stdout": "{\"status\": \"rejected\", \"job\": \"atlas-sync\", \"message\": \"The native job needs current local owner permission, an admitted model route, and a managed store.\"}\n",
+      "stderr": ""
+    }
+  ],
+  "observations": [
+    {
+      "path": "/auth/password-login",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": null
+    },
+    {
+      "path": "/api/atlas",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 200,
+      "authenticated": true,
+      "cache_control": "no-store"
+    }
+  ],
+  "wire_requests": [
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "xhigh",
+      "upstream_status": 200,
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "63e11c95ca8310c9bbca3adb0ae260cb47838d83f2dc2b5857a13fdd34dfb74d",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ]
+    }
+  ]
+}

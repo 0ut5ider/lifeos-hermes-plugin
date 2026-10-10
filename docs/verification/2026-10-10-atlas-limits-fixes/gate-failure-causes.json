@@ -1,0 +1,171 @@
+{
+  "private_fixture": {
+    "receipt": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 1,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 2,
+          "swept": true
+        }
+      ],
+      "capacity": {
+        "graph_fields": {
+          "used": 186,
+          "limit": 10000
+        },
+        "graph_projection_bytes": {
+          "used": 8433,
+          "limit": 3145728
+        },
+        "tables": {
+          "asset": {
+            "used": 4,
+            "limit": 2048
+          },
+          "edge": {
+            "used": 2,
+            "limit": 2048
+          },
+          "source_observation": {
+            "used": 4,
+            "limit": 2048
+          },
+          "edge_observation": {
+            "used": 2,
+            "limit": 2048
+          },
+          "lifecycle_event": {
+            "used": 0,
+            "limit": 2048
+          },
+          "sync_run": {
+            "used": 2,
+            "limit": 2048
+          }
+        },
+        "database_bytes": {
+          "used": 49152,
+          "limit": 2097152
+        },
+        "snapshot_bytes": {
+          "used": 2373,
+          "limit": 262144
+        },
+        "snapshot_fields": {
+          "used": 153,
+          "limit": 10000
+        },
+        "snapshot_projection_bytes": {
+          "used": 6499,
+          "limit": 3145728
+        },
+        "warnings": []
+      }
+    },
+    "native_calls": [
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "atlas_collect",
+        "fixture_instance": false
+      },
+      {
+        "action": "atlas_collect",
+        "fixture_instance": false
+      },
+      {
+        "action": "atlas_sync_plan",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "atlas_graph_state",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "atlas_graph_state",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      },
+      {
+        "action": "validate_source_batch",
+        "fixture_instance": false
+      }
+    ]
+  },
+  "lifetime_fixture": {
+    "sources": {
+      "GEAR.md": null,
+      "PROJECTS.md": null
+    },
+    "companions_before": [
+      "atlas.db-shm",
+      "atlas.db-wal",
+      "atlas.db"
+    ],
+    "journal_mode": "wal",
+    "exit_code": 1,
+    "stdout": "{\"status\": \"failed\", \"job\": \"atlas-insights\", \"exit_code\": 1, \"output\": \"{\\\"ok\\\":false,\\\"code\\\":\\\"EINVAL_PATH\\\",\\\"message\\\":\\\"Atlas publication requires a closed database without companion files\\\"}\\n\"}\n",
+    "stderr": "",
+    "model_request_count": 0,
+    "companions_after": [
+      "atlas.db-shm",
+      "atlas.db-wal",
+      "atlas.db"
+    ]
+  }
+}
