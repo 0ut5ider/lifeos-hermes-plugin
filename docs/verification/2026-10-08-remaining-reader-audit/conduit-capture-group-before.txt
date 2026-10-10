@@ -1,0 +1,15 @@
+test_isolated_native_command_inherits_the_callers_process_group (test_memory_conduit_capture.MemoryConduitCaptureTests.test_isolated_native_command_inherits_the_callers_process_group) ... FAIL
+
+======================================================================
+FAIL: test_isolated_native_command_inherits_the_callers_process_group (test_memory_conduit_capture.MemoryConduitCaptureTests.test_isolated_native_command_inherits_the_callers_process_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 261, in test_isolated_native_command_inherits_the_callers_process_group
+    self.assertEqual(observed[0][0],observed[0][1])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1992156 != 1991961
+
+----------------------------------------------------------------------
+Ran 1 test in 0.549s
+
+FAILED (failures=1)

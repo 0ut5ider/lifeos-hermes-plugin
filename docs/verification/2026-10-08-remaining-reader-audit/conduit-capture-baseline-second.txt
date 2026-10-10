@@ -1,0 +1,57 @@
+test_current_owner_capture_keeps_native_event_and_private_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_owner_capture_keeps_native_event_and_private_publication) ... FAIL
+test_limited_writer_cannot_publish_capture_or_advance_cursor (test_memory_conduit_capture.MemoryConduitCaptureTests.test_limited_writer_cannot_publish_capture_or_advance_cursor) ... FAIL
+test_original_capture_folds_work_activity_and_repeats_without_duplicate_events (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_capture_folds_work_activity_and_repeats_without_duplicate_events) ... ok
+test_original_failed_append_advances_cursor_and_loses_activity_known_bug (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_failed_append_advances_cursor_and_loses_activity_known_bug) ... ok
+test_private_work_event_refuses_capture_and_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_private_work_event_refuses_capture_and_cursor_publication) ... FAIL
+test_unbound_capture_refuses_before_event_or_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unbound_capture_refuses_before_event_or_cursor_publication) ... FAIL
+
+======================================================================
+FAIL: test_current_owner_capture_keeps_native_event_and_private_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_owner_capture_keeps_native_event_and_private_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 92, in test_current_owner_capture_keeps_native_event_and_private_publication
+    self.assertEqual([path.stat().st_mode & 0o777 for path in paths],[0o600,0o600])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [420, 420] != [384, 384]
+
+First differing element 0:
+420
+384
+
+- [420, 420]
++ [384, 384]
+
+======================================================================
+FAIL: test_limited_writer_cannot_publish_capture_or_advance_cursor (test_memory_conduit_capture.MemoryConduitCaptureTests.test_limited_writer_cannot_publish_capture_or_advance_cursor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 108, in test_limited_writer_cannot_publish_capture_or_advance_cursor
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : captured 1 event(s)
+
+
+======================================================================
+FAIL: test_private_work_event_refuses_capture_and_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_private_work_event_refuses_capture_and_cursor_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 99, in test_private_work_event_refuses_capture_and_cursor_publication
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : captured 1 event(s)
+
+
+======================================================================
+FAIL: test_unbound_capture_refuses_before_event_or_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unbound_capture_refuses_before_event_or_cursor_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 79, in test_unbound_capture_refuses_before_event_or_cursor_publication
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : captured 1 event(s)
+
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.244s
+
+FAILED (failures=4)

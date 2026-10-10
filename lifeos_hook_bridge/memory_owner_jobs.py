@@ -25,6 +25,7 @@ JOBS = {
                              ('LIFEOS/TOOLS/LearningPatternSynthesis.ts', '--week')),
     'life-morning-brief': (('LIFEOS/PULSE/checks/life-morning-brief.ts',),),
     'proposal-gc': (('LIFEOS/TOOLS/ProposalGC.ts', '--auto'),),
+    'conduit-capture': (('LIFEOS/PULSE/Conduit/conduit.ts', 'capture'),),
     'conduit-insight': (('LIFEOS/PULSE/Conduit/BuildInsight.ts',),),
     'local-intelligence': (('skills/LocalIntelligence/Tools/Refresh.ts', '--fill'),),
     'atlas-insights': (('LIFEOS/PULSE/modules/atlas.ts', '--build-insights'),),

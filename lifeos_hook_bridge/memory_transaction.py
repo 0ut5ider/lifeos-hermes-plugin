@@ -80,7 +80,7 @@ class MemoryTransaction:
 
     def prepare(self, writer: str, request_id: str, paths: list[str], *, expected=None) -> None:
         if expected is not None and (not isinstance(expected, dict) or set(expected) != set(paths)
-                or any(not isinstance(value, str) or re.fullmatch('[0-9a-f]{64}', value) is None
+                or any(value is not None and (not isinstance(value, str) or re.fullmatch('[0-9a-f]{64}', value) is None)
                        for value in expected.values())):
             raise ValueError('Expected publications require one exact digest for each destination')
         copies = []
@@ -118,8 +118,8 @@ class MemoryTransaction:
         from .memory_access import MemoryUnavailable
         if (not isinstance(copy, dict) or set(copy) not in ({'path', 'data', 'after_digest'}, {'path', 'data', 'mode', 'after_digest'})
                 or not isinstance(copy['path'], str) or not copy['path']
-                or not isinstance(copy['after_digest'], str)
-                or re.fullmatch('[0-9a-f]{64}', copy['after_digest']) is None
+                or copy['after_digest'] is not None and (not isinstance(copy['after_digest'], str)
+                    or re.fullmatch('[0-9a-f]{64}', copy['after_digest']) is None)
                 or copy['data'] is not None and not isinstance(copy['data'], str)):
             raise MemoryUnavailable('The expected publication journal has invalid artifact metadata')
         try:

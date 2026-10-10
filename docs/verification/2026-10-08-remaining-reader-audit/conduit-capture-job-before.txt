@@ -1,0 +1,48 @@
+test_actual_hermes_parser_runs_selected_owner_capture_without_inference (test_memory_conduit_capture_job.ConduitCaptureOwnerJobTests.test_actual_hermes_parser_runs_selected_owner_capture_without_inference) ... FAIL
+test_actual_owner_job_captures_work_once_and_repeats_without_duplicate_activity (test_memory_conduit_capture_job.ConduitCaptureOwnerJobTests.test_actual_owner_job_captures_work_once_and_repeats_without_duplicate_activity) ... ERROR
+
+======================================================================
+ERROR: test_actual_owner_job_captures_work_once_and_repeats_without_duplicate_activity (test_memory_conduit_capture_job.ConduitCaptureOwnerJobTests.test_actual_owner_job_captures_work_once_and_repeats_without_duplicate_activity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture_job.py", line 34, in test_actual_owner_job_captures_work_once_and_repeats_without_duplicate_activity
+    result=owner.run_job('conduit-capture')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_jobs.py", line 46, in run_job
+    return self.jobs.run(name, route=self.route, mapping=self.mapping)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_owner_jobs.py", line 77, in run
+    raise ValueError('Choose a supported native owner job')
+ValueError: Choose a supported native owner job
+
+======================================================================
+FAIL: test_actual_hermes_parser_runs_selected_owner_capture_without_inference (test_memory_conduit_capture_job.ConduitCaptureOwnerJobTests.test_actual_hermes_parser_runs_selected_owner_capture_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture_job.py", line 52, in test_actual_hermes_parser_runs_selected_owner_capture_without_inference
+    self.assertEqual((result.returncode,result.stderr),(0,''),result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (2, "usage: hermes lifeos-job [-h]\n      [528 chars])\n") != (0, '')
+
+First differing element 0:
+2
+0
+
++ (0, '')
+- (2,
+-  'usage: hermes lifeos-job [-h]\n'
+-  '                         [--configuration-revision CONFIGURATION_REVISION]\n'
+-  '                         '
+-  '{user-index,memory-consolidation,life-morning-brief,proposal-gc,conduit-insight,local-intelligence,atlas-insights,algorithm-summaries,algorithm-summaries-force}\n'
+-  "hermes lifeos-job: error: argument job: invalid choice: 'conduit-capture' "
+-  "(choose from 'user-index', 'memory-consolidation', 'life-morning-brief', "
+-  "'proposal-gc', 'conduit-insight', 'local-intelligence', 'atlas-insights', "
+-  "'algorithm-summaries', 'algorithm-summaries-force')\n") : usage: hermes lifeos-job [-h]
+                         [--configuration-revision CONFIGURATION_REVISION]
+                         {user-index,memory-consolidation,life-morning-brief,proposal-gc,conduit-insight,local-intelligence,atlas-insights,algorithm-summaries,algorithm-summaries-force}
+hermes lifeos-job: error: argument job: invalid choice: 'conduit-capture' (choose from 'user-index', 'memory-consolidation', 'life-morning-brief', 'proposal-gc', 'conduit-insight', 'local-intelligence', 'atlas-insights', 'algorithm-summaries', 'algorithm-summaries-force')
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.021s
+
+FAILED (failures=1, errors=1)

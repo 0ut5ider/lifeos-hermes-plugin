@@ -1,0 +1,113 @@
+test_current_owner_capture_keeps_native_event_and_private_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_owner_capture_keeps_native_event_and_private_publication) ... ERROR
+test_limited_writer_cannot_publish_capture_or_advance_cursor (test_memory_conduit_capture.MemoryConduitCaptureTests.test_limited_writer_cannot_publish_capture_or_advance_cursor) ... ERROR
+test_original_capture_folds_work_activity_and_repeats_without_duplicate_events (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_capture_folds_work_activity_and_repeats_without_duplicate_events) ... ERROR
+test_original_failed_append_advances_cursor_and_loses_activity_known_bug (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_failed_append_advances_cursor_and_loses_activity_known_bug) ... ERROR
+test_private_work_event_refuses_capture_and_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_private_work_event_refuses_capture_and_cursor_publication) ... ERROR
+test_unbound_capture_refuses_before_event_or_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unbound_capture_refuses_before_event_or_cursor_publication) ... ERROR
+
+======================================================================
+ERROR: test_current_owner_capture_keeps_native_event_and_private_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_owner_capture_keeps_native_event_and_private_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 31, in setUp
+    self.work.write_text(json.dumps({'ts':datetime.now(timezone.utc).isoformat(),
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'slug':'synthetic-hermes-work','type':'work.started'})+'\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-l2xvyb12/.claude/LIFEOS/MEMORY/STATE/work-events.jsonl'
+
+======================================================================
+ERROR: test_limited_writer_cannot_publish_capture_or_advance_cursor (test_memory_conduit_capture.MemoryConduitCaptureTests.test_limited_writer_cannot_publish_capture_or_advance_cursor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 31, in setUp
+    self.work.write_text(json.dumps({'ts':datetime.now(timezone.utc).isoformat(),
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'slug':'synthetic-hermes-work','type':'work.started'})+'\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-qrnuotr3/.claude/LIFEOS/MEMORY/STATE/work-events.jsonl'
+
+======================================================================
+ERROR: test_original_capture_folds_work_activity_and_repeats_without_duplicate_events (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_capture_folds_work_activity_and_repeats_without_duplicate_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 31, in setUp
+    self.work.write_text(json.dumps({'ts':datetime.now(timezone.utc).isoformat(),
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'slug':'synthetic-hermes-work','type':'work.started'})+'\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-b98id443/.claude/LIFEOS/MEMORY/STATE/work-events.jsonl'
+
+======================================================================
+ERROR: test_original_failed_append_advances_cursor_and_loses_activity_known_bug (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_failed_append_advances_cursor_and_loses_activity_known_bug)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 31, in setUp
+    self.work.write_text(json.dumps({'ts':datetime.now(timezone.utc).isoformat(),
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'slug':'synthetic-hermes-work','type':'work.started'})+'\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-4_w1lho1/.claude/LIFEOS/MEMORY/STATE/work-events.jsonl'
+
+======================================================================
+ERROR: test_private_work_event_refuses_capture_and_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_private_work_event_refuses_capture_and_cursor_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 31, in setUp
+    self.work.write_text(json.dumps({'ts':datetime.now(timezone.utc).isoformat(),
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'slug':'synthetic-hermes-work','type':'work.started'})+'\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-0ivchlg1/.claude/LIFEOS/MEMORY/STATE/work-events.jsonl'
+
+======================================================================
+ERROR: test_unbound_capture_refuses_before_event_or_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unbound_capture_refuses_before_event_or_cursor_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 31, in setUp
+    self.work.write_text(json.dumps({'ts':datetime.now(timezone.utc).isoformat(),
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'slug':'synthetic-hermes-work','type':'work.started'})+'\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-2h8oz8h9/.claude/LIFEOS/MEMORY/STATE/work-events.jsonl'
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.018s
+
+FAILED (errors=6)

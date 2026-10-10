@@ -14388,3 +14388,39 @@ index 9cbfc25..8e28e49 100644
    }
  
    const next: Digest = structuredClone(digest)
+diff --git a/LifeOS/install/LIFEOS/PULSE/Conduit/conduit.ts b/LifeOS/install/LIFEOS/PULSE/Conduit/conduit.ts
+index f416aef..2e88e34 100755
+--- a/LifeOS/install/LIFEOS/PULSE/Conduit/conduit.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Conduit/conduit.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Executes native activity capture and inspection through current owner admission.
++// ABOUTME: Retains unmanaged commands while managed publication uses isolated admitted sources.
+ /**
+  * Conduit CLI + capture entrypoint. Invoked by launchd on a poll interval (`capture`)
+  * and by hand for inspection. Stateless one-shot per invocation — no long-lived
+@@ -13,6 +15,7 @@
+  *   init            write default config under USER
+  *   version         print Conduit version
+  */
++import { memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ import { capture as captureAppFocus } from "./adapters/appFocus.ts";
+ import { capture as captureClaude } from "./adapters/claudeSession.ts";
+ import { capture as captureGit } from "./adapters/git.ts";
+@@ -143,7 +146,15 @@ function doInit(): void {
+ }
+ 
+ const cmd = process.argv[2] ?? "status";
+-switch (cmd) {
++const managed = cmd === "version" ? undefined : memoryAccess("conduit_command",
++  {command: cmd, date: process.argv[3] ?? null},
++  (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++if (managed !== undefined) {
++  if (managed.ok !== true || typeof managed.output !== "string") {
++    throw new Error("Conduit activity is unavailable under the current owner policy");
++  }
++  process.stdout.write(managed.output);
++} else switch (cmd) {
+   case "capture": {
+     const n = runCapture();
+     console.log(`captured ${n} event(s)`);

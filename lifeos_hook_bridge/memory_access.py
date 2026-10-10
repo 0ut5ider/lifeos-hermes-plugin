@@ -401,6 +401,9 @@ class NativeMemory:
         if payload['operation'] == 'atlas_insight':
             from .memory_atlas_insight import publication_paths
             return publication_paths(self, scope, payload)
+        if payload['operation'] == 'conduit_command':
+            from .memory_conduit_capture import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'conduit_insight':
             from .memory_conduit_insight import publication_paths
             return publication_paths(self, scope, payload)
