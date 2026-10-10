@@ -12774,7 +12774,7 @@ index 7d37200..cba36bf 100644
 +  throw new Error("Choose a declared LocalIntelligence read route")
 +}
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/content.ts b/LifeOS/install/LIFEOS/PULSE/modules/content.ts
-index ea7ccff..ecb635d 100644
+index ea7ccff..aec0d24 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/content.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/content.ts
 @@ -1,3 +1,5 @@
@@ -12867,7 +12867,7 @@ index ea7ccff..ecb635d 100644
    const sub = pathname.replace(/^\/api\/content/, "") || "/";
  
    if (sub === "/status") return Response.json(health());
-@@ -228,3 +234,56 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+@@ -228,3 +234,81 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
  
    return Response.json({ error: "Not found" }, { status: 404 });
  }
@@ -12895,6 +12895,31 @@ index ea7ccff..ecb635d 100644
 +    throw new Error("The Content snapshot changes during rendering");
 +  }
 +  return foldEvents({items: {}}, parseEventLines(rows.join("\n")));
++}
++
++export async function prepareContentDelete(descriptor: number, id: string): Promise<{
++  status: number; body: Record<string, unknown>; event: ContentEvent | null; path: string | null; live: boolean;
++}> {
++  const admitted = await readContentSnapshot(descriptor);
++  if (!Object.hasOwn(admitted.items, id)) return {
++    status: 404, body: {error: `no item ${id}`}, event: null, path: null, live: false,
++  };
++  const item = admitted.items[id];
++  return {status: 200, body: {ok: true, id},
++    event: {v: 1, ts: new Date().toISOString(), id, op: "delete", src: "dashboard"},
++    path: item.path ? String(item.path) : null,
++    live: Boolean(item.lease_expires && Date.parse(String(item.lease_expires)) > Date.now() || item.stage_status === "running")};
++}
++
++export function appendContentDelete(value: unknown): {ok: true} {
++  if (!memoryObject(value) || Object.keys(value).sort().join(",") !== "id,op,src,ts,v"
++      || value.v !== 1 || value.op !== "delete" || value.src !== "dashboard"
++      || typeof value.id !== "string" || !/^[A-Za-z0-9]{1,200}$/.test(value.id)
++      || typeof value.ts !== "string" || !Number.isFinite(Date.parse(value.ts))) {
++    throw new Error("Choose a declared Content disposal event");
++  }
++  appendEvents([{v: 1, ts: value.ts, id: value.id, op: "delete", src: "dashboard"}]);
++  return {ok: true};
 +}
 +
 +export async function prepareContentRun(descriptor: number, id: string): Promise<{status: number; body: Record<string, unknown>; event: ContentEvent | null}> {

@@ -1,0 +1,15 @@
+test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts) ... FAIL
+
+======================================================================
+FAIL: test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_disposal.py", line 36, in test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts
+    self.assertEqual(result.status_code,200,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Content action is unavailable under the current policy"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.150s
+
+FAILED (failures=1)

@@ -26,7 +26,7 @@ def publication_paths(memory, scope, payload):
     authorize(scope)
     if not scope.principal or not CATEGORIES <= set(scope.write):
         raise MemoryUnavailable('Content runs require the unrestricted owner writer')
-    if payload != {'operation': 'content_run'}:
+    if payload not in ({'operation': 'content_run'}, {'operation': 'content_delete'}):
         raise ValueError('Choose declared Content run publication')
     _checked(memory, memory._publication_path(EVENTS))
     return [EVENTS]
@@ -38,7 +38,8 @@ def action(memory, scope, route, observation, *, check_current):
     if not scope.principal or not CATEGORIES <= set(scope.write):
         raise MemoryUnavailable('Content actions require the unrestricted owner writer')
     if observation['method'] != 'POST':
-        raise MemoryUnavailable('Content disposal requires governed source and runner control')
+        from .memory_content_disposal import dispose
+        return dispose(memory, scope, route.split('/')[-1], check_current=check_current)
     check_current()
     streamed = {EVENTS: None}
     with memory._transaction() as connection:

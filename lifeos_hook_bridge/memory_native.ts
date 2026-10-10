@@ -134,10 +134,21 @@ async function main(): Promise<void> {
       throw new Error('Choose bounded Algorithm checkpoint fields');
     }
     result = await module.commitAlgorithmEdit(input.paths, input.message);
-  } else if (input.action === 'content_run_plan' || input.action === 'content_run_append') {
+  } else if (input.action === 'content_run_plan' || input.action === 'content_run_append'
+      || input.action === 'content_delete_plan' || input.action === 'content_delete_append') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/content.ts')).href);
     if (!object(module)) throw new Error('Native Content actions are unavailable');
-    if (input.action === 'content_run_plan') {
+    if (input.action === 'content_delete_plan') {
+      if (typeof module.prepareContentDelete !== 'function' || typeof input.id !== 'string'
+          || !/^[A-Za-z0-9]{1,200}$/.test(input.id) || typeof input.history_descriptor !== 'number'
+          || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
+        throw new Error('Choose a declared Content disposal snapshot');
+      }
+      result = await module.prepareContentDelete(input.history_descriptor, input.id);
+    } else if (input.action === 'content_delete_append') {
+      if (typeof module.appendContentDelete !== 'function') throw new Error('Native Content disposal is unavailable');
+      result = module.appendContentDelete(input.event);
+    } else if (input.action === 'content_run_plan') {
       if (typeof module.prepareContentRun !== 'function' || typeof input.id !== 'string'
           || !/^[A-Za-z0-9]{1,200}$/.test(input.id) || typeof input.history_descriptor !== 'number'
           || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {

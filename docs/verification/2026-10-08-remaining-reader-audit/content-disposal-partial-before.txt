@@ -1,0 +1,21 @@
+test_committed_partial_cleanup_finishes_remaining_original_artifacts (test_memory_moves.MemoryMoveTests.test_committed_partial_cleanup_finishes_remaining_original_artifacts) ... ERROR
+test_committed_partial_cleanup_preserves_a_later_remaining_edit (test_memory_moves.MemoryMoveTests.test_committed_partial_cleanup_preserves_a_later_remaining_edit) ... ok
+
+======================================================================
+ERROR: test_committed_partial_cleanup_finishes_remaining_original_artifacts (test_memory_moves.MemoryMoveTests.test_committed_partial_cleanup_finishes_remaining_original_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_moves.py", line 149, in test_committed_partial_cleanup_finishes_remaining_original_artifacts
+    self.transaction.recover(self.connection)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_transaction.py", line 188, in recover
+    self.moves.finish(operation['moves'])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_moves.py", line 146, in finish
+    raise MemoryUnavailable('Content cleanup preserves later owner files')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Content cleanup preserves later owner files
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.007s
+
+FAILED (errors=1)

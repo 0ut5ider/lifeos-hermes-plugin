@@ -64,7 +64,10 @@ class NativeMemory:
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
-        self.transaction = MemoryTransaction(self.database.parent, self._publication_path)
+        from .memory_content_disposal import resolve_move
+        from .memory_moves import MemoryMoves
+        self.transaction = MemoryTransaction(self.database.parent, self._publication_path,
+            moves=MemoryMoves(lambda name: resolve_move(self, name)))
 
     def _boundary(self) -> None:
         if self.root.resolve() != self.physical_root:
@@ -386,7 +389,7 @@ class NativeMemory:
         if payload['operation'] == 'local_refresh':
             from .memory_local_refresh import publication_paths
             return publication_paths(self, scope, payload)
-        if payload['operation'] == 'content_run':
+        if payload['operation'] in {'content_run', 'content_delete'}:
             from .memory_content_action import publication_paths
             return publication_paths(self, scope, payload)
         if payload['operation'] == 'algorithm_edit':

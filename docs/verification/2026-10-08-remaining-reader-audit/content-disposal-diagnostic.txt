@@ -1,0 +1,22 @@
+test_artifact_symlink_refuses_before_tombstone_or_source_movement (test_memory_content_disposal.MemoryContentDisposalTests.test_artifact_symlink_refuses_before_tombstone_or_source_movement) ... MemoryUnavailable Content media changes during disposal admission
+ok
+test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media (test_memory_content_disposal.MemoryContentDisposalTests.test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media) ... MemoryUnavailable A complete state fold cannot omit an excluded event
+ok
+test_existing_trash_preserves_every_file_and_ledger_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_existing_trash_preserves_every_file_and_ledger_before_tombstone) ... MemoryUnavailable Content disposal preserves changed sources and existing trash
+ok
+test_external_source_path_refuses_before_any_effect (test_memory_content_disposal.MemoryContentDisposalTests.test_external_source_path_refuses_before_any_effect) ... MemoryUnavailable Content disposal preserves media outside the fixed owner inbox
+ok
+test_missing_media_still_disposes_current_item_and_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_missing_media_still_disposes_current_item_and_artifacts) ... {'status': 'committed', 'response': {'ok': True, 'id': 'synthetic0', 'trashed': 0, 'artifactsRemoved': True, 'runnerKicked': False}, 'writer': 'dashboard:owner', 'request_id': 'content-delete-a40dd264294b444499cf481061acda9d'}
+ok
+test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts) ... {'status': 'committed', 'response': {'ok': True, 'id': 'synthetic0', 'trashed': 2, 'artifactsRemoved': True, 'runnerKicked': False}, 'writer': 'dashboard:owner', 'request_id': 'content-delete-22d598706a7040318736b354fd141419'}
+ok
+test_repeat_delete_returns_missing_without_appending_or_touching_other_items (test_memory_content_disposal.MemoryContentDisposalTests.test_repeat_delete_returns_missing_without_appending_or_touching_other_items) ... {'status': 'committed', 'response': {'ok': True, 'id': 'synthetic0', 'trashed': 2, 'artifactsRemoved': True, 'runnerKicked': False}, 'writer': 'dashboard:owner', 'request_id': 'content-delete-12e052f168bb4e2187550c562d93ff16'}
+ok
+test_symlink_or_hardlink_source_refuses_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_symlink_or_hardlink_source_refuses_before_tombstone) ... MemoryUnavailable Content disposal changes its physical owner inbox
+MemoryUnavailable Content disposal requires physical owner files and directories
+ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 13.136s
+
+OK
