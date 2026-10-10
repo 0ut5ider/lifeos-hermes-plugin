@@ -8071,10 +8071,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..1d4f077
+index 0000000..29bdbfc
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,664 @@
+@@ -0,0 +1,665 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -8593,6 +8593,7 @@ index 0000000..1d4f077
 +  const origin = request.headers.get("origin");
 +  if (origin && origin !== url.origin) return Response.json({error: "Content requires the current origin"}, {status: 403, headers});
 +  try {
++    if (run || remove) return await memoryHTTPResponseAsync(request, "content_action", url.pathname, {method: request.method});
 +    if (url.pathname === "/api/content/stream") return await contentStream(request);
 +    const target = url.pathname + (url.pathname === "/api/content/status" ? "?running=" + Number(running) : "");
 +    return await memoryHTTPResponseAsync(request, "life", target);
@@ -12773,7 +12774,7 @@ index 7d37200..cba36bf 100644
 +  throw new Error("Choose a declared LocalIntelligence read route")
 +}
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/content.ts b/LifeOS/install/LIFEOS/PULSE/modules/content.ts
-index ea7ccff..3f374be 100644
+index ea7ccff..ecb635d 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/content.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/content.ts
 @@ -1,3 +1,5 @@
@@ -12793,7 +12794,7 @@ index ea7ccff..3f374be 100644
  import { basename, dirname, join } from "path";
  import { homedir } from "os";
 -import { LEGS, appendEvents, eventsPath, readState } from "../../TOOLS/Conveyor/Ledger";
-+import { LEGS, appendEvents, eventsPath, readState, foldEvents, parseEventLines, type ContentState } from "../../TOOLS/Conveyor/Ledger";
++import { LEGS, appendEvents, eventsPath, readState, foldEvents, parseEventLines, type ContentState, type ContentEvent } from "../../TOOLS/Conveyor/Ledger";
  
  const MODULE = "content";
  const STAGES = ["inbox", "prep", "produce", "review", "publishing", "done"] as const;
@@ -12825,7 +12826,39 @@ index ea7ccff..3f374be 100644
      String(b.created ?? "").localeCompare(String(a.created ?? "")),
    );
    const counts: Record<string, number> = {};
-@@ -206,6 +211,8 @@ function requestRun(id: string): Response {
+@@ -187,25 +192,26 @@ function deleteItem(id: string): Response {
+ }
+ 
+ /** Request the regular run for an item: one ledger upsert; executors poll the flag. */
++function contentRunPlan(admitted: ContentState, id: string): {status: number; body: Record<string, unknown>; event: ContentEvent | null} {
++  const item = admitted.items[id];
++  if (!item) return {status: 404, body: {error: `no item ${id}`}, event: null};
++  if (item.requested_run) return {status: 200, body: {ok: true, id, already: true}, event: null};
++  const event: ContentEvent = {v: 1, ts: new Date().toISOString(), id, op: "upsert",
++    fields: {requested_run: "regular", requested_at: new Date().toISOString(), updated: new Date().toISOString()},
++    src: "dashboard"};
++  return {status: 200, body: {ok: true, id, requested_run: "regular"}, event};
++}
++
+ function requestRun(id: string): Response {
+-  const item = readState().items[id];
+-  if (!item) return Response.json({ error: `no item ${id}` }, { status: 404 });
+-  if (item.requested_run) return Response.json({ ok: true, id, already: true });
+-  appendEvents([
+-    {
+-      v: 1,
+-      ts: new Date().toISOString(),
+-      id,
+-      op: "upsert",
+-      fields: { requested_run: "regular", requested_at: new Date().toISOString(), updated: new Date().toISOString() },
+-      src: "dashboard",
+-    },
+-  ]);
+-  return Response.json({ ok: true, id, requested_run: "regular" });
++  const plan = contentRunPlan(readState(), id);
++  if (plan.event) appendEvents([plan.event]);
++  return Response.json(plan.body, {status: plan.status});
+ }
  
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
    if (!pathname.startsWith("/api/content")) return null;
@@ -12834,13 +12867,13 @@ index ea7ccff..3f374be 100644
    const sub = pathname.replace(/^\/api\/content/, "") || "/";
  
    if (sub === "/status") return Response.json(health());
-@@ -228,3 +235,31 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
+@@ -228,3 +234,56 @@ export async function handleRequest(req: Request, pathname: string): Promise<Res
  
    return Response.json({ error: "Not found" }, { status: 404 });
  }
 +
 +
-+export async function renderContentView(descriptor: number, target: string, running: boolean): Promise<Response> {
++async function readContentSnapshot(descriptor: number): Promise<ContentState> {
 +  const before = fstatSync(descriptor);
 +  if (!before.isFile() || before.uid !== process.getuid?.() || before.nlink !== 0 || (before.mode & 0o077) !== 0) {
 +    throw new Error("Content requires an anonymous private owner snapshot");
@@ -12861,7 +12894,32 @@ index ea7ccff..3f374be 100644
 +  if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
 +    throw new Error("The Content snapshot changes during rendering");
 +  }
-+  const admitted = foldEvents({items: {}}, parseEventLines(rows.join("\n")));
++  return foldEvents({items: {}}, parseEventLines(rows.join("\n")));
++}
++
++export async function prepareContentRun(descriptor: number, id: string): Promise<{status: number; body: Record<string, unknown>; event: ContentEvent | null}> {
++  const admitted = await readContentSnapshot(descriptor);
++  if (!Object.hasOwn(admitted.items, id)) return {status: 404, body: {error: `no item ${id}`}, event: null};
++  return contentRunPlan(admitted, id);
++}
++
++export function appendContentRun(value: unknown): {ok: true} {
++  if (!memoryObject(value) || Object.keys(value).sort().join(",") !== "fields,id,op,src,ts,v"
++      || value.v !== 1 || value.op !== "upsert" || value.src !== "dashboard"
++      || typeof value.id !== "string" || !/^[A-Za-z0-9]{1,200}$/.test(value.id)
++      || typeof value.ts !== "string" || !Number.isFinite(Date.parse(value.ts))
++      || !memoryObject(value.fields) || Object.keys(value.fields).sort().join(",") !== "requested_at,requested_run,updated"
++      || value.fields.requested_run !== "regular" || typeof value.fields.requested_at !== "string"
++      || typeof value.fields.updated !== "string" || !Number.isFinite(Date.parse(value.fields.requested_at))
++      || !Number.isFinite(Date.parse(value.fields.updated))) throw new Error("Choose a declared Content run event");
++  appendEvents([{v: 1, ts: value.ts, id: value.id, op: "upsert",
++    fields: {requested_run: "regular", requested_at: value.fields.requested_at, updated: value.fields.updated},
++    src: "dashboard"}]);
++  return {ok: true};
++}
++
++export async function renderContentView(descriptor: number, target: string, running: boolean): Promise<Response> {
++  const admitted = await readContentSnapshot(descriptor);
 +  if (target === "/api/content/status") return Response.json(health(admitted, running));
 +  if (target === "/api/content" || target === "/api/content/") return Response.json(buildBoard(admitted));
 +  throw new Error("Choose a declared Content read route");

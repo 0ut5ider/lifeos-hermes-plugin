@@ -1,0 +1,35 @@
+test_simultaneous_owner_run_requests_append_one_event_and_each_return_current_native_status (test_memory_content_actions.MemoryContentActionTests.test_simultaneous_owner_run_requests_append_one_event_and_each_return_current_native_status) ... FAIL
+test_unknown_prototype_named_item_refuses_without_creating_a_card (test_memory_content_actions.MemoryContentActionTests.test_unknown_prototype_named_item_refuses_without_creating_a_card) ... FAIL
+test_original_unknown_prototype_named_item_creates_a_phantom_request_known_bug (test_native_content_actions.NativeContentActionTests.test_original_unknown_prototype_named_item_creates_a_phantom_request_known_bug) ... ok
+
+======================================================================
+FAIL: test_simultaneous_owner_run_requests_append_one_event_and_each_return_current_native_status (test_memory_content_actions.MemoryContentActionTests.test_simultaneous_owner_run_requests_append_one_event_and_each_return_current_native_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 141, in test_simultaneous_owner_run_requests_append_one_event_and_each_return_current_native_status
+    self.assertEqual([response.status_code for response in responses],[200,200,200],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        [response.text for response in responses])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [503, 503, 200] != [200, 200, 200]
+
+First differing element 0:
+503
+200
+
+- [503, 503, 200]
++ [200, 200, 200] : ['{"error": "Content action is unavailable under the current policy"}', '{"error": "Content action is unavailable under the current policy"}', '{"ok": true, "id": "synthetic0", "requested_run": "regular"}']
+
+======================================================================
+FAIL: test_unknown_prototype_named_item_refuses_without_creating_a_card (test_memory_content_actions.MemoryContentActionTests.test_unknown_prototype_named_item_refuses_without_creating_a_card)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 155, in test_unknown_prototype_named_item_refuses_without_creating_a_card
+    self.assertEqual(result.status_code,404,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 404 : {"ok": true, "id": "constructor", "requested_run": "regular"}
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.613s
+
+FAILED (failures=2)

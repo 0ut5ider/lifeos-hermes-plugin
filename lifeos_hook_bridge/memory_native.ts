@@ -134,6 +134,20 @@ async function main(): Promise<void> {
       throw new Error('Choose bounded Algorithm checkpoint fields');
     }
     result = await module.commitAlgorithmEdit(input.paths, input.message);
+  } else if (input.action === 'content_run_plan' || input.action === 'content_run_append') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/content.ts')).href);
+    if (!object(module)) throw new Error('Native Content actions are unavailable');
+    if (input.action === 'content_run_plan') {
+      if (typeof module.prepareContentRun !== 'function' || typeof input.id !== 'string'
+          || !/^[A-Za-z0-9]{1,200}$/.test(input.id) || typeof input.history_descriptor !== 'number'
+          || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
+        throw new Error('Choose a declared Content run snapshot');
+      }
+      result = await module.prepareContentRun(input.history_descriptor, input.id);
+    } else {
+      if (typeof module.appendContentRun !== 'function') throw new Error('Native Content run publication is unavailable');
+      result = module.appendContentRun(input.event);
+    }
   } else if (input.action === 'content_view') {
     if (typeof input.target !== 'string' || !['/api/content', '/api/content/', '/api/content/status'].includes(input.target)
         || typeof input.running !== 'boolean' || typeof input.history_descriptor !== 'number'

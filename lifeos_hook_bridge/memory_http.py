@@ -70,14 +70,16 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     edit = arguments.get('view') == 'telos_file_edit'
     algorithm_edit = arguments.get('view') == 'algorithm_edit'
+    content_action = arguments.get('view') == 'content_action'
+    action = algorithm_edit or content_action
     runtime = arguments.get('view') == 'pulse_runtime'
     job = arguments.get('view') in ('conduit_job', 'atlas_job', 'local_job', 'algorithm_job')
     delivery = runtime and 'observation' in arguments
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
-        {'target','observation'} if algorithm_edit else {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else
+        {'target','observation'} if action else {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else
         {'observation'} if delivery else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and not algorithm_edit and not runtime and not job and arguments['view'] != 'remount')):
+            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and not action and not runtime and not job and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
     remount = arguments['view'] == 'remount'
@@ -156,6 +158,16 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             return _response(400, {'error': 'Choose declared Algorithm edit fields'})
         route = '/memory/algorithm_edit'
         data = json.dumps({'target': arguments['target'], 'body': arguments['observation']}, ensure_ascii=False).encode()
+    if content_action:
+        from .memory_content_action import target as action_target
+        try:
+            action_target(arguments['target'], arguments['observation'])
+        except LookupError:
+            return _response(404, {'error': 'Choose a declared Content action route'})
+        except ValueError:
+            return _response(400, {'error': 'Choose declared Content action fields'})
+        route = '/memory/content_action'
+        data = json.dumps({'target': arguments['target'], 'observation': arguments['observation']}).encode()
     credentials={}
     for key in ('authorization','cookie'):
         value=arguments[key]
@@ -181,11 +193,11 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         base=dashboard_base(settings['dashboard_base_url'])
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
-        if review or edit or algorithm_edit or delivery:credentials['Content-Type']='application/json'
+        if review or edit or action or delivery:credentials['Content-Type']='application/json'
         request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
-                                      headers=credentials,method='POST' if remount or review or edit or algorithm_edit or delivery or job else 'GET')
+                                      headers=credentials,method='POST' if remount or review or edit or action or delivery or job else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
-        timeout = 120 if remount else 30 if runtime or algorithm_edit else 8
+        timeout = 120 if remount else 30 if runtime or action else 8
         if arguments['view'] == 'life':
             from .memory_operational_views import CAPABILITY_WINDOWS
             from .memory_performance import ROUTES as PERFORMANCE_ROUTES
@@ -201,12 +213,12 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,404,409,422,503} if algorithm_edit else {200,400,401,403,503} if runtime or job else {200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
+            if status not in ({200,400,401,403,404,409,422,503} if action else {200,400,401,403,503} if runtime or job else {200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
                               {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
             if runtime and status == 503 and response.headers.get('x-lifeos-memory-installation') != installation_binding(config, configuration.path):
                 return _response(503, {'error': 'Authenticated memory is unavailable'})
-            if (status in ({200,503} if runtime else {200,404,409,422} if algorithm_edit else {200,404,409} if review or edit else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
+            if (status in ({200,503} if runtime else {200,404,409,422} if action else {200,404,409} if review or edit else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):
                 raise ValueError('The authenticated response belongs to another installation')
             if response.headers.get_content_type()!='application/json':

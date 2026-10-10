@@ -352,6 +352,31 @@ def get_memory_life(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('life', request, account)
 
 
+@router.post('/memory/content_action')
+async def run_memory_content_action(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content) > 8192:
+            return JSONResponse({'error': 'Content action exceeds its request limit'}, status_code=400, headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body, dict) or set(body) != {'target', 'observation'}:
+            raise ValueError('Choose declared Content action arguments')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().content_action_response(
+            body['target'], body['observation'], account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except LookupError:
+        return JSONResponse({'error': 'Choose a declared Content action route'}, status_code=404, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Choose declared Content action fields'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Content action is unavailable under the current policy'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'], headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
 @router.post('/memory/algorithm_edit')
 async def edit_memory_algorithm(request: Request, account: str = Depends(_memory_account)):
     headers = {'Cache-Control': 'no-store'}

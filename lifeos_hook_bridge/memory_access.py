@@ -386,6 +386,9 @@ class NativeMemory:
         if payload['operation'] == 'local_refresh':
             from .memory_local_refresh import publication_paths
             return publication_paths(self, scope, payload)
+        if payload['operation'] == 'content_run':
+            from .memory_content_action import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'algorithm_edit':
             from .memory_algorithm_edit import publication_paths
             return publication_paths(self, scope, payload)

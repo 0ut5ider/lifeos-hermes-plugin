@@ -48,9 +48,13 @@ def view(memory, scope, target, *, check_current=None):
                 or result['status'] != 200 or not isinstance(result['body'], dict)
                 or len(json.dumps(result).encode()) > CORPUS_LIMIT):
             raise MemoryUnavailable('The native Content view changes its declared response')
-        decoded = projection(json.dumps(result), field_limit=CORPUS_LIMIT)
-        if (decoded is None or memory._native('validate_source_batch', contents=[decoded])['accepted'] != [True]
-                or memory._filter_history(connection, scope, decoded, datetime.now(timezone.utc).isoformat())['excluded']):
-            raise MemoryUnavailable('The native Content response contains excluded text')
+        validate_output(memory, scope, connection, result)
         if check_current is not None: check_current()
         return result
+
+
+def validate_output(memory, scope, connection, result):
+    decoded = projection(json.dumps(result), field_limit=CORPUS_LIMIT)
+    if (decoded is None or memory._native('validate_source_batch', contents=[decoded])['accepted'] != [True]
+            or memory._filter_history(connection, scope, decoded, datetime.now(timezone.utc).isoformat())['excluded']):
+        raise MemoryUnavailable('The native Content response contains excluded text')

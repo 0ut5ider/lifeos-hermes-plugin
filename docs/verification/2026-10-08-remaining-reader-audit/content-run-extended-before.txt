@@ -1,0 +1,43 @@
+test_owner_missing_run_request_keeps_the_complete_ledger (test_memory_content_actions.MemoryContentActionTests.test_owner_missing_run_request_keeps_the_complete_ledger) ... FAIL
+test_source_change_after_actual_plan_keeps_later_ledger_bytes (test_memory_content_actions.MemoryContentActionTests.test_source_change_after_actual_plan_keeps_later_ledger_bytes) ... FAIL
+test_owner_revocation_after_actual_plan_refuses_append (test_memory_content_actions.MemoryContentActionTests.test_owner_revocation_after_actual_plan_refuses_append) ... FAIL
+test_excluded_event_refuses_run_before_ledger_append (test_memory_content_actions.MemoryContentActionTests.test_excluded_event_refuses_run_before_ledger_append) ... ok
+
+======================================================================
+FAIL: test_owner_missing_run_request_keeps_the_complete_ledger (test_memory_content_actions.MemoryContentActionTests.test_owner_missing_run_request_keeps_the_complete_ledger)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 96, in test_owner_missing_run_request_keeps_the_complete_ledger
+    self.assertEqual(result.status_code,404,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 404 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_source_change_after_actual_plan_keeps_later_ledger_bytes (test_memory_content_actions.MemoryContentActionTests.test_source_change_after_actual_plan_keeps_later_ledger_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 119, in test_source_change_after_actual_plan_keeps_later_ledger_bytes
+    self.assertEqual(seen,[200])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [200]
+
+Second list contains 1 additional elements.
+First extra element 0:
+200
+
+- []
++ [200]
+
+======================================================================
+FAIL: test_owner_revocation_after_actual_plan_refuses_append (test_memory_content_actions.MemoryContentActionTests.test_owner_revocation_after_actual_plan_refuses_append)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 129, in test_owner_revocation_after_actual_plan_refuses_append
+    self.assertEqual(result.status_code,403,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 403 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.590s
+
+FAILED (failures=3)

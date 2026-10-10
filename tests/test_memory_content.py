@@ -123,23 +123,24 @@ class MemoryContentTests(unittest.TestCase):
             (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
             self.assertEqual(client.get(self.native + '/api/content').status_code, 503)
 
-    def test_manual_actions_authenticate_then_refuse_until_governed_publication(self):
+    def test_manual_actions_authenticate_before_publication_or_disposal(self):
         path, _ = self.seed()
         before = path.read_bytes()
         with httpx.Client(timeout=30) as client:
-            # The unmodified baseline stops on a read-only request before any delete or run action.
+            # Owner admission precedes run publication and source disposal.
             self.assertEqual(client.get(self.native + '/api/content/status').status_code, 401)
             for method, target in (('DELETE', '/api/content/synthetic0'), ('POST', '/api/content/synthetic0/run')):
                 self.assertEqual(client.request(method, self.native + target).status_code, 401)
             self.login(client)
-            for method, target in (('DELETE', '/api/content/synthetic0'), ('POST', '/api/content/synthetic0/run')):
+            for method, target, code in (('DELETE', '/api/content/synthetic0', 503), ('POST', '/api/content/synthetic0/run', 200)):
                 response = client.request(method, self.native + target)
-                self.assertEqual(response.status_code, 503, response.text[:250])
+                self.assertEqual(response.status_code, code, response.text[:250])
                 self.assertEqual(response.headers.get('cache-control'), 'no-store')
+                if method == 'DELETE': self.assertEqual(path.read_bytes(), before)
             for method, target, code in (('POST', '/api/content', 405), ('GET', '/api/content?root=other', 400),
                     ('GET', '/api/content/unsupported/path', 404)):
                 self.assertEqual(client.request(method, self.native + target).status_code, code)
-        self.assertEqual(path.read_bytes(), before)
+        self.assertTrue(path.read_bytes().startswith(before))
 
     def test_stream_current_owner_frames_recheck_private_updates_and_revocation(self):
         path, _ = self.seed()
