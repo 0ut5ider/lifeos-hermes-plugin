@@ -259,6 +259,7 @@ async function main(): Promise<void> {
     if (typeof render !== 'function') throw new Error('Native Atlas collector exports are unavailable');
     result = render(input.content);
   } else if (input.action === 'atlas_sync_plan') {
+    process.env.ATLAS_DIR = resolve(root, '../.local/state/lifeos/atlas');
     if (!(input.database === null || typeof input.database === 'string') || !Array.isArray(input.runs)
         || input.runs.length < 1 || input.runs.length > 2 || input.runs.some(run => !object(run)
           || typeof run.collector !== 'string' || !['gear', 'projects'].includes(run.collector)

@@ -194,6 +194,19 @@ class MemoryAtlasSyncTests(unittest.TestCase):
         self.assertFalse(self.sync()['ok'])
         self.assertEqual(original.read_bytes(), before)
 
+    def test_inherited_atlas_directory_cannot_redirect_planner_effects(self):
+        outside = self.root.parent/'unselected-atlas-directory'
+        original = os.environ.get('ATLAS_DIR')
+        os.environ['ATLAS_DIR'] = str(outside)
+        try:
+            self.assertTrue(self.sync()['ok'])
+        finally:
+            if original is None:
+                os.environ.pop('ATLAS_DIR')
+            else:
+                os.environ['ATLAS_DIR'] = original
+        self.assertFalse(outside.exists())
+
     def test_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph(self):
         self.sources()
         for collectors, scope in ((['systemd'], 'full'), (['gear', 'gear'], 'full'), (['gear'], ''), (['gear'], 'x'*129)):
