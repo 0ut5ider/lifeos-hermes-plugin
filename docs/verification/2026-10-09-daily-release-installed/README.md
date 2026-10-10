@@ -77,3 +77,13 @@ The selected daily profile disables the optional native Pulse core-file editor. 
 The [installed HTTP repeat](application-http-core-disabled.json) passes all 16 scoped reads and the governed Content actions after this selection. Media extraction and transcription remain deferred with voice. The installed acceptance profile retains the prior user configuration for reversal. The original package archive retains its original bytes; its explicit application candidate manifest records this selected overlay.
 
 The separate Proxmox backup records the tested recovery profile before the editor selection change. It is not the final release backup. Private-channel admission and delivery, remaining browser actions, final version and package verification, off-server restore, and daily guest creation remain open. The live bot profile and live ownership selection do not change.
+
+## Off-server tested profile restore
+
+The [Proxmox task result](offserver-backup-status.json) returns OK. The [native task log](offserver-backup-log.json) records 90.605 GiB, 96.2 percent reused data, and completion in 12 minutes 38 seconds. The archive remains on PBS-01 as ct/101/2026-10-10T03:08:05Z.
+
+The first extractor uses root.pxar as the path component and returns 255. The corrected extractor uses root.pxar.didx and returns zero. The [operator](restore_tested_profile_offserver.pl) uses existing host-local storage authentication. It prints no credential and extracts only the synthetic tested-profile backup. The [Proxmox client documentation](https://pbs.proxmox.com/docs/backup-client.html) distinguishes the restore archive name from its indexed catalog path. Both extractor outputs and numeric completion markers remain unchanged.
+
+The [actual off-server profile reconstruction](installed-offserver-profile-recovery-verification.json) passes in 1.622 seconds. The extracted manifest matches the reviewed signature. Actual profile inspection checks all copied files and SQLite databases. Actual recovery retains the exact synthetic memory reference and both conversation histories. The recovered connector selects the recovered profile. Ownership and sharing stay disabled, and no recovered service starts. This gate verifies the tested profile from the PBS archive. It does not verify a complete guest restore or the final release backup.
+
+The [live operational repeat](live-profile-preservation-after-schedules.json) exactly matches the original baseline, including ownership, sharing, code paths, and all three active services. No live memory record is read. Private-channel acceptance, remaining browser actions, final version and package verification, and daily guest creation remain open.
