@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "head": "ef946c3faac3c3faf27912992da526404ca290b0",
+  "outside_directory_created": false,
+  "native_identity_preserved": true,
+  "cache_bytes_inode_mtime_preserved": true,
+  "configuration_bytes_preserved": true,
+  "authenticated_views": [
+    {
+      "path": "/api/atlas",
+      "status": 200,
+      "available": true
+    },
+    {
+      "path": "/api/atlas/insights",
+      "status": 200,
+      "available": true
+    }
+  ],
+  "artifact_sha256": {
+    "atlas.db": "988fec4cfd930f36aaede52a41b92be59a9a74e3a750ecc0f39ed8b8449a0735",
+    "snapshot.json": "6bf92603e51c20e3f0fea92d21d1db9f598778489794cbc1b183cc8d7cf33a8f",
+    "atlas-insights.json": "e49b1f597e83503351c9fd81c076cb600c1f259fc04f4e05f5a7fca6d525a3f1"
+  },
+  "job": {
+    "exit_code": 0,
+    "stdout": "{\"status\": \"completed\", \"job\": \"atlas-sync\", \"output\": \"{\\\"ok\\\":true,\\\"runs\\\":[{\\\"collector\\\":\\\"gear\\\",\\\"runId\\\":7,\\\"swept\\\":true},{\\\"collector\\\":\\\"projects\\\",\\\"runId\\\":8,\\\"swept\\\":true}]}\\n\"}\n",
+    "stderr": ""
+  },
+  "live_profile_changed": false,
+  "isolated_acceptance_profile_only": true
+}

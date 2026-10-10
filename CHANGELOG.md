@@ -10,11 +10,13 @@ Keep it equal to the version in both plugin manifests.
 - Publish the native Atlas database and snapshot as one recoverable file group.
 - Preserve native asset identity, incomplete observations, and targeted-run sweep rules.
 - Keep Atlas insight recovery when source or destination changes occur after publication.
+- Bind the Atlas planner directory before loading native code. Ignore inherited directory overrides.
 
 ## 0.2.0 (release candidate)
 
 This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
-Private-channel acceptance, Atlas graph initialization, final package checks, and combined review remain open.
+Private-channel acceptance, final release backup, daily guest deployment, and combined review remain open.
+Atlas initialization and fresh-store acceptance pass on the isolated development profile.
 
 - Select the main Pulse dashboard and defer audio and video processing with voice.
 - Verify actual private-model memory write and search across separate installed Hermes sessions.
