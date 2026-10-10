@@ -20,6 +20,7 @@ Private-channel acceptance, remaining browser actions, final package checks, and
 - Disable the optional Pulse core-file editor under the documented first-release assumption.
 - Correct native Mount list indentation, Pulse shutdown waiting, and strict daemon types.
 - Admit bounded owner-job output through its four MiB byte limit. Preserve reviewer limits and complete retirement filtering.
+- Send complete Algorithm overview prompts through the shared inference function. Avoid Linux argument limits.
 
 The following changes also belong to this candidate:
 
