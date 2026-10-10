@@ -166,7 +166,7 @@ class MemoryAlgorithmJobRelayTests(unittest.TestCase):
                 for response in responses:
                     self.assertEqual(response.status_code, 202 if daemon else 200, response.text)
                     if not daemon:
-                        self.assertTrue(response.json()['generating'])
+                        self.assertTrue(response.json()['generating'], response.text)
                 self.assertTrue(received.wait(25), 'The actual summary child does not reach inference')
                 self.assertEqual(len(requests), 1)
                 self.assertEqual(requests[0]['model'], 'synthetic-flashnext')

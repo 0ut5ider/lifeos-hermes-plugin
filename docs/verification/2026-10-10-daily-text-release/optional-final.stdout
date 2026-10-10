@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "observations": [
+    {
+      "method": "GET",
+      "path": "/api/hermes",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "GET",
+      "path": "/api/hermes/",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "GET",
+      "path": "/api/hermes/log-analysis",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "GET",
+      "path": "/api/hermes/file/principal-memory",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/hermes/file/config",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "POST",
+      "path": "/api/hermes/remount",
+      "status": 404,
+      "body": "Not found"
+    }
+  ],
+  "configuration_preserved": true,
+  "pulse_core_editor_enabled": false,
+  "live_profile_changed": false
+}

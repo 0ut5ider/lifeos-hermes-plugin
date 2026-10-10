@@ -1,0 +1,120 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_stop_clarify_waiters.py"
+      ],
+      "exit_code": 0,
+      "stdout": "....                                                                     [100%]\n4 passed in 5.89s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_clarify_cancellation_outcome.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".......                                                                  [100%]\n7 passed in 3.50s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_clarify_delivery_fallback.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".......                                                                  [100%]\n7 passed in 5.82s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/tools/test_clarify_gateway.py"
+      ],
+      "exit_code": 0,
+      "stdout": "........................                                                 [100%]\n24 passed in 4.16s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/tools/test_clarify_tool.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".......................................                                  [100%]\n39 passed in 2.86s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-c",
+        "import discord, discord.ext.commands; import pytest, sys; sys.exit(pytest.main(sys.argv[1:]))",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_discord_guild_channel_only.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".........                                                         [100%]\n9 passed, 7 subtests passed in 1.43s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-c",
+        "import discord, discord.ext.commands; import pytest, sys; sys.exit(pytest.main(sys.argv[1:]))",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_discord_command_identity.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".....                                                                    [100%]\n5 passed in 1.34s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-atlas-20261010/native-test-python313/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_discord_sync_limit.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".                                                                        [100%]\n1 passed in 1.23s\n",
+      "stderr": ""
+    }
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 40.60948009099229,
+  "scope": "Native unit controls include simulated Discord transport. Installed acceptance is separate.",
+  "isolation": "One fresh pytest subprocess per file, as required by native tests/conftest.py. SDK controls preload real discord so gateway/conftest.py preserves its documented real-module branch."
+}

@@ -197,7 +197,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
                                       headers=credentials,method='POST' if remount or review or edit or action or delivery or job else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
-        timeout = 120 if remount else 30 if runtime or action else 8
+        timeout = 120 if remount else 30 if runtime or action or job else 8
         if arguments['view'] == 'life':
             from .memory_operational_views import CAPABILITY_WINDOWS
             from .memory_performance import ROUTES as PERFORMANCE_ROUTES
