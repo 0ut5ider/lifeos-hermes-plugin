@@ -1,0 +1,104 @@
+test_frame_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_publication_rechecks_the_current_audience) ... FAIL
+test_frame_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_reads_recheck_the_current_audience) ... FAIL
+test_hypotheses_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_hypotheses_recheck_the_current_audience) ... FAIL
+test_rating_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_rating_reports_recheck_the_current_audience) ... FAIL
+test_recurrence_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_publication_rechecks_the_current_audience) ... FAIL
+test_recurrence_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_reads_recheck_the_current_audience) ... FAIL
+test_unchanged_private_audience_allows_actual_publication (test_memory_background_audience.MemoryBackgroundAudienceTests.test_unchanged_private_audience_allows_actual_publication) ... ok
+test_wisdom_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_wisdom_reports_recheck_the_current_audience) ... FAIL
+
+======================================================================
+FAIL: test_frame_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_publication_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 135, in test_frame_publication_rechecks_the_current_audience
+    self.exercise('wisdom_frame_update')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[143886 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 308843 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_frame_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_reads_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 129, in test_frame_reads_recheck_the_current_audience
+    self.exercise('wisdom_frames')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[144712 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 310705 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_hypotheses_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_hypotheses_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 117, in test_hypotheses_recheck_the_current_audience
+    self.exercise('learning_hypotheses')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[144712 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 310705 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_rating_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_rating_reports_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 120, in test_rating_reports_recheck_the_current_audience
+    self.exercise('learning_ratings')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[144712 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 310705 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_recurrence_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_publication_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 126, in test_recurrence_publication_rechecks_the_current_audience
+    self.exercise('recurrence_append')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[143886 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 308843 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_recurrence_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_reads_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 123, in test_recurrence_reads_recheck_the_current_audience
+    self.exercise('recurrence_sources')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[144712 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 310705 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_wisdom_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_wisdom_reports_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 132, in test_wisdom_reports_recheck_the_current_audience
+    self.exercise('wisdom_synthesis')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 113, in exercise
+    self.assertEqual(self.snapshot(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'STATE/memory-access.sqlite': b'SQLite for[144712 chars]]\n'} != {'OBSERVABILITY/tool-failures.jsonl': b'{"t[2206 chars]]\n'}
+Diff is 310705 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 8 tests in 6.309s
+
+FAILED (failures=7)

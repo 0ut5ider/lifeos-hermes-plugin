@@ -1,0 +1,24 @@
+FF
+======================================================================
+FAIL: test_complete_final_rows_without_newline_preserve_native_counts (test_memory_capabilities.MemoryCapabilitiesTests.test_complete_final_rows_without_newline_preserve_native_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 147, in test_complete_final_rows_without_newline_preserve_native_counts
+    self.assertEqual(self.comparable(response.json()), self.comparable(self.original('/api/capabilities')))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'win[353 chars]s': {}, 'types': {}, 'fanouts': 1, 'max_fanout[752 chars]: 2}} != {'win[353 chars]s': {'synthetic-model': 1}, 'types': {'Synthet[803 chars]: 2}}
+Diff is 2440 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_unfinished_utf8_tail_waits_without_stopping_current_telemetry (test_memory_capabilities.MemoryCapabilitiesTests.test_unfinished_utf8_tail_waits_without_stopping_current_telemetry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 166, in test_unfinished_utf8_tail_waits_without_stopping_current_telemetry
+    self.assertIn('SyntheticCapabilityCafé', response.text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticCapabilityCafé' not found in '{"generated_at": "2026-10-09T00:56:12.725Z", "window_minutes": 60, "oldest_event_parsed": "2026-10-09T00:53:12.006499+00:00", "totals": {"tool_calls": 11, "sessions": 2, "skills": 2, "agent_dispatches": 2, "workflow_runs": 1, "send_messages": 1, "tool_searches": 1, "web_searches": 1, "web_fetches": 1}, "skills": [{"name": "SyntheticCapabilityCurrent", "count": 1}, {"name": "SyntheticCapabilityCaf\\u00e9", "count": 1}], "agents": {"dispatches": 2, "models": {"synthetic-model": 1}, "types": {"SyntheticCapabilityCurrent": 1}, "fanouts": 1, "max_fanout": 2}, "parallel": {"bursts": 1, "max_width": 10}, "mcp": [{"server": "synthetic", "count": 1}], "tools": [{"name": "Skill", "count": 2}, {"name": "Agent", "count": 2}, {"name": "Workflow", "count": 1}, {"name": "SendMessage", "count": 1}, {"name": "ToolSearch", "count": 1}, {"name": "WebSearch", "count": 1}, {"name": "WebFetch", "count": 1}, {"name": "mcp__synthetic__lookup", "count": 1}, {"name": "Write", "count": 1}], "last_used": {"tool_call": 1791507192006, "skills": 1791507192006, "agents": 1791507192006, "workflow": 1791507192006, "send_messages": 1791507192006, "web": 1791507192006, "mcp": 1791507192006}, "series": {"buckets": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0], "bucket_minutes": 2}}'
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.011s
+
+FAILED (failures=2)

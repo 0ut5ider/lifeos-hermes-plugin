@@ -1,0 +1,159 @@
+{
+  "checks": [
+    "anonymous refusal",
+    "current owner read",
+    "UI private save",
+    "later edit preservation",
+    "conflict displayed with unsaved text retained",
+    "fresh reference recovery"
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/editor.js",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/editor.js",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "body": null
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:36587/api/telos/file",
+      "body": {
+        "name": "GOALS.md",
+        "content": "# SyntheticBrowserSavedTelosGoal\n",
+        "reference": "0269b06e067547e45ce641c155a49490804cb8708f6c1b641ef71524d50c97a7",
+        "request_id": "028360af-2a14-4c4c-bdac-829b58b3421b"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "body": null
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:36587/api/telos/file",
+      "body": {
+        "name": "GOALS.md",
+        "content": "# SyntheticStaleBrowserSave\n",
+        "reference": "506712ca1069a06476fda4689642651f4172f3ba1254732d9a4f3ddc53efbe9c",
+        "request_id": "8bfb3ad5-c570-4a29-9046-3fc9dc028881"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "body": null
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:36587/api/telos/file",
+      "body": {
+        "name": "GOALS.md",
+        "content": "# SyntheticRecoveredBrowserSave\n",
+        "reference": "8b9f1e143641ee743a58bdbd4ff2b8c6223ac8bbe45dbc4bf89a43b19b9abf09",
+        "request_id": "f18c05ca-f356-44c3-95ee-66b9a2514fff"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/editor.js",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/editor.js",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:36587/api/telos/file",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:36587/api/telos/file",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:36587/api/telos/file?name=GOALS.md",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:36587/api/telos/file",
+      "status": 200
+    }
+  ],
+  "console": [
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    }
+  ],
+  "final_source": "# SyntheticRecoveredBrowserSave\n",
+  "final_mode": "0o600"
+}

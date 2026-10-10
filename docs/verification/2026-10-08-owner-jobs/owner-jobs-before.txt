@@ -1,0 +1,18 @@
+test_memory_owner_jobs (unittest.loader._FailedTest.test_memory_owner_jobs) ... ERROR
+
+======================================================================
+ERROR: test_memory_owner_jobs (unittest.loader._FailedTest.test_memory_owner_jobs)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_memory_owner_jobs
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_jobs.py", line 9, in <module>
+    from lifeos_hook_bridge.memory_owner_jobs import OwnerJobs
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_owner_jobs'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

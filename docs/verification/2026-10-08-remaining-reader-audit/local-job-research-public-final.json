@@ -1,0 +1,876 @@
+{
+  "server_mutation": false,
+  "public_test_location_only": true,
+  "status": "FAIL",
+  "actual_child": {
+    "arguments": [
+      "--print",
+      "--model",
+      "sonnet",
+      "--output-format",
+      "text",
+      "--setting-sources",
+      "",
+      "--system-prompt",
+      "",
+      "--tools",
+      "WebSearch,WebFetch",
+      "--allowedTools",
+      "WebSearch,WebFetch"
+    ],
+    "exit_code": 0,
+    "stderr": "  \u250a \ud83d\udd0d search    Austin TX new construction project building permit October 2026  1.3s\n  \u250a \ud83d\udd0d search    Austin Police Department crime news October 2026  0.7s\n  \u250a \ud83d\udd0d search    Austin TX business opening closing September October 2026  0.3s\n  \u250a \ud83d\udd0d search    Austin mayor Kirk Watson city council news October 2026  3.2s\n  \u250a \ud83d\udd0d search    Austin City Council ordinance agenda October 2026 council approved  1.8s\n  \u250a \ud83d\udd0d search    Travis County Texas elections 2026 ballot measures candidate filing November  0.6s\n  \u250a \ud83d\udd0d search    Austin TX arrest police blotter this week October 6 2026  1.5s\n  \u250a \ud83d\udd0d search    Austin Travis County local news headlines October 2026 statesman  0.8s\n  \u250a \ud83d\udcc4 fetch     www.austintexas.gov +1  0.9s\n  \u250a \ud83d\udd0d search    Austin City Council data center ban work session October 2026 CBS Austin  2.4s\n  \u250a \ud83d\udd0d search    \"Austin\" police arrest murder roommate rent argument October 2026 FOX 7  0.9s\n  \u250a \ud83d\udd0d search    Austin ICE shooting investigation update KXAN October 2026  0.2s\n  \u250a \ud83d\udd0d search    Austin American-Statesman local news October 7 8 9 2026 city news  1.2s\n  \u250a \ud83d\udd0d search    Austin restaurant opening October 2026 new restaurant opens  0.7s\n  \u250a \ud83d\udcc4 fetch     kxan.com +1  0.8s\n  \u250a \ud83d\udd0d search    Austin City Council data center work session press conference October 6 2026 Siegel Watson  0.2s\n  \u250a \ud83d\udd0d search    \"bond dashboard\" Austin launched October 2026 canceled bond projects KXAN  1.3s\n\u26a0\ufe0f  Response truncated (finish_reason='length') - model hit max output tokens\n\u21bb Requesting continuation (1/4)...\n"
+  },
+  "wire_requests": [
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 0,
+      "tool_results": [],
+      "prior_tool_call_names": [],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "e5ef8859b72e5aeb76cc1df5369d828066d6a547515c0d568caa96cd0065f96a"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 4,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "aeeeba20c401b1cfe8fb9c9cc791725495481a37677c7d9aeb8c5b590a508e0b"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 8,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "e59dfbea8a91531f5b4aa40e7e5f9c7bdae1b90877a2f56e86fd1deddd3b76b3"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 10,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        },
+        {
+          "call_id": "chatcmpl-tool-ac93ae78bc4d367d",
+          "content_sha256": "0c372bce9f22d3d49d99bde80967fee9b705edb3e55d0425f2089421ac0a7029",
+          "content_characters": 7396
+        },
+        {
+          "call_id": "chatcmpl-tool-b0cfdeb7fb5884b9",
+          "content_sha256": "c2f0adf4a254eef7d76d0866aaf71096d98257ff3e653f18dc1de16ae17380b8",
+          "content_characters": 31285
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "b1e6e4ebfccf69b85963bab6ff99daad1c58d0015ed083bb0fd246dce030cfd9"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 12,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        },
+        {
+          "call_id": "chatcmpl-tool-ac93ae78bc4d367d",
+          "content_sha256": "0c372bce9f22d3d49d99bde80967fee9b705edb3e55d0425f2089421ac0a7029",
+          "content_characters": 7396
+        },
+        {
+          "call_id": "chatcmpl-tool-b0cfdeb7fb5884b9",
+          "content_sha256": "c2f0adf4a254eef7d76d0866aaf71096d98257ff3e653f18dc1de16ae17380b8",
+          "content_characters": 31285
+        },
+        {
+          "call_id": "chatcmpl-tool-8bf95db13a705329",
+          "content_sha256": "1c783abc63f3020b8d4c660eafcafd699b8ae3d5afa5821540da20634d053e64",
+          "content_characters": 4412
+        },
+        {
+          "call_id": "chatcmpl-tool-afaf05dfa4b8066d",
+          "content_sha256": "991bef33e06beb9a7b04342f4c73a5aff35276f6620952eece72939176bf38ef",
+          "content_characters": 16802
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "450fdf50f98e116a6e2dea71b984c42c805d6e4f9214ec5c3e51b5680af9beb9"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 14,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        },
+        {
+          "call_id": "chatcmpl-tool-ac93ae78bc4d367d",
+          "content_sha256": "0c372bce9f22d3d49d99bde80967fee9b705edb3e55d0425f2089421ac0a7029",
+          "content_characters": 7396
+        },
+        {
+          "call_id": "chatcmpl-tool-b0cfdeb7fb5884b9",
+          "content_sha256": "c2f0adf4a254eef7d76d0866aaf71096d98257ff3e653f18dc1de16ae17380b8",
+          "content_characters": 31285
+        },
+        {
+          "call_id": "chatcmpl-tool-8bf95db13a705329",
+          "content_sha256": "1c783abc63f3020b8d4c660eafcafd699b8ae3d5afa5821540da20634d053e64",
+          "content_characters": 4412
+        },
+        {
+          "call_id": "chatcmpl-tool-afaf05dfa4b8066d",
+          "content_sha256": "991bef33e06beb9a7b04342f4c73a5aff35276f6620952eece72939176bf38ef",
+          "content_characters": 16802
+        },
+        {
+          "call_id": "chatcmpl-tool-895273e03d89a049",
+          "content_sha256": "15537201434fe706f0ed6dbcfc8bd6e432af94d1d650fa2571f9d88844dcc8c9",
+          "content_characters": 16846
+        },
+        {
+          "call_id": "chatcmpl-tool-a267ebd4ff19bb2f",
+          "content_sha256": "5c98a2dc64ecb612c8b67ed4169d0154f2b5b197499d90de2c54cb656e6b0a2f",
+          "content_characters": 17352
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "cbfe04e9ff99f69de18bab3f98002b3a5b5c245f2284ef5ec78c0a861c5e6c1c"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 15,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        },
+        {
+          "call_id": "chatcmpl-tool-ac93ae78bc4d367d",
+          "content_sha256": "0c372bce9f22d3d49d99bde80967fee9b705edb3e55d0425f2089421ac0a7029",
+          "content_characters": 7396
+        },
+        {
+          "call_id": "chatcmpl-tool-b0cfdeb7fb5884b9",
+          "content_sha256": "c2f0adf4a254eef7d76d0866aaf71096d98257ff3e653f18dc1de16ae17380b8",
+          "content_characters": 31285
+        },
+        {
+          "call_id": "chatcmpl-tool-8bf95db13a705329",
+          "content_sha256": "1c783abc63f3020b8d4c660eafcafd699b8ae3d5afa5821540da20634d053e64",
+          "content_characters": 4412
+        },
+        {
+          "call_id": "chatcmpl-tool-afaf05dfa4b8066d",
+          "content_sha256": "991bef33e06beb9a7b04342f4c73a5aff35276f6620952eece72939176bf38ef",
+          "content_characters": 16802
+        },
+        {
+          "call_id": "chatcmpl-tool-895273e03d89a049",
+          "content_sha256": "15537201434fe706f0ed6dbcfc8bd6e432af94d1d650fa2571f9d88844dcc8c9",
+          "content_characters": 16846
+        },
+        {
+          "call_id": "chatcmpl-tool-a267ebd4ff19bb2f",
+          "content_sha256": "5c98a2dc64ecb612c8b67ed4169d0154f2b5b197499d90de2c54cb656e6b0a2f",
+          "content_characters": 17352
+        },
+        {
+          "call_id": "chatcmpl-tool-90d7301ce96cf583",
+          "content_sha256": "79478a0720d79296a9c3859d6792a908f53d56cb6c5f0b4119e4aadc2632b7aa",
+          "content_characters": 6578
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "b907de2cf50a7bc430306f165661462db5f4cef653f009de4548d9bcc6dfd7d5"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "medium",
+      "effort_fields": {
+        "reasoning_effort": "medium"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 17,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        },
+        {
+          "call_id": "chatcmpl-tool-ac93ae78bc4d367d",
+          "content_sha256": "0c372bce9f22d3d49d99bde80967fee9b705edb3e55d0425f2089421ac0a7029",
+          "content_characters": 7396
+        },
+        {
+          "call_id": "chatcmpl-tool-b0cfdeb7fb5884b9",
+          "content_sha256": "c2f0adf4a254eef7d76d0866aaf71096d98257ff3e653f18dc1de16ae17380b8",
+          "content_characters": 31285
+        },
+        {
+          "call_id": "chatcmpl-tool-8bf95db13a705329",
+          "content_sha256": "1c783abc63f3020b8d4c660eafcafd699b8ae3d5afa5821540da20634d053e64",
+          "content_characters": 4412
+        },
+        {
+          "call_id": "chatcmpl-tool-afaf05dfa4b8066d",
+          "content_sha256": "991bef33e06beb9a7b04342f4c73a5aff35276f6620952eece72939176bf38ef",
+          "content_characters": 16802
+        },
+        {
+          "call_id": "chatcmpl-tool-895273e03d89a049",
+          "content_sha256": "15537201434fe706f0ed6dbcfc8bd6e432af94d1d650fa2571f9d88844dcc8c9",
+          "content_characters": 16846
+        },
+        {
+          "call_id": "chatcmpl-tool-a267ebd4ff19bb2f",
+          "content_sha256": "5c98a2dc64ecb612c8b67ed4169d0154f2b5b197499d90de2c54cb656e6b0a2f",
+          "content_characters": 17352
+        },
+        {
+          "call_id": "chatcmpl-tool-90d7301ce96cf583",
+          "content_sha256": "79478a0720d79296a9c3859d6792a908f53d56cb6c5f0b4119e4aadc2632b7aa",
+          "content_characters": 6578
+        },
+        {
+          "call_id": "chatcmpl-tool-b198a88f905452ac",
+          "content_sha256": "f107079bcda2782af33220c52a3435342b753ab51549d8a265cf804e08384960",
+          "content_characters": 14612
+        },
+        {
+          "call_id": "chatcmpl-tool-a5941bead014c9cc",
+          "content_sha256": "4c3d159e2c2ce3666ea0abe7a1ffc387a2b2c9d5e6479a95342f9b0ea911d438",
+          "content_characters": 9887
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "225e30ccd09a6fa5606f2bd6769bef788ac319ce5a8ee284120a9e0bba228b42"
+    },
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "none",
+      "effort_fields": {
+        "reasoning_effort": "none"
+      },
+      "body_keys": [
+        "max_tokens",
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ],
+      "upstream_status": 200,
+      "tool_names": [
+        "web_extract",
+        "web_search"
+      ],
+      "tool_result_count": 17,
+      "tool_results": [
+        {
+          "call_id": "chatcmpl-tool-9b8e3808d4431c55",
+          "content_sha256": "4c5b095001b11f081c3b7324abf3cc3f8acfd4ef2d8b4d67a19caee44a19238d",
+          "content_characters": 10492
+        },
+        {
+          "call_id": "chatcmpl-tool-878be69564a12a07",
+          "content_sha256": "6a37764f67354c0161d2258e4d9fde60e2a89509b07134de3532ba2287bc3cb8",
+          "content_characters": 22167
+        },
+        {
+          "call_id": "chatcmpl-tool-bac06e68869c6732",
+          "content_sha256": "8f9cb3a497edcbe46317d8cb10d0fdaf5190d3787998454a5aa70166cb9993d9",
+          "content_characters": 15332
+        },
+        {
+          "call_id": "chatcmpl-tool-9ce409c9fc972092",
+          "content_sha256": "888ecbbea24080e7aede5187651076be5c448e9ce224cd815e746de148608700",
+          "content_characters": 4797
+        },
+        {
+          "call_id": "chatcmpl-tool-92798e37701959dd",
+          "content_sha256": "e74e0f691a564dd0bd6c9647a313a1f2300426cd7a3693385e2c34918e4f4713",
+          "content_characters": 41152
+        },
+        {
+          "call_id": "chatcmpl-tool-b15d65083222703e",
+          "content_sha256": "2e71b59e36f13f971a290c8b0f31d694d4ed40c39cfb7a9e26a7d520c47136b5",
+          "content_characters": 17316
+        },
+        {
+          "call_id": "chatcmpl-tool-8f76e1e9e6cf9dd9",
+          "content_sha256": "e0d2a79ecbf4a565a6b27617992d45ac01a7be09b0f72aa862a6d5c5b88b6c9b",
+          "content_characters": 11232
+        },
+        {
+          "call_id": "chatcmpl-tool-b7701ce46e01140a",
+          "content_sha256": "6870cc2f3e6bd71fd5199be9c41aa17b4710fa373cdaf8d0b2dfc8e1e8e2aac1",
+          "content_characters": 6413
+        },
+        {
+          "call_id": "chatcmpl-tool-ac93ae78bc4d367d",
+          "content_sha256": "0c372bce9f22d3d49d99bde80967fee9b705edb3e55d0425f2089421ac0a7029",
+          "content_characters": 7396
+        },
+        {
+          "call_id": "chatcmpl-tool-b0cfdeb7fb5884b9",
+          "content_sha256": "c2f0adf4a254eef7d76d0866aaf71096d98257ff3e653f18dc1de16ae17380b8",
+          "content_characters": 31285
+        },
+        {
+          "call_id": "chatcmpl-tool-8bf95db13a705329",
+          "content_sha256": "1c783abc63f3020b8d4c660eafcafd699b8ae3d5afa5821540da20634d053e64",
+          "content_characters": 4412
+        },
+        {
+          "call_id": "chatcmpl-tool-afaf05dfa4b8066d",
+          "content_sha256": "991bef33e06beb9a7b04342f4c73a5aff35276f6620952eece72939176bf38ef",
+          "content_characters": 16802
+        },
+        {
+          "call_id": "chatcmpl-tool-895273e03d89a049",
+          "content_sha256": "15537201434fe706f0ed6dbcfc8bd6e432af94d1d650fa2571f9d88844dcc8c9",
+          "content_characters": 16846
+        },
+        {
+          "call_id": "chatcmpl-tool-a267ebd4ff19bb2f",
+          "content_sha256": "5c98a2dc64ecb612c8b67ed4169d0154f2b5b197499d90de2c54cb656e6b0a2f",
+          "content_characters": 17352
+        },
+        {
+          "call_id": "chatcmpl-tool-90d7301ce96cf583",
+          "content_sha256": "79478a0720d79296a9c3859d6792a908f53d56cb6c5f0b4119e4aadc2632b7aa",
+          "content_characters": 6578
+        },
+        {
+          "call_id": "chatcmpl-tool-b198a88f905452ac",
+          "content_sha256": "f107079bcda2782af33220c52a3435342b753ab51549d8a265cf804e08384960",
+          "content_characters": 14612
+        },
+        {
+          "call_id": "chatcmpl-tool-a5941bead014c9cc",
+          "content_sha256": "4c3d159e2c2ce3666ea0abe7a1ffc387a2b2c9d5e6479a95342f9b0ea911d438",
+          "content_characters": 9887
+        }
+      ],
+      "prior_tool_call_names": [
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_search",
+        "web_extract",
+        "web_search",
+        "web_search"
+      ],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "7d1dc67fe69daaf0f6e3710ee3a82a27214bb3d6a66aabbe94b882b7f9f72c65"
+    }
+  ],
+  "native_status": 200,
+  "run_log_characters": 688,
+  "native_run_log": "{\n  \"city\": \"Austin\",\n  \"state\": \"TX\",\n  \"sources_used\": [],\n  \"sources_failed\": [\n    \"construction\",\n    \"crime\",\n    \"business\",\n    \"officials\",\n    \"legislation\",\n    \"elections\",\n    \"arrests\",\n    \"news\"\n  ],\n  \"user_sources_merged\": [],\n  \"claude_filled\": [],\n  \"total_items\": 0,\n  \"datedPath\": \"/tmp/native-memory-_z9d_h0k/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/2026-10-09_austin_tx_digest.json\",\n  \"latestPaths\": [\n    \"/tmp/native-memory-_z9d_h0k/.claude/LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/latest.json\",\n    \"/tmp/native-memory-_z9d_h0k/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/latest.json\"\n  ],\n  \"latest_skipped_no_clobber\": false\n}\n\n[exit] code=0\n",
+  "native_exit_zero": true,
+  "logged_child_failure": false,
+  "latest_exists": true,
+  "marker_exists": true,
+  "digest_error_count": 9,
+  "native_total_items": 0,
+  "item_sources": [],
+  "source_statuses": {
+    "construction": "unavailable",
+    "crime": "unavailable",
+    "business": "unavailable",
+    "officials": "unavailable",
+    "legislation": "unavailable",
+    "elections": "unavailable",
+    "arrests": "unavailable",
+    "news": "unavailable"
+  },
+  "selected_job_status": "completed",
+  "owner_job_input_proof_unchanged": true,
+  "separate_research_sessions": 1,
+  "failure_type": "RuntimeError",
+  "failure": "The actual child research fails even though the parent job completes",
+  "raw_json_sha256": "c399fe9855df2479b88c4455c7a951303fab55f775d96cd8bb27257633fbf5be",
+  "raw_record": "local-job-research-public-final.json.raw.gz"
+}

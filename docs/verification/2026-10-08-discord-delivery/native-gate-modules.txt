@@ -1,0 +1,655 @@
+..................FFFFFFFFF.....FF......F.FFF..FFF...................... [100%]
+=================================== FAILURES ===================================
+_ GuildChannelOnlyTests.test_absent_opt_in_preserves_direct_message_admission __
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_absent_opt_in_preserves_direct_message_admission>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+___ GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id ____
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_channel_only_requires_one_numeric_channel_id>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+____ GuildChannelOnlyTests.test_direct_messages_refuse_an_allowlisted_owner ____
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_direct_messages_refuse_an_allowlisted_owner>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+__ GuildChannelOnlyTests.test_other_guild_channel_refuses_messages_and_status __
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_other_guild_channel_refuses_messages_and_status>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_outbound_messages_and_files_cannot_resolve_another_destination _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_outbound_messages_and_files_cannot_resolve_another_destination>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+__ GuildChannelOnlyTests.test_pairing_does_not_bypass_the_channel_restriction __
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_pairing_does_not_bypass_the_channel_restriction>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_private_channel_accepts_owner_messages_and_status _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_private_channel_accepts_owner_messages_and_status>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_standalone_selected_channel_reaches_credential_validation _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_standalone_selected_channel_reaches_credential_validation>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_ GuildChannelOnlyTests.test_standalone_text_and_media_refuse_another_channel_before_credentials _
+
+self = <tests.gateway.test_discord_guild_channel_only.GuildChannelOnlyTests testMethod=test_standalone_text_and_media_refuse_another_channel_before_credentials>
+
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        token = set_hermes_home_override(Path(directory.name))
+        self.addCleanup(reset_hermes_home_override, token)
+        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
+        self.addCleanup(reset_secret_scope, secret_scope)
+        self.client = discord.Client(intents=discord.Intents.none())
+        state = self.client._connection
+        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
+        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
+        state.user = discord.ClientUser(state=state, data=self.bot_data)
+        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
+            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
+            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
+        state._guilds[10] = self.guild
+        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
+        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
+        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
+>       self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: DMChannel() takes no arguments
+
+tests/gateway/test_discord_guild_channel_only.py:37: TypeError
+_________________ test_send_video_uses_path_based_files_kwarg __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_send_video_uses_path_base0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f547b303310>
+
+    @pytest.mark.asyncio
+    async def test_send_video_uses_path_based_files_kwarg(tmp_path, monkeypatch):
+        """Regression for #66797: video MEDIA delivery must use path-based
+        ``discord.File`` via ``files=[...]`` (same pattern as image batching).
+    
+        The previous open-handle + singular ``file=`` form could return a successful
+        message with zero attachments after an earlier image batch on the same
+        channel — silent drop from the user's perspective.
+        """
+        import plugins.platforms.discord.adapter as discord_platform
+    
+        video = tmp_path / "clip.mp4"
+        video.write_bytes(b"\x00\x00\x00\x18ftypmp42fake")
+    
+        captured = {}
+    
+        class _FakeFile:
+            def __init__(self, fp, filename=None, **kwargs):
+                captured["fp"] = fp
+                captured["filename"] = filename
+    
+        monkeypatch.setattr(discord_platform.discord, "File", _FakeFile)
+    
+        adapter = DiscordAdapter(PlatformConfig(enabled=True, token="***"))
+        sent_msg = SimpleNamespace(
+            id=4242,
+            attachments=[SimpleNamespace(filename="clip.mp4", url="https://cdn.example/clip.mp4")],
+        )
+        channel = SimpleNamespace(
+            send=AsyncMock(return_value=sent_msg),
+            type=0,
+        )
+        adapter._client = SimpleNamespace(
+            get_channel=lambda _chat_id: channel,
+            fetch_channel=AsyncMock(),
+        )
+        monkeypatch.setattr(adapter, "_is_forum_parent", lambda _ch: False)
+    
+        result = await adapter.send_video("555", str(video))
+    
+>       assert result.success is True
+E       assert False is True
+E        +  where False = SendResult(success=False, message_id=None, error="'_FakeFile' object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).success
+
+tests/gateway/test_discord_send.py:304: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment clip.mp4 (.mp4) to 555
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local video: '_FakeFile' object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: '_FakeFile' object has no attribute 'close'
+__________ test_send_video_fails_loud_when_message_has_no_attachments __________
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_send_video_fails_loud_whe0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f547dac3620>
+
+    @pytest.mark.asyncio
+    async def test_send_video_fails_loud_when_message_has_no_attachments(tmp_path, monkeypatch):
+        """If Discord accepts the message but attaches nothing, fail loud (#66797)."""
+        import plugins.platforms.discord.adapter as discord_platform
+    
+        video = tmp_path / "clip.mp4"
+        video.write_bytes(b"fake-mp4")
+    
+        monkeypatch.setattr(
+            discord_platform.discord,
+            "File",
+            lambda fp, filename=None, **kwargs: SimpleNamespace(fp=fp, filename=filename),
+        )
+    
+        adapter = DiscordAdapter(PlatformConfig(enabled=True, token="***"))
+        # Message id present, but no attachments — the silent-drop failure mode.
+        sent_msg = SimpleNamespace(id=99, attachments=[])
+        channel = SimpleNamespace(send=AsyncMock(return_value=sent_msg), type=0)
+        adapter._client = SimpleNamespace(
+            get_channel=lambda _chat_id: channel,
+            fetch_channel=AsyncMock(),
+        )
+        monkeypatch.setattr(adapter, "_is_forum_parent", lambda _ch: False)
+    
+        result = await adapter.send_video("555", str(video))
+    
+        assert result.success is False
+>       assert "no files" in (result.error or "").lower()
+E       assert 'no files' in "'types.simplenamespace' object has no attribute 'close'"
+E        +  where "'types.simplenamespace' object has no attribute 'close'" = <built-in method lower of str object at 0x7f547e15da10>()
+E        +    where <built-in method lower of str object at 0x7f547e15da10> = ("'types.SimpleNamespace' object has no attribute 'close'").lower
+E        +      where "'types.SimpleNamespace' object has no attribute 'close'" = SendResult(success=False, message_id=None, error="'types.SimpleNamespace' object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).error
+
+tests/gateway/test_discord_send.py:341: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment clip.mp4 (.mp4) to 555
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local video: 'types.SimpleNamespace' object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'close'
+_______________ test_send_video_under_guild_boost_limit_uploads ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_send_video_under_guild_bo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f547d869470>
+
+    @pytest.mark.asyncio
+    async def test_send_video_under_guild_boost_limit_uploads(tmp_path, monkeypatch):
+        """A boosted guild's higher cap is honored: a file over the default but under the guild
+        limit is uploaded, not rejected."""
+        from plugins.platforms.discord.adapter_media import _DISCORD_DEFAULT_UPLOAD_LIMIT_BYTES
+    
+        video = tmp_path / "ok.mp4"
+        video.write_bytes(b"fake-video-bytes")
+        _fake_getsize(monkeypatch, video, _DISCORD_DEFAULT_UPLOAD_LIMIT_BYTES + 1)
+        sent_msg = SimpleNamespace(id=42, attachments=[SimpleNamespace(filename="ok.mp4", url="https://cdn/ok.mp4")])
+        send = AsyncMock(return_value=sent_msg)
+        adapter = _preflight_adapter(
+            SimpleNamespace(id=777, guild=SimpleNamespace(filesize_limit=50 * 1024 * 1024), send=send))
+    
+        result = await adapter.send_video("777", str(video))
+    
+>       assert result.success is True and result.message_id == "42"
+E       assert (False is True)
+E        +  where False = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).success
+
+tests/gateway/test_discord_send.py:497: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment ok.mp4 (.mp4) to 777
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local video: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+_ test_media_uses_metadata_target_without_losing_direct_channel[send_document] _
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_media_uses_metadata_targe0')
+method = 'send_document'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+            client.uploads.clear()
+            result = await getattr(adapter, method)(chat_id, media, metadata=metadata)
+>           assert result is None or result.success
+E           assert (SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None) is None or False)
+E            +  where False = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).success
+
+tests/gateway/test_discord_attachment_receipts.py:48: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send document: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+_ test_media_uses_metadata_target_without_losing_direct_channel[send_image_file] _
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_media_uses_metadata_targe1')
+method = 'send_image_file'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+            client.uploads.clear()
+            result = await getattr(adapter, method)(chat_id, media, metadata=metadata)
+>           assert result is None or result.success
+E           assert (SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None) is None or False)
+E            +  where False = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).success
+
+tests/gateway/test_discord_attachment_receipts.py:48: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local image: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+__ test_media_uses_metadata_target_without_losing_direct_channel[send_video] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_media_uses_metadata_targe2')
+method = 'send_video'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+            client.uploads.clear()
+            result = await getattr(adapter, method)(chat_id, media, metadata=metadata)
+>           assert result is None or result.success
+E           assert (SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None) is None or False)
+E            +  where False = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).success
+
+tests/gateway/test_discord_attachment_receipts.py:48: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local video: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+____ test_failed_upload_never_becomes_successful_text_notice[send_document] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_failed_upload_never_becom0')
+method = 'send_document'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice"])
+    async def test_failed_upload_never_becomes_successful_text_notice(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client(fail=True)
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        result = await getattr(adapter, method)("111", str(path), metadata={"thread_id": "222"})
+        assert not result.success
+>       assert "upload rejected" in result.error
+E       assert 'upload rejected' in "Mock object has no attribute 'close'"
+E        +  where "Mock object has no attribute 'close'" = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).error
+
+tests/gateway/test_discord_attachment_receipts.py:62: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send document: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 120, in _send_file_attachment
+    msg = await channel.send(content=caption if caption else None, files=[discord_file])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/tests/gateway/test_discord_attachment_receipts.py", line 31, in send
+    raise RuntimeError("upload rejected")
+RuntimeError: upload rejected
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+___ test_failed_upload_never_becomes_successful_text_notice[send_image_file] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_failed_upload_never_becom1')
+method = 'send_image_file'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice"])
+    async def test_failed_upload_never_becomes_successful_text_notice(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client(fail=True)
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        result = await getattr(adapter, method)("111", str(path), metadata={"thread_id": "222"})
+        assert not result.success
+>       assert "upload rejected" in result.error
+E       assert 'upload rejected' in "Mock object has no attribute 'close'"
+E        +  where "Mock object has no attribute 'close'" = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).error
+
+tests/gateway/test_discord_attachment_receipts.py:62: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local image: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 120, in _send_file_attachment
+    msg = await channel.send(content=caption if caption else None, files=[discord_file])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/tests/gateway/test_discord_attachment_receipts.py", line 31, in send
+    raise RuntimeError("upload rejected")
+RuntimeError: upload rejected
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+_____ test_failed_upload_never_becomes_successful_text_notice[send_video] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-5/test_failed_upload_never_becom2')
+method = 'send_video'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice"])
+    async def test_failed_upload_never_becomes_successful_text_notice(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client(fail=True)
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        result = await getattr(adapter, method)("111", str(path), metadata={"thread_id": "222"})
+        assert not result.success
+>       assert "upload rejected" in result.error
+E       assert 'upload rejected' in "Mock object has no attribute 'close'"
+E        +  where "Mock object has no attribute 'close'" = SendResult(success=False, message_id=None, error="Mock object has no attribute 'close'", raw_response=None, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None).error
+
+tests/gateway/test_discord_attachment_receipts.py:62: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:371 [Discord] Failed to send local video: Mock object has no attribute 'close'
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 120, in _send_file_attachment
+    msg = await channel.send(content=caption if caption else None, files=[discord_file])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/tests/gateway/test_discord_attachment_receipts.py", line 31, in send
+    raise RuntimeError("upload rejected")
+RuntimeError: upload rejected
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 367, in _send_local_file
+    return await self._send_file_attachment(chat_id, path, caption, file_name=file_name, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/delivery-sources/hermes/plugins/platforms/discord/adapter_media.py", line 122, in _send_file_attachment
+    discord_file.close()
+    ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 697, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'close'
+=========================== short test summary info ============================
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_absent_opt_in_preserves_direct_message_admission
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_channel_only_requires_one_numeric_channel_id
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_direct_messages_refuse_an_allowlisted_owner
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_other_guild_channel_refuses_messages_and_status
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_outbound_messages_and_files_cannot_resolve_another_destination
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_pairing_does_not_bypass_the_channel_restriction
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_private_channel_accepts_owner_messages_and_status
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_standalone_selected_channel_reaches_credential_validation
+FAILED tests/gateway/test_discord_guild_channel_only.py::GuildChannelOnlyTests::test_standalone_text_and_media_refuse_another_channel_before_credentials
+FAILED tests/gateway/test_discord_send.py::test_send_video_uses_path_based_files_kwarg
+FAILED tests/gateway/test_discord_send.py::test_send_video_fails_loud_when_message_has_no_attachments
+FAILED tests/gateway/test_discord_send.py::test_send_video_under_guild_boost_limit_uploads
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_document]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_image_file]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_video]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_failed_upload_never_becomes_successful_text_notice[send_document]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_failed_upload_never_becomes_successful_text_notice[send_image_file]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_failed_upload_never_becomes_successful_text_notice[send_video]
+18 failed, 54 passed in 3.65s

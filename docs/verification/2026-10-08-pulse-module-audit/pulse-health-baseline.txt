@@ -1,0 +1,47 @@
+test_anonymous_unified_health_refuses_personal_runtime_metadata (test_memory_pulse_health.MemoryPulseHealthTests.test_anonymous_unified_health_refuses_personal_runtime_metadata) ... 
+  test_anonymous_unified_health_refuses_personal_runtime_metadata (test_memory_pulse_health.MemoryPulseHealthTests.test_anonymous_unified_health_refuses_personal_runtime_metadata) (path='/api/pulse/health') ... FAIL
+  test_anonymous_unified_health_refuses_personal_runtime_metadata (test_memory_pulse_health.MemoryPulseHealthTests.test_anonymous_unified_health_refuses_personal_runtime_metadata) (path='/healthz') ... FAIL
+test_current_owner_receives_native_health_with_no_store_and_current_revocation (test_memory_pulse_health.MemoryPulseHealthTests.test_current_owner_receives_native_health_with_no_store_and_current_revocation) ... FAIL
+test_original_unmanaged_health_has_truthful_native_asset_and_failure_status (test_memory_pulse_health.MemoryPulseHealthTests.test_original_unmanaged_health_has_truthful_native_asset_and_failure_status) ... ok
+test_private_job_label_refuses_owner_delivery (test_memory_pulse_health.MemoryPulseHealthTests.test_private_job_label_refuses_owner_delivery) ... FAIL
+
+======================================================================
+FAIL: test_anonymous_unified_health_refuses_personal_runtime_metadata (test_memory_pulse_health.MemoryPulseHealthTests.test_anonymous_unified_health_refuses_personal_runtime_metadata) (path='/api/pulse/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_health.py", line 150, in test_anonymous_unified_health_refuses_personal_runtime_metadata
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"ok","reasons":[],"service":"pulse","pid":746960,"port":39277,"startedAt":"2026-10-09T18:08:19.758Z","uptime":0,"subsystems":{"cron":{"status":"ok","jobs":[{"name":"SyntheticPulseJob","lastRun":"2026-10-09T18:08:19.715Z","agoMs":203,"result
+
+======================================================================
+FAIL: test_anonymous_unified_health_refuses_personal_runtime_metadata (test_memory_pulse_health.MemoryPulseHealthTests.test_anonymous_unified_health_refuses_personal_runtime_metadata) (path='/healthz')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_health.py", line 150, in test_anonymous_unified_health_refuses_personal_runtime_metadata
+    self.assertEqual(response.status_code, 401, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"status":"ok","reasons":[],"service":"pulse","pid":746960,"port":39277,"startedAt":"2026-10-09T18:08:19.758Z","uptime":0,"subsystems":{"cron":{"status":"ok","jobs":[{"name":"SyntheticPulseJob","lastRun":"2026-10-09T18:08:19.715Z","agoMs":209,"result
+
+======================================================================
+FAIL: test_current_owner_receives_native_health_with_no_store_and_current_revocation (test_memory_pulse_health.MemoryPulseHealthTests.test_current_owner_receives_native_health_with_no_store_and_current_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_health.py", line 160, in test_current_owner_receives_native_health_with_no_store_and_current_revocation
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_job_label_refuses_owner_delivery (test_memory_pulse_health.MemoryPulseHealthTests.test_private_job_label_refuses_owner_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_health.py", line 172, in test_private_job_label_refuses_owner_delivery
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"status":"ok","reasons":[],"service":"pulse","pid":755343,"port":35647,"startedAt":"2026-10-09T18:09:23.690Z","uptime":0,"subsystems":{"cron":{"status":"ok","jobs":[{"name":"<private>SyntheticPulseHiddenJob</private>","lastRun":"2026-10-09T18:09:23.
+
+----------------------------------------------------------------------
+Ran 4 tests in 75.030s
+
+FAILED (failures=4)

@@ -6,6 +6,33 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+## 0.2.0 (release candidate)
+
+This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
+Private-channel acceptance, Atlas graph initialization, final package checks, and combined review remain open.
+
+- Select the main Pulse dashboard and defer audio and video processing with voice.
+- Verify actual private-model memory write and search across separate installed Hermes sessions.
+- Verify installed governed Content actions, current owner revocation, and authenticated native dashboard reads.
+- Verify actual scheduled work-event capture and all four selected owner commands.
+- Stop an active native owner job and clear all acceptance service groups.
+- Recover the tested profile locally and from the completed Proxmox Backup Server archive.
+- Disable the optional Pulse core-file editor under the confirmed first-release decision.
+- Correct native Mount list indentation, Pulse shutdown waiting, and strict daemon types.
+- Admit bounded owner-job output through its four MiB byte limit. Preserve reviewer limits and complete retirement filtering.
+- Send complete Algorithm overview prompts through the shared inference function. Avoid Linux argument limits.
+- Complete native Content action responses and display HTTP failures. Verify actual browser owner refusal and restoration.
+- Recheck current owner authority between session learning writes, proposal cleanup writes, Knowledge record transitions, and queue deletion. Retain recovery after revocation.
+- Keep unknown receipts and recovery journals when Algorithm, Conduit insight, or LocalIntelligence publication detects a later change after writing files.
+- Verify every Algorithm summary, LocalIntelligence digest, and Conduit insight destination before committing its receipt. Preserve later destination edits and retain recovery for incomplete groups.
+- Record the conditional Hermes upgrade that can remove one of the 36 functional patches after complete qualification.
+
+The following changes also belong to this candidate:
+
+- Preserve Discord command IDs during synchronization. Compare inherited settings without recreating unchanged commands.
+- Release pending clarification waiters when the gateway interrupts their turn.
+- Record Discord slash routing and dispatch without interaction tokens or option values.
+
 - Recover an interrupted target mount before restoring the previous LifeOS selection and mounted files.
 - Bind selection status and recovery to the invoking Hermes profile. Recheck the owner in the detached worker.
 - Check completed target mount files before selection rollback. Preserve later owner edits and refuse service restart.

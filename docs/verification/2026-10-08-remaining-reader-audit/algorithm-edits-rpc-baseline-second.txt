@@ -1,0 +1,26 @@
+test_declared_edit_above_source_limit_returns_a_bounded_request_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_above_source_limit_returns_a_bounded_request_refusal) ... FAIL
+test_declared_edit_below_source_limit_reaches_anonymous_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_below_source_limit_reaches_anonymous_refusal) ... FAIL
+test_ordinary_native_http_retains_its_smaller_transport_limit (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_ordinary_native_http_retains_its_smaller_transport_limit) ... ok
+
+======================================================================
+FAIL: test_declared_edit_above_source_limit_returns_a_bounded_request_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_above_source_limit_returns_a_bounded_request_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edit_rpc.py", line 27, in test_declared_edit_above_source_limit_returns_a_bounded_request_refusal
+    self.assertIn('status', result, result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'status' not found in {'ok': False, 'code': 'EWRITE_FAILED', 'message': 'The native memory request exceeds the input limit'} : {'ok': False, 'code': 'EWRITE_FAILED', 'message': 'The native memory request exceeds the input limit'}
+
+======================================================================
+FAIL: test_declared_edit_below_source_limit_reaches_anonymous_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_below_source_limit_reaches_anonymous_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edit_rpc.py", line 22, in test_declared_edit_below_source_limit_reaches_anonymous_refusal
+    self.assertIn('status', result, result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'status' not found in {'ok': False, 'code': 'EWRITE_FAILED', 'message': 'The native memory request exceeds the input limit'} : {'ok': False, 'code': 'EWRITE_FAILED', 'message': 'The native memory request exceeds the input limit'}
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.246s
+
+FAILED (failures=2)

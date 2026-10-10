@@ -1,0 +1,176 @@
+[
+  {
+    "name": "system-surface-base",
+    "argv": [
+      "bun",
+      "-e",
+      "import {renderSystemLine} from \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/lifeos/base/LifeOS/install/hooks/lib/system-surfaces.ts\";console.log(renderSystemLine([{\"tier\": \"isa\", \"label\": \"fixture\", \"detail\": \"0 closed\"}, {\"tier\": \"isa\", \"label\": \"fixture\", \"detail\": \"0\\u21921\"}, {\"tier\": \"isa\", \"label\": \"fixture\", \"detail\": \"0\\u21922\"}]));"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpm94sb49b",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpm94sb49b",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes"
+    },
+    "exit": 0,
+    "stdout": "\u2699\ufe0f SYSTEM: ISA fixture 0 closed\n",
+    "stderr": ""
+  },
+  {
+    "name": "system-surface-full",
+    "argv": [
+      "bun",
+      "-e",
+      "import {renderSystemLine} from \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/lifeos/full/LifeOS/install/hooks/lib/system-surfaces.ts\";console.log(renderSystemLine([{\"tier\": \"isa\", \"label\": \"fixture\", \"detail\": \"0 closed\"}, {\"tier\": \"isa\", \"label\": \"fixture\", \"detail\": \"0\\u21921\"}, {\"tier\": \"isa\", \"label\": \"fixture\", \"detail\": \"0\\u21922\"}]));"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpdbpmjuwu",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpdbpmjuwu",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes"
+    },
+    "exit": 0,
+    "stdout": "\u2699\ufe0f SYSTEM: ISA fixture 0\u21922\n",
+    "stderr": ""
+  },
+  {
+    "name": "build-id",
+    "argv": [
+      "bun",
+      "-e",
+      "import config from \"/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/lifeos/LifeOS/install/LIFEOS/PULSE/Observability/next.config.ts\"; const first = config.generateBuildId(); await Bun.sleep(10); const second = config.generateBuildId(); console.log(JSON.stringify({first,second,equal:first===second}));"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmp3uzuyy_6",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmp3uzuyy_6",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes"
+    },
+    "exit": 0,
+    "stdout": "{\"first\":\"build-1791638310822\",\"second\":\"build-1791638310833\",\"equal\":false}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-pinned-1-once",
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "from tools.file_tools_write_guards import _request_protected_instruction_approval as guard\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpzg5tvhk6",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpzg5tvhk6",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "1",
+      "ANSWER": "once"
+    },
+    "exit": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) requires approval but no interactive user or gateway is present to approve it. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": []}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-pinned-interactive-once",
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "from tools.file_tools_write_guards import _request_protected_instruction_approval as guard\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmp0ymb6shy",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmp0ymb6shy",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "once"
+    },
+    "exit": 0,
+    "stdout": "{\"result\": null, \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-pinned-interactive-deny",
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "from tools.file_tools_write_guards import _request_protected_instruction_approval as guard\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpay10emf2",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpay10emf2",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "deny"
+    },
+    "exit": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) was denied by the user. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-current-1-once",
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import importlib.util,sys\nfrom tools.terminal_tool import set_approval_callback\nspec=importlib.util.spec_from_file_location('tools.approval_context','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/approval_context.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.approval_context']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('tools.file_tools_read_tracking','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_read_tracking.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.file_tools_read_tracking']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('current_guard','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_write_guards.py'); m=importlib.util.module_from_spec(spec);sys.modules['current_guard']=m;spec.loader.exec_module(m)\nguard=m._request_protected_instruction_approval\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpk89dt0cr",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmpk89dt0cr",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "1",
+      "ANSWER": "once"
+    },
+    "exit": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) requires approval but no interactive user or gateway is present to approve it. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": []}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-current-interactive-once",
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import importlib.util,sys\nfrom tools.terminal_tool import set_approval_callback\nspec=importlib.util.spec_from_file_location('tools.approval_context','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/approval_context.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.approval_context']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('tools.file_tools_read_tracking','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_read_tracking.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.file_tools_read_tracking']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('current_guard','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_write_guards.py'); m=importlib.util.module_from_spec(spec);sys.modules['current_guard']=m;spec.loader.exec_module(m)\nguard=m._request_protected_instruction_approval\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmphy9mmmuf",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmphy9mmmuf",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "once"
+    },
+    "exit": 0,
+    "stdout": "{\"result\": null, \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-current-interactive-deny",
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import importlib.util,sys\nfrom tools.terminal_tool import set_approval_callback\nspec=importlib.util.spec_from_file_location('tools.approval_context','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/approval_context.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.approval_context']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('tools.file_tools_read_tracking','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_read_tracking.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.file_tools_read_tracking']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('current_guard','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_write_guards.py'); m=importlib.util.module_from_spec(spec);sys.modules['current_guard']=m;spec.loader.exec_module(m)\nguard=m._request_protected_instruction_approval\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmp7a_7g9uf",
+      "HERMES_HOME": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/scratch/tmp7a_7g9uf",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "deny"
+    },
+    "exit": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) was denied by the user. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  }
+]

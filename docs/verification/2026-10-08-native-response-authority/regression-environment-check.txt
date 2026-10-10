@@ -1,0 +1,22 @@
+test_revocation_refuses_even_fresh_pattern_cache (test_memory_graph.MemoryGraphTests.test_revocation_refuses_even_fresh_pattern_cache) ... ok
+test_actual_cached_child_preserves_page_and_publishes_tracking (test_memory_derived_sync_adapter.MemoryDerivedSyncAdapterTests.test_actual_cached_child_preserves_page_and_publishes_tracking) ... FAIL
+
+======================================================================
+FAIL: test_actual_cached_child_preserves_page_and_publishes_tracking (test_memory_derived_sync_adapter.MemoryDerivedSyncAdapterTests.test_actual_cached_child_preserves_page_and_publishes_tracking)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_derived_sync_adapter.py", line 68, in test_actual_cached_child_preserves_page_and_publishes_tracking
+    self.successful()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_derived_sync_adapter.py", line 41, in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : [DerivedSync] action failed: exit 1 for bun /tmp/native-memory-i9yb8avp/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts synthetic after 26ms: error: Cannot find package 'zod' from '/tmp/native-memory-i9yb8avp/.claude/LIFEOS/PULSE/Schema/PulseSchema.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.072s
+
+FAILED (failures=1)

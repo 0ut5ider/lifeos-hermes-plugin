@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_graph_row_limit_refuses_without_returning_truncated_metrics (test_memory_atlas.MemoryAtlasTests.test_graph_row_limit_refuses_without_returning_truncated_metrics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas.py", line 221, in test_graph_row_limit_refuses_without_returning_truncated_metrics
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"available":true,"metrics":{"census":[{"kind":"device","n":2049}],"edge_census":[],"unwired_workers":0,"worker_wiring":{"total":0,"served":0,"workers_dev":0,"cron":0,"service_binding_target":0},"projects_no_repo":0,"blast_zones":[],"data_stores":[],"auth_curation_gaps":0,"curated_targets":0,"stale"
+
+----------------------------------------------------------------------
+Ran 1 test in 1.119s
+
+FAILED (failures=1)

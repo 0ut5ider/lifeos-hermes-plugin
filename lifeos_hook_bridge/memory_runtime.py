@@ -99,8 +99,9 @@ def _generated_text(value: Any, depth: int = 0) -> list[str]:
 
 
 class MemoryRuntime:
-    def __init__(self, configuration: Path):
+    def __init__(self, configuration: Path, *, audience_lookup=None):
         self.configuration = MemoryConfiguration(configuration)
+        self.audience_lookup = audience_lookup
         self.key = str(configuration.absolute())
         self.state_path = configuration.parent / 'lifeos-memory-contexts.json'
 
@@ -192,7 +193,7 @@ class MemoryRuntime:
         if not metadata.get('HERMES_SESSION_PLATFORM'):
             metadata['HERMES_SESSION_PLATFORM'] = platform
         context = host_context(configuration, metadata, model_route=route_identity(provider, model, base_url, api_mode),
-                               hermes_home=str(self.configuration.path.parent))
+                               hermes_home=str(self.configuration.path.parent), audience_lookup=self.audience_lookup)
         self._scope(configuration, context)
         if not context.session_id:
             raise MemoryAdmissionError('Memory needs a host-bound conversation identifier')
@@ -255,7 +256,7 @@ class MemoryRuntime:
                 raise MemoryAdmissionError('Compression belongs to a different parent conversation')
             context = replace(parent,session_id=new_session_id)
             observed = host_context(configuration,metadata,model_route=parent.model_route,
-                                    hermes_home=str(self.configuration.path.parent))
+                                    hermes_home=str(self.configuration.path.parent), audience_lookup=self.audience_lookup)
             if asdict(observed) != asdict(context):
                 raise MemoryAdmissionError('The current compression author or destination differs from its parent')
             if self._stamp(configuration,parent,connection,previous.get('user_input'),previous.get('compression_parent')) != previous:
@@ -269,6 +270,35 @@ class MemoryRuntime:
                 states[new_session_id] = stamp
                 publish(self.state_path,(json.dumps(states,sort_keys=True)+'\n').encode())
         _BOUND.set((self.key,context,stamp))
+
+    def fork_owner_job(self, session_id: str, *, route: dict[str, str]) -> None:
+        """Create a separate research turn without changing the admitted owner job."""
+        if not isinstance(session_id, str) or not session_id.startswith('owner-research-') or len(session_id) > 128:
+            raise MemoryAdmissionError('Owner research needs a bounded separate session identifier')
+        configuration = self.configuration.load()
+        parent = self.context()
+        if (not self.enabled() or parent is None or parent.transport != 'terminal'
+                or not parent.session_id.startswith('owner-job-')
+                or set(self._scope(configuration, parent).write) != CATEGORIES):
+            raise MemoryAdmissionError('Native web research requires the selected unrestricted owner job')
+        memory = NativeMemory(Path(configuration['root']))
+        with memory._transaction() as connection:
+            states = self._states()
+            previous = states.get(parent.session_id)
+            if (not isinstance(previous, dict) or previous.get('context') != json.loads(json.dumps(asdict(parent)))
+                    or self._stamp(configuration, parent, connection, previous.get('user_input')) != previous):
+                raise MemoryAdmissionError('Owner research preserves only current parent admission')
+            context = replace(parent, session_id=session_id, model_route=route_identity(**route))
+            parent_scope, child_scope = self._scope(configuration, parent), self._scope(configuration, context)
+            if any(getattr(parent_scope, name) != getattr(child_scope, name)
+                    for name in ('principal', 'writer', 'read', 'write', 'projects', 'proposals')):
+                raise MemoryAdmissionError('Owner research cannot change parent permission')
+            stamp = self._stamp(configuration, context, connection)
+            if session_id in states:
+                raise MemoryAdmissionError('Owner research preserves existing sessions')
+            states[session_id] = stamp
+            publish(self.state_path, (json.dumps(states, sort_keys=True) + '\n').encode())
+        _BOUND.set((self.key, context, stamp))
 
     def _refuse_inactive_context(self, session_id: str, inherited: str) -> None:
         if self.context() is not None or inherited or (session_id and session_id in self._states()):
@@ -327,7 +357,7 @@ class MemoryRuntime:
                     if metadata is None or not metadata.get('HERMES_SESSION_PLATFORM'):
                         raise ValueError('The caller has no trusted host identity metadata')
                     observed = host_context(configuration, metadata, model_route=inherited.model_route,
-                                            hermes_home=str(self.configuration.path.parent))
+                                            hermes_home=str(self.configuration.path.parent), audience_lookup=self.audience_lookup)
                     if asdict(observed) != asdict(inherited):
                         raise ValueError('The current host metadata differs from admission')
                 admitted = states.get(inherited.session_id)
@@ -350,9 +380,13 @@ class MemoryRuntime:
             raise MemoryAdmissionError('The model call belongs to a different conversation')
         if metadata and metadata.get('HERMES_SESSION_PLATFORM'):
             observed = host_context(configuration, metadata, model_route=context.model_route,
-                                    hermes_home=str(self.configuration.path.parent))
+                                    hermes_home=str(self.configuration.path.parent), audience_lookup=self.audience_lookup)
             if asdict(observed) != asdict(context):
                 raise MemoryAdmissionError('The current author or destination differs from admission')
+        else:
+            from .discord_audience import context_audience_is_current
+            if not context_audience_is_current(configuration, context, audience_lookup=self.audience_lookup):
+                raise MemoryAdmissionError('The Discord channel audience no longer permits private memory')
         body = _request_body(request)
         route = route_identity(provider, body.get('model',model), base_url, api_mode)
         self._scope(configuration, replace(context, model_route=route))

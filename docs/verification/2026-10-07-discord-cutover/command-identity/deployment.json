@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-07T19:42:19.226906+00:00",
+  "plugin_commit": "2d07208",
+  "host_files": {
+    "plugins/platforms/discord/adapter.py": {
+      "before": "42d71c8c4960e3a46d42997bb6496311d0ebd6691b3d7d34e011bfa0594a283c",
+      "after": "da01ee2e9601968f17b8328c3dd0ab002485e265cc2a2332ca7cde235753a3ce"
+    },
+    "tests/gateway/test_discord_connect.py": {
+      "before": "a34bee67484439c53a656624315c18c7906c55b405d17032640870cbe86a082b",
+      "after": "550a05782fdcf24f4ecc8251045723ac1a852a7f72982cdcc41640ffbafb5ed3"
+    },
+    "tests/gateway/test_discord_sync_limit.py": {
+      "before": "c5f04cbea9ee7b736f5e2584a0be34ba6990920ebb3e1293d85af7bad893d4fd",
+      "after": "90768c3a7eb968cfa15e88f5337666f1161db6e5f7926ee13848b7b45876449f"
+    },
+    "tests/gateway/test_discord_command_identity.py": {
+      "before": null,
+      "after": "daec60f64ca1e1bf0263e02f077d446a0e32d88f7dca18069e0b9d364e28c3a5"
+    },
+    "hermes-source-manifest.json": {
+      "before": "8560084f935a97acb4446e3b0db48c2ac4b9daa9dd1d1d02776c5e9916ad2364",
+      "after": "e7ba7313ba4ded48126d2275660838ed66faa65dde1ef0712cb77dafbaf917fc"
+    }
+  },
+  "capture_fingerprints": 10,
+  "service": "MainPID=252543\nNRestarts=0\nActiveState=active",
+  "rollback": "/home/lifeos-hermes/migration/2026-10-07/command-sync-rollback-2d07208",
+  "clarify_timeout_seconds": 3600,
+  "tier_mapping_changed": false,
+  "personal_data_imported": false,
+  "status": "verified",
+  "gateway_connected_at": "2026-10-07T19:42:27.944000+00:00",
+  "command_sync": {
+    "total": 70,
+    "unchanged": 69,
+    "updated": 0,
+    "recreated": 0,
+    "created": 1,
+    "deleted": 0
+  },
+  "command_identity": {
+    "before_count": 69,
+    "after_count": 70,
+    "existing_ids_preserved": 69,
+    "existing_ids_changed": 0,
+    "existing_versions_changed": 0,
+    "new_commands": [
+      "kanban"
+    ],
+    "stop_id": "1557471123728240801",
+    "status_id": "1557471043235610724"
+  },
+  "plugin_validation": "passed",
+  "expected_validation_warning": "Stock validator reports pre_llm_call declaration on the patched host.",
+  "deployed_regression_tests_passed": 9,
+  "neighbor_tests_passed": 14,
+  "patch_and_source_tests_passed": 13,
+  "capture_summary": {
+    "events": 2679,
+    "incomplete_invocations": 0,
+    "known_lost_events": 0,
+    "capture_failure_processes": 0,
+    "capture_gaps": 0,
+    "integrity_issues": {}
+  },
+  "source_gateway": {
+    "host": "192.168.8.212",
+    "load_state": "masked",
+    "active_state": "inactive",
+    "main_pid": 0
+  }
+}

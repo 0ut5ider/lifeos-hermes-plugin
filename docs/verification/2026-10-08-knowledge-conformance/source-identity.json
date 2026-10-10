@@ -1,0 +1,23 @@
+{
+  "plugin_parent": "a990cdcf6438d7b542fbe757d61ec12bccaa8409",
+  "lifeos": "/home/outsider/.cache/lifeos-daily-text-20261007/knowledge-conformance-final/lifeos/LifeOS/install",
+  "control": "/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install",
+  "files": {
+    "lifeos_hook_bridge/memory_knowledge_conformance.py": "ab9a2d2cc7a867bb0a1ee131ba8880dc7b4e81aa07868e905cb879397ead884b",
+    "lifeos_hook_bridge/memory_access.py": "7836795e6f326efd8b84f0ed21fb83c56871e3cc8bf79ba29b2b0f9d37b9e0ba",
+    "lifeos_hook_bridge/memory_service.py": "d5c6d3ab84a5d9f6195a15d7075c7fd852847a7b1ff8e9ef39d265e4989b6882",
+    "lifeos_hook_bridge/memory_native.ts": "3ecc3d296c413fcf28ed4aeac03429aed4713e7c0d450b1957c850c5451c0851",
+    "tests/test_memory_knowledge_conformance.py": "1aeb414f7553a326e25dbff0754752890fe594d5265feace1186ce49e206d294",
+    "tests/memory_knowledge_conformance_process.py": "fa9b6869fec03d099acd817926f41a1be957fe1c250c05f8a4c01a8928ae0102",
+    "patches/lifeos-memory-access.patch": "7096c995544496bb14092ea68f5b5d0465745a908ad23c0e77f594bbe4d02df8",
+    "lifeos_hook_bridge/patches/lifeos-memory-access.patch": "7096c995544496bb14092ea68f5b5d0465745a908ad23c0e77f594bbe4d02df8"
+  },
+  "native_handler_sha256": "88be55915e07bbb497c70101f5c76678fa56c66be34834acb678121e11db1973",
+  "focused_cases": 14,
+  "adjacent_cases": 87,
+  "limits": [
+    "Synthetic sources and owner contexts",
+    "No installed ownership activation",
+    "Raw event writers do not share the memory transaction lock"
+  ]
+}

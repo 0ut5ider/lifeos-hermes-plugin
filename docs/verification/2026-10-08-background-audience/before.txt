@@ -1,0 +1,97 @@
+test_frame_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_publication_rechecks_the_current_audience) ... FAIL
+test_frame_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_reads_recheck_the_current_audience) ... FAIL
+test_hypotheses_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_hypotheses_recheck_the_current_audience) ... FAIL
+test_rating_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_rating_reports_recheck_the_current_audience) ... FAIL
+test_recurrence_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_publication_rechecks_the_current_audience) ... FAIL
+test_recurrence_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_reads_recheck_the_current_audience) ... FAIL
+test_unchanged_private_audience_allows_actual_publication (test_memory_background_audience.MemoryBackgroundAudienceTests.test_unchanged_private_audience_allows_actual_publication) ... ok
+test_wisdom_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_wisdom_reports_recheck_the_current_audience) ... FAIL
+
+======================================================================
+FAIL: test_frame_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_publication_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 135, in test_frame_publication_rechecks_the_current_audience
+    self.exercise('wisdom_frame_update')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'result': {'success': True, 'domain': 'communication', 'type': 'principle', 'message': 'Updated "communication" frame with principle: Synthetic new principle', 'framePath': '/tmp/native-memory-k620dzb0/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md'}, 'receipt': {'status': 'committed', 'result': {'success': True, 'domain': 'communication', 'type': 'principle', 'message': 'Updated "communication" frame with principle: Synthetic new principle', 'framePath': '/tmp/native-memory-k620dzb0/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md'}, 'writer': 'discord:20', 'request_id': 'audience-update'}}
+
+======================================================================
+FAIL: test_frame_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_frame_reads_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 129, in test_frame_reads_recheck_the_current_audience
+    self.exercise('wisdom_frames')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'sources': [{'path': '/tmp/native-memory-nsvrm7ua/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/development.md', 'content': '# Synthetic frame\n## Meta\n- **Confidence:** 70%\n- **Observation Count:** 12\n- **Last Crystallized:** 2026-10-01\n\n## Core Principles\n### Synthetic concrete verification principle [CRYSTAL]\n'}, {'path': '/tmp/native-memory-nsvrm7ua/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md', 'content': '# Synthetic frame\n## Meta\n- **Confidence:** 70%\n- **Observation Count:** 12\n- **Last Crystallized:** 2026-10-01\n\n## Core Principles\n### Synthetic concrete verification principle [CRYSTAL]\n'}]}
+
+======================================================================
+FAIL: test_hypotheses_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_hypotheses_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 117, in test_hypotheses_recheck_the_current_audience
+    self.exercise('learning_hypotheses')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'result': {'emitted': 1, 'updated': 0, 'expired': 0}, 'stdout': '🌙 deriver: window=7d expired=0 emitted=1 updated=0\n', 'receipt': {'status': 'committed', 'result': {'emitted': 1, 'updated': 0, 'expired': 0}, 'stdout': '🌙 deriver: window=7d expired=0 emitted=1 updated=0\n', 'writer': 'discord:20', 'request_id': 'audience-hypotheses'}}
+
+======================================================================
+FAIL: test_rating_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_rating_reports_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 120, in test_rating_reports_recheck_the_current_audience
+    self.exercise('learning_ratings')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'stdout': '📊 Loaded 8 total ratings\n🔍 Analyzing 8 ratings for all time period\n\n📈 Analysis Results:\n   Average Rating: 8.0/10\n   Frustration Patterns: 0\n   Success Patterns: 1\n\n✅ Created synthesis report: 2026-10-08_all-time-patterns.md\n', 'receipt': {'status': 'committed', 'stdout': '📊 Loaded 8 total ratings\n🔍 Analyzing 8 ratings for all time period\n\n📈 Analysis Results:\n   Average Rating: 8.0/10\n   Frustration Patterns: 0\n   Success Patterns: 1\n\n✅ Created synthesis report: 2026-10-08_all-time-patterns.md\n', 'writer': 'discord:20', 'request_id': 'audience-ratings'}}
+
+======================================================================
+FAIL: test_recurrence_publication_rechecks_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_publication_rechecks_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 126, in test_recurrence_publication_rechecks_the_current_audience
+    self.exercise('recurrence_append')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'receipt': {'status': 'committed', 'writer': 'discord:20', 'request_id': 'audience-append'}}
+
+======================================================================
+FAIL: test_recurrence_reads_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_recurrence_reads_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 123, in test_recurrence_reads_recheck_the_current_audience
+    self.exercise('recurrence_sources')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'sources': [{'path': '/tmp/native-memory-b3xwop8u/.claude/LIFEOS/MEMORY/OBSERVABILITY/tool-failures.jsonl', 'content': '{"timestamp": "2026-10-08T13:40:12.688646+00:00", "event": "tool_failure", "tool_name": "terminal", "error": "Synthetic recurrence failure", "session_id": "synthetic"}\n', 'timestamp': '2026-10-08T13:40:12.689000+00:00'}]}
+
+======================================================================
+FAIL: test_wisdom_reports_recheck_the_current_audience (test_memory_background_audience.MemoryBackgroundAudienceTests.test_wisdom_reports_recheck_the_current_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 132, in test_wisdom_reports_recheck_the_current_audience
+    self.exercise('wisdom_synthesis')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_background_audience.py", line 110, in exercise
+    self.assertFalse(result.get('ok'), result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'stdout': '📊 Loading 2 frames...\n🔍 Analyzing cross-frame principles...\n   Found 1 cross-domain principles\n✅ Principles report written to WISDOM/PRINCIPLES/verified.md\n✅ Health report written to WISDOM/META/frame-health.md\n', 'receipt': {'status': 'committed', 'stdout': '📊 Loading 2 frames...\n🔍 Analyzing cross-frame principles...\n   Found 1 cross-domain principles\n✅ Principles report written to WISDOM/PRINCIPLES/verified.md\n✅ Health report written to WISDOM/META/frame-health.md\n', 'writer': 'discord:20', 'request_id': 'audience-synthesis'}}
+
+----------------------------------------------------------------------
+Ran 8 tests in 6.714s
+
+FAILED (failures=7)

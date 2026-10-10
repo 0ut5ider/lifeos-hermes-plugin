@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/observe-banner-refusal.py", line 9, in <module>
+    try:run(case.fixture.fixture.memory,scope,args=['--design=navy'],width=100,check_current=lambda:None)
+        ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_banner.py", line 89, in run
+    raise MemoryUnavailable('The native banner response contains excluded text')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The native banner response contains excluded text
+{"ok": false, "code": "EINVAL_PATH", "message": "The native banner response contains excluded text"}

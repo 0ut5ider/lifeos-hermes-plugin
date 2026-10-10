@@ -1,0 +1,30 @@
+test_actual_native_render_rechecks_sources_and_authority (test_memory_local_refresh.MemoryLocalRefreshTests.test_actual_native_render_rechecks_sources_and_authority) ... ok
+test_current_owner_prepares_native_hometown_and_source_selection (test_memory_local_refresh.MemoryLocalRefreshTests.test_current_owner_prepares_native_hometown_and_source_selection) ... ok
+test_exact_review_restores_safe_old_config_without_changing_bytes (test_memory_local_refresh.MemoryLocalRefreshTests.test_exact_review_restores_safe_old_config_without_changing_bytes) ... ERROR
+test_linked_invalid_and_excessive_sources_refuse (test_memory_local_refresh.MemoryLocalRefreshTests.test_linked_invalid_and_excessive_sources_refuse) ... ok
+test_missing_hometown_refuses_before_network_or_publication (test_memory_local_refresh.MemoryLocalRefreshTests.test_missing_hometown_refuses_before_network_or_publication) ... ok
+test_missing_sources_preserve_native_empty_selection (test_memory_local_refresh.MemoryLocalRefreshTests.test_missing_sources_preserve_native_empty_selection) ... ok
+test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader) ... ok
+test_native_user_sources_refuse_private_decoded_configuration (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_user_sources_refuse_private_decoded_configuration) ... ok
+test_private_identity_and_escaped_private_configuration_refuse (test_memory_local_refresh.MemoryLocalRefreshTests.test_private_identity_and_escaped_private_configuration_refuse) ... ok
+test_read_only_owner_retains_inputs_but_cannot_prepare_generation (test_memory_local_refresh.MemoryLocalRefreshTests.test_read_only_owner_retains_inputs_but_cannot_prepare_generation) ... ok
+test_unbound_revoked_and_partial_reader_cannot_read_inputs (test_memory_local_refresh.MemoryLocalRefreshTests.test_unbound_revoked_and_partial_reader_cannot_read_inputs) ... ok
+
+======================================================================
+ERROR: test_exact_review_restores_safe_old_config_without_changing_bytes (test_memory_local_refresh.MemoryLocalRefreshTests.test_exact_review_restores_safe_old_config_without_changing_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 143, in test_exact_review_restores_safe_old_config_without_changing_bytes
+    selected = preview(memory, OWNER, [IDENTITY, SOURCES])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_source_review.py", line 121, in preview
+    return _snapshot(memory, connection, scope, paths)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_source_review.py", line 79, in _snapshot
+    classification = _classification(relative)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_source_review.py", line 43, in _classification
+    raise ValueError('Source review supports declared system, owner context, and Life sources')
+ValueError: Source review supports declared system, owner context, and Life sources
+
+----------------------------------------------------------------------
+Ran 11 tests in 3.993s
+
+FAILED (errors=1)

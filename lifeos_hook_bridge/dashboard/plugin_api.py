@@ -17,6 +17,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
+from starlette.requests import ClientDisconnect
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
 
 
@@ -231,6 +232,47 @@ async def recover_mount(request: Request, account: str = Depends(_memory_account
         raise HTTPException(status_code=409, detail='Recovery cannot overwrite a later edit or invalid snapshot') from error
 
 
+@router.get('/memory/pulse_runtime')
+def admit_memory_pulse_runtime(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    if request.query_params:
+        return JSONResponse({'error': 'Pulse runtime admission uses fixed installed sources'}, status_code=400, headers=headers)
+    try:
+        result, binding = _memory_preferences().pulse_runtime_response(account=account)
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Pulse runtime admission is unavailable'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.post('/memory/pulse_runtime')
+async def deliver_memory_pulse_runtime(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    if request.query_params:
+        return JSONResponse({'error': 'Pulse runtime delivery uses a fixed installed route'}, status_code=400, headers=headers)
+    content = bytearray()
+    try:
+        async for chunk in request.stream():
+            content.extend(chunk)
+            if len(content) > 65536:
+                return JSONResponse({'error': 'Pulse runtime observations exceed their byte limit'}, status_code=400, headers=headers)
+    except ClientDisconnect:
+        return JSONResponse({'error': 'Pulse runtime delivery is cancelled'}, status_code=400, headers=headers)
+    try:
+        observation = json.loads(content)
+        if not isinstance(observation, dict): raise ValueError('Choose a complete Pulse runtime observation')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().pulse_runtime_response(observation, account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Choose complete current Pulse runtime observations'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Pulse runtime delivery is unavailable'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'],
+        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
 @router.get('/memory/pulse/{view}')
 def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs', 'graph', 'telos_freshness',
                                   'telos_stale', 'telos_freshness_summary', 'context_freshness',
@@ -257,6 +299,186 @@ def review_memory(request: dict, account: str = Depends(_memory_account)):
     return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments'], account=account))
 
 
+@router.post('/memory/hypotheses/review')
+async def review_memory_hypothesis(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control':'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content)>65536:
+            return JSONResponse({'error':'Hypothesis review exceeds its request limit'}, status_code=400, headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body,dict) or set(body)!={'target','note','request_id'}:
+            raise ValueError('Choose a fixed hypothesis review action')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().review_hypothesis(**body,account=account))
+    except LookupError:
+        return JSONResponse({'error':'Choose a governed hypothesis review action'},status_code=404,headers=headers)
+    except PermissionError:
+        return JSONResponse({'error':'This dashboard account has no installation owner binding'},status_code=403,headers=headers)
+    except ValueError:
+        return JSONResponse({'error':'Invalid hypothesis review request'},status_code=400,headers=headers)
+    except (OSError,RuntimeError,sqlite3.Error,subprocess.TimeoutExpired):
+        return JSONResponse({'error':'Hypothesis review is unavailable under the current policy'},status_code=409,headers=headers)
+    return JSONResponse(result['body'],status_code=result['status'],headers={**headers,'X-LifeOS-Memory-Installation':binding})
+
+
+@router.post('/memory/upgrades/review')
+async def review_memory_upgrade(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control':'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content)>65536:
+            return JSONResponse({'error':'Upgrade review exceeds its request limit'},status_code=400,headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body,dict) or set(body)!={'target','note','request_id'}:
+            raise ValueError('Choose a fixed upgrade review action')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().review_upgrade(**body,account=account))
+    except LookupError:
+        return JSONResponse({'error':'Choose a governed upgrade review action'},status_code=404,headers=headers)
+    except PermissionError:
+        return JSONResponse({'error':'This dashboard account has no installation owner binding'},status_code=403,headers=headers)
+    except ValueError:
+        return JSONResponse({'error':'Invalid upgrade review request'},status_code=400,headers=headers)
+    except (OSError,RuntimeError,sqlite3.Error,subprocess.TimeoutExpired):
+        return JSONResponse({'error':'Upgrade review is unavailable under the current policy'},status_code=409,headers=headers)
+    return JSONResponse(result['body'],status_code=result['status'],headers={**headers,'X-LifeOS-Memory-Installation':binding})
+
+
+@router.get('/memory/life')
+def get_memory_life(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('life', request, account)
+
+
+@router.post('/memory/content_action')
+async def run_memory_content_action(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content) > 8192:
+            return JSONResponse({'error': 'Content action exceeds its request limit'}, status_code=400, headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body, dict) or set(body) != {'target', 'observation'}:
+            raise ValueError('Choose declared Content action arguments')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().content_action_response(
+            body['target'], body['observation'], account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except LookupError:
+        return JSONResponse({'error': 'Choose a declared Content action route'}, status_code=404, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Choose declared Content action fields'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Content action is unavailable under the current policy'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'], headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.post('/memory/algorithm_edit')
+async def edit_memory_algorithm(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content) > 3 * 1024 * 1024:
+            return JSONResponse({'error': 'Algorithm edit exceeds its request limit'}, status_code=400, headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body, dict) or set(body) != {'target', 'body'}:
+            raise ValueError('Choose declared Algorithm edit arguments')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().edit_algorithm(
+            body['target'], body['body'], account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except LookupError:
+        return JSONResponse({'error': 'Choose a declared Algorithm edit route'}, status_code=404, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Choose declared Algorithm edit fields'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Algorithm editing is unavailable under the current policy'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'], headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.post('/memory/algorithm_job')
+@router.post('/memory/local_job')
+@router.post('/memory/atlas_job')
+@router.post('/memory/conduit_job')
+async def prepare_memory_owner_job(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    if request.query_params:
+        return JSONResponse({'error': 'Native owner jobs use fixed installed arguments'}, status_code=400, headers=headers)
+    try:
+        async for chunk in request.stream():
+            if chunk:
+                return JSONResponse({'error': 'Native owner jobs use fixed installed arguments'}, status_code=400, headers=headers)
+    except ClientDisconnect:
+        return JSONResponse({'error': 'Native owner job preparation is cancelled'}, status_code=400, headers=headers)
+    try:
+        preferences = _memory_preferences()
+        methods = {'algorithm_job': preferences.algorithm_job_response, 'local_job': preferences.local_job_response, 'atlas_job': preferences.atlas_job_response,
+            'conduit_job': preferences.conduit_job_response}
+        method = methods[request.url.path.rsplit('/', 1)[-1]]
+        result, binding = await run_in_threadpool(lambda: method(account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except (ValueError, OSError, RuntimeError, sqlite3.Error):
+        return JSONResponse({'error': 'Native owner job preparation is unavailable'}, status_code=503, headers=headers)
+    return JSONResponse(result, headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.get('/memory/telos_file')
+def get_memory_telos_file(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('telos_file', request, account)
+
+
+@router.post('/memory/telos_file')
+async def edit_memory_telos_file(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content) > 3 * 1024 * 1024:
+            return JSONResponse({'error': 'TELOS edit exceeds its request limit'}, status_code=400, headers=headers)
+    preferences = _memory_preferences()
+    try:
+        body = json.loads(content)
+        result, binding = await run_in_threadpool(lambda: preferences.edit_telos_file(body, account=account))
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Invalid TELOS edit request'}, status_code=400, headers=headers)
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        from lifeos_memory_settings.memory_http import installation_binding
+        try:
+            config = preferences._configuration(account=account)
+            binding = installation_binding(config, preferences.configuration.path)
+        except PermissionError:
+            return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+        except (ValueError, OSError, RuntimeError):
+            return JSONResponse({'error': 'TELOS editing is unavailable'}, status_code=503, headers=headers)
+        result = {'status': 409, 'body': {'error': 'The TELOS save conflicts with the current source or policy. Open the file again.'}}
+    return JSONResponse(result['body'], status_code=result['status'],
+        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.get('/memory/tab_freshness')
+def get_memory_tab_freshness(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('tab_freshness', request, account)
+
+
+@router.get('/memory/upgrades')
+def get_memory_upgrades(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('upgrades', request, account)
+
+
+@router.get('/memory/hypotheses')
+def get_memory_hypotheses(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('hypotheses', request, account)
+
+
 @router.get('/memory/wiki')
 def get_memory_wiki(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('wiki', request, account)
@@ -267,9 +489,10 @@ def get_memory_knowledge(request: Request, account: str = Depends(_memory_accoun
     return _memory_source_read('knowledge', request, account)
 
 
-def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, account: str):
+def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file'], request: Request, account: str):
     preferences = _memory_preferences()
-    request_target = importlib.import_module('lifeos_memory_settings.memory_' + view).request_target
+    module = {'hypotheses':'memory_hypothesis_queue','upgrades':'memory_upgrade_queue'}.get(view, 'memory_' + view)
+    request_target = importlib.import_module('lifeos_memory_settings.' + module).request_target
     headers = {'Cache-Control': 'no-store'}
     try:
         if list(request.query_params.keys()) != ['target'] or len(request.query_params.getlist('target')) != 1:
@@ -280,7 +503,10 @@ def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, ac
     except ValueError:
         return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
     try:
-        operation = preferences.wiki_response if view == 'wiki' else preferences.knowledge_response
+        operation = getattr(preferences, {'wiki': 'wiki_response', 'knowledge': 'knowledge_response',
+                     'hypotheses': 'hypothesis_response', 'upgrades': 'upgrade_response',
+                     'tab_freshness': 'tab_freshness_response', 'life': 'life_response',
+                     'telos_file': 'telos_file_response'}[view])
         result, binding = operation(target, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)

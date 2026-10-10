@@ -1,0 +1,149 @@
+FFFFFFF..
+======================================================================
+FAIL: test_enabled_owner_job_executes_the_actual_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_enabled_owner_job_executes_the_actual_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 107, in test_enabled_owner_job_executes_the_actual_brief
+    self.assertEqual(result['status'],'completed',result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'completed'
+- failed
++ completed
+ : {'status': 'failed', 'job': 'life-morning-brief', 'exit_code': 1}
+
+======================================================================
+FAIL: test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) (legacy=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 95, in test_legacy_goals_and_unified_telos_fallback_match_native
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:93:20)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) (legacy=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 95, in test_legacy_goals_and_unified_telos_fallback_match_native
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:93:20)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_missing_sources_preserve_native_no_action (test_memory_morning_brief.MemoryMorningBriefTests.test_missing_sources_preserve_native_no_action)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 52, in test_missing_sources_preserve_native_no_action
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:93:20)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_owner_brief_preserves_native_goal_spark_and_action_output (test_memory_morning_brief.MemoryMorningBriefTests.test_owner_brief_preserves_native_goal_spark_and_action_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 46, in test_owner_brief_preserves_native_goal_spark_and_action_output
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:93:20)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_private_sources_do_not_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_private_sources_do_not_enter_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 74, in test_private_sources_do_not_enter_brief
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:93:20)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_retired_source_does_not_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_retired_source_does_not_enter_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 85, in test_retired_source_does_not_enter_brief
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 52 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+53 |                                                env: {...process.env},
+54 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+55 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+56 |   const response: unknown = JSON.parse(result.stdout);
+57 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+                                       ^
+error: The native memory service returned an invalid result
+      at memoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:57:35)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:93:20)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.009s
+
+FAILED (failures=7)

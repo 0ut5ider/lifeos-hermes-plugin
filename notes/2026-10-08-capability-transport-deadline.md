@@ -1,0 +1,5 @@
+# Complete capability telemetry exceeds the shared relay deadline
+
+2026-10-08. Native capability windows read four, ten, and twenty million activity bytes. A synthetic source with 25,476,000 bytes makes the 24-hour read take 8.729 seconds through actual owner HTTP. The eight-second shared relay instead returns 503 after 8.013 seconds with a captured TimeoutError. Reducing the telemetry tail would change native counts. The candidate preserves the declared tails and gives only the declared capability routes a 30-second HTTP deadline.
+
+The native synchronous relay causes a second failure. While the 24-hour read runs, a concurrent anonymous request takes 8.704 seconds to receive its 401 refusal. The existing asynchronous relay reduces that request to 0.089 seconds while telemetry still succeeds. The corrected large-window gate reports 2.022, 4.372, and 8.503 seconds across all three windows. These are local fixture measurements with Bun 1.3.14. Installed server load remains a separate acceptance requirement.

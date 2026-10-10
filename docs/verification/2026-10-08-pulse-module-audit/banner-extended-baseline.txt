@@ -1,0 +1,67 @@
+test_actual_retirement_refuses_retained_banner_name (test_memory_banner.MemoryBannerTests.test_actual_retirement_refuses_retained_banner_name) ... FAIL
+test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization) ... FAIL
+test_original_native_designs_name_substitution_and_default_characterization (test_memory_banner.MemoryBannerTests.test_original_native_designs_name_substitution_and_default_characterization) ... ok
+test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) ... 
+  test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='<private>SyntheticBannerHidden</private>') ... FAIL
+  test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='\\u003cprivate\\u003eSyntheticBannerHidden\\u003c/private\\u003e') ... FAIL
+test_revoked_owner_and_missing_connector_refuse (test_memory_banner.MemoryBannerTests.test_revoked_owner_and_missing_connector_refuse) ... FAIL
+test_unbound_reader_cannot_disclose_assistant_identity (test_memory_banner.MemoryBannerTests.test_unbound_reader_cannot_disclose_assistant_identity) ... FAIL
+
+======================================================================
+FAIL: test_actual_retirement_refuses_retained_banner_name (test_memory_banner.MemoryBannerTests.test_actual_retirement_refuses_retained_banner_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 71, in test_actual_retirement_refuses_retained_banner_name
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_native_identity_display_name_empty_phrase_and_parse_failure_characterization (test_memory_banner.MemoryBannerTests.test_native_identity_display_name_empty_phrase_and_parse_failure_characterization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 97, in test_native_identity_display_name_empty_phrase_and_parse_failure_characterization
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='<private>SyntheticBannerHidden</private>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 63, in test_private_and_yaml_escaped_catchphrases_cannot_reach_banner
+    self.assertNotIn('SyntheticBannerHidden', result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticBannerHidden' unexpectedly found in '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\x1b[0m\n\n                      \x1b[38;2;37;99;235mLi\x1b[0m\x1b[38;2;59;130;246mfe\x1b[0m\x1b[38;2;147;197;253mOS\x1b[0m \x1b[38;2;51;65;85m|\x1b[0m \x1b[38;2;100;116;139mYour Life Operating System\x1b[0m\n\n                      \x1b[3m\x1b[38;2;147;197;253m"Magnifying human capabilities..."\x1b[0m\n\n\n                            \x1b[38;2;37;99;235m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \n                            \x1b[38;2;37;99;235m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;100;116;139m"\x1b[0m\x1b[38;2;147;197;253m<private>SyntheticBannerHidden</private>\x1b[0m\x1b[38;2;100;116;139m..."\x1b[0m\n                            \x1b[38;2;30;58;138m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;51;65;85m────────────────────────\x1b[0m\n                            \x1b[38;2;30;58;138m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;30;58;138m⬢\x1b[0m  \x1b[38;2;100;116;139mLifeOS\x1b[0m    \x1b[38;2;203;213;225m3.8\x1b[0m\n                       \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;30;58;138m⚙\x1b[0m  \x1b[38;2;100;116;139mAlgo\x1b[0m      \x1b[38;2;203;213;225m7.9\x1b[0m\n                       \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;147;197;253m✦\x1b[0m  \x1b[38;2;100;116;139mSKILLS\x1b[0m    \x1b[38;2;203;213;225m0\x1b[0m\n                  \x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;65;105;225m↪\x1b[0m  \x1b[38;2;100;116;139mHOOKS\x1b[0m     \x1b[38;2;140;160;220m0\x1b[0m\n                  \x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;51;65;85m────────────────────────\x1b[0m\n             \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \n             \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \n\n\n                      \x1b[38;2;51;65;85m→\x1b[0m \x1b[38;2;59;130;246mgithub.com/danielmiessler/LifeOS\x1b[0m\n\n     \x1b[38;2;51;65;85m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\x1b[0m\n\n'
+
+======================================================================
+FAIL: test_private_and_yaml_escaped_catchphrases_cannot_reach_banner (test_memory_banner.MemoryBannerTests.test_private_and_yaml_escaped_catchphrases_cannot_reach_banner) (phrase='\\u003cprivate\\u003eSyntheticBannerHidden\\u003c/private\\u003e')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 63, in test_private_and_yaml_escaped_catchphrases_cannot_reach_banner
+    self.assertNotIn('SyntheticBannerHidden', result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticBannerHidden' unexpectedly found in '\n     \x1b[38;2;51;65;85m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\x1b[0m\n\n                      \x1b[38;2;37;99;235mLi\x1b[0m\x1b[38;2;59;130;246mfe\x1b[0m\x1b[38;2;147;197;253mOS\x1b[0m \x1b[38;2;51;65;85m|\x1b[0m \x1b[38;2;100;116;139mYour Life Operating System\x1b[0m\n\n                      \x1b[3m\x1b[38;2;147;197;253m"Magnifying human capabilities..."\x1b[0m\n\n\n                            \x1b[38;2;37;99;235m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \n                            \x1b[38;2;37;99;235m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;100;116;139m"\x1b[0m\x1b[38;2;147;197;253m<private>SyntheticBannerHidden</private>\x1b[0m\x1b[38;2;100;116;139m..."\x1b[0m\n                            \x1b[38;2;30;58;138m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;51;65;85m────────────────────────\x1b[0m\n                            \x1b[38;2;30;58;138m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;30;58;138m⬢\x1b[0m  \x1b[38;2;100;116;139mLifeOS\x1b[0m    \x1b[38;2;203;213;225m3.8\x1b[0m\n                       \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;30;58;138m⚙\x1b[0m  \x1b[38;2;100;116;139mAlgo\x1b[0m      \x1b[38;2;203;213;225m7.9\x1b[0m\n                       \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;147;197;253m✦\x1b[0m  \x1b[38;2;100;116;139mSKILLS\x1b[0m    \x1b[38;2;203;213;225m0\x1b[0m\n                  \x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;65;105;225m↪\x1b[0m  \x1b[38;2;100;116;139mHOOKS\x1b[0m     \x1b[38;2;140;160;220m0\x1b[0m\n                  \x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;30;58;138m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \x1b[38;2;51;65;85m────────────────────────\x1b[0m\n             \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \n             \x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m\x1b[38;2;147;197;253m█████\x1b[0m   \x1b[38;2;51;65;85m│\x1b[0m  \n\n\n                      \x1b[38;2;51;65;85m→\x1b[0m \x1b[38;2;59;130;246mgithub.com/danielmiessler/LifeOS\x1b[0m\n\n     \x1b[38;2;51;65;85m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\x1b[0m\n\n'
+
+======================================================================
+FAIL: test_revoked_owner_and_missing_connector_refuse (test_memory_banner.MemoryBannerTests.test_revoked_owner_and_missing_connector_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 78, in test_revoked_owner_and_missing_connector_refuse
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_reader_cannot_disclose_assistant_identity (test_memory_banner.MemoryBannerTests.test_unbound_reader_cannot_disclose_assistant_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 53, in test_unbound_reader_cannot_disclose_assistant_identity
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 6 tests in 10.570s
+
+FAILED (failures=6)

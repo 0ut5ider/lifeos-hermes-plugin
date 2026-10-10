@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "elapsed_seconds": 10.15,
+  "playwright_version": "1.60.0",
+  "observations": [
+    {
+      "action": "revoked_owner_run",
+      "status": 403,
+      "body": {
+        "error": "This dashboard account has no installation owner binding"
+      },
+      "cache_control": "no-store"
+    },
+    {
+      "action": "run",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4118",
+        "requested_run": "regular"
+      },
+      "cache_control": "no-store"
+    },
+    {
+      "action": "confirmed_delete",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "id": "dailysynthetic4118",
+        "trashed": 2,
+        "artifactsRemoved": true,
+        "runnerKicked": false
+      },
+      "cache_control": "no-store"
+    }
+  ],
+  "cancelled_delete_preserves_item": true,
+  "real_owner_refusal_displayed": true,
+  "binding_restored": true,
+  "refusal_leaves_ledger_and_source_unchanged": true,
+  "effects": {
+    "status": "PASS",
+    "run_and_disposal_events": [
+      {
+        "v": 1,
+        "ts": "2026-10-10T04:41:47.193Z",
+        "id": "dailysynthetic4118",
+        "op": "upsert",
+        "fields": {
+          "requested_run": "regular",
+          "requested_at": "2026-10-10T04:41:47.193Z",
+          "updated": "2026-10-10T04:41:47.193Z"
+        },
+        "src": "dashboard"
+      },
+      {
+        "v": 1,
+        "ts": "2026-10-10T04:41:50.237Z",
+        "id": "dailysynthetic4118",
+        "op": "delete",
+        "src": "dashboard"
+      }
+    ],
+    "prior_ledger_preserved": true,
+    "source_and_sidecar_trashed_intact": true,
+    "derivatives_removed": true,
+    "media_processing_verified": false,
+    "live_profile_changed": false
+  },
+  "page_errors": [],
+  "finished_requests": [
+    {
+      "method": "POST",
+      "url": "http://localhost:18837/api/content/dailysynthetic4118/run"
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:18837/api/content/dailysynthetic4118/run"
+    },
+    {
+      "method": "DELETE",
+      "url": "http://localhost:18837/api/content/dailysynthetic4118"
+    }
+  ],
+  "wire_finished": [
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4118/run",
+      "encoded_bytes": 209
+    },
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4118/run",
+      "encoded_bytes": 201
+    },
+    {
+      "url": "http://localhost:18837/api/content/dailysynthetic4118",
+      "encoded_bytes": 237
+    }
+  ],
+  "live_profile_changed": false,
+  "media_processing_verified": false
+}

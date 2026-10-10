@@ -1,0 +1,15 @@
+test_inherited_native_home_cannot_redirect_private_edit_rendering (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_inherited_native_home_cannot_redirect_private_edit_rendering) ... FAIL
+
+======================================================================
+FAIL: test_inherited_native_home_cannot_redirect_private_edit_rendering (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_inherited_native_home_cannot_redirect_private_edit_rendering)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 361, in test_inherited_native_home_cannot_redirect_private_edit_rendering
+    self.assertEqual(external.read_bytes(),before,json.dumps(observation))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'Synthetic requested isolated owner edit. Synthetic [109 chars]it. ' != b'Synthetic external native source. Synthetic externa[81 chars]ce. ' : {"status": 200, "response": "{\"ok\": true, \"mtime\": \"2026-10-09T23:47:14.481Z\", \"commit\": {\"committed\": false, \"detail\": \"git repository failed: fatal: not a git repository (or any parent up to mount point /)\\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\"}}", "external_changed": true}
+
+----------------------------------------------------------------------
+Ran 1 test in 5.792s
+
+FAILED (failures=1)

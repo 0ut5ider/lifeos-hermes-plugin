@@ -1,0 +1,16 @@
+test_native_diagnostic_and_event_match_original_registered_note_checks (test_memory_knowledge_conformance.MemoryKnowledgeConformanceTests.test_native_diagnostic_and_event_match_original_registered_note_checks) ... ok
+test_unbound_handler_cannot_publish_or_report_private_note_counts (test_memory_knowledge_conformance.MemoryKnowledgeConformanceTests.test_unbound_handler_cannot_publish_or_report_private_note_counts) ... FAIL
+
+======================================================================
+FAIL: test_unbound_handler_cannot_publish_or_report_private_note_counts (test_memory_knowledge_conformance.MemoryKnowledgeConformanceTests.test_unbound_handler_cannot_publish_or_report_private_note_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_conformance.py", line 53, in test_unbound_handler_cannot_publish_or_report_private_note_counts
+    self.assertNotEqual(result.returncode,0,result)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : CompletedProcess(args=['bun', '--no-install', '/tmp/native-memory-cj9qbpme/.claude/hooks/handlers/KnowledgeConformance.ts'], returncode=0, stdout='', stderr='[KnowledgeConformance] === Starting knowledge conformance check ===\n[KnowledgeConformance] [WARN] 2/2 notes off-schema (0.0% conformant). Repair: bun LIFEOS/TOOLS/MigrateKnowledge.ts\n[KnowledgeConformance]   2× convention — not kb-v3 (dialect not migrated)\n[KnowledgeConformance]   2× id — required envelope field missing\n[KnowledgeConformance]   2× tags — required envelope field missing\n[KnowledgeConformance] === Check complete (1ms, 0.0% conformant, 2 notes) ===\n')
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.089s
+
+FAILED (failures=1)

@@ -63,6 +63,30 @@ class MemoryHTTPTests(unittest.TestCase):
             'authorization':'Bearer synthetic','cookie':'hermes_session_at=synthetic-at; __Secure-hermes_session_rt=synthetic-rt'}])
         self.assertEqual(dict(result['headers'])['cache-control'],'no-store')
 
+    def test_novelty_scalar_shapes_require_the_exact_bound_source_route(self):
+        arguments = {'view': 'life', 'target': '/api/novelty', 'authorization': 'Bearer synthetic', 'cookie': ''}
+        for value in ('SyntheticNoveltyTransport', 17, 0.7, True, None, [], {}):
+            with self.subTest(value=value):
+                self.payload = json.dumps(value).encode()
+                result = relay(self.configuration, arguments)
+                self.assertEqual(result['status'], 200, result)
+                self.assertEqual(json.loads(result['body']), value)
+                self.assertEqual(dict(result['headers'])['cache-control'], 'no-store')
+                if value is not None and not isinstance(value, (dict, list)):
+                    self.assertEqual(self.call()['status'], 503)
+                    self.assertEqual(relay(self.configuration, {**arguments, 'target': '/api/life/home'})['status'], 503)
+                    self.assertEqual(relay(self.configuration, {**arguments, 'target': '/api/agents'})['status'], 503)
+        self.payload = b'17'
+        self.headers['X-LifeOS-Memory-Installation'] = 'foreign-installation'
+        self.assertEqual(relay(self.configuration, arguments)['status'], 503)
+
+    def test_novelty_non_finite_or_malformed_json_refuses(self):
+        arguments = {'view': 'life', 'target': '/api/novelty', 'authorization': 'Bearer synthetic', 'cookie': ''}
+        for payload in (b'NaN', b'Infinity', b'-Infinity', b'1e9999', b'{unfinished'):
+            with self.subTest(payload=payload):
+                self.payload = payload
+                self.assertEqual(relay(self.configuration, arguments)['status'], 503)
+
     def test_remount_uses_fixed_authenticated_post_without_caller_arguments(self):
         arguments = {'view':'remount','authorization':'Bearer synthetic','cookie':''}
         self.assertEqual(relay(self.configuration, arguments)['status'], 200)

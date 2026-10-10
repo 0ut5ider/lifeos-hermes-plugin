@@ -1,0 +1,23 @@
+........E.......s.
+======================================================================
+ERROR: test_finalization_mounts_and_records_installed_system_files (test_lifeos_install_source.InstallSourceTests.test_finalization_mounts_and_records_installed_system_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_lifeos_install_source.py", line 244, in test_finalization_mounts_and_records_installed_system_files
+    result = finalize_lifeos(candidate, installed, hermes_home, baseline,
+                             str(bun), str(hermes), revision, patches,
+                             ("lifeos-test.patch",), create_baseline, save_baseline)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 400, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 444, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 74, in _check_prepared_config
+    from hermes_cli import _launchers
+ModuleNotFoundError: No module named 'hermes_cli'
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.764s
+
+FAILED (errors=1, skipped=1)

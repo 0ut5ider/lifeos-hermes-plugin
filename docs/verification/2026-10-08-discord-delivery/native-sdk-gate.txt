@@ -1,0 +1,607 @@
+............................FFF..........FFFF.F..E.E............. [ 69%]
+............................                                             [100%]Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 33, in gc_collect_harder
+    gc.collect()
+    ~~~~~~~~~~^^
+ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe4/media.bin' mode='rb' closefd=True>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import discord,pytest; raise SystemExit(pytest.main(["tests/hermes_cli/test_required_policy_hooks.py","tests/gateway/test_discord_guild_channel_only.py","tests/gateway/test_discord_send.py","tests/gateway/test_discord_attachment_receipts.py","tests/plugins/platforms/test_discord_gate_isolation.py","tests/gateway/test_discord_clarify_buttons.py","tests/gateway/test_discord_view_base_parity.py","-q","-W","error"]))
+                                            ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/config/__init__.py", line 201, in main
+    return _main(args=args, plugins=plugins, prog="pytest.main()")
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/config/__init__.py", line 229, in _main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/main.py", line 377, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/main.py", line 372, in wrap_session
+    config._ensure_unconfigure()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/config/__init__.py", line 1212, in _ensure_unconfigure
+    self.hook.pytest_unconfigure(config=self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 173, in pytest_unconfigure
+    collect_unraisable(config)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 79, in collect_unraisable
+    raise errors[0]
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe4/media.bin' mode='rb' closefd=True>: None
+
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_failed_upload_never_becomes_successful_text_notice[send_video] _
+
+self = <logging.handlers.QueueListener object at 0x7f6081fc7b10>
+
+    def _monitor(self):
+        """
+        Monitor the queue for records, and ask the handler
+        to deal with them.
+    
+        This method runs on a separate, internal thread.
+        The thread will terminate if it sees a sentinel object in the queue.
+        """
+        q = self.queue
+        has_task_done = hasattr(q, 'task_done')
+        while True:
+            try:
+>               record = self.dequeue(True)
+                ^^^^^^
+E               ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_failed_upload_never_becom0/media.bin' mode='rb' closefd=True>
+
+/usr/lib64/python3.14/logging/handlers.py:1618: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x7f6080bdb950>
+when = 'setup'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+                                     ^^^^^^
+
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/runner.py:250: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/logging.py:858: in pytest_runtest_setup
+    yield
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:178: in pytest_runtest_setup
+    collect_unraisable(item.config)
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:79: in collect_unraisable
+    raise errors[0]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <_pytest.config.Config object at 0x7f6084338440>
+
+    def collect_unraisable(config: Config) -> None:
+        pop_unraisable = config.stash[unraisable_exceptions].pop
+        errors: list[pytest.PytestUnraisableExceptionWarning | RuntimeError] = []
+        meta = None
+        hook_error = None
+        try:
+            while True:
+                try:
+                    meta = pop_unraisable()
+                except IndexError:
+                    break
+    
+                if isinstance(meta, BaseException):
+                    hook_error = RuntimeError("Failed to process unraisable exception")
+                    hook_error.__cause__ = meta
+                    errors.append(hook_error)
+                    continue
+    
+                msg = meta.msg
+                try:
+>                   warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+E                   pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_failed_upload_never_becom0/media.bin' mode='rb' closefd=True>: None
+
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:67: PytestUnraisableExceptionWarning
+_ ERROR at teardown of test_failed_upload_never_becomes_successful_text_notice[send_voice] _
+
+self = <logging.handlers.QueueListener object at 0x7f6081fc7b10>
+
+    def _monitor(self):
+        """
+        Monitor the queue for records, and ask the handler
+        to deal with them.
+    
+        This method runs on a separate, internal thread.
+        The thread will terminate if it sees a sentinel object in the queue.
+        """
+        q = self.queue
+        has_task_done = hasattr(q, 'task_done')
+        while True:
+            try:
+>               record = self.dequeue(True)
+                ^^^^^^
+E               ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_failed_upload_never_becom1/media.bin' mode='rb' closefd=True>
+
+/usr/lib64/python3.14/logging/handlers.py:1618: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_and_report.<locals>.<lambda> at 0x7f6080c266c0>
+when = 'teardown'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -> CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+>           result: TResult | None = func()
+                                     ^^^^^^
+
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/runner.py:250: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/logging.py:873: in pytest_runtest_teardown
+    yield
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/capture.py:905: in pytest_runtest_teardown
+    return (yield)
+            ^^^^^
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:188: in pytest_runtest_teardown
+    collect_unraisable(item.config)
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:79: in collect_unraisable
+    raise errors[0]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <_pytest.config.Config object at 0x7f6084338440>
+
+    def collect_unraisable(config: Config) -> None:
+        pop_unraisable = config.stash[unraisable_exceptions].pop
+        errors: list[pytest.PytestUnraisableExceptionWarning | RuntimeError] = []
+        meta = None
+        hook_error = None
+        try:
+            while True:
+                try:
+                    meta = pop_unraisable()
+                except IndexError:
+                    break
+    
+                if isinstance(meta, BaseException):
+                    hook_error = RuntimeError("Failed to process unraisable exception")
+                    hook_error.__cause__ = meta
+                    errors.append(hook_error)
+                    continue
+    
+                msg = meta.msg
+                try:
+>                   warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+E                   pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_failed_upload_never_becom1/media.bin' mode='rb' closefd=True>: None
+
+../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:67: PytestUnraisableExceptionWarning
+------------------------------ Captured log call -------------------------------
+ERROR    plugins.platforms.discord.adapter:adapter_media.py:361 [Discord] Failed to send audio: upload rejected
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter_media.py", line 342, in send_voice
+    msg_data = await self._client.http.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/gateway/test_discord_attachment_receipts.py", line 26, in request
+    raise RuntimeError("native voice transport unavailable")
+RuntimeError: native voice transport unavailable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/plugins/platforms/discord/adapter_media.py", line 352, in send_voice
+    msg = await channel.send(file=file, reference=reference)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/gateway/test_discord_attachment_receipts.py", line 31, in send
+    raise RuntimeError("upload rejected")
+RuntimeError: upload rejected
+=================================== FAILURES ===================================
+_______ test_send_retries_without_reference_when_reply_target_is_deleted _______
+
+    @pytest.mark.asyncio
+    async def test_send_retries_without_reference_when_reply_target_is_deleted():
+        adapter = DiscordAdapter(PlatformConfig(enabled=True, token="***"))
+    
+        reference_obj = object()
+        ref_msg = SimpleNamespace(id=99, to_reference=MagicMock(return_value=reference_obj))
+        sent_msgs = [SimpleNamespace(id=1001), SimpleNamespace(id=1002)]
+        send_calls = []
+    
+        async def fake_send(*, content, reference=None):
+            send_calls.append({"content": content, "reference": reference})
+            if len(send_calls) == 1:
+                raise RuntimeError(
+                    "400 Bad Request (error code: 10008): Unknown Message"
+                )
+            return sent_msgs[len(send_calls) - 2]
+    
+        channel = SimpleNamespace(
+            fetch_message=AsyncMock(return_value=ref_msg),
+            send=AsyncMock(side_effect=fake_send),
+        )
+        adapter._client = SimpleNamespace(
+            get_channel=lambda _chat_id: channel,
+            fetch_channel=AsyncMock(),
+        )
+    
+        long_text = "A" * (adapter.MAX_MESSAGE_LENGTH + 50)
+        result = await adapter.send("555", long_text, reply_to="99")
+    
+        assert result.success is True
+        assert result.message_id == "1001"
+        # ids-only reference: the fetch is gone entirely — the retry happens
+        # on the send-side 10008, not a fetch failure
+        assert channel.fetch_message.await_count == 0
+        assert channel.send.await_count == 3
+        # the reference is constructed from ids, not fetched + to_reference()
+>       _discord_mod.MessageReference.assert_any_call(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            message_id=99, channel_id=None, guild_id=None,
+            fail_if_not_exists=False)
+E       AttributeError: type object 'MessageReference' has no attribute 'assert_any_call'
+
+tests/gateway/test_discord_send.py:147: AttributeError
+------------------------------ Captured log call -------------------------------
+WARNING  plugins.platforms.discord.adapter:adapter.py:3085 [Discord] Reply target 99 rejected the reply reference; retrying send without reply reference
+_____________ test_forum_post_file_creates_thread_with_attachment ______________
+
+    @pytest.mark.asyncio
+    async def test_forum_post_file_creates_thread_with_attachment():
+        """_forum_post_file routes file-bearing sends to create_thread with file kwarg."""
+        adapter = DiscordAdapter(PlatformConfig(enabled=True, token="***"))
+    
+        thread_ch = SimpleNamespace(id=777, send=AsyncMock())
+        thread = SimpleNamespace(
+            id=777,
+            message=SimpleNamespace(
+                id=800,
+                attachments=[SimpleNamespace(filename="photo.png")],
+            ),
+            thread=thread_ch,
+        )
+>       forum_channel = _discord_mod.ForumChannel()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: ForumChannel.__init__() missing 3 required keyword-only arguments: 'state', 'guild', and 'data'
+
+tests/gateway/test_discord_send.py:183: TypeError
+__________ test_forum_post_file_fails_when_starter_has_no_attachments __________
+
+    @pytest.mark.asyncio
+    async def test_forum_post_file_fails_when_starter_has_no_attachments():
+        """Forum create_thread can succeed yet return an attachmentless starter (#66797)."""
+        adapter = DiscordAdapter(PlatformConfig(enabled=True, token="***"))
+    
+        thread = SimpleNamespace(
+            id=7,
+            message=SimpleNamespace(id=8, attachments=[]),
+            thread=SimpleNamespace(id=7, send=AsyncMock()),
+        )
+>       forum_channel = _discord_mod.ForumChannel()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: ForumChannel.__init__() missing 3 required keyword-only arguments: 'state', 'guild', and 'data'
+
+tests/gateway/test_discord_send.py:217: TypeError
+_____________ test_send_multiple_images_skips_oversized_local_file _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-8/test_send_multiple_images_skip0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f6080d73770>
+
+    @pytest.mark.asyncio
+    async def test_send_multiple_images_skips_oversized_local_file(tmp_path, monkeypatch):
+        """Sibling site of #50846: an oversized local image used to 413 the whole chunk and dump
+        its siblings into the per-image fallback. It is skipped up front, the rest of the chunk is
+        delivered with a notice appended; an all-oversized chunk still sends the notice alone."""
+        from plugins.platforms.discord.adapter_media import _DISCORD_DEFAULT_UPLOAD_LIMIT_BYTES
+    
+        small = tmp_path / "small.png"
+        small.write_bytes(b"ok")
+        big = tmp_path / "big.png"
+        big.write_bytes(b"x")
+        _fake_getsize(monkeypatch, big, _DISCORD_DEFAULT_UPLOAD_LIMIT_BYTES + 1)
+        send = AsyncMock(return_value=SimpleNamespace(id=7))
+        adapter = _preflight_adapter(SimpleNamespace(id=9, guild=None, send=send))
+    
+        mixed = await adapter.send_multiple_images("9", [(f"file://{small}", ""), (f"file://{big}", "")])
+        assert mixed.success is True
+        kwargs = send.await_args.kwargs
+        assert len(kwargs["files"]) == 1  # only the small image made it
+        assert "big.png" in kwargs["content"] and "exceeds" in kwargs["content"]
+    
+        send.reset_mock()
+        only_big = await adapter.send_multiple_images("9", [(f"file://{big}", "")])
+        assert only_big.success is False
+        assert send.await_count == 1
+>       kwargs = send.await_args.kwargs
+        ^^^^^^
+E       ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_send_multiple_images_skip0/small.png' mode='rb' closefd=True>
+
+tests/gateway/test_discord_send.py:526: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+item = <Coroutine test_send_multiple_images_skips_oversized_local_file>
+
+    @pytest.hookimpl(wrapper=True, trylast=True)
+    def pytest_runtest_call(item):
+        """Join the turn's auto-title threads INSIDE capture, before pytest snaps it.
+    
+        A title thread that prints its failure warning while capture's
+        ``readouterr`` swaps the fd crashed the interpreter (SIGSEGV in
+        ``_pytest/capture.py::snap``). The teardown join in
+        ``_close_leaked_session_dbs`` runs after that snap, too late for this race.
+        """
+        try:
+>           return (yield)
+                    ^^^^^
+E           pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_send_multiple_images_skip0/small.png' mode='rb' closefd=True>: None
+
+tests/conftest.py:1199: PytestUnraisableExceptionWarning
+------------------------------ Captured log call -------------------------------
+WARNING  plugins.platforms.discord.adapter:adapter_media.py:199 [Discord] Skipping oversized image in batch: big.png is 20.0 MB (limit 20 MB)
+INFO     plugins.platforms.discord.adapter:adapter_media.py:262 [Discord] Sending 1 image(s) as single Discord message (chunk 1/1)
+WARNING  plugins.platforms.discord.adapter:adapter_media.py:199 [Discord] Skipping oversized image in batch: big.png is 20.0 MB (limit 20 MB)
+_ test_media_uses_metadata_target_without_losing_direct_channel[send_document] _
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe0')
+method = 'send_document'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+>           client.uploads.clear()
+E           ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe0/media.bin' mode='rb' closefd=True>
+
+tests/gateway/test_discord_attachment_receipts.py:46: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+item = <Coroutine test_media_uses_metadata_target_without_losing_direct_channel[send_document]>
+
+    @pytest.hookimpl(wrapper=True, trylast=True)
+    def pytest_runtest_call(item):
+        """Join the turn's auto-title threads INSIDE capture, before pytest snaps it.
+    
+        A title thread that prints its failure warning while capture's
+        ``readouterr`` swaps the fd crashed the interpreter (SIGSEGV in
+        ``_pytest/capture.py::snap``). The teardown join in
+        ``_close_leaked_session_dbs`` runs after that snap, too late for this race.
+        """
+        try:
+>           return (yield)
+                    ^^^^^
+E           pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe0/media.bin' mode='rb' closefd=True>: None
+
+tests/conftest.py:1199: PytestUnraisableExceptionWarning
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 222
+_ test_media_uses_metadata_target_without_losing_direct_channel[send_image_file] _
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe1')
+method = 'send_image_file'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+>           client.uploads.clear()
+E           ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe1/media.bin' mode='rb' closefd=True>
+
+tests/gateway/test_discord_attachment_receipts.py:46: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+item = <Coroutine test_media_uses_metadata_target_without_losing_direct_channel[send_image_file]>
+
+    @pytest.hookimpl(wrapper=True, trylast=True)
+    def pytest_runtest_call(item):
+        """Join the turn's auto-title threads INSIDE capture, before pytest snaps it.
+    
+        A title thread that prints its failure warning while capture's
+        ``readouterr`` swaps the fd crashed the interpreter (SIGSEGV in
+        ``_pytest/capture.py::snap``). The teardown join in
+        ``_close_leaked_session_dbs`` runs after that snap, too late for this race.
+        """
+        try:
+>           return (yield)
+                    ^^^^^
+E           pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe1/media.bin' mode='rb' closefd=True>: None
+
+tests/conftest.py:1199: PytestUnraisableExceptionWarning
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 222
+__ test_media_uses_metadata_target_without_losing_direct_channel[send_video] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe2')
+method = 'send_video'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+>           client.uploads.clear()
+E           ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe2/media.bin' mode='rb' closefd=True>
+
+tests/gateway/test_discord_attachment_receipts.py:46: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+item = <Coroutine test_media_uses_metadata_target_without_losing_direct_channel[send_video]>
+
+    @pytest.hookimpl(wrapper=True, trylast=True)
+    def pytest_runtest_call(item):
+        """Join the turn's auto-title threads INSIDE capture, before pytest snaps it.
+    
+        A title thread that prints its failure warning while capture's
+        ``readouterr`` swaps the fd crashed the interpreter (SIGSEGV in
+        ``_pytest/capture.py::snap``). The teardown join in
+        ``_close_leaked_session_dbs`` runs after that snap, too late for this race.
+        """
+        try:
+>           return (yield)
+                    ^^^^^
+E           pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe2/media.bin' mode='rb' closefd=True>: None
+
+tests/conftest.py:1199: PytestUnraisableExceptionWarning
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 111
+INFO     plugins.platforms.discord.adapter:adapter_media.py:107 [Discord] Sending file attachment media.bin (.bin) to 222
+_ test_media_uses_metadata_target_without_losing_direct_channel[send_multiple_images] _
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe4')
+method = 'send_multiple_images'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("method", ["send_document", "send_image_file", "send_video", "send_voice", "send_multiple_images"])
+    async def test_media_uses_metadata_target_without_losing_direct_channel(tmp_path, method):
+        adapter = DiscordAdapter(PlatformConfig())
+        adapter._client = client = Client()
+        path = tmp_path / "media.bin"
+        path.write_bytes(b"attachment bytes")
+        media = [(path.as_uri(), "caption")] if method == "send_multiple_images" else str(path)
+        for chat_id, metadata in [("111", {"thread_id": "222"}), ("222", None)]:
+            client.ids.clear()
+>           client.uploads.clear()
+E           ResourceWarning: unclosed file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe4/media.bin' mode='rb' closefd=True>
+
+tests/gateway/test_discord_attachment_receipts.py:46: ResourceWarning
+
+The above exception was the direct cause of the following exception:
+
+item = <Coroutine test_media_uses_metadata_target_without_losing_direct_channel[send_multiple_images]>
+
+    @pytest.hookimpl(wrapper=True, trylast=True)
+    def pytest_runtest_call(item):
+        """Join the turn's auto-title threads INSIDE capture, before pytest snaps it.
+    
+        A title thread that prints its failure warning while capture's
+        ``readouterr`` swaps the fd crashed the interpreter (SIGSEGV in
+        ``_pytest/capture.py::snap``). The teardown join in
+        ``_close_leaked_session_dbs`` runs after that snap, too late for this race.
+        """
+        try:
+>           return (yield)
+                    ^^^^^
+E           pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing file <_io.FileIO name='/tmp/pytest-of-outsider/pytest-8/test_media_uses_metadata_targe4/media.bin' mode='rb' closefd=True>: None
+
+tests/conftest.py:1199: PytestUnraisableExceptionWarning
+------------------------------ Captured log call -------------------------------
+INFO     plugins.platforms.discord.adapter:adapter_media.py:262 [Discord] Sending 1 image(s) as single Discord message (chunk 1/1)
+INFO     plugins.platforms.discord.adapter:adapter_media.py:262 [Discord] Sending 1 image(s) as single Discord message (chunk 1/1)
+=========================== short test summary info ============================
+FAILED tests/gateway/test_discord_send.py::test_send_retries_without_reference_when_reply_target_is_deleted
+FAILED tests/gateway/test_discord_send.py::test_forum_post_file_creates_thread_with_attachment
+FAILED tests/gateway/test_discord_send.py::test_forum_post_file_fails_when_starter_has_no_attachments
+FAILED tests/gateway/test_discord_send.py::test_send_multiple_images_skips_oversized_local_file
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_document]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_image_file]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_video]
+FAILED tests/gateway/test_discord_attachment_receipts.py::test_media_uses_metadata_target_without_losing_direct_channel[send_multiple_images]
+ERROR tests/gateway/test_discord_attachment_receipts.py::test_failed_upload_never_becomes_successful_text_notice[send_video]
+ERROR tests/gateway/test_discord_attachment_receipts.py::test_failed_upload_never_becomes_successful_text_notice[send_voice]
+8 failed, 83 passed, 2 errors, 7 subtests passed in 4.01s

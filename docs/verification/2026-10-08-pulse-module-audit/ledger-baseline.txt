@@ -1,0 +1,214 @@
+FFFFFFFFFFFF..FFFFF
+======================================================================
+FAIL: test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority (test_memory_ledger.MemoryLedgerTests.test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 160, in test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_registered_process.py", line 47, in <module>
+    preferences.life_response('/api/' + module, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 61, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 36, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority (test_memory_ledger.MemoryLedgerTests.test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority) (mode='metadata')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 160, in test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_registered_process.py", line 47, in <module>
+    preferences.life_response('/api/' + module, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 61, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 36, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority (test_memory_ledger.MemoryLedgerTests.test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority) (mode='created')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 160, in test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_registered_process.py", line 47, in <module>
+    preferences.life_response('/api/' + module, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 61, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 36, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority (test_memory_ledger.MemoryLedgerTests.test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 160, in test_actual_native_render_rechecks_source_bytes_inode_creation_and_authority
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_registered_process.py", line 47, in <module>
+    preferences.life_response('/api/' + module, account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 61, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 36, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_admitted_fields_and_absence_preserve_actual_native_response (test_memory_ledger.MemoryLedgerTests.test_admitted_fields_and_absence_preserve_actual_native_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ledger.py", line 70, in test_admitted_fields_and_absence_preserve_actual_native_response
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_anonymous_reader_cannot_read_native_labels_counts_or_presence (test_memory_ledger.MemoryLedgerTests.test_anonymous_reader_cannot_read_native_labels_counts_or_presence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 46, in test_anonymous_reader_cannot_read_native_labels_counts_or_presence
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"generated_at":"2026-10-09T03:12:59.748Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_current_account_origin_and_connector_govern_delivery (test_memory_ledger.MemoryLedgerTests.test_current_account_origin_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 111, in test_current_account_origin_and_connector_govern_delivery
+    self.assertEqual(client.get(self.native + self.route, headers={'Origin': 'https://untrusted.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403
+
+======================================================================
+FAIL: test_decoded_private_deploy_source_cannot_reuse_registry_cache (test_memory_ledger.MemoryLedgerTests.test_decoded_private_deploy_source_cannot_reuse_registry_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ledger.py", line 120, in test_decoded_private_deploy_source_cannot_reuse_registry_cache
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T03:13:01.515Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_exact_review_restores_only_current_safe_old_source (test_memory_ledger.MemoryLedgerTests.test_exact_review_restores_only_current_safe_old_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ledger.py", line 84, in test_exact_review_restores_only_current_safe_old_source
+    self.assertEqual(client.get(self.native + self.route).status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_methods_queries_and_unknown_routes_refuse (test_memory_ledger.MemoryLedgerTests.test_methods_queries_and_unknown_routes_refuse) (route='/api/ledger')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 147, in test_methods_queries_and_unknown_routes_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_methods_queries_and_unknown_routes_refuse (test_memory_ledger.MemoryLedgerTests.test_methods_queries_and_unknown_routes_refuse) (route='/api/ledger?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 146, in test_methods_queries_and_unknown_routes_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"generated_at":"2026-10-09T03:13:04.285Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_methods_queries_and_unknown_routes_refuse (test_memory_ledger.MemoryLedgerTests.test_methods_queries_and_unknown_routes_refuse) (route='/api/ledger/unsupported')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 147, in test_methods_queries_and_unknown_routes_refuse
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_source_and_retirement_refuse_cached_native_result (test_memory_ledger.MemoryLedgerTests.test_private_source_and_retirement_refuse_cached_native_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 94, in test_private_source_and_retirement_refuse_cached_native_result
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T03:13:07.108Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_source_refuses (test_memory_ledger.MemoryLedgerTests.test_redirected_invalid_or_excessive_source_refuses) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 136, in test_redirected_invalid_or_excessive_source_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T03:13:07.986Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_source_refuses (test_memory_ledger.MemoryLedgerTests.test_redirected_invalid_or_excessive_source_refuses) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 136, in test_redirected_invalid_or_excessive_source_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T03:13:07.986Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_source_refuses (test_memory_ledger.MemoryLedgerTests.test_redirected_invalid_or_excessive_source_refuses) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 136, in test_redirected_invalid_or_excessive_source_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T03:13:07.986Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_source_refuses (test_memory_ledger.MemoryLedgerTests.test_redirected_invalid_or_excessive_source_refuses) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_registered_modules.py", line 136, in test_redirected_invalid_or_excessive_source_refuses
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"generated_at":"2026-10-09T03:13:07.986Z","versions":{"lifeos":"0.1.0","algorithm":"1.2.3","system_prompt":"2.3.4"},"registry":{"last_updated":"2026-10-08T00:00:00Z","total_updates":1,"by_significance":{"minor":1},"by_change_type":{"fix":1},"recent":[{"timestamp":"2026-10-08T00:00:00Z","title":"Syn
+
+----------------------------------------------------------------------
+Ran 11 tests in 11.239s
+
+FAILED (failures=17)

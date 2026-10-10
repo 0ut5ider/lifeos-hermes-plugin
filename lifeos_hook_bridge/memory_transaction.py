@@ -37,9 +37,10 @@ def publish(path: Path, data: bytes, *, mode: int = 0o600) -> None:
 
 
 class MemoryTransaction:
-    def __init__(self, state: Path, resolve):
+    def __init__(self, state: Path, resolve, *, moves=None):
         self.state = state
         self.resolve = resolve
+        self.moves = moves
         self.journal = state / "memory-operation.json"
         self._descriptor = ContextVar("memory_lock_descriptor", default=None)
 
@@ -79,7 +80,7 @@ class MemoryTransaction:
 
     def prepare(self, writer: str, request_id: str, paths: list[str], *, expected=None) -> None:
         if expected is not None and (not isinstance(expected, dict) or set(expected) != set(paths)
-                or any(not isinstance(value, str) or re.fullmatch('[0-9a-f]{64}', value) is None
+                or any(value is not None and (not isinstance(value, str) or re.fullmatch('[0-9a-f]{64}', value) is None)
                        for value in expected.values())):
             raise ValueError('Expected publications require one exact digest for each destination')
         copies = []
@@ -92,12 +93,33 @@ class MemoryTransaction:
                 copies[-1]['after_digest'] = expected[name]
         publish(self.journal, json.dumps({"writer": writer, "request_id": request_id, "copies": copies}).encode())
 
+    @staticmethod
+    def _move_publications(operation) -> None:
+        from .memory_access import MemoryUnavailable
+        copies = operation.get('copies')
+        if (not isinstance(copies, list) or not copies
+                or any(not isinstance(copy, dict) or not isinstance(copy.get('after_digest'), str)
+                       or re.fullmatch('[0-9a-f]{64}', copy['after_digest']) is None for copy in copies)):
+            raise MemoryUnavailable('Content move recovery requires expected ledger publications')
+
+    def prepare_moves(self, entries) -> None:
+        from .memory_access import MemoryUnavailable
+        if self.moves is None or not self.journal.exists():
+            raise MemoryUnavailable('Content moves require a reserved owner publication')
+        operation = json.loads(self.journal.read_text())
+        if 'moves' in operation:
+            raise MemoryUnavailable('Content moves already have a recovery reservation')
+        self._move_publications(operation)
+        self.moves.before(entries)
+        operation['moves'] = entries
+        publish(self.journal, json.dumps(operation).encode())
+
     def _check_restore(self, copy):
         from .memory_access import MemoryUnavailable
         if (not isinstance(copy, dict) or set(copy) not in ({'path', 'data', 'after_digest'}, {'path', 'data', 'mode', 'after_digest'})
                 or not isinstance(copy['path'], str) or not copy['path']
-                or not isinstance(copy['after_digest'], str)
-                or re.fullmatch('[0-9a-f]{64}', copy['after_digest']) is None
+                or copy['after_digest'] is not None and (not isinstance(copy['after_digest'], str)
+                    or re.fullmatch('[0-9a-f]{64}', copy['after_digest']) is None)
                 or copy['data'] is not None and not isinstance(copy['data'], str)):
             raise MemoryUnavailable('The expected publication journal has invalid artifact metadata')
         try:
@@ -143,11 +165,16 @@ class MemoryTransaction:
             operation = json.loads(self.journal.read_text())
         except (ValueError, UnicodeError, RecursionError) as error:
             raise MemoryUnavailable('The publication recovery journal has invalid content') from error
-        if (not isinstance(operation, dict) or set(operation) != {'writer', 'request_id', 'copies'}
+        if (not isinstance(operation, dict) or set(operation) not in ({'writer', 'request_id', 'copies'}, {'writer', 'request_id', 'copies', 'moves'})
                 or not isinstance(operation['writer'], str) or not operation['writer']
                 or not isinstance(operation['request_id'], str) or not 1 <= len(operation['request_id']) <= 256
                 or not isinstance(operation['copies'], list)):
             raise MemoryUnavailable('The publication recovery journal has invalid operation metadata')
+        if 'moves' in operation:
+            self._move_publications(operation)
+            if self.moves is None:
+                raise MemoryUnavailable('This owner cannot recover Content moves')
+            self.moves.validate(operation['moves'])
         names = set()
         for copy in operation['copies']:
             if (not isinstance(copy, dict) or set(copy) not in ({'path', 'data'}, {'path', 'data', 'after_digest'},
@@ -168,13 +195,19 @@ class MemoryTransaction:
         row = connection.execute("SELECT receipt FROM operations WHERE writer=? AND request_id=?",
                                  (operation["writer"], operation["request_id"])).fetchone()
         if row is not None and json.loads(row["receipt"])["status"] != "unknown":
+            if 'moves' in operation:
+                self.moves.finish(operation['moves'])
             self.journal.unlink()
             return
         expected = any('after_digest' in copy for copy in operation['copies'])
         if expected:
             for copy in operation['copies']:
                 self._check_restore(copy)
+        if 'moves' in operation:
+            self.moves.recovery_check(operation['moves'])
         self._preserve_current(operation)
+        if 'moves' in operation:
+            self.moves.recover(operation['moves'])
         for copy in operation["copies"]:
             if expected:
                 self._check_restore(copy)
@@ -189,4 +222,8 @@ class MemoryTransaction:
         self.journal.unlink()
 
     def finish(self) -> None:
+        if self.journal.exists():
+            operation = json.loads(self.journal.read_text())
+            if 'moves' in operation:
+                self.moves.finish(operation['moves'])
         self.journal.unlink(missing_ok=True)

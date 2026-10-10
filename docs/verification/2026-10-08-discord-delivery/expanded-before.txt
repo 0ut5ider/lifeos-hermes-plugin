@@ -1,0 +1,32 @@
+test_another_profile_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_another_profile_withholds_the_reply) ... ok
+test_another_transport_token_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_another_transport_token_withholds_the_reply) ... ok
+test_changed_audience_withholds_generated_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_audience_withholds_generated_reply) ... ok
+test_changed_configuration_during_permission_reads_withholds_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_configuration_during_permission_reads_withholds_delivery) ... ok
+test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience) ... ok
+test_missing_required_guard_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_missing_required_guard_withholds_the_reply) ... ok
+test_optional_channel_mode_preserves_actual_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_optional_channel_mode_preserves_actual_delivery) ... ok
+test_overflow_edit_stops_after_the_audience_changes (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_overflow_edit_stops_after_the_audience_changes) ... FAIL
+test_private_audience_permits_an_actual_sdk_post (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_permits_an_actual_sdk_post) ... ok
+test_prompt_delivery_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_prompt_delivery_rechecks_the_current_audience) ... ok
+test_streaming_edit_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_streaming_edit_rechecks_the_current_audience) ... ok
+test_unknown_guard_result_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_unknown_guard_result_withholds_the_reply) ... ok
+
+======================================================================
+FAIL: test_overflow_edit_stops_after_the_audience_changes (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_overflow_edit_stops_after_the_audience_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_private_delivery.py", line 88, in test_overflow_edit_stops_after_the_audience_changes
+    self.assertFalse(result.success,result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : SendResult(success=True, message_id='100000000000000000', error=None, raw_response={'partial_overflow': True, 'delivered_chunks': 1, 'total_chunks': 2, 'last_message_id': '100000000000000000', 'continuation_message_ids': ()}, retryable=False, retry_after=None, continuation_message_ids=(), error_kind=None)
+
+----------------------------------------------------------------------
+Ran 12 tests in 6.208s
+
+FAILED (failures=1)

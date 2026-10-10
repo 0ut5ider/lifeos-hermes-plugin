@@ -27,7 +27,480 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "learning_principal") {
+  if (input.action === 'local_refresh_inputs') {
+    if (!['hometown', 'sources', 'prepare'].includes(String(input.kind)) || !object(input.contents)
+        || Object.values(input.contents).some(value => !(value === null || typeof value === 'string'))
+        || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
+      throw new Error('Choose declared LocalIntelligence input snapshots');
+    }
+    const hometown: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/Hometown.ts')).href);
+    const sources: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/UserSources.ts')).href);
+    if (!object(hometown) || typeof hometown.parseHometown !== 'function'
+        || !object(sources) || typeof sources.parseUserSources !== 'function') {
+      throw new Error('Native LocalIntelligence input exports are unavailable');
+    }
+    const identity = input.contents['LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md'];
+    const configuration = input.contents['LIFEOS/USER/CUSTOMIZATIONS/SKILLS/LocalIntelligence/sources.json'];
+    const home = input.kind === 'sources' ? undefined : hometown.parseHometown(identity ?? '');
+    const selected = input.kind === 'hometown' ? undefined : sources.parseUserSources(configuration ?? null);
+    if (input.kind === 'prepare') {
+      const refresh: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/Refresh.ts')).href);
+      if (!object(refresh) || typeof refresh.localRefreshPlan !== 'function') throw new Error('Native LocalIntelligence plan is unavailable');
+      result = refresh.localRefreshPlan(input.contents, input.date);
+    } else result = input.kind === 'hometown' ? {home} : {sources: selected};
+  } else if (input.action === 'local_refresh_publication') {
+    const refresh: unknown = await import(pathToFileURL(resolve(root, 'skills/LocalIntelligence/Tools/Refresh.ts')).href);
+    if (!object(input.plan) || !object(refresh) || typeof refresh.localRefreshPublication !== 'function') {
+      throw new Error('Choose the native LocalIntelligence publication plan');
+    }
+    result = refresh.localRefreshPublication(input.plan, input.value);
+  } else if (input.action === 'telos_template_view') {
+    if (!Array.isArray(input.files) || input.files.some(row => !object(row)
+        || typeof row.name !== 'string' || typeof row.filename !== 'string' || typeof row.content !== 'string'
+        || (row.type !== 'markdown' && row.type !== 'csv'))) throw new Error('Choose declared native Telos template files');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'skills/Telos/DashboardTemplate/lib/telos-data.ts')).href);
+    if (!object(module) || typeof module.getAllTelosData !== 'function') throw new Error('Native Telos template exports are unavailable');
+    result = {files: module.getAllTelosData(input.files)};
+  } else if (input.action === 'skill_hygiene_inventory') {
+    if (!(input.skill === null || typeof input.skill === 'string')) throw new Error('Choose declared native skill selection');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/SkillHygieneGate.ts')).href);
+    if (!object(module) || typeof module.skillHygieneFiles !== 'function' || typeof module.trackedVendoredDeps !== 'function') {
+      throw new Error('Native skill scan selection is unavailable');
+    }
+    result = {files: module.skillHygieneFiles(input.skill), vendored: module.trackedVendoredDeps()};
+  } else if (input.action === 'banner_view' || input.action === 'banner_source_projection') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/Banner.ts')).href);
+    if (!object(module) || typeof module.bannerSourceView !== 'function' || typeof module.bannerIdentityProjection !== 'function') {
+      throw new Error('Native banner exports are unavailable');
+    }
+    if (input.action === 'banner_source_projection') {
+      if (!(input.content === null || typeof input.content === 'string')) throw new Error('Choose declared banner identity text');
+      result = module.bannerIdentityProjection(input.content === null ? undefined : input.content);
+    } else {
+      if (!object(input.sources) || Object.keys(input.sources).some(key => ![
+          'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'LIFEOS/VERSION', 'LIFEOS/ALGORITHM/LATEST'].includes(key))
+          || Object.values(input.sources).some(value => typeof value !== 'string')
+          || !object(input.counts) || Object.keys(input.counts).sort().join(',') !== 'hooks,skills'
+          || Object.values(input.counts).some(value => typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0)
+          || !Array.isArray(input.args) || input.args.some(value => typeof value !== 'string')
+          || typeof input.width !== 'number' || !Number.isSafeInteger(input.width) || input.width < 1 || input.width > 1024) {
+        throw new Error('The native banner requires declared sources, inventory, arguments, and width');
+      }
+      result = module.bannerSourceView(input.sources, input.counts, input.args, input.width);
+    }
+  } else if (input.action === 'algorithm_tab_sources' || input.action === 'algorithm_tab_view' || input.action === 'algorithm_summary_plan') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/algorithm-tab.ts')).href);
+    if (!object(module) || typeof module.algorithmChainSources !== 'function' || typeof module.renderAlgorithmTabView !== 'function') {
+      throw new Error('Native Algorithm exports are unavailable');
+    }
+    if (input.action === 'algorithm_tab_sources') result = {sources: module.algorithmChainSources()};
+    else {
+      if (input.action === 'algorithm_tab_view' && (typeof input.target !== 'string' || !/^\/api\/algorithm-tab(?:\/|\/file(?:\?.*)?)?$/.test(input.target))
+          || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+            || typeof source.relative !== 'string' || typeof source.content !== 'string')
+          || !object(input.metadata) || Object.values(input.metadata).some(value => !object(value)
+            || typeof value.size !== 'number' || !Number.isSafeInteger(value.size) || value.size < 0
+            || typeof value.modified !== 'number' || !Number.isFinite(value.modified))
+          || !Array.isArray(input.versions) || input.versions.some(value => typeof value !== 'string' || !/^v\d{1,10}\.\d{1,10}\.\d{1,10}\.md$/.test(value))) {
+        throw new Error('Native Algorithm requires declared admitted sources and version metadata');
+      }
+      if (input.action === 'algorithm_summary_plan') {
+        if (typeof module.algorithmSummaryPlan !== 'function') throw new Error('Native Algorithm summary planning is unavailable');
+        result = await module.algorithmSummaryPlan(input.sources, input.metadata, input.versions);
+      } else {
+        const response: unknown = await module.renderAlgorithmTabView(input.sources, input.target, input.metadata, input.versions);
+        if (!(response instanceof Response)) throw new Error('Native Algorithm requires a response');
+        result = {status: response.status, body: await response.json()};
+      }
+    }
+  } else if (input.action === 'algorithm_edit_render' || input.action === 'algorithm_edit_commit') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/algorithm-tab.ts')).href);
+    if (!object(module)) throw new Error('Native Algorithm edits are unavailable');
+    if (input.action === 'algorithm_edit_render') {
+      if (typeof module.renderAlgorithmEdit !== 'function' || typeof input.target !== 'string'
+          || !['/api/algorithm-tab/file', '/api/algorithm-tab/doctrine'].includes(input.target) || !object(input.body)) {
+        throw new Error('Choose declared Algorithm edit fields');
+      }
+      const response: unknown = await module.renderAlgorithmEdit(input.target, input.body);
+      if (!(response instanceof Response)) throw new Error('Native Algorithm edits require a response');
+      result = {status: response.status, body: await response.json()};
+      process.stdout.write(JSON.stringify(result) + "\n", () => process.exit(0));
+      return;
+    }
+    if (typeof module.commitAlgorithmEdit !== 'function' || !Array.isArray(input.paths) || input.paths.length < 1
+        || input.paths.length > 3 || input.paths.some(path => typeof path !== 'string'
+          || path.startsWith('/') || path.split('/').some(part => ['', '.', '..'].includes(part)))
+        || typeof input.message !== 'string' || input.message.length > 512) {
+      throw new Error('Choose bounded Algorithm checkpoint fields');
+    }
+    result = await module.commitAlgorithmEdit(input.paths, input.message);
+  } else if (input.action === 'content_run_plan' || input.action === 'content_run_append'
+      || input.action === 'content_delete_plan' || input.action === 'content_delete_append') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/content.ts')).href);
+    if (!object(module)) throw new Error('Native Content actions are unavailable');
+    if (input.action === 'content_delete_plan') {
+      if (typeof module.prepareContentDelete !== 'function' || typeof input.id !== 'string'
+          || !/^[A-Za-z0-9]{1,200}$/.test(input.id) || typeof input.history_descriptor !== 'number'
+          || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
+        throw new Error('Choose a declared Content disposal snapshot');
+      }
+      result = await module.prepareContentDelete(input.history_descriptor, input.id);
+    } else if (input.action === 'content_delete_append') {
+      if (typeof module.appendContentDelete !== 'function') throw new Error('Native Content disposal is unavailable');
+      result = module.appendContentDelete(input.event);
+    } else if (input.action === 'content_run_plan') {
+      if (typeof module.prepareContentRun !== 'function' || typeof input.id !== 'string'
+          || !/^[A-Za-z0-9]{1,200}$/.test(input.id) || typeof input.history_descriptor !== 'number'
+          || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
+        throw new Error('Choose a declared Content run snapshot');
+      }
+      result = await module.prepareContentRun(input.history_descriptor, input.id);
+    } else {
+      if (typeof module.appendContentRun !== 'function') throw new Error('Native Content run publication is unavailable');
+      result = module.appendContentRun(input.event);
+    }
+  } else if (input.action === 'content_view') {
+    if (typeof input.target !== 'string' || !['/api/content', '/api/content/', '/api/content/status'].includes(input.target)
+        || typeof input.running !== 'boolean' || typeof input.history_descriptor !== 'number'
+        || !Number.isInteger(input.history_descriptor) || input.history_descriptor < 3) {
+      throw new Error('Native Content requires a declared admitted ledger and runtime state');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/content.ts')).href);
+    if (!object(module) || typeof module.renderContentView !== 'function') throw new Error('Native Content exports are unavailable');
+    const response: unknown = await module.renderContentView(input.history_descriptor, input.target, input.running);
+    if (!(response instanceof Response)) throw new Error('Native Content requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'local_intelligence_view') {
+    if (typeof input.target !== 'string' || !/^\/api\/local-intelligence(?:\/status|\/history(?:\?range=(?:week|month|year))?)?$/.test(input.target)
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || !object(input.modified) || Object.values(input.modified).some(value => typeof value !== 'number' || !Number.isFinite(value))
+        || typeof input.running !== 'boolean' || typeof input.started !== 'number' || !Number.isSafeInteger(input.started)
+        || input.started < 0 || input.started > 8640000000000000
+        || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
+      throw new Error('Native LocalIntelligence requires declared admitted sources and runtime state');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/local-intelligence.ts')).href);
+    if (!object(module) || typeof module.renderLocalIntelligenceView !== 'function') throw new Error('Native LocalIntelligence exports are unavailable');
+    const response: unknown = await module.renderLocalIntelligenceView(input.sources, input.target, input.modified,
+      input.running, input.started, input.date);
+    if (!(response instanceof Response)) throw new Error('Native LocalIntelligence requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'menubar_view') {
+    if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || !object(input.modified) || Object.values(input.modified).some(value => typeof value !== 'number' || !Number.isFinite(value))
+        || typeof input.profile_home !== 'string' || typeof input.profile_present !== 'boolean'
+        || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)
+        || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3) throw new Error('Native Menubar requires declared admitted sources and profile state');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/menubar.ts')).href);
+    if (!object(module) || typeof module.renderMenubarView !== 'function') throw new Error('Native Menubar exports are unavailable');
+    const response: unknown = await module.renderMenubarView(input.sources, input.history_descriptor,
+      input.modified, input.profile_home, input.profile_present, input.date);
+    if (!(response instanceof Response)) throw new Error('Native Menubar requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'conduit_prepare') {
+    if (typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3 || !(input.content === null || typeof input.content === 'string')) {
+      throw new Error('Native Conduit preparation requires declared admitted history and prior insight');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Conduit/BuildInsight.ts')).href);
+    if (!object(module) || typeof module.prepareInsight !== 'function') throw new Error('Native Conduit insight exports are unavailable');
+    result = {plan: await module.prepareInsight(input.history_descriptor, input.content)};
+  } else if (input.action === 'conduit_defaults') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Conduit/config.ts')).href);
+    if (!object(module) || typeof module.defaultConfigText !== 'function') throw new Error('Native Conduit defaults are unavailable');
+    result = {content: module.defaultConfigText()};
+  } else if (input.action === 'conduit_view') {
+    if (typeof input.target !== 'string' || !/^\/api\/conduit(?:\/|\/today|\/recent(?:\?days=[1-9][0-9]?)?|\/sources|\/status|\/health|\/insight)?$/.test(input.target)
+        || typeof input.date !== 'string' || typeof input.running !== 'boolean' || typeof input.building !== 'boolean'
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3) throw new Error('Native Conduit requires fixed admitted records and events');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/conduit.ts')).href);
+    if (!object(module) || typeof module.renderConduitView !== 'function') throw new Error('Native Conduit exports are unavailable');
+    const response: unknown = await module.renderConduitView(input.sources, input.history_descriptor,
+      input.target, input.running, input.building, input.date);
+    if (!(response instanceof Response)) throw new Error('Native Conduit requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'performance_view') {
+    if (typeof input.target !== 'string' || !/^\/api\/performance\/(?:cost(?:\?days=[1-9][0-9]{0,3})?|failures|summary|anthropic-cost)$/.test(input.target)
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')
+        || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+        || input.history_descriptor < 3) throw new Error('Native Performance requires declared admitted histories');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Performance/module.ts')).href);
+    if (!object(module) || typeof module.renderPerformanceView !== 'function') throw new Error('Native Performance exports are unavailable');
+    const response: unknown = await module.renderPerformanceView(input.sources, input.history_descriptor, input.target);
+    if (!(response instanceof Response)) throw new Error('Native Performance requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'personal_module_view') {
+    if (typeof input.module !== 'string' || !['books', 'projects', 'assets', 'evals', 'threatmodel', 'ledger', 'doctor'].includes(input.module)
+        || typeof input.target !== 'string' || typeof input.running !== 'boolean' || !Array.isArray(input.sources)
+        || !(input.modified === null || typeof input.modified === 'number' && Number.isFinite(input.modified))
+        || input.sources.some(source => !object(source) || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native personal module views require declared admitted sources and runtime state');
+    }
+    const module: unknown = await import(pathToFileURL(resolve(root, `LIFEOS/PULSE/modules/${input.module}.ts`)).href);
+    if (!object(module) || typeof module.renderPersonalView !== 'function') throw new Error('Native personal module exports are unavailable');
+    const response: unknown = module.renderPersonalView(input.sources, input.target, input.running, input.modified);
+    if (!(response instanceof Response)) throw new Error('Native personal module views require a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'atlas_collect') {
+    if (typeof input.collector !== 'string' || !['gear', 'projects'].includes(input.collector)
+        || !(input.content === null || typeof input.content === 'string')) {
+      throw new Error('Native Atlas collectors require fixed admitted source text');
+    }
+    const name = input.collector === 'gear' ? 'Gear' : 'Projects';
+    const module: unknown = await import(pathToFileURL(resolve(root, `LIFEOS/ATLAS/collectors/${name}.ts`)).href);
+    const render = object(module) ? module[`collect${name}`] : undefined;
+    if (typeof render !== 'function') throw new Error('Native Atlas collector exports are unavailable');
+    result = render(input.content);
+  } else if (input.action === 'atlas_graph_state') {
+    process.env.ATLAS_DIR = resolve(root, '../.local/state/lifeos/atlas');
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/ATLAS/Store.ts')).href);
+    if (!object(module) || typeof module.atlasGraphState !== 'function') throw new Error('Native Atlas graph exports are unavailable');
+    result = module.atlasGraphState();
+  } else if (input.action === 'atlas_insight_plan') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
+    if (!object(module) || typeof module.atlasInsightPlan !== 'function' || !(input.metrics === null || object(input.metrics))) {
+      throw new Error('Native Atlas generation requires admitted current metrics');
+    }
+    result = module.atlasInsightPlan(input.metrics);
+  } else if (input.action === 'atlas_insights_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
+    if (!object(module) || typeof module.renderAtlasInsights !== 'function'
+        || !(input.metrics === null || object(input.metrics)) || !(input.cache === null || typeof input.cache === 'string')) {
+      throw new Error('Native Atlas insights require admitted current metrics and narrative');
+    }
+    const response: unknown = module.renderAtlasInsights(input.metrics, input.cache);
+    if (!(response instanceof Response)) throw new Error('Native Atlas insights require a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'atlas_snapshot_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/atlas.ts')).href);
+    if (!object(module) || typeof module.renderAtlasSnapshot !== 'function'
+        || !(input.snapshot === null || object(input.snapshot) && typeof input.snapshot.content === 'string'
+          && typeof input.snapshot.modified_ms === 'number' && Number.isFinite(input.snapshot.modified_ms))) {
+      throw new Error('Native Atlas views require a declared admitted snapshot');
+    }
+    const response: unknown = module.renderAtlasSnapshot(input.snapshot);
+    if (!(response instanceof Response)) throw new Error('Native Atlas views require a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'upgrade_store') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/Upgrades.ts')).href);
+    if (!object(module) || typeof module.renderUpgradeStore !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
+        || typeof input.action_name !== 'string' || !object(input.arguments)
+        || !(input.state === null || typeof input.state === 'string') || typeof input.now !== 'string'
+        || typeof input.source_session !== 'string') throw new Error('Native upgrades require declared current sources and actions');
+    result = module.renderUpgradeStore(input.sources,input.state,input.action_name,input.arguments,input.now,input.source_session);
+  } else if (input.action === 'life_business_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.renderBusinessView !== 'function' || typeof input.company !== 'string'
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native business views require declared current company sources');
+    }
+    const response: unknown = module.renderBusinessView(input.sources, input.company);
+    if (!(response instanceof Response)) throw new Error('Native business renderer requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'life_work_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.renderWorkView !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.relative !== 'string'
+          || typeof source.content !== 'string')) throw new Error('Native local work views require declared current sources');
+    const response: unknown = module.renderWorkView(input.sources);
+    if (!(response instanceof Response)) throw new Error('Native local work renderer requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'finance_source_projections' || input.action === 'life_finance_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.financeSourceProjections !== 'function' || typeof module.renderFinanceView !== 'function'
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native finance views require declared current sources');
+    }
+    if (input.action === 'finance_source_projections') result = {projections: module.financeSourceProjections(input.sources)};
+    else {
+      const response: unknown = module.renderFinanceView(input.sources);
+      if (!(response instanceof Response)) throw new Error('Native finance renderer requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
+  } else if (input.action === 'life_health_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.renderHealthView !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string'
+          || typeof source.content !== 'string')) throw new Error('Native health views require declared current sources');
+    const response: unknown = module.renderHealthView(input.sources);
+    if (!(response instanceof Response)) throw new Error('Native health renderer requires a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'operational_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.renderOperationalView !== 'function' || typeof input.target !== 'string'
+        || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native operational views require declared current sources');
+    }
+    let response: unknown;
+    if (input.history_descriptor === undefined) response = module.renderOperationalView(input.sources, input.target);
+    else {
+      if (typeof module.renderOperationalHistory !== 'function'
+          || input.target !== '/api/algorithm' && !/^\/api\/capabilities(?:\?window=(?:60|360|1440))?$/.test(input.target)
+          || typeof input.history_descriptor !== 'number' || !Number.isInteger(input.history_descriptor)
+          || input.history_descriptor < 3) throw new Error('Operational history requires a private inherited descriptor');
+      response = await module.renderOperationalHistory(input.sources, input.history_descriptor, input.target);
+    }
+    if (!(response instanceof Response)) throw new Error('Native operational views require a response');
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === 'onboarding_sources' || input.action === 'onboarding_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.onboardingViewSources !== 'function' || typeof module.renderOnboardingView !== 'function') {
+      throw new Error('Native onboarding exports are unavailable');
+    }
+    if (input.action === 'onboarding_sources') result = {sources: module.onboardingViewSources()};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+        throw new Error('Native onboarding requires declared current sources');
+      }
+      const response: unknown = module.renderOnboardingView(input.sources);
+      if (!(response instanceof Response)) throw new Error('Native onboarding requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
+  } else if (input.action === 'telos_overview_sources' || input.action === 'telos_overview') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.telosOverviewSources !== 'function' || typeof module.renderTelosOverview !== 'function') {
+      throw new Error('Native TELOS overview exports are unavailable');
+    }
+    if (input.action === 'telos_overview_sources') result = {sources: module.telosOverviewSources()};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string')) {
+        throw new Error('Native TELOS overview requires declared current sources');
+      }
+      const state: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/UpdateLifeosState.ts')).href);
+      if (!object(state) || typeof state.renderLifeosState !== 'function') {
+        throw new Error('Native current dimension calculation is unavailable');
+      }
+      const dimensions = Object.fromEntries(input.sources.filter(source => object(source)
+        && typeof source.relative === 'string'
+        && /^LIFEOS\/USER\/TELOS\/(?:CURRENT_STATE|IDEAL_STATE)\/(?:HEALTH|MONEY|FREEDOM|CREATIVE|RELATIONSHIPS|RHYTHMS|INFRASTRUCTURE)\.md$/.test(source.relative))
+        .map(source => [source.relative.slice('LIFEOS/USER/TELOS/'.length), source.content]));
+      const rendered: unknown = state.renderLifeosState(dimensions, true);
+      if (!object(rendered) || typeof rendered.content !== 'string') {
+        throw new Error('Native current dimension calculation changes its declared output');
+      }
+      const response: unknown = await module.renderTelosOverview(input.sources, rendered.content);
+      if (!(response instanceof Response)) throw new Error('Native TELOS overview requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
+  } else if (input.action === 'telos_file_names') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.telosFileNames !== 'function') {
+      throw new Error('Native TELOS file names are unavailable');
+    }
+    result = {filenames: module.telosFileNames()};
+  } else if (input.action === 'user_index_registry' || input.action === 'user_index') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/user-index.ts')).href);
+    if (!object(module) || typeof module.userIndexRegistry !== 'function' || typeof module.renderUserIndex !== 'function') {
+      throw new Error('Native user index calculations are unavailable');
+    }
+    if (input.action === 'user_index_registry') result = {skip_directories: module.userIndexRegistry()};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.relative !== 'string' || typeof source.content !== 'string'
+          || typeof source.modified !== 'string' || typeof source.size !== 'number')) {
+        throw new Error('Native user index calculations require declared sources');
+      }
+      result = {index: module.renderUserIndex(input.sources)};
+    }
+  } else if (input.action === 'life_view_sources' || input.action === 'life_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/Observability/observability.ts')).href);
+    if (!object(module) || typeof module.lifeViewSources !== 'function' || typeof module.renderLifeView !== 'function') {
+      throw new Error('Native Life views are unavailable');
+    }
+    if (input.action === 'life_view_sources') result = {filenames: module.lifeViewSources()};
+    else {
+      if (typeof input.target !== 'string' || !Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.filename !== 'string' || typeof source.content !== 'string')) {
+        throw new Error('Native Life views require declared current sources');
+      }
+      const response: unknown = module.renderLifeView(input.sources, input.target);
+      if (!(response instanceof Response)) throw new Error('Native Life renderer requires a response');
+      result = {status: response.status, body: await response.json()};
+    }
+  } else if (input.action === 'morning_brief') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/checks/life-morning-brief.ts')).href);
+    if (!object(module) || typeof module.renderMorningBrief !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string'
+          || typeof source.content !== 'string')) throw new Error('Native morning brief requires declared current sources');
+    result = {stdout: module.renderMorningBrief(input.sources)};
+  } else if (input.action === 'tab_freshness_specs' || input.action === 'tab_freshness_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/tab-freshness.ts')).href);
+    if (!object(module) || typeof input.tab !== 'string' || typeof module.tabFreshnessSpecifications !== 'function'
+        || typeof module.renderTabFreshness !== 'function') throw new Error('Native tab freshness requires its fixed registry');
+    if (input.action === 'tab_freshness_specs') result = {specifications: module.tabFreshnessSpecifications(input.tab)};
+    else {
+      if (!Array.isArray(input.sources) || input.sources.some(source => !object(source)
+          || typeof source.name !== 'string' || typeof source.path !== 'string' || typeof source.exists !== 'boolean'
+          || !(source.mtime === null || typeof source.mtime === 'string')
+          || !(source.content === null || typeof source.content === 'string'))) {
+        throw new Error('Native tab freshness requires declared current sources and timestamps');
+      }
+      result = {status: 200, body: module.renderTabFreshness(input.tab,input.sources)};
+    }
+  } else if (input.action === 'upgrades_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/upgrades.ts')).href);
+    if (!object(module) || typeof module.renderUpgradesView !== 'function' || !Array.isArray(input.records)
+        || !Array.isArray(input.hypotheses) || [...input.records, ...input.hypotheses].some(source => !object(source)
+          || typeof source.filename !== 'string' || typeof source.content !== 'string') || typeof input.target !== 'string') {
+      throw new Error('Native upgrades views require declared current records and hypotheses');
+    }
+    result = module.renderUpgradesView(input.records,input.hypotheses,input.target);
+  } else if (input.action === 'hypothesis_review') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
+    if (!object(module) || typeof module.renderHypothesisReview !== 'function' || !object(input.sources)
+        || !Array.isArray(input.sources.hypotheses) || !object(input.sources.frames)
+        || input.sources.hypotheses.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
+        || Object.values(input.sources.frames).some(content => typeof content !== 'string')
+        || typeof input.sources.directory_exists !== 'boolean'
+        || !(input.sources.state === null || typeof input.sources.state === 'string')
+        || typeof input.slug !== 'string' || (input.verb !== 'graduate' && input.verb !== 'reject')
+        || !(input.note === null || typeof input.note === 'string') || typeof input.now !== 'string') {
+      throw new Error('Native hypothesis review requires declared sources and actions');
+    }
+    result = await module.renderHypothesisReview(input.sources, input.slug, input.verb,
+      input.note === null ? undefined : input.note, input.now);
+  } else if (input.action === 'hypothesis_list') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
+    if (!object(module) || typeof module.renderHypothesisList !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')) {
+      throw new Error('Native pending hypotheses require declared current sources');
+    }
+    result = {status: 200, body: {hypotheses: module.renderHypothesisList(input.sources)}};
+  } else if (input.action === 'hypothesis_view') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
+    if (!object(module) || typeof module.renderHypothesesView !== 'function' || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
+        || typeof input.target !== 'string') throw new Error('Native hypothesis views require declared current sources');
+    result = module.renderHypothesesView(input.sources, input.target);
+  } else if (input.action === 'session_harvest') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/SessionHarvester.ts')).href);
+    if (!object(module) || typeof module.renderSessionHarvest !== 'function' || !Array.isArray(input.sessions)
+        || typeof input.mine !== 'boolean' || typeof input.now !== 'string') {
+      throw new Error('Session consolidation requires declared transcripts and modes');
+    }
+    result = module.renderSessionHarvest(input.sessions, input.mine, input.now);
+  } else if (input.action === "proposal_gc") {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/ProposalGC.ts')).href);
+    if (!object(module) || typeof module.renderProposalGC !== 'function' || !object(input.sources)
+        || Object.values(input.sources).some(content => typeof content !== 'string')
+        || typeof input.auto !== 'boolean' || typeof input.route !== 'boolean') {
+      throw new Error('Proposal cleanup requires declared sources and modes');
+    }
+    result = module.renderProposalGC(input.sources, input.auto, input.route);
+  } else if (input.action === "learning_principal") {
     const module: unknown = await import(pathToFileURL(resolve(root, "hooks/lib/identity.ts")).href);
     if (!object(module) || typeof module.getPrincipalName !== "function") throw new Error("Native principal identity is unavailable");
     result = {name: module.getPrincipalName()};
@@ -211,7 +684,7 @@ async function main(): Promise<void> {
       return sources;
     }
     let observed = null;
-    if (object(input.evidence)) {
+    if (object(input.evidence) && Array.isArray(input.evidence.sources)) {
       const sources: Record<string, string> = {};
       for (const value of Object.values(declared(input.evidence.sources))) sources[value.path] = value.content;
       observed = evidence.gatherEvidence(new Date(), {sources, gitCommits: input.evidence.gitCommits});
@@ -252,7 +725,7 @@ async function main(): Promise<void> {
     const context = freshness.readContextFreshness(declared(input.context_sources));
     const state = freshness.readStateFreshness(declared(input.state_sources));
     let observed = null;
-    if (object(input.evidence_sources)) {
+    if (object(input.evidence_sources) && Array.isArray(input.evidence_sources.sources)) {
       const values: Record<string, string> = {};
       for (const source of Object.values(declared(input.evidence_sources.sources))) values[source.path] = source.content;
       observed = evidence.gatherEvidence(now, {sources: values, gitCommits: input.evidence_sources.gitCommits});
@@ -456,6 +929,69 @@ async function main(): Promise<void> {
     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
     if (!(response instanceof Response)) throw new Error("Native wiki response is unavailable");
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === "knowledge_conformance") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "hooks/handlers/KnowledgeConformance.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeConformance !== "function" || !Array.isArray(input.sources)
+        || !Array.isArray(input.directories) || !input.directories.every(value => typeof value === "string")
+        || typeof input.exists !== "boolean") {
+      throw new Error("Native Knowledge findings need declared sources and archive directories");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge findings need declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderKnowledgeConformance(sources, input.directories, input.exists);
+  } else if (input.action === "knowledge_lint") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeLint.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeLint !== "function" || !Array.isArray(input.sources)
+        || typeof input.json !== "boolean" || typeof input.list !== "number" || !Number.isSafeInteger(input.list)
+        || input.list < 0 || input.list > 10000 || !(input.directory === null || typeof input.directory === "string")) {
+      throw new Error("Native Knowledge lint needs declared sources and bounded report options");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge lint needs declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = {stdout: module.renderKnowledgeLint(sources, {json: input.json, list: input.list, directory: input.directory})};
+  } else if (input.action === "knowledge_harvester_view") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeView !== "function" || !Array.isArray(input.sources)
+        || typeof input.view !== "string" || !["review", "status", "contradictions", "index"].includes(input.view) || !Array.isArray(input.ordering)
+        || !input.ordering.every(value => typeof value === "string")) {
+      throw new Error("Native Knowledge views need declared sources and options");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge views need declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderKnowledgeView(sources, input.view, input.ordering);
+  } else if (input.action === "knowledge_harvest") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
+    if (!object(module) || typeof module.renderHarvest !== "function" || !Array.isArray(input.sources)
+        || !(input.source === null || typeof input.source === "string") || typeof input.dry_run !== "boolean"
+        || typeof input.max_notes !== "number" || !Number.isSafeInteger(input.max_notes)
+        || input.max_notes < 1 || input.max_notes > 50 || !Array.isArray(input.occupied)
+        || !input.occupied.every(value => typeof value === "string") || !Array.isArray(input.ordering)
+        || !input.ordering.every(value => typeof value === "string")) {
+      throw new Error("Native harvesting needs declared sources and bounded options");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native harvesting needs declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderHarvest(sources, input.source, input.dry_run, input.max_notes, input.occupied, input.ordering);
   } else if (input.action === "knowledge_indexes") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
     if (!object(module) || typeof module.renderKnowledgeIndexes !== "function" || !Array.isArray(input.sources)
@@ -484,7 +1020,8 @@ async function main(): Promise<void> {
     result = {notes: retriever.discoverAllItems(null)};
   } else if (input.action === "validate_batch") {
     if (!Array.isArray(input.items) || typeof system.sanitizeTypedItemForPersistence !== "function") throw new Error("Invalid native validation batch");
-    result = {results: input.items.map((item: unknown) => system.sanitizeTypedItemForPersistence(item))};
+    const sanitize = system.sanitizeTypedItemForPersistence;
+    result = {results: input.items.map((item: unknown) => sanitize(item))};
   } else if (input.action === "validate_source_batch") {
     const capture: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/CaptureEnvelope.ts")).href);
     if (!object(capture) || typeof capture.stripPrivateContent !== "function" || !Array.isArray(input.contents)) {

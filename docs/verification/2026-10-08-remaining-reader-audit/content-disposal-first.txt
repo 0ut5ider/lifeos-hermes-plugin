@@ -1,0 +1,31 @@
+test_artifact_symlink_refuses_before_tombstone_or_source_movement (test_memory_content_disposal.MemoryContentDisposalTests.test_artifact_symlink_refuses_before_tombstone_or_source_movement) ... ok
+test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media (test_memory_content_disposal.MemoryContentDisposalTests.test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media) ... ok
+test_existing_trash_preserves_every_file_and_ledger_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_existing_trash_preserves_every_file_and_ledger_before_tombstone) ... ok
+test_external_source_path_refuses_before_any_effect (test_memory_content_disposal.MemoryContentDisposalTests.test_external_source_path_refuses_before_any_effect) ... ok
+test_missing_media_still_disposes_current_item_and_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_missing_media_still_disposes_current_item_and_artifacts) ... FAIL
+test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts) ... FAIL
+test_repeat_delete_returns_missing_without_appending_or_touching_other_items (test_memory_content_disposal.MemoryContentDisposalTests.test_repeat_delete_returns_missing_without_appending_or_touching_other_items) ... ok
+test_symlink_or_hardlink_source_refuses_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_symlink_or_hardlink_source_refuses_before_tombstone) ... ok
+
+======================================================================
+FAIL: test_missing_media_still_disposes_current_item_and_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_missing_media_still_disposes_current_item_and_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_disposal.py", line 159, in test_missing_media_still_disposes_current_item_and_artifacts
+    self.assertEqual(result.status_code,200,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Content action is unavailable under the current policy"}
+
+======================================================================
+FAIL: test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_disposal.py", line 41, in test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts
+    self.assertEqual(result.status_code,200,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Content action is unavailable under the current policy"}
+
+----------------------------------------------------------------------
+Ran 8 tests in 11.163s
+
+FAILED (failures=2)

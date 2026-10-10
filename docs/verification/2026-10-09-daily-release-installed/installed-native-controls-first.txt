@@ -1,0 +1,1067 @@
+test_actual_committed_exit_keeps_native_event_record_and_retention_effects (test_memory_conduit_capture.MemoryConduitCaptureTests.test_actual_committed_exit_keeps_native_event_record_and_retention_effects) ... ok
+test_actual_exit_after_event_publication_keeps_cursor_unadvanced_and_recovers_event (test_memory_conduit_capture.MemoryConduitCaptureTests.test_actual_exit_after_event_publication_keeps_cursor_unadvanced_and_recovers_event) ... ok
+test_actual_exit_after_retention_deletion_restores_all_original_owner_files (test_memory_conduit_capture.MemoryConduitCaptureTests.test_actual_exit_after_retention_deletion_restores_all_original_owner_files) ... ok
+test_capture_rolls_up_old_events_before_native_retention_removes_them (test_memory_conduit_capture.MemoryConduitCaptureTests.test_capture_rolls_up_old_events_before_native_retention_removes_them) ... ok
+test_current_owner_capture_keeps_native_event_and_private_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_owner_capture_keeps_native_event_and_private_publication) ... ok
+test_current_status_and_existing_init_preserve_actual_native_stdout (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_status_and_existing_init_preserve_actual_native_stdout) ... ok
+test_current_today_and_selected_rollup_preserve_actual_native_markdown_and_records (test_memory_conduit_capture.MemoryConduitCaptureTests.test_current_today_and_selected_rollup_preserve_actual_native_markdown_and_records) ... ok
+test_disabled_capture_keeps_native_idle_behavior_without_reading_excluded_activity (test_memory_conduit_capture.MemoryConduitCaptureTests.test_disabled_capture_keeps_native_idle_behavior_without_reading_excluded_activity) ... ok
+test_foreign_claude_root_environment_cannot_redirect_managed_capture (test_memory_conduit_capture.MemoryConduitCaptureTests.test_foreign_claude_root_environment_cannot_redirect_managed_capture) ... ok
+test_isolated_native_command_inherits_the_callers_process_group (test_memory_conduit_capture.MemoryConduitCaptureTests.test_isolated_native_command_inherits_the_callers_process_group) ... ok
+test_later_owner_recreation_after_retention_exit_blocks_all_recovery (test_memory_conduit_capture.MemoryConduitCaptureTests.test_later_owner_recreation_after_retention_exit_blocks_all_recovery) ... ok
+test_later_work_change_after_actual_execution_preserves_all_owner_files (test_memory_conduit_capture.MemoryConduitCaptureTests.test_later_work_change_after_actual_execution_preserves_all_owner_files) ... ok
+test_limited_writer_cannot_publish_capture_or_advance_cursor (test_memory_conduit_capture.MemoryConduitCaptureTests.test_limited_writer_cannot_publish_capture_or_advance_cursor) ... ok
+test_optional_capture_sources_refuse_before_any_file_or_external_command (test_memory_conduit_capture.MemoryConduitCaptureTests.test_optional_capture_sources_refuse_before_any_file_or_external_command) ... ok
+test_original_capture_folds_work_activity_and_repeats_without_duplicate_events (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_capture_folds_work_activity_and_repeats_without_duplicate_events) ... ok
+test_original_failed_append_advances_cursor_and_loses_activity_known_bug (test_memory_conduit_capture.MemoryConduitCaptureTests.test_original_failed_append_advances_cursor_and_loses_activity_known_bug) ... ok
+test_owner_revocation_after_actual_execution_preserves_all_owner_files (test_memory_conduit_capture.MemoryConduitCaptureTests.test_owner_revocation_after_actual_execution_preserves_all_owner_files) ... ok
+test_private_work_event_refuses_capture_and_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_private_work_event_refuses_capture_and_cursor_publication) ... ok
+test_unbound_capture_refuses_before_event_or_cursor_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unbound_capture_refuses_before_event_or_cursor_publication) ... ok
+test_unbound_status_and_rollup_refuse_without_disclosure_or_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unbound_status_and_rollup_refuse_without_disclosure_or_publication) ... ok
+test_actual_committed_exit_finishes_artifact_cleanup_and_keeps_native_trash (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_committed_exit_finishes_artifact_cleanup_and_keeps_native_trash) ... Exception in thread Thread-2 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_actual_interruption_preserves_later_ledger_before_any_move_recovery (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_interruption_preserves_later_ledger_before_any_move_recovery) ... Exception in thread Thread-4 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_actual_process_exit_after_all_moves_restores_artifacts_and_source (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_after_all_moves_restores_artifacts_and_source) ... Exception in thread Thread-6 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_actual_process_exit_after_first_move_restores_all_original_bytes (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_after_first_move_restores_all_original_bytes) ... Exception in thread Thread-8 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_actual_process_exit_after_tombstone_restores_exact_ledger_and_permissions (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_after_tombstone_restores_exact_ledger_and_permissions) ... Exception in thread Thread-10 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_actual_process_exit_during_cleanup_finishes_only_original_remaining_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_during_cleanup_finishes_only_original_remaining_artifacts) ... Exception in thread Thread-12 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_artifact_symlink_refuses_before_tombstone_or_source_movement (test_memory_content_disposal.MemoryContentDisposalTests.test_artifact_symlink_refuses_before_tombstone_or_source_movement) ... Exception in thread Thread-14 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media (test_memory_content_disposal.MemoryContentDisposalTests.test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media) ... Exception in thread Thread-16 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_existing_trash_preserves_every_file_and_ledger_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_existing_trash_preserves_every_file_and_ledger_before_tombstone) ... Exception in thread Thread-18 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_external_source_path_refuses_before_any_effect (test_memory_content_disposal.MemoryContentDisposalTests.test_external_source_path_refuses_before_any_effect) ... Exception in thread Thread-20 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_ledger_change_after_real_native_plan_preserves_all_media (test_memory_content_disposal.MemoryContentDisposalTests.test_ledger_change_after_real_native_plan_preserves_all_media) ... Exception in thread Thread-22 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_live_item_refuses_before_any_effect_until_runner_control_is_governed (test_memory_content_disposal.MemoryContentDisposalTests.test_live_item_refuses_before_any_effect_until_runner_control_is_governed) ... Exception in thread Thread-24 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_missing_media_still_disposes_current_item_and_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_missing_media_still_disposes_current_item_and_artifacts) ... Exception in thread Thread-26 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts) ... Exception in thread Thread-28 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_owner_revocation_after_real_native_plan_refuses_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_revocation_after_real_native_plan_refuses_before_tombstone) ... Exception in thread Thread-30 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_repeat_delete_returns_missing_without_appending_or_touching_other_items (test_memory_content_disposal.MemoryContentDisposalTests.test_repeat_delete_returns_missing_without_appending_or_touching_other_items) ... Exception in thread Thread-32 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_symlink_or_hardlink_source_refuses_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_symlink_or_hardlink_source_refuses_before_tombstone) ... Exception in thread Thread-34 (run):
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/config.py", line 433, in load
+    ws_protocol_class = import_from_string(WS_PROTOCOLS.get(self.ws, self.ws))
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/auto.py", line 19, in <module>
+    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 11, in <module>
+    import websockets.legacy.handshake
+  File "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/lib/python3.14/site-packages/websockets/legacy/__init__.py", line 6, in <module>
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "websockets.legacy is deprecated; "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        DeprecationWarning,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+FAIL
+test_actual_no_replacement_rename_preserves_existing_trash (test_memory_moves.MemoryMoveTests.test_actual_no_replacement_rename_preserves_existing_trash) ... ok
+test_committed_partial_cleanup_finishes_remaining_original_artifacts (test_memory_moves.MemoryMoveTests.test_committed_partial_cleanup_finishes_remaining_original_artifacts) ... ok
+test_committed_partial_cleanup_preserves_a_later_remaining_edit (test_memory_moves.MemoryMoveTests.test_committed_partial_cleanup_preserves_a_later_remaining_edit) ... ok
+test_committed_recovery_removes_only_selected_quarantine_and_keeps_trash (test_memory_moves.MemoryMoveTests.test_committed_recovery_removes_only_selected_quarantine_and_keeps_trash) ... ok
+test_interruption_after_all_moves_restores_artifacts_and_source (test_memory_moves.MemoryMoveTests.test_interruption_after_all_moves_restores_artifacts_and_source) ... ok
+test_interruption_after_first_move_restores_media_and_exact_ledger (test_memory_moves.MemoryMoveTests.test_interruption_after_first_move_restores_media_and_exact_ledger) ... ok
+test_large_media_journal_keeps_metadata_without_media_bytes (test_memory_moves.MemoryMoveTests.test_large_media_journal_keeps_metadata_without_media_bytes) ... ok
+test_later_ledger_edit_prevents_all_move_recovery (test_memory_moves.MemoryMoveTests.test_later_ledger_edit_prevents_all_move_recovery) ... ok
+test_later_quarantine_edit_refuses_committed_cleanup (test_memory_moves.MemoryMoveTests.test_later_quarantine_edit_refuses_committed_cleanup) ... ok
+test_later_source_recreation_prevents_all_move_and_ledger_recovery (test_memory_moves.MemoryMoveTests.test_later_source_recreation_prevents_all_move_and_ledger_recovery) ... ok
+test_move_recovery_requires_expected_ledger_identity_before_any_effect (test_memory_moves.MemoryMoveTests.test_move_recovery_requires_expected_ledger_identity_before_any_effect) ... ok
+test_move_reservation_requires_expected_ledger_identity (test_memory_moves.MemoryMoveTests.test_move_reservation_requires_expected_ledger_identity) ... ok
+test_read_access_time_change_does_not_reject_unchanged_owner_media (test_memory_moves.MemoryMoveTests.test_read_access_time_change_does_not_reject_unchanged_owner_media) ... ok
+test_changed_expected_journal_hash_refuses_without_restoring_any_file (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_changed_expected_journal_hash_refuses_without_restoring_any_file) ... ok
+test_committed_original_operation_keeps_publications_and_removes_its_journal (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_committed_original_operation_keeps_publications_and_removes_its_journal) ... ok
+test_expected_deleted_publication_restores_original_and_absent_targets (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_expected_deleted_publication_restores_original_and_absent_targets) ... ok
+test_expected_publications_restore_only_original_or_owned_artifact_bytes (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_expected_publications_restore_only_original_or_owned_artifact_bytes) ... ok
+test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal) ... ok
+test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect) ... ok
+test_later_edit_refuses_before_any_member_of_the_group_is_restored (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_later_edit_refuses_before_any_member_of_the_group_is_restored) ... ok
+test_later_recreation_of_expected_deleted_file_blocks_all_recovery (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_later_recreation_of_expected_deleted_file_blocks_all_recovery) ... ok
+test_unknown_original_operation_restores_existing_and_absent_targets (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_unknown_original_operation_restores_existing_and_absent_targets) ... ok
+
+======================================================================
+FAIL: test_actual_committed_exit_finishes_artifact_cleanup_and_keeps_native_trash (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_committed_exit_finishes_artifact_cleanup_and_keeps_native_trash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_actual_interruption_preserves_later_ledger_before_any_move_recovery (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_interruption_preserves_later_ledger_before_any_move_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_actual_process_exit_after_all_moves_restores_artifacts_and_source (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_after_all_moves_restores_artifacts_and_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_actual_process_exit_after_first_move_restores_all_original_bytes (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_after_first_move_restores_all_original_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_actual_process_exit_after_tombstone_restores_exact_ledger_and_permissions (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_after_tombstone_restores_exact_ledger_and_permissions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_actual_process_exit_during_cleanup_finishes_only_original_remaining_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_actual_process_exit_during_cleanup_finishes_only_original_remaining_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_artifact_symlink_refuses_before_tombstone_or_source_movement (test_memory_content_disposal.MemoryContentDisposalTests.test_artifact_symlink_refuses_before_tombstone_or_source_movement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media (test_memory_content_disposal.MemoryContentDisposalTests.test_excluded_ledger_refuses_disposal_without_revealing_or_moving_media)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_existing_trash_preserves_every_file_and_ledger_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_existing_trash_preserves_every_file_and_ledger_before_tombstone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_external_source_path_refuses_before_any_effect (test_memory_content_disposal.MemoryContentDisposalTests.test_external_source_path_refuses_before_any_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_ledger_change_after_real_native_plan_preserves_all_media (test_memory_content_disposal.MemoryContentDisposalTests.test_ledger_change_after_real_native_plan_preserves_all_media)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_live_item_refuses_before_any_effect_until_runner_control_is_governed (test_memory_content_disposal.MemoryContentDisposalTests.test_live_item_refuses_before_any_effect_until_runner_control_is_governed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_missing_media_still_disposes_current_item_and_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_missing_media_still_disposes_current_item_and_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_delete_moves_fixed_inbox_files_and_removes_selected_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_owner_revocation_after_real_native_plan_refuses_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_owner_revocation_after_real_native_plan_refuses_before_tombstone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_repeat_delete_returns_missing_without_appending_or_touching_other_items (test_memory_content_disposal.MemoryContentDisposalTests.test_repeat_delete_returns_missing_without_appending_or_touching_other_items)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+======================================================================
+FAIL: test_symlink_or_hardlink_source_refuses_before_tombstone (test_memory_content_disposal.MemoryContentDisposalTests.test_symlink_or_hardlink_source_refuses_before_tombstone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/tests/test_memory_pulse_relay.py", line 35, in setUp
+    self.fail('The disposable authenticated dashboard did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The disposable authenticated dashboard did not start
+
+----------------------------------------------------------------------
+Ran 59 tests in 30.649s
+
+FAILED (failures=17)

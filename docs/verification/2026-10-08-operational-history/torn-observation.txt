@@ -1,0 +1,16 @@
+test_torn_utf8_activity_waits_until_its_writer_completes_the_record (test_memory_operational_history.MemoryOperationalHistoryTests.test_torn_utf8_activity_waits_until_its_writer_completes_the_record) ... FAIL
+
+======================================================================
+FAIL: test_torn_utf8_activity_waits_until_its_writer_completes_the_record (test_memory_operational_history.MemoryOperationalHistoryTests.test_torn_utf8_activity_waits_until_its_writer_completes_the_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 132, in test_torn_utf8_activity_waits_until_its_writer_completes_the_record
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.316s
+
+FAILED (failures=1)
+Torn UTF-8 source observation: {"withheld": true, "error_type": "UnicodeDecodeError", "start": 0, "end": 1}

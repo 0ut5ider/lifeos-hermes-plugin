@@ -1,0 +1,310 @@
+..............................F......................................... [ 74%]
+.........................                                                [100%]
+=================================== FAILURES ===================================
+________________ test_batch_routing[answers1-asked1-payload1-0] ________________
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/conftest.py", line 1199, in pytest_runtest_call
+  |     return (yield)
+  |             ^^^^^
+  |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/pluggy/_callers.py", line 121, in _multicall
+  |     res = hook_impl.function(*args)
+  |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 183, in pytest_runtest_call
+  |     collect_unraisable(item.config)
+  |     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 81, in collect_unraisable
+  |     raise ExceptionGroup("multiple unraisable exception warnings", errors)
+  | ExceptionGroup: multiple unraisable exception warnings (22 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=39, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=39, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=38, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=38, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 3 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 759, in __del__
+    |     _warn(f"unclosed event loop {self!r}", ResourceWarning, source=self)
+    |     ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | ResourceWarning: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while calling deallocator <function BaseEventLoop.__del__ at 0x7f5a756ac5c0>: None
+    | 
+    +---------------- 4 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=36, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=36, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 5 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=35, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=35, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 6 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 759, in __del__
+    |     _warn(f"unclosed event loop {self!r}", ResourceWarning, source=self)
+    |     ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | ResourceWarning: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while calling deallocator <function BaseEventLoop.__del__ at 0x7f5a756ac5c0>: None
+    | 
+    +---------------- 7 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=33, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=33, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 8 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=32, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=32, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 9 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 759, in __del__
+    |     _warn(f"unclosed event loop {self!r}", ResourceWarning, source=self)
+    |     ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | ResourceWarning: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while calling deallocator <function BaseEventLoop.__del__ at 0x7f5a756ac5c0>: None
+    | 
+    +---------------- 10 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=30, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=30, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 11 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=29, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=29, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 12 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 759, in __del__
+    |     _warn(f"unclosed event loop {self!r}", ResourceWarning, source=self)
+    |     ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | ResourceWarning: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while calling deallocator <function BaseEventLoop.__del__ at 0x7f5a756ac5c0>: None
+    | 
+    +---------------- 13 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=27, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=27, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 14 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 650, in _run_forever_setup
+    |     sys.set_asyncgen_hooks(
+    |     ~~~~~~~~~~~~~~~~~~~~~~^
+    |         firstiter=self._asyncgen_firstiter_hook,
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         finalizer=self._asyncgen_finalizer_hook
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    | ResourceWarning: unclosed <socket.socket fd=26, family=1, type=1, proto=0>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while finalizing socket <socket.socket fd=26, family=1, type=1, proto=0>: None
+    | 
+    +---------------- 15 ----------------
+    | Traceback (most recent call last):
+    |   File "/usr/lib64/python3.14/asyncio/base_events.py", line 759, in __del__
+    |     _warn(f"unclosed event loop {self!r}", ResourceWarning, source=self)
+    |     ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | ResourceWarning: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+    | 
+    | The above exception was the direct cause of the following exception:
+    | 
+    | Traceback (most recent call last):
+    |   File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py", line 67, in collect_unraisable
+    |     warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+    |     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    | pytest.PytestUnraisableExceptionWarning: Exception ignored while calling deallocator <function BaseEventLoop.__del__ at 0x7f5a756ac5c0>: None
+    | 
+    +---------------- ... ----------------
+    | and 7 more exceptions
+    +------------------------------------
+------------------------------ Captured log call -------------------------------
+ERROR    asyncio:base_events.py:1891 Task was destroyed but it is pending!
+task: <Task pending name='Task-33' coro=<_CardAdapter.retire_clarify_card() running at /home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/gateway/test_clarify_delivery_fallback.py:49> cb=[_chain_future.<locals>._call_set_state() at /usr/lib64/python3.14/asyncio/futures.py:400]>
+=========================== short test summary info ============================
+FAILED tests/gateway/test_clarify_card_retire_on_timeout.py::test_batch_routing[answers1-asked1-payload1-0]
+1 failed, 96 passed in 55.81s

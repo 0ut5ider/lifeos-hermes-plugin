@@ -1,0 +1,20 @@
+test_twenty_megabyte_tail_keeps_each_native_window (test_memory_capabilities.MemoryCapabilitiesTests.test_twenty_megabyte_tail_keeps_each_native_window) ... 
+  test_twenty_megabyte_tail_keeps_each_native_window (test_memory_capabilities.MemoryCapabilitiesTests.test_twenty_megabyte_tail_keeps_each_native_window) (window=1440) ... FAIL
+test_actual_aggregation_rechecks_bytes_creation_inode_and_authority (test_memory_capabilities.MemoryCapabilitiesTests.test_actual_aggregation_rechecks_bytes_creation_inode_and_authority) ... Large capability window observation: {"source_bytes": 25476000, "window_minutes": 60, "status": 200, "seconds": 2.279722}
+Large capability window observation: {"source_bytes": 25476000, "window_minutes": 360, "status": 200, "seconds": 5.226158}
+Large capability window observation: {"source_bytes": 25476000, "window_minutes": 1440, "status": 503, "seconds": 8.117803}
+ok
+
+======================================================================
+FAIL: test_twenty_megabyte_tail_keeps_each_native_window (test_memory_capabilities.MemoryCapabilitiesTests.test_twenty_megabyte_tail_keeps_each_native_window) (window=1440)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 188, in test_twenty_megabyte_tail_keeps_each_native_window
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 21.425s
+
+FAILED (failures=1)

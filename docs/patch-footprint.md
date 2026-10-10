@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The bundle uses eleven Hermes patch groups and twenty-three LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
+The current bundle uses eleven Hermes patch groups and twenty-five LifeOS patches, for 36 total patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation. The [conditional Hermes upgrade record](../notes/2026-10-10-conditional-hermes-patch-reduction.md) describes one possible removal and the checks required before reducing the count to 35.
 
 ## Hermes patch groups
 
@@ -9,7 +9,7 @@ The bundle uses eleven Hermes patch groups and twenty-three LifeOS patches. It t
 | `hermes-plugin-events.patch` | Required policy dispatch, tool events, and result composition |
 | `hermes-turn-gates.patch` | Prompt admission, final-answer gates, turn outcomes, and effective route facts |
 | `hermes-command-policy.patch` | Command decisions, replacements, review scope, nested execution, and denial precedence |
-| `hermes-session-lifecycle.patch` | Session start, resume, clear, and end events |
+| `hermes-session-lifecycle.patch` | Session start, resume, clear, and end events; pending question interruption; Discord command identity |
 | `hermes-child-routing.patch` | Independent provider, model, and effort for each child |
 | `hermes-strict-inference.patch` | Selected-provider inference without provider fallback |
 | `hermes-remote-files.patch` | Remote whole-file stale-write protection |

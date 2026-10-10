@@ -1,0 +1,28 @@
+test_actual_rejected_child_error_is_retained_in_digest (test_native_local_fill.NativeLocalFillTests.test_actual_rejected_child_error_is_retained_in_digest) ... FAIL
+
+======================================================================
+FAIL: test_actual_rejected_child_error_is_retained_in_digest (test_native_local_fill.NativeLocalFillTests.test_actual_rejected_child_error_is_retained_in_digest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_local_fill.py", line 48, in test_actual_rejected_child_error_is_retained_in_digest
+    self.assertEqual(outcome['digest']['meta']['errors'], outcome['errors'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['claude-fill: claude exited 2: usage: her[291 chars]M_P']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'claude-fill: claude exited 2: usage: hermes lifeos-infer [-h] --print --model MODEL\n                           [--effort {minimal,low,medium,high,xhigh,max,ultra}]\n                           --output-format {json}\n                           [--system-prompt SYSTEM_PROMPT]\n                           [--system-prompt-file SYSTEM_P'
+
+- []
++ ['claude-fill: claude exited 2: usage: hermes lifeos-infer [-h] --print '
++  '--model MODEL\n'
++  '                           [--effort '
++  '{minimal,low,medium,high,xhigh,max,ultra}]\n'
++  '                           --output-format {json}\n'
++  '                           [--system-prompt SYSTEM_PROMPT]\n'
++  '                           [--system-prompt-file SYSTEM_P']
+
+----------------------------------------------------------------------
+Ran 1 test in 3.013s
+
+FAILED (failures=1)

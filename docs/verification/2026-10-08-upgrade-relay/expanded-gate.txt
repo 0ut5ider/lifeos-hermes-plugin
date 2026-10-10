@@ -1,0 +1,26 @@
+......F....F..
+======================================================================
+FAIL: test_missing_and_illegal_native_actions_preserve_responses_and_sources (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_missing_and_illegal_native_actions_preserve_responses_and_sources) (identifier='hyp:missing-hypothesis', verb='reject')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 249, in test_missing_and_illegal_native_actions_preserve_responses_and_sources
+    self.assertEqual({'status':response.status_code,'body':response.json()},expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'sta[13 chars]ody': {'ok': False, 'reason': 'not_found_or_already_archived'}} != {'sta[13 chars]ody': {'ok': False, 'reason': 'directory_missing'}}
++ {'body': {'ok': False, 'reason': 'directory_missing'}, 'status': 409}
+- {'body': {'ok': False, 'reason': 'not_found_or_already_archived'},
+-  'status': 409}
+
+======================================================================
+FAIL: test_private_review_note_cannot_enter_upgrade_or_hypothesis_sources (test_memory_upgrade_relay.MemoryUpgradeRelayTests.test_private_review_note_cannot_enter_upgrade_or_hypothesis_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_relay.py", line 261, in test_private_review_note_cannot_enter_upgrade_or_hypothesis_sources
+    self.assertEqual(response.status_code,409,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 409 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 14 tests in 29.654s
+
+FAILED (failures=2)

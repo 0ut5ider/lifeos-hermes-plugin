@@ -1,0 +1,122 @@
+[
+  {
+    "name": "approval-pinned-1-once",
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "from tools.file_tools_write_guards import _request_protected_instruction_approval as guard\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/tmp/hermes-patch-qualification-eh27rq_i",
+      "HERMES_HOME": "/tmp/hermes-patch-qualification-eh27rq_i",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "1",
+      "ANSWER": "once"
+    },
+    "exit_code": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) requires approval but no interactive user or gateway is present to approve it. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": []}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-pinned-interactive-once",
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "from tools.file_tools_write_guards import _request_protected_instruction_approval as guard\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/tmp/hermes-patch-qualification-6ib7kfbp",
+      "HERMES_HOME": "/tmp/hermes-patch-qualification-6ib7kfbp",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "once"
+    },
+    "exit_code": 0,
+    "stdout": "{\"result\": null, \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-pinned-interactive-deny",
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "from tools.file_tools_write_guards import _request_protected_instruction_approval as guard\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/tmp/hermes-patch-qualification-f1m7tun_",
+      "HERMES_HOME": "/tmp/hermes-patch-qualification-f1m7tun_",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "deny"
+    },
+    "exit_code": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) was denied by the user. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-current-1-once",
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import importlib.util,sys\nfrom tools.terminal_tool import set_approval_callback\nspec=importlib.util.spec_from_file_location('tools.approval_context','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/approval_context.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.approval_context']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('tools.file_tools_read_tracking','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_read_tracking.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.file_tools_read_tracking']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('current_guard','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_write_guards.py'); m=importlib.util.module_from_spec(spec);sys.modules['current_guard']=m;spec.loader.exec_module(m)\nguard=m._request_protected_instruction_approval\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/tmp/hermes-patch-qualification-zsw_hvbq",
+      "HERMES_HOME": "/tmp/hermes-patch-qualification-zsw_hvbq",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "1",
+      "ANSWER": "once"
+    },
+    "exit_code": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) requires approval but no interactive user or gateway is present to approve it. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": []}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-current-interactive-once",
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import importlib.util,sys\nfrom tools.terminal_tool import set_approval_callback\nspec=importlib.util.spec_from_file_location('tools.approval_context','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/approval_context.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.approval_context']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('tools.file_tools_read_tracking','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_read_tracking.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.file_tools_read_tracking']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('current_guard','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_write_guards.py'); m=importlib.util.module_from_spec(spec);sys.modules['current_guard']=m;spec.loader.exec_module(m)\nguard=m._request_protected_instruction_approval\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/tmp/hermes-patch-qualification-5dz91uj9",
+      "HERMES_HOME": "/tmp/hermes-patch-qualification-5dz91uj9",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "once"
+    },
+    "exit_code": 0,
+    "stdout": "{\"result\": null, \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "approval-current-interactive-deny",
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import importlib.util,sys\nfrom tools.terminal_tool import set_approval_callback\nspec=importlib.util.spec_from_file_location('tools.approval_context','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/approval_context.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.approval_context']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('tools.file_tools_read_tracking','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_read_tracking.py'); m=importlib.util.module_from_spec(spec);sys.modules['tools.file_tools_read_tracking']=m;spec.loader.exec_module(m)\nspec=importlib.util.spec_from_file_location('current_guard','/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-patch-reduction-assessment/sources/hermes/tools/file_tools_write_guards.py'); m=importlib.util.module_from_spec(spec);sys.modules['current_guard']=m;spec.loader.exec_module(m)\nguard=m._request_protected_instruction_approval\nfrom tools.terminal_tool import set_approval_callback\nimport json,os\ncalls=[]\ndef callback(command,description,**kwargs):\n calls.append(kwargs)\n return os.environ['ANSWER']\nset_approval_callback(callback)\nresult=guard(['CLAUDE.md'])\nprint(json.dumps({'result':result,'calls':calls}))\n"
+    ],
+    "environment": {
+      "HOME": "/tmp/hermes-patch-qualification-wlwncekq",
+      "HERMES_HOME": "/tmp/hermes-patch-qualification-wlwncekq",
+      "PATH": "/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.162.1-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0qIDVo3:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+      "HERMES_SINGLE_QUERY_SESSION": "",
+      "ANSWER": "deny"
+    },
+    "exit_code": 0,
+    "stdout": "{\"result\": \"BLOCKED: write to protected agent-instruction file(s) (CLAUDE.md) was denied by the user. The user has NOT consented to this write. Do NOT retry it or attempt the same edit via another path (terminal, execute_code, etc.).\", \"calls\": [{\"allow_permanent\": false, \"allow_session\": false}]}\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "prepared_root": "/home/outsider/.cache/lifeos-daily-text-20261007/skill-hygiene-second/lifeos/LifeOS/install",
+  "native_files": {
+    "LIFEOS/TOOLS/SkillHygieneGate.ts": "f59d96fcd95f0085fd2cf5eb1d8b3dbb63c78059787bf7f502dca9699c42fc4e",
+    "LIFEOS/TOOLS/IntegrityCheck.ts": "3961d8008ae5e1d6278ed9cad6403deb8ca77ebd163695c44e55ae0671c9f76a",
+    "LIFEOS/TOOLS/lib/MemoryAccess.ts": "57851616eef05b1885062bde422b9aca4a23d478d55b53347e69144dfdb2a193",
+    "skills/CreateSkill/SKILL.md": "630b857843ac8cddb72612e7774bd7b7bbfb7853d9cfea95a98c0ce251611685"
+  },
+  "plugin_programs": {
+    "lifeos_hook_bridge/memory_skill_hygiene.py": "78004139aff28f6ccdd678e9bc4aa5fca811e77c34fd029d4efbabb45ef73867",
+    "lifeos_hook_bridge/memory_service.py": "0e35295aceca6cf20957a2d3d060458ab6ba74c19a98024ae52f88786d93ee5f",
+    "lifeos_hook_bridge/memory_native.ts": "5df5395ffc1657338cf62c34dca4630a08e045e344917055ad03b8c80ce296bf",
+    "lifeos_hook_bridge/memory_life_source_review.py": "3726f8ad1dda1a387ea91145adc909dc455d20bca915693d4feca06a9f2f04e3",
+    "tests/test_memory_skill_hygiene.py": "7c4bbe92f7a4d57a10c89f850dfdf936bdae57f95358baf9cd778ba4f664e4d0"
+  },
+  "patch_sha256": "96511d5d8b0fd51fd37449c4811ce3dd7d5a16290ddf32a09ede5d25b55c72a8",
+  "both_patch_copies_match": true,
+  "all_native_files_match_mutable": true,
+  "validation": {
+    "focused": {
+      "tests": 15,
+      "seconds": 17.589,
+      "output": "skill-hygiene-pattern-final.txt"
+    },
+    "neighbors": {
+      "tests": 108,
+      "seconds": 144.753,
+      "output": "skill-hygiene-neighbors.txt",
+      "note": "The neighboring run precedes the inventory sort and the invalid-pattern test. The final focused run covers those changes."
+    },
+    "consumer": "skill-hygiene-consumer-final.json"
+  },
+  "limits": [
+    "The consumer fixture has unrelated native scan errors. It verifies the skill-hygiene result and cannot certify the complete installation.",
+    "No frontend source changes occur. The previously accepted dashboard build remains applicable.",
+    "Installed acceptance, governed actions, and the combined daily release remain open."
+  ]
+}

@@ -146,12 +146,87 @@ class MemoryPreferences:
         config = self._configuration(account=account)
         return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
 
+    def _response(self, config, result, *, account):
+        from .memory_http import installation_binding
+        if self._configuration(account=account) != config:
+            raise MemoryUnavailable('Current memory authority changes before the dashboard response')
+        return result, installation_binding(config, self.configuration.path)
+
     def pulse_snapshot(self, view: str, *, account: str | None = None):
         return self.pulse_response(view,account=account)[0]
 
+    def pulse_runtime_response(self, observation=None, *, account=None):
+        from .memory_sources import authorize
+        from .memory_pulse_health import admit
+        config = self._configuration(account=account)
+        scope = self._owner_scope(config)
+        authorize(scope)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Current owner authority changes during Pulse health delivery')
+        result = {'status': 200, 'body': {'admitted': True}} if observation is None else admit(
+            NativeMemory(self.root), scope, observation, check_current=check_current)
+        return self._response(config, result, account=account)
+
+    def conduit_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def local_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def atlas_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def content_action_response(self, target, observation, *, account):
+        from .memory_content_action import action
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Content action authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = action(NativeMemory(self.root), scope, target, observation, check_current=check_current)
+        return self._response(config, result, account=account)
+
+    def edit_algorithm(self, target, body, *, account):
+        from .memory_algorithm_edit import edit
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Algorithm edit authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = edit(NativeMemory(self.root), scope, target, body, check_current=check_current)
+        return self._response(config, result, account=account)
+
+    def algorithm_job_response(self, *, account):
+        from .memory_algorithm_summary import synthesis
+        prepared, _ = self._owner_job_response(account=account)
+        config = self._configuration(account=account)
+        if prepared['configuration_revision'] != MemoryPolicy(config).revision:
+            raise MemoryUnavailable('Algorithm job authority changes before source preparation')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Algorithm job authority changes during source preparation')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = synthesis(NativeMemory(self.root), scope, 'algorithm_summary_prepare', {}, check_current=check_current)
+        return self._response(config, {**prepared, 'chain_hash': result['plan']['hash']}, account=account)
+
+    def _owner_job_response(self, *, account):
+        config = self._configuration(account=account)
+        if not config.get('ownership_enabled', False):
+            raise MemoryUnavailable('Native jobs require activated owner memory')
+        author = str(os.getuid())
+        destination = str(self.configuration.path.parent)
+        grant = config.get('destinations', {}).get('terminal:' + destination, {})
+        if (config.get('accounts', {}).get('terminal:' + author) != config['principal']
+                or grant.get('visibility') != 'private' or grant.get('participants') != [config['principal']]
+                or not CATEGORIES <= set(grant.get('read', [])) or not CATEGORIES <= set(grant.get('write', []))
+                or '*' not in grant.get('projects', []) or not grant.get('model_routes')):
+            raise MemoryUnavailable('Native jobs require the selected local owner grant')
+        result = {'configuration_revision': MemoryPolicy(config).revision}
+        return self._response(config, result, account=account)
+
     def pulse_response(self, view: str, *, account: str | None = None):
         from .memory_pulse import snapshot
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
         from .memory_freshness import HTTP_VIEWS
         if isinstance(view, str) and view in HTTP_VIEWS:
@@ -161,9 +236,8 @@ class MemoryPreferences:
                 if self._configuration(account=account) != config:
                     raise MemoryUnavailable('The memory configuration changed during freshness rendering')
 
-            return (freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
-                                   check_current=check_current),
-                    installation_binding(config, self.configuration.path))
+            return self._response(config, freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
+                                   check_current=check_current), account=account)
         if view == 'graph':
             from .memory_graph import view as graph_view
 
@@ -171,10 +245,10 @@ class MemoryPreferences:
                 if self._configuration(account=account) != config:
                     raise MemoryUnavailable('The memory configuration changed during graph rendering')
 
-            return (graph_view(NativeMemory(self.root), self._owner_scope(config), check_current=check_current),
-                    installation_binding(config, self.configuration.path))
-        return (snapshot(NativeMemory(self.root), self._owner_scope(config), view),
-                installation_binding(config,self.configuration.path))
+            return self._response(config, graph_view(NativeMemory(self.root), self._owner_scope(config),
+                                                    check_current=check_current), account=account)
+        return self._response(config, snapshot(NativeMemory(self.root), self._owner_scope(config), view),
+                              account=account)
 
     def preview_prompt(self, *, keep_output_format: bool = False, account: str | None = None):
         from .memory_prompt import preview
@@ -253,7 +327,7 @@ class MemoryPreferences:
         from .memory_source_review import preview
         config = self._configuration(account=account)
         scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
-        return preview(NativeMemory(self.root), scope, paths)
+        return preview(NativeMemory(self.root, profile=self.configuration.path.parent), scope, paths)
 
     def approve_sources(self, request: dict[str, Any], *, account: str | None = None):
         from .memory_source_review import approve
@@ -264,21 +338,95 @@ class MemoryPreferences:
             if self._configuration(account=account) != config:
                 raise MemoryUnavailable('The memory configuration changed during source review')
         scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
-        return approve(NativeMemory(self.root), scope, **request, check_current=check_current)
+        return approve(NativeMemory(self.root, profile=self.configuration.path.parent), scope, **request, check_current=check_current)
+
+    def review_hypothesis(self, target, note, request_id, *, account=None):
+        from .memory_hypothesis_review import review
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during hypothesis review')
+        return self._response(config, review(NativeMemory(self.root), self._owner_scope(config),
+            target=target, note=note, request_id=request_id, check_current=check_current), account=account)
+
+    def review_upgrade(self, target, note, request_id, *, account=None):
+        from .memory_upgrade_queue import review
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during upgrade review')
+        return self._response(config, review(NativeMemory(self.root), self._owner_scope(config),
+            target=target, note=note, request_id=request_id, check_current=check_current), account=account)
+
+    def life_response(self, target, *, account=None):
+        from .memory_life import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during Life rendering')
+        return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
+    def telos_file_response(self, target, *, account=None):
+        from .memory_telos_file import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during TELOS reading')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, view(NativeMemory(self.root), scope, target,
+            check_current=check_current), account=account)
+
+    def edit_telos_file(self, request, *, account=None):
+        from .memory_telos_file import edit
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'name', 'content', 'reference', 'request_id'}:
+            raise ValueError('Provide the current TELOS file reference and requested content')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during TELOS saving')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, edit(NativeMemory(self.root), scope, **request,
+            check_current=check_current), account=account)
+
+    def tab_freshness_response(self, target, *, account=None):
+        from .memory_tab_freshness import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during tab freshness rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
+    def upgrade_response(self, target, *, account=None):
+        from .memory_upgrade_queue import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during upgrade rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
+    def hypothesis_response(self, target: str, *, account: str | None = None):
+        from .memory_hypothesis_queue import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during hypothesis rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                          check_current=check_current), account=account)
 
     def wiki_response(self, target: str, *, account: str | None = None):
         from .memory_wiki import view
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
-        return (view(NativeMemory(self.root), self._owner_scope(config), target),
-                installation_binding(config, self.configuration.path))
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target),
+                              account=account)
 
     def knowledge_response(self, target: str, *, account: str | None = None):
         from .memory_knowledge import view
-        from .memory_http import installation_binding
         config = self._configuration(account=account)
-        return (view(NativeMemory(self.root), self._owner_scope(config), target),
-                installation_binding(config, self.configuration.path))
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target),
+                              account=account)
 
     def adopt(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
         if not isinstance(request,dict) or set(request) != {'signature','projects','request_id'}:

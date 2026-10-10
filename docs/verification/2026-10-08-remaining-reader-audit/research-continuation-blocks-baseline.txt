@@ -1,0 +1,112 @@
+test_actual_generated_continuation_preserves_original_proof_and_request (test_memory_continuation.MemoryContinuationTests.test_actual_generated_continuation_preserves_original_proof_and_request) ... ok
+test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof (test_memory_continuation.MemoryContinuationTests.test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof) ...
+  test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof (test_memory_continuation.MemoryContinuationTests.test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof) (content='[System: Your previous response was truncated by the output length limit. Continue exactly where you left off. Do not restart or repeat prior text. Finish the answer directly.]') ... ERROR
+  test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof (test_memory_continuation.MemoryContinuationTests.test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof) (content='[Content excluded after a memory correction or forget request.]') ... ERROR
+test_arbitrary_later_input_cannot_borrow_the_previous_input_proof (test_memory_continuation.MemoryContinuationTests.test_arbitrary_later_input_cannot_borrow_the_previous_input_proof) ... ok
+test_generated_responses_blocks_filter_the_derived_tail_and_keep_the_original_quote (test_memory_continuation.MemoryContinuationTests.test_generated_responses_blocks_filter_the_derived_tail_and_keep_the_original_quote) ... ERROR
+test_generated_user_tail_is_filtered_and_never_treated_as_an_explicit_quote (test_memory_continuation.MemoryContinuationTests.test_generated_user_tail_is_filtered_and_never_treated_as_an_explicit_quote) ... ok
+test_missing_original_input_and_changed_continuation_refuse (test_memory_continuation.MemoryContinuationTests.test_missing_original_input_and_changed_continuation_refuse) ... ok
+
+======================================================================
+ERROR: test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof (test_memory_continuation.MemoryContinuationTests.test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof) (content='[System: Your previous response was truncated by the output length limit. Continue exactly where you left off. Do not restart or repeat prior text. Finish the answer directly.]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 413, in _check_call
+    projected = project_request(body,excluded,user_input)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 94, in project_request
+    for index,derived in retained_messages(projected,user_input):
+                         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 78, in retained_messages
+    raise ValueError('Memory history cannot verify the current user input')
+ValueError: Memory history cannot verify the current user input
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_continuation.py", line 91, in test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof
+    self.assertEqual(self.project(request), request)
+                     ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_continuation.py", line 30, in project
+    def project(self, request): return self.history.project(request)
+                                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_history.py", line 35, in project
+    self.fixture.runtime.project_call(request=request,next_call=dispatch,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                      **self.fixture.route,session_id='session')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 325, in project_call
+    projected = self._check_call(request=request, project=True, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 415, in _check_call
+    raise MemoryAdmissionError(str(error)) from error
+lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory history cannot verify the current user input
+
+======================================================================
+ERROR: test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof (test_memory_continuation.MemoryContinuationTests.test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof) (content='[Content excluded after a memory correction or forget request.]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 413, in _check_call
+    projected = project_request(body,excluded,user_input)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 94, in project_request
+    for index,derived in retained_messages(projected,user_input):
+                         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 78, in retained_messages
+    raise ValueError('Memory history cannot verify the current user input')
+ValueError: Memory history cannot verify the current user input
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_continuation.py", line 91, in test_actual_human_input_that_matches_a_native_nudge_keeps_its_recorded_proof
+    self.assertEqual(self.project(request), request)
+                     ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_continuation.py", line 30, in project
+    def project(self, request): return self.history.project(request)
+                                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_history.py", line 35, in project
+    self.fixture.runtime.project_call(request=request,next_call=dispatch,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                      **self.fixture.route,session_id='session')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 325, in project_call
+    projected = self._check_call(request=request, project=True, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 415, in _check_call
+    raise MemoryAdmissionError(str(error)) from error
+lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory history cannot verify the current user input
+
+======================================================================
+ERROR: test_generated_responses_blocks_filter_the_derived_tail_and_keep_the_original_quote (test_memory_continuation.MemoryContinuationTests.test_generated_responses_blocks_filter_the_derived_tail_and_keep_the_original_quote)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 436, in _check_call
+    retained = list(enumerate(messages)) if auxiliary else retained_messages(messages,user_input)
+                                                           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 82, in retained_messages
+    _,suffix = user_parts(message.get('content'),user_input)
+               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 61, in user_parts
+    raise ValueError('Memory history cannot verify the current user input')
+ValueError: Memory history cannot verify the current user input
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_continuation.py", line 80, in test_generated_responses_blocks_filter_the_derived_tail_and_keep_the_original_quote
+    result = self.project(request)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_continuation.py", line 30, in project
+    def project(self, request): return self.history.project(request)
+                                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_history.py", line 35, in project
+    self.fixture.runtime.project_call(request=request,next_call=dispatch,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                      **self.fixture.route,session_id='session')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 325, in project_call
+    projected = self._check_call(request=request, project=True, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 440, in _check_call
+    raise MemoryAdmissionError(str(error)) from error
+lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory history cannot verify the current user input
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.242s
+
+FAILED (errors=3)

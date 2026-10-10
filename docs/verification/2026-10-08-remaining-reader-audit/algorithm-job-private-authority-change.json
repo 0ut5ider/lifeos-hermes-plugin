@@ -1,0 +1,45 @@
+{
+  "server_mutation": false,
+  "isolated_synthetic_profile": true,
+  "status": "PASS",
+  "elapsed_seconds": 17.768778028999805,
+  "selected_job_status": "failed",
+  "native_status": 200,
+  "cache_exists": false,
+  "configured_pin": "fable",
+  "configured_efforts": {
+    "haiku": "low",
+    "sonnet": "medium",
+    "opus": "xhigh",
+    "fable": "xhigh"
+  },
+  "wire_requests": [
+    {
+      "path": "/v1/chat/completions",
+      "requested_model": "flashnext-w4a16-fp8ple",
+      "reasoning_effort": "low",
+      "max_tokens": null,
+      "finish_reasons": [
+        "stop"
+      ],
+      "effort_fields": {
+        "reasoning_effort": "low"
+      },
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ],
+      "upstream_status": 200,
+      "tool_names": [],
+      "tool_result_count": 0,
+      "tool_results": [],
+      "prior_tool_call_names": [],
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "response_sha256": "20df14f5687ba805947d6567f873b8cc5a20d9f5c1292ed45448b8d2be6e5118"
+    }
+  ],
+  "observer_forwards_actual_response": true,
+  "actual_writer_revocation_during_inference": true,
+  "published_cache": false
+}

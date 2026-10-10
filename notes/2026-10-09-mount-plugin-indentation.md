@@ -1,0 +1,13 @@
+# Native Mount plugin indentation, October 9, 2026
+
+Actual isolated daily application preparation fails before configuration publication. The first operator writes JSON to config.yaml; native Mount edits that text as block YAML. Changing the operator to block YAML removes that invalid input. The next run still fails on a valid YAML list. ruamel.yaml emits enabled entries at two spaces. Native Mount inserts its lifeos entry at four spaces, then retains the existing two-space entries. The resulting list is invalid.
+
+A real native preparation regression covers two-space and four-space lists. The installed-dependency baseline fails only the two-space case in 2.041 seconds. The prepared profile and workspace stay unchanged. The correction selects the indentation of the first existing list entry. An empty list keeps the existing four-space default. Existing list content and order remain intact. Both bundled patch copies must contain the correction.
+
+Two earlier local attempts do not establish this cause. The system Python lacks ruamel.yaml. The uninstalled canonical native source lacks the yaml package needed by identity parsing, so guarded prompt preview refuses. Using the selected test interpreter and installed native dependency source reproduces the actual YAML parser failure. Preserve all three outputs separately.
+
+The two operator review lookup errors precede profile selection. The fresh-store identifier comes from the prepared folder name, and review_home returns a home and listing row. Those API corrections leave the current bot and live profile unchanged. The failed native mount preparations select only the isolated test profile and publish no native mount target.
+
+All 44 mount, selection, administrative, and patch-bundle checks pass in 94.320 seconds. Strict native TypeScript passes without output. The previous 43-case broader run has two failures and 18 errors because the runner omits the Hermes import path and names a missing patch test module. The corrected runner adds the actual Hermes source to PYTHONPATH and selects test_patch_bundle. No test is skipped.
+
+The isolated .252 source receives the verified correction after an exact original-byte check. Complete source validation initially refuses an archive that omits Git metadata. The next archive retains that required metadata. The installed native mount and actual Hermes configuration checks then complete successfully. The canonical original archive stays unchanged. The application candidate manifest records the updated native source and copied bridge patch. The owner and sharing settings remain disabled.

@@ -1,0 +1,18 @@
+test_exact_review_restores_safe_old_identity_and_mission_without_writes (test_memory_onboarding.MemoryOnboardingTests.test_exact_review_restores_safe_old_identity_and_mission_without_writes) ... FAIL
+
+======================================================================
+FAIL: test_exact_review_restores_safe_old_identity_and_mission_without_writes (test_memory_onboarding.MemoryOnboardingTests.test_exact_review_restores_safe_old_identity_and_mission_without_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 192, in test_exact_review_restores_safe_old_identity_and_mission_without_writes
+    self.assertEqual(response.json()['daName'], 'your DA')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOnboardingAssistant' != 'your DA'
+- SyntheticOnboardingAssistant
++ your DA
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.997s
+
+FAILED (failures=1)

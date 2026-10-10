@@ -1,0 +1,44 @@
+.F.F.Record-growth observation: {"bytes": 336357, "records": 2051, "native_climb_points": 1, "managed_status": 200}
+.Byte-growth observation: {"bytes": 1320157, "records": 5001, "native_climb_points": 1, "managed_status": 200}
+...F...........................Torn UTF-8 source observation: {"rendered": true, "anonymous": true, "readonly": true, "withheld": false}
+....Actual synchronous relay seconds: 0.394064961
+..Synchronous native relay observation: {"status": 200, "timerRan": false, "seconds": 0.38630094099999995}
+.Equal-length rotation observation: {"bytes": 217, "prior_inode": 1635071, "current_inode": 1635079, "source_tool": "Agent", "displayed_tool": "Agent"}
+..Initial operational stream seconds: 0.379441
+..........Revoked operational stream remaining lines: ['']
+..Actual operational stream update seconds: 0.490139
+.......................SubTabs markup SHA256: 85d7244cc5c904c7e98c104ddc7adcad2ccb988366012c68c70cedafdddd42b0
+...................................................................................................................................................................................................................................................................................................................................................
+======================================================================
+FAIL: test_dense_activity_tail_preserves_native_folding_above_record_cap (test_memory_operational_history.MemoryOperationalHistoryTests.test_dense_activity_tail_preserves_native_folding_above_record_cap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 67, in test_dense_activity_tail_preserves_native_folding_above_record_cap
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_large_history_retains_native_movement_deduplication_and_series_eviction (test_memory_operational_history.MemoryOperationalHistoryTests.test_large_history_retains_native_movement_deduplication_and_series_eviction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 85, in test_large_history_retains_native_movement_deduplication_and_series_eviction
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_snapshot_descriptor_is_read_only_and_tampering_withholds_response (test_memory_operational_history.MemoryOperationalHistoryTests.test_snapshot_descriptor_is_read_only_and_tampering_withholds_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 149, in test_snapshot_descriptor_is_read_only_and_tampering_withholds_response
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'anonymous': True, 'readonly': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'withheld': True} != {'rendered': True, 'anonymous': True, 'readonly': True, 'withheld': True}
+- {'withheld': True}
++ {'anonymous': True, 'readonly': True, 'rendered': True, 'withheld': True}
+
+----------------------------------------------------------------------
+Ran 420 tests in 567.239s
+
+FAILED (failures=3)

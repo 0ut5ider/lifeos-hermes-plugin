@@ -4,7 +4,38 @@ This guide records the steps that made the isolated `.212` Hermes installation w
 
 The [Hermes Discord guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/discord) is the upstream reference. Check it when the Developer Portal or Hermes version changes.
 
+## Permanent move to .252 on October 7
+
+Adrian selects `192.168.8.252` as the sole future server and decommissions `.212`. The existing Shiny Hermes Bot now connects from the permanent `lifeos-hermes` account on `.252`, UID 1008. Its existing Discord application, token, guild membership, user allowlist, and channel routing are retained. The channel remains `#hermes-212`, ID `1554859357374513222`. A new bot invitation is unnecessary.
+
+The source gateway is stopped and masked. Its active `.env` no longer contains `DISCORD_BOT_TOKEN`. Existing source backups are not erased by this operation. Do not restore the bot to `.212`. Recovery configuration stays in the private destination directory `~/migration/2026-10-07/`.
+
+The destination contains the merged plugin runtime, all 11 supported Hermes patch groups, and all 23 native LifeOS patch groups. A fresh native installation uses Adrian and Cerebo. No source conversations, personal memory, or scheduled jobs are imported. Managed memory ownership and sharing remain disabled. The existing private FlashNext tier mapping is unchanged, and the carrier probe reports `HOLDS` at xhigh effort.
+
+The user gateway service is enabled with systemd linger. The private development recorder is installed outside the plugin and writes a new capture on `.252`. Installation and connection checks pass. Actual Discord question, answer, timeout, and cancellation acceptance remains in progress. The temporary acceptance timeout is 120 seconds; restore the normal 3600-second value after the live checks.
+
 ## 1. Create and install the Discord bot
+
+### Daily release: one private text channel
+
+The daily release uses a private server text channel. Direct messages are disabled for this profile. The candidate patch introduces `DISCORD_GUILD_CHANNEL_ONLY=true`; this setting requires exactly one numeric ID in `DISCORD_ALLOWED_CHANNELS`. It gates messages, slash commands, adapter sends, and standalone text or attachment sends. Threads are refused. Older installed patches do not provide this setting.
+
+Configure the tested candidate with these values after verifying the channel permissions:
+
+```dotenv
+DISCORD_ALLOWED_USERS=<owner-user-id>
+DISCORD_ALLOWED_CHANNELS=<private-text-channel-id>
+DISCORD_GUILD_CHANNEL_ONLY=true
+DISCORD_FREE_RESPONSE_CHANNELS=<private-text-channel-id>
+DISCORD_NO_THREAD_CHANNELS=<private-text-channel-id>
+DISCORD_AUTO_THREAD=false
+DISCORD_FREE_RESPONSE_AUTO_THREAD=false
+DISCORD_HOME_CHANNEL=<private-text-channel-id>
+```
+
+The channel must deny **View Channel** to `@everyone`. Only the installation owner and the selected bot may read it. Discord server owners and administrators bypass channel permission overwrites. The memory check reads current roles and members, applies the channel permission rules, and refuses additional readers. The selected bot needs the Server Members privileged intent for that check.
+
+The memory configuration separately binds the channel to its guild, owner, bot, and private destination grant. A channel allowlist alone does not grant private-memory access. Memory requests recheck the audience, including before native publication and after tool reads. Installed application acceptance and the final delivery check remain release gates. See the [control results](verification/2026-10-07-private-channel/README.md).
 
 1. Create an application in the [Discord Developer Portal](https://discord.com/developers/applications). Choose the bot template or create a blank application. Set the bot's username on its **Bot** page.
 2. On **Bot**, enable **Public Bot** if you will use Discord's provided install link. Leave **Requires OAuth2 Code Grant** off. Enable the **Message Content** and **Server Members** privileged gateway intents, then save. The message content intent was required to clear the connection error in our setup.

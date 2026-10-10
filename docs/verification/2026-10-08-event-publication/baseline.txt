@@ -1,0 +1,71 @@
+test_actual_concurrent_emitters_preserve_each_event (test_memory_events.MemoryEventsTests.test_actual_concurrent_emitters_preserve_each_event) ... ok
+test_current_event_matches_original_fields_and_uses_authenticated_session (test_memory_events.MemoryEventsTests.test_current_event_matches_original_fields_and_uses_authenticated_session) ... FAIL
+test_interrupted_append_recovers_original_history (test_memory_events.MemoryEventsTests.test_interrupted_append_recovers_original_history) ... FAIL
+test_managed_emitter_cannot_publish_to_another_path (test_memory_events.MemoryEventsTests.test_managed_emitter_cannot_publish_to_another_path) ... FAIL
+test_read_only_owner_cannot_append_events (test_memory_events.MemoryEventsTests.test_read_only_owner_cannot_append_events) ... FAIL
+test_retry_does_not_duplicate_and_preserves_later_entries (test_memory_events.MemoryEventsTests.test_retry_does_not_duplicate_and_preserves_later_entries) ... FAIL
+test_standalone_emitter_preserves_native_overrides (test_memory_events.MemoryEventsTests.test_standalone_emitter_preserves_native_overrides) ... ok
+test_unbound_emitter_silently_refuses_without_publishing (test_memory_events.MemoryEventsTests.test_unbound_emitter_silently_refuses_without_publishing) ... FAIL
+
+======================================================================
+FAIL: test_current_event_matches_original_fields_and_uses_authenticated_session (test_memory_events.MemoryEventsTests.test_current_event_matches_original_fields_and_uses_authenticated_session)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_events.py", line 50, in test_current_event_matches_original_fields_and_uses_authenticated_session
+    self.assertEqual(actual['session_id'],self.owner.context.session_id)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'synthetic-raw-event-session' != 'native-session'
+- synthetic-raw-event-session
++ native-session
+
+
+======================================================================
+FAIL: test_interrupted_append_recovers_original_history (test_memory_events.MemoryEventsTests.test_interrupted_append_recovers_original_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_events.py", line 105, in test_interrupted_append_recovers_original_history
+    self.assertEqual(result.returncode,73,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 73 : /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python: can't open file '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_events_process.py': [Errno 2] No such file or directory
+
+
+======================================================================
+FAIL: test_managed_emitter_cannot_publish_to_another_path (test_memory_events.MemoryEventsTests.test_managed_emitter_cannot_publish_to_another_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_events.py", line 68, in test_managed_emitter_cannot_publish_to_another_path
+    self.assertFalse(alternate.exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_read_only_owner_cannot_append_events (test_memory_events.MemoryEventsTests.test_read_only_owner_cannot_append_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_events.py", line 63, in test_read_only_owner_cannot_append_events
+    self.assertFalse(self.events.exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_retry_does_not_duplicate_and_preserves_later_entries (test_memory_events.MemoryEventsTests.test_retry_does_not_duplicate_and_preserves_later_entries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_events.py", line 80, in test_retry_does_not_duplicate_and_preserves_later_entries
+    self.assertTrue(first['ok'],first)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_unbound_emitter_silently_refuses_without_publishing (test_memory_events.MemoryEventsTests.test_unbound_emitter_silently_refuses_without_publishing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_events.py", line 58, in test_unbound_emitter_silently_refuses_without_publishing
+    self.assertFalse(self.events.exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.295s
+
+FAILED (failures=6)

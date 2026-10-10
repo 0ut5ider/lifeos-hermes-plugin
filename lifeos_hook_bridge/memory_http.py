@@ -6,6 +6,7 @@ import ipaddress
 import hashlib
 import http.client
 import json
+import math
 from pathlib import Path
 import re
 from typing import TYPE_CHECKING
@@ -65,10 +66,20 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
-    source_view = arguments.get('view') in ('wiki', 'knowledge')
-    expected = {'view','authorization','cookie'} | ({'target'} if source_view else set())
+    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file')
+    review = arguments.get('view') in ('hypothesis_review','upgrades_review')
+    edit = arguments.get('view') == 'telos_file_edit'
+    algorithm_edit = arguments.get('view') == 'algorithm_edit'
+    content_action = arguments.get('view') == 'content_action'
+    action = algorithm_edit or content_action
+    runtime = arguments.get('view') == 'pulse_runtime'
+    job = arguments.get('view') in ('conduit_job', 'atlas_job', 'local_job', 'algorithm_job')
+    delivery = runtime and 'observation' in arguments
+    expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
+        {'target','observation'} if action else {'target','note','request_id'} if review else {'name','content','reference','request_id'} if edit else
+        {'observation'} if delivery else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view and arguments['view'] != 'remount')):
+            or (arguments['view'] not in VIEWS and not source_view and not review and not edit and not action and not runtime and not job and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
     remount = arguments['view'] == 'remount'
@@ -77,8 +88,18 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     if source_view:
         if arguments['view'] == 'wiki':
             from .memory_wiki import request_target
-        else:
+        elif arguments['view'] == 'knowledge':
             from .memory_knowledge import request_target
+        elif arguments['view'] == 'hypotheses':
+            from .memory_hypothesis_queue import request_target
+        elif arguments['view']=='upgrades':
+            from .memory_upgrade_queue import request_target
+        elif arguments['view']=='life':
+            from .memory_life import request_target
+        elif arguments['view']=='telos_file':
+            from .memory_telos_file import request_target
+        else:
+            from .memory_tab_freshness import request_target
         try:
             target = request_target(arguments['target'])
         except LookupError:
@@ -86,6 +107,67 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         except ValueError:
             return _response(400,{'error':'Invalid source read route'})
         route = '/memory/' + arguments['view'] + '?' + urllib.parse.urlencode({'target':target})
+    data = None
+    if runtime:
+        route = '/memory/pulse_runtime'
+    if job:
+        route = '/memory/' + arguments['view']
+    if delivery:
+        from .memory_pulse_health import validate
+        try:
+            validate(arguments['observation'])
+            data = json.dumps(arguments['observation'], ensure_ascii=False, allow_nan=False).encode()
+        except (ValueError, TypeError):
+            return _response(400, {'error': 'Choose complete current Pulse runtime observations'})
+    if edit:
+        from .memory_telos_file import validate_name
+        from .memory_sources import SOURCE_LIMIT
+        try:
+            validate_name(arguments['name'])
+            if (not isinstance(arguments['content'], str) or len(arguments['content'].encode()) > SOURCE_LIMIT
+                    or not isinstance(arguments['reference'], str) or re.fullmatch('[0-9a-f]{64}', arguments['reference']) is None
+                    or not isinstance(arguments['request_id'], str) or not 1 <= len(arguments['request_id']) <= 256):
+                raise ValueError('Choose bounded TELOS edit arguments')
+        except ValueError:
+            return _response(400, {'error': 'Invalid TELOS edit arguments'})
+        route = '/memory/telos_file'
+        data = json.dumps({key: arguments[key] for key in ('name', 'content', 'reference', 'request_id')}, ensure_ascii=False).encode()
+    if review:
+        if arguments['view']=='hypothesis_review':
+            from .memory_hypothesis_review import action_target
+        else:
+            from .memory_upgrade_queue import action_target
+        try:
+            action_target(arguments['target'])
+            if (arguments['note'] is not None and (not isinstance(arguments['note'],str) or len(arguments['note'])>8192)
+                    or not isinstance(arguments['request_id'],str) or not 1<=len(arguments['request_id'])<=256):
+                raise ValueError('Choose bounded memory review arguments')
+        except LookupError:
+            return _response(404,{'error':'Choose a governed memory review route'})
+        except ValueError:
+            return _response(400,{'error':'Invalid memory review arguments'})
+        route = '/memory/' + ('hypotheses' if arguments['view']=='hypothesis_review' else 'upgrades') + '/review'
+        data = json.dumps({key:arguments[key] for key in ('target','note','request_id')},ensure_ascii=False).encode()
+    if algorithm_edit:
+        from .memory_algorithm_edit import _target
+        try:
+            _target(arguments['target'], arguments['observation'])
+        except LookupError:
+            return _response(404, {'error': 'Choose a declared Algorithm edit route'})
+        except ValueError:
+            return _response(400, {'error': 'Choose declared Algorithm edit fields'})
+        route = '/memory/algorithm_edit'
+        data = json.dumps({'target': arguments['target'], 'body': arguments['observation']}, ensure_ascii=False).encode()
+    if content_action:
+        from .memory_content_action import target as action_target
+        try:
+            action_target(arguments['target'], arguments['observation'])
+        except LookupError:
+            return _response(404, {'error': 'Choose a declared Content action route'})
+        except ValueError:
+            return _response(400, {'error': 'Choose declared Content action fields'})
+        route = '/memory/content_action'
+        data = json.dumps({'target': arguments['target'], 'observation': arguments['observation']}).encode()
     credentials={}
     for key in ('authorization','cookie'):
         value=arguments[key]
@@ -111,19 +193,32 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         base=dashboard_base(settings['dashboard_base_url'])
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
-        request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route,
-                                      headers=credentials,method='POST' if remount else 'GET')
+        if review or edit or action or delivery:credentials['Content-Type']='application/json'
+        request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
+                                      headers=credentials,method='POST' if remount or review or edit or action or delivery or job else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
+        timeout = 120 if remount else 30 if runtime or action else 8
+        if arguments['view'] == 'life':
+            from .memory_operational_views import CAPABILITY_WINDOWS
+            from .memory_performance import ROUTES as PERFORMANCE_ROUTES
+            from .memory_conduit import ROUTES as CONDUIT_ROUTES
+            from .memory_menubar import ROUTES as MENUBAR_ROUTES
+            from .memory_local_intelligence import ROUTES as LOCAL_ROUTES
+            from .memory_content import ROUTES as CONTENT_ROUTES
+            from .memory_algorithm_tab import ROUTES as ALGORITHM_ROUTES
+            if target in CAPABILITY_WINDOWS or urllib.parse.urlsplit(target).path in frozenset(PERFORMANCE_ROUTES) | CONDUIT_ROUTES | MENUBAR_ROUTES | LOCAL_ROUTES | CONTENT_ROUTES | ALGORITHM_ROUTES: timeout = 30
         try:
-            response=opener.open(request,timeout=120 if remount else 8)
+            response=opener.open(request,timeout=timeout)
         except urllib.error.HTTPError as error:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,409} if remount else
+            if status not in ({200,400,401,403,404,409,422,503} if action else {200,400,401,403,503} if runtime or job else {200,400,401,403,404,409} if review or edit else {200,400,401,403,409} if remount else
                               {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
-            if (status in ({200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
+            if runtime and status == 503 and response.headers.get('x-lifeos-memory-installation') != installation_binding(config, configuration.path):
+                return _response(503, {'error': 'Authenticated memory is unavailable'})
+            if (status in ({200,503} if runtime else {200,404,409,422} if action else {200,404,409} if review or edit else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):
                 raise ValueError('The authenticated response belongs to another installation')
             if response.headers.get_content_type()!='application/json':
@@ -136,7 +231,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             if len(payload)>RESPONSE_LIMIT or (lengths and len(payload)!=int(lengths[0])):
                 raise ValueError('Authenticated memory response exceeds its limit')
             body=json.loads(payload)
-            if status==200 and (not isinstance(body,(dict,list)) and body is not None):
+            source_scalar = (arguments['view'] == 'life' and target in {'/api/novelty', '/api/local-intelligence'}
+                and type(body) in (str, bool, int, float) and (type(body) is not float or math.isfinite(body)))
+            if status==200 and (not isinstance(body,(dict,list)) and body is not None and not source_scalar):
                 raise ValueError('Invalid authenticated memory response')
             if status==401 and isinstance(body,dict):
                 body.pop('login_url',None)

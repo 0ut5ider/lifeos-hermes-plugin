@@ -1,0 +1,15 @@
+test_read_views_require_the_current_audience_after_final_source_check (test_memory_knowledge_views.MemoryKnowledgeViewAudienceTests.test_read_views_require_the_current_audience_after_final_source_check) ... FAIL
+
+======================================================================
+FAIL: test_read_views_require_the_current_audience_after_final_source_check (test_memory_knowledge_views.MemoryKnowledgeViewAudienceTests.test_read_views_require_the_current_audience_after_final_source_check)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_views.py", line 188, in test_read_views_require_the_current_audience_after_final_source_check
+    self.assertFalse(result.get('ok'),result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'ok': True, 'stdout': '🗂  Harvest Queue — pending review\n────────────────────────────────────────\n  Ideas/synthetic-private-view\n    Title: "Synthetic private audience view"\n    From:  synthetic-source (2026-10-08)\n\n  1 note(s) pending. Promote with `promote <slug>` or `promote --all`; reject with `reject <slug>`.\n'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.669s
+
+FAILED (failures=1)

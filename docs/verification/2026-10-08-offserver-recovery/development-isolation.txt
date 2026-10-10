@@ -1,0 +1,22 @@
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0@if58        DOWN           
+docker0          DOWN           172.17.0.1/16 
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+disabled
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+inactive
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+arch: amd64
+cores: 2
+description: LifeOS Hermes plugin development environment created 2026-10-05. Root disk is a ZFS dataset with zstd-3 compression.%0A
+features: nesting=1
+hostname: lifeos-dev-recovery
+memory: 4096
+net0: name=eth0,bridge=vmbr0,firewall=1,hwaddr=BC:24:11:94:44:87,ip=manual,ip6=manual,link_down=1,type=veth
+onboot: 0
+ostype: ubuntu
+rootfs: local-zfs:subvol-103-disk-0,size=150G
+swap: 0
+tags: lifeos-recovery-disposable
+unprivileged: 1

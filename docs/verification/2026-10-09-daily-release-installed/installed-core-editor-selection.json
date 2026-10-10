@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "observations": [
+    {
+      "method": "GET",
+      "path": "/api/hermes",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "GET",
+      "path": "/api/hermes/",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "GET",
+      "path": "/api/hermes/log-analysis",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "GET",
+      "path": "/api/hermes/file/principal-memory",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/hermes/file/config",
+      "status": 404,
+      "body": "Not found"
+    },
+    {
+      "method": "POST",
+      "path": "/api/hermes/remount",
+      "status": 404,
+      "body": "Not found"
+    }
+  ],
+  "native_core_editor_enabled": false,
+  "actual_hermes_dashboard_configuration_unchanged": true,
+  "retained_previous_configuration": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/daily-PULSE.user-before-core-disable.toml",
+  "service_state": {
+    "state": "active",
+    "recovery_required": false,
+    "owner_turn_verified": false
+  },
+  "live_profile_changed": false,
+  "selection": {
+    "path": "docs/deployment/daily-text/PULSE.user.toml",
+    "before_sha256": "a4bb57c54d11bc062e6277b915d3513374643d4347c0ed66ed1d1553344e7ed4",
+    "after_sha256": "beaab83d5132b4ea30b17716add541b78de26c5ac8809a7e204cf2f22d33c765",
+    "launch_assumption": "Use the actual Hermes dashboard for administration"
+  }
+}

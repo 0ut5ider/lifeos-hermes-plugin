@@ -1,0 +1,48 @@
+test_actual_timeout_keeps_the_timeout_outcome (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_actual_timeout_keeps_the_timeout_outcome) ... ok
+test_batch_cancellation_during_send_preserves_earlier_answers (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_batch_cancellation_during_send_preserves_earlier_answers) ... FAIL
+test_cancellation_is_not_a_timeout_or_an_answer (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_cancellation_is_not_a_timeout_or_an_answer) ... FAIL
+test_deliberate_empty_answer_does_not_report_a_timeout (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_deliberate_empty_answer_does_not_report_a_timeout) ... FAIL
+test_user_text_that_matches_the_cancellation_notice_remains_an_answer (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_user_text_that_matches_the_cancellation_notice_remains_an_answer) ... ok
+
+======================================================================
+FAIL: test_batch_cancellation_during_send_preserves_earlier_answers (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_batch_cancellation_during_send_preserves_earlier_answers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/gateway/test_clarify_cancellation_outcome.py", line 122, in test_batch_cancellation_during_send_preserves_earlier_answers
+    self.assertTrue(result.get('cancelled'), result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None is not true : {'responses': [{'question': 'First', 'choices_offered': ['A', 'B'], 'user_response': 'A'}, {'question': 'Second', 'choices_offered': ['A', 'B'], 'user_response': ''}, {'question': 'Third', 'choices_offered': ['A', 'B'], 'user_response': ''}], 'timed_out': True, 'notice': '[user did not respond within 0m]'}
+
+======================================================================
+FAIL: test_cancellation_is_not_a_timeout_or_an_answer (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_cancellation_is_not_a_timeout_or_an_answer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/gateway/test_clarify_cancellation_outcome.py", line 58, in test_cancellation_is_not_a_timeout_or_an_answer
+    self.assertEqual(result['user_response'], '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '[user did not respond within 60m]' != ''
+- [user did not respond within 60m]
+
+
+======================================================================
+FAIL: test_deliberate_empty_answer_does_not_report_a_timeout (test_clarify_cancellation_outcome.ClarifyCancellationOutcomeTests.test_deliberate_empty_answer_does_not_report_a_timeout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes/tests/gateway/test_clarify_cancellation_outcome.py", line 74, in test_deliberate_empty_answer_does_not_report_a_timeout
+    self.assertEqual(_clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        session_key=entry.session_key, clarify_mod=queue), ('', True))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('[user did not respond within 0m]', False) != ('', True)
+
+First differing element 0:
+'[user did not respond within 0m]'
+''
+
+- ('[user did not respond within 0m]', False)
++ ('', True)
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.361s
+
+FAILED (failures=3)

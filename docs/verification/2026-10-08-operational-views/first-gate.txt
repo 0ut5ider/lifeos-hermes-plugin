@@ -1,0 +1,60 @@
+test_admitted_operational_views_preserve_native_fields_and_folding (test_memory_operational_views.MemoryOperationalViewsTests.test_admitted_operational_views_preserve_native_fields_and_folding) ... ok
+test_anonymous_and_ambient_owner_cannot_read_operational_routes (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_and_ambient_owner_cannot_read_operational_routes) ... ok
+test_anonymous_stream_refuses_before_sending_initial_algorithm_state (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_stream_refuses_before_sending_initial_algorithm_state) ... FAIL
+test_log_rotation_with_equal_bytes_cannot_reuse_prior_private_activity_cache (test_memory_operational_views.MemoryOperationalViewsTests.test_log_rotation_with_equal_bytes_cannot_reuse_prior_private_activity_cache) ... ok
+test_native_stream_initial_event_matches_current_algorithm_response (test_memory_operational_views.MemoryOperationalViewsTests.test_native_stream_initial_event_matches_current_algorithm_response) ... Equal-length rotation observation: {"bytes": 217, "prior_inode": 1574684, "current_inode": 1574691, "source_tool": "Agent", "displayed_tool": "Agent"}
+ok
+test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer (test_memory_operational_views.MemoryOperationalViewsTests.test_operational_routes_refuse_selectors_methods_origin_and_invalid_bearer) ... Initial operational stream seconds: 0.005074
+ok
+test_private_and_encoded_private_sources_cannot_enter_operational_views (test_memory_operational_views.MemoryOperationalViewsTests.test_private_and_encoded_private_sources_cannot_enter_operational_views) ... ok
+test_retired_text_cannot_return_from_original_session_or_event_files (test_memory_operational_views.MemoryOperationalViewsTests.test_retired_text_cannot_return_from_original_session_or_event_files) ... ok
+test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions (test_memory_operational_views.MemoryOperationalViewsTests.test_revoked_account_and_missing_connector_cannot_fall_back_to_raw_sessions) ... ok
+test_configuration_cli_emits_native_normalized_config (test_native_frontend_types.NativeFrontendTypeTests.test_configuration_cli_emits_native_normalized_config) ... ok
+test_configuration_import_does_not_run_cli (test_native_frontend_types.NativeFrontendTypeTests.test_configuration_import_does_not_run_cli) ... ok
+test_dashboard_strict_typecheck_passes (test_native_frontend_types.NativeFrontendTypeTests.test_dashboard_strict_typecheck_passes) ... FAIL
+test_subordinate_tabs_ignore_unused_callback (test_native_frontend_types.NativeFrontendTypeTests.test_subordinate_tabs_ignore_unused_callback) ... ok
+
+======================================================================
+FAIL: test_anonymous_stream_refuses_before_sending_initial_algorithm_state (test_memory_operational_views.MemoryOperationalViewsTests.test_anonymous_stream_refuses_before_sending_initial_algorithm_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_views.py", line 114, in test_anonymous_stream_refuses_before_sending_initial_algorithm_state
+    self.assertEqual(response.status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_dashboard_strict_typecheck_passes (test_native_frontend_types.NativeFrontendTypeTests.test_dashboard_strict_typecheck_passes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_frontend_types.py", line 75, in test_dashboard_strict_typecheck_passes
+    self.run_bun(self.dashboard / 'node_modules/typescript/bin/tsc', '--noEmit',
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 '--incremental', 'false', '--pretty', 'false', cwd=self.dashboard)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_frontend_types.py", line 37, in run_bun
+    self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : observability.ts(4686,56): error TS2345: Argument of type '(path: string, maximum: number) => Array<Record<string, unknown>>' is not assignable to parameter of type '(filePath: string, maxLines?: number) => any[]'.
+  Types of parameters 'maximum' and 'maxLines' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+observability.ts(4687,69): error TS2345: Argument of type '(path: string, maximum: number) => Array<Record<string, unknown>>' is not assignable to parameter of type '(filePath: string, maxLines?: number) => any[]'.
+  Types of parameters 'maximum' and 'maxLines' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+observability.ts(4688,81): error TS2345: Argument of type '(path: string, maximum: number) => Array<Record<string, unknown>>' is not assignable to parameter of type '(filePath: string, maxLines?: number) => any[]'.
+  Types of parameters 'maximum' and 'maxLines' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+observability.ts(4689,83): error TS2345: Argument of type '(path: string, maximum: number) => Array<Record<string, unknown>>' is not assignable to parameter of type '(filePath: string, maxLines?: number) => any[]'.
+  Types of parameters 'maximum' and 'maxLines' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+
+
+----------------------------------------------------------------------
+Ran 13 tests in 24.850s
+
+FAILED (failures=2)
+SubTabs markup SHA256: 85d7244cc5c904c7e98c104ddc7adcad2ccb988366012c68c70cedafdddd42b0

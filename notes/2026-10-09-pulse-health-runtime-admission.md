@@ -1,0 +1,13 @@
+# Health metadata needs its own delivery boundary
+
+2026-10-09. Four checks start the actual native Pulse daemon against a disposable authenticated profile. Every job is disabled or has a January-only schedule. The daemon executes no job. No optional module is enabled. The fixture uses a synthetic dashboard index to test the native asset-existence rule. It never starts a model program.
+
+The native status characterization passes. A disabled job with 100 prior failures does not degrade service. The same declared, enabled job degrades the body and retains HTTP 200. Removing the dashboard index changes the native status to HTTP 503. Both anonymous health routes expose the synthetic job label. Owner delivery lacks `no-store`. A private job label reaches the original health response. The four-case baseline records four failed assertions in 75.030 seconds.
+
+The selected health fields are current runtime observations: job names, job result codes, timestamps, failure counts, hook counters, module enablement and start times, data-file presence, process identity, uptime, and dashboard asset status. They are not source text from personal records. The selected release omits voice, iMessage, private Assistant, and Syslog health payloads. A managed payload that adds one of those unclassified subsystems must refuse until it receives its own classification.
+
+The candidate will authenticate before native health formatting. It will send the complete bounded native observation through a second current owner check and the existing native private-text and retirement filters. It will preserve the native HTTP 503 body for missing dashboard assets only when the installation binding is valid. The first read gate alone does not authorize later delivery after owner revocation. Current model routing, source read views, and job execution admission retain their separate checks.
+
+The delayed real-response probe gives each backend phase a 24-second delay. The first candidate disconnects without a response after 48.001 seconds. Independent phase deadlines exceed Pulse's 45-second idle limit. The candidate now uses one 40-second abort deadline for the complete health request, while preserving any refreshed cookies from the first phase.
+
+The shared deadline returns HTTP 503 at 40.003 seconds. Thirteen assertions pass, but the delayed backend logs an uncaught ClientDisconnect while reading the cancelled POST body. A strengthened observation records actual application exceptions and fails cleanup with exactly ClientDisconnect. The health delivery endpoint now handles that cancellation before parsing or admitting an observation. A final complete health run also checks that the timed refusal retains the actual refreshed access cookie.

@@ -1,0 +1,53 @@
+test_incremental_native_cache_is_private_and_returns_next_signature (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_incremental_native_cache_is_private_and_returns_next_signature) ... FAIL
+test_native_plan_preserves_complete_source_hashes_and_native_levels (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_native_plan_preserves_complete_source_hashes_and_native_levels) ... FAIL
+test_source_metadata_private_source_and_read_only_permission_refuse (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_source_metadata_private_source_and_read_only_permission_refuse) ... FAIL
+test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache) ... FAIL
+
+======================================================================
+FAIL: test_incremental_native_cache_is_private_and_returns_next_signature (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_incremental_native_cache_is_private_and_returns_next_signature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 71, in test_incremental_native_cache_is_private_and_returns_next_signature
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 47, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_native_plan_preserves_complete_source_hashes_and_native_levels (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_native_plan_preserves_complete_source_hashes_and_native_levels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 59, in test_native_plan_preserves_complete_source_hashes_and_native_levels
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 47, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_source_metadata_private_source_and_read_only_permission_refuse (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_source_metadata_private_source_and_read_only_permission_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 100, in test_source_metadata_private_source_and_read_only_permission_refuse
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 47, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache (test_memory_algorithm_summary.MemoryAlgorithmSummaryTests.test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 82, in test_wrong_hash_private_output_and_removed_cards_cannot_replace_cache
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_summary.py", line 47, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.065s
+
+FAILED (failures=4)

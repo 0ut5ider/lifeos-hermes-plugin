@@ -1,0 +1,33 @@
+F
+======================================================================
+FAIL: test_standalone_legacy_goals_do_not_open_unused_unified_source (test_memory_morning_brief.MemoryMorningBriefTests.test_standalone_legacy_goals_do_not_open_unused_unified_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 121, in test_standalone_legacy_goals_do_not_open_unused_unified_source
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 :  95 |         && value.ok === true && typeof value.stdout === "string")
+ 96 |     if (!result) throw new Error("Morning brief requires current owner recall")
+ 97 |     process.stdout.write(result.stdout)
+ 98 |     return
+ 99 |   }
+100 |   const sources = ["GOALS.md", "TELOS.md", "SPARKS.md", "CURRENT.md"].map(filename => ({filename, content: readFile(filename)}))
+                                                                                                                 ^
+EISDIR: illegal operation on a directory, read
+      fd: 11,
+ syscall: "read",
+   errno: -21,
+    code: "EISDIR"
+
+      at <anonymous> (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:100:108)
+      at map (1:11)
+      at main (/home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:100:71)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/morning-brief-first/lifeos/LifeOS/install/LIFEOS/PULSE/checks/life-morning-brief.ts:104:23
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.053s
+
+FAILED (failures=1)

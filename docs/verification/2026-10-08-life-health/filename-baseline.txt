@@ -1,0 +1,15 @@
+test_leaf_filename_with_repeated_dots_preserves_native_fields (test_memory_life_health.MemoryLifeHealthTests.test_leaf_filename_with_repeated_dots_preserves_native_fields) ... FAIL
+
+======================================================================
+FAIL: test_leaf_filename_with_repeated_dots_preserves_native_fields (test_memory_life_health.MemoryLifeHealthTests.test_leaf_filename_with_repeated_dots_preserves_native_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_health.py", line 136, in test_leaf_filename_with_repeated_dots_preserves_native_fields
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.247s
+
+FAILED (failures=1)

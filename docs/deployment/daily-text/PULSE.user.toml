@@ -1,0 +1,57 @@
+# Daily Discord text configuration for a fresh Adrian and Cerebo profile.
+# Install this file only after current owner admission and release acceptance.
+
+[modules]
+voice = false
+work = false
+synapse = false
+usage = false
+bunker = false
+hermes = false
+
+[voice]
+enabled = false
+
+[[job]]
+name = "healthcheck"
+schedule = "*/5 * * * *"
+type = "script"
+command = "bun run checks/health.ts"
+output = "log"
+enabled = true
+
+[[job]]
+name = "conduit-capture"
+schedule = "*/2 * * * *"
+type = "script"
+command = "hermes lifeos-job conduit-capture"
+timeout_ms = 600000
+output = "log"
+enabled = true
+
+[[job]]
+name = "memory-consolidation"
+schedule = "0 3 * * *"
+type = "script"
+command = "hermes lifeos-job memory-consolidation"
+timeout_ms = 600000
+output = "log"
+enabled = true
+
+[[job]]
+name = "proposal-gc"
+schedule = "45 3 * * *"
+type = "script"
+command = "hermes lifeos-job proposal-gc"
+timeout_ms = 600000
+output = "log"
+enabled = true
+
+[[job]]
+name = "life-morning-brief"
+schedule = "0 7 * * *"
+type = "script"
+command = "hermes lifeos-job life-morning-brief"
+timeout_ms = 600000
+output = "log"
+enabled = true

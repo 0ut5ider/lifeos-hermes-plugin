@@ -1,0 +1,59 @@
+test_actual_generated_continuation_preserves_original_proof_and_request (test_memory_continuation.MemoryContinuationTests.test_actual_generated_continuation_preserves_original_proof_and_request) ... ok
+test_arbitrary_later_input_cannot_borrow_the_previous_input_proof (test_memory_continuation.MemoryContinuationTests.test_arbitrary_later_input_cannot_borrow_the_previous_input_proof) ... ok
+test_generated_user_tail_is_filtered_and_never_treated_as_an_explicit_quote (test_memory_continuation.MemoryContinuationTests.test_generated_user_tail_is_filtered_and_never_treated_as_an_explicit_quote) ... ok
+test_missing_original_input_and_changed_continuation_refuse (test_memory_continuation.MemoryContinuationTests.test_missing_original_input_and_changed_continuation_refuse) ... ok
+test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof (test_memory_history.MemoryHistoryTests.test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof) ... ok
+test_auxiliary_inputs_do_not_borrow_the_current_user_quote_exception (test_memory_history.MemoryHistoryTests.test_auxiliary_inputs_do_not_borrow_the_current_user_quote_exception) ... ok
+test_auxiliary_responses_string_is_generated_content_without_a_user_role (test_memory_history.MemoryHistoryTests.test_auxiliary_responses_string_is_generated_content_without_a_user_role) ... ERROR
+test_changed_current_user_input_cannot_borrow_an_original_input_proof (test_memory_history.MemoryHistoryTests.test_changed_current_user_input_cannot_borrow_an_original_input_proof) ... ok
+test_clean_projection_preserves_request_and_does_not_mutate_transcript (test_memory_history.MemoryHistoryTests.test_clean_projection_preserves_request_and_does_not_mutate_transcript) ... ok
+test_each_admitted_turn_binds_its_current_input_without_changing_identity_policy (test_memory_history.MemoryHistoryTests.test_each_admitted_turn_binds_its_current_input_without_changing_identity_policy) ... ok
+test_generation_refresh_removes_retired_tool_and_assistant_content (test_memory_history.MemoryHistoryTests.test_generation_refresh_removes_retired_tool_and_assistant_content) ... ok
+test_original_multimodal_user_proof_excludes_appended_text_blocks (test_memory_history.MemoryHistoryTests.test_original_multimodal_user_proof_excludes_appended_text_blocks) ... ok
+test_original_user_proof_excludes_appended_context_without_losing_the_user_quote (test_memory_history.MemoryHistoryTests.test_original_user_proof_excludes_appended_context_without_losing_the_user_quote) ... ok
+test_projection_cannot_change_authenticated_author_or_destination (test_memory_history.MemoryHistoryTests.test_projection_cannot_change_authenticated_author_or_destination) ... ok
+test_projection_cannot_refresh_changed_policy_or_prompt (test_memory_history.MemoryHistoryTests.test_projection_cannot_refresh_changed_policy_or_prompt) ... ok
+test_projection_does_not_remove_required_system_instructions (test_memory_history.MemoryHistoryTests.test_projection_does_not_remove_required_system_instructions) ... ok
+test_projection_replaces_previous_user_quote_but_keeps_current_explicit_quote (test_memory_history.MemoryHistoryTests.test_projection_replaces_previous_user_quote_but_keeps_current_explicit_quote) ... ok
+test_protocol_identifiers_are_refused_instead_of_rewritten (test_memory_history.MemoryHistoryTests.test_protocol_identifiers_are_refused_instead_of_rewritten) ... ok
+test_repair_preserves_concurrent_admission_and_its_inactive_lineage (test_memory_history.MemoryHistoryTests.test_repair_preserves_concurrent_admission_and_its_inactive_lineage) ... ok
+test_responses_extra_body_projects_effective_input_and_preserves_other_options (test_memory_history.MemoryHistoryTests.test_responses_extra_body_projects_effective_input_and_preserves_other_options) ... ok
+test_responses_projection_preserves_the_current_quote_and_removes_appended_context (test_memory_history.MemoryHistoryTests.test_responses_projection_preserves_the_current_quote_and_removes_appended_context) ... ok
+test_responses_projection_refuses_to_rewrite_protocol_identifiers (test_memory_history.MemoryHistoryTests.test_responses_projection_refuses_to_rewrite_protocol_identifiers) ... ok
+test_responses_projection_removes_retired_content_and_preserves_protocol_ids (test_memory_history.MemoryHistoryTests.test_responses_projection_removes_retired_content_and_preserves_protocol_ids) ... ok
+test_sdk_override_history_is_projected_without_overriding_other_fields (test_memory_history.MemoryHistoryTests.test_sdk_override_history_is_projected_without_overriding_other_fields) ... ok
+test_uninspectable_history_is_refused_without_consuming_it (test_memory_history.MemoryHistoryTests.test_uninspectable_history_is_refused_without_consuming_it) ... ok
+test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context (test_memory_history.MemoryHistoryTests.test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context) ... ok
+test_worker_input_proof_cannot_authorize_a_different_foreground_input (test_memory_history.MemoryHistoryTests.test_worker_input_proof_cannot_authorize_a_different_foreground_input) ... ok
+test_worker_input_proof_does_not_authorize_retired_auxiliary_content (test_memory_history.MemoryHistoryTests.test_worker_input_proof_does_not_authorize_retired_auxiliary_content) ... ok
+test_worker_input_proof_does_not_refresh_a_retired_generation_for_auxiliary_calls (test_memory_history.MemoryHistoryTests.test_worker_input_proof_does_not_refresh_a_retired_generation_for_auxiliary_calls) ... ok
+test_worker_input_proof_rebinds_auxiliary_execution_and_keeps_direct_checks_closed (test_memory_history.MemoryHistoryTests.test_worker_input_proof_rebinds_auxiliary_execution_and_keeps_direct_checks_closed) ... ok
+
+======================================================================
+ERROR: test_auxiliary_responses_string_is_generated_content_without_a_user_role (test_memory_history.MemoryHistoryTests.test_auxiliary_responses_string_is_generated_content_without_a_user_role)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 436, in _check_call
+    retained = list(enumerate(messages)) if auxiliary else retained_messages(messages,user_input)
+                                                           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_history.py", line 78, in retained_messages
+    raise ValueError('Memory history cannot verify the current user input')
+ValueError: Memory history cannot verify the current user input
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_history.py", line 272, in test_auxiliary_responses_string_is_generated_content_without_a_user_role
+    self.fixture.runtime.check_call(request=request,**self.fixture.route,session_id='aux')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 322, in check_call
+    self._check_call(**kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 440, in _check_call
+    raise MemoryAdmissionError(str(error)) from error
+lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory history cannot verify the current user input
+
+----------------------------------------------------------------------
+Ran 30 tests in 17.201s
+
+FAILED (errors=1)

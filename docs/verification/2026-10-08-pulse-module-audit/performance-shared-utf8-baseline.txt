@@ -1,0 +1,15 @@
+test_unfinished_utf8_tail_waits_without_stopping_current_telemetry (test_memory_capabilities.MemoryCapabilitiesTests.test_unfinished_utf8_tail_waits_without_stopping_current_telemetry) ... FAIL
+
+======================================================================
+FAIL: test_unfinished_utf8_tail_waits_without_stopping_current_telemetry (test_memory_capabilities.MemoryCapabilitiesTests.test_unfinished_utf8_tail_waits_without_stopping_current_telemetry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 168, in test_unfinished_utf8_tail_waits_without_stopping_current_telemetry
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.103s
+
+FAILED (failures=1)

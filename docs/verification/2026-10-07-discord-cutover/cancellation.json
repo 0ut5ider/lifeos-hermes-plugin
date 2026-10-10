@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-07",
+  "status": "passed",
+  "scope": "Actual Discord cancellation of a pending question and recovery",
+  "host": "192.168.8.252",
+  "bot_application_id": "1554102173535703140",
+  "channel_id": "1554859357374513222",
+  "test_marker": "D252-CANCEL-3",
+  "source_message_id": "1557475569606598737",
+  "source_timestamp": "2026-10-07T19:31:52.291000+00:00",
+  "question_message_id": "1557475614724726805",
+  "question_timestamp": "2026-10-07T19:32:03.048000+00:00",
+  "stop_interaction_id": "1557475685474246686",
+  "slash_entered_at": "2026-10-07T19:32:20.282217+00:00",
+  "interaction_observed_at": "2026-10-07T19:32:20.286835+00:00",
+  "authorization_allowed": true,
+  "defer_succeeded": true,
+  "interrupt_entered_at": "2026-10-07T19:32:20.697660+00:00",
+  "invalidation_reason": "stop_command",
+  "generation_after_interrupt": 3,
+  "stop_reply_message_id": "1557475689702105219",
+  "stop_reply_timestamp": "2026-10-07T19:32:20.924000+00:00",
+  "stop_reply": "Stopped. You can continue this session.",
+  "tool_call_id": "chatcmpl-tool-8b09e727b09fb2fb",
+  "tool_commit_timestamp": "2026-10-07T19:32:22.438802+00:00",
+  "tool_duration_seconds": 17.954375505447388,
+  "configured_timeout_seconds": 120,
+  "tool_is_error": false,
+  "question_wait_ends_before_deadline": true,
+  "native_question_hooks": [
+    {
+      "native_event": "PreToolUse",
+      "completed_at": "2026-10-07T19:32:02.858040+00:00",
+      "exit_code": 0
+    },
+    {
+      "native_event": "PostToolUse",
+      "completed_at": "2026-10-07T19:32:22.338833+00:00",
+      "exit_code": 0
+    }
+  ],
+  "recovery_source_message_id": "1557475841489903697",
+  "recovery_source_timestamp": "2026-10-07T19:32:57.113000+00:00",
+  "recovery_reply_message_id": "1557475892014489702",
+  "recovery_reply_timestamp": "2026-10-07T19:33:09.159000+00:00",
+  "recovery_marker": "D252-RECOVERY-3-PASS",
+  "user_confirmed_immediate_stop_and_recovery": true,
+  "stale_turn_reply_after_stop": false,
+  "capture_snapshot": {
+    "events": 2552,
+    "incomplete_invocations": 0,
+    "known_lost_events": 0,
+    "capture_failure_processes": 0,
+    "capture_gaps": 0,
+    "integrity_issues": {}
+  },
+  "limits": [
+    "The clarification tool represents a cleared waiter as an empty timeout result. The measured duration and gateway interruption establish cancellation.",
+    "The recorder redacts the timed_out boolean. The recovery model statement is not cancellation evidence.",
+    "The screenshot remains private. This file retains only synthetic test markers and routing evidence."
+  ]
+}

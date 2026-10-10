@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_memory_publication_rechecks"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 19.166449308395386,
+  "stdout": "",
+  "stderr": "FFF\n======================================================================\nFAIL: test_native_recheck_source_conflicts_retain_recovery (test_memory_publication_rechecks.MemoryPublicationRecheckTests.test_native_recheck_source_conflicts_retain_recovery) (kind='algorithm')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_rechecks.py\", line 77, in test_native_recheck_source_conflicts_retain_recovery\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_native_recheck_source_conflicts_retain_recovery (test_memory_publication_rechecks.MemoryPublicationRecheckTests.test_native_recheck_source_conflicts_retain_recovery) (kind='local')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_rechecks.py\", line 77, in test_native_recheck_source_conflicts_retain_recovery\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n======================================================================\nFAIL: test_native_recheck_source_conflicts_retain_recovery (test_memory_publication_rechecks.MemoryPublicationRecheckTests.test_native_recheck_source_conflicts_retain_recovery) (kind='conduit')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_rechecks.py\", line 77, in test_native_recheck_source_conflicts_retain_recovery\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 1 test in 18.993s\n\nFAILED (failures=3)\n"
+}

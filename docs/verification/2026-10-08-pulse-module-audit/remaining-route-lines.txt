@@ -1,0 +1,445 @@
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:5: * MEMORY/DATA/LocalIntelligence/latest.json. Serves the LOCAL dashboard tab.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:8: *   GET  /api/local-intelligence            — latest digest
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:9: *   POST /api/local-intelligence/refresh    — kick off a refresh, returns run_id
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:10: *   (health() integrates into /api/pulse/health)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:13: * skill's Tools/Refresh.ts. This module spawns that script for refreshes and
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:14: * reads the resulting JSON for serves.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:17:import { spawn } from "node:child_process"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:18:import { readFile, readdir, mkdir, writeFile, stat } from "node:fs/promises"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:27:// Fallback path: legacy MEMORY/DATA path (used when customizations file absent).
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:28:const CUSTOMIZATIONS_DIR = join(HOME, ".claude", "LIFEOS", "USER", "CUSTOMIZATIONS", "SKILLS", "LocalIntelligence")
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:29:const LEGACY_DATA_DIR = join(HOME, ".claude", "LIFEOS", "MEMORY", "DATA", "LocalIntelligence")
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:36:async function readLatest(): Promise<string | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:37:  try { return await readFile(LATEST_PATH, "utf8") } catch {}
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:38:  try { return await readFile(LEGACY_LATEST_PATH, "utf8") } catch {}
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:39:  return null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:65:  await readLatestMeta()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:75:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:89:async function readLatestMeta(): Promise<void> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:90:  const raw = await readLatest()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:105:async function spawnRefresh(): Promise<string> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:108:  const out = await Bun.file(logPath).writer()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:109:  const child = spawn("bun", ["run", REFRESH_SCRIPT, "--fill"], {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:113:  child.stdout.on("data", (b) => out.write(b))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:114:  child.stderr.on("data", (b) => out.write(b))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:116:    out.write(`\n[exit] code=${code}\n`)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:118:    await readLatestMeta()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:121:  await writeFile(logPath + ".started", new Date().toISOString())
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:122:  return runId
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:127:// Dated digests written by the skill to MEMORY/DATA/LocalIntelligence/ are the
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:146:    return Response.json({ error: "bad_range", valid: Object.keys(RANGE_DAYS) }, { status: 400 })
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:154:    files = (await readdir(LEGACY_DATA_DIR))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:175:      digest = JSON.parse(await readFile(join(LEGACY_DATA_DIR, f), "utf8"))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:200:  return Response.json({
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:212:export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:213:  if (req.method === "GET" && pathname === "/api/local-intelligence/history") {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:215:    return buildHistory(range)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:217:  if (req.method === "GET" && pathname === "/api/local-intelligence") {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:218:    const raw = await readLatest()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:220:      return new Response(raw, {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:224:    return Response.json(
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:225:      { error: "not_yet_generated", hint: "POST /api/local-intelligence/refresh to kick off a run" },
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:229:  if (req.method === "POST" && pathname === "/api/local-intelligence/refresh") {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:230:    const runId = await spawnRefresh()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:231:    return Response.json({ status: "started", run_id: runId }, { status: 202 })
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:233:  if (req.method === "GET" && pathname === "/api/local-intelligence/status") {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:241:    return Response.json({
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/local-intelligence.ts:247:  return null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:2: * Doctor Pulse module — read-only "System Health" surface over the advisory
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:4: * reads the capability manifest + heartbeat and shells the hook reconciler,
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:11: * Route: GET /api/doctor → { manifest, heartbeat, reconcile }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:13:import { existsSync, readFileSync } from "node:fs";
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:20:const STATE_DIR = join(LIFEOS_DIR, "MEMORY", "STATE");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:50:  return CAP_TITLES[id] || id.replace(/(^|[-_])(\w)/g, (_, __, c) => " " + c.toUpperCase()).trim();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:53:function readManifest() {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:55:    return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:62:    const raw = JSON.parse(readFileSync(MANIFEST_PATH, "utf8")) as {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:72:      return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:84:    return { present: true as const, updatedAt: raw.updatedAt ?? null, capabilities };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:86:    return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:88:      hint: `capabilities manifest unreadable — re-run: bun ${DOCTOR_TS}`,
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:94:function readHeartbeat() {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:96:    return { present: false as const, hint: `no doctor run yet — bun ${DOCTOR_TS}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:99:    const raw = JSON.parse(readFileSync(HEARTBEAT_PATH, "utf8")) as {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:105:    return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:114:    return { present: false as const, hint: `heartbeat unreadable — re-run: bun ${DOCTOR_TS}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:125:function readReconcile(): Reconcile {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:127:    return reconcileCache.value;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:135:    const proc = Bun.spawnSync(["bun", DOCTOR_TS, "--reconcile"], {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:143:    return value;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:145:    return fallback;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:149:function read() {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:150:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:151:    manifest: readManifest(),
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:152:    heartbeat: readHeartbeat(),
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:153:    reconcile: readReconcile(),
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:165:  const hb = readHeartbeat();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:166:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:171:export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:173:  if (sub === "/" || sub === "/state") return Response.json(read());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:174:  if (sub === "/status" || sub === "/health") return Response.json(health());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/doctor.ts:175:  return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:2: * Ledger Pulse module — read-only surface over the LifeOS change-tracking system.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:6: *   registry  — MEMORY/SYSTEMUPDATES/index.json (latest N entries + rollups)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:7: *   deploys   — MEMORY/SYSTEMUPDATES/deploys.jsonl (estate deploy events)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:8: *   integrity — MEMORY/STATE/integrity/last-run.json + last-pass.json
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:9: *   drift     — MEMORY/STATE/version-drift-nag.json
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:11: * Route: GET /api/ledger → { generated_at, versions, registry, deploys, integrity, drift, errors }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:16:import { existsSync, readFileSync } from "node:fs";
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:22:const SYSTEMUPDATES = join(LIFEOS_DIR, "MEMORY", "SYSTEMUPDATES");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:23:const STATE_DIR = join(LIFEOS_DIR, "MEMORY", "STATE");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:34:function readText(path: string): string | null {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:36:    return readFileSync(path, "utf8").trim();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:38:    return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:42:function readJson(path: string): any | null {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:43:  const raw = readText(path);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:44:  if (raw === null) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:46:    return JSON.parse(raw);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:48:    return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:52:function readJsonl(path: string, lastN: number): any[] {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:53:  if (!existsSync(path)) return [];
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:54:  const raw = readText(path);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:55:  if (!raw) return [];
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:65:  return out.reverse();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:70:  const raw = readText(path);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:71:  if (!raw) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:73:  return m ? m[1] : null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:80:    lifeos: readText(join(LIFEOS_DIR, "VERSION")),
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:81:    algorithm: readText(join(LIFEOS_DIR, "ALGORITHM", "LATEST")),
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:84:  if (!versions.lifeos) errors.push("VERSION unreadable");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:87:  const idx = readJson(join(SYSTEMUPDATES, "index.json"));
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:106:    errors.push("SYSTEMUPDATES/index.json unreadable");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:109:  const deploys = readJsonl(join(SYSTEMUPDATES, "deploys.jsonl"), DEPLOYS_SLICE);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:111:  const lastRun = readJson(join(STATE_DIR, "integrity", "last-run.json"));
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:112:  const lastPass = readJson(join(STATE_DIR, "integrity", "last-pass.json"));
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:119:  const driftNag = readJson(join(STATE_DIR, "version-drift-nag.json"));
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:122:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:137:export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:138:  if (pathname !== "/api/ledger" && pathname !== "/api/ledger/") return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:139:  if (req.method !== "GET") return new Response("method not allowed", { status: 405 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:142:    return Response.json(state.cache.payload, { headers: { "X-Ledger-Cache": "hit" } });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:146:  return Response.json(payload);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/ledger.ts:150:  return { running: state.running };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:10: *   GET  /api/algorithm-tab                       — composed payload: version, the
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:16: *   GET  /api/algorithm-tab/file?id=<id>[&version=vX.Y.Z]
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:18: *   POST /api/algorithm-tab/file                  — save an editable chain file in
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:22: *        repo (USER symlink targets commit in the USER repo). Kicks summary regen.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:23: *   POST /api/algorithm-tab/doctrine              — the versioned doctrine workflow:
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:24: *        write v{next}.md (H1 bumped, prior v-files never touched), prepend a
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:26: *   POST /api/algorithm-tab/summary/regenerate    — force a full regeneration pass.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:28: * Summaries (MEMORY/STATE/algorithm-tab-summary.json, schema v2):
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:34: * paths are never accepted. Git runs via arg-array spawn only (no shell
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:36: * writer refuses to overwrite an existing v*.md.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:39:import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:47:const STATE_PATH = join(LIFEOS_DIR, "MEMORY", "STATE", "algorithm-tab-summary.json");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:49:// The USER tree is a symlink into the private USER-data repo — commits for
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:51:const USER_REPO = join(homedir(), ".config", "LIFEOS", "USER");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:92:    id: "operational-rules", name: "Operational Rules", rel: "LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:103:    role: "Every-prompt injection of the hot-layer memory files (PRINCIPAL_MEMORY, DA_MEMORY) so each turn sees current memory.",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:127:    role: "How the ISA subsystem works end to end — lifecycle, homes (repo ISA vs MEMORY/WORK), sync to Pulse, resume semantics.",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:137:    role: "Mirrors every ISA write to the work registry (work.json) → Pulse. This write IS the run telemetry — claim 13's carrier.",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:138:    loaded: "Event-driven (ISA writes)", stage: "isa", editable: true, kind: "code",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:164:    role: "The ONE Stop-event gate runner — merges the per-turn gate spawns into a single process reading stdin once; each gate file stays owner of its logic.",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:200:    id: "incidents", name: "Incidents", rel: "LIFEOS/MEMORY/LEARNING/INCIDENTS/README.md",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:210:    id: "operational-rules-expanded", name: "Operational Rules Expanded", rel: "LIFEOS/USER/CONFIG/OperationalRulesExpanded.md",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:215:    id: "writing-style-backstop", name: "Writing Style Backstop", rel: "LIFEOS/USER/DIGITAL_ASSISTANT/REFERENCE/WritingStyleBackstop.md",
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:225:    const v = version ?? readLatestSync();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:226:    return join(ALGO_DIR, `v${v}.md`);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:228:  return join(HOME, spec.rel);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:231:function readLatestSync(): string {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:233:    return readFileSync(join(ALGO_DIR, "LATEST"), "utf8").trim();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:235:    return "0.0.0";
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:245:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:255:  for (const f of readdirSync(ALGO_DIR)) {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:265:  return out.map(({ _k, ...r }) => r);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:276:async function readStore(): Promise<SummaryStore> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:279:    if (raw && typeof raw === "object" && "files" in raw) return raw as SummaryStore;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:282:      return { overview: { generated_at: raw.generated_at, chain_hash: raw.chain_hash, level: raw.level ?? "high", markdown: raw.markdown }, files: {} };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:285:  return { overview: null, files: {} };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:288:async function writeStore(store: SummaryStore): Promise<void> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:289:  await Bun.write(STATE_PATH, JSON.stringify(store, null, 2));
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:293:  return createHash("sha256").update(text).digest("hex");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:303:  return h.digest("hex");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:309:  const proc = Bun.spawn(
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:320:    return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:325:  return paras.join("\n\n").trim();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:330:Write it SIMPLE. The reader is smart but should not need to already know the system.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:336:  ## When work is real — how a run works: write done down, climb, close claims on evidence.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:338:  ## Where the rules live — which files carry what, so the reader knows what to edit to change behavior.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:340:250-450 words total. Plain words a Paul Graham essay would use — no jargon without a five-word gloss, no marketing register, no bullet spam. Ground every statement in the provided files; name real filenames so the reader can jump to them.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:344:const FILE_PROMPT = `You are writing the summary card for ONE file in the Pulse Algorithm dashboard. The reader wants to quickly and deeply understand what this file is doing in his AI system.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:356:    const store = await readStore();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:372:        await writeStore(store); // persist incrementally — a crash keeps finished cards
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:390:        await writeStore(store);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:417:/* ── Git — arg-array spawn only, repo chosen from the file's REAL path ── */
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:422:    if (real.startsWith(realpathSync(USER_REPO))) return USER_REPO;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:424:  return HOME;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:428:  const proc = Bun.spawn(["git", "-C", repo, ...args], { stdout: "pipe", stderr: "pipe" });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:434:  return { code, out: out.trim(), err: err.trim() };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:439:  const real = absPaths.map((p) => { try { return realpathSync(p); } catch { return p; } });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:441:  if (add.code !== 0) return { committed: false, detail: `git add failed: ${add.err}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:443:  if (commit.code !== 0) return { committed: false, detail: `git commit: ${commit.err || commit.out}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:445:  return { committed: true, detail: `${sha.out} in ${repo === HOME ? "~/.claude" : "USER repo"}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:452:  if (!fm) return content;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:462:  return content.replace(fm[0], `---\n${head}\n---`);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:470:    return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:472:    return String(e?.message ?? e);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:481:    return Response.json({ error: "content missing or implausibly short" }, { status: 400 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:484:    return Response.json({ error: "bump must be 'patch' or 'feature'" }, { status: 400 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:487:    return Response.json({ error: "a changelog note (≥10 chars) is required — edits are noted and versioned, always" }, { status: 400 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:490:  const cur = readLatestSync();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:493:    return Response.json({ error: `LATEST unparsable: ${cur}` }, { status: 500 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:498:    // Tagged versions are immutable — refuse rather than overwrite.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:499:    return Response.json({ error: `v${next}.md already exists — refusing to touch a tagged version` }, { status: 409 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:509:  await Bun.write(nextPath, doctrine);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:518:  await Bun.write(clPath, newCl);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:520:  await Bun.write(join(ALGO_DIR, "LATEST"), `${next}\n`);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:528:  setTimeout(() => { readStore().then((s) => chainHash().then((h) => kickIfStale(h, s))); }, 500);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:530:  return Response.json({ ok: true, version: next, previous: cur, commit });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:537:  if (!spec) return Response.json({ error: "unknown file id" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:538:  if (!spec.editable) return Response.json({ error: `${spec.name} is view-only` }, { status: 403 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:539:  if (spec.id === "doctrine") return Response.json({ error: "doctrine edits go through /api/algorithm-tab/doctrine (versioned)" }, { status: 400 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:541:    return Response.json({ error: "content missing or implausibly short" }, { status: 400 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:546:    return Response.json({ error: "file changed on disk since you loaded it — reload and re-apply", mtime: st.mtime.toISOString() }, { status: 409 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:551:      return Response.json({ error: `TS syntax check failed — not saved: ${syntaxErr.slice(0, 300)}` }, { status: 422 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:555:  await Bun.write(path, finalContent);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:559:  setTimeout(() => { readStore().then((s) => chainHash().then((h) => kickIfStale(h, s))); }, 500);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:561:  return Response.json({ ok: true, mtime: statSync(path).mtime.toISOString(), commit });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:568:  const version = readLatestSync();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:574:  const store = await readStore();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:587:    return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:599:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:618:  console.log(`[${MODULE_NAME}] Started — serving /api/algorithm-tab (${CHAIN.length} chain files)`);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:621:export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:622:  if (!pathname.startsWith("/api/algorithm-tab")) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:627:      return Response.json(await compose());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:634:      if (!spec) return Response.json({ error: "unknown file id" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:639:          if (!/^\d+\.\d+\.\d+$/.test(v)) return Response.json({ error: "bad version" }, { status: 400 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:644:      if (!existsSync(path)) return Response.json({ error: "file missing on disk" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:646:      return Response.json({ id, content: await Bun.file(path).text(), mtime: st.mtime.toISOString(), editable: spec.editable && !version });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:650:      return saveFile(await req.json());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:654:      return saveDoctrine(await req.json());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:658:      // Generation takes minutes; kick it off and return — the page polls
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:660:      if (state.generating) return Response.json({ error: "generation already in progress" }, { status: 409 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:664:      return Response.json({ ok: true, started: true }, { status: 202 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:667:    return Response.json({ error: "not found" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:669:    return Response.json({ error: String(e?.message ?? e) }, { status: 500 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts:674:  return { running: state.running, generating: state.generating };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:5: *   GET /api/menubar → { generatedAt, daemon, counts, feed[] }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:9: * having to know about every subsystem's storage. Every subsystem read is best-effort:
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:11: * (ISC-13). The amber ledger (Synapse's write-ahead journal) is cloud-D1 and reached via
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:17:import { existsSync, readFileSync, statSync } from "node:fs"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:27:const OBS = join(LIFEOS, "MEMORY", "OBSERVABILITY")
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:29:const WORK_JSON = join(LIFEOS, "MEMORY", "STATE", "work.json")
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:65:  return d.getTime()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:70:  if (s < 5) return "now"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:71:  if (s < 60) return `${s}s`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:73:  if (m < 60) return `${m}m`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:75:  if (h < 24) return `${h}h`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:76:  return `${Math.floor(h / 24)}d`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:79:/** Read the last `n` lines of a text file, capping the read at 512KB so giant logs stay cheap. */
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:82:    if (!existsSync(path)) return []
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:85:    const buf = readFileSync(path)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:88:    return lines.slice(-n)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:90:    return []
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:94:/** Count JSONL lines whose ISO `ts`/`timestamp` field is within the last `hours`. Bounded read. */
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:107:  return count
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:113:  if (sec < 60) return `${sec}s`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:115:  if (m < 60) return `${m}m`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:117:  if (h < 24) return `${h}h ${m % 60}m`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:118:  return `${Math.floor(h / 24)}d ${h % 24}h`
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:125:    if (!existsSync(statePath)) return { status: "stopped", label: "Stopped", uptimeSec: 0, failingJobs: 0, jobCount: 0 }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:126:    const st = JSON.parse(readFileSync(statePath, "utf8"))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:134:      const pid = Number(readFileSync(pidPath, "utf8").trim())
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:143:    if (!alive && fileAgeSec > 120) return { status: "stopped", label: "Stopped", uptimeSec: 0, failingJobs, jobCount }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:145:      return { status: "failing", label: `Failing — ${failingJobs} job${failingJobs === 1 ? "" : "s"}`, uptimeSec: 0, failingJobs, jobCount }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:146:    if (fileAgeSec > 120) return { status: "stale", label: "Running — tick stale", uptimeSec: 0, failingJobs, jobCount }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:148:    return { status: "running", label: `Running — ${fmtUptime(uptimeSec)}`, uptimeSec, failingJobs, jobCount }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:150:    return { status: "stopped", label: "Stopped", uptimeSec: 0, failingJobs: 0, jobCount: 0 }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:162:    const m = readFileSync(cfg, "utf8").match(/^\s*auth_token:\s*["']?([^"'\n]+)["']?\s*$/m)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:163:    return m ? m[1].trim() : null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:165:    return null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:170:  if (!AMBER_BASE) return []
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:171:  if (Date.now() - amberCache.at < 60_000) return amberCache.captures
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:173:  if (!token) return amberCache.captures
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:179:    if (!res.ok) return amberCache.captures
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:183:    return captures
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:185:    return amberCache.captures // stale-but-serving; never throws
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:193:    if (!existsSync(WORK_JSON)) return { count: 0, items: [] }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:194:    const wj = JSON.parse(readFileSync(WORK_JSON, "utf8"))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:198:      if (phase === "complete" || phase === "minimal" || phase === "") return false
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:200:      return Date.now() - upd < 7 * 24 * 3600 * 1000 // active in last 7d
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:206:      return { subsystem: "work", glyph: "⚙", title: `Work: ${name} · ${s.phase}`, tsMs: ts, ago: agoFrom(ts), actionable: false }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:208:    return { count: active.length, items }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:210:    return { count: 0, items: [] }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:263:  // Memory — today's writes + pending proposals
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:264:  const memoryToday = countRecent(join(OBS, "memory-writes.jsonl"), 24) + countRecent(join(OBS, "reviewer-runs.jsonl"), 24)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:296:  // recent memory writes as feed lines
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:297:  for (const line of tailLines(join(OBS, "memory-writes.jsonl"), 4)) {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:301:      const what = o.target_kind || o.kind || o.target_file || "memory write"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:318:      const st = JSON.parse(readFileSync(join(STATE_DIR, "state.json"), "utf8"))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:344:        // Stamped from the sidecar's own last state write, never Date.now() —
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:362:    /* sidecar absent or unreadable — HERMES_ABSENT stands */
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:367:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:389:  return { status: state.running ? "healthy" : "stopped" }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:392:export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:393:  if (pathname === "/api/menubar" || pathname === "/api/menubar/") {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:395:      return Response.json(await buildPayload())
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:398:      return Response.json({
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:408:  return null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:2: * Conduit Pulse module — read-only dashboard surface over Conduit's daily records.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:4: * Reads ONLY from USER/CONDUIT (no capture here — capture is the launchd job). Routes:
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:5: *   GET  /api/conduit/today         → today's live deterministic record
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:6: *   GET  /api/conduit/recent        → last N daily records (?days=7)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:7: *   GET  /api/conduit/insight       → latest cached content-type read
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:8: *   POST /api/conduit/insight/build → run the hourly insight job now (public PR #1647, @elhoim)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:9: *   GET  /api/conduit/status        → module health
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:13:import { existsSync, readFileSync, readdirSync } from "node:fs"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:19:import { localDate, readDayEvents } from "../Conduit/store.ts"
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:45:    eventsToday = readDayEvents(today).length
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:49:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:59:  return buildDailyRecord(date, readDayEvents(date), config.pollIntervalSec, CONDUIT_VERSION)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:64:  if (!existsSync(DAILY_DIR)) return []
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:65:  const files = readdirSync(DAILY_DIR)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:73:      out.push(JSON.parse(readFileSync(dailyPathsFor(f.replace(/\.json$/, "")).json, "utf8")))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:75:      /* skip unreadable */
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:78:  return out
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:81:const EMPTY_INSIGHT_NARRATIVE = "No hourly read yet — the insight job runs on the hour."
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:85:  if (!existsSync(INSIGHTS_DIR)) return null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:86:  const dates = readdirSync(INSIGHTS_DIR)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:90:  return dates.length ? dates[dates.length - 1] : null
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:94: * Serve the LATEST content-type read (Forge audit ISC-13): prefer today's file, else fall
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:95: * back to the most recent one so a valid prior-day read isn't shown as empty after midnight.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:96: * A failed/empty read (contentTypes empty, or model "(failed)") is NOT a real read and is
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:103:    return { date: today, available: false, narrative: EMPTY_INSIGHT_NARRATIVE, contentTypes: [] }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:106:    const insight = JSON.parse(readFileSync(join(INSIGHTS_DIR, `${useDate}.json`), "utf8"))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:110:      return { date: useDate, available: false, narrative: insight.narrative || EMPTY_INSIGHT_NARRATIVE, contentTypes: [] }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:112:    // `stale` = the served read is from an earlier day; the UI's "updated Nd ago" already
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:114:    return { available: true, stale: useDate !== today, ...insight }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:116:    return { date: today, available: false, narrative: "Insight file unreadable.", contentTypes: [] }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:122:  return todayRecord()
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:125:export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:127:  if (sub === "/" || sub === "/today") return Response.json(todayRecord())
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:130:    return Response.json(recentRecords(days))
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:132:  if (sub === "/sources") return Response.json(buildSourcesReport())
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:138:  // The caller re-reads GET /insight, which now reports `building`.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:142:    if (req.method !== "POST") return new Response("method not allowed", { status: 405 })
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:143:    if (state.building) return Response.json({ building: true, alreadyRunning: true }, { status: 202 })
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:155:    return Response.json({ building: true }, { status: 202 })
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:157:  if (sub === "/insight") return Response.json({ ...(todayInsight() as object), building: state.building })
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:158:  if (sub === "/status" || sub === "/health") return Response.json(health())
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/conduit.ts:159:  return null // fall through to other routers
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:4: * The content ledger (MEMORY/STATE/content-pipeline/events.jsonl) is the
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:5: * source of truth; the Conveyor watcher and stage-runner write it. This module
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:6: * reads the board, plus ONE deliberate write path: DELETE, which is the
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:9: * actually stops). The P4 approve endpoint will be the second write path.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:11: * Routes (all under /api/content):
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:12: *   GET    /api/content         → { columns[], items[], counts, generatedAt }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:13: *   GET    /api/content/stream  → text/event-stream, one `data:` board frame per change
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:14: *   GET    /api/content/status  → module health
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:15: *   DELETE /api/content/:id     → kill an item: dead card, dead tasks, no resurrection
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:16: *   POST   /api/content/:id/run → request the regular run (edit → augment → clips → social,
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:17: *                                 staged): writes requested_run to the ledger; {{DA_NAME}} in-session
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:24:import { LEGS, appendEvents, eventsPath, readState } from "../../TOOLS/Conveyor/Ledger";
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:44:    items = Object.keys(readState().items).length;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:48:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:56:  const items = Object.values(readState().items).sort((a, b) =>
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:62:  return { columns: STAGES, legs: LEGS, items, counts, generatedAt: new Date().toISOString() };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:125:  return new Response(body, {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:136:  const item = readState().items[id];
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:137:  if (!item) return Response.json({ error: `no item ${id}` }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:139:  // 1. Delete event first — the runner's write guard suppresses any in-flight
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:140:  //    progress writes from the moment this lands.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:164:    "MEMORY", "STATE", "content-pipeline", "artifacts", id,
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:177:    const uid = Bun.spawnSync(["id", "-u"], { stdout: "pipe" }).stdout.toString().trim();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:178:    const r = Bun.spawnSync(["launchctl", "kickstart", "-k", `gui/${uid}/com.lifeos.conveyor-runner`], {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:186:  return Response.json({ ok: true, id, trashed: moved.length, artifactsRemoved: true, runnerKicked: kicked });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:191:  const item = readState().items[id];
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:192:  if (!item) return Response.json({ error: `no item ${id}` }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:193:  if (item.requested_run) return Response.json({ ok: true, id, already: true });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:204:  return Response.json({ ok: true, id, requested_run: "regular" });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:207:export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:208:  if (!pathname.startsWith("/api/content")) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:211:  if (sub === "/status") return Response.json(health());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:214:  if (req.method === "POST" && runMatch) return requestRun(runMatch[1]);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:217:  if (req.method === "DELETE" && idMatch) return deleteItem(idMatch[1]);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:219:  if (sub === "/stream" && req.method === "GET") return streamResponse();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:223:      return Response.json(buildBoard());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:225:      return Response.json({ columns: STAGES, legs: LEGS, items: [], counts: {}, error: String(err) }, { status: 200 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/content.ts:229:  return Response.json({ error: "Not found" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:5: * CLI (`bunker data`), caches the snapshot, and serves it at /api/bunker. Pulse only
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:8: * Routes (all under /api/bunker):
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:9: *   GET  /api/bunker          → { apps[], summary, lastFetch, stale }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:10: *   GET  /api/bunker/status   → module health
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:11: *   GET  /api/bunker/arbol    → cloud infra-security scan (the Arbol scanner's last report)
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:12: *   POST /api/bunker/refresh  → force an immediate re-scan
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:16:import { existsSync, readFileSync } from "fs";
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:19:const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:22:// the USER config tree, so shot images are read from there, never from BUNKER_DIR.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:25:const BUNKER_SHOTS_DIR = join(HOME, ".config", "LIFEOS", "USER", "PULSE", "Bunker", "shots");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:37:// ASYNC, never sync (2026-07-26). The old spawnSync froze Pulse's entire event
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:40:// could never answer because the thread that would answer them was the one
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:48:  if (refreshInFlight) return { ok: false, reason: "refresh already in flight" };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:51:    const proc = Bun.spawn(["bun", BUNKER_BIN, "data"], { stdout: "pipe", stderr: "pipe" });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:52:    const timer = setTimeout(() => { try { proc.kill(); } catch { /* already gone */ } }, REFRESH_TIMEOUT_MS);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:60:      return { ok: false, reason: `bunker data exit ${code}: ${errTxt.slice(0, 200)}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:64:    return { ok: true };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:66:    return { ok: false, reason: String(err) };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:107:  return existsSync(BUNKER_BIN);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:112:    return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:120:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:145:// private-infrastructure identifiers (G18). `pentest_worker` was already
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:154:    const y = readFileSync(join(HOME, ".config", "arbol", "config.yaml"), "utf8");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:160:    if (!subdomain || !token) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:161:    return { subdomain, token, pentestWorker, securityWorker, siteHealthWorker };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:162:  } catch { return null; }
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:166:// (the old return type) made "no security system installed" and "scanner is
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:167:// down" render identically as a BLANK panel — and a blank security panel reads
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:168:// as "no findings / all clear", the most dangerous possible misread (a blank
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:177:  if (arbolCache && Date.now() - arbolCache.at < 5 * 60_000) return { state: "ok", report: arbolCache.report };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:179:  if (!cfg) return { state: "not-configured" };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:184:    if (!r.ok) return { state: "unreachable", reason: `scanner returned HTTP ${r.status}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:187:    return { state: "ok", report };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:189:    return { state: "unreachable", reason: `scanner fetch failed: ${(e as Error)?.message ?? "network error"}` };
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:194:  if (pentestCache && Date.now() - pentestCache.at < 5 * 60_000) return pentestCache.online;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:196:  if (!cfg?.pentestWorker) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:200:    return r.ok;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:203:    return false;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:224:  if (checks.length === 0) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:228:  return {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:240:// to be a public no-auth dashboard; it's now authenticated and read here
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:248:  if (siteHealthCache && Date.now() - siteHealthCache.at < 60_000) return Response.json(siteHealthCache.body);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:250:  if (!cfg) return Response.json({ error: "arbol not configured (~/.config/arbol/config.yaml)" }, { status: 503 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:255:    if (!r.ok) return Response.json({ error: `site-health worker HTTP ${r.status}` }, { status: 502 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:268:    return Response.json(body);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:270:    return Response.json({ error: String(err) }, { status: 502 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:277:// priced against the Workers Paid plan. Token/account read server-side from the
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:292:  return new RegExp(names.join("|"));
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:305:      const env = readFileSync(join(HOME, ".claude", ".env"), "utf8");
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:310:  return acct && token ? { acct, token } : null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:314:  if (costCache && Date.now() - costCache.at < 60 * 60_000) return Response.json(costCache.body);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:316:  if (!creds) return Response.json({ error: "cloudflare credentials not found in env" }, { status: 503 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:348:    return Response.json(body);
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:350:    return Response.json({ error: String(err) }, { status: 502 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:360:  if (res.state === "not-configured") return Response.json({ configured: false });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:362:  // "security status unknown" rather than silently reading as all-clear.
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:363:  if (res.state === "unreachable") return Response.json({ configured: true, reachable: false, reason: res.reason, count: 0, items: [] });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:366:  return Response.json({
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:380:    return Response.json(
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:389:  return Response.json({
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:401:export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:402:  if (!pathname.startsWith("/api/bunker")) return null;
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:405:  if (sub === "/status") return Response.json(health());
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:406:  if (req.method === "GET" && sub === "/arbol") return arbolReport();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:407:  if (req.method === "GET" && sub === "/critical") return criticalBanner();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:408:  if (req.method === "GET" && sub === "/sitehealth") return siteHealthReport();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:409:  if (req.method === "GET" && sub === "/cost") return costReport();
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:413:    return Response.json({ ok: r.ok, reason: r.reason ?? null, lastFetch: state.lastFetch?.toISOString() ?? null });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:422:    if (!found) return Response.json({ error: "unknown app" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:423:    // Screenshots live centrally in the USER data tree (never in an app's deploy payload, never in the code tree).
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:427:    if (!existsSync(path)) return Response.json({ error: "no asset" }, { status: 404 });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:428:    return new Response(Bun.file(path), { headers: { "Cache-Control": "public, max-age=300" } });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:433:      return Response.json({
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:450:    // "scanner unreachable" indicator instead of a blank panel that reads as
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:456:    return Response.json({ ...state.cache, apps, security_source, lastFetch: state.lastFetch?.toISOString() ?? null });
+/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install/LIFEOS/PULSE/modules/bunker.ts:459:  return Response.json({ error: "Not found" }, { status: 404 });

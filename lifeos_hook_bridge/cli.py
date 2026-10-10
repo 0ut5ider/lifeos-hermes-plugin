@@ -93,6 +93,33 @@ def run_backup(args: argparse.Namespace) -> int:
     return 0
 
 
+def configure_owner_job(parser: argparse.ArgumentParser) -> None:
+    from .memory_owner_jobs import JOBS
+    parser.add_argument('job', choices=tuple(JOBS), help='Run one configured native owner job.')
+    parser.add_argument('--configuration-revision', help='Require the initiating owner configuration revision.')
+
+
+def run_owner_job(args: argparse.Namespace, read_setting) -> int:
+    from hermes_constants import get_hermes_home
+    from hermes_cli.inventory import load_picker_context
+    from hermes_cli.runtime_provider import resolve_runtime_provider
+    from .memory_owner_jobs import OwnerJobs
+    from .model_tiers import configured_model_map
+    try:
+        current = load_picker_context()
+        provider = resolve_runtime_provider(requested=current.current_provider, target_model=current.current_model)
+        route = {'provider': provider['provider'], 'model': current.current_model,
+                 'base_url': provider['base_url'], 'api_mode': provider['api_mode']}
+        mapping = configured_model_map(read_setting, current.current_provider, current.current_model)
+        result = OwnerJobs(get_hermes_home() / 'lifeos-memory.json').run(args.job, route=route, mapping=mapping,
+            expected_revision=getattr(args, 'configuration_revision', None))
+    except (ValueError, OSError, RuntimeError, KeyError, sqlite3.Error, subprocess.TimeoutExpired):
+        result = {'status': 'rejected', 'job': args.job,
+                  'message': 'The native job needs current local owner permission, an admitted model route, and a managed store.'}
+    print(json.dumps(result))
+    return 0 if result['status'] == 'completed' else 1
+
+
 def register_commands(ctx) -> None:
     ctx.register_cli_command(
         "lifeos-infer", help="Run a LifeOS child call with the selected Hermes provider.",
@@ -105,4 +132,8 @@ def register_commands(ctx) -> None:
     ctx.register_cli_command(
         'lifeos-backup', help='Create or verify private LifeOS data and selected-profile backups.',
         setup_fn=configure_backup, handler_fn=run_backup,
+    )
+    ctx.register_cli_command(
+        'lifeos-job', help='Run a native background job with current local owner permission.',
+        setup_fn=configure_owner_job, handler_fn=lambda args: run_owner_job(args, ctx.get_config),
     )

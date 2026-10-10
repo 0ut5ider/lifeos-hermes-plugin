@@ -13,7 +13,8 @@ from pathlib import Path
 
 
 HOST_FILES = ("hermes_cli/plugins.py", "agent/tool_executor.py", "agent/turn_context.py",
-              "agent/turn_stop_gates.py", "plugins/platforms/discord/adapter.py")
+              "agent/turn_stop_gates.py", "plugins/platforms/discord/adapter.py",
+              "gateway/run_agent_cache.py")
 PLUGIN_FILES = ("__init__.py", "bridge.py", "remote_hooks.py", "bin/hook_runner.py")
 
 

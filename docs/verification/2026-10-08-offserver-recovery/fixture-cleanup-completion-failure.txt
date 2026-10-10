@@ -1,0 +1,5 @@
+Exception ignored in atexit callback <function record_completion at 0x70fbae523100>:
+Traceback (most recent call last):
+  File "/root/lifeos-release-acceptance/2026-10-08/cleanup_restores.py", line 20, in record_completion
+    Path(__file__).with_name('fixture-cleanup.done').write_text('0\n' if completed else '1\n')
+NameError: name '__file__' is not defined

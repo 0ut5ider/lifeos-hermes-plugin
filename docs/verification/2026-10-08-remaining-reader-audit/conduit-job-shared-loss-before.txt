@@ -1,0 +1,35 @@
+test_retained_context_without_connector_cannot_read_native_wisdom (test_memory_sources.MemorySourceTests.test_retained_context_without_connector_cannot_read_native_wisdom) ... FAIL
+test_retained_context_without_connector_cannot_gather_native_notes (test_memory_distill.MemoryDistillTests.test_retained_context_without_connector_cannot_gather_native_notes) ... FAIL
+
+======================================================================
+FAIL: test_retained_context_without_connector_cannot_read_native_wisdom (test_memory_sources.MemorySourceTests.test_retained_context_without_connector_cannot_read_native_wisdom)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_sources.py", line 83, in test_retained_context_without_connector_cannot_read_native_wisdom
+    self.assertEqual((result.returncode, result.stdout, result.stderr), (0, 'REFUSED\n', ''))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, '**Wisdom Frames (high confidence):**\n  [[53 chars], '') != (0, 'REFUSED\n', '')
+
+First differing element 1:
+'**Wisdom Frames (high confidence):**\n  [[48 chars]%)\n'
+'REFUSED\n'
+
++ (0, 'REFUSED\n', '')
+- (0,
+-  '**Wisdom Frames (high confidence):**\n'
+-  '  [synthetic] Synthetic retained context marker (95%)\n',
+-  '')
+
+======================================================================
+FAIL: test_retained_context_without_connector_cannot_gather_native_notes (test_memory_distill.MemoryDistillTests.test_retained_context_without_connector_cannot_gather_native_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_distill.py", line 138, in test_retained_context_without_connector_cannot_gather_native_notes
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.520s
+
+FAILED (failures=2)

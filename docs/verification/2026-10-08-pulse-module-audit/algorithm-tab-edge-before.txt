@@ -1,0 +1,17 @@
+test_unconfigured_file_error_preserves_original_native_failure_response (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_unconfigured_file_error_preserves_original_native_failure_response) ... FAIL
+test_managed_stale_and_prior_summary_views_do_not_start_ungoverned_generation (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_managed_stale_and_prior_summary_views_do_not_start_ungoverned_generation) ... ok
+test_version_discovery_is_bounded_and_checks_redirected_metadata (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_version_discovery_is_bounded_and_checks_redirected_metadata) ... ok
+
+======================================================================
+FAIL: test_unconfigured_file_error_preserves_original_native_failure_response (test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_unconfigured_file_error_preserves_original_native_failure_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_tab.py", line 329, in test_unconfigured_file_error_preserves_original_native_failure_response
+    self.assertIn('directory', value['body']['error'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'directory' not found in 'Directories cannot be read like files'
+
+----------------------------------------------------------------------
+Ran 3 tests in 19.578s
+
+FAILED (failures=1)

@@ -1,0 +1,16 @@
+test_long_window_leaves_other_native_requests_responsive (test_memory_capabilities.MemoryCapabilitiesTests.test_long_window_leaves_other_native_requests_responsive) ... FAIL
+
+======================================================================
+FAIL: test_long_window_leaves_other_native_requests_responsive (test_memory_capabilities.MemoryCapabilitiesTests.test_long_window_leaves_other_native_requests_responsive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_capabilities.py", line 221, in test_long_window_leaves_other_native_requests_responsive
+    self.assertLess(seconds, 2)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: 8.703747413994279 not less than 2
+
+----------------------------------------------------------------------
+Ran 1 test in 9.763s
+
+FAILED (failures=1)
+Concurrent native telemetry observation: {"other_status": 401, "other_seconds": 8.703747, "telemetry_status": 200}

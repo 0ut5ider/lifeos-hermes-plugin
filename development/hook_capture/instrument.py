@@ -513,6 +513,7 @@ def patch_module(module, path):
                 setattr(module, name, observed(getattr(module, name), "host."+name.lstrip("_")))
         if path.name == "adapter.py" and "discord" in path.parts:
             cls = module.DiscordAdapter
+            patch_discord_interactions(cls)
             for name in ("_dispatch_discord_message", "_handle_message", "send"):
                 if hasattr(cls, name):
                     setattr(cls, name, discord_observed(getattr(cls,name), name))
@@ -531,6 +532,61 @@ def patch_module(module, path):
                     finally:
                         CURRENT.reset(token)
                 cls._discord_message_admission = admission
+
+        if path.name == "run_agent_cache.py":
+            cls = module.GatewayAgentCacheMixin
+            cls._interrupt_running_turn = observed(cls._interrupt_running_turn, "host.interrupt_running_turn")
+
+
+@optional_observer(lambda interaction: {"capture_gap": "interaction_snapshot"})
+def discord_interaction_snapshot(interaction):
+    """Select command routing metadata without interaction tokens or option values."""
+    data = getattr(interaction, "data", None) or {}
+    return {"interaction_id": str(getattr(interaction, "id", "")),
+            "application_id": str(getattr(interaction, "application_id", "")),
+            "channel_id": str(getattr(interaction, "channel_id", "")),
+            "user_id": str(getattr(getattr(interaction, "user", None), "id", "")),
+            "interaction_type": getattr(getattr(interaction, "type", None), "value", None),
+            "command_name": data.get("name")}
+
+
+def patch_discord_interactions(cls):
+    original_connect = cls.connect
+
+    @functools.wraps(original_connect)
+    async def connect(self, *args, **kwargs):
+        result = await original_connect(self, *args, **kwargs)
+        if result and self._client:
+            async def received(interaction):
+                emit("discord.interaction.received", discord_interaction_snapshot(interaction))
+            try:
+                self._client.add_listener(received, "on_interaction")
+            except Exception as error:
+                emit("instrumentation.failed", {"operation": "discord_interaction_listener",
+                    "error_type": type(error).__name__}, status="capture_gap")
+        return result
+
+    cls.connect = connect
+    for name in ("_run_simple_slash", "_check_slash_authorization", "_defer_unless_expired"):
+        if not hasattr(cls, name):
+            continue
+        setattr(cls, name, discord_interaction_observed(getattr(cls, name), name))
+
+
+def discord_interaction_observed(function, name):
+    @functools.wraps(function)
+    async def call(*args, **kwargs):
+        values = arguments_for(function, args, kwargs)
+        snapshot = discord_interaction_snapshot(values.get("interaction"))
+        emit("discord." + name + ".entered", snapshot)
+        try:
+            result = await function(*args, **kwargs)
+        except BaseException as error:
+            emit("discord." + name + ".failed", {**snapshot, "error_type": type(error).__name__}, status="exception")
+            raise
+        emit("discord." + name + ".returned", {**snapshot, "result": result})
+        return result
+    return call
 
 
 @optional_observer(lambda values: {"capture_gap": "message_snapshot"})

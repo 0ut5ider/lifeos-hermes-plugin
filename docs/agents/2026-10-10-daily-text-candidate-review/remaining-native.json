@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_memory_session_harvest",
+    "test_memory_conduit_capture",
+    "test_memory_conduit_publication",
+    "test_memory_atlas_insight",
+    "test_memory_local_refresh_publication",
+    "test_memory_algorithm_summary"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 96.34442806243896,
+  "stdout": "",
+  "stderr": ".....................................E.................\n======================================================================\nERROR: test_memory_conduit_publication (unittest.loader._FailedTest.test_memory_conduit_publication)\n----------------------------------------------------------------------\nImportError: Failed to import test module: test_memory_conduit_publication\nTraceback (most recent call last):\n  File \"/usr/lib64/python3.14/unittest/loader.py\", line 141, in loadTestsFromName\n    module = __import__(module_name)\nModuleNotFoundError: No module named 'test_memory_conduit_publication'\n\n\n----------------------------------------------------------------------\nRan 55 tests in 96.250s\n\nFAILED (errors=1)\n"
+}

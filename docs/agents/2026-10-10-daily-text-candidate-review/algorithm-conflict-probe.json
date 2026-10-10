@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_conflict.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 1.3654379844665527,
+  "stdout": "{\n  \"result\": {\n    \"exception\": \"ValueError\",\n    \"message\": \"'/tmp/lifeos-algorithm-edit-ka4wsz1w/.claude/LIFEOS/ALGORITHM/LATEST' is not in the subpath of '/tmp/native-memory-64o0xhs0/.claude'\"\n  },\n  \"observed_publications\": [],\n  \"files\": {\n    \"changelog.md\": \"# Synthetic history\\n\",\n    \"v3.2.1.md\": \"# The Algorithm 3.2.1\\n\\nSynthetic original doctrine.\\n\",\n    \"LATEST\": \"3.2.1\\n\"\n  },\n  \"journal_exists\": false,\n  \"operations\": []\n}\n",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_conflict.py\", line 37, in <module>\n    assert result.get('exception')=='MemoryUnavailable',outcome\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'result': {'exception': 'ValueError', 'message': \"'/tmp/lifeos-algorithm-edit-ka4wsz1w/.claude/LIFEOS/ALGORITHM/LATEST' is not in the subpath of '/tmp/native-memory-64o0xhs0/.claude'\"}, 'observed_publications': [], 'files': {'changelog.md': '# Synthetic history\\n', 'v3.2.1.md': '# The Algorithm 3.2.1\\n\\nSynthetic original doctrine.\\n', 'LATEST': '3.2.1\\n'}, 'journal_exists': False, 'operations': []}\n"
+}

@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 77, in _git
+    result = subprocess.run(["git", *args], cwd=cwd or Path.home(), text=True, capture_output=True,
+                            check=True, timeout=timeout)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/prepare_installed_applications.py", line 86, in <module>
+    receipt = module('install_source').finalize_prepared_lifeos(candidate, installed, profile,
+        baseline, module('version_drift').create_baseline, module('version_drift').save_baseline)
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 408, in finalize_prepared_lifeos
+    return finalize_lifeos(candidate, installed, hermes_home, baseline_path, "bun", "hermes",
+                           SUPPORTED_LIFEOS_COMMIT, Path(__file__).parent / "patches", LIFEOS_PATCHES,
+                           create_baseline, save_baseline, memory_authorization=memory_authorization)
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 368, in finalize_lifeos
+    manifest = validate_candidate(candidate, supported_revision, patches, patch_names)
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 137, in validate_candidate
+    if _git("rev-parse", "HEAD", cwd=target) != supported_revision:
+       ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/plugins/lifeos-hook-bridge/install_source.py", line 81, in _git
+    raise IncompatibleLifeOS(f"Git {args[0]} failed: {detail.strip()}") from error
+lifeos-hook-bridge.install_source.IncompatibleLifeOS: Git rev-parse failed: fatal: not a git repository (or any of the parent directories): .git

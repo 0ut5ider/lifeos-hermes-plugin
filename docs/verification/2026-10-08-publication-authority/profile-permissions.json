@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "directories": [
+    {
+      "path": "source-checks",
+      "mode": 509
+    },
+    {
+      "path": "platforms",
+      "mode": 509
+    },
+    {
+      "path": "platforms/pairing",
+      "mode": 509
+    },
+    {
+      "path": "kanban",
+      "mode": 509
+    },
+    {
+      "path": "state",
+      "mode": 509
+    },
+    {
+      "path": "plugin-update-checks",
+      "mode": 509
+    },
+    {
+      "path": "sandboxes",
+      "mode": 509
+    },
+    {
+      "path": "sandboxes/singularity",
+      "mode": 509
+    },
+    {
+      "path": "gateway",
+      "mode": 509
+    },
+    {
+      "path": "runtime",
+      "mode": 509
+    }
+  ],
+  "dropins": [
+    "/home/lifeos-hermes/.config/systemd/user/hermes-gateway.service.d/backup-privacy.conf",
+    "/home/lifeos-hermes/.config/systemd/user/hermes-dashboard.service.d/backup-privacy.conf",
+    "/home/lifeos-hermes/.config/systemd/user/com.lifeos.pulse.service.d/backup-privacy.conf"
+  ],
+  "state": "complete",
+  "ownership_enabled": false,
+  "service_signature": "34f9b31f22655f1b052f17d4ae4b684a058fe44e2185067b0dac6092a8ff4faf"
+}

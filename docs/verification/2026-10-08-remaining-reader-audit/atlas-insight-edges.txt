@@ -1,0 +1,20 @@
+test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse) ... ok
+test_generated_retired_text_cannot_enter_the_private_cache (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_retired_text_cannot_enter_the_private_cache) ... FAIL
+test_graph_inode_replacement_invalidates_prepared_generation (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_graph_inode_replacement_invalidates_prepared_generation) ... ok
+test_linked_or_invalid_cache_cannot_prepare_or_replace_prior_data (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_linked_or_invalid_cache_cannot_prepare_or_replace_prior_data) ... ok
+
+======================================================================
+FAIL: test_generated_retired_text_cannot_enter_the_private_cache (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_retired_text_cannot_enter_the_private_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight_edges.py", line 56, in test_generated_retired_text_cannot_enter_the_private_cache
+    prepared = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'The Atlas graph is excluded under the current owner policy'}
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.927s
+
+FAILED (failures=1)

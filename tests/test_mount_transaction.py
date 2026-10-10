@@ -153,6 +153,33 @@ class MountTransactionTests(unittest.TestCase):
         self.assertIn('SyntheticSafetyDoctrine', (stage / 'SOUL.md').read_text())
         self.assertEqual(json.loads((stage / 'mount-plan.json').read_text())['home'], str(self.profile))
 
+    def test_native_preparation_preserves_valid_yaml_plugin_sequence_indentation(self):
+        import io
+        from ruamel.yaml import YAML
+        path = self.profile / 'config.yaml'
+        original = YAML().load(path.read_text())
+        original.setdefault('plugins', {})['enabled'] = ['lifeos-hook-bridge', 'dashboard-auth-basic']
+        for offset in (0, 2):
+            with self.subTest(sequence_offset=offset):
+                yaml = YAML()
+                yaml.indent(mapping=2, sequence=2 + offset, offset=offset)
+                text = io.StringIO()
+                yaml.dump(original, text)
+                path.write_text(text.getvalue())
+                before = path.read_bytes()
+                stage = self.profile / ('plugin-sequence-' + str(offset))
+                stage.mkdir(mode=0o700)
+                result = subprocess.run([self.fixture.fixture.memory.bun, '--no-install',
+                    str(self.root / 'LIFEOS/HERMES/Mount.ts')], env={**self.environment,
+                        'LIFEOS_MOUNT_DESTINATION': str(stage)}, text=True, capture_output=True, timeout=45)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertEqual(result.stderr, '')
+                prepared = YAML().load((stage / 'config.yaml').read_text())
+                self.assertEqual(prepared['plugins']['enabled'],
+                    ['lifeos', 'lifeos-hook-bridge', 'dashboard-auth-basic'])
+                self.assertEqual(prepared['model'], original['model'])
+                self.assertEqual(path.read_bytes(), before)
+
     def test_success_publishes_verified_native_files_and_commits_the_journal(self):
         result = self.execute()
         self.assertTrue(result['mounted'])

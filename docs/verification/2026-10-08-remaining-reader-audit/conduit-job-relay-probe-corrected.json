@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-remaining-reader-audit/conduit_job_relay_probe.py", line 16, in <module>
+    endpoint = next(route.endpoint for route in fixture.fixture.app.router.routes
+        if getattr(route, 'path', '').endswith('/memory/conduit_job'))
+StopIteration

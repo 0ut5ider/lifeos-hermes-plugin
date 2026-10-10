@@ -1,0 +1,34 @@
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+INFO: starting new backup job: vzdump 100 --storage PBS-01 --notes-template 'LifeOS isolated recovery acceptance 2026-10-08' --mode snapshot
+INFO: Starting Backup of VM 100 (lxc)
+INFO: Backup started at 2026-10-08 11:10:54
+INFO: status = running
+INFO: CT Name: lifeos-install-probe
+INFO: including mount point rootfs ('/') in backup
+INFO: backup mode: snapshot
+INFO: ionice priority: 7
+INFO: create storage snapshot 'vzdump'
+freeze guest filesystem
+thaw guest filesystem
+INFO: creating Proxmox Backup Server archive 'ct/100/2026-10-08T16:10:54Z'
+INFO: set max number of entries in memory for file-based backups to 1048576
+INFO: run: lxc-usernsexec -m u:0:100000:65536 -m g:0:100000:65536 -- /usr/bin/proxmox-backup-client backup --crypt-mode=none pct.conf:/var/tmp/vzdumptmp151514_100/etc/vzdump/pct.conf root.pxar:/mnt/vzsnap0 --include-dev /mnt/vzsnap0/./ --skip-lost-and-found --exclude=/tmp/?* --exclude=/var/tmp/?* --exclude=/var/run/?*.pid --backup-type ct --backup-id 100 --backup-time 1791475854 --entries-max 1048576 --repository admin@pbs@192.168.8.24:PlutoNAS_Backup
+INFO: Starting backup: ct/100/2026-10-08T16:10:54Z    
+INFO: Client name: pve-tr1950x    
+INFO: Starting backup protocol: Thu Oct  8 11:10:55 2026    
+INFO: No previous manifest available.    
+INFO: Upload config file '/var/tmp/vzdumptmp151514_100/etc/vzdump/pct.conf' to 'admin@pbs@192.168.8.24:8007:PlutoNAS_Backup' as pct.conf.blob    
+INFO: Upload directory '/mnt/vzsnap0' to 'admin@pbs@192.168.8.24:8007:PlutoNAS_Backup' as root.pxar.didx    
+INFO: processed 6.603 GiB in 1m, uploaded 5.39 GiB
+INFO: root.pxar: had to backup 7.779 GiB of 10.067 GiB (compressed 2.913 GiB) in 92.45 s (average 86.161 MiB/s)
+INFO: root.pxar: backup was done incrementally, reused 2.288 GiB (22.7%)
+INFO: Uploaded backup catalog (14.254 MiB)
+INFO: catalog.pcat1: backup was done incrementally, reused 470.564 KiB (3.2%)
+INFO: Duration: 92.56s    
+INFO: End Time: Thu Oct  8 11:12:27 2026    
+INFO: adding notes to backup
+INFO: cleanup temporary 'vzdump' snapshot
+INFO: Finished Backup of VM 100 (00:01:35)
+INFO: Backup finished at 2026-10-08 11:12:29
+INFO: Backup job finished successfully
+INFO: notified via target `mail-to-root`

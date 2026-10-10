@@ -1,0 +1,149 @@
+{
+  "status": "PASS",
+  "ownership_receipt": {
+    "state": "configured",
+    "signature": "eba8afea59671e03e364b8b6b62f8b86251be27e065ee9c2bc7c332148010d6d",
+    "backup": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/application-ownership-backup-third",
+    "application_verified": false,
+    "owner_turn_verified": false
+  },
+  "service_state": {
+    "state": "active",
+    "recovery_required": false,
+    "owner_turn_verified": false
+  },
+  "observations": [
+    {
+      "path": "/api/memory",
+      "status": 200,
+      "body": {
+        "ts": "2026-10-10T02:30:08.719Z",
+        "derivedState": "cold",
+        "cadenceConfig": {
+          "turn_threshold": 8,
+          "min_minutes_between": 30,
+          "idle_threshold": 2,
+          "confidence_threshold": 0.7
+        },
+        "reviewState": {
+          "turn_count_since_last_review": 0,
+          "last_review_at": null,
+          "last_message_at": null,
+          "pending_review": false
+        },
+        "health": null,
+        "lastFireCount": 0,
+        "recentFires": [],
+        "pendingProposals": 0,
+        "autoAppliedProposals": 0,
+        "proposalsRecent": [],
+        "recentRuns": [],
+        "principalMemory": {
+          "entries": [],
+          "count": 0,
+          "charsUsed": 0
+        },
+        "daMemory": {
+          "entries": [],
+          "count": 0,
+          "charsUsed": 0
+        }
+      },
+      "cache_control": null
+    },
+    {
+      "path": "/api/telos/freshness/summary",
+      "status": 200,
+      "body": {
+        "file_updated": "2026-01-01T00:00:00.000Z",
+        "file_age_days": 282,
+        "total": 10,
+        "stale_count": 3,
+        "most_stale_section": {
+          "name": "Current State (where you are now)",
+          "slug": "current_state",
+          "age_days": null,
+          "threshold_days": 7
+        }
+      },
+      "cache_control": null
+    },
+    {
+      "path": "/api/conduit/status",
+      "status": 200,
+      "body": {
+        "status": "healthy",
+        "details": {
+          "version": "1.0.0",
+          "eventsToday": 0
+        }
+      },
+      "cache_control": null
+    },
+    {
+      "path": "/healthz",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "reasons": [],
+        "service": "pulse",
+        "pid": 405649,
+        "port": 18837,
+        "startedAt": "2026-10-10T02:29:59.190Z",
+        "uptime": 11,
+        "subsystems": {
+          "cron": {
+            "status": "ok",
+            "jobs": [
+              {
+                "name": "conduit-capture",
+                "lastRun": "2026-10-10T02:28:48.602Z",
+                "agoMs": 81208,
+                "result": "ok",
+                "failures": 0
+              }
+            ]
+          },
+          "hooks": {
+            "status": "ok",
+            "stats": {
+              "requests": 0,
+              "skillGuard": {
+                "total": 0,
+                "blocked": 0,
+                "passed": 0
+              },
+              "agentGuard": {
+                "total": 0,
+                "warned": 0,
+                "passed": 0
+              }
+            }
+          },
+          "observability": {
+            "module": "observability",
+            "enabled": true,
+            "startedAt": "2026-10-10T02:29:59.353Z"
+          },
+          "performance": {
+            "module": "performance",
+            "enabled": true,
+            "startedAt": "2026-10-10T02:29:59.353Z",
+            "hasCostData": false,
+            "hasFailureData": false
+          },
+          "dashboard": {
+            "status": "ok",
+            "indexPath": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/PULSE/Observability/out/index.html"
+          }
+        }
+      },
+      "cache_control": null
+    }
+  ],
+  "transport_credentials_loaded": false,
+  "live_profile_changed": false,
+  "browser_verified": false,
+  "scheduled_execution_verified": false,
+  "owner_turn_verified": false
+}

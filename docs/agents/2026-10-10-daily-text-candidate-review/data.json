@@ -1,0 +1,932 @@
+{
+  "date": "2026-10-10",
+  "role": "independent code reviewer",
+  "model": "GPT-6, Codex harness; exact backend variant and reasoning setting not supplied",
+  "question": "Review the actual complete daily text candidate for actionable correctness, authorization, data preservation, concurrency, recovery, and integration defects",
+  "pinned_head": "bf53c16dd23d72c9824843cbb85f31db5a48e723",
+  "base": "c0b26bd57d6abf5364f60e3c33c6b3bea53c5ab8",
+  "identity": {
+    "date": "2026-10-10",
+    "expected_head": "bf53c16dd23d72c9824843cbb85f31db5a48e723",
+    "base": "c0b26bd57d6abf5364f60e3c33c6b3bea53c5ab8",
+    "head": {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "bf53c16dd23d72c9824843cbb85f31db5a48e723\n",
+      "stderr": ""
+    },
+    "tracked_status": {
+      "command": [
+        "git",
+        "status",
+        "--short",
+        "--untracked-files=no"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "diff_check": {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "c0b26bd57d6abf5364f60e3c33c6b3bea53c5ab8",
+        "bf53c16dd23d72c9824843cbb85f31db5a48e723",
+        "--",
+        "lifeos_hook_bridge",
+        "scripts",
+        "tests",
+        "patches"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "changed_runtime_inventory": {
+      "command": [
+        "git",
+        "diff",
+        "--name-status",
+        "c0b26bd57d6abf5364f60e3c33c6b3bea53c5ab8",
+        "bf53c16dd23d72c9824843cbb85f31db5a48e723",
+        "--",
+        "lifeos_hook_bridge",
+        "scripts",
+        "tests",
+        "patches"
+      ],
+      "exit_code": 0,
+      "stdout": "M\tlifeos_hook_bridge/__init__.py\nM\tlifeos_hook_bridge/bin/claude_direct.py\nA\tlifeos_hook_bridge/bin/claude_research.py\nM\tlifeos_hook_bridge/cli.py\nM\tlifeos_hook_bridge/dashboard/manifest.json\nM\tlifeos_hook_bridge/dashboard/plugin_api.py\nA\tlifeos_hook_bridge/discord_audience.py\nA\tlifeos_hook_bridge/discord_delivery.py\nM\tlifeos_hook_bridge/install_source.py\nM\tlifeos_hook_bridge/memory_access.py\nA\tlifeos_hook_bridge/memory_algorithm_edit.py\nA\tlifeos_hook_bridge/memory_algorithm_summary.py\nA\tlifeos_hook_bridge/memory_algorithm_tab.py\nA\tlifeos_hook_bridge/memory_atlas.py\nA\tlifeos_hook_bridge/memory_atlas_insight.py\nA\tlifeos_hook_bridge/memory_banner.py\nA\tlifeos_hook_bridge/memory_conduit.py\nA\tlifeos_hook_bridge/memory_conduit_capture.py\nA\tlifeos_hook_bridge/memory_conduit_insight.py\nA\tlifeos_hook_bridge/memory_content.py\nA\tlifeos_hook_bridge/memory_content_action.py\nA\tlifeos_hook_bridge/memory_content_disposal.py\nM\tlifeos_hook_bridge/memory_context.py\nA\tlifeos_hook_bridge/memory_events.py\nM\tlifeos_hook_bridge/memory_history.py\nM\tlifeos_hook_bridge/memory_http.py\nA\tlifeos_hook_bridge/memory_hypothesis_queue.py\nA\tlifeos_hook_bridge/memory_hypothesis_review.py\nA\tlifeos_hook_bridge/memory_knowledge_conformance.py\nA\tlifeos_hook_bridge/memory_knowledge_harvest.py\nA\tlifeos_hook_bridge/memory_knowledge_lint.py\nA\tlifeos_hook_bridge/memory_knowledge_views.py\nA\tlifeos_hook_bridge/memory_life.py\nA\tlifeos_hook_bridge/memory_life_business.py\nA\tlifeos_hook_bridge/memory_life_finances.py\nA\tlifeos_hook_bridge/memory_life_health.py\nA\tlifeos_hook_bridge/memory_life_source_review.py\nA\tlifeos_hook_bridge/memory_life_work.py\nA\tlifeos_hook_bridge/memory_local_intelligence.py\nA\tlifeos_hook_bridge/memory_local_refresh.py\nA\tlifeos_hook_bridge/memory_local_runs.py\nA\tlifeos_hook_bridge/memory_manual_state.py\nA\tlifeos_hook_bridge/memory_menubar.py\nA\tlifeos_hook_bridge/memory_morning_brief.py\nA\tlifeos_hook_bridge/memory_moves.py\nM\tlifeos_hook_bridge/memory_native.ts\nA\tlifeos_hook_bridge/memory_onboarding.py\nA\tlifeos_hook_bridge/memory_operational_history.py\nA\tlifeos_hook_bridge/memory_operational_views.py\nA\tlifeos_hook_bridge/memory_owner_jobs.py\nA\tlifeos_hook_bridge/memory_performance.py\nA\tlifeos_hook_bridge/memory_personal_modules.py\nM\tlifeos_hook_bridge/memory_preferences.py\nA\tlifeos_hook_bridge/memory_proposal_gc.py\nM\tlifeos_hook_bridge/memory_proposals.py\nA\tlifeos_hook_bridge/memory_pulse_health.py\nA\tlifeos_hook_bridge/memory_recommend.py\nM\tlifeos_hook_bridge/memory_rpc.py\nM\tlifeos_hook_bridge/memory_runtime.py\nM\tlifeos_hook_bridge/memory_service.py\nA\tlifeos_hook_bridge/memory_session_harvest.py\nA\tlifeos_hook_bridge/memory_skill_hygiene.py\nM\tlifeos_hook_bridge/memory_source_review.py\nM\tlifeos_hook_bridge/memory_sources.py\nM\tlifeos_hook_bridge/memory_staging.py\nA\tlifeos_hook_bridge/memory_tab_freshness.py\nA\tlifeos_hook_bridge/memory_telos_file.py\nA\tlifeos_hook_bridge/memory_telos_overview.py\nA\tlifeos_hook_bridge/memory_telos_template.py\nM\tlifeos_hook_bridge/memory_transaction.py\nA\tlifeos_hook_bridge/memory_upgrade_queue.py\nA\tlifeos_hook_bridge/memory_upgrades.py\nA\tlifeos_hook_bridge/memory_user_index.py\nA\tlifeos_hook_bridge/memory_user_index_publish.py\nM\tlifeos_hook_bridge/patches/hermes-plugin-events.patch\nM\tlifeos_hook_bridge/patches/hermes-session-lifecycle.patch\nA\tlifeos_hook_bridge/patches/lifeos-algorithm-prompt-transport.patch\nA\tlifeos_hook_bridge/patches/lifeos-content-response-consumption.patch\nM\tlifeos_hook_bridge/patches/lifeos-memory-access.patch\nM\tlifeos_hook_bridge/patches/lifeos-mount-yaml-blocks.patch\nM\tlifeos_hook_bridge/plugin.yaml\nM\tlifeos_hook_bridge/selection_worker.py\nM\tpatches/hermes-plugin-events.patch\nM\tpatches/hermes-session-lifecycle.patch\nA\tpatches/lifeos-algorithm-prompt-transport.patch\nA\tpatches/lifeos-content-response-consumption.patch\nM\tpatches/lifeos-memory-access.patch\nM\tpatches/lifeos-mount-yaml-blocks.patch\nM\tscripts/prepare_sources.py\nM\tscripts/rebuild_hermes_patches.py\nA\ttests/daily_conduit_hermes_work.py\nA\ttests/memory_algorithm_edit_process.py\nA\ttests/memory_algorithm_summary_process.py\nA\ttests/memory_algorithm_tab_process.py\nA\ttests/memory_atlas_insight_process.py\nA\ttests/memory_atlas_process.py\nA\ttests/memory_capabilities_process.py\nA\ttests/memory_conduit_capture_process.py\nA\ttests/memory_conduit_insight_process.py\nA\ttests/memory_conduit_process.py\nA\ttests/memory_conduit_publication_process.py\nA\ttests/memory_content_action_process.py\nA\ttests/memory_content_disposal_process.py\nA\ttests/memory_content_process.py\nA\ttests/memory_dashboard_response_process.py\nA\ttests/memory_events_concurrent_process.py\nA\ttests/memory_events_process.py\nA\ttests/memory_hypothesis_helpers_process.py\nA\ttests/memory_hypothesis_queue_process.py\nA\ttests/memory_hypothesis_review_process.py\nA\ttests/memory_knowledge_conformance_process.py\nA\ttests/memory_knowledge_harvest_process.py\nA\ttests/memory_knowledge_lint_process.py\nA\ttests/memory_knowledge_views_process.py\nA\ttests/memory_life_process.py\nA\ttests/memory_local_intelligence_process.py\nA\ttests/memory_local_refresh_process.py\nA\ttests/memory_local_runs_process.py\nA\ttests/memory_manual_state_process.py\nA\ttests/memory_menubar_process.py\nA\ttests/memory_morning_brief_process.py\nA\ttests/memory_novelty_process.py\nA\ttests/memory_onboarding_process.py\nA\ttests/memory_operational_history_process.py\nA\ttests/memory_operational_views_process.py\nA\ttests/memory_owner_jobs_process.py\nA\ttests/memory_performance_process.py\nA\ttests/memory_personal_process.py\nA\ttests/memory_proposal_gc_process.py\nA\ttests/memory_publication_authority_process.py\nA\ttests/memory_registered_process.py\nA\ttests/memory_session_harvest_process.py\nA\ttests/memory_staging_authority_process.py\nA\ttests/memory_tab_freshness_process.py\nA\ttests/memory_telos_browser.py\nA\ttests/memory_telos_edit_process.py\nA\ttests/memory_telos_overview_process.py\nA\ttests/memory_telos_template_process.ts\nA\ttests/memory_upgrade_queue_process.py\nA\ttests/memory_upgrade_store_process.py\nA\ttests/memory_user_index_interrupt.py\nA\ttests/memory_user_index_render_process.py\nA\ttests/native_daily_pulse_profile.ts\nA\ttests/test_child_research_arguments.py\nA\ttests/test_child_research_auth.py\nA\ttests/test_daily_conduit_capture.py\nA\ttests/test_daily_pulse_profile.py\nA\ttests/test_discord_audience.py\nA\ttests/test_discord_private_delivery.py\nA\ttests/test_memory_algorithm_edit_rpc.py\nA\ttests/test_memory_algorithm_edits.py\nA\ttests/test_memory_algorithm_job_cooldown.py\nA\ttests/test_memory_algorithm_jobs.py\nA\ttests/test_memory_algorithm_summary.py\nA\ttests/test_memory_algorithm_summary_edges.py\nA\ttests/test_memory_algorithm_tab.py\nA\ttests/test_memory_async_relay.py\nA\ttests/test_memory_atlas.py\nA\ttests/test_memory_atlas_insight.py\nA\ttests/test_memory_atlas_insight_edges.py\nA\ttests/test_memory_atlas_jobs.py\nA\ttests/test_memory_background_audience.py\nA\ttests/test_memory_banner.py\nA\ttests/test_memory_caller_inventory.py\nA\ttests/test_memory_capabilities.py\nA\ttests/test_memory_conduit.py\nA\ttests/test_memory_conduit_capture.py\nA\ttests/test_memory_conduit_capture_job.py\nA\ttests/test_memory_conduit_insight.py\nA\ttests/test_memory_conduit_jobs.py\nA\ttests/test_memory_content.py\nA\ttests/test_memory_content_actions.py\nA\ttests/test_memory_content_disposal.py\nA\ttests/test_memory_continuation.py\nA\ttests/test_memory_dashboard_response_authority.py\nM\ttests/test_memory_distill.py\nA\ttests/test_memory_doctor.py\nA\ttests/test_memory_events.py\nM\ttests/test_memory_graph.py\nM\ttests/test_memory_http.py\nA\ttests/test_memory_hypothesis_helpers.py\nA\ttests/test_memory_hypothesis_relay.py\nA\ttests/test_memory_hypothesis_review.py\nA\ttests/test_memory_job_output.py\nA\ttests/test_memory_knowledge_conformance.py\nA\ttests/test_memory_knowledge_harvest.py\nA\ttests/test_memory_knowledge_lint.py\nA\ttests/test_memory_knowledge_views.py\nA\ttests/test_memory_ledger.py\nA\ttests/test_memory_life_business.py\nA\ttests/test_memory_life_finances.py\nA\ttests/test_memory_life_health.py\nA\ttests/test_memory_life_relay.py\nA\ttests/test_memory_life_source_review.py\nA\ttests/test_memory_life_work.py\nA\ttests/test_memory_local_intelligence.py\nA\ttests/test_memory_local_refresh.py\nA\ttests/test_memory_local_refresh_cache.py\nA\ttests/test_memory_local_refresh_jobs.py\nA\ttests/test_memory_local_refresh_lifetime.py\nA\ttests/test_memory_local_refresh_native.py\nA\ttests/test_memory_local_refresh_publication.py\nA\ttests/test_memory_local_refresh_runs.py\nA\ttests/test_memory_manual_state.py\nA\ttests/test_memory_menubar.py\nA\ttests/test_memory_morning_brief.py\nA\ttests/test_memory_moves.py\nA\ttests/test_memory_native_response_authority.py\nA\ttests/test_memory_novelty.py\nA\ttests/test_memory_onboarding.py\nA\ttests/test_memory_operational_history.py\nA\ttests/test_memory_operational_views.py\nA\ttests/test_memory_owner_job_command.py\nA\ttests/test_memory_owner_job_processes.py\nA\ttests/test_memory_owner_jobs.py\nA\ttests/test_memory_performance.py\nA\ttests/test_memory_personal_modules.py\nA\ttests/test_memory_proposal_gc.py\nA\ttests/test_memory_publication_authority.py\nM\ttests/test_memory_publication_recovery.py\nA\ttests/test_memory_pulse_health.py\nM\ttests/test_memory_pulse_relay.py\nA\ttests/test_memory_recommend.py\nA\ttests/test_memory_registered_modules.py\nM\ttests/test_memory_review_fixes.py\nA\ttests/test_memory_session_harvest.py\nA\ttests/test_memory_skill_hygiene.py\nM\ttests/test_memory_sources.py\nA\ttests/test_memory_staging_writers.py\nA\ttests/test_memory_tab_freshness.py\nA\ttests/test_memory_telos_editor.py\nA\ttests/test_memory_telos_overview.py\nA\ttests/test_memory_telos_template.py\nA\ttests/test_memory_upgrade_relay.py\nA\ttests/test_memory_upgrade_store.py\nA\ttests/test_memory_user_index.py\nA\ttests/test_memory_user_index_publish.py\nM\ttests/test_mount_transaction.py\nA\ttests/test_native_algorithm_edits.py\nA\ttests/test_native_algorithm_prompt_transport.py\nA\ttests/test_native_algorithm_summary.py\nA\ttests/test_native_content_actions.py\nA\ttests/test_native_frontend_types.py\nA\ttests/test_native_hermes_health_sources.py\nA\ttests/test_native_local_fill.py\nA\ttests/test_optional_text_release.py\nA\ttests/test_owner_research_session.py\nM\ttests/test_plugin_lifecycle.py\nA\ttests/test_pulse_shutdown.py\nA\ttests/test_selection_service_files.py\n",
+      "stderr": ""
+    },
+    "patches": [
+      {
+        "name": "hermes-plugin-events.patch",
+        "sha256": "b9923533904918424bf704b9424ffd69d0f29c692c89d953cff849b3cb464e76",
+        "packaged_sha256": "b9923533904918424bf704b9424ffd69d0f29c692c89d953cff849b3cb464e76"
+      },
+      {
+        "name": "hermes-turn-gates.patch",
+        "sha256": "0bde030f742c7062f0d7541077a5a0a7041a46e120dcad64ef45be7012f1bd6e",
+        "packaged_sha256": "0bde030f742c7062f0d7541077a5a0a7041a46e120dcad64ef45be7012f1bd6e"
+      },
+      {
+        "name": "hermes-command-policy.patch",
+        "sha256": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d",
+        "packaged_sha256": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d"
+      },
+      {
+        "name": "hermes-session-lifecycle.patch",
+        "sha256": "b4960d8aecf2d28cbfb482a3ffda9c5117a89bb2ecd01b41064dc5aba7b1d0e6",
+        "packaged_sha256": "b4960d8aecf2d28cbfb482a3ffda9c5117a89bb2ecd01b41064dc5aba7b1d0e6"
+      },
+      {
+        "name": "hermes-child-routing.patch",
+        "sha256": "1ac0a8e1ea1ca37b111199796e25b7079f9ec869f0a9190de53c359f235d7f38",
+        "packaged_sha256": "1ac0a8e1ea1ca37b111199796e25b7079f9ec869f0a9190de53c359f235d7f38"
+      },
+      {
+        "name": "hermes-strict-inference.patch",
+        "sha256": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c",
+        "packaged_sha256": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c"
+      },
+      {
+        "name": "hermes-remote-files.patch",
+        "sha256": "4e97e2866afeb86a7243a63858a2dd1e48c906c4690d2fa39fc7deb6d4a6ff10",
+        "packaged_sha256": "4e97e2866afeb86a7243a63858a2dd1e48c906c4690d2fa39fc7deb6d4a6ff10"
+      },
+      {
+        "name": "hermes-cron-bootstrap.patch",
+        "sha256": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445",
+        "packaged_sha256": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445"
+      },
+      {
+        "name": "hermes-required-middleware.patch",
+        "sha256": "27351214aeebd8bd0d9994fc88d971b9de5c03d90be9d717842c758f8bbf8ab6",
+        "packaged_sha256": "27351214aeebd8bd0d9994fc88d971b9de5c03d90be9d717842c758f8bbf8ab6"
+      },
+      {
+        "name": "hermes-web-result-status.patch",
+        "sha256": "629a345ced101eb06430c8d77d972e6efe4c53a3ec234f19199597f3181eca8d",
+        "packaged_sha256": "629a345ced101eb06430c8d77d972e6efe4c53a3ec234f19199597f3181eca8d"
+      },
+      {
+        "name": "hermes-protected-instruction-approval.patch",
+        "sha256": "89a129ea558e04775d818b3d75d9cce817484546633eed66bd056831fff81b03",
+        "packaged_sha256": "89a129ea558e04775d818b3d75d9cce817484546633eed66bd056831fff81b03"
+      },
+      {
+        "name": "lifeos-task-governance.patch",
+        "sha256": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798",
+        "packaged_sha256": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798"
+      },
+      {
+        "name": "lifeos-agent-watchdog.patch",
+        "sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808",
+        "packaged_sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808"
+      },
+      {
+        "name": "lifeos-terminal-audit.patch",
+        "sha256": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886",
+        "packaged_sha256": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886"
+      },
+      {
+        "name": "lifeos-checkpoint-verification.patch",
+        "sha256": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f",
+        "packaged_sha256": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f"
+      },
+      {
+        "name": "lifeos-failure-capture.patch",
+        "sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e",
+        "packaged_sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e"
+      },
+      {
+        "name": "lifeos-remote-desktop-gate.patch",
+        "sha256": "4e27328544015177a6ffbb962421c794eba53da355c6c6d2961f0b43b66c5146",
+        "packaged_sha256": "4e27328544015177a6ffbb962421c794eba53da355c6c6d2961f0b43b66c5146"
+      },
+      {
+        "name": "lifeos-remote-isa-view.patch",
+        "sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b",
+        "packaged_sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b"
+      },
+      {
+        "name": "lifeos-model-rung-effort.patch",
+        "sha256": "708cd3cb994b21440bb54267c975b71b0f82a71415df0338693c862d2e0942d7",
+        "packaged_sha256": "708cd3cb994b21440bb54267c975b71b0f82a71415df0338693c862d2e0942d7"
+      },
+      {
+        "name": "lifeos-hermes-carrier-probe.patch",
+        "sha256": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae",
+        "packaged_sha256": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae"
+      },
+      {
+        "name": "lifeos-memory-access.patch",
+        "sha256": "421989eaefbf0150766cd8b0d65f1a79929ba12c6f4b824be5af157b4c1e6fde",
+        "packaged_sha256": "421989eaefbf0150766cd8b0d65f1a79929ba12c6f4b824be5af157b4c1e6fde"
+      },
+      {
+        "name": "lifeos-mount-yaml-blocks.patch",
+        "sha256": "1cc07e111db11ad88288b5b7d2d333d53d0b0c85ff9a54d77c5bf10ea1976d78",
+        "packaged_sha256": "1cc07e111db11ad88288b5b7d2d333d53d0b0c85ff9a54d77c5bf10ea1976d78"
+      },
+      {
+        "name": "lifeos-config-audit.patch",
+        "sha256": "972ec11722ccf66935d5bfa398562fbc0907aa49ba2d71d6e0fbc17c923beaff",
+        "packaged_sha256": "972ec11722ccf66935d5bfa398562fbc0907aa49ba2d71d6e0fbc17c923beaff"
+      },
+      {
+        "name": "lifeos-shell-literal-guard.patch",
+        "sha256": "7b3230838abb75be2f43215fc1f61b4002e10152604ca6667618bf7219d8dfb2",
+        "packaged_sha256": "7b3230838abb75be2f43215fc1f61b4002e10152604ca6667618bf7219d8dfb2"
+      },
+      {
+        "name": "lifeos-pulse-hook-switch.patch",
+        "sha256": "271c54ded25480ea883c6b5ba38ff8d6b7e8702dbd5228b413b0c4e148ccb5cf",
+        "packaged_sha256": "271c54ded25480ea883c6b5ba38ff8d6b7e8702dbd5228b413b0c4e148ccb5cf"
+      },
+      {
+        "name": "lifeos-evaluation-publication.patch",
+        "sha256": "58a024c58355784149b239fce270bc64a8da900d9ee1b93fba035302e94f8311",
+        "packaged_sha256": "58a024c58355784149b239fce270bc64a8da900d9ee1b93fba035302e94f8311"
+      },
+      {
+        "name": "lifeos-system-surface.patch",
+        "sha256": "2aa2eb24b8bb90ac62633a649a61704d051cc789b4c2ac69c6dd0cd611563327",
+        "packaged_sha256": "2aa2eb24b8bb90ac62633a649a61704d051cc789b4c2ac69c6dd0cd611563327"
+      },
+      {
+        "name": "lifeos-version-drift-state.patch",
+        "sha256": "33bd1d7cbeb0154ee154e8b60ab5842bccc4996d3647252ca97baff6ead9f70c",
+        "packaged_sha256": "33bd1d7cbeb0154ee154e8b60ab5842bccc4996d3647252ca97baff6ead9f70c"
+      },
+      {
+        "name": "lifeos-work-learning-identity.patch",
+        "sha256": "66c2c7e72731fa591b0f2b6aeaac659179895a0b03ad49e2daf3e252e92ce98c",
+        "packaged_sha256": "66c2c7e72731fa591b0f2b6aeaac659179895a0b03ad49e2daf3e252e92ce98c"
+      },
+      {
+        "name": "lifeos-completion-state.patch",
+        "sha256": "88c0e6e3e37eeb5fb9ab822d4caebdbf656872327966418ab60a3edf7188b2b4",
+        "packaged_sha256": "88c0e6e3e37eeb5fb9ab822d4caebdbf656872327966418ab60a3edf7188b2b4"
+      },
+      {
+        "name": "lifeos-render-inference.patch",
+        "sha256": "2fd60494c1318f241ca9394d3a868986392254c2fb8882b3552d843697839c58",
+        "packaged_sha256": "2fd60494c1318f241ca9394d3a868986392254c2fb8882b3552d843697839c58"
+      },
+      {
+        "name": "lifeos-feedback-admission.patch",
+        "sha256": "478398a28d6a92832572eb339ab71d4cf2502aa0295a4ce41b9be5bccca31dc9",
+        "packaged_sha256": "478398a28d6a92832572eb339ab71d4cf2502aa0295a4ce41b9be5bccca31dc9"
+      },
+      {
+        "name": "lifeos-reminder-publication.patch",
+        "sha256": "419df3fe10f88024721489ee9858719954ff85679a5ff89839a9532b8c70a6a6",
+        "packaged_sha256": "419df3fe10f88024721489ee9858719954ff85679a5ff89839a9532b8c70a6a6"
+      },
+      {
+        "name": "lifeos-review-admission.patch",
+        "sha256": "ee4644d3f5ab5615e6f6b7098d8a4bec67ad3bb4eae58147923fad74da73664d",
+        "packaged_sha256": "ee4644d3f5ab5615e6f6b7098d8a4bec67ad3bb4eae58147923fad74da73664d"
+      },
+      {
+        "name": "lifeos-algorithm-prompt-transport.patch",
+        "sha256": "66d5647839e16218521bfface657e677adf07fb12671c16e9f1bad374e7dfe04",
+        "packaged_sha256": "66d5647839e16218521bfface657e677adf07fb12671c16e9f1bad374e7dfe04"
+      },
+      {
+        "name": "lifeos-content-response-consumption.patch",
+        "sha256": "49aaed964696ddfafb87e63fa909a76ac9b5b53093932896bd8f3ef8c8530de1",
+        "packaged_sha256": "49aaed964696ddfafb87e63fa909a76ac9b5b53093932896bd8f3ef8c8530de1"
+      }
+    ],
+    "registry_equal": true,
+    "prepared_manifests": {
+      "lifeos": {
+        "upstream": "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos",
+        "upstream_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+        "patches": [
+          {
+            "name": "lifeos-task-governance.patch",
+            "sha256": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798"
+          },
+          {
+            "name": "lifeos-agent-watchdog.patch",
+            "sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808"
+          },
+          {
+            "name": "lifeos-terminal-audit.patch",
+            "sha256": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886"
+          },
+          {
+            "name": "lifeos-checkpoint-verification.patch",
+            "sha256": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f"
+          },
+          {
+            "name": "lifeos-failure-capture.patch",
+            "sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e"
+          },
+          {
+            "name": "lifeos-remote-desktop-gate.patch",
+            "sha256": "4e27328544015177a6ffbb962421c794eba53da355c6c6d2961f0b43b66c5146"
+          },
+          {
+            "name": "lifeos-remote-isa-view.patch",
+            "sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b"
+          },
+          {
+            "name": "lifeos-model-rung-effort.patch",
+            "sha256": "708cd3cb994b21440bb54267c975b71b0f82a71415df0338693c862d2e0942d7"
+          },
+          {
+            "name": "lifeos-hermes-carrier-probe.patch",
+            "sha256": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae"
+          },
+          {
+            "name": "lifeos-memory-access.patch",
+            "sha256": "421989eaefbf0150766cd8b0d65f1a79929ba12c6f4b824be5af157b4c1e6fde"
+          },
+          {
+            "name": "lifeos-mount-yaml-blocks.patch",
+            "sha256": "1cc07e111db11ad88288b5b7d2d333d53d0b0c85ff9a54d77c5bf10ea1976d78"
+          },
+          {
+            "name": "lifeos-config-audit.patch",
+            "sha256": "972ec11722ccf66935d5bfa398562fbc0907aa49ba2d71d6e0fbc17c923beaff"
+          },
+          {
+            "name": "lifeos-shell-literal-guard.patch",
+            "sha256": "7b3230838abb75be2f43215fc1f61b4002e10152604ca6667618bf7219d8dfb2"
+          },
+          {
+            "name": "lifeos-pulse-hook-switch.patch",
+            "sha256": "271c54ded25480ea883c6b5ba38ff8d6b7e8702dbd5228b413b0c4e148ccb5cf"
+          },
+          {
+            "name": "lifeos-evaluation-publication.patch",
+            "sha256": "58a024c58355784149b239fce270bc64a8da900d9ee1b93fba035302e94f8311"
+          },
+          {
+            "name": "lifeos-system-surface.patch",
+            "sha256": "2aa2eb24b8bb90ac62633a649a61704d051cc789b4c2ac69c6dd0cd611563327"
+          },
+          {
+            "name": "lifeos-version-drift-state.patch",
+            "sha256": "33bd1d7cbeb0154ee154e8b60ab5842bccc4996d3647252ca97baff6ead9f70c"
+          },
+          {
+            "name": "lifeos-work-learning-identity.patch",
+            "sha256": "66c2c7e72731fa591b0f2b6aeaac659179895a0b03ad49e2daf3e252e92ce98c"
+          },
+          {
+            "name": "lifeos-completion-state.patch",
+            "sha256": "88c0e6e3e37eeb5fb9ab822d4caebdbf656872327966418ab60a3edf7188b2b4"
+          },
+          {
+            "name": "lifeos-render-inference.patch",
+            "sha256": "2fd60494c1318f241ca9394d3a868986392254c2fb8882b3552d843697839c58"
+          },
+          {
+            "name": "lifeos-feedback-admission.patch",
+            "sha256": "478398a28d6a92832572eb339ab71d4cf2502aa0295a4ce41b9be5bccca31dc9"
+          },
+          {
+            "name": "lifeos-reminder-publication.patch",
+            "sha256": "419df3fe10f88024721489ee9858719954ff85679a5ff89839a9532b8c70a6a6"
+          },
+          {
+            "name": "lifeos-review-admission.patch",
+            "sha256": "ee4644d3f5ab5615e6f6b7098d8a4bec67ad3bb4eae58147923fad74da73664d"
+          },
+          {
+            "name": "lifeos-algorithm-prompt-transport.patch",
+            "sha256": "66d5647839e16218521bfface657e677adf07fb12671c16e9f1bad374e7dfe04"
+          },
+          {
+            "name": "lifeos-content-response-consumption.patch",
+            "sha256": "49aaed964696ddfafb87e63fa909a76ac9b5b53093932896bd8f3ef8c8530de1"
+          }
+        ],
+        "tree_sha256": "ee4912eab9e0509e66e0c6e699c1a94bb424c642ba4738f88bb013bf38313f8a"
+      },
+      "hermes": {
+        "base_commit": "758ad514eb0e800547e015edf05aa18f78b78d82",
+        "patches": [
+          {
+            "name": "hermes-plugin-events.patch",
+            "sha256": "b9923533904918424bf704b9424ffd69d0f29c692c89d953cff849b3cb464e76"
+          },
+          {
+            "name": "hermes-turn-gates.patch",
+            "sha256": "0bde030f742c7062f0d7541077a5a0a7041a46e120dcad64ef45be7012f1bd6e"
+          },
+          {
+            "name": "hermes-command-policy.patch",
+            "sha256": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d"
+          },
+          {
+            "name": "hermes-session-lifecycle.patch",
+            "sha256": "b4960d8aecf2d28cbfb482a3ffda9c5117a89bb2ecd01b41064dc5aba7b1d0e6"
+          },
+          {
+            "name": "hermes-child-routing.patch",
+            "sha256": "1ac0a8e1ea1ca37b111199796e25b7079f9ec869f0a9190de53c359f235d7f38"
+          },
+          {
+            "name": "hermes-strict-inference.patch",
+            "sha256": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c"
+          },
+          {
+            "name": "hermes-remote-files.patch",
+            "sha256": "4e97e2866afeb86a7243a63858a2dd1e48c906c4690d2fa39fc7deb6d4a6ff10"
+          },
+          {
+            "name": "hermes-cron-bootstrap.patch",
+            "sha256": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445"
+          },
+          {
+            "name": "hermes-required-middleware.patch",
+            "sha256": "27351214aeebd8bd0d9994fc88d971b9de5c03d90be9d717842c758f8bbf8ab6"
+          },
+          {
+            "name": "hermes-web-result-status.patch",
+            "sha256": "629a345ced101eb06430c8d77d972e6efe4c53a3ec234f19199597f3181eca8d"
+          },
+          {
+            "name": "hermes-protected-instruction-approval.patch",
+            "sha256": "89a129ea558e04775d818b3d75d9cce817484546633eed66bd056831fff81b03"
+          }
+        ],
+        "tree_sha256": "55af6de42da102bc3f25b0d0165cd111780d9b56427afc62ef4cf51df94d76dc"
+      }
+    },
+    "native_behavior_source_comparisons": [
+      {
+        "relative": "LIFEOS/TOOLS/lib/MemoryAccess.ts",
+        "prepared_sha256": "57ff995c14f816d1cc9491127c811b90b00b125af17c0766830f784b81ff0904",
+        "test_source_sha256": "57ff995c14f816d1cc9491127c811b90b00b125af17c0766830f784b81ff0904",
+        "equal": true
+      },
+      {
+        "relative": "LIFEOS/TOOLS/SessionHarvester.ts",
+        "prepared_sha256": "374f7b0d5cdda0692553614871e710fa55f0b06d7a0d1de2447e5f5d4b4b1453",
+        "test_source_sha256": "374f7b0d5cdda0692553614871e710fa55f0b06d7a0d1de2447e5f5d4b4b1453",
+        "equal": true
+      },
+      {
+        "relative": "LIFEOS/TOOLS/ProposalGC.ts",
+        "prepared_sha256": "86ebc5322415d599584fa23c9ecf8230cbcb8be15a0e53b434e865fbc4879dfd",
+        "test_source_sha256": "86ebc5322415d599584fa23c9ecf8230cbcb8be15a0e53b434e865fbc4879dfd",
+        "equal": true
+      },
+      {
+        "relative": "LIFEOS/TOOLS/KnowledgeHarvester.ts",
+        "prepared_sha256": "28ffbc1f91235078489de57cbddf650d105df814c6617a8ce6f74517ba55da76",
+        "test_source_sha256": "28ffbc1f91235078489de57cbddf650d105df814c6617a8ce6f74517ba55da76",
+        "equal": true
+      },
+      {
+        "relative": "LIFEOS/PULSE/modules/algorithm-tab.ts",
+        "prepared_sha256": "f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f",
+        "test_source_sha256": "f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f",
+        "equal": true
+      },
+      {
+        "relative": "LIFEOS/PULSE/modules/user-index.ts",
+        "prepared_sha256": "492bc5c0200b5f4696f616452b88d85fc4aed0412d9fe60534b1c3356c533f8d",
+        "test_source_sha256": "492bc5c0200b5f4696f616452b88d85fc4aed0412d9fe60534b1c3356c533f8d",
+        "equal": true
+      },
+      {
+        "relative": "LIFEOS/PULSE/modules/content.ts",
+        "prepared_sha256": "879bcf11ade72c46ca251cb9f8e61edcdb8b7cbc47f927874dbea679d2b970b1",
+        "test_source_sha256": "879bcf11ade72c46ca251cb9f8e61edcdb8b7cbc47f927874dbea679d2b970b1",
+        "equal": true
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "P1",
+      "title": "Native batch publishers continue after owner revocation",
+      "locations": [
+        "lifeos_hook_bridge/memory_session_harvest.py:170",
+        "lifeos_hook_bridge/memory_proposal_gc.py:91",
+        "lifeos_hook_bridge/memory_knowledge_harvest.py:242"
+      ],
+      "evidence": [
+        "harvest-revocation-default.json",
+        "harvest-revocation-two-writes.json",
+        "proposal-gc-revocation.json",
+        "knowledge-harvest-revocation.json"
+      ],
+      "confirmed": true
+    },
+    {
+      "id": "F2",
+      "severity": "P2",
+      "title": "Algorithm post-publication conflict discards recovery reservation",
+      "locations": [
+        "lifeos_hook_bridge/memory_algorithm_edit.py:179",
+        "lifeos_hook_bridge/memory_algorithm_edit.py:188"
+      ],
+      "evidence": [
+        "algorithm-http-conflict.json",
+        "algorithm-conflict-probe-fixed.json"
+      ],
+      "confirmed": true
+    }
+  ],
+  "runs": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_conflict.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 4.04692530632019,
+      "stdout": "{\n  \"result\": {\n    \"exception\": \"MemoryUnavailable\",\n    \"message\": \"Algorithm edit publication needs recovery\"\n  },\n  \"observed_publications\": [\n    \"LIFEOS/ALGORITHM/v3.2.2.md\",\n    \"LIFEOS/ALGORITHM/changelog.md\",\n    \"LIFEOS/ALGORITHM/LATEST\"\n  ],\n  \"files\": {\n    \"LATEST\": \"3.2.2\\n\",\n    \"changelog.md\": \"# Synthetic history\\n\\n- **v3.2.2 changelog (Synthetic requested version, PATCH):** edited via the Pulse Algorithm tab, 2026-10-10. Synthetic requested version. Migration: `echo 3.2.2 > LATEST` (done). Rollback: `echo 3.2.1 > LATEST`.\\n\\n\",\n    \"v3.2.2.md\": \"# The Algorithm 3.2.2\\n\\nSynthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. \",\n    \"v3.2.1.md\": \"Synthetic later owner edit to the prior source.\\n\"\n  },\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"local:owner\",\n      \"request_id\": \"algorithm-edit-71bb7b8df563490d8b69253f8897f53e\",\n      \"payload_digest\": \"6d7fe154513d614b059c02a9eef8be24fe1b99c65097db63901e6317d0b41131\",\n      \"receipt\": \"{\\\"status\\\": \\\"conflict\\\", \\\"reason\\\": \\\"Algorithm publication preserves later source edits\\\", \\\"writer\\\": \\\"local:owner\\\", \\\"request_id\\\": \\\"algorithm-edit-71bb7b8df563490d8b69253f8897f53e\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "evidence_file": "algorithm-conflict-probe-fixed.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_conflict.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 1,
+      "duration_seconds": 1.3654379844665527,
+      "stdout": "{\n  \"result\": {\n    \"exception\": \"ValueError\",\n    \"message\": \"'/tmp/lifeos-algorithm-edit-ka4wsz1w/.claude/LIFEOS/ALGORITHM/LATEST' is not in the subpath of '/tmp/native-memory-64o0xhs0/.claude'\"\n  },\n  \"observed_publications\": [],\n  \"files\": {\n    \"changelog.md\": \"# Synthetic history\\n\",\n    \"v3.2.1.md\": \"# The Algorithm 3.2.1\\n\\nSynthetic original doctrine.\\n\",\n    \"LATEST\": \"3.2.1\\n\"\n  },\n  \"journal_exists\": false,\n  \"operations\": []\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_conflict.py\", line 37, in <module>\n    assert result.get('exception')=='MemoryUnavailable',outcome\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'result': {'exception': 'ValueError', 'message': \"'/tmp/lifeos-algorithm-edit-ka4wsz1w/.claude/LIFEOS/ALGORITHM/LATEST' is not in the subpath of '/tmp/native-memory-64o0xhs0/.claude'\"}, 'observed_publications': [], 'files': {'changelog.md': '# Synthetic history\\n', 'v3.2.1.md': '# The Algorithm 3.2.1\\n\\nSynthetic original doctrine.\\n', 'LATEST': '3.2.1\\n'}, 'journal_exists': False, 'operations': []}\n",
+      "evidence_file": "algorithm-conflict-probe.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_algorithm_http_conflict.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 5.8601813316345215,
+      "stdout": "{\n  \"http_status\": 503,\n  \"http_body\": \"{\\\"error\\\": \\\"Algorithm editing is unavailable under the current policy\\\"}\",\n  \"publications\": [\n    \"LIFEOS/ALGORITHM/v3.2.2.md\",\n    \"LIFEOS/ALGORITHM/changelog.md\",\n    \"LIFEOS/ALGORITHM/LATEST\"\n  ],\n  \"initial\": {\n    \"LATEST\": \"3.2.1\\n\",\n    \"changelog.md\": \"# Synthetic algorithm history\\n\",\n    \"v3.2.1.md\": \"# The Algorithm 3.2.1\\n\\nSynthetic doctrine explanation.\\n\"\n  },\n  \"final_files\": {\n    \"LATEST\": \"3.2.2\\n\",\n    \"changelog.md\": \"# Synthetic algorithm history\\n\\n- **v3.2.2 changelog (Synthetic next version, PATCH):** edited via the Pulse Algorithm tab, 2026-10-10. Synthetic next version. Migration: `echo 3.2.2 > LATEST` (done). Rollback: `echo 3.2.1 > LATEST`.\\n\\n\",\n    \"v3.2.2.md\": \"# The Algorithm 3.2.2\\n\\nSynthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. Synthetic requested next doctrine. \",\n    \"v3.2.1.md\": \"Synthetic later concurrent source edit.\\n\"\n  },\n  \"journal_before_recovery\": false,\n  \"journal_after_recovery\": false,\n  \"operations\": [\n    {\n      \"writer\": \"local:owner\",\n      \"request_id\": \"http-pulse\",\n      \"payload_digest\": \"863be515909546d346ae3a838b7968c0eea27b69714b2b521137aa17a6a02388\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"reference\\\": {\\\"id\\\": \\\"d54a3fe3d2174965b8c6f45559dc3430\\\", \\\"revision\\\": 1}, \\\"source\\\": {\\\"kind\\\": \\\"explicit\\\", \\\"session\\\": \\\"\\\"}, \\\"writer\\\": \\\"local:owner\\\", \\\"request_id\\\": \\\"http-pulse\\\"}\"\n    },\n    {\n      \"writer\": \"dashboard:owner\",\n      \"request_id\": \"algorithm-edit-99780fc6a0db4cdbac3e3f1e4c20ed2d\",\n      \"payload_digest\": \"6d7fe154513d614b059c02a9eef8be24fe1b99c65097db63901e6317d0b41131\",\n      \"receipt\": \"{\\\"status\\\": \\\"conflict\\\", \\\"reason\\\": \\\"Algorithm publication preserves later source edits\\\", \\\"writer\\\": \\\"dashboard:owner\\\", \\\"request_id\\\": \\\"algorithm-edit-99780fc6a0db4cdbac3e3f1e4c20ed2d\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "evidence_file": "algorithm-http-conflict.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_memory_algorithm_edits"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 133.41366982460022,
+      "stdout": "",
+      "stderr": "...................\n----------------------------------------------------------------------\nRan 19 tests in 132.764s\n\nOK\n",
+      "evidence_file": "algorithm-regressions.json",
+      "unittest_tests_attempted": 19
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_discord_audience",
+        "test_discord_private_delivery",
+        "test_child_research_auth",
+        "test_child_research_arguments",
+        "test_daily_pulse_profile",
+        "test_optional_text_release",
+        "test_pulse_shutdown",
+        "test_memory_owner_job_processes"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 58.10395407676697,
+      "stdout": "",
+      "stderr": "....../usr/lib64/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 404: 'Not Found'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n..............................................\n----------------------------------------------------------------------\nRan 52 tests in 56.109s\n\nOK\n",
+      "evidence_file": "discord-tests.json",
+      "unittest_tests_attempted": 52
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_harvest_revocation.py",
+        "--default"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 0.1868886947631836,
+      "stdout": "{\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1201_correction_syntheti.md\",\n      \"body\": \"# Correction Learning\\n\\n**Session:** synthetic-second-session\\n**Timestamp:** 2026-10-08T12:01:00+00:00\\n**Category:** ALGORITHM\\n**Source Pattern:** actually,?\\\\s+\\n**Provenance:** source=hermes channel=transcript captured_at=2026-10-08T12:01:00+00:00 session_id=synthetic-second-session\\n\\n---\\n\\n## Context\\n\\n\\n\\n## Learning\\n\\nActually, I meant to keep synthetic receipts for this lab.\\n\\n---\\n\\n*Harvested by SessionHarvester from Hermes transcript*\\n\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1200_correction_native-s.md\",\n      \"body\": \"# Correction Learning\\n\\n**Session:** native-session\\n**Timestamp:** 2026-10-08T12:00:00+00:00\\n**Category:** ALGORITHM\\n**Source Pattern:** actually,?\\\\s+\\n**Provenance:** source=hermes channel=transcript captured_at=2026-10-08T12:00:00+00:00 session_id=native-session\\n\\n---\\n\\n## Context\\n\\n\\n\\n## Learning\\n\\nActually, I meant to use the synthetic safe port for this lab.\\n\\n---\\n\\n*Harvested by SessionHarvester from Hermes transcript*\\n\"\n    }\n  ],\n  \"current_accounts\": {},\n  \"learning_files\": [\n    \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1200_correction_native-s.md\",\n    \"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1201_correction_syntheti.md\"\n  ],\n  \"candidate_files\": [],\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"session-harvest-8a2e59e4dc751848dbf14c2286c7128aef632c1b44d1efefcc76500580c5d710\",\n      \"payload_digest\": \"575b79a65eef0c827a6595cce98f87a960bdbab6ecd4bb111069a888a18c57bd\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"files\\\": [\\\"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1201_correction_syntheti.md\\\", \\\"LIFEOS/MEMORY/LEARNING/ALGORITHM/2026-10/2026-10-08_1200_correction_native-s.md\\\"], \\\"count\\\": 2, \\\"sessions\\\": 2, \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"session-harvest-8a2e59e4dc751848dbf14c2286c7128aef632c1b44d1efefcc76500580c5d710\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "evidence_file": "harvest-revocation-default.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_harvest_revocation.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 0.1832435131072998,
+      "stdout": "{\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\",\n      \"body\": \"{\\n  \\\"title\\\": \\\"decision: We decided to use the synthetic safe port. The decision is t...\\\",\\n  \\\"content\\\": \\\"## Decision\\\\n\\\\nWe decided to use the synthetic safe port. The decision is to keep that port for the lab service.\\\\n\\\\n## Context\\\\n\\\\nWe decided to use the synthetic safe port. The decision is to keep that port for the lab service.\\\",\\n  \\\"domain\\\": \\\"Ideas\\\",\\n  \\\"type\\\": \\\"idea\\\",\\n  \\\"tags\\\": [\\n    \\\"decision\\\",\\n    \\\"mined\\\"\\n  ],\\n  \\\"confidence\\\": 0.4,\\n  \\\"sourcePattern\\\": \\\"(?:we|i) (?:decided|chose|went with|picked|selected)\\\\\\\\b\\\",\\n  \\\"sourcePath\\\": \\\"native-session\\\",\\n  \\\"minedAt\\\": \\\"2026-10-10T13:18:25.499860+00:00\\\",\\n  \\\"provenance\\\": {\\n    \\\"source\\\": \\\"hermes\\\",\\n    \\\"channel\\\": \\\"transcript\\\",\\n    \\\"captured_at\\\": \\\"2026-10-08T12:00:00+00:00\\\",\\n    \\\"session_id\\\": \\\"native-session\\\"\\n  }\\n}\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-01-00_decision_native-s_L2.json\",\n      \"body\": \"{\\n  \\\"title\\\": \\\"decision: We decided to keep synthetic event receipts. The decision is...\\\",\\n  \\\"content\\\": \\\"## Decision\\\\n\\\\nWe decided to keep synthetic event receipts. The decision is to retain receipts for the lab service.\\\\n\\\\n## Context\\\\n\\\\nWe decided to keep synthetic event receipts. The decision is to retain receipts for the lab service.\\\",\\n  \\\"domain\\\": \\\"Ideas\\\",\\n  \\\"type\\\": \\\"idea\\\",\\n  \\\"tags\\\": [\\n    \\\"decision\\\",\\n    \\\"mined\\\"\\n  ],\\n  \\\"confidence\\\": 0.4,\\n  \\\"sourcePattern\\\": \\\"(?:we|i) (?:decided|chose|went with|picked|selected)\\\\\\\\b\\\",\\n  \\\"sourcePath\\\": \\\"native-session\\\",\\n  \\\"minedAt\\\": \\\"2026-10-10T13:18:25.499860+00:00\\\",\\n  \\\"provenance\\\": {\\n    \\\"source\\\": \\\"hermes\\\",\\n    \\\"channel\\\": \\\"transcript\\\",\\n    \\\"captured_at\\\": \\\"2026-10-08T12:01:00+00:00\\\",\\n    \\\"session_id\\\": \\\"native-session\\\"\\n  }\\n}\"\n    }\n  ],\n  \"current_accounts\": {},\n  \"learning_files\": [],\n  \"candidate_files\": [\n    \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-01-00_decision_native-s_L2.json\",\n    \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\"\n  ],\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"session-harvest-83980ed7060462bdf8b428c2c4f9b78b01cc35081780bf9d490fbfad75cd5f80\",\n      \"payload_digest\": \"635895aa9cda972bee04ced223527c9e4535fc4fa6660a6a8d5f090d8e231d9d\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"files\\\": [\\\"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\\\", \\\"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-01-00_decision_native-s_L2.json\\\"], \\\"count\\\": 2, \\\"sessions\\\": 1, \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"session-harvest-83980ed7060462bdf8b428c2c4f9b78b01cc35081780bf9d490fbfad75cd5f80\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "evidence_file": "harvest-revocation-two-writes.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_harvest_revocation.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 1,
+      "duration_seconds": 0.1839275360107422,
+      "stdout": "{\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\",\n      \"body\": \"{\\n  \\\"title\\\": \\\"decision: Actually, I meant to use the synthetic safe port for the lab...\\\",\\n  \\\"content\\\": \\\"## Decision\\\\n\\\\nActually, I meant to use the synthetic safe port for the lab. We decided to use the synthetic safe port. The decision is to keep that port for the lab service.\\\\n\\\\n## Context\\\\n\\\\nActually, I meant to use the synthetic safe port for the lab. We decided to use the synthetic safe port. The decision is to keep that port for the lab service.\\\",\\n  \\\"domain\\\": \\\"Ideas\\\",\\n  \\\"type\\\": \\\"idea\\\",\\n  \\\"tags\\\": [\\n    \\\"decision\\\",\\n    \\\"mined\\\"\\n  ],\\n  \\\"confidence\\\": 0.4,\\n  \\\"sourcePattern\\\": \\\"(?:we|i) (?:decided|chose|went with|picked|selected)\\\\\\\\b\\\",\\n  \\\"sourcePath\\\": \\\"native-session\\\",\\n  \\\"minedAt\\\": \\\"2026-10-10T13:18:11.446993+00:00\\\",\\n  \\\"provenance\\\": {\\n    \\\"source\\\": \\\"hermes\\\",\\n    \\\"channel\\\": \\\"transcript\\\",\\n    \\\"captured_at\\\": \\\"2026-10-08T12:00:00+00:00\\\",\\n    \\\"session_id\\\": \\\"native-session\\\"\\n  }\\n}\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    }\n  ],\n  \"current_accounts\": {},\n  \"learning_files\": [],\n  \"candidate_files\": [\n    \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\"\n  ],\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"session-harvest-60a20b1e49aa019b797c562b720d65292071f3e11aa92767dab664104972ad78\",\n      \"payload_digest\": \"ebd2ed67f1b7d720ba64feab6ce19f4d736054c8e28061368c9fce74d3b5d060\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"files\\\": [\\\"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\\\"], \\\"count\\\": 1, \\\"sessions\\\": 1, \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"session-harvest-60a20b1e49aa019b797c562b720d65292071f3e11aa92767dab664104972ad78\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-daily-text-candidate-review/probe_harvest_revocation.py\", line 34, in <module>\n    assert any(e['event']=='publication' for e in events[index+1:]),result\n           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'response': {'ok': False, 'code': 'EACCESS_CHANGED', 'message': 'Current memory authority is unavailable; the operation response is withheld.'}, 'events': [{'event': 'publication', 'path': 'LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json', 'body': '{\\n  \"title\": \"decision: Actually, I meant to use the synthetic safe port for the lab...\",\\n  \"content\": \"## Decision\\\\n\\\\nActually, I meant to use the synthetic safe port for the lab. We decided to use the synthetic safe port. The decision is to keep that port for the lab service.\\\\n\\\\n## Context\\\\n\\\\nActually, I meant to use the synthetic safe port for the lab. We decided to use the synthetic safe port. The decision is to keep that port for the lab service.\",\\n  \"domain\": \"Ideas\",\\n  \"type\": \"idea\",\\n  \"tags\": [\\n    \"decision\",\\n    \"mined\"\\n  ],\\n  \"confidence\": 0.4,\\n  \"sourcePattern\": \"(?:we|i) (?:decided|chose|went with|picked|selected)\\\\\\\\b\",\\n  \"sourcePath\": \"native-session\",\\n  \"minedAt\": \"2026-10-10T13:18:11.446993+00:00\",\\n  \"provenance\": {\\n    \"source\": \"hermes\",\\n    \"channel\": \"transcript\",\\n    \"captured_at\": \"2026-10-08T12:00:00+00:00\",\\n    \"session_id\": \"native-session\"\\n  }\\n}'}, {'event': 'owner_revoked'}], 'current_accounts': {}, 'learning_files': [], 'candidate_files': ['LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json'], 'journal_exists': False, 'operations': [{'writer': 'chat-a:100', 'request_id': 'session-harvest-60a20b1e49aa019b797c562b720d65292071f3e11aa92767dab664104972ad78', 'payload_digest': 'ebd2ed67f1b7d720ba64feab6ce19f4d736054c8e28061368c9fce74d3b5d060', 'receipt': '{\"status\": \"committed\", \"files\": [\"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/mine_2026-10-08T12-00-00_decision_native-s_L1.json\"], \"count\": 1, \"sessions\": 1, \"writer\": \"chat-a:100\", \"request_id\": \"session-harvest-60a20b1e49aa019b797c562b720d65292071f3e11aa92767dab664104972ad78\"}'}]}\n",
+      "evidence_file": "harvest-revocation.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/collect_review_identity.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 0.17983579635620117,
+      "stdout": "{\n  \"head\": \"bf53c16dd23d72c9824843cbb85f31db5a48e723\",\n  \"tracked_status\": \"\",\n  \"patch_count\": 36,\n  \"patches_equal\": true,\n  \"registries_equal\": true,\n  \"native_comparisons\": [\n    {\n      \"relative\": \"LIFEOS/TOOLS/lib/MemoryAccess.ts\",\n      \"prepared_sha256\": \"57ff995c14f816d1cc9491127c811b90b00b125af17c0766830f784b81ff0904\",\n      \"test_source_sha256\": \"57ff995c14f816d1cc9491127c811b90b00b125af17c0766830f784b81ff0904\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/TOOLS/SessionHarvester.ts\",\n      \"prepared_sha256\": \"374f7b0d5cdda0692553614871e710fa55f0b06d7a0d1de2447e5f5d4b4b1453\",\n      \"test_source_sha256\": \"374f7b0d5cdda0692553614871e710fa55f0b06d7a0d1de2447e5f5d4b4b1453\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/TOOLS/ProposalGC.ts\",\n      \"prepared_sha256\": \"86ebc5322415d599584fa23c9ecf8230cbcb8be15a0e53b434e865fbc4879dfd\",\n      \"test_source_sha256\": \"86ebc5322415d599584fa23c9ecf8230cbcb8be15a0e53b434e865fbc4879dfd\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/TOOLS/KnowledgeHarvester.ts\",\n      \"prepared_sha256\": \"28ffbc1f91235078489de57cbddf650d105df814c6617a8ce6f74517ba55da76\",\n      \"test_source_sha256\": \"28ffbc1f91235078489de57cbddf650d105df814c6617a8ce6f74517ba55da76\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/PULSE/modules/algorithm-tab.ts\",\n      \"prepared_sha256\": \"f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f\",\n      \"test_source_sha256\": \"f733c7f9f6a45cc6135f5499710c5e7485fa52987423bb25c0555e1072f2ad8f\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/PULSE/modules/user-index.ts\",\n      \"prepared_sha256\": \"492bc5c0200b5f4696f616452b88d85fc4aed0412d9fe60534b1c3356c533f8d\",\n      \"test_source_sha256\": \"492bc5c0200b5f4696f616452b88d85fc4aed0412d9fe60534b1c3356c533f8d\",\n      \"equal\": true\n    },\n    {\n      \"relative\": \"LIFEOS/PULSE/modules/content.ts\",\n      \"prepared_sha256\": \"879bcf11ade72c46ca251cb9f8e61edcdb8b7cbc47f927874dbea679d2b970b1\",\n      \"test_source_sha256\": \"879bcf11ade72c46ca251cb9f8e61edcdb8b7cbc47f927874dbea679d2b970b1\",\n      \"equal\": true\n    }\n  ],\n  \"diff_check_exit\": 0\n}\n",
+      "stderr": "",
+      "evidence_file": "identity.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_batch_revocation.py",
+        "knowledge-harvest"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 0.43216538429260254,
+      "stdout": "{\n  \"operation\": \"knowledge_harvest\",\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"before\": {\n    \"queue\": \"{\\\"sourcePath\\\": \\\"synthetic-manual-source\\\", \\\"title\\\": \\\"Synthetic staged knowledge\\\", \\\"content\\\": \\\"Synthetic declared knowledge for source mining.\\\", \\\"domain\\\": \\\"Ideas\\\", \\\"type\\\": \\\"idea\\\", \\\"tags\\\": [\\\"synthetic\\\"]}\"\n  },\n  \"after\": {\n    \"queue_exists\": false,\n    \"note_exists\": true,\n    \"state_exists\": true\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/_harvest-queue/Ideas/synthetic-staged-knowledge.md\",\n      \"content\": \"---\\ntitle: \\\"Synthetic staged knowledge\\\"\\ntype: idea\\ndomain: ideas\\ntags: [synthetic]\\ncreated: 2026-10-10\\nupdated: 2026-10-10\\nquality: 5\\nstatus: pending-review\\nharvested_from: synthetic-manual-source\\n---\\n\\n# Synthetic staged knowledge\\n\\nSynthetic declared knowledge for source mining.\\n\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/KNOWLEDGE/.harvest-state.json\",\n      \"content\": \"{\\n  \\\"lastHarvest\\\": \\\"2026-10-10T13:20:04.610Z\\\",\\n  \\\"harvestedPaths\\\": [\\n    \\\"synthetic-manual-source\\\"\\n  ],\\n  \\\"totalHarvested\\\": 0\\n}\"\n    }\n  ],\n  \"accounts\": {},\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"synthetic-midpublication-revocation\",\n      \"payload_digest\": \"4e62efdde92b96d53eaaf79ae60c69bb5be37049ef94007de5df3011e91986a6\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"notes_staged\\\": 1, \\\"notes_archived\\\": 0, \\\"stdout\\\": \\\"\\\\ud83c\\\\udf3e Knowledge Harvester\\\\n\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\u2500\\\\n  RESEARCH/: 0 candidates\\\\n  Queue: 1 candidates\\\\n\\\\n  After dedup: 1 candidates\\\\n  Harvesting: 1 (max 20/run)\\\\n\\\\n  \\\\ud83d\\\\udce5 staged: _harvest-queue/Ideas/synthetic-staged-knowledge.md\\\\n\\\\n  \\\\u2705 Harvest complete. 1 note(s) staged to _harvest-queue/.\\\\n  Review with `review`, then `promote <slug>` (or `promote --all`) / `reject <slug>`.\\\\n\\\", \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"synthetic-midpublication-revocation\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "evidence_file": "knowledge-harvest-revocation.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_memory_publication_authority",
+        "test_memory_publication_recovery",
+        "test_memory_job_output",
+        "test_memory_user_index_publish",
+        "test_memory_algorithm_edits",
+        "test_memory_content_disposal",
+        "test_memory_staging_writers",
+        "test_memory_native_response_authority"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 1,
+      "duration_seconds": 67.96069574356079,
+      "stdout": "",
+      "stderr": "...........................................EEEEEEEEEEEEEEEEEEE...........................F.....\n======================================================================\nERROR: test_actual_doctrine_render_preserves_a_later_immutable_tag (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_doctrine_render_preserves_a_later_immutable_tag)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_actual_git_hook_refusal_preserves_the_saved_file (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_git_hook_refusal_preserves_the_saved_file)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_actual_partial_doctrine_publication_restores_all_original_files (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_partial_doctrine_publication_restores_all_original_files)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_actual_render_owner_revocation_refuses_publication (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_render_owner_revocation_refuses_publication)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_actual_render_source_change_preserves_the_later_owner_file (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_render_source_change_preserves_the_later_owner_file)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_anonymous_edits_refuse_before_source_or_version_change (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_anonymous_edits_refuse_before_source_or_version_change)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_bounded_fixed_private_and_linked_file_requests_refuse (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_bounded_fixed_private_and_linked_file_requests_refuse)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_doctrine_commit_tracks_the_new_version_and_preserves_other_staged_files (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_doctrine_commit_tracks_the_new_version_and_preserves_other_staged_files)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_git_environment_cannot_redirect_snapshot_or_owner_commits (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_git_environment_cannot_redirect_snapshot_or_owner_commits)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_inherited_native_home_cannot_redirect_private_edit_rendering (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_inherited_native_home_cannot_redirect_private_edit_rendering)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_interrupted_publication_keeps_later_owner_bytes_for_review (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_interrupted_publication_keeps_later_owner_bytes_for_review)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_invalid_hook_syntax_refuses_without_source_change (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_invalid_hook_syntax_refuses_without_source_change)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_later_immutable_tag_at_publication_is_not_overwritten (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_later_immutable_tag_at_publication_is_not_overwritten)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_later_owner_edit_after_publication_withholds_the_prior_response (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_later_owner_edit_after_publication_withholds_the_prior_response)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_owner_commit_preserves_unrelated_staged_files (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_owner_commit_preserves_unrelated_staged_files)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_saved_modification_time_matches_native_view_at_a_millisecond_boundary (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_saved_modification_time_matches_native_view_at_a_millisecond_boundary)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nERROR: test_timed_out_actual_git_hook_has_no_running_child (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_timed_out_actual_git_hook_has_no_running_child)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_jobs.py\", line 79, in setUp\n    job_fixture.MemoryConduitJobRelayTests.setUp(self)\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py\", line 167, in setUp\n    os.environ['PYTHONPATH'] = os.pathsep.join([os.environ['LIFEOS_HERMES_SOURCE'], previous or ''])\n                                                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen os>\", line 709, in __getitem__\nKeyError: 'LIFEOS_HERMES_SOURCE'\n\n======================================================================\nFAIL: test_standalone_rejection_retains_the_native_command_behavior (test_memory_staging_writers.MemoryStagingWriterTests.test_standalone_rejection_retains_the_native_command_behavior)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging_writers.py\", line 58, in test_standalone_rejection_retains_the_native_command_behavior\n    self.assertEqual(result.returncode, 0, result.stderr)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 0 : 21 |       return true;\n22 |     } catch (error: unknown) {\n23 |       if (!memoryObject(error) || error.code !== \"ENOENT\") throw error;\n24 |     }\n25 |   }\n26 |   if (\"LIFEOS_MEMORY_CONTEXT\" in process.env) throw new Error(\"The admitted native caller lost its memory connector\");\n                                                             ^\nerror: The admitted native caller lost its memory connector\n      at hasMemoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:26:57)\n      at /home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts:1519:10\n\nBun v1.3.14 (Linux x64)\n\n\n----------------------------------------------------------------------\nRan 95 tests in 67.073s\n\nFAILED (failures=1, errors=19)\n",
+      "evidence_file": "native-regressions.json",
+      "unittest_tests_attempted": 95
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_native_frontend_types",
+        "test_native_hermes_health_sources"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 12.106850862503052,
+      "stdout": "SubTabs markup SHA256: 85d7244cc5c904c7e98c104ddc7adcad2ccb988366012c68c70cedafdddd42b0\n",
+      "stderr": ".....\n----------------------------------------------------------------------\nRan 5 tests in 12.045s\n\nOK\n",
+      "evidence_file": "native-types.json",
+      "unittest_tests_attempted": 5
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_batch_revocation.py",
+        "proposal-gc"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 0.6623830795288086,
+      "stdout": "{\n  \"operation\": \"proposal_gc\",\n  \"response\": {\n    \"ok\": false,\n    \"code\": \"EACCESS_CHANGED\",\n    \"message\": \"Current memory authority is unavailable; the operation response is withheld.\"\n  },\n  \"before\": {\n    \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\": \"---\\nprovenance: template\\nlast_updated: 2000-01-01\\n---\\n# Synthetic rules\\n\\n## Memory-System Proposals\\n- Synthetic private cleanup marker [SUPERSEDED]\\n- Keep the distinct synthetic rule.\\n- Keep the distinct synthetic rule. <!-- applied: 2026-10-07 -->\\n\",\n    \"LIFEOS/USER/PROJECTS.md\": \"## Memory-System Proposals\\n- Synthetic expired project rule [SUPERSEDED]\\n- Keep current synthetic project rule.\\n\"\n  },\n  \"after\": {\n    \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\": \"---\\nprovenance: customized\\nlast_updated: 2026-10-10T13:20:03.725Z\\nlast_updated_by: proposal-gc\\n---\\n# Synthetic rules\\n\\n## Memory-System Proposals\\n- Keep the distinct synthetic rule. <!-- applied: 2026-10-07 -->\\n\",\n    \"LIFEOS/USER/PROJECTS.md\": \"---\\nlast_updated: 2026-10-10T13:20:03.726Z\\nlast_updated_by: proposal-gc\\n---\\n\\n## Memory-System Proposals\\n- Keep current synthetic project rule.\\n\"\n  },\n  \"events\": [\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md\",\n      \"content\": \"---\\nprovenance: customized\\nlast_updated: 2026-10-10T13:20:03.725Z\\nlast_updated_by: proposal-gc\\n---\\n# Synthetic rules\\n\\n## Memory-System Proposals\\n- Keep the distinct synthetic rule. <!-- applied: 2026-10-07 -->\\n\"\n    },\n    {\n      \"event\": \"owner_revoked\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/USER/PROJECTS.md\",\n      \"content\": \"---\\nlast_updated: 2026-10-10T13:20:03.726Z\\nlast_updated_by: proposal-gc\\n---\\n\\n## Memory-System Proposals\\n- Keep current synthetic project rule.\\n\"\n    },\n    {\n      \"event\": \"publication\",\n      \"path\": \"LIFEOS/MEMORY/OBSERVABILITY/proposal-gc.jsonl\",\n      \"content\": \"{\\\"ts\\\": \\\"2026-10-10T13:20:04.036774+00:00\\\", \\\"applied\\\": true, \\\"auto\\\": true, \\\"removed\\\": 3, \\\"byReason\\\": {\\\"superseded\\\": 2, \\\"exact-dup\\\": 1}, \\\"skipped\\\": []}\\n\"\n    }\n  ],\n  \"accounts\": {},\n  \"journal_exists\": false,\n  \"operations\": [\n    {\n      \"writer\": \"chat-a:100\",\n      \"request_id\": \"proposal-gc-0ec3206dd2ae4595bfe1d77a8db0b117\",\n      \"payload_digest\": \"3c89b2b1abd9556997915bbeaa9503534d1e7165bcad511b4a95ef9caa91a90b\",\n      \"receipt\": \"{\\\"status\\\": \\\"committed\\\", \\\"artifacts\\\": 2, \\\"writer\\\": \\\"chat-a:100\\\", \\\"request_id\\\": \\\"proposal-gc-0ec3206dd2ae4595bfe1d77a8db0b117\\\"}\"\n    }\n  ]\n}\n",
+      "stderr": "",
+      "evidence_file": "proposal-gc-revocation.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_memory_publication_authority",
+        "test_memory_publication_recovery",
+        "test_memory_job_output",
+        "test_memory_user_index_publish",
+        "test_memory_content_disposal",
+        "test_memory_native_response_authority",
+        "test_native_algorithm_prompt_transport",
+        "test_native_content_actions"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 65.08928060531616,
+      "stdout": "",
+      "stderr": ".....................................................................\n----------------------------------------------------------------------\nRan 69 tests in 64.424s\n\nOK\n",
+      "evidence_file": "publication-clean.json",
+      "unittest_tests_attempted": 69
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_memory_session_harvest",
+        "test_memory_conduit_capture",
+        "test_memory_atlas_insight",
+        "test_memory_local_refresh_publication",
+        "test_memory_algorithm_summary",
+        "test_memory_proposal_gc",
+        "test_memory_knowledge_harvest"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 1,
+      "duration_seconds": 110.33963871002197,
+      "stdout": "",
+      "stderr": "..........................................................................................F.....\n======================================================================\nFAIL: test_standalone_mining_preserves_native_staging_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_standalone_mining_preserves_native_staging_and_state)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py\", line 86, in test_standalone_mining_preserves_native_staging_and_state\n    self.assertEqual(result.returncode,0,result.stderr)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 0 : 21 |       return true;\n22 |     } catch (error: unknown) {\n23 |       if (!memoryObject(error) || error.code !== \"ENOENT\") throw error;\n24 |     }\n25 |   }\n26 |   if (\"LIFEOS_MEMORY_CONTEXT\" in process.env) throw new Error(\"The admitted native caller lost its memory connector\");\n                                                             ^\nerror: The admitted native caller lost its memory connector\n      at hasMemoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:26:57)\n      at /home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts:1519:10\n\nBun v1.3.14 (Linux x64)\n\n\n----------------------------------------------------------------------\nRan 96 tests in 110.243s\n\nFAILED (failures=1)\n",
+      "evidence_file": "remaining-native-corrected.json",
+      "unittest_tests_attempted": 96
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_memory_session_harvest",
+        "test_memory_conduit_capture",
+        "test_memory_conduit_publication",
+        "test_memory_atlas_insight",
+        "test_memory_local_refresh_publication",
+        "test_memory_algorithm_summary"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 1,
+      "duration_seconds": 96.34442806243896,
+      "stdout": "",
+      "stderr": ".....................................E.................\n======================================================================\nERROR: test_memory_conduit_publication (unittest.loader._FailedTest.test_memory_conduit_publication)\n----------------------------------------------------------------------\nImportError: Failed to import test module: test_memory_conduit_publication\nTraceback (most recent call last):\n  File \"/usr/lib64/python3.14/unittest/loader.py\", line 141, in loadTestsFromName\n    module = __import__(module_name)\nModuleNotFoundError: No module named 'test_memory_conduit_publication'\n\n\n----------------------------------------------------------------------\nRan 55 tests in 96.250s\n\nFAILED (errors=1)\n",
+      "evidence_file": "remaining-native.json",
+      "unittest_tests_attempted": 55
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/verify_prepared_sources.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 3.007704496383667,
+      "stdout": "{\"lifeos_manifest_valid\": true, \"lifeos_tree_sha256\": \"ee4912eab9e0509e66e0c6e699c1a94bb424c642ba4738f88bb013bf38313f8a\", \"hermes_manifest_tree_valid\": true, \"hermes_tree_sha256\": \"55af6de42da102bc3f25b0d0165cd111780d9b56427afc62ef4cf51df94d76dc\"}\n",
+      "stderr": "",
+      "evidence_file": "source-manifest-validation.json"
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "unittest",
+        "test_memory_staging_writers"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 1,
+      "duration_seconds": 5.0621607303619385,
+      "stdout": "",
+      "stderr": "..........F.\n======================================================================\nFAIL: test_standalone_rejection_retains_the_native_command_behavior (test_memory_staging_writers.MemoryStagingWriterTests.test_standalone_rejection_retains_the_native_command_behavior)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging_writers.py\", line 58, in test_standalone_rejection_retains_the_native_command_behavior\n    self.assertEqual(result.returncode, 0, result.stderr)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 0 : 21 |       return true;\n22 |     } catch (error: unknown) {\n23 |       if (!memoryObject(error) || error.code !== \"ENOENT\") throw error;\n24 |     }\n25 |   }\n26 |   if (\"LIFEOS_MEMORY_CONTEXT\" in process.env) throw new Error(\"The admitted native caller lost its memory connector\");\n                                                             ^\nerror: The admitted native caller lost its memory connector\n      at hasMemoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:26:57)\n      at /home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts:1519:10\n\nBun v1.3.14 (Linux x64)\n\n\n----------------------------------------------------------------------\nRan 12 tests in 4.966s\n\nFAILED (failures=1)\n",
+      "evidence_file": "staging-isolated.json",
+      "unittest_tests_attempted": 12
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-10-10-daily-text-candidate-review/probe_unmanaged_compatibility.py"
+      ],
+      "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+      "environment_overrides": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+        "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+        "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+      },
+      "exit_code": 0,
+      "duration_seconds": 0.21099424362182617,
+      "stdout": "[\n  {\n    \"operation\": \"reject\",\n    \"exit_code\": 0,\n    \"stdout\": \"  \\ud83d\\uddd1  rejected: Research/synthetic-staged-note.md\\n\",\n    \"stderr\": \"\"\n  },\n  {\n    \"operation\": \"promote\",\n    \"exit_code\": 0,\n    \"stdout\": \"  \\u2705 promoted: Research/synthetic-staged-note.md\\n\\n  \\ud83d\\udcd1 Regenerating MOCs...\\n     Research/_index.md\\n     _index.md (master)\\n\",\n    \"stderr\": \"\"\n  },\n  {\n    \"operation\": \"harvest\",\n    \"exit_code\": 0,\n    \"stdout\": \"\\ud83c\\udf3e Knowledge Harvester\\n\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n  RESEARCH/: 0 candidates\\n  Queue: 1 candidates\\n\\n  After dedup: 1 candidates\\n  Harvesting: 1 (max 5/run)\\n\\n  \\ud83d\\udce5 staged: _harvest-queue/Ideas/synthetic-staged-knowledge.md\\n\\n  \\u2705 Harvest complete. 1 note(s) staged to _harvest-queue/.\\n  Review with `review`, then `promote <slug>` (or `promote --all`) / `reject <slug>`.\\n\",\n    \"stderr\": \"\"\n  }\n]\n",
+      "stderr": "",
+      "evidence_file": "unmanaged-compatibility.json"
+    }
+  ],
+  "final_tracked_status": {
+    "command": [
+      "git",
+      "status",
+      "--short",
+      "--untracked-files=no"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "runner_errors_and_fixture_failures": {
+    "native-regressions": "Omitted LIFEOS_HERMES_SOURCE gives 19 Algorithm setup errors; one standalone staging fixture failure. Repeated Algorithm suite passes with required variable.",
+    "staging-isolated": "One fixture exports managed context after removing connector. Correct unmanaged calls pass separately.",
+    "remaining-native": "One reviewer invocation named nonexistent test_memory_conduit_publication; remaining 54 tests complete.",
+    "remaining-native-corrected": "96 tests, one standalone Knowledge fixture failure with same connector/context contradiction; remaining 95 checks complete.",
+    "algorithm-conflict-probe": "Initial probe observer attempted to make a scratch render path relative to installed root; fixed observer rerun confirms defect.",
+    "harvest-revocation": "Initial one-row mining fixture yields only one write; two-row/default two-session probes confirm publication after revocation."
+  },
+  "warnings": {
+    "discord-tests": "unittest OK and exit zero, but ResourceWarning from temporary HTTPError cleanup means output is not warning-clean."
+  },
+  "prohibited_actions_performed": false,
+  "report": "daily-text-candidate-review.md"
+}

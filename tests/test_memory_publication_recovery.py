@@ -107,6 +107,24 @@ class MemoryPublicationRecoveryTests(unittest.TestCase):
                 self.assertFalse(self.second.exists())
                 self.assertTrue(self.transaction.journal.exists())
 
+    def test_expected_deleted_publication_restores_original_and_absent_targets(self):
+        self.reserve(expected={'first':None,'second':self.digests()['second']})
+        self.first.unlink()
+        self.second.write_bytes(b'Synthetic published second artifact')
+        self.transaction.recover(self.connection)
+        self.assertEqual(self.first.read_bytes(),b'Synthetic original first artifact')
+        self.assertFalse(self.second.exists())
+
+    def test_later_recreation_of_expected_deleted_file_blocks_all_recovery(self):
+        self.reserve(expected={'first':None,'second':self.digests()['second']})
+        self.first.unlink()
+        self.first.write_bytes(b'Synthetic later recreated owner artifact')
+        self.second.write_bytes(b'Synthetic published second artifact')
+        with self.assertRaises(MemoryUnavailable):self.transaction.recover(self.connection)
+        self.assertEqual(self.first.read_bytes(),b'Synthetic later recreated owner artifact')
+        self.assertEqual(self.second.read_bytes(),b'Synthetic published second artifact')
+        self.assertTrue(self.transaction.journal.exists())
+
 
 if __name__ == '__main__':
     unittest.main()

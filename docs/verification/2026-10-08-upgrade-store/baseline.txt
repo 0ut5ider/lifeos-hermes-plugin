@@ -1,0 +1,197 @@
+test_forgotten_record_remains_retained_and_leaves_native_views (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_forgotten_record_remains_retained_and_leaves_native_views) ... FAIL
+test_list_and_get_preserve_all_original_fields (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_list_and_get_preserve_all_original_fields) ... ok
+test_native_add_status_and_expiry_preserve_selected_file_effects (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_native_add_status_and_expiry_preserve_selected_file_effects) ... ok
+test_original_terminal_status_refuses_an_illegal_transition_without_writing (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_original_terminal_status_refuses_an_illegal_transition_without_writing) ... ok
+test_private_creation_never_changes_record_or_state (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_private_creation_never_changes_record_or_state) ... FAIL
+test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) ... 
+  test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) (action='add') ... FAIL
+  test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) (action='status') ... FAIL
+  test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) (action='expire') ... FAIL
+test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) ... 
+  test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='list') ... FAIL
+  test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='get') ... FAIL
+  test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='add') ... FAIL
+  test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='status') ... FAIL
+  test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='expire') ... FAIL
+test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) ... 
+  test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='list') ... FAIL
+  test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='get') ... FAIL
+  test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='add') ... FAIL
+  test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='status') ... FAIL
+  test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='expire') ... FAIL
+
+======================================================================
+FAIL: test_forgotten_record_remains_retained_and_leaves_native_views (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_forgotten_record_remains_retained_and_leaves_native_views)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 149, in test_forgotten_record_remains_retained_and_leaves_native_views
+    self.assertEqual(json.loads(result.stdout),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'id': 'synthetic-upgrade', 'slug': 'synt[473 chars]md'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'id': 'synthetic-upgrade', 'slug': 'synthetic-upgrade', 'status': 'recommended', 'source': 'manual', 'created': '2026-10-08T00:00:00.000Z', 'expires': '2027-01-01T00:00:00.000Z', 'confidence': 0.7, 'target_surface': 'context', 'session_id': 'synthetic-seed', 'ledger_id': None, 'evidence': ['synthetic-evidence'], 'claim': 'SyntheticUpgradeForgottenMarker', 'current_state': 'Synthetic current state', 'recommendation': 'Synthetic recommendation', 'notes': ['Synthetic seed note'], 'filename': 'synthetic-upgrade.md'}
+
++ []
+- [{'claim': 'SyntheticUpgradeForgottenMarker',
+-   'confidence': 0.7,
+-   'created': '2026-10-08T00:00:00.000Z',
+-   'current_state': 'Synthetic current state',
+-   'evidence': ['synthetic-evidence'],
+-   'expires': '2027-01-01T00:00:00.000Z',
+-   'filename': 'synthetic-upgrade.md',
+-   'id': 'synthetic-upgrade',
+-   'ledger_id': None,
+-   'notes': ['Synthetic seed note'],
+-   'recommendation': 'Synthetic recommendation',
+-   'session_id': 'synthetic-seed',
+-   'slug': 'synthetic-upgrade',
+-   'source': 'manual',
+-   'status': 'recommended',
+-   'target_surface': 'context'}]
+
+======================================================================
+FAIL: test_private_creation_never_changes_record_or_state (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_private_creation_never_changes_record_or_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 159, in test_private_creation_never_changes_record_or_state
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"created":true,"id":"20261008-175754_private-synthetic-private-upgrade-private_b39e31b3dbdaa43d"}
+
+
+======================================================================
+FAIL: test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) (action='add')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 137, in test_read_only_owner_keeps_reads_and_cannot_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"created":true,"id":"20261008-175754_synthetic-new-upgrade-claim_12cf86fdcf073ba9"}
+
+
+======================================================================
+FAIL: test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) (action='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 137, in test_read_only_owner_keeps_reads_and_cannot_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_read_only_owner_keeps_reads_and_cannot_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_read_only_owner_keeps_reads_and_cannot_mutate) (action='expire')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 137, in test_read_only_owner_keeps_reads_and_cannot_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : 1
+
+
+======================================================================
+FAIL: test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 123, in test_revoked_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : [{"id":"synthetic-upgrade","slug":"synthetic-upgrade","status":"recommended","source":"manual","created":"2026-10-08T00:00:00.000Z","expires":"2026-01-01T00:00:00.000Z","confidence":0.7,"target_surface":"context","session_id":"synthetic-seed","ledger_id":null,"evidence":["synthetic-evidence"],"claim":"SyntheticUpgradeCurrentMarker","current_state":"Synthetic current state","recommendation":"Synthetic recommendation","notes":["Synthetic seed note"],"filename":"synthetic-upgrade.md"}]
+
+
+======================================================================
+FAIL: test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='get')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 123, in test_revoked_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"id":"synthetic-upgrade","slug":"synthetic-upgrade","status":"recommended","source":"manual","created":"2026-10-08T00:00:00.000Z","expires":"2026-01-01T00:00:00.000Z","confidence":0.7,"target_surface":"context","session_id":"synthetic-seed","ledger_id":null,"evidence":["synthetic-evidence"],"claim":"SyntheticUpgradeCurrentMarker","current_state":"Synthetic current state","recommendation":"Synthetic recommendation","notes":["Synthetic seed note"],"filename":"synthetic-upgrade.md"}
+
+
+======================================================================
+FAIL: test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='add')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 123, in test_revoked_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"created":true,"id":"20261008-175754_synthetic-new-upgrade-claim_12cf86fdcf073ba9"}
+
+
+======================================================================
+FAIL: test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 123, in test_revoked_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_revoked_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_revoked_native_store_cannot_read_or_mutate) (action='expire')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 123, in test_revoked_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : 1
+
+
+======================================================================
+FAIL: test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 112, in test_unbound_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : [{"id":"synthetic-upgrade","slug":"synthetic-upgrade","status":"recommended","source":"manual","created":"2026-10-08T00:00:00.000Z","expires":"2026-01-01T00:00:00.000Z","confidence":0.7,"target_surface":"context","session_id":"synthetic-seed","ledger_id":null,"evidence":["synthetic-evidence"],"claim":"SyntheticUpgradeCurrentMarker","current_state":"Synthetic current state","recommendation":"Synthetic recommendation","notes":["Synthetic seed note"],"filename":"synthetic-upgrade.md"}]
+
+
+======================================================================
+FAIL: test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='get')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 112, in test_unbound_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"id":"synthetic-upgrade","slug":"synthetic-upgrade","status":"recommended","source":"manual","created":"2026-10-08T00:00:00.000Z","expires":"2026-01-01T00:00:00.000Z","confidence":0.7,"target_surface":"context","session_id":"synthetic-seed","ledger_id":null,"evidence":["synthetic-evidence"],"claim":"SyntheticUpgradeCurrentMarker","current_state":"Synthetic current state","recommendation":"Synthetic recommendation","notes":["Synthetic seed note"],"filename":"synthetic-upgrade.md"}
+
+
+======================================================================
+FAIL: test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='add')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 112, in test_unbound_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"created":true,"id":"20261008-175754_synthetic-new-upgrade-claim_12cf86fdcf073ba9"}
+
+
+======================================================================
+FAIL: test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 112, in test_unbound_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"ok":true}
+
+
+======================================================================
+FAIL: test_unbound_native_store_cannot_read_or_mutate (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_unbound_native_store_cannot_read_or_mutate) (action='expire')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 112, in test_unbound_native_store_cannot_read_or_mutate
+    self.assertNotEqual(result.returncode,0,result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : 1
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.593s
+
+FAILED (failures=15)

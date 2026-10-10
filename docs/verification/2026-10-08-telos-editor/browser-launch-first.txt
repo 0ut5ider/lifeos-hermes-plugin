@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "/usr/lib64/python3.14/weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/tempfile.py", line 962, in _cleanup
+    _warnings.warn(warn_message, ResourceWarning)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/native-memory-_hkcsqjk'>
+Exception ignored while calling deallocator <function Popen.__del__ at 0x7f1d2be71900>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/subprocess.py", line 1139, in __del__
+ResourceWarning: subprocess 109379 is still running
+Exception ignored while finalizing file <_io.FileIO name=10 mode='rb' closefd=True>:
+ResourceWarning: unclosed file <_io.TextIOWrapper name=10 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=12 mode='rb' closefd=True>:
+ResourceWarning: unclosed file <_io.TextIOWrapper name=12 encoding='UTF-8'>

@@ -1,0 +1,41 @@
+test_anonymous_edits_refuse_before_source_or_version_change (__main__.Diagnostics.test_anonymous_edits_refuse_before_source_or_version_change) ... ERROR
+test_invalid_hook_syntax_refuses_without_source_change (__main__.Diagnostics.test_invalid_hook_syntax_refuses_without_source_change) ... ERROR
+test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag (__main__.Diagnostics.test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag) ... ERROR
+test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal (__main__.Diagnostics.test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal) ... ERROR
+
+======================================================================
+ERROR: test_anonymous_edits_refuse_before_source_or_version_change (__main__.Diagnostics.test_anonymous_edits_refuse_before_source_or_version_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-remaining-reader-audit/algorithm_edit_failure_second_probe.py", line 12, in setUp
+    endpoint=next(route.endpoint for route in self.fixture.app.routes if getattr(route,'name','')=='edit_memory_algorithm')
+StopIteration
+
+======================================================================
+ERROR: test_invalid_hook_syntax_refuses_without_source_change (__main__.Diagnostics.test_invalid_hook_syntax_refuses_without_source_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-remaining-reader-audit/algorithm_edit_failure_second_probe.py", line 12, in setUp
+    endpoint=next(route.endpoint for route in self.fixture.app.routes if getattr(route,'name','')=='edit_memory_algorithm')
+StopIteration
+
+======================================================================
+ERROR: test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag (__main__.Diagnostics.test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-remaining-reader-audit/algorithm_edit_failure_second_probe.py", line 12, in setUp
+    endpoint=next(route.endpoint for route in self.fixture.app.routes if getattr(route,'name','')=='edit_memory_algorithm')
+StopIteration
+
+======================================================================
+ERROR: test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal (__main__.Diagnostics.test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-remaining-reader-audit/algorithm_edit_failure_second_probe.py", line 12, in setUp
+    endpoint=next(route.endpoint for route in self.fixture.app.routes if getattr(route,'name','')=='edit_memory_algorithm')
+StopIteration
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.707s
+
+FAILED (errors=4)

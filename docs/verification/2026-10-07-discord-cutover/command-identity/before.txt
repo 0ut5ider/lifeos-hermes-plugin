@@ -1,0 +1,70 @@
+test_description_and_settings_change_both_reach_the_api (test_discord_command_identity.DiscordCommandIdentityTests.test_description_and_settings_change_both_reach_the_api) ... FAIL
+test_description_change_updates_the_existing_command (test_discord_command_identity.DiscordCommandIdentityTests.test_description_change_updates_the_existing_command) ... ok
+test_explicit_contexts_do_not_match_other_contexts (test_discord_command_identity.DiscordCommandIdentityTests.test_explicit_contexts_do_not_match_other_contexts) ... FAIL
+test_explicit_settings_change_keeps_the_command_id (test_discord_command_identity.DiscordCommandIdentityTests.test_explicit_settings_change_keeps_the_command_id) ... FAIL
+test_inherited_settings_keep_an_unchanged_command (test_discord_command_identity.DiscordCommandIdentityTests.test_inherited_settings_keep_an_unchanged_command) ... FAIL
+
+======================================================================
+FAIL: test_description_and_settings_change_both_reach_the_api (test_discord_command_identity.DiscordCommandIdentityTests.test_description_and_settings_change_both_reach_the_api)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/migration/2026-10-07/command-sync-stage/test_discord_command_identity.py", line 89, in test_description_and_settings_change_both_reach_the_api
+    self.assertTrue(self.transport.payloads["123"]["nsfw"])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_explicit_contexts_do_not_match_other_contexts (test_discord_command_identity.DiscordCommandIdentityTests.test_explicit_contexts_do_not_match_other_contexts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/migration/2026-10-07/command-sync-stage/test_discord_command_identity.py", line 95, in test_explicit_contexts_do_not_match_other_contexts
+    self.assertEqual(summary["updated"], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_explicit_settings_change_keeps_the_command_id (test_discord_command_identity.DiscordCommandIdentityTests.test_explicit_settings_change_keeps_the_command_id)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/migration/2026-10-07/command-sync-stage/test_discord_command_identity.py", line 77, in test_explicit_settings_change_keeps_the_command_id
+    self.assertEqual(summary["updated"], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_inherited_settings_keep_an_unchanged_command (test_discord_command_identity.DiscordCommandIdentityTests.test_inherited_settings_keep_an_unchanged_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/migration/2026-10-07/command-sync-stage/test_discord_command_identity.py", line 70, in test_inherited_settings_keep_an_unchanged_command
+    self.assertEqual(summary["unchanged"], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 5 tests in 13.542s
+
+FAILED (failures=4)

@@ -1,0 +1,26 @@
+test_anonymous_first_read_refuses_before_native_config_creation (test_memory_conduit.MemoryConduitTests.test_anonymous_first_read_refuses_before_native_config_creation) ... FAIL
+test_original_first_read_writes_native_defaults_and_preserves_daily_fields (test_memory_conduit.MemoryConduitTests.test_original_first_read_writes_native_defaults_and_preserves_daily_fields) ... ok
+test_owner_first_read_publishes_identical_native_defaults_privately (test_memory_conduit.MemoryConduitTests.test_owner_first_read_publishes_identical_native_defaults_privately) ... FAIL
+
+======================================================================
+FAIL: test_anonymous_first_read_refuses_before_native_config_creation (test_memory_conduit.MemoryConduitTests.test_anonymous_first_read_refuses_before_native_config_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 63, in test_anonymous_first_read_refuses_before_native_config_creation
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"date":"2026-10-09","conduitVersion":"1.0.0","generatedAt":"2026-10-09T16:14:02.153Z","totalMinutes":2,"creationMinutes":0,"consumptionMinutes":0,"neutralMinutes":2,"blocks":[{"label":"SyntheticConduitCurrent","kind":"neutral","minutes":2}],"commits":0,"sessions":0,"narrative":null,"telosTags":{}}
+
+======================================================================
+FAIL: test_owner_first_read_publishes_identical_native_defaults_privately (test_memory_conduit.MemoryConduitTests.test_owner_first_read_publishes_identical_native_defaults_privately)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit.py", line 78, in test_owner_first_read_publishes_identical_native_defaults_privately
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.790s
+
+FAILED (failures=2)

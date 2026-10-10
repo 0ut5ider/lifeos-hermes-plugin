@@ -1,0 +1,116 @@
+F.F.F.FFFFF
+======================================================================
+FAIL: test_anonymous_revoked_and_missing_connector_refuse_business (test_memory_life_business.MemoryLifeBusinessTests.test_anonymous_revoked_and_missing_connector_refuse_business)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 67, in test_anonymous_revoked_and_missing_connector_refuse_business
+    self.assertEqual(httpx.get(self.native + '/api/life/business').status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401
+
+======================================================================
+FAIL: test_current_retired_report_filename_stays_excluded (test_memory_life_business.MemoryLifeBusinessTests.test_current_retired_report_filename_stays_excluded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 104, in test_current_retired_report_filename_stays_excluded
+    self.assertNotIn(filename, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2026-11-SyntheticRetiredReport.md' unexpectedly found in '{"latestRevenueReport":"2026-11-SyntheticRetiredReport.md","revenueSummary":"Synthetic retained report","revenueByProduct":"","revenueAllSections":[{"heading":"Summary","body":"Synthetic retained report"}],"ulOverview":[{"heading":"Company","body":"SyntheticCompanyOverview"}],"businessOverview":[{"heading":"Businesses","body":"SyntheticBusinessOverview"}]}'
+
+======================================================================
+FAIL: test_hardlinked_or_oversize_report_refuses (test_memory_life_business.MemoryLifeBusinessTests.test_hardlinked_or_oversize_report_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 136, in test_hardlinked_or_oversize_report_refuses
+    self.assertEqual(self.get(client).status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_private_company_and_report_body_or_name_do_not_publish (test_memory_life_business.MemoryLifeBusinessTests.test_private_company_and_report_body_or_name_do_not_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 83, in test_private_company_and_report_body_or_name_do_not_publish
+    self.assertNotIn('SyntheticPrivate', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticPrivate' unexpectedly found in '{"latestRevenueReport":"2026-10.md","revenueSummary":"<private>SyntheticPrivateRevenue</private>","revenueByProduct":"","revenueAllSections":[{"heading":"Summary","body":"<private>SyntheticPrivateRevenue</private>"}],"ulOverview":[{"heading":"Company","body":"<private>SyntheticPrivateCompany</private>"}],"businessOverview":[{"heading":"Businesses","body":"SyntheticBusinessOverview"}]}'
+
+======================================================================
+FAIL: test_redirected_revenue_directory_refuses (test_memory_life_business.MemoryLifeBusinessTests.test_redirected_revenue_directory_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 127, in test_redirected_revenue_directory_refuses
+    self.assertEqual(self.get(client).status_code, 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+======================================================================
+FAIL: test_report_directory_or_authority_changes_withhold_rendered_response (test_memory_life_business.MemoryLifeBusinessTests.test_report_directory_or_authority_changes_withhold_rendered_response) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 148, in test_report_directory_or_authority_changes_withhold_rendered_response
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_life_process.py", line 52, in <module>
+    result = preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 46, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 21, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_report_directory_or_authority_changes_withhold_rendered_response (test_memory_life_business.MemoryLifeBusinessTests.test_report_directory_or_authority_changes_withhold_rendered_response) (mode='report')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 148, in test_report_directory_or_authority_changes_withhold_rendered_response
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_life_process.py", line 52, in <module>
+    result = preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 46, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 21, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_report_directory_or_authority_changes_withhold_rendered_response (test_memory_life_business.MemoryLifeBusinessTests.test_report_directory_or_authority_changes_withhold_rendered_response) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_business.py", line 148, in test_report_directory_or_authority_changes_withhold_rendered_response
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_life_process.py", line 52, in <module>
+    result = preferences.life_response(target, account='dashboard:basic:synthetic-owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 46, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 21, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+----------------------------------------------------------------------
+Ran 9 tests in 9.915s
+
+FAILED (failures=8)

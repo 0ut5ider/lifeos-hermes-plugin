@@ -1,0 +1,315 @@
+EFEFEFEFEFEFEFEFEFEF
+======================================================================
+ERROR: test_anonymous_and_revoked_accounts_cannot_read_finances (test_memory_life_finances.MemoryLifeFinanceTests.test_anonymous_and_revoked_accounts_cannot_read_finances)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_connector_loss_does_not_restore_raw_reads (test_memory_life_finances.MemoryLifeFinanceTests.test_connector_loss_does_not_restore_raw_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_currency_and_missing_key_match_native_config_defaults (test_memory_life_finances.MemoryLifeFinanceTests.test_currency_and_missing_key_match_native_config_defaults)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_empty_view_matches_native_defaults (test_memory_life_finances.MemoryLifeFinanceTests.test_empty_view_matches_native_defaults)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_forgotten_decoded_yaml_and_statement_rows_stay_retired (test_memory_life_finances.MemoryLifeFinanceTests.test_forgotten_decoded_yaml_and_statement_rows_stay_retired)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_oversize_source_refuses (test_memory_life_finances.MemoryLifeFinanceTests.test_oversize_source_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_populated_view_matches_all_native_fields (test_memory_life_finances.MemoryLifeFinanceTests.test_populated_view_matches_all_native_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_private_sources_and_decoded_jsonl_rows_do_not_publish (test_memory_life_finances.MemoryLifeFinanceTests.test_private_sources_and_decoded_jsonl_rows_do_not_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_redirected_or_hardlinked_source_refuses (test_memory_life_finances.MemoryLifeFinanceTests.test_redirected_or_hardlinked_source_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_source_or_authority_change_after_render_withholds_response (test_memory_life_finances.MemoryLifeFinanceTests.test_source_or_authority_change_after_render_withholds_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 69, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+FAIL: test_anonymous_and_revoked_accounts_cannot_read_finances (test_memory_life_finances.MemoryLifeFinanceTests.test_anonymous_and_revoked_accounts_cannot_read_finances)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_connector_loss_does_not_restore_raw_reads (test_memory_life_finances.MemoryLifeFinanceTests.test_connector_loss_does_not_restore_raw_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_currency_and_missing_key_match_native_config_defaults (test_memory_life_finances.MemoryLifeFinanceTests.test_currency_and_missing_key_match_native_config_defaults)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_empty_view_matches_native_defaults (test_memory_life_finances.MemoryLifeFinanceTests.test_empty_view_matches_native_defaults)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_forgotten_decoded_yaml_and_statement_rows_stay_retired (test_memory_life_finances.MemoryLifeFinanceTests.test_forgotten_decoded_yaml_and_statement_rows_stay_retired)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_oversize_source_refuses (test_memory_life_finances.MemoryLifeFinanceTests.test_oversize_source_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_populated_view_matches_all_native_fields (test_memory_life_finances.MemoryLifeFinanceTests.test_populated_view_matches_all_native_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_private_sources_and_decoded_jsonl_rows_do_not_publish (test_memory_life_finances.MemoryLifeFinanceTests.test_private_sources_and_decoded_jsonl_rows_do_not_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_redirected_or_hardlinked_source_refuses (test_memory_life_finances.MemoryLifeFinanceTests.test_redirected_or_hardlinked_source_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_source_or_authority_change_after_render_withholds_response (test_memory_life_finances.MemoryLifeFinanceTests.test_source_or_authority_change_after_render_withholds_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 86, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[166 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+-
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/life-finances-first/lifeos/LifeOS/install/LIFEOS/TOOLS/LifeosConfig.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.264s
+
+FAILED (failures=10, errors=10)

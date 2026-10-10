@@ -1,0 +1,20 @@
+{
+  "source_root": "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos/LifeOS/install",
+  "sha256": {
+    "LIFEOS/PULSE/modules/menubar.ts": "821b99df228471bcef209e011235ecea4a6ea235e8e3f71f32d4a6c1727b69a6",
+    "LIFEOS/PULSE/modules/scheduled.ts": "85982834d11c38a0d8c755eb09a380fc99a910e5af643b579f3892df8a93fc77",
+    "LIFEOS/HERMES/Health.ts": "f77930fc3997c24f2ee6952c3f020c85107d0c16db9751a06a625217c0fff16c"
+  },
+  "raw_reads": [
+    "LIFEOS/MEMORY/STATE/work.json",
+    "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+    "LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl",
+    "LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+    "LIFEOS/PULSE/state/state.json",
+    "LIFEOS/PULSE/state/pulse.pid",
+    "configured Hermes profile/gateway_state.json",
+    "configured Hermes profile/gateway-starts.log"
+  ],
+  "dependent_effect": "Conduit todayRecordPublic creates native default config on first read",
+  "optional_amber": "Daily release omits this integration. The baseline explicitly clears AMBER_LEDGER_URL. Managed admission must prove that optional configuration does not enable an ungoverned network read."
+}

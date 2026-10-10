@@ -26,6 +26,7 @@ from .installation_selection import (SelectionError, account_selection_lock, rec
                                      select_home, selection_authority)
 from .memory_administration import mount_environment
 from .memory_service import MemoryConfiguration
+from .memory_transaction import publish
 from .mount_transaction import MountTransaction
 from .native_output import failure_message
 from .version_drift import create_baseline, default_baseline_path, save_baseline
@@ -74,8 +75,8 @@ class SystemdServices:
             self.dropin.unlink(missing_ok=True)
         else:
             self.dropin.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-            self.dropin.write_text(f'[Service]\nWorkingDirectory={home}/.claude/LIFEOS/PULSE\n'
-                                   f'Environment=HOME={home}\n')
+            publish(self.dropin, (f'[Service]\nWorkingDirectory={home}/.claude/LIFEOS/PULSE\n'
+                                   f'Environment=HOME={home}\n').encode())
         _systemctl('daemon-reload')
 
     def start(self) -> None:

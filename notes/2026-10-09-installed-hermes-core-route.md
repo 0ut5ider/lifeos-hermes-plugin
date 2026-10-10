@@ -1,0 +1,9 @@
+# 2026-10-09: Installed native Hermes core route admission
+
+The installed HTTP gate checks anonymous native Pulse routes before the synthetic owner login. The governed memory, personal-data, Content, Atlas, and Algorithm routes refuse anonymous requests. The shipped Growth route instead returns an explicit uninstalled optional integration descriptor with null provider data. That response contains no personal source data.
+
+The next gate finds GET /api/hermes returns 200 without a login. Its payload includes gateway metadata, the local profile path, file metadata, and a failed mount-drift probe. The native Hermes module routes only remount through the authenticated relay. Its other handlers still use direct file reads and writes. This is a separate ungoverned administrative surface. It cannot inherit the passing memory and Content acceptance claims.
+
+The third gate exposes another operator assumption: the fresh Local view correctly returns 404 with error not_yet_generated. The fourth gate checks the actual fresh-store contract and passes 16 scoped native reads, Content run intent and disposal, repeat requests, and current owner revocation. It excludes the unresolved Hermes core-file editor. Adrian has been asked whether that editor belongs in the first release or administration should use the actual Hermes dashboard. The remaining-page browser probe loses its automation host after an expired login returns 401. It establishes no additional browser interaction pass.
+
+The separate actual private FlashNext CLI gate commits a synthetic project fact in one conversation. A fresh second conversation recalls the exact same reference and revision through the native memory search tool. The evidence is the stream tool result, not the model's final prose. The isolated synthetic store receives the fact. The live .252 profile remains outside this operation.

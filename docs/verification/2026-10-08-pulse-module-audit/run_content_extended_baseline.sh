@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# ABOUTME: Runs the prepared operational views and neighboring owner publication and relay checks.
+# ABOUTME: Retains complete output and a completion status for detached execution.
+set -u
+cd /home/outsider/Projects/Hermes_agent/LifeOS_plugin || exit 1
+export PATH=/home/outsider/.bun/bin:$PATH
+export LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/local-intelligence-first/lifeos/LifeOS/install
+export LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/local-intelligence-first/hermes
+export LIFEOS_PREPARE_HERMES_REPO=/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes
+export LIFEOS_PREPARE_LIFEOS_REPO=/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos
+export LIFEOS_HARVEST_CONTROL_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install
+export LIFEOS_FRESHNESS_CONTROL_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install
+export LIFEOS_UPGRADE_CONTROL_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-helpers-first/lifeos/LifeOS/install
+export PYTHONPATH=/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -W error -m unittest -v test_memory_content.MemoryContentTests.test_actual_render_rechecks_source_inode_creation_descriptor_and_authority test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads test_memory_content.MemoryContentTests.test_anonymous_board_status_and_stream_refuse_before_personal_reads test_memory_content.MemoryContentTests.test_complete_history_exceeds_one_mib_without_losing_first_items test_memory_content.MemoryContentTests.test_current_authority_origin_bearer_and_connector_govern_delivery test_memory_content.MemoryContentTests.test_excluded_later_event_refuses_whole_fold_instead_of_resurrecting_older_item test_memory_content.MemoryContentTests.test_managed_direct_health_does_not_read_or_cache_personal_counts test_memory_content.MemoryContentTests.test_manual_actions_authenticate_then_refuse_until_governed_publication test_memory_content.MemoryContentTests.test_native_missing_corrupt_and_unterminated_valid_records_keep_original_semantics test_memory_content.MemoryContentTests.test_original_native_fold_order_delete_unset_and_torn_tail test_memory_content.MemoryContentTests.test_owner_complete_board_and_status_match_actual_native_fold test_memory_content.MemoryContentTests.test_redirected_excessive_event_and_invalid_utf8_refuse test_memory_content.MemoryContentTests.test_retired_update_refuses_incomplete_fold_and_exact_review_preserves_safe_log test_memory_content.MemoryContentTests.test_stream_current_owner_frames_recheck_private_updates_and_revocation > docs/verification/2026-10-08-pulse-module-audit/content-extended-baseline.txt 2>&1
+result=$?
+printf '%s\n' "$result" > docs/verification/2026-10-08-pulse-module-audit/content-extended-baseline.done
+exit "$result"

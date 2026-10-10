@@ -1,0 +1,61 @@
+fixture_prepared
+browser_launched
+signed_in
+board_live
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-09-daily-release-installed/verify_installed_content_browser_seventh.py", line 61, in <module>
+    page.get_by_role('button', name='\u25b6 RUN', exact=True).click()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/sync_api/_generated.py", line 17422, in click
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.click(
+        ^^^^^^^^^^^^^^^^^^^^^
+    ...<10 lines>...
+        )
+        ^
+    )
+    ^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/_impl/_locator.py", line 163, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/_impl/_frame.py", line 569, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/_impl/_connection.py", line 559, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Locator.click: Error: strict mode violation: get_by_role("button", name="▶ RUN", exact=True) resolved to 2 elements:
+    1) <button type="button" class="rounded-full text-[12px] font-medium cursor-pointer" title="Queue the regular run: edit → augment → clips → social (staged, never auto-published)">▶ RUN</button> aka get_by_role("button", name="▶ RUN").first
+    2) <button type="button" class="rounded-full text-[12px] font-medium cursor-pointer" title="Queue the regular run: edit → augment → clips → social (staged, never auto-published)">▶ RUN</button> aka get_by_role("button", name="▶ RUN").nth(1)
+
+Call log:
+  - waiting for get_by_role("button", name="▶ RUN", exact=True)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-09-daily-release-installed/verify_installed_content_browser_seventh.py", line 28, in <module>
+    with sync_playwright() as playwright:
+         ~~~~~~~~~~~~~~~^^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/sync_api/_context_manager.py", line 90, in __exit__
+    self._connection.stop_sync()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/.local/lib/python3.14/site-packages/playwright/_impl/_connection.py", line 319, in stop_sync
+    self._loop.run_until_complete(self._transport.wait_until_stopped())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 696, in run_until_complete
+    self._check_running()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/asyncio/base_events.py", line 632, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+<sys>:0: RuntimeWarning: coroutine 'PipeTransport.wait_until_stopped' was never awaited

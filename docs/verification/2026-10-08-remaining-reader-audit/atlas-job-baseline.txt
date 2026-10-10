@@ -1,0 +1,40 @@
+test_actual_selected_profile_command_reports_absent_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_reports_absent_graph_without_inference) ... FAIL
+test_anonymous_regeneration_preserves_current_native_cache (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_anonymous_regeneration_preserves_current_native_cache) ... ok
+test_authenticated_native_regeneration_button_starts_selected_owner_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_authenticated_native_regeneration_button_starts_selected_owner_job) ... FAIL
+
+======================================================================
+FAIL: test_actual_selected_profile_command_reports_absent_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_reports_absent_graph_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 53, in test_actual_selected_profile_command_reports_absent_graph_without_inference
+    self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (2, "usage: hermes lifeos-job [-h]\n      [355 chars])\n") != (0, '')
+
+First differing element 0:
+2
+0
+
++ (0, '')
+- (2,
+-  'usage: hermes lifeos-job [-h]\n'
+-  '                         [--configuration-revision CONFIGURATION_REVISION]\n'
+-  '                         '
+-  '{user-index,memory-consolidation,life-morning-brief,proposal-gc,conduit-insight}\n'
+-  "hermes lifeos-job: error: argument job: invalid choice: 'atlas-insights' "
+-  "(choose from 'user-index', 'memory-consolidation', 'life-morning-brief', "
+-  "'proposal-gc', 'conduit-insight')\n") :
+
+======================================================================
+FAIL: test_authenticated_native_regeneration_button_starts_selected_owner_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_authenticated_native_regeneration_button_starts_selected_owner_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 32, in test_authenticated_native_regeneration_button_starts_selected_owner_job
+    self.assertEqual(response.status_code, 202, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 202 : {"error":"Atlas insights generation is not available"}
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.811s
+
+FAILED (failures=2)

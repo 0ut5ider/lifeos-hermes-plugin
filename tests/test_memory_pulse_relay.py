@@ -25,7 +25,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
         self.listener = socket.socket()
         self.listener.bind(('127.0.0.1', 0))
         self.dashboard = f'http://127.0.0.1:{self.listener.getsockname()[1]}'
-        self.server = uvicorn.Server(uvicorn.Config(self.fixture.app, log_level='error', lifespan='off'))
+        self.server = uvicorn.Server(uvicorn.Config(self.fixture.app, log_level='error', lifespan='off', ws='none'))
         self.thread = threading.Thread(target=self.server.run, kwargs={'sockets': [self.listener]}, daemon=True)
         self.thread.start()
         self.addCleanup(self.stop_dashboard)
@@ -51,10 +51,15 @@ class MemoryPulseRelayTests(unittest.TestCase):
             'observability.ts': ('startObservability,handleObservabilityRequest', 'handleObservabilityRequest',
                                  'startObservability({enabled:true});\n'),
             'memory.ts': ('handleRequest', 'handleRequest', ''),
+            'hypotheses.ts': ('handleRequest', 'handleRequest', ''),
+            'upgrades.ts': ('handleRequest', 'handleRequest', ''),
+            'tab-freshness.ts': ('handleRequest', 'handleRequest', ''),
             'hermes.ts': ('handleRequest', 'handleRequest', ''),
+            'atlas.ts': ('handleRequest', 'handleRequest', ''),
         }[self.native_module_name()]
-        program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+
-            'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){\n'
+        program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'
+            'import {memoryHTTPServerOptions} from ' + json.dumps(str(self.root / 'LIFEOS/TOOLS/lib/MemoryAccess.ts')) + ';\n' + start+
+            'const server=Bun.serve({hostname:"127.0.0.1",port:0,...memoryHTTPServerOptions(),async fetch(request){\n'
             'return await '+handler+'(request,new URL(request.url).pathname) ?? new Response("not found",{status:404});}});\n'
             'console.log(server.port);\n')
         environment = dict(os.environ, HOME=str(self.fixture.home), BUN_CONFIG_NO_AUTO_INSTALL='1',

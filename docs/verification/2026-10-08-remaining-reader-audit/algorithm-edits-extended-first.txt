@@ -1,0 +1,27 @@
+test_actual_doctrine_render_preserves_a_later_immutable_tag (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_doctrine_render_preserves_a_later_immutable_tag) ... ok
+test_actual_render_owner_revocation_refuses_publication (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_render_owner_revocation_refuses_publication) ... ok
+test_actual_render_source_change_preserves_the_later_owner_file (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_actual_render_source_change_preserves_the_later_owner_file) ... ok
+test_anonymous_edits_refuse_before_source_or_version_change (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_anonymous_edits_refuse_before_source_or_version_change) ... ok
+test_bounded_fixed_private_and_linked_file_requests_refuse (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_bounded_fixed_private_and_linked_file_requests_refuse) ...
+  test_bounded_fixed_private_and_linked_file_requests_refuse (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_bounded_fixed_private_and_linked_file_requests_refuse) (body_keys=['content', 'id'], expected=400) ... FAIL
+test_invalid_hook_syntax_refuses_without_source_change (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_invalid_hook_syntax_refuses_without_source_change) ... ok
+test_owner_commit_preserves_unrelated_staged_files (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_owner_commit_preserves_unrelated_staged_files) ... ok
+test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_owner_doctrine_save_versions_fixed_files_and_preserves_existing_next_tag) ... ok
+test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_owner_file_save_keeps_native_frontmatter_and_stale_write_refusal) ... ok
+test_original_doctrine_save_header_changelog_and_tag_refusal_characterization (test_native_algorithm_edits.NativeAlgorithmEditTests.test_original_doctrine_save_header_changelog_and_tag_refusal_characterization) ... ok
+test_original_file_save_frontmatter_stale_gate_and_syntax_characterization (test_native_algorithm_edits.NativeAlgorithmEditTests.test_original_file_save_frontmatter_stale_gate_and_syntax_characterization) ... ok
+test_original_git_commit_includes_unrelated_staged_files_known_bug (test_native_algorithm_edits.NativeAlgorithmEditTests.test_original_git_commit_includes_unrelated_staged_files_known_bug) ... ok
+
+======================================================================
+FAIL: test_bounded_fixed_private_and_linked_file_requests_refuse (test_memory_algorithm_edits.MemoryAlgorithmEditTests.test_bounded_fixed_private_and_linked_file_requests_refuse) (body_keys=['content', 'id'], expected=400)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edits.py", line 182, in test_bounded_fixed_private_and_linked_file_requests_refuse
+    self.assertEqual(result.status_code,expected,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 400 : {"error":"Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 12 tests in 48.081s
+
+FAILED (failures=1)

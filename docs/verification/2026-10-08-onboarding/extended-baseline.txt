@@ -1,0 +1,242 @@
+test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) ... 
+  test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='MISSION') ... FAIL
+  test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='GOALS') ... FAIL
+  test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='PROBLEMS') ... FAIL
+  test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='STRATEGIES') ... FAIL
+  test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='CHALLENGES') ... FAIL
+test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) ... 
+  test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='marker-link') ... FAIL
+  test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='marker-hardlink') ... FAIL
+  test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='oversize') ... FAIL
+  test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='utf8') ... FAIL
+test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) ... 
+  test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='source') ... FAIL
+  test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='created') ... FAIL
+  test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='metadata') ... FAIL
+  test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='marker-created') ... FAIL
+  test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='marker-removed') ... FAIL
+  test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='authority') ... FAIL
+
+======================================================================
+FAIL: test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='MISSION')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 142, in test_each_native_legacy_personalization_fallback_matches
+    self.assertTrue(response.json()['templateMode'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='GOALS')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 142, in test_each_native_legacy_personalization_fallback_matches
+    self.assertTrue(response.json()['templateMode'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='PROBLEMS')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 142, in test_each_native_legacy_personalization_fallback_matches
+    self.assertTrue(response.json()['templateMode'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='STRATEGIES')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 142, in test_each_native_legacy_personalization_fallback_matches
+    self.assertTrue(response.json()['templateMode'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_each_native_legacy_personalization_fallback_matches (test_memory_onboarding.MemoryOnboardingTests.test_each_native_legacy_personalization_fallback_matches) (filename='CHALLENGES')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 142, in test_each_native_legacy_personalization_fallback_matches
+    self.assertTrue(response.json()['templateMode'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='marker-link')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 161, in test_marker_redirection_source_size_and_invalid_utf8_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='marker-hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 161, in test_marker_redirection_source_size_and_invalid_utf8_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='oversize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 161, in test_marker_redirection_source_size_and_invalid_utf8_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"your DA","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_marker_redirection_source_size_and_invalid_utf8_refuse (test_memory_onboarding.MemoryOnboardingTests.test_marker_redirection_source_size_and_invalid_utf8_refuse) (mode='utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 161, in test_marker_redirection_source_size_and_invalid_utf8_refuse
+    self.assertEqual(response.status_code, 503, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant�","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 174, in test_actual_render_rechecks_source_and_marker_before_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_onboarding_process.py", line 48, in <module>
+    preferences.life_response('/api/onboarding/state', account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 57, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 32, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='created')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 174, in test_actual_render_rechecks_source_and_marker_before_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_onboarding_process.py", line 48, in <module>
+    preferences.life_response('/api/onboarding/state', account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 57, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 32, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='metadata')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 174, in test_actual_render_rechecks_source_and_marker_before_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_onboarding_process.py", line 48, in <module>
+    preferences.life_response('/api/onboarding/state', account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 57, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 32, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='marker-created')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 174, in test_actual_render_rechecks_source_and_marker_before_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_onboarding_process.py", line 48, in <module>
+    preferences.life_response('/api/onboarding/state', account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 57, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 32, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='marker-removed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 174, in test_actual_render_rechecks_source_and_marker_before_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_onboarding_process.py", line 48, in <module>
+    preferences.life_response('/api/onboarding/state', account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 57, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 32, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+======================================================================
+FAIL: test_actual_render_rechecks_source_and_marker_before_delivery (test_memory_onboarding.MemoryOnboardingTests.test_actual_render_rechecks_source_and_marker_before_delivery) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 174, in test_actual_render_rechecks_source_and_marker_before_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_onboarding_process.py", line 48, in <module>
+    preferences.life_response('/api/onboarding/state', account='dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 297, in life_response
+    return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        check_current=check_current), account=account)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 57, in view
+    target = request_target(target)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_life.py", line 32, in request_target
+    raise LookupError('This Life route is not a governed read view')
+LookupError: This Life route is not a governed read view
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.718s
+
+FAILED (failures=15)

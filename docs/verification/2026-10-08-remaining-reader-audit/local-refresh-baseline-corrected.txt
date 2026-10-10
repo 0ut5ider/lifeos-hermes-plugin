@@ -1,0 +1,37 @@
+test_current_owner_prepares_native_hometown_and_source_selection (test_memory_local_refresh.MemoryLocalRefreshTests.test_current_owner_prepares_native_hometown_and_source_selection) ... FAIL
+test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader) ... FAIL
+test_native_user_sources_refuse_private_decoded_configuration (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_user_sources_refuse_private_decoded_configuration) ... FAIL
+
+======================================================================
+FAIL: test_current_owner_prepares_native_hometown_and_source_selection (test_memory_local_refresh.MemoryLocalRefreshTests.test_current_owner_prepares_native_hometown_and_source_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 62, in test_current_owner_prepares_native_hometown_and_source_selection
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+
+======================================================================
+FAIL: test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 51, in test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader
+    self.assertNotEqual(refused.returncode, 0, refused.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"city":"SyntheticCity","state":"TX","zip":"78701","county":"Synthetic","citySlug":"syntheticcity","stateSlug":"tx"}
+
+
+======================================================================
+FAIL: test_native_user_sources_refuse_private_decoded_configuration (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_user_sources_refuse_private_decoded_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 57, in test_native_user_sources_refuse_private_decoded_configuration
+    self.assertNotEqual(refused.returncode, 0, refused.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : [{"section":"news","name":"<private>SyntheticLocalHidden</private>","type":"rss","url":"https://synthetic.invalid/local"}]
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.071s
+
+FAILED (failures=3)

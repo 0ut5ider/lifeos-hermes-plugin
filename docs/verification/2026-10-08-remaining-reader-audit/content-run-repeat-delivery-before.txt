@@ -1,0 +1,15 @@
+test_current_repeat_response_withholds_later_source_change_during_validation (test_memory_content_actions.MemoryContentActionTests.test_current_repeat_response_withholds_later_source_change_during_validation) ... FAIL
+
+======================================================================
+FAIL: test_current_repeat_response_withholds_later_source_change_during_validation (test_memory_content_actions.MemoryContentActionTests.test_current_repeat_response_withholds_later_source_change_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 183, in test_current_repeat_response_withholds_later_source_change_during_validation
+    self.assertEqual(result.status_code,503,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"ok": true, "id": "synthetic0", "already": true}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.560s
+
+FAILED (failures=1)

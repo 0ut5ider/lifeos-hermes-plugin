@@ -1,0 +1,183 @@
+{
+  "prepared_source": "/home/outsider/.cache/lifeos-daily-text-20261007/operational-history-second/lifeos/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts",
+  "sha256": "01814ad3a0a792a34e528f72302436d408b206dfd4c78400e5f1f57ad5f0f361",
+  "routes": [
+    {
+      "route": "/api/novelty",
+      "handler": "handleNoveltyApi",
+      "sources": [
+        "LIFEOS/MEMORY/STATE/novelty-state.json"
+      ],
+      "disposition": "required_available_native_reader",
+      "source_evidence": [
+        {
+          "line": 22,
+          "text": "*   GET  /api/novelty                \u2014 Novelty state"
+        },
+        {
+          "line": 1226,
+          "text": "// \u2500\u2500 /api/novelty \u2500\u2500"
+        },
+        {
+          "line": 1228,
+          "text": "function handleNoveltyApi(): Response {"
+        },
+        {
+          "line": 4985,
+          "text": "if (pathname === \"/api/novelty\") return handleNoveltyApi()"
+        }
+      ],
+      "installed_acceptance": "pending"
+    },
+    {
+      "route": "/api/capabilities",
+      "handler": "handleCapabilitiesApi",
+      "sources": [
+        "LIFEOS/MEMORY/OBSERVABILITY/tool-activity.jsonl",
+        "LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl"
+      ],
+      "disposition": "required_frontend_reader",
+      "source_evidence": [
+        {
+          "line": 1047,
+          "text": "// \u2500\u2500 /api/capabilities \u2500\u2500"
+        },
+        {
+          "line": 1056,
+          "text": "function handleCapabilitiesApi(searchParams: URLSearchParams): Response {"
+        },
+        {
+          "line": 4993,
+          "text": "if (pathname === \"/api/capabilities\") return handleCapabilitiesApi(url.searchParams)"
+        }
+      ],
+      "installed_acceptance": "pending"
+    },
+    {
+      "route": "/api/onboarding/state",
+      "handler": "handleOnboardingState",
+      "sources": [
+        "LIFEOS/USER/.template-mode",
+        "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md",
+        "LIFEOS/USER/TELOS/*.md"
+      ],
+      "disposition": "required_frontend_reader",
+      "source_evidence": [
+        {
+          "line": 27,
+          "text": "*   GET  /api/onboarding/state       \u2014 Template mode flag + DA name (drives onboarding banner)"
+        },
+        {
+          "line": 4563,
+          "text": "// \u2500\u2500 /api/onboarding/state \u2500\u2500"
+        },
+        {
+          "line": 4578,
+          "text": "function handleOnboardingState(): Response {"
+        },
+        {
+          "line": 5019,
+          "text": "if (pathname === \"/api/onboarding/state\") return handleOnboardingState()"
+        }
+      ],
+      "installed_acceptance": "pending"
+    },
+    {
+      "route": "/api/life/air",
+      "handler": "handleLifeAir",
+      "sources": [
+        "LIFEOS/MEMORY/_AIRGRADIENT/latest.json"
+      ],
+      "disposition": "unselected_optional_integration_requires_absence_acceptance",
+      "source_evidence": [
+        {
+          "line": 4449,
+          "text": "// \u2500\u2500 GET /api/life/air \u2500\u2500"
+        },
+        {
+          "line": 4451,
+          "text": "function handleLifeAir(): Response {"
+        },
+        {
+          "line": 5006,
+          "text": "if (pathname === \"/api/life/air\") return handleLifeAir()"
+        }
+      ],
+      "installed_acceptance": "pending"
+    },
+    {
+      "route": "/api/life/growth",
+      "handler": "handleLifeGrowth",
+      "sources": [
+        "LIFEOS/USER/CUSTOMIZATIONS/TOOLS/Growth"
+      ],
+      "disposition": "unselected_optional_customization_requires_absence_acceptance",
+      "source_evidence": [
+        {
+          "line": 3046,
+          "text": "// \u2500\u2500 GET /api/life/growth \u2500\u2500"
+        },
+        {
+          "line": 3054,
+          "text": "async function handleLifeGrowth(): Promise<Response> {"
+        },
+        {
+          "line": 5003,
+          "text": "if (pathname === \"/api/life/growth\") return handleLifeGrowth()"
+        }
+      ],
+      "installed_acceptance": "pending"
+    },
+    {
+      "route": "/api/ladder",
+      "handler": "handleLadderApi",
+      "sources": [
+        "HOME/Projects/Ladder/{Sources,Ideas,Hypotheses,Experiments,Algorithms,Results}"
+      ],
+      "disposition": "external_project_requires_selection_before_data_acceptance",
+      "source_evidence": [
+        {
+          "line": 23,
+          "text": "*   GET  /api/ladder                 \u2014 Ladder pipeline data"
+        },
+        {
+          "line": 1240,
+          "text": "// \u2500\u2500 /api/ladder \u2500\u2500"
+        },
+        {
+          "line": 1242,
+          "text": "function handleLadderApi(): Response {"
+        },
+        {
+          "line": 4996,
+          "text": "if (pathname === \"/api/ladder\") return handleLadderApi()"
+        }
+      ],
+      "installed_acceptance": "pending"
+    },
+    {
+      "route": "/api/security/attack-surface",
+      "handler": "handleAttackSurfaceApi",
+      "sources": [
+        "HOME/.config/LIFEOS/USER/CUSTOMIZATIONS/ARBOL/Shared/attack-surface.snapshot.json",
+        "HOME/.config/arbol/config.yaml"
+      ],
+      "disposition": "unselected_optional_customization_requires_absence_acceptance",
+      "source_evidence": [
+        {
+          "line": 1370,
+          "text": "// \u2500\u2500 GET /api/security/attack-surface \u2500\u2500"
+        },
+        {
+          "line": 1393,
+          "text": "async function handleAttackSurfaceApi(): Promise<Response> {"
+        },
+        {
+          "line": 5030,
+          "text": "if (pathname === \"/api/security/attack-surface\") return handleAttackSurfaceApi()"
+        }
+      ],
+      "installed_acceptance": "pending"
+    }
+  ]
+}

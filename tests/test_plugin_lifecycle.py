@@ -88,9 +88,14 @@ class PluginLifecycleTests(unittest.TestCase):
                     self.unload.append(callback)
 
             ctx = Context()
-            with patch.dict(os.environ, {"LIFEOS_HOOK_SETTINGS": str(settings)}):
+            with patch.dict(os.environ, {"LIFEOS_HOOK_SETTINGS": str(settings), "HERMES_HOME": directory}):
                 register(ctx)
-            self.assertEqual(ctx.hooks, {})
+            if 'pre_message_delivery' in ctx.hooks:
+                self.assertEqual(set(ctx.hooks), {'pre_message_delivery'})
+                self.assertEqual(ctx.hooks['pre_message_delivery'](
+                    platform='discord',chat_id='60',guild_id='10',hermes_home=directory)['action'],'block')
+            else:
+                self.assertEqual(ctx.hooks, {})
             self.assertEqual(ctx.unload, [])
 
     def test_unload_stops_config_watcher(self):

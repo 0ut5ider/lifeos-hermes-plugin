@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# ABOUTME: Runs the prepared operational views and neighboring owner publication and relay checks.
+# ABOUTME: Retains complete output and a completion status for detached execution.
+set -u
+cd /home/outsider/Projects/Hermes_agent/LifeOS_plugin || exit 1
+export PATH=/home/outsider/.bun/bin:$PATH
+export LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/content-first/lifeos/LifeOS/install
+export LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/content-first/hermes
+export LIFEOS_PREPARE_HERMES_REPO=/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/hermes
+export LIFEOS_PREPARE_LIFEOS_REPO=/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos
+export LIFEOS_HARVEST_CONTROL_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install
+export LIFEOS_FRESHNESS_CONTROL_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install
+export LIFEOS_UPGRADE_CONTROL_SOURCE=/home/outsider/.cache/lifeos-daily-text-20261007/hypothesis-helpers-first/lifeos/LifeOS/install
+export PYTHONPATH=/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -W error -m unittest -v test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_actions_refuse_before_writes_commits_or_inference test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_actual_native_render_rechecks_source_inode_creation_authority_and_selected_latest test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_admitted_personal_file_views_preserve_actual_native_content_and_metadata test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_anonymous_chain_and_personal_files_require_current_owner test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_current_owner_origin_bearer_and_connector_govern_delivery test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_original_native_file_fields_missing_and_version_selection_characterization test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_original_warm_cache_composition_characterization_has_no_generation test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_owner_warm_composition_preserves_actual_native_chain_and_claims test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_private_personal_chain_file_refuses test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_private_summary_refuses_composition_without_blocking_an_independent_file test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_redirected_invalid_and_excessive_selected_file_refuses test_memory_algorithm_tab.MemoryAlgorithmTabTests.test_retired_selected_file_refuses_and_exact_review_preserves_safe_old_file > docs/verification/2026-10-08-pulse-module-audit/algorithm-tab-extended-baseline.txt 2>&1
+result=$?
+printf '%s\n' "$result" > docs/verification/2026-10-08-pulse-module-audit/algorithm-tab-extended-baseline.done
+exit "$result"

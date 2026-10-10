@@ -1,0 +1,51 @@
+test_a_changed_audience_withholds_an_actual_file_upload (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_a_changed_audience_withholds_an_actual_file_upload) ... ok
+test_a_late_policy_grant_cannot_resume_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_a_late_policy_grant_cannot_resume_delivery) ... ok
+test_another_profile_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_another_profile_withholds_the_reply) ... ok
+test_another_transport_token_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_another_transport_token_withholds_the_reply) ... ok
+test_changed_audience_withholds_generated_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_audience_withholds_generated_reply) ... ok
+test_changed_configuration_during_permission_reads_withholds_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_changed_configuration_during_permission_reads_withholds_delivery) ... ok
+test_each_chunk_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience) ... ok
+test_expired_choice_picker_withholds_its_card_after_an_audience_change (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_expired_choice_picker_withholds_its_card_after_an_audience_change) ... ok
+test_expired_question_updates_its_card_with_an_unchanged_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_expired_question_updates_its_card_with_an_unchanged_audience) ... ok
+test_expired_question_withholds_its_card_after_an_audience_change (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_expired_question_withholds_its_card_after_an_audience_change) ... ok
+test_missing_required_guard_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_missing_required_guard_withholds_the_reply) ... ok
+test_optional_channel_mode_preserves_actual_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_optional_channel_mode_preserves_actual_delivery) ... ok
+test_overflow_edit_stops_after_the_audience_changes (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_overflow_edit_stops_after_the_audience_changes) ... ok
+test_policy_exception_withholds_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_policy_exception_withholds_delivery) ... ok
+test_private_audience_allows_actual_standalone_delivery (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_allows_actual_standalone_delivery) ... ok
+test_private_audience_permits_an_actual_sdk_post (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_private_audience_permits_an_actual_sdk_post) ... ok
+test_prompt_delivery_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_prompt_delivery_rechecks_the_current_audience) ... ok
+test_standalone_attachment_stops_after_the_audience_changes (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_standalone_attachment_stops_after_the_audience_changes) ... ok
+test_standalone_delivery_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_standalone_delivery_rechecks_the_current_audience) ... ok
+test_streaming_edit_rechecks_the_current_audience (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_streaming_edit_rechecks_the_current_audience) ... ok
+test_unknown_guard_result_withholds_the_reply (test_discord_private_delivery.DiscordPrivateDeliveryTests.test_unknown_guard_result_withholds_the_reply) ... ok
+test_plugin_loads_before_lifeos_installation (test_plugin_lifecycle.PluginLifecycleTests.test_plugin_loads_before_lifeos_installation) ... FAIL
+test_stock_hermes_registers_only_supported_hooks (test_plugin_lifecycle.PluginLifecycleTests.test_stock_hermes_registers_only_supported_hooks) ... ok
+test_unload_stops_config_watcher (test_plugin_lifecycle.PluginLifecycleTests.test_unload_stops_config_watcher) ... ok
+test_actual_host_worker_admission_reaches_model_guard_and_provider_tools (test_hermes_memory_provider.HermesMemoryProviderTests.test_actual_host_worker_admission_reaches_model_guard_and_provider_tools) ... ok
+test_compression_provider_failure_clears_authority_and_does_not_switch (test_hermes_memory_provider.HermesMemoryProviderTests.test_compression_provider_failure_clears_authority_and_does_not_switch) ... ok
+test_compression_provider_keeps_verified_lineage_and_tools_on_the_child (test_hermes_memory_provider.HermesMemoryProviderTests.test_compression_provider_keeps_verified_lineage_and_tools_on_the_child) ... ok
+test_config_revocation_is_visible_without_provider_recreation (test_hermes_memory_provider.HermesMemoryProviderTests.test_config_revocation_is_visible_without_provider_recreation) ... ok
+test_explicit_tools_use_the_native_store_and_current_author (test_hermes_memory_provider.HermesMemoryProviderTests.test_explicit_tools_use_the_native_store_and_current_author) ... ok
+test_installed_bridge_loads_without_memory_selection_and_provider_namespace_shares_context (test_hermes_memory_provider.HermesMemoryProviderTests.test_installed_bridge_loads_without_memory_selection_and_provider_namespace_shares_context) ... ok
+test_profile_mismatch_and_session_switch_reject_stale_tools (test_hermes_memory_provider.HermesMemoryProviderTests.test_profile_mismatch_and_session_switch_reject_stale_tools) ... ok
+test_provider_does_not_duplicate_native_automatic_recall_or_review (test_hermes_memory_provider.HermesMemoryProviderTests.test_provider_does_not_duplicate_native_automatic_recall_or_review) ... ok
+test_terminal_worker_uses_actual_host_platform_without_gateway_metadata (test_hermes_memory_provider.HermesMemoryProviderTests.test_terminal_worker_uses_actual_host_platform_without_gateway_metadata) ... ok
+test_runtime_contains_exact_hermes_patch_sequence (test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_hermes_patch_sequence) ... ok
+test_runtime_contains_exact_lifeos_patch_sequence (test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_lifeos_patch_sequence) ... ok
+
+======================================================================
+FAIL: test_plugin_loads_before_lifeos_installation (test_plugin_lifecycle.PluginLifecycleTests.test_plugin_loads_before_lifeos_installation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_plugin_lifecycle.py", line 93, in test_plugin_loads_before_lifeos_installation
+    self.assertEqual(ctx.hooks, {})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: {'pre_message_delivery': <bound method Pri[111 chars]50>>} != {}
+- {'pre_message_delivery': <bound method PrivateDiscordDelivery.check of <lifeos_hook_bridge.discord_delivery.PrivateDiscordDelivery object at 0x7efd00f22450>>}
++ {}
+
+----------------------------------------------------------------------
+Ran 35 tests in 13.841s
+
+FAILED (failures=1)

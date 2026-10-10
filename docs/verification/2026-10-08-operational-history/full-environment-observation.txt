@@ -1,0 +1,17 @@
+test_dense_activity_tail_preserves_native_folding_above_record_cap (test_memory_operational_history.MemoryOperationalHistoryTests.test_dense_activity_tail_preserves_native_folding_above_record_cap) ... ok
+test_large_history_retains_native_movement_deduplication_and_series_eviction (test_memory_operational_history.MemoryOperationalHistoryTests.test_large_history_retains_native_movement_deduplication_and_series_eviction) ... FAIL
+test_snapshot_descriptor_is_read_only_and_tampering_withholds_response (test_memory_operational_history.MemoryOperationalHistoryTests.test_snapshot_descriptor_is_read_only_and_tampering_withholds_response) ... ok
+
+======================================================================
+FAIL: test_large_history_retains_native_movement_deduplication_and_series_eviction (test_memory_operational_history.MemoryOperationalHistoryTests.test_large_history_retains_native_movement_deduplication_and_series_eviction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 85, in test_large_history_retains_native_movement_deduplication_and_series_eviction
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.807s
+
+FAILED (failures=1)

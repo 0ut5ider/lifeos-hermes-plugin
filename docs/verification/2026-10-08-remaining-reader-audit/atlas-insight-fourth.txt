@@ -1,0 +1,79 @@
+test_absent_graph_prepare_has_no_generated_cache_or_model_effect (test_memory_atlas_insight.MemoryAtlasInsightTests.test_absent_graph_prepare_has_no_generated_cache_or_model_effect) ... ok
+test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) ... ok
+test_current_graph_prepare_and_fixed_private_publication (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_graph_prepare_and_fixed_private_publication) ... ok
+test_current_revision_check_refuses_changed_graph_and_later_cache (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_revision_check_refuses_changed_graph_and_later_cache) ... ok
+test_graph_metadata_changes_invalidate_prepared_sources (test_memory_atlas_insight.MemoryAtlasInsightTests.test_graph_metadata_changes_invalidate_prepared_sources) ... ok
+test_private_collector_sources_refuse_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_private_collector_sources_refuse_generation) ... ok
+test_read_only_and_revoked_owners_cannot_prepare_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_read_only_and_revoked_owners_cannot_prepare_generation) ... ok
+test_wrong_metadata_and_private_generated_text_cannot_publish (test_memory_atlas_insight.MemoryAtlasInsightTests.test_wrong_metadata_and_private_generated_text_cannot_publish) ... ok
+test_actual_selected_profile_command_reports_absent_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_reports_absent_graph_without_inference) ... ok
+test_absent_graph_retains_exact_native_unavailable_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_absent_graph_retains_exact_native_unavailable_response) ... ok
+test_anonymous_regeneration_preserves_current_native_cache (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_anonymous_regeneration_preserves_current_native_cache) ... ok
+test_authenticated_native_regeneration_button_starts_selected_owner_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_authenticated_native_regeneration_button_starts_selected_owner_job) ... ok
+test_current_cache_does_not_start_a_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_cache_does_not_start_a_job) ... ok
+test_current_stale_insights_start_native_owner_regeneration (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_stale_insights_start_native_owner_regeneration) ... ok
+test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children) ... FAIL
+test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children) ... ERROR
+test_owner_revocation_during_automatic_preparation_withholds_prior_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_owner_revocation_during_automatic_preparation_withholds_prior_response) ... ok
+test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children) ... FAIL
+test_unbound_local_writer_keeps_stale_reader_without_generation (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_unbound_local_writer_keeps_stale_reader_without_generation) ... ok
+
+======================================================================
+ERROR: test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 87, in stop_pulse
+    _, error = self.process.communicate(timeout=10)
+               ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['bun', '--no-install', '/tmp/native-memory-xjdlqvxv/.claude/LIFEOS/PULSE/pulse.ts']' timed out after 10 seconds
+
+======================================================================
+FAIL: test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 166, in test_native_pulse_shutdown_ends_actual_atlas_inference_children
+    self.lifetime(daemon=True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 140, in lifetime
+    self.assertEqual(response.status_code, 202 if daemon else 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 202 : Not found
+
+======================================================================
+FAIL: test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 163, in test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children
+    self.lifetime(daemon=False)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 128, in lifetime
+    self.launch_lifetime_process(environment, daemon=daemon)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 346, in launch_lifetime_process
+    self.fail('The actual Conduit lifetime listener did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The actual Conduit lifetime listener did not start
+
+----------------------------------------------------------------------
+Ran 18 tests in 53.459s
+
+FAILED (failures=2, errors=1)
+Exception ignored while calling deallocator <function Popen.__del__ at 0x7f65f9f0ddd0>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/subprocess.py", line 1139, in __del__
+    _warn("subprocess %s is still running" % self.pid,
+ResourceWarning: subprocess 1152849 is still running
+Exception ignored while finalizing file <_io.FileIO name=10 mode='rb' closefd=True>:
+ResourceWarning: unclosed file <_io.TextIOWrapper name=10 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=13 mode='rb' closefd=True>:
+ResourceWarning: unclosed file <_io.TextIOWrapper name=13 encoding='UTF-8'>

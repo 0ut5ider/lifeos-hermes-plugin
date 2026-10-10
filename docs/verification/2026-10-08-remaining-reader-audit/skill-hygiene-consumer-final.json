@@ -1,0 +1,1842 @@
+[
+  {
+    "mode": "clean",
+    "exit_code": 2,
+    "stdout": "{\n  \"ok\": false,\n  \"exitCode\": 2,\n  \"scanErrors\": [\n    \"version_anchors: ALGORITHM/LATEST unreadable\",\n    \"retired-tokens: could not read ALGORITHM/LATEST\",\n    \"ascent-vocabulary doc lane: ENOENT: no such file or directory, open '/tmp/native-memory-e97dfpdi/.claude/LIFEOS/ALGORITHM/LATEST'\"\n  ],\n  \"totalBlocking\": 64,\n  \"totalInfo\": 28,\n  \"changeWindow\": {\n    \"lastRun\": null,\n    \"commits\": 0,\n    \"areas\": []\n  },\n  \"checks\": [\n    {\n      \"name\": \"references\",\n      \"ok\": false,\n      \"blocking\": 30,\n      \"info\": 0,\n      \"note\": \"472 refs across 288 files: 30 missing, 0 stale, 0 orphan\",\n      \"findings\": [\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/CommitmentSweep.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../skills/Evals/Tools/EvalRunner.ts in LIFEOS/TOOLS/ConfigEvalOnChange.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/ConfigEvalOnChange.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/CostTracker.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/ForgeProgress.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/IntegrityMaintenance.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MergeSettings.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/ProposalDecide.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/SettingsBackport.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/lifeos.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MemoryHealthCheck.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/MemoryReviewer.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/ISARender.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/endpoint in hooks/PromptProcessing.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: USER/CONFIG/settings.user.json in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: Tools/AgentWatchdog.ts in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: USER/CONFIG/memory-review.json in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: checkpoint-repos.txt in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/VersionDrift.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/LastResponseCache.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/AlgorithmNudge.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/SpendAuditor.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryTurnStart.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/ReminderRouter.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryReviewFire.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/lib/work-config.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/VoiceNotification.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/SystemIntegrity.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/DocCrossRefIntegrity.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/DocCrossRefIntegrity.ts\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"version_anchors\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"SCAN ERROR (no LATEST)\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"master_doc_paths\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 maintainer-tree check (not applicable on an installed tree)\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"hook_registration\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 27,\n      \"note\": \"0 registered, 55 on disk\",\n      \"findings\": [\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/AtlasEventCapture.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ComplexityRatchet.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/DocIntegrity.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/HookHealer.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ISASync.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/IntegrityCheck.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/KnowledgeWriteGuard.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/MemoryHealthGate.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/PostToolObserver.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/PreToolGuard.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/Safety.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/StopGates.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/TimeContext.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/TaskGovernance.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/CheckpointPerISC.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/KittyEnvPersist.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/AgentInvocation.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/LoadContext.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/EventLogger.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ConfigEvalFire.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/VersionDrift.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/LastResponseCache.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/SpendAuditor.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/DriftReminder.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ISARenderOnStop.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/SatisfactionCapture.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ReminderRouter.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"hook_registration: 27 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"settings-parity\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 settings.system.json missing or unparseable\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"hook_wiring\",\n      \"ok\": false,\n      \"blocking\": 29,\n      \"info\": 0,\n      \"note\": \"29 hooks declare an event; 29 mis-wired\",\n      \"findings\": [\n        {\n          \"detail\": \"hooks/AtlasEventCapture.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/CommunicationSkillGuard.hook.ts declares TRIGGER: PreToolUse but is not registered on PreToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/DocIntegrity.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/FormatGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISACloseGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISAFoldGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISAGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISASync.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/IntegrityCheck.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/KnowledgeWriteGuard.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/PostToolObserver.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/PromptProcessing.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SessionCleanup.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SystemChangeSurface.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/UpdateCounts.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/VerificationGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/VoiceCompletion.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/WritingGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/TaskGovernance.hook.ts declares TRIGGER: TaskCreated but is not registered on TaskCreated (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/CheckpointPerISC.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/KittyEnvPersist.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ModelRungGuard.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/LoadContext.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/WorkCompletionLearning.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/LastResponseCache.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/AlgorithmNudge.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/DriftReminder.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISARenderOnStop.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SatisfactionCapture.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"carrier-probe\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"findings\": [\n        {\n          \"detail\": \"CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"model-rung-pin\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"doctrine and config disagree on the main-loop rung\",\n      \"findings\": [\n        {\n          \"detail\": \"settings.json has no \\\"model\\\" key \u2014 the main loop runs the harness default, while doctrine claims the top rung (fable). This exact gap has happened before and gone undetected.\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"rule-duplication\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 rule surfaces, single-homed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"replay-corpus\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 replay corpus not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"claude_imports\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 CLAUDE.md files, 0 @-imports\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"skills\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"1 SKILL.md validated\",\n      \"findings\": [\n        {\n          \"detail\": \"skills/SyntheticSkill/SKILL.md: no frontmatter block\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"workflows\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 workflow files, 0 orphaned\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"retired-tokens\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"1 live files scanned, 5 tokens\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"retirement-registry\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 release tooling not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"gate_counts\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 release tooling not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"x_token_ownership\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 ts files scanned\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"commands\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"commands absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"agents\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"agents absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"agent-shared-blocks\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"agents/ absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"skill-hygiene\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 violations, 0 allowlisted\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"permission-rule-shape\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"1 settings layers, no inert rules\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"prose-in-code\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 1,\n      \"note\": \"270 source files scanned, 1 doctrine-prose hits\",\n      \"findings\": [\n        {\n          \"detail\": \"SUPERSEDED: LIFEOS/TOOLS/ProseInCode.ts:9 \u2014 a superseded directive asserted in code drifts from the rule file that owns it\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"prose-in-code: 1 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"fetch-timeouts\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 fetch-calling tools, 0 without any abort signal\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"ascent-vocabulary\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 consumer files + 0 living docs + 0 phase-key files scanned against 6 table states\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"block-messages\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 block message(s) missing a problem or fix clause\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"spinner-tips\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 settings.user.json has no tips (public install)\",\n      \"findings\": []\n    }\n  ]\n}\n",
+    "stderr": "CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/DOCUMENTATION\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/agents\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/commands\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/PULSE/Observability/src\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/DOCUMENTATION\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/PULSE/Observability/src\u2019: No such file or directory\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\n",
+    "body": {
+      "ok": false,
+      "exitCode": 2,
+      "scanErrors": [
+        "version_anchors: ALGORITHM/LATEST unreadable",
+        "retired-tokens: could not read ALGORITHM/LATEST",
+        "ascent-vocabulary doc lane: ENOENT: no such file or directory, open '/tmp/native-memory-e97dfpdi/.claude/LIFEOS/ALGORITHM/LATEST'"
+      ],
+      "totalBlocking": 64,
+      "totalInfo": 28,
+      "changeWindow": {
+        "lastRun": null,
+        "commits": 0,
+        "areas": []
+      },
+      "checks": [
+        {
+          "name": "references",
+          "ok": false,
+          "blocking": 30,
+          "info": 0,
+          "note": "472 refs across 288 files: 30 missing, 0 stale, 0 orphan",
+          "findings": [
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/CommitmentSweep.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../skills/Evals/Tools/EvalRunner.ts in LIFEOS/TOOLS/ConfigEvalOnChange.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/ConfigEvalOnChange.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/CostTracker.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/ForgeProgress.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/IntegrityMaintenance.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MergeSettings.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/ProposalDecide.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/SettingsBackport.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/lifeos.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MemoryHealthCheck.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/MemoryReviewer.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/ISARender.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/endpoint in hooks/PromptProcessing.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: USER/CONFIG/settings.user.json in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: Tools/AgentWatchdog.ts in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: USER/CONFIG/memory-review.json in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: checkpoint-repos.txt in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/VersionDrift.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/LastResponseCache.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/AlgorithmNudge.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/SpendAuditor.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryTurnStart.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/ReminderRouter.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryReviewFire.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/lib/work-config.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/VoiceNotification.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/SystemIntegrity.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/DocCrossRefIntegrity.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/DocCrossRefIntegrity.ts",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "version_anchors",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "SCAN ERROR (no LATEST)",
+          "findings": []
+        },
+        {
+          "name": "master_doc_paths",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 maintainer-tree check (not applicable on an installed tree)",
+          "findings": []
+        },
+        {
+          "name": "hook_registration",
+          "ok": false,
+          "blocking": 1,
+          "info": 27,
+          "note": "0 registered, 55 on disk",
+          "findings": [
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/AtlasEventCapture.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ComplexityRatchet.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/DocIntegrity.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/HookHealer.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ISASync.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/IntegrityCheck.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/KnowledgeWriteGuard.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/MemoryHealthGate.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/PostToolObserver.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/PreToolGuard.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/Safety.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/StopGates.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/TimeContext.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/TaskGovernance.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/CheckpointPerISC.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/KittyEnvPersist.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/AgentInvocation.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/LoadContext.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/EventLogger.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ConfigEvalFire.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/VersionDrift.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/LastResponseCache.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/SpendAuditor.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/DriftReminder.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ISARenderOnStop.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/SatisfactionCapture.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ReminderRouter.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "hook_registration: 27 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "settings-parity",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 settings.system.json missing or unparseable",
+          "findings": []
+        },
+        {
+          "name": "hook_wiring",
+          "ok": false,
+          "blocking": 29,
+          "info": 0,
+          "note": "29 hooks declare an event; 29 mis-wired",
+          "findings": [
+            {
+              "detail": "hooks/AtlasEventCapture.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/CommunicationSkillGuard.hook.ts declares TRIGGER: PreToolUse but is not registered on PreToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/DocIntegrity.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/FormatGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISACloseGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISAFoldGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISAGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISASync.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/IntegrityCheck.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/KnowledgeWriteGuard.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/PostToolObserver.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/PromptProcessing.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SessionCleanup.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SystemChangeSurface.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/UpdateCounts.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/VerificationGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/VoiceCompletion.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/WritingGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/TaskGovernance.hook.ts declares TRIGGER: TaskCreated but is not registered on TaskCreated (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/CheckpointPerISC.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/KittyEnvPersist.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ModelRungGuard.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/LoadContext.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/WorkCompletionLearning.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/LastResponseCache.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/AlgorithmNudge.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/DriftReminder.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISARenderOnStop.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SatisfactionCapture.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "carrier-probe",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "findings": [
+            {
+              "detail": "CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "model-rung-pin",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "doctrine and config disagree on the main-loop rung",
+          "findings": [
+            {
+              "detail": "settings.json has no \"model\" key \u2014 the main loop runs the harness default, while doctrine claims the top rung (fable). This exact gap has happened before and gone undetected.",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "rule-duplication",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 rule surfaces, single-homed",
+          "findings": []
+        },
+        {
+          "name": "replay-corpus",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 replay corpus not installed",
+          "findings": []
+        },
+        {
+          "name": "claude_imports",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 CLAUDE.md files, 0 @-imports",
+          "findings": []
+        },
+        {
+          "name": "skills",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "1 SKILL.md validated",
+          "findings": [
+            {
+              "detail": "skills/SyntheticSkill/SKILL.md: no frontmatter block",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "workflows",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 workflow files, 0 orphaned",
+          "findings": []
+        },
+        {
+          "name": "retired-tokens",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "1 live files scanned, 5 tokens",
+          "findings": []
+        },
+        {
+          "name": "retirement-registry",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 release tooling not installed",
+          "findings": []
+        },
+        {
+          "name": "gate_counts",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 release tooling not installed",
+          "findings": []
+        },
+        {
+          "name": "x_token_ownership",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 ts files scanned",
+          "findings": []
+        },
+        {
+          "name": "commands",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "commands absent",
+          "findings": []
+        },
+        {
+          "name": "agents",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "agents absent",
+          "findings": []
+        },
+        {
+          "name": "agent-shared-blocks",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "agents/ absent",
+          "findings": []
+        },
+        {
+          "name": "skill-hygiene",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 violations, 0 allowlisted",
+          "findings": []
+        },
+        {
+          "name": "permission-rule-shape",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "1 settings layers, no inert rules",
+          "findings": []
+        },
+        {
+          "name": "prose-in-code",
+          "ok": false,
+          "blocking": 1,
+          "info": 1,
+          "note": "270 source files scanned, 1 doctrine-prose hits",
+          "findings": [
+            {
+              "detail": "SUPERSEDED: LIFEOS/TOOLS/ProseInCode.ts:9 \u2014 a superseded directive asserted in code drifts from the rule file that owns it",
+              "blocking": false
+            },
+            {
+              "detail": "prose-in-code: 1 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "fetch-timeouts",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 fetch-calling tools, 0 without any abort signal",
+          "findings": []
+        },
+        {
+          "name": "ascent-vocabulary",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 consumer files + 0 living docs + 0 phase-key files scanned against 6 table states",
+          "findings": []
+        },
+        {
+          "name": "block-messages",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 block message(s) missing a problem or fix clause",
+          "findings": []
+        },
+        {
+          "name": "spinner-tips",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 settings.user.json has no tips (public install)",
+          "findings": []
+        }
+      ]
+    }
+  },
+  {
+    "mode": "dirty",
+    "exit_code": 2,
+    "stdout": "{\n  \"ok\": false,\n  \"exitCode\": 2,\n  \"scanErrors\": [\n    \"version_anchors: ALGORITHM/LATEST unreadable\",\n    \"retired-tokens: could not read ALGORITHM/LATEST\",\n    \"ascent-vocabulary doc lane: ENOENT: no such file or directory, open '/tmp/native-memory-e97dfpdi/.claude/LIFEOS/ALGORITHM/LATEST'\"\n  ],\n  \"totalBlocking\": 65,\n  \"totalInfo\": 28,\n  \"changeWindow\": {\n    \"lastRun\": \"2026-10-09T19:30:57Z\",\n    \"commits\": 0,\n    \"areas\": []\n  },\n  \"checks\": [\n    {\n      \"name\": \"references\",\n      \"ok\": false,\n      \"blocking\": 30,\n      \"info\": 0,\n      \"note\": \"472 refs across 288 files: 30 missing, 0 stale, 0 orphan\",\n      \"findings\": [\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/CommitmentSweep.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../skills/Evals/Tools/EvalRunner.ts in LIFEOS/TOOLS/ConfigEvalOnChange.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/ConfigEvalOnChange.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/CostTracker.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/ForgeProgress.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/IntegrityMaintenance.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MergeSettings.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/ProposalDecide.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/SettingsBackport.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/lifeos.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MemoryHealthCheck.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/MemoryReviewer.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/ISARender.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/endpoint in hooks/PromptProcessing.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: USER/CONFIG/settings.user.json in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: Tools/AgentWatchdog.ts in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: USER/CONFIG/memory-review.json in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: checkpoint-repos.txt in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/VersionDrift.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/LastResponseCache.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/AlgorithmNudge.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/SpendAuditor.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryTurnStart.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/ReminderRouter.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryReviewFire.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/lib/work-config.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/VoiceNotification.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/SystemIntegrity.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/DocCrossRefIntegrity.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/DocCrossRefIntegrity.ts\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"version_anchors\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"SCAN ERROR (no LATEST)\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"master_doc_paths\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 maintainer-tree check (not applicable on an installed tree)\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"hook_registration\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 27,\n      \"note\": \"0 registered, 55 on disk\",\n      \"findings\": [\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/AtlasEventCapture.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ComplexityRatchet.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/DocIntegrity.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/HookHealer.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ISASync.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/IntegrityCheck.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/KnowledgeWriteGuard.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/MemoryHealthGate.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/PostToolObserver.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/PreToolGuard.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/Safety.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/StopGates.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/TimeContext.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/TaskGovernance.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/CheckpointPerISC.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/KittyEnvPersist.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/AgentInvocation.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/LoadContext.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/EventLogger.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ConfigEvalFire.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/VersionDrift.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/LastResponseCache.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/SpendAuditor.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/DriftReminder.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ISARenderOnStop.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/SatisfactionCapture.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ReminderRouter.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"hook_registration: 27 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"settings-parity\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 settings.system.json missing or unparseable\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"hook_wiring\",\n      \"ok\": false,\n      \"blocking\": 29,\n      \"info\": 0,\n      \"note\": \"29 hooks declare an event; 29 mis-wired\",\n      \"findings\": [\n        {\n          \"detail\": \"hooks/AtlasEventCapture.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/CommunicationSkillGuard.hook.ts declares TRIGGER: PreToolUse but is not registered on PreToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/DocIntegrity.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/FormatGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISACloseGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISAFoldGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISAGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISASync.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/IntegrityCheck.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/KnowledgeWriteGuard.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/PostToolObserver.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/PromptProcessing.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SessionCleanup.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SystemChangeSurface.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/UpdateCounts.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/VerificationGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/VoiceCompletion.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/WritingGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/TaskGovernance.hook.ts declares TRIGGER: TaskCreated but is not registered on TaskCreated (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/CheckpointPerISC.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/KittyEnvPersist.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ModelRungGuard.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/LoadContext.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/WorkCompletionLearning.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/LastResponseCache.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/AlgorithmNudge.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/DriftReminder.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISARenderOnStop.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SatisfactionCapture.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"carrier-probe\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"findings\": [\n        {\n          \"detail\": \"CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"model-rung-pin\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"doctrine and config disagree on the main-loop rung\",\n      \"findings\": [\n        {\n          \"detail\": \"settings.json has no \\\"model\\\" key \u2014 the main loop runs the harness default, while doctrine claims the top rung (fable). This exact gap has happened before and gone undetected.\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"rule-duplication\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 rule surfaces, single-homed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"replay-corpus\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 replay corpus not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"claude_imports\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 CLAUDE.md files, 0 @-imports\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"skills\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"1 SKILL.md validated\",\n      \"findings\": [\n        {\n          \"detail\": \"skills/SyntheticSkill/SKILL.md: no frontmatter block\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"workflows\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 workflow files, 0 orphaned\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"retired-tokens\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"1 live files scanned, 5 tokens\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"retirement-registry\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 release tooling not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"gate_counts\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 release tooling not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"x_token_ownership\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 ts files scanned\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"commands\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"commands absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"agents\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"agents absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"agent-shared-blocks\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"agents/ absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"skill-hygiene\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"1 violations, 0 allowlisted\",\n      \"findings\": [\n        {\n          \"detail\": \"SyntheticSkill: 1 deny-list hits in 1 files (bun LIFEOS/TOOLS/SkillHygieneGate.ts --skill SyntheticSkill)\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"permission-rule-shape\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"1 settings layers, no inert rules\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"prose-in-code\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 1,\n      \"note\": \"270 source files scanned, 1 doctrine-prose hits\",\n      \"findings\": [\n        {\n          \"detail\": \"SUPERSEDED: LIFEOS/TOOLS/ProseInCode.ts:9 \u2014 a superseded directive asserted in code drifts from the rule file that owns it\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"prose-in-code: 1 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"fetch-timeouts\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 fetch-calling tools, 0 without any abort signal\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"ascent-vocabulary\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 consumer files + 0 living docs + 0 phase-key files scanned against 6 table states\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"block-messages\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 block message(s) missing a problem or fix clause\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"spinner-tips\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 settings.user.json has no tips (public install)\",\n      \"findings\": []\n    }\n  ]\n}\n",
+    "stderr": "fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nCarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/DOCUMENTATION\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/agents\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/commands\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/PULSE/Observability/src\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/DOCUMENTATION\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/PULSE/Observability/src\u2019: No such file or directory\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\n",
+    "body": {
+      "ok": false,
+      "exitCode": 2,
+      "scanErrors": [
+        "version_anchors: ALGORITHM/LATEST unreadable",
+        "retired-tokens: could not read ALGORITHM/LATEST",
+        "ascent-vocabulary doc lane: ENOENT: no such file or directory, open '/tmp/native-memory-e97dfpdi/.claude/LIFEOS/ALGORITHM/LATEST'"
+      ],
+      "totalBlocking": 65,
+      "totalInfo": 28,
+      "changeWindow": {
+        "lastRun": "2026-10-09T19:30:57Z",
+        "commits": 0,
+        "areas": []
+      },
+      "checks": [
+        {
+          "name": "references",
+          "ok": false,
+          "blocking": 30,
+          "info": 0,
+          "note": "472 refs across 288 files: 30 missing, 0 stale, 0 orphan",
+          "findings": [
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/CommitmentSweep.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../skills/Evals/Tools/EvalRunner.ts in LIFEOS/TOOLS/ConfigEvalOnChange.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/ConfigEvalOnChange.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/CostTracker.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/ForgeProgress.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/IntegrityMaintenance.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MergeSettings.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/ProposalDecide.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/SettingsBackport.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/lifeos.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MemoryHealthCheck.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/MemoryReviewer.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/ISARender.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/endpoint in hooks/PromptProcessing.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: USER/CONFIG/settings.user.json in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: Tools/AgentWatchdog.ts in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: USER/CONFIG/memory-review.json in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: checkpoint-repos.txt in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/VersionDrift.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/LastResponseCache.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/AlgorithmNudge.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/SpendAuditor.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryTurnStart.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/ReminderRouter.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryReviewFire.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/lib/work-config.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/VoiceNotification.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/SystemIntegrity.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/DocCrossRefIntegrity.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/DocCrossRefIntegrity.ts",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "version_anchors",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "SCAN ERROR (no LATEST)",
+          "findings": []
+        },
+        {
+          "name": "master_doc_paths",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 maintainer-tree check (not applicable on an installed tree)",
+          "findings": []
+        },
+        {
+          "name": "hook_registration",
+          "ok": false,
+          "blocking": 1,
+          "info": 27,
+          "note": "0 registered, 55 on disk",
+          "findings": [
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/AtlasEventCapture.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ComplexityRatchet.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/DocIntegrity.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/HookHealer.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ISASync.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/IntegrityCheck.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/KnowledgeWriteGuard.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/MemoryHealthGate.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/PostToolObserver.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/PreToolGuard.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/Safety.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/StopGates.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/TimeContext.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/TaskGovernance.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/CheckpointPerISC.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/KittyEnvPersist.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/AgentInvocation.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/LoadContext.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/EventLogger.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ConfigEvalFire.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/VersionDrift.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/LastResponseCache.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/SpendAuditor.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/DriftReminder.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ISARenderOnStop.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/SatisfactionCapture.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ReminderRouter.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "hook_registration: 27 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "settings-parity",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 settings.system.json missing or unparseable",
+          "findings": []
+        },
+        {
+          "name": "hook_wiring",
+          "ok": false,
+          "blocking": 29,
+          "info": 0,
+          "note": "29 hooks declare an event; 29 mis-wired",
+          "findings": [
+            {
+              "detail": "hooks/AtlasEventCapture.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/CommunicationSkillGuard.hook.ts declares TRIGGER: PreToolUse but is not registered on PreToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/DocIntegrity.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/FormatGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISACloseGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISAFoldGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISAGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISASync.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/IntegrityCheck.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/KnowledgeWriteGuard.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/PostToolObserver.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/PromptProcessing.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SessionCleanup.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SystemChangeSurface.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/UpdateCounts.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/VerificationGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/VoiceCompletion.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/WritingGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/TaskGovernance.hook.ts declares TRIGGER: TaskCreated but is not registered on TaskCreated (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/CheckpointPerISC.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/KittyEnvPersist.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ModelRungGuard.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/LoadContext.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/WorkCompletionLearning.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/LastResponseCache.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/AlgorithmNudge.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/DriftReminder.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISARenderOnStop.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SatisfactionCapture.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "carrier-probe",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "findings": [
+            {
+              "detail": "CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "model-rung-pin",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "doctrine and config disagree on the main-loop rung",
+          "findings": [
+            {
+              "detail": "settings.json has no \"model\" key \u2014 the main loop runs the harness default, while doctrine claims the top rung (fable). This exact gap has happened before and gone undetected.",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "rule-duplication",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 rule surfaces, single-homed",
+          "findings": []
+        },
+        {
+          "name": "replay-corpus",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 replay corpus not installed",
+          "findings": []
+        },
+        {
+          "name": "claude_imports",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 CLAUDE.md files, 0 @-imports",
+          "findings": []
+        },
+        {
+          "name": "skills",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "1 SKILL.md validated",
+          "findings": [
+            {
+              "detail": "skills/SyntheticSkill/SKILL.md: no frontmatter block",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "workflows",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 workflow files, 0 orphaned",
+          "findings": []
+        },
+        {
+          "name": "retired-tokens",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "1 live files scanned, 5 tokens",
+          "findings": []
+        },
+        {
+          "name": "retirement-registry",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 release tooling not installed",
+          "findings": []
+        },
+        {
+          "name": "gate_counts",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 release tooling not installed",
+          "findings": []
+        },
+        {
+          "name": "x_token_ownership",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 ts files scanned",
+          "findings": []
+        },
+        {
+          "name": "commands",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "commands absent",
+          "findings": []
+        },
+        {
+          "name": "agents",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "agents absent",
+          "findings": []
+        },
+        {
+          "name": "agent-shared-blocks",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "agents/ absent",
+          "findings": []
+        },
+        {
+          "name": "skill-hygiene",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "1 violations, 0 allowlisted",
+          "findings": [
+            {
+              "detail": "SyntheticSkill: 1 deny-list hits in 1 files (bun LIFEOS/TOOLS/SkillHygieneGate.ts --skill SyntheticSkill)",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "permission-rule-shape",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "1 settings layers, no inert rules",
+          "findings": []
+        },
+        {
+          "name": "prose-in-code",
+          "ok": false,
+          "blocking": 1,
+          "info": 1,
+          "note": "270 source files scanned, 1 doctrine-prose hits",
+          "findings": [
+            {
+              "detail": "SUPERSEDED: LIFEOS/TOOLS/ProseInCode.ts:9 \u2014 a superseded directive asserted in code drifts from the rule file that owns it",
+              "blocking": false
+            },
+            {
+              "detail": "prose-in-code: 1 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "fetch-timeouts",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 fetch-calling tools, 0 without any abort signal",
+          "findings": []
+        },
+        {
+          "name": "ascent-vocabulary",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 consumer files + 0 living docs + 0 phase-key files scanned against 6 table states",
+          "findings": []
+        },
+        {
+          "name": "block-messages",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 block message(s) missing a problem or fix clause",
+          "findings": []
+        },
+        {
+          "name": "spinner-tips",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 settings.user.json has no tips (public install)",
+          "findings": []
+        }
+      ]
+    }
+  },
+  {
+    "mode": "unbound",
+    "exit_code": 2,
+    "stdout": "{\n  \"ok\": false,\n  \"exitCode\": 2,\n  \"scanErrors\": [\n    \"version_anchors: ALGORITHM/LATEST unreadable\",\n    \"retired-tokens: could not read ALGORITHM/LATEST\",\n    \"skill-hygiene: The skill scan requires current owner memory access\",\n    \"ascent-vocabulary doc lane: ENOENT: no such file or directory, open '/tmp/native-memory-e97dfpdi/.claude/LIFEOS/ALGORITHM/LATEST'\"\n  ],\n  \"totalBlocking\": 64,\n  \"totalInfo\": 28,\n  \"changeWindow\": {\n    \"lastRun\": \"2026-10-09T19:30:58Z\",\n    \"commits\": 0,\n    \"areas\": []\n  },\n  \"checks\": [\n    {\n      \"name\": \"references\",\n      \"ok\": false,\n      \"blocking\": 30,\n      \"info\": 0,\n      \"note\": \"472 refs across 288 files: 30 missing, 0 stale, 0 orphan\",\n      \"findings\": [\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/CommitmentSweep.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../skills/Evals/Tools/EvalRunner.ts in LIFEOS/TOOLS/ConfigEvalOnChange.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/ConfigEvalOnChange.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/CostTracker.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/ForgeProgress.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/IntegrityMaintenance.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MergeSettings.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/ProposalDecide.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/SettingsBackport.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/endpoint in LIFEOS/TOOLS/lifeos.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MemoryHealthCheck.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/MemoryReviewer.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/ISARender.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/endpoint in hooks/PromptProcessing.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: USER/CONFIG/settings.user.json in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: Tools/AgentWatchdog.ts in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: USER/CONFIG/memory-review.json in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: checkpoint-repos.txt in hooks/README.md\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/VersionDrift.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/LastResponseCache.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/AlgorithmNudge.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/SpendAuditor.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryTurnStart.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/ReminderRouter.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryReviewFire.hook.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/lib/work-config.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/VoiceNotification.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/SystemIntegrity.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/DocCrossRefIntegrity.ts\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/DocCrossRefIntegrity.ts\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"version_anchors\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"SCAN ERROR (no LATEST)\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"master_doc_paths\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 maintainer-tree check (not applicable on an installed tree)\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"hook_registration\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 27,\n      \"note\": \"0 registered, 55 on disk\",\n      \"findings\": [\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/AtlasEventCapture.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ComplexityRatchet.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/DocIntegrity.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/HookHealer.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ISASync.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/IntegrityCheck.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/KnowledgeWriteGuard.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/MemoryHealthGate.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/PostToolObserver.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/PreToolGuard.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/Safety.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/StopGates.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/TimeContext.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/TaskGovernance.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/CheckpointPerISC.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/KittyEnvPersist.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/AgentInvocation.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/LoadContext.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/EventLogger.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ConfigEvalFire.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/VersionDrift.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/LastResponseCache.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/SpendAuditor.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/DriftReminder.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ISARenderOnStop.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/SatisfactionCapture.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"on disk, not registered, and no hook calls it: hooks/ReminderRouter.hook.ts\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"hook_registration: 27 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"settings-parity\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 settings.system.json missing or unparseable\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"hook_wiring\",\n      \"ok\": false,\n      \"blocking\": 29,\n      \"info\": 0,\n      \"note\": \"29 hooks declare an event; 29 mis-wired\",\n      \"findings\": [\n        {\n          \"detail\": \"hooks/AtlasEventCapture.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/CommunicationSkillGuard.hook.ts declares TRIGGER: PreToolUse but is not registered on PreToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/DocIntegrity.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/FormatGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISACloseGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISAFoldGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISAGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISASync.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/IntegrityCheck.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/KnowledgeWriteGuard.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/PostToolObserver.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/PromptProcessing.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SessionCleanup.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SystemChangeSurface.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/UpdateCounts.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/VerificationGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/VoiceCompletion.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/WritingGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/TaskGovernance.hook.ts declares TRIGGER: TaskCreated but is not registered on TaskCreated (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/CheckpointPerISC.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/KittyEnvPersist.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ModelRungGuard.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/LoadContext.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/WorkCompletionLearning.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/LastResponseCache.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/AlgorithmNudge.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/DriftReminder.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/ISARenderOnStop.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        },\n        {\n          \"detail\": \"hooks/SatisfactionCapture.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"carrier-probe\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"findings\": [\n        {\n          \"detail\": \"CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"model-rung-pin\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"doctrine and config disagree on the main-loop rung\",\n      \"findings\": [\n        {\n          \"detail\": \"settings.json has no \\\"model\\\" key \u2014 the main loop runs the harness default, while doctrine claims the top rung (fable). This exact gap has happened before and gone undetected.\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"rule-duplication\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 rule surfaces, single-homed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"replay-corpus\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 replay corpus not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"claude_imports\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 CLAUDE.md files, 0 @-imports\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"skills\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 0,\n      \"note\": \"1 SKILL.md validated\",\n      \"findings\": [\n        {\n          \"detail\": \"skills/SyntheticSkill/SKILL.md: no frontmatter block\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"workflows\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 workflow files, 0 orphaned\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"retired-tokens\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"1 live files scanned, 5 tokens\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"retirement-registry\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 release tooling not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"gate_counts\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 release tooling not installed\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"x_token_ownership\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 ts files scanned\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"commands\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"commands absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"agents\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"agents absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"agent-shared-blocks\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"agents/ absent\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"permission-rule-shape\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"1 settings layers, no inert rules\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"prose-in-code\",\n      \"ok\": false,\n      \"blocking\": 1,\n      \"info\": 1,\n      \"note\": \"270 source files scanned, 1 doctrine-prose hits\",\n      \"findings\": [\n        {\n          \"detail\": \"SUPERSEDED: LIFEOS/TOOLS/ProseInCode.ts:9 \u2014 a superseded directive asserted in code drifts from the rule file that owns it\",\n          \"blocking\": false\n        },\n        {\n          \"detail\": \"prose-in-code: 1 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose\",\n          \"blocking\": true\n        }\n      ]\n    },\n    {\n      \"name\": \"fetch-timeouts\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 fetch-calling tools, 0 without any abort signal\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"ascent-vocabulary\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 consumer files + 0 living docs + 0 phase-key files scanned against 6 table states\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"block-messages\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"0 block message(s) missing a problem or fix clause\",\n      \"findings\": []\n    },\n    {\n      \"name\": \"spinner-tips\",\n      \"ok\": true,\n      \"blocking\": 0,\n      \"info\": 0,\n      \"note\": \"skipped \u2014 settings.user.json has no tips (public install)\",\n      \"findings\": []\n    }\n  ]\n}\n",
+    "stderr": "fatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\nCarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/DOCUMENTATION\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/agents\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/commands\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/PULSE/Observability/src\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/DOCUMENTATION\u2019: No such file or directory\nfind: \u2018/tmp/native-memory-e97dfpdi/.claude/LIFEOS/PULSE/Observability/src\u2019: No such file or directory\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).\n",
+    "body": {
+      "ok": false,
+      "exitCode": 2,
+      "scanErrors": [
+        "version_anchors: ALGORITHM/LATEST unreadable",
+        "retired-tokens: could not read ALGORITHM/LATEST",
+        "skill-hygiene: The skill scan requires current owner memory access",
+        "ascent-vocabulary doc lane: ENOENT: no such file or directory, open '/tmp/native-memory-e97dfpdi/.claude/LIFEOS/ALGORITHM/LATEST'"
+      ],
+      "totalBlocking": 64,
+      "totalInfo": 28,
+      "changeWindow": {
+        "lastRun": "2026-10-09T19:30:58Z",
+        "commits": 0,
+        "areas": []
+      },
+      "checks": [
+        {
+          "name": "references",
+          "ok": false,
+          "blocking": 30,
+          "info": 0,
+          "note": "472 refs across 288 files: 30 missing, 0 stale, 0 orphan",
+          "findings": [
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/CommitmentSweep.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../skills/Evals/Tools/EvalRunner.ts in LIFEOS/TOOLS/ConfigEvalOnChange.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/ConfigEvalOnChange.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/CostTracker.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/ForgeProgress.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/IntegrityMaintenance.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MergeSettings.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/ProposalDecide.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/SettingsBackport.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/endpoint in LIFEOS/TOOLS/lifeos.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/MemoryHealthCheck.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/memory-proposals in LIFEOS/TOOLS/MemoryReviewer.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../PULSE/lib/atomic-write in LIFEOS/TOOLS/ISARender.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/endpoint in hooks/PromptProcessing.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: USER/CONFIG/settings.user.json in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: Tools/AgentWatchdog.ts in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: USER/CONFIG/memory-review.json in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: checkpoint-repos.txt in hooks/README.md",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/VersionDrift.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/LastResponseCache.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/AlgorithmNudge.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/SpendAuditor.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryTurnStart.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/ReminderRouter.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../LIFEOS/PULSE/lib/atomic-write in hooks/MemoryReviewFire.hook.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/lib/work-config.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/VoiceNotification.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/SystemIntegrity.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/lib/atomic-write in hooks/handlers/DocCrossRefIntegrity.ts",
+              "blocking": true
+            },
+            {
+              "detail": "missing: ../../LIFEOS/PULSE/endpoint in hooks/handlers/DocCrossRefIntegrity.ts",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "version_anchors",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "SCAN ERROR (no LATEST)",
+          "findings": []
+        },
+        {
+          "name": "master_doc_paths",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 maintainer-tree check (not applicable on an installed tree)",
+          "findings": []
+        },
+        {
+          "name": "hook_registration",
+          "ok": false,
+          "blocking": 1,
+          "info": 27,
+          "note": "0 registered, 55 on disk",
+          "findings": [
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/AtlasEventCapture.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ComplexityRatchet.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/DocIntegrity.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/HookHealer.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ISASync.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/IntegrityCheck.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/KnowledgeWriteGuard.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/MemoryHealthGate.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/PostToolObserver.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/PreToolGuard.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/Safety.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/StopGates.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/TimeContext.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/TaskGovernance.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/CheckpointPerISC.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/KittyEnvPersist.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/AgentInvocation.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/LoadContext.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/EventLogger.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ConfigEvalFire.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/VersionDrift.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/LastResponseCache.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/SpendAuditor.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/DriftReminder.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ISARenderOnStop.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/SatisfactionCapture.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "on disk, not registered, and no hook calls it: hooks/ReminderRouter.hook.ts",
+              "blocking": false
+            },
+            {
+              "detail": "hook_registration: 27 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "settings-parity",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 settings.system.json missing or unparseable",
+          "findings": []
+        },
+        {
+          "name": "hook_wiring",
+          "ok": false,
+          "blocking": 29,
+          "info": 0,
+          "note": "29 hooks declare an event; 29 mis-wired",
+          "findings": [
+            {
+              "detail": "hooks/AtlasEventCapture.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/CommunicationSkillGuard.hook.ts declares TRIGGER: PreToolUse but is not registered on PreToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/DocIntegrity.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/FormatGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISACloseGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISAFoldGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISAGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISASync.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/IntegrityCheck.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/KnowledgeWriteGuard.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/PostToolObserver.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/PromptProcessing.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SessionCleanup.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SystemChangeSurface.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/UpdateCounts.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/VerificationGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/VoiceCompletion.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/WritingGate.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/TaskGovernance.hook.ts declares TRIGGER: TaskCreated but is not registered on TaskCreated (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/CheckpointPerISC.hook.ts declares TRIGGER: PostToolUse but is not registered on PostToolUse (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/KittyEnvPersist.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ModelRungGuard.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/LoadContext.hook.ts declares TRIGGER: SessionStart but is not registered on SessionStart (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/WorkCompletionLearning.hook.ts declares TRIGGER: SessionEnd but is not registered on SessionEnd (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/LastResponseCache.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/AlgorithmNudge.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/DriftReminder.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/ISARenderOnStop.hook.ts declares TRIGGER: Stop but is not registered on Stop (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            },
+            {
+              "detail": "hooks/SatisfactionCapture.hook.ts declares TRIGGER: UserPromptSubmit but is not registered on UserPromptSubmit (directly or via a dispatcher) \u2014 silently dead",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "carrier-probe",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "findings": [
+            {
+              "detail": "CarrierProbe: NEVER RUN \u2014 run `bun LIFEOS/TOOLS/CarrierProbe.ts` to establish the fact",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "model-rung-pin",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "doctrine and config disagree on the main-loop rung",
+          "findings": [
+            {
+              "detail": "settings.json has no \"model\" key \u2014 the main loop runs the harness default, while doctrine claims the top rung (fable). This exact gap has happened before and gone undetected.",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "rule-duplication",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 rule surfaces, single-homed",
+          "findings": []
+        },
+        {
+          "name": "replay-corpus",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 replay corpus not installed",
+          "findings": []
+        },
+        {
+          "name": "claude_imports",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 CLAUDE.md files, 0 @-imports",
+          "findings": []
+        },
+        {
+          "name": "skills",
+          "ok": false,
+          "blocking": 1,
+          "info": 0,
+          "note": "1 SKILL.md validated",
+          "findings": [
+            {
+              "detail": "skills/SyntheticSkill/SKILL.md: no frontmatter block",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "workflows",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 workflow files, 0 orphaned",
+          "findings": []
+        },
+        {
+          "name": "retired-tokens",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "1 live files scanned, 5 tokens",
+          "findings": []
+        },
+        {
+          "name": "retirement-registry",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 release tooling not installed",
+          "findings": []
+        },
+        {
+          "name": "gate_counts",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 release tooling not installed",
+          "findings": []
+        },
+        {
+          "name": "x_token_ownership",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 ts files scanned",
+          "findings": []
+        },
+        {
+          "name": "commands",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "commands absent",
+          "findings": []
+        },
+        {
+          "name": "agents",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "agents absent",
+          "findings": []
+        },
+        {
+          "name": "agent-shared-blocks",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "agents/ absent",
+          "findings": []
+        },
+        {
+          "name": "permission-rule-shape",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "1 settings layers, no inert rules",
+          "findings": []
+        },
+        {
+          "name": "prose-in-code",
+          "ok": false,
+          "blocking": 1,
+          "info": 1,
+          "note": "270 source files scanned, 1 doctrine-prose hits",
+          "findings": [
+            {
+              "detail": "SUPERSEDED: LIFEOS/TOOLS/ProseInCode.ts:9 \u2014 a superseded directive asserted in code drifts from the rule file that owns it",
+              "blocking": false
+            },
+            {
+              "detail": "prose-in-code: 1 non-blocking findings exceeds its budget of 0 \u2014 fix them or raise the budget on purpose",
+              "blocking": true
+            }
+          ]
+        },
+        {
+          "name": "fetch-timeouts",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 fetch-calling tools, 0 without any abort signal",
+          "findings": []
+        },
+        {
+          "name": "ascent-vocabulary",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 consumer files + 0 living docs + 0 phase-key files scanned against 6 table states",
+          "findings": []
+        },
+        {
+          "name": "block-messages",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "0 block message(s) missing a problem or fix clause",
+          "findings": []
+        },
+        {
+          "name": "spinner-tips",
+          "ok": true,
+          "blocking": 0,
+          "info": 0,
+          "note": "skipped \u2014 settings.user.json has no tips (public install)",
+          "findings": []
+        }
+      ]
+    }
+  }
+]

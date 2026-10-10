@@ -1,0 +1,48 @@
+test_invalid_input_selectors_return_refusal_without_unhandled_errors (test_memory_local_refresh.MemoryLocalRefreshTests.test_invalid_input_selectors_return_refusal_without_unhandled_errors) ...
+  test_invalid_input_selectors_return_refusal_without_unhandled_errors (test_memory_local_refresh.MemoryLocalRefreshTests.test_invalid_input_selectors_return_refusal_without_unhandled_errors) (kind=[]) ... ERROR
+  test_invalid_input_selectors_return_refusal_without_unhandled_errors (test_memory_local_refresh.MemoryLocalRefreshTests.test_invalid_input_selectors_return_refusal_without_unhandled_errors) (kind={}) ... ERROR
+
+======================================================================
+ERROR: test_invalid_input_selectors_return_refusal_without_unhandled_errors (test_memory_local_refresh.MemoryLocalRefreshTests.test_invalid_input_selectors_return_refusal_without_unhandled_errors) (kind=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 161, in test_invalid_input_selectors_return_refusal_without_unhandled_errors
+    self.assertFalse(self.call('local_inputs', kind=kind)['ok'])
+                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 61, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 285, in _native_operation
+    return inputs(memory, scope, operation, arguments,
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_local_refresh.py", line 66, in inputs
+    if set(arguments) != {'kind'} or arguments['kind'] not in {'hometown', 'sources'}:
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot use 'list' as a set element (unhashable type: 'list')
+
+======================================================================
+ERROR: test_invalid_input_selectors_return_refusal_without_unhandled_errors (test_memory_local_refresh.MemoryLocalRefreshTests.test_invalid_input_selectors_return_refusal_without_unhandled_errors) (kind={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 161, in test_invalid_input_selectors_return_refusal_without_unhandled_errors
+    self.assertFalse(self.call('local_inputs', kind=kind)['ok'])
+                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 61, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 285, in _native_operation
+    return inputs(memory, scope, operation, arguments,
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_local_refresh.py", line 66, in inputs
+    if set(arguments) != {'kind'} or arguments['kind'] not in {'hometown', 'sources'}:
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+
+----------------------------------------------------------------------
+Ran 1 test in 0.010s
+
+FAILED (errors=2)

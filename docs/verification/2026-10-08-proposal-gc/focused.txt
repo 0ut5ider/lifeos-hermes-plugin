@@ -1,0 +1,41 @@
+............................................... [ 52%]
+...............................F..........                                            [100%]
+=================================== FAILURES ===================================
+_ MemoryProposalDelegationTests.test_explicit_context_proposal_records_its_authenticated_source_session _
+
+self = <test_memory_proposal_delegation.MemoryProposalDelegationTests testMethod=test_explicit_context_proposal_records_its_authenticated_source_session>
+
+    def test_explicit_context_proposal_records_its_authenticated_source_session(self):
+        from lifeos_hook_bridge.memory_service import MemoryService
+        service = MemoryService(MemoryConfiguration(self.config))
+        arguments = {'proposal': self.fixture.item(), 'request_id': 'explicit-context-proposal'}
+>       result = service.call_context(self.context, 'lifeos_memory_propose', arguments)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_memory_proposal_delegation.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+lifeos_hook_bridge/memory_service.py:618: in call_context
+    result = self._call(configuration, scope, name, arguments,
+lifeos_hook_bridge/memory_service.py:658: in _call
+    result = memory.native_add(scope, arguments["proposal"], request_id=arguments["request_id"], project="",
+lifeos_hook_bridge/memory_access.py:606: in native_add
+    return enqueue(self, scope, item, request_id, source_session, check_current=check_current)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_proposals.py:67: in enqueue
+    receipt = memory._operation(scope, request_id, {'operation':'native_proposal', 'item':item,
+lifeos_hook_bridge/memory_access.py:340: in _operation
+    receipt = callback(connection)
+              ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+connection = <sqlite3.Connection object at 0x7fd6d21f7f10>
+
+    def save(connection):
+        if check_current is not None:
+>           check_current(connection)
+E           TypeError: MemoryService.call_context.<locals>.check_current() takes 0 positional arguments but 1 was given
+
+lifeos_hook_bridge/memory_proposals.py:26: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_memory_proposal_delegation.py::MemoryProposalDelegationTests::test_explicit_context_proposal_records_its_authenticated_source_session
+1 failed, 88 passed, 84 subtests passed in 62.84s (0:01:02)

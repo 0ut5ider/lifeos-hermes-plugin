@@ -28,6 +28,14 @@ def register(ctx: Any) -> None:
         profile = None
     else:
         profile = get_hermes_home()
+    try:
+        from hermes_cli.plugins import VALID_HOOKS
+    except ImportError:
+        VALID_HOOKS = PATCHED_HOOKS
+    if profile is not None and 'pre_message_delivery' in VALID_HOOKS:
+        from .discord_delivery import PrivateDiscordDelivery
+        delivery = PrivateDiscordDelivery(profile / 'lifeos-memory.json')
+        ctx.register_hook('pre_message_delivery', delivery.check)
     from .lifeos_installation import selection
     home = selection(profile).home if profile is not None else Path.home()
     settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(home / ".claude/settings.json"))).expanduser()
@@ -43,10 +51,6 @@ def register(ctx: Any) -> None:
         current = load_picker_context()
         return configured_model_map(ctx.get_config, current.current_provider, current.current_model)
 
-    try:
-        from hermes_cli.plugins import VALID_HOOKS
-    except ImportError:
-        VALID_HOOKS = PATCHED_HOOKS
     patched_host = PATCHED_HOOKS <= VALID_HOOKS
     bridge = HookBridge(
         settings, settings.parent,

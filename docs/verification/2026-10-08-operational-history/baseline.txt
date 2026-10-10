@@ -1,0 +1,27 @@
+test_more_than_2048_records_preserve_native_climb_for_quiet_current_run (test_memory_operational_history.MemoryOperationalHistoryTests.test_more_than_2048_records_preserve_native_climb_for_quiet_current_run) ... FAIL
+test_multi_megabyte_history_preserves_native_climb_before_any_tail_window (test_memory_operational_history.MemoryOperationalHistoryTests.test_multi_megabyte_history_preserves_native_climb_before_any_tail_window) ... Record-growth observation: {"bytes": 336357, "records": 2051, "native_climb_points": 1, "managed_status": 503}
+FAIL
+
+======================================================================
+FAIL: test_more_than_2048_records_preserve_native_climb_for_quiet_current_run (test_memory_operational_history.MemoryOperationalHistoryTests.test_more_than_2048_records_preserve_native_climb_for_quiet_current_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 47, in test_more_than_2048_records_preserve_native_climb_for_quiet_current_run
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_multi_megabyte_history_preserves_native_climb_before_any_tail_window (test_memory_operational_history.MemoryOperationalHistoryTests.test_multi_megabyte_history_preserves_native_climb_before_any_tail_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_operational_history.py", line 61, in test_multi_megabyte_history_preserves_native_climb_before_any_tail_window
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.380s
+
+FAILED (failures=2)
+Byte-growth observation: {"bytes": 1320157, "records": 5001, "native_climb_points": 1, "managed_status": 503}

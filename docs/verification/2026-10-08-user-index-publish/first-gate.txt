@@ -1,0 +1,80 @@
+F.FFF
+======================================================================
+FAIL: test_existing_owner_job_admission_can_run_the_fixed_user_index_cli (test_memory_user_index_publish.MemoryUserIndexPublishTests.test_existing_owner_job_admission_can_run_the_fixed_user_index_cli)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index_publish.py", line 94, in test_existing_owner_job_admission_can_run_the_fixed_user_index_cli
+    self.assertEqual(result['status'], 'completed', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'completed'
+- failed
++ completed
+ : {'status': 'failed', 'job': 'user-index', 'exit_code': 1}
+
+======================================================================
+FAIL: test_native_query_remains_read_only_and_matches_published_entry (test_memory_user_index_publish.MemoryUserIndexPublishTests.test_native_query_remains_read_only_and_matches_published_entry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index_publish.py", line 74, in test_native_query_remains_read_only_and_matches_published_entry
+    self.assertEqual(first.returncode, 0, first.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 570 |   const response = memoryAccess("user_index", {query: null, publish_index: publishIndex, request_id: "user-index-" + randomUUID()},
+571 |     (value): value is {ok: boolean; index?: UserIndex; message?: string} => memoryObject(value)
+572 |       && typeof value.ok === "boolean" && (value.ok === false || isUserIndex(value.index)))
+573 |   if (response === undefined) return undefined
+574 |   if (!response.ok || response.index === undefined) {
+575 |     throw new Error(response.message ?? "The current owner user index is unavailable")
+                    ^
+error: User index sources or retirement state change before publication
+      at managedIndex (/home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:575:15)
+      at cli (/home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:743:17)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:776:3
+
+
+
+======================================================================
+FAIL: test_owner_cli_publishes_a_private_index_and_preserves_source_bytes (test_memory_user_index_publish.MemoryUserIndexPublishTests.test_owner_cli_publishes_a_private_index_and_preserves_source_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index_publish.py", line 44, in test_owner_cli_publishes_a_private_index_and_preserves_source_bytes
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 570 |   const response = memoryAccess("user_index", {query: null, publish_index: publishIndex, request_id: "user-index-" + randomUUID()},
+571 |     (value): value is {ok: boolean; index?: UserIndex; message?: string} => memoryObject(value)
+572 |       && typeof value.ok === "boolean" && (value.ok === false || isUserIndex(value.index)))
+573 |   if (response === undefined) return undefined
+574 |   if (!response.ok || response.index === undefined) {
+575 |     throw new Error(response.message ?? "The current owner user index is unavailable")
+                    ^
+error: User index sources or retirement state change before publication
+      at managedIndex (/home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:575:15)
+      at cli (/home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:743:17)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:776:3
+
+
+
+======================================================================
+FAIL: test_retired_source_does_not_enter_native_cli_output_or_cache (test_memory_user_index_publish.MemoryUserIndexPublishTests.test_retired_source_does_not_enter_native_cli_output_or_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index_publish.py", line 67, in test_retired_source_does_not_enter_native_cli_output_or_cache
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 570 |   const response = memoryAccess("user_index", {query: null, publish_index: publishIndex, request_id: "user-index-" + randomUUID()},
+571 |     (value): value is {ok: boolean; index?: UserIndex; message?: string} => memoryObject(value)
+572 |       && typeof value.ok === "boolean" && (value.ok === false || isUserIndex(value.index)))
+573 |   if (response === undefined) return undefined
+574 |   if (!response.ok || response.index === undefined) {
+575 |     throw new Error(response.message ?? "The current owner user index is unavailable")
+                    ^
+error: User index sources or retirement state change before publication
+      at managedIndex (/home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:575:15)
+      at cli (/home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:743:17)
+      at /home/outsider/.cache/lifeos-daily-text-20261007/user-index-publish-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/user-index.ts:776:3
+
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.321s
+
+FAILED (failures=4)

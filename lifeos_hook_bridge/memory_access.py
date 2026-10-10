@@ -13,6 +13,7 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import signal
 from typing import Any, Callable
 from uuid import uuid4
 
@@ -21,6 +22,7 @@ from .memory_transaction import MemoryTransaction
 
 
 SCHEMA_VERSION = 4
+JOB_OUTPUT_LIMIT = 4 * 1024 * 1024
 HOT_FILES = {
     "principal": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
     "assistant": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
@@ -55,13 +57,18 @@ class MemoryConflict(MemoryUnavailable):
 
 
 class NativeMemory:
-    def __init__(self, installed_root: Path, *, bun: str | None = None):
+    def __init__(self, installed_root: Path, *, bun: str | None = None, profile: Path | None = None):
         self.root = Path(installed_root).absolute()
         self.physical_root = self.root.resolve()
+        self.profile = Path(profile or self.root.parent / ".hermes").absolute()
+        self.physical_profile = self.profile.resolve()
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
-        self.transaction = MemoryTransaction(self.database.parent, self._publication_path)
+        from .memory_content_disposal import resolve_move
+        from .memory_moves import MemoryMoves
+        self.transaction = MemoryTransaction(self.database.parent, self._publication_path,
+            moves=MemoryMoves(lambda name: resolve_move(self, name)))
 
     def _boundary(self) -> None:
         if self.root.resolve() != self.physical_root:
@@ -136,20 +143,37 @@ class NativeMemory:
             finally:
                 connection.close()
 
-    def _native(self, action: str, **values: Any) -> dict[str, Any]:
+    def _native(self, action: str, *, source_descriptors: tuple[int, ...] = (), **values: Any) -> dict[str, Any]:
+        if (len(source_descriptors) > 1 or any(type(value) is not int or value < 3 for value in source_descriptors)):
+            raise MemoryUnavailable('Native snapshots require a declared source descriptor')
         environment = dict(os.environ)
         environment["HOME"] = str(self.root.parent)
         environment["LIFEOS_DIR"] = str(self.root / "LIFEOS")
         environment["LIFEOS_CONFIG_DIR"] = str(self.root / "LIFEOS/USER/CONFIG")
+        if action == 'algorithm_edit_commit':
+            environment['CLAUDE_CONFIG_DIR'] = str(self.root)
         environment.pop("LIFEOS_MEMORY_PUBLICATION_JOURNAL", None)
         if self.transaction.inherited_descriptors():
             environment["LIFEOS_MEMORY_PUBLICATION_JOURNAL"] = str(self.transaction.journal)
         environment["LIFEOS_MEMORY_INTERNAL"] = "1"
         environment["BUN_CONFIG_NO_AUTO_INSTALL"] = "1"
-        result = subprocess.run([self.bun, "--no-install", str(self.worker), str(self.root)],
-                                input=json.dumps({"action": action, **values}), text=True,
-                                capture_output=True, timeout=30, env=environment, cwd=self.root,
-                                pass_fds=self.transaction.inherited_descriptors())
+        arguments = [self.bun, "--no-install", str(self.worker), str(self.root)]
+        content = json.dumps({"action": action, **values})
+        descriptors = (*self.transaction.inherited_descriptors(), *source_descriptors)
+        if action == 'algorithm_edit_commit':
+            # The commit group must end before the enclosing HTTP relay reaches its deadline.
+            with subprocess.Popen(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True, env=environment, cwd=self.root, pass_fds=descriptors, start_new_session=True) as process:
+                try:
+                    output, errors = process.communicate(content, timeout=20)
+                finally:
+                    try: os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError: pass
+                    process.wait()
+                result = subprocess.CompletedProcess(arguments, process.returncode, output, errors)
+        else:
+            result = subprocess.run(arguments, input=content, text=True, capture_output=True,
+                timeout=30, env=environment, cwd=self.root, pass_fds=descriptors)
         if result.returncode:
             raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
         try:
@@ -178,7 +202,10 @@ class NativeMemory:
         from .memory_freshness import SYSTEM_PUBLICATIONS
         from .memory_freshness_migration import is_system_backup
         from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
-        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS and not is_system_backup(name):
+        from .memory_user_index_publish import PUBLICATIONS as INDEX_PUBLICATIONS
+        from .memory_manual_state import SYSTEM_PUBLICATIONS as MANUAL_PUBLICATIONS
+        from .memory_algorithm_edit import system_publication
+        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS | INDEX_PUBLICATIONS | MANUAL_PUBLICATIONS and not is_system_backup(name) and not system_publication(name):
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != self.physical_root / name or path.is_symlink()
@@ -192,7 +219,7 @@ class NativeMemory:
         permissions = scope.write if write else scope.read
         if record["category"] not in permissions:
             return False
-        if record["path"].startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/")) and "principal" not in permissions:
+        if NativeMemory._private_entity(record["path"]) and "principal" not in permissions:
             return False
         if record['category'] == 'project' and not record['project'] and not CATEGORIES <= set(permissions):
             return False
@@ -242,7 +269,7 @@ class NativeMemory:
                                   AND current.project=retained.project)""",
                                   (_claim_digest(content),)).fetchone() is not None
 
-    def _archive_write(self, connection: sqlite3.Connection, item: dict[str, Any]) -> dict[str, Any]:
+    def _archive_write(self, connection: sqlite3.Connection, item: dict[str, Any], *, check_current=None) -> dict[str, Any]:
         path = Path(self._native("route", item=item)["path"])
         relative = path.relative_to(self.root).as_posix()
         path = self._path(relative)
@@ -250,6 +277,8 @@ class NativeMemory:
         old_text = path.read_text(encoding="utf-8") if path.exists() else ""
         for row in rows:
             self._content(row)
+        if check_current is not None:
+            check_current(connection)
         result = self._native("add", item=item)
         if not result.get("ok"):
             return result
@@ -282,7 +311,8 @@ class NativeMemory:
 
     @staticmethod
     def _private_entity(path: str) -> bool:
-        return path.startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/"))
+        return path.startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/",
+                                "LIFEOS/MEMORY/KNOWLEDGE/_archive/People/", "LIFEOS/MEMORY/KNOWLEDGE/_archive/Companies/"))
 
     def _duplicate(self, connection: sqlite3.Connection, scope: MemoryScope, content: str,
                    category: str, project: str, destination: str) -> sqlite3.Row | None:
@@ -354,6 +384,66 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'local_run':
+            from .memory_local_runs import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'local_refresh':
+            from .memory_local_refresh import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] in {'content_run', 'content_delete'}:
+            from .memory_content_action import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'algorithm_edit':
+            from .memory_algorithm_edit import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'algorithm_summary':
+            from .memory_algorithm_summary import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'atlas_insight':
+            from .memory_atlas_insight import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'conduit_command':
+            from .memory_conduit_capture import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'conduit_insight':
+            from .memory_conduit_insight import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'conduit_initialize':
+            from .memory_conduit import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'manual_state':
+            from .memory_manual_state import publication_paths
+            return publication_paths(self, scope, payload['tool'], paths=payload['paths'])
+        if payload['operation'] == 'telos_file_edit':
+            from .memory_telos_file import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'user_index_publish':
+            from .memory_user_index_publish import publication_paths
+            return publication_paths(self, connection, scope, payload)
+        if payload['operation'] == 'upgrade_store':
+            from .memory_upgrades import publication_paths
+            return publication_paths(self,scope,payload)
+        if payload['operation'] == 'hypothesis_review':
+            from .memory_hypothesis_review import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'event_append':
+            from .memory_events import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'knowledge_conformance':
+            from .memory_knowledge_conformance import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'knowledge_view':
+            from .memory_knowledge_views import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'knowledge_harvest':
+            from .memory_knowledge_harvest import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'session_harvest':
+            from .memory_session_harvest import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'proposal_gc':
+            from .memory_proposal_gc import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'context_audit':
             from .memory_context_audit import publication_paths
             return publication_paths(self, scope)
@@ -417,6 +507,9 @@ class NativeMemory:
         if payload['operation'] == 'staged_promote':
             from .memory_staging import publication_paths
             return publication_paths(self,connection,scope,payload)
+        if payload['operation'] == 'staged_reject':
+            from .memory_staging import rejection_paths
+            return rejection_paths(self,scope,payload)
         if payload["operation"] == "proposal_decision":
             from .memory_proposals import _permitted
             permission = 'auto_apply' if payload['decision'] == 'auto_apply' else 'approve'
@@ -494,7 +587,8 @@ class NativeMemory:
 
     def _curate_hot(self, connection: sqlite3.Connection, scope: MemoryScope, category: str,
                     entries: list[str], observed_revision: str, *, allow_drastic: bool = False,
-                    source: dict[str, str] | None = None, native_writer: str | None = None) -> dict[str, Any]:
+                    source: dict[str, str] | None = None, native_writer: str | None = None,
+                    check_current=None) -> dict[str, Any]:
         current = self._hot_snapshot(connection, category)
         if not observed_revision or observed_revision != current["revision"]:
             return {"status": "conflict", "reason": "The native memory revision changed after the reviewer read it"}
@@ -526,6 +620,8 @@ class NativeMemory:
                 preserved.add(row["id"])
             assignments.append(row)
         path = self._path(HOT_FILES[category])
+        if check_current is not None:
+            check_current(connection)
         # Native summaries recognize the addition label; registry authorship stays in scope.writer.
         result = self._native("set_hot", path=str(path), entries=desired,
                               writer=native_writer or scope.writer, allowDrastic=allow_drastic)
@@ -558,7 +654,8 @@ class NativeMemory:
         return {"status": "committed", "references": references, "detail": result}
 
     def native_set(self, scope: MemoryScope, category: str, entries: list[str], request_id: str,
-                   observed_revision: str, *, allow_drastic: bool = False, source_session: str = '') -> dict[str, Any]:
+                   observed_revision: str, *, allow_drastic: bool = False, source_session: str = '',
+                   check_current=None) -> dict[str, Any]:
         if category not in HOT_FILES or category not in scope.read or category not in scope.write:
             return {"ok": False, "code": "EINVAL_PATH", "message": "Native curation needs read and write grants for the whole file"}
         if not isinstance(entries, list) or any(not isinstance(entry, str) for entry in entries) or type(allow_drastic) is not bool:
@@ -567,7 +664,8 @@ class NativeMemory:
                    "observed_revision": observed_revision, "allow_drastic": allow_drastic, 'source_session': source_session}
         receipt = self._operation(scope, request_id, payload, lambda connection:
                                   self._curate_hot(connection, scope, category, entries, observed_revision, allow_drastic=allow_drastic,
-                                                   source={'kind': 'native-curation', 'session': source_session}))
+                                                   source={'kind': 'native-curation', 'session': source_session},
+                                                   check_current=check_current))
         result = self._native_receipt(receipt, category=category, path=self._path(HOT_FILES[category]))
         return {**receipt["detail"], "receipt": receipt} if result["ok"] else {**result, "code": "EWRITE_FAILED"}
 
@@ -577,10 +675,10 @@ class NativeMemory:
 
     def decide_proposal(self, scope: MemoryScope, reference: dict[str, Any], decision: str,
                         request_id: str, *, content: str = "", note: str = "",
-                        confidence_threshold: float | None = None) -> dict[str, Any]:
+                        confidence_threshold: float | None = None, check_current=None) -> dict[str, Any]:
         from .memory_proposals import decide
         return decide(self, scope, reference, decision, request_id, content=content, note=note,
-                      confidence_threshold=confidence_threshold)
+                      confidence_threshold=confidence_threshold, check_current=check_current)
 
     def proposal_decision_row(self, scope: MemoryScope, reference: dict[str, Any]) -> dict[str, Any]:
         from .memory_proposals import decision_row
@@ -615,7 +713,7 @@ class NativeMemory:
             return {"ok": False, "code": "EINVAL_ITEM", "message": checked.get("message", "Native validation changed the requested item")}
         if category != "project" and item.get("op") == "set":
             result = self.native_set(scope, category, item.get("entries"), request_id, observed_revision,
-                                     source_session=source_session)
+                                     source_session=source_session, check_current=check_current)
             if not result.get("ok"):
                 return result
             return {"ok": True, "type": "memory", "path": str(self._path(HOT_FILES[category])), "detail": result, "receipt": result["receipt"]}
@@ -630,10 +728,11 @@ class NativeMemory:
             if category != "project":
                 snapshot = self._hot_snapshot(connection, category)
                 return self._curate_hot(connection, scope, category, [*snapshot["entries"], content], snapshot["revision"],
-                                        native_writer='MemorySystem.add', source={'kind': 'native', 'session': source_session})
+                                        native_writer='MemorySystem.add', source={'kind': 'native', 'session': source_session},
+                                        check_current=check_current)
             if self._blocked(connection, content):
                 return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
-            result = self._archive_write(connection, item)
+            result = self._archive_write(connection, item, check_current=check_current)
             if not result.get("ok"):
                 return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
             reference = self._record(connection, scope, Path(result["path"]), content, category, project,
@@ -684,11 +783,12 @@ class NativeMemory:
                 return {"status": "unchanged", "reference": {"id": existing["id"], "revision": existing["revision"]}, "source": source}
             if snapshot is not None:
                 result = self._curate_hot(connection, scope, category, [*snapshot['entries'], content],
-                                          snapshot['revision'], source=source, native_writer='MemorySystem.add')
+                                          snapshot['revision'], source=source, native_writer='MemorySystem.add',
+                                          check_current=check_current)
                 if result['status'] != 'committed':
                     return result
                 return {'status': 'committed', 'reference': result['references'][-1], 'source': source}
-            result = self._archive_write(connection, item)
+            result = self._archive_write(connection, item, check_current=check_current)
             if not result.get("ok"):
                 return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
             reference = self._record(connection, scope, Path(result["path"]), content, category, project, source)
@@ -770,6 +870,16 @@ class NativeMemory:
             return {"content": "", "excluded": True}
         with self._transaction() as connection:
             return self._filter_history(connection,scope,content,timestamp)
+
+    def filter_job_output(self, scope: MemoryScope, content: str, timestamp: str) -> dict[str, Any]:
+        if (not isinstance(content, str) or not isinstance(timestamp, str)
+                or len(content.encode('utf-8')) > JOB_OUTPUT_LIMIT):
+            raise ValueError('Invalid native job output')
+        if (not CATEGORIES <= set(scope.read) or not CATEGORIES <= set(scope.write)
+                or '*' not in scope.projects):
+            return {'content': '', 'excluded': True}
+        with self._transaction() as connection:
+            return self._filter_history(connection, scope, content, timestamp)
 
     def _filter_history(self, connection: sqlite3.Connection, scope: MemoryScope, content: str, timestamp: str,
                         *, reviewed: bool = False) -> dict[str, Any]:
@@ -855,7 +965,7 @@ class NativeMemory:
             existing = self._duplicate(connection, scope, replacement, row["category"], row["project"], row["path"])
             if row["category"] == "project" and not existing:
                 # Native path slugs must remain unchanged for section references.
-                result = self._archive_write(connection, item)
+                result = self._archive_write(connection, item, check_current=check_current)
                 if not result.get("ok"):
                     return {"status": "rejected", "reason": result.get("message", "Native correction rejected")}
                 path = Path(result["path"])
@@ -864,9 +974,13 @@ class NativeMemory:
                 if old not in entries:
                     return {"status": "conflict", "reason": "The native fact changed before correction"}
                 updated = [value for value in entries if value != old] if existing else [replacement if value == old else value for value in entries]
+                if check_current is not None:
+                    check_current(connection)
                 result = self._native("set_hot", path=str(path), entries=updated, writer=scope.writer, allowDrastic=True)
                 if not result.get("ok"):
                     return {"status": "rejected", "reason": result.get("message", "Native correction rejected")}
+            elif check_current is not None:
+                check_current(connection)
             new_reference = ({"id": existing["id"], "revision": existing["revision"]} if existing else
                              self._record(connection, scope, path, replacement, row["category"], row["project"],
                                           {"session": row["source_session"], "kind": "correction"}))
@@ -892,10 +1006,14 @@ class NativeMemory:
                 path = self._path(row["path"])
                 if content not in current.get("entries", []):
                     return {"status": "conflict", "reason": "The native fact changed before forgetting"}
+                if check_current is not None:
+                    check_current(connection)
                 result = self._native("set_hot", path=str(path), entries=[value for value in current["entries"] if value != content],
                                       writer=scope.writer, allowDrastic=True)
                 if not result.get("ok"):
                     return {"status": "rejected", "reason": result.get("message", "Native forgetting rejected")}
+            elif check_current is not None:
+                check_current(connection)
             connection.execute("UPDATE records SET status='forgotten',revision=revision+1,updated=? WHERE id=?", (_now(), row["id"]))
             return {"status": "committed", "reference": {"id": row["id"], "revision": row["revision"] + 1},
                     "retained": ["native history", "audit evidence", "backups", "conversation history", "development logs"]}

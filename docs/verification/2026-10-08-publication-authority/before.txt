@@ -1,0 +1,150 @@
+test_explicit_accept_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_accept_refuses_authority_revoked_during_validation) ... FAIL
+test_explicit_archive_correction_refuses_authority_revoked_during_routing (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_archive_correction_refuses_authority_revoked_during_routing) ... ok
+test_explicit_archive_forget_refuses_authority_revoked_after_content_read (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_archive_forget_refuses_authority_revoked_after_content_read) ... FAIL
+test_explicit_archive_remember_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_archive_remember_refuses_authority_revoked_during_validation) ... ok
+test_explicit_hot_correction_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_hot_correction_refuses_authority_revoked_during_validation) ... FAIL
+test_explicit_hot_forget_refuses_authority_revoked_after_native_read (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_hot_forget_refuses_authority_revoked_after_native_read) ... ok
+test_explicit_hot_remember_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_hot_remember_refuses_authority_revoked_during_validation) ... ok
+test_native_accept_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_accept_refuses_authority_revoked_during_validation) ... FAIL
+test_native_add_set_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_add_set_refuses_authority_revoked_during_validation) ... FAIL
+test_native_archive_add_refuses_authority_revoked_during_routing (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_archive_add_refuses_authority_revoked_during_routing) ... FAIL
+test_native_hot_add_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_hot_add_refuses_authority_revoked_during_validation) ... FAIL
+test_native_hot_set_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_hot_set_refuses_authority_revoked_during_validation) ... FAIL
+test_native_reject_refuses_authority_revoked_after_queue_read (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_reject_refuses_authority_revoked_after_queue_read) ... FAIL
+test_unchanged_authority_allows_a_real_native_write (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_unchanged_authority_allows_a_real_native_write) ... ok
+
+======================================================================
+FAIL: test_explicit_accept_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_accept_refuses_authority_revoked_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 84, in test_explicit_accept_refuses_authority_revoked_during_validation
+    self.decision('accept', interface='explicit')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 72, in decision
+    self.run_request(operation, {'reference': reference, 'decision': decision,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'request_id': 'publication-authority'}, trigger, interface=interface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'proposal_decision'} is not false : {'result': {'status': 'unavailable', 'reason': 'This memory conversation changes during the request'}, 'actions': ['proposal_read', 'validate', 'authority_revoked', 'proposal_decision'], 'revoked': True}
+
+======================================================================
+FAIL: test_explicit_archive_forget_refuses_authority_revoked_after_content_read (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_archive_forget_refuses_authority_revoked_after_content_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 124, in test_explicit_archive_forget_refuses_authority_revoked_after_content_read
+    self.change('project', 'forget', 'content_read')
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 109, in change
+    self.run_request('lifeos_memory_' + operation, arguments, trigger, interface='explicit')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 33, in run_request
+    self.assertTrue(receipt['revoked'], receipt)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'result': {'status': 'committed', 'reference': {'id': '41b3218f7f504d3984a54689df98cb26', 'revision': 2}, 'retained': ['native history', 'audit evidence', 'backups', 'conversation history', 'development logs'], 'writer': 'chat-a:100', 'request_id': 'publication-authority'}, 'actions': [], 'revoked': False}
+
+======================================================================
+FAIL: test_explicit_hot_correction_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_explicit_hot_correction_refuses_authority_revoked_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 115, in test_explicit_hot_correction_refuses_authority_revoked_during_validation
+    self.change('principal', 'correct', 'validate')
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 109, in change
+    self.run_request('lifeos_memory_' + operation, arguments, trigger, interface='explicit')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'set_hot'} is not false : {'result': {'status': 'unavailable', 'reason': 'This memory conversation changes during the request'}, 'actions': ['read_hot', 'read_hot', 'read_hot', 'content_read', 'validate', 'authority_revoked', 'set_hot'], 'revoked': True}
+
+======================================================================
+FAIL: test_native_accept_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_accept_refuses_authority_revoked_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 78, in test_native_accept_refuses_authority_revoked_during_validation
+    self.decision('accept')
+    ~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 72, in decision
+    self.run_request(operation, {'reference': reference, 'decision': decision,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'request_id': 'publication-authority'}, trigger, interface=interface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'proposal_decision'} is not false : {'result': {'ok': True, 'row': {'id': 'muzjeppd-0crafx', 'ts': '2026-10-08T12:53:15.554Z', 'status': 'accepted', 'target_file': '/tmp/native-memory-iu4ffmfw/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md', 'target_kind': 'operational-rule', 'edit': 'Always confirm before deploying changes to production.', 'confidence': 0.5, 'rationale': 'Synthetic explicit owner preference.', 'observed_across_sessions': 1, 'source_session': None, 'resolved_at': '2026-10-08T12:53:15.812Z', 'applied_edit': 'Always confirm before deploying changes to production.'}, 'receipt': {'status': 'committed', 'proposal_status': 'accepted', 'proposal_reference': {'id': 'muzjeppd-0crafx', 'revision': 2}, 'destination': '/tmp/native-memory-iu4ffmfw/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md', 'creator': 'local:owner', 'writer': 'chat-a:100', 'request_id': 'publication-authority'}, 'reason': ''}, 'actions': ['proposal_read', 'validate', 'authority_revoked', 'proposal_decision', 'proposal_read'], 'revoked': True}
+
+======================================================================
+FAIL: test_native_add_set_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_add_set_refuses_authority_revoked_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 65, in test_native_add_set_refuses_authority_revoked_during_validation
+    self.run_request('add', arguments, 'validate')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'set_hot'} is not false : {'result': {'ok': True, 'type': 'memory', 'path': '/tmp/native-memory-796f3cd6/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md', 'detail': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker'], 'receipt': {'status': 'committed', 'references': [{'id': '1562b169fe934af6bfd926821b5f4188', 'revision': 1}], 'detail': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker']}, 'writer': 'chat-a:100', 'request_id': 'publication-authority'}}, 'receipt': {'status': 'committed', 'references': [{'id': '1562b169fe934af6bfd926821b5f4188', 'revision': 1}], 'detail': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker']}, 'writer': 'chat-a:100', 'request_id': 'publication-authority'}}, 'actions': ['validate', 'authority_revoked', 'read_hot', 'validate', 'set_hot', 'read_hot'], 'revoked': True}
+
+======================================================================
+FAIL: test_native_archive_add_refuses_authority_revoked_during_routing (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_archive_add_refuses_authority_revoked_during_routing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 51, in test_native_archive_add_refuses_authority_revoked_during_routing
+    self.run_request('add', self.add_arguments(item), 'route')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'add'} is not false : {'result': {'ok': True, 'type': 'knowledge', 'path': '/tmp/native-memory-ddxqoj83/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-authority.md', 'detail': {'bytes_written': 350, 'created_or_appended': 'created', 'related_links': 0}, 'receipt': {'status': 'committed', 'reference': {'id': '1b58c75f175d40adaa4af037cd23af12', 'revision': 1}, 'detail': {'bytes_written': 350, 'created_or_appended': 'created', 'related_links': 0}, 'writer': 'chat-a:100', 'request_id': 'publication-authority'}}, 'actions': ['validate', 'validate', 'route', 'authority_revoked', 'validate', 'route', 'add'], 'revoked': True}
+
+======================================================================
+FAIL: test_native_hot_add_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_hot_add_refuses_authority_revoked_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 45, in test_native_hot_add_refuses_authority_revoked_during_validation
+    self.run_request('add', self.add_arguments(item), 'validate')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'set_hot'} is not false : {'result': {'ok': True, 'type': 'memory', 'path': '/tmp/native-memory-su6j58t5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md', 'detail': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker']}, 'receipt': {'status': 'committed', 'references': [{'id': 'a50268cca8a14afe848e06f603cfbd41', 'revision': 1}], 'detail': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker']}, 'writer': 'chat-a:100', 'request_id': 'publication-authority'}}, 'actions': ['validate', 'authority_revoked', 'validate', 'route', 'validate', 'read_hot', 'read_hot', 'validate', 'set_hot', 'read_hot'], 'revoked': True}
+
+======================================================================
+FAIL: test_native_hot_set_refuses_authority_revoked_during_validation (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_hot_set_refuses_authority_revoked_during_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 57, in test_native_hot_set_refuses_authority_revoked_during_validation
+    self.run_request('set', {'path': str(path), 'entries': ['RULE: Synthetic current authority marker'],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'request_id': 'publication-authority', 'observed_revision': revision, 'allow_drastic': False}, 'validate')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'set_hot'} is not false : {'result': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker'], 'receipt': {'status': 'committed', 'references': [{'id': '75037937385341b8a121eaaf768aead2', 'revision': 1}], 'detail': {'ok': True, 'accepted': 1, 'dropped_malformed': 0, 'dropped_overlength': 0, 'dropped_duplicates': 0, 'prior_count': 0, 'new_count': 1, 'evictions': [], 'additions': ['RULE: Synthetic current authority marker']}, 'writer': 'chat-a:100', 'request_id': 'publication-authority'}}, 'actions': ['read_hot', 'validate', 'authority_revoked', 'set_hot', 'read_hot'], 'revoked': True}
+
+======================================================================
+FAIL: test_native_reject_refuses_authority_revoked_after_queue_read (test_memory_publication_authority.MemoryPublicationAuthorityTests.test_native_reject_refuses_authority_revoked_after_queue_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 81, in test_native_reject_refuses_authority_revoked_after_queue_read
+    self.decision('reject', trigger='proposal_read')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 72, in decision
+    self.run_request(operation, {'reference': reference, 'decision': decision,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'request_id': 'publication-authority'}, trigger, interface=interface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_publication_authority.py", line 35, in run_request
+    self.assertFalse(set(after) & {'add', 'set_hot', 'proposal_decision'}, receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'proposal_decision'} is not false : {'result': {'ok': True, 'row': {'id': 'muzjesd3-q6fu7d', 'ts': '2026-10-08T12:53:19.002Z', 'status': 'rejected', 'target_file': '/tmp/native-memory-7r81exyp/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md', 'target_kind': 'operational-rule', 'edit': 'Always confirm before deploying changes to production.', 'confidence': 0.5, 'rationale': 'Synthetic explicit owner preference.', 'observed_across_sessions': 1, 'source_session': None, 'resolved_at': '2026-10-08T12:53:19.168Z'}, 'receipt': {'status': 'committed', 'proposal_status': 'rejected', 'proposal_reference': {'id': 'muzjesd3-q6fu7d', 'revision': 2}, 'destination': '/tmp/native-memory-7r81exyp/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md', 'creator': 'local:owner', 'writer': 'chat-a:100', 'request_id': 'publication-authority'}, 'reason': ''}, 'actions': ['proposal_read', 'authority_revoked', 'proposal_decision', 'proposal_read'], 'revoked': True}
+
+----------------------------------------------------------------------
+Ran 14 tests in 10.269s
+
+FAILED (failures=9)

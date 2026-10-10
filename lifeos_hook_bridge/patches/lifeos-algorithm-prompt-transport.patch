@@ -1,0 +1,44 @@
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
+--- a/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts
+@@ -38,6 +38,7 @@
+  * writer refuses to overwrite an existing v*.md.
+  */
+ import { memoryHTTPAlgorithmTabView, memoryAccess, memoryObject, startOwnerMemoryJob } from "../../TOOLS/lib/MemoryAccess";
++import { inference as nativeInference } from "../../TOOLS/Inference";
+ import { createHash } from "node:crypto";
+ import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
+ import { homedir } from "node:os";
+@@ -48,7 +49,6 @@
+ const LIFEOS_DIR = join(HOME, "LIFEOS");
+ const ALGO_DIR = join(LIFEOS_DIR, "ALGORITHM");
+ const STATE_PATH = join(LIFEOS_DIR, "MEMORY", "STATE", "algorithm-tab-summary.json");
+-const INFERENCE = join(LIFEOS_DIR, "TOOLS", "Inference.ts");
+ // The USER tree is a symlink into the private USER-data repo — commits for
+ // files that resolve there must land in THAT repo, not ~/.claude.
+ const USER_REPO = join(homedir(), ".config", "LIFEOS", "USER");
+@@ -320,20 +320,13 @@
+ /* ── Inference ── */
+ 
+ async function inference(level: "low" | "high", system: string, user: string, timeoutMs: number, managed = false): Promise<string | null> {
+-  const proc = Bun.spawn(
+-    ["bun", INFERENCE, "--level", level, "--timeout", String(timeoutMs), system, user],
+-    { stdout: "pipe", stderr: "pipe" },
+-  );
+-  const [out, err, code] = await Promise.all([
+-    new Response(proc.stdout).text(),
+-    new Response(proc.stderr).text(),
+-    proc.exited,
+-  ]);
+-  if (code !== 0 || !out.trim()) {
++  const result = await nativeInference({level, systemPrompt: system, userPrompt: user, timeout: timeoutMs});
++  if (!result.success || !result.output.trim()) {
+     console.log(managed ? `[${MODULE_NAME}] inference(${level}) unavailable`
+-      : `[${MODULE_NAME}] inference(${level}) failed (exit ${code}): ${err.slice(0, 300)}`);
++      : `[${MODULE_NAME}] inference(${level}) failed: ${(result.error ?? "Empty model output").slice(0, 300)}`);
+     return null;
+   }
++  const out = result.output;
+   // Strip trailing meta-commentary paragraphs the subprocess sometimes appends.
+   const paras = out.trim().split(/\n{2,}/);
+   while (paras.length > 1 && /^[*_(\s]*Note[:\s]/i.test(paras[paras.length - 1])) paras.pop();

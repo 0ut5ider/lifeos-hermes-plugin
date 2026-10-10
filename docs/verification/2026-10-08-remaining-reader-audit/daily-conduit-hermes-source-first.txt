@@ -1,0 +1,30 @@
+test_actual_hermes_isa_hook_produces_the_work_events_that_scheduled_capture_consumes (test_daily_conduit_capture.DailyConduitCaptureTests.test_actual_hermes_isa_hook_produces_the_work_events_that_scheduled_capture_consumes) ... FAIL
+
+======================================================================
+FAIL: test_actual_hermes_isa_hook_produces_the_work_events_that_scheduled_capture_consumes (test_daily_conduit_capture.DailyConduitCaptureTests.test_actual_hermes_isa_hook_produces_the_work_events_that_scheduled_capture_consumes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_conduit_capture.py", line 104, in test_actual_hermes_isa_hook_produces_the_work_events_that_scheduled_capture_consumes
+    self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, '/home/outsider/.cache/lifeos-daily-text-2[280 chars]H\n') != (0, '')
+
+First differing element 1:
+'/home/outsider/.cache/lifeos-daily-text-2[279 chars]TH\n'
+''
+
++ (0, '')
+- (0,
+-  '/home/outsider/.cache/lifeos-daily-text-20261007/conduit-capture-first/hermes/pm/shell.py:13: '
+-  'SyntaxWarning: "\\W" is an invalid escape sequence. Such sequences will not '
+-  'work in the future. Did you mean "\\\\W"? A raw string is also an option.\n'
+-  '  minus C:\\Windows\\System32\\bash.exe (the WSL launcher stub, first on '
+-  'PATH\n') : {"events": [{"v": 1, "ts": "2026-10-10T01:29:25.697Z", "slug": "synthetic-conduit-hermes", "op": "upsert", "src": "ISASync.hook.ts", "fields": {"isa": "/tmp/native-memory-mov3qr7w/.config/LIFEOS/USER/MEMORY/WORK/synthetic-conduit-hermes/ISA.md", "task": "Synthetic Conduit Hermes work", "sessionName": "Synthetic Conduit Hermes work", "sessionUUID": "synthetic-conduit-hermes-work", "phase": "observe", "progress": "0/1", "started": "2026-10-10T01:29:25.346549+00:00", "updatedAt": "2026-10-10T01:29:25.694Z", "criteria": [{"id": "ISC-1", "description": "Record synthetic work activity", "type": "criterion", "status": "pending", "createdInPhase": "OBSERVE"}], "ratings": [], "intent": "- [ ] ISC-1: Record synthetic work activity", "bodyHash": "312a8ef3462b63c32627cd79d6047b56a91fc39766d8024f3eee82b2d0a35fe4", "lastBodySize": 171, "ascent": {"key": "marking", "icon": "\ud83d\udcd0", "label": "Marking", "color": "#7aa2f7"}}, "uuid": "synthetic-conduit-hermes-work"}], "registry": {"sessions": {"synthetic-conduit-hermes": {"isa": "/tmp/native-memory-mov3qr7w/.config/LIFEOS/USER/MEMORY/WORK/synthetic-conduit-hermes/ISA.md", "task": "Synthetic Conduit Hermes work", "sessionName": "Synthetic Conduit Hermes work", "sessionUUID": "synthetic-conduit-hermes-work", "phase": "observe", "progress": "0/1", "started": "2026-10-10T01:29:25.346549+00:00", "updatedAt": "2026-10-10T01:29:25.694Z", "criteria": [{"id": "ISC-1", "description": "Record synthetic work activity", "type": "criterion", "status": "pending", "createdInPhase": "OBSERVE"}], "ratings": [], "intent": "- [ ] ISC-1: Record synthetic work activity", "bodyHash": "312a8ef3462b63c32627cd79d6047b56a91fc39766d8024f3eee82b2d0a35fe4", "lastBodySize": 171, "ascent": {"key": "marking", "icon": "\ud83d\udcd0", "label": "Marking", "color": "#7aa2f7"}}}, "_events_offset": 894, "_folded_at": "2026-10-10T01:29:25.698Z"}, "tool_context": "<lifeos-ascent-delta>\nThe run's derived ascent state changed (computed by ISASync through the same deriveAscent() every dashboard surface reads). Lead the next visible status note with this phase strip VERBATIM, exactly once. Never compute a strip yourself:\n\u2550\u2550\u2550\u2550 LifeOS | Algorithm | \ud83d\udcd0 Marking \u2550\u2550\u2550\u2550\n</lifeos-ascent-delta>", "diagnostics": ""}
+/home/outsider/.cache/lifeos-daily-text-20261007/conduit-capture-first/hermes/pm/shell.py:13: SyntaxWarning: "\W" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\W"? A raw string is also an option.
+  minus C:\Windows\System32\bash.exe (the WSL launcher stub, first on PATH
+
+
+----------------------------------------------------------------------
+Ran 1 test in 4.016s
+
+FAILED (failures=1)

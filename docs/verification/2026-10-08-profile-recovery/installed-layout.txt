@@ -1,0 +1,47 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import os, sys, runpy; os.environ.pop('PYTHONHOME', None); os.environ.pop('PYTHONPATH', None); os.environ.pop('VIRTUAL_ENV', None); sys.path.insert(0, '/home/lifeos-hermes/workspace/hermes-agent'); os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(__import__('hermes_constants').get_default_hermes_root()); import hermes_bootstrap; exec("runpy.run_path('/home/lifeos-hermes/migration/2026-10-08/prepare_profile_installation.py', run_name='__main__')")
+                                                                                                                                                                                                                                                                                                                                                               ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+    import os, sys, runpy; os.environ.pop('PYTHONHOME', None); os.environ.pop('PYTHONPATH', None); os.environ.pop('VIRTUAL_ENV', None); sys.path.insert(0, '/home/lifeos-hermes/workspace/hermes-agent'); os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(__import__('hermes_constants').get_default_hermes_root()); import hermes_bootstrap; exec("runpy.run_path('/home/lifeos-hermes/migration/2026-10-08/prepare_profile_installation.py', run_name='__main__')")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/lifeos-hermes/migration/2026-10-08/prepare_profile_installation.py", line 87, in <module>
+    receipt['backup']=create(configuration,snapshot,account='dashboard:basic:release-owner')
+                      ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/workspace/plugin-release/lifeos_hook_bridge/profile_backup.py", line 196, in create
+    native, native_signature = capture(memory, scope, connection, stage / 'native')
+                               ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/workspace/plugin-release/lifeos_hook_bridge/memory_backup.py", line 130, in capture
+    _check_references(memory, connection)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/workspace/plugin-release/lifeos_hook_bridge/memory_backup.py", line 119, in _check_references
+    hot_entries = {memory._path(relative): memory._hot_snapshot(connection, category)['entries']
+                                           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/workspace/plugin-release/lifeos_hook_bridge/memory_access.py", line 480, in _hot_snapshot
+    snapshot = self._native("read_hot", path=str(path))
+  File "/home/lifeos-hermes/workspace/plugin-release/lifeos_hook_bridge/memory_access.py", line 149, in _native
+    result = subprocess.run([self.bun, "--no-install", str(self.worker), str(self.root)],
+                            input=json.dumps({"action": action, **values}), text=True,
+                            capture_output=True, timeout=30, env=environment, cwd=self.root,
+                            pass_fds=self.transaction.inherited_descriptors())
+  File "/home/lifeos-hermes/workspace/plugin-release/development/hook_capture/instrument.py", line 637, in run
+    return original(*args, **kwargs)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'bun'

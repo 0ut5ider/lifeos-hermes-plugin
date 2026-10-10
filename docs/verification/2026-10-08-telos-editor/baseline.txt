@@ -1,0 +1,50 @@
+FFEEF
+======================================================================
+ERROR: test_missing_file_read_can_create_one_declared_file (test_memory_telos_editor.MemoryTelosEditorTests.test_missing_file_read_can_create_one_declared_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_telos_editor.py", line 86, in test_missing_file_read_can_create_one_declared_file
+    'content': '# SyntheticNewEditorFile\n', 'reference': body['reference'],
+                                                          ~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+ERROR: test_owner_saves_only_the_current_reviewed_reference_privately (test_memory_telos_editor.MemoryTelosEditorTests.test_owner_saves_only_the_current_reviewed_reference_privately)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_telos_editor.py", line 57, in test_owner_saves_only_the_current_reviewed_reference_privately
+    'reference': before['reference'], 'request_id': 'synthetic-owner-edit'}
+                 ~~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+FAIL: test_anonymous_read_and_write_refuse_before_disclosing_or_changing_file (test_memory_telos_editor.MemoryTelosEditorTests.test_anonymous_read_and_write_refuse_before_disclosing_or_changing_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_telos_editor.py", line 44, in test_anonymous_read_and_write_refuse_before_disclosing_or_changing_file
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"name":"GOALS.md","content":"# SyntheticEditableTelosGoal\nSynthetic current goal\n","mtime":"2026-10-08T21:58:18.122Z","missing":false}
+
+======================================================================
+FAIL: test_current_owner_read_preserves_native_file_fields (test_memory_telos_editor.MemoryTelosEditorTests.test_current_owner_read_preserves_native_file_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_telos_editor.py", line 37, in test_current_owner_read_preserves_native_file_fields
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_source_is_withheld_without_changing_its_bytes (test_memory_telos_editor.MemoryTelosEditorTests.test_private_source_is_withheld_without_changing_its_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_telos_editor.py", line 74, in test_private_source_is_withheld_without_changing_its_bytes
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"name":"GOALS.md","content":"# SyntheticPrivateEditor\n<private>Synthetic withheld editor body</private>\n","mtime":"2026-10-08T21:58:22.046Z","missing":false}
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.944s
+
+FAILED (failures=3, errors=2)

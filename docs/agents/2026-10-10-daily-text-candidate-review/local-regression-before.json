@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_memory_local_refresh_publication.MemoryLocalRefreshPublicationTests.test_source_change_after_digest_write_retains_recovery_and_later_identity"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 2.021272897720337,
+  "stdout": "",
+  "stderr": "F\n======================================================================\nFAIL: test_source_change_after_digest_write_retains_recovery_and_later_identity (test_memory_local_refresh_publication.MemoryLocalRefreshPublicationTests.test_source_change_after_digest_write_retains_recovery_and_later_identity)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_publication.py\", line 74, in test_source_change_after_digest_write_retains_recovery_and_later_identity\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 1 test in 1.922s\n\nFAILED (failures=1)\n"
+}

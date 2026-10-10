@@ -1,0 +1,28 @@
+....E...E
+======================================================================
+ERROR: test_large_media_journal_keeps_metadata_without_media_bytes (test_memory_moves.MemoryMoveTests.test_large_media_journal_keeps_metadata_without_media_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_moves.py", line 135, in test_large_media_journal_keeps_metadata_without_media_bytes
+    entries=self.entries()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_moves.py", line 43, in entries
+    return [{'source':'inbox:source','destination':'trash:source','digest':fingerprint(self.source),'remove':False},
+                                                                           ~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_moves.py", line 38, in fingerprint
+    raise MemoryUnavailable('Content media changes during disposal admission')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Content media changes during disposal admission
+
+======================================================================
+ERROR: test_read_access_time_change_does_not_reject_unchanged_owner_media (test_memory_moves.MemoryMoveTests.test_read_access_time_change_does_not_reject_unchanged_owner_media)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_moves.py", line 58, in test_read_access_time_change_does_not_reject_unchanged_owner_media
+    digest=fingerprint(self.source)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_moves.py", line 38, in fingerprint
+    raise MemoryUnavailable('Content media changes during disposal admission')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Content media changes during disposal admission
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.041s
+
+FAILED (errors=2)

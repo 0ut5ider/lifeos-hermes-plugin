@@ -1,0 +1,13 @@
+# Algorithm views and exception propagation
+
+2026-10-09. The original five-case Algorithm baseline has ten failed assertions. The expanded twelve-case baseline has twenty-four failed assertions. Anonymous reads expose the synthetic principal rules and cached summary. Native warm-cache controls preserve actual hashing, chain order, claims, file fields, and version metadata without calling inference. The two-case metadata baseline has one failure. The native summary migration characterization passes.
+
+The managed renderer receives admitted source text and metadata. It reuses native parsing, hashing, composition, and file selection. The main view admits the selected chain and summary cache. An independent file request does not read unrelated cache text. Historical version listing admits metadata and does not read historical file bodies. A private historical file therefore does not block the version list, while an explicit request for its text refuses.
+
+The first candidate passes fourteen focused cases in 41.410 seconds. Extended checks cover missing and malformed summary state, prior summary schema, bounded version discovery, redirected version metadata, and missing current doctrine. Managed reads do not trigger raw background inference. Restoring governed generation and file publication remains a release blocker.
+
+Extracting the file branch exposes an unmanaged exception regression. The original native directory fixture returns HTTP 500 with the error text `Directories cannot be read like files`. The extracted branch returns a promise inside `try`. The promise rejects after the function leaves `try`, so the catch cannot convert the failure into an HTTP response. The corrected characterization records process exit 1. Returning `await fileView(req)` keeps the rejection inside the existing catch. The test uses the actual original and candidate handlers, with no managed connector and no model program.
+
+The initial three-case edge probe has one assertion error because it expects lowercase `directory` inside native `Directories`. The corrected probe establishes the actual regression before its fix. The missing-doctrine comparison passes without a code change: the native chain loop replaces the earlier doctrine error with its fixed missing-file message.
+
+The second candidate passes all eighteen focused cases in 59.794 seconds. All 386 neighboring checks pass in 670.108 seconds without skips. Strict frontend typing, source preparation, and the dashboard build pass. The existing workspace-root and Tailwind utility warnings remain recorded. Final source identities match. No server or model endpoint is changed or used. Governed editing and generation remain required before release.

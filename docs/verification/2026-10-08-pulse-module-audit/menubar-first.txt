@@ -1,0 +1,401 @@
+test_admitted_daemon_job_counts_preserve_native_metadata (test_memory_menubar.MemoryMenubarTests.test_admitted_daemon_job_counts_preserve_native_metadata) ... ERROR
+test_admitted_daemon_job_counts_preserve_native_metadata (test_memory_menubar.MemoryMenubarTests.test_admitted_daemon_job_counts_preserve_native_metadata) ... FAIL
+test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write) ... ERROR
+test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write) ... FAIL
+test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_menubar.MemoryMenubarTests.test_current_owner_origin_bearer_and_connector_govern_delivery) ... ERROR
+test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_menubar.MemoryMenubarTests.test_current_owner_origin_bearer_and_connector_govern_delivery) ... FAIL
+test_managed_direct_conduit_accessor_requires_admitted_inputs (test_memory_menubar.MemoryMenubarTests.test_managed_direct_conduit_accessor_requires_admitted_inputs) ... ERROR
+test_managed_direct_conduit_accessor_requires_admitted_inputs (test_memory_menubar.MemoryMenubarTests.test_managed_direct_conduit_accessor_requires_admitted_inputs) ... FAIL
+test_original_native_payload_counts_feed_and_initialization_characterization (test_memory_menubar.MemoryMenubarTests.test_original_native_payload_counts_feed_and_initialization_characterization) ... ERROR
+test_original_native_payload_counts_feed_and_initialization_characterization (test_memory_menubar.MemoryMenubarTests.test_original_native_payload_counts_feed_and_initialization_characterization) ... FAIL
+test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload) ... ERROR
+test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload) ... FAIL
+test_private_gateway_metadata_refuses_without_reading_credentials (test_memory_menubar.MemoryMenubarTests.test_private_gateway_metadata_refuses_without_reading_credentials) ... ERROR
+test_private_gateway_metadata_refuses_without_reading_credentials (test_memory_menubar.MemoryMenubarTests.test_private_gateway_metadata_refuses_without_reading_credentials) ... FAIL
+test_private_or_retired_telemetry_does_not_contribute_counts (test_memory_menubar.MemoryMenubarTests.test_private_or_retired_telemetry_does_not_contribute_counts) ... ERROR
+test_private_or_retired_telemetry_does_not_contribute_counts (test_memory_menubar.MemoryMenubarTests.test_private_or_retired_telemetry_does_not_contribute_counts) ... FAIL
+test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels) ... ERROR
+test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels) ... FAIL
+test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) ... ERROR
+test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses) ... FAIL
+test_unknown_methods_and_public_selectors_refuse (test_memory_menubar.MemoryMenubarTests.test_unknown_methods_and_public_selectors_refuse) ... ERROR
+test_unknown_methods_and_public_selectors_refuse (test_memory_menubar.MemoryMenubarTests.test_unknown_methods_and_public_selectors_refuse) ... FAIL
+
+======================================================================
+ERROR: test_admitted_daemon_job_counts_preserve_native_metadata (test_memory_menubar.MemoryMenubarTests.test_admitted_daemon_job_counts_preserve_native_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_menubar.MemoryMenubarTests.test_current_owner_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_managed_direct_conduit_accessor_requires_admitted_inputs (test_memory_menubar.MemoryMenubarTests.test_managed_direct_conduit_accessor_requires_admitted_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_original_native_payload_counts_feed_and_initialization_characterization (test_memory_menubar.MemoryMenubarTests.test_original_native_payload_counts_feed_and_initialization_characterization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_private_gateway_metadata_refuses_without_reading_credentials (test_memory_menubar.MemoryMenubarTests.test_private_gateway_metadata_refuses_without_reading_credentials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_private_or_retired_telemetry_does_not_contribute_counts (test_memory_menubar.MemoryMenubarTests.test_private_or_retired_telemetry_does_not_contribute_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+ERROR: test_unknown_methods_and_public_selectors_refuse (test_memory_menubar.MemoryMenubarTests.test_unknown_methods_and_public_selectors_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_menubar.py", line 33, in setUp
+    relay_fixture.MemoryPulseRelayTests.setUp(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 71, in setUp
+    self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+                                      ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+
+======================================================================
+FAIL: test_admitted_daemon_job_counts_preserve_native_metadata (test_memory_menubar.MemoryMenubarTests.test_admitted_daemon_job_counts_preserve_native_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_anonymous_reader_refuses_labels_counts_and_implicit_write (test_memory_menubar.MemoryMenubarTests.test_anonymous_reader_refuses_labels_counts_and_implicit_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_current_owner_origin_bearer_and_connector_govern_delivery (test_memory_menubar.MemoryMenubarTests.test_current_owner_origin_bearer_and_connector_govern_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_managed_direct_conduit_accessor_requires_admitted_inputs (test_memory_menubar.MemoryMenubarTests.test_managed_direct_conduit_accessor_requires_admitted_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_original_native_payload_counts_feed_and_initialization_characterization (test_memory_menubar.MemoryMenubarTests.test_original_native_payload_counts_feed_and_initialization_characterization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_owner_admitted_fields_match_actual_native_payload (test_memory_menubar.MemoryMenubarTests.test_owner_admitted_fields_match_actual_native_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_private_gateway_metadata_refuses_without_reading_credentials (test_memory_menubar.MemoryMenubarTests.test_private_gateway_metadata_refuses_without_reading_credentials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_private_or_retired_telemetry_does_not_contribute_counts (test_memory_menubar.MemoryMenubarTests.test_private_or_retired_telemetry_does_not_contribute_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_private_work_source_refuses_cached_personal_labels (test_memory_menubar.MemoryMenubarTests.test_private_work_source_refuses_cached_personal_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_redirected_invalid_or_excessive_work_source_refuses (test_memory_menubar.MemoryMenubarTests.test_redirected_invalid_or_excessive_work_source_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_unknown_methods_and_public_selectors_refuse (test_memory_menubar.MemoryMenubarTests.test_unknown_methods_and_public_selectors_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '3 | #!/usr/bin/env bun\n    ^\nerror: Syn[155 chars]4)\n' != ''
+- 3 | #!/usr/bin/env bun
+-     ^
+- error: Syntax Error
+-     at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+- 
+- Bun v1.3.14 (Linux x64)
+ : 3 | #!/usr/bin/env bun
+    ^
+error: Syntax Error
+    at /home/outsider/.cache/lifeos-daily-text-20261007/menubar-first/lifeos/LifeOS/install/LIFEOS/HERMES/Health.ts:3:1
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 11 tests in 9.736s
+
+FAILED (failures=11, errors=11)

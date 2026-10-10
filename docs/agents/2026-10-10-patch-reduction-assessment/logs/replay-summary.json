@@ -1,0 +1,235 @@
+{
+  "replay": {
+    "hermes": {
+      "steps": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-web-result-status.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "hermes-protected-instruction-approval.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        }
+      ],
+      "paths": 83,
+      "prepared_mismatches": [],
+      "source_only_mismatches": []
+    },
+    "lifeos": {
+      "steps": [
+        {
+          "patch": "lifeos-task-governance.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-agent-watchdog.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-terminal-audit.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-checkpoint-verification.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-failure-capture.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-remote-desktop-gate.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-remote-isa-view.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-model-rung-effort.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-hermes-carrier-probe.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-memory-access.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-mount-yaml-blocks.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-config-audit.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-shell-literal-guard.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-pulse-hook-switch.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-evaluation-publication.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-system-surface.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-version-drift-state.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-work-learning-identity.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-completion-state.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-render-inference.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-feedback-admission.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-reminder-publication.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-review-admission.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-algorithm-prompt-transport.patch",
+          "independent_applies": false,
+          "ordered_applies": true
+        },
+        {
+          "patch": "lifeos-content-response-consumption.patch",
+          "independent_applies": true,
+          "ordered_applies": true
+        }
+      ],
+      "paths": 393,
+      "prepared_mismatches": [],
+      "source_only_mismatches": []
+    }
+  },
+  "overlaps": {
+    "hermes": {},
+    "lifeos": {
+      "LifeOS/install/LIFEOS/HERMES/Mount.ts": [
+        "lifeos-memory-access.patch",
+        "lifeos-mount-yaml-blocks.patch"
+      ],
+      "LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts": [
+        "lifeos-memory-access.patch",
+        "lifeos-algorithm-prompt-transport.patch"
+      ],
+      "LifeOS/install/LIFEOS/PULSE/pulse.ts": [
+        "lifeos-memory-access.patch",
+        "lifeos-pulse-hook-switch.patch"
+      ],
+      "LifeOS/install/LIFEOS/TOOLS/Inference.ts": [
+        "lifeos-memory-access.patch",
+        "lifeos-render-inference.patch"
+      ],
+      "LifeOS/install/hooks/EventLogger.hook.ts": [
+        "lifeos-terminal-audit.patch",
+        "lifeos-config-audit.patch"
+      ],
+      "LifeOS/install/hooks/MemoryTurnStart.hook.ts": [
+        "lifeos-memory-access.patch",
+        "lifeos-completion-state.patch"
+      ]
+    }
+  },
+  "totals": {
+    "patches": 36,
+    "bytes": 10269223,
+    "generated_patch_bytes": 9153133,
+    "hunks": 1442,
+    "added": 11490,
+    "deleted": 2731
+  }
+}

@@ -1,0 +1,16 @@
+test_unprojectable_or_nested_private_update_cannot_leave_an_older_item (test_memory_content.MemoryContentTests.test_unprojectable_or_nested_private_update_cannot_leave_an_older_item) ... 
+  test_unprojectable_or_nested_private_update_cannot_leave_an_older_item (test_memory_content.MemoryContentTests.test_unprojectable_or_nested_private_update_cannot_leave_an_older_item) (mode='field_limit') ... FAIL
+
+======================================================================
+FAIL: test_unprojectable_or_nested_private_update_cannot_leave_an_older_item (test_memory_content.MemoryContentTests.test_unprojectable_or_nested_private_update_cannot_leave_an_older_item) (mode='field_limit')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content.py", line 288, in test_unprojectable_or_nested_private_update_cannot_leave_an_older_item
+    self.assertEqual(response.status_code, 503, response.text[:250])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"columns": ["inbox", "prep", "produce", "review", "publishing", "done"], "legs": ["youtube", "shorts", "social", "omny", "discord"], "items": [{"id": "synthetic1", "title": "SyntheticContentCurrent1", "path": "/synthetic/source-1", "created": "2026-
+
+----------------------------------------------------------------------
+Ran 1 test in 2.092s
+
+FAILED (failures=1)

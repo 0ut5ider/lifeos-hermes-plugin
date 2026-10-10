@@ -1,0 +1,15 @@
+test_recovery_preserves_a_later_edit_to_an_interrupted_record (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_recovery_preserves_a_later_edit_to_an_interrupted_record) ... FAIL
+
+======================================================================
+FAIL: test_recovery_preserves_a_later_edit_to_an_interrupted_record (test_memory_upgrade_store.MemoryUpgradeStoreTests.test_recovery_preserves_a_later_edit_to_an_interrupted_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_upgrade_store.py", line 235, in test_recovery_preserves_a_later_edit_to_an_interrupted_record
+    with self.assertRaisesRegex(MemoryUnavailable,'later'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.650s
+
+FAILED (failures=1)

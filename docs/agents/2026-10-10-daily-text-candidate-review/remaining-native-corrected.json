@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_memory_session_harvest",
+    "test_memory_conduit_capture",
+    "test_memory_atlas_insight",
+    "test_memory_local_refresh_publication",
+    "test_memory_algorithm_summary",
+    "test_memory_proposal_gc",
+    "test_memory_knowledge_harvest"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 110.33963871002197,
+  "stdout": "",
+  "stderr": "..........................................................................................F.....\n======================================================================\nFAIL: test_standalone_mining_preserves_native_staging_and_state (test_memory_knowledge_harvest.MemoryKnowledgeHarvestTests.test_standalone_mining_preserves_native_staging_and_state)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_harvest.py\", line 86, in test_standalone_mining_preserves_native_staging_and_state\n    self.assertEqual(result.returncode,0,result.stderr)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 0 : 21 |       return true;\n22 |     } catch (error: unknown) {\n23 |       if (!memoryObject(error) || error.code !== \"ENOENT\") throw error;\n24 |     }\n25 |   }\n26 |   if (\"LIFEOS_MEMORY_CONTEXT\" in process.env) throw new Error(\"The admitted native caller lost its memory connector\");\n                                                             ^\nerror: The admitted native caller lost its memory connector\n      at hasMemoryAccess (/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:26:57)\n      at /home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts:1519:10\n\nBun v1.3.14 (Linux x64)\n\n\n----------------------------------------------------------------------\nRan 96 tests in 110.243s\n\nFAILED (failures=1)\n"
+}

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-10-pr5-publication-targeted-review/probe_destination_families.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "revision": "cc14475fe36cf170d0afcffb1208b38044dfccaf",
+  "exit_code": 0,
+  "duration_seconds": 3.87904953956604,
+  "stdout": "[\n  {\n    \"kind\": \"local\",\n    \"response\": {\n      \"ok\": true,\n      \"summary\": {\n        \"filename\": \"2026-10-10_syntheticcity_tx_digest.json\",\n        \"latestSkipped\": false,\n        \"totalItems\": 1\n      }\n    },\n    \"receipts\": [\n      {\n        \"status\": \"committed\",\n        \"writer\": \"chat-a:100\",\n        \"request_id\": \"local-refresh-c0ac990a37d945ceb633983d55fa476a\"\n      }\n    ],\n    \"journal\": false,\n    \"destination_matches_requested\": false,\n    \"destination_matches_later\": true,\n    \"events\": [\n      \"/tmp/native-memory-a6ni27ru/.claude/LIFEOS/MEMORY/DATA/LocalIntelligence/2026-10-10_syntheticcity_tx_digest.json\"\n    ],\n    \"latest_match_requested\": [\n      true,\n      true\n    ],\n    \"fresh_transaction\": \"success\",\n    \"journal_after_recovery\": false,\n    \"receipts_after_recovery\": [\n      {\n        \"status\": \"committed\",\n        \"writer\": \"chat-a:100\",\n        \"request_id\": \"local-refresh-c0ac990a37d945ceb633983d55fa476a\"\n      }\n    ],\n    \"destination_still_matches_later\": true\n  },\n  {\n    \"kind\": \"conduit\",\n    \"response\": {\n      \"ok\": false,\n      \"code\": \"EINVAL_PATH\",\n      \"message\": \"Conduit insight destinations change before delivery\"\n    },\n    \"receipts\": [\n      {\n        \"status\": \"committed\",\n        \"writer\": \"chat-a:100\",\n        \"request_id\": \"conduit-insight-832d3771652846e398ed1f5abcb5c5c7\"\n      }\n    ],\n    \"journal\": false,\n    \"destination_matches_requested\": false,\n    \"destination_matches_later\": true,\n    \"events\": [\n      \"/tmp/native-memory-x5pxv_tf/.claude/LIFEOS/USER/CONDUIT/insights/2026-10-08.json\"\n    ],\n    \"config_exists\": true,\n    \"fresh_transaction\": \"success\",\n    \"journal_after_recovery\": false,\n    \"receipts_after_recovery\": [\n      {\n        \"status\": \"committed\",\n        \"writer\": \"chat-a:100\",\n        \"request_id\": \"conduit-insight-832d3771652846e398ed1f5abcb5c5c7\"\n      }\n    ],\n    \"destination_still_matches_later\": true\n  }\n]\n",
+  "stderr": "",
+  "probe_sha256": "81dab9ced0e27ae5c2759107dab9414a41ec0a917cb00746c3950d84c8db8f28"
+}

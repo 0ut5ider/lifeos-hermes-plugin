@@ -1,0 +1,35 @@
+test_failed_native_hash_backs_off_force_retries_and_source_change_retries (test_memory_algorithm_job_cooldown.MemoryAlgorithmCooldownTests.test_failed_native_hash_backs_off_force_retries_and_source_change_retries) ... FAIL
+test_failed_native_hash_backs_off_force_retries_and_source_change_retries (test_memory_algorithm_job_cooldown.MemoryAlgorithmCooldownTests.test_failed_native_hash_backs_off_force_retries_and_source_change_retries) ... FAIL
+
+======================================================================
+FAIL: test_failed_native_hash_backs_off_force_retries_and_source_change_retries (test_memory_algorithm_job_cooldown.MemoryAlgorithmCooldownTests.test_failed_native_hash_backs_off_force_retries_and_source_change_retries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_job_cooldown.py", line 53, in setUp
+    self.launch_lifetime_process(environment, daemon=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_jobs.py", line 347, in launch_lifetime_process
+    self.fail('The actual Conduit lifetime listener did not start')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The actual Conduit lifetime listener did not start
+
+======================================================================
+FAIL: test_failed_native_hash_backs_off_force_retries_and_source_change_retries (test_memory_algorithm_job_cooldown.MemoryAlgorithmCooldownTests.test_failed_native_hash_backs_off_force_retries_and_source_change_retries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: "SyntaxError: Export named 'stop' not fou[173 chars]4)\n" != ''
+- SyntaxError: Export named 'stop' not found in module '/home/outsider/.cache/lifeos-daily-text-20261007/algorithm-summary-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts'.
+-
+- Bun v1.3.14 (Linux x64)
+ : SyntaxError: Export named 'stop' not found in module '/home/outsider/.cache/lifeos-daily-text-20261007/algorithm-summary-first/lifeos/LifeOS/install/LIFEOS/PULSE/modules/algorithm-tab.ts'.
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.812s
+
+FAILED (failures=2)

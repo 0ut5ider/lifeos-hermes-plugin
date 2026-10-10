@@ -1,0 +1,26 @@
+test_declared_edit_above_source_limit_returns_a_bounded_request_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_above_source_limit_returns_a_bounded_request_refusal) ... ERROR
+test_declared_edit_below_source_limit_reaches_anonymous_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_below_source_limit_reaches_anonymous_refusal) ... ERROR
+test_ordinary_native_http_retains_its_smaller_transport_limit (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_ordinary_native_http_retains_its_smaller_transport_limit) ... ok
+
+======================================================================
+ERROR: test_declared_edit_above_source_limit_returns_a_bounded_request_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_above_source_limit_returns_a_bounded_request_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edit_rpc.py", line 24, in test_declared_edit_above_source_limit_returns_a_bounded_request_refusal
+    self.assertEqual(self.request('algorithm_edit', 300000)['status'], 400)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'status'
+
+======================================================================
+ERROR: test_declared_edit_below_source_limit_reaches_anonymous_refusal (test_memory_algorithm_edit_rpc.MemoryAlgorithmEditRPCTests.test_declared_edit_below_source_limit_reaches_anonymous_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_algorithm_edit_rpc.py", line 21, in test_declared_edit_below_source_limit_reaches_anonymous_refusal
+    self.assertEqual(self.request('algorithm_edit', 200000)['status'], 401)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'status'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.242s
+
+FAILED (errors=2)

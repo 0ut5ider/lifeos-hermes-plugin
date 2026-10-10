@@ -1,6 +1,6 @@
 name: lifeos-hook-bridge
 kind: standalone
-version: 0.1.0
+version: 0.2.0
 description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
 author: 0ut5ider
 python_dependencies:
@@ -116,6 +116,7 @@ provides_hooks:
   - augment_tool_result
   - pre_llm_call
   - pre_prompt_admission
+  - pre_message_delivery
   - pre_turn_stop
   - on_session_finalize
   - api_request_error

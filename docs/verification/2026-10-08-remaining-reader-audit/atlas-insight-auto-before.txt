@@ -1,0 +1,30 @@
+test_current_stale_insights_start_native_owner_regeneration (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_stale_insights_start_native_owner_regeneration) ... FAIL
+test_absent_graph_retains_exact_native_unavailable_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_absent_graph_retains_exact_native_unavailable_response) ... FAIL
+test_unbound_local_writer_keeps_stale_reader_without_generation (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_unbound_local_writer_keeps_stale_reader_without_generation) ... ok
+
+======================================================================
+FAIL: test_current_stale_insights_start_native_owner_regeneration (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_stale_insights_start_native_owner_regeneration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 45, in test_current_stale_insights_start_native_owner_regeneration
+    self.assertTrue(response.json()['generating'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_absent_graph_retains_exact_native_unavailable_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_absent_graph_retains_exact_native_unavailable_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_jobs.py", line 52, in test_absent_graph_retains_exact_native_unavailable_response
+    self.assertEqual(response.json(), {'available': False, 'error': 'run an atlas sync first'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'available': False, 'error': 'run an atlas sync first', 'generating': False} != {'available': False, 'error': 'run an atlas sync first'}
+- {'available': False, 'error': 'run an atlas sync first', 'generating': False}
+?                                                        ---------------------
+
++ {'available': False, 'error': 'run an atlas sync first'}
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.493s
+
+FAILED (failures=2)

@@ -1,0 +1,13 @@
+# SessionEnd Knowledge conformance
+
+Date: 2026-10-08. The release remains staged. The checks use synthetic notes and actual Bun and Python processes.
+
+The [baseline](baseline.txt) passes the paired native report comparison. It fails the refusal check: the original handler exposes private note counts and appends a finding event without an admitted caller. DocIntegrity invokes this handler at SessionEnd.
+
+The managed handler delegates to the owner memory service. The service supplies registered current notes to the native schema validator. It checks caller authority, source bytes, retirement policy, and event history before publication. Finding publication requires unrestricted owner read and write grants. The event uses the authenticated session identifier and a UTC timestamp with millisecond precision. The recoverable owner transaction preserves the prior event history after an interrupted publication.
+
+The [final focused gate](final-gate.txt) passes 14 tests. It compares native report text and finding content with the pinned original, excluding elapsed time, publication timestamp, and the authenticated session identifier. It checks missing and empty archives, unregistered and forgotten notes, read-only refusal, authority and source changes after actual rendering, a concurrent event append before publication, interrupted publication recovery, and retry deduplication. Standalone checks preserve the original note count and unreadable-note violation without a connector.
+
+The [adjacent gate](adjacent-gate.txt) passes 87 tests without skips. It covers lint, views, canonical sources, source labels, response authority, and publication recovery. The final focused repeat follows stricter validation of native event counters. The [source receipt](source-identity.json) records the final product and native handler hashes. Both patch copies have identical bytes. Preparation uses the existing pinned Hermes and LifeOS bases. No configured TOOLS typecheck, lint, or build script exists; these checks execute the edited TypeScript through Bun.
+
+Managed collection can refuse a source before the native validator runs. These checks establish native report equality for admitted fixtures. The standalone renderer preserves report order and finding contents, but it emits the event after rendering; crash interleaving with individual diagnostic lines is outside the comparison. The event append detects history changes before publication. Other raw native event writers do not share the owner transaction lock, so append concurrency after that check remains open. Full caller coverage, installed application acceptance, and daily cutover remain separate release gates.

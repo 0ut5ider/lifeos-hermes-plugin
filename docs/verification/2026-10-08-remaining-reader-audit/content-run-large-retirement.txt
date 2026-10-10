@@ -1,0 +1,16 @@
+test_large_complete_ledger_keeps_every_prior_byte_when_requesting_the_last_item (test_memory_content_actions.MemoryContentActionTests.test_large_complete_ledger_keeps_every_prior_byte_when_requesting_the_last_item) ... ok
+test_retired_item_refuses_run_before_an_event_can_reintroduce_it (test_memory_content_actions.MemoryContentActionTests.test_retired_item_refuses_run_before_an_event_can_reintroduce_it) ... FAIL
+
+======================================================================
+FAIL: test_retired_item_refuses_run_before_an_event_can_reintroduce_it (test_memory_content_actions.MemoryContentActionTests.test_retired_item_refuses_run_before_an_event_can_reintroduce_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_content_actions.py", line 263, in test_retired_item_refuses_run_before_an_event_can_reintroduce_it
+    self.assertEqual(result.status_code,503,result.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"ok": true, "id": "synthetic0", "requested_run": "regular"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 4.431s
+
+FAILED (failures=1)

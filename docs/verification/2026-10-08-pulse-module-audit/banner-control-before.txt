@@ -1,0 +1,15 @@
+test_source_review_refuses_yaml_escaped_identity_controls (test_memory_banner.MemoryBannerTests.test_source_review_refuses_yaml_escaped_identity_controls) ... FAIL
+
+======================================================================
+FAIL: test_source_review_refuses_yaml_escaped_identity_controls (test_memory_banner.MemoryBannerTests.test_source_review_refuses_yaml_escaped_identity_controls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_banner.py", line 223, in test_source_review_refuses_yaml_escaped_identity_controls
+    self.assertFalse(result['sources'][0]['accepted'], result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'sources': [{'path': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'classification': 'owner_context', 'digest': '7cedb800cbb314527d06e5189605a408fdd902b614ac6ee6acfb79c464ee27ab', 'lastModified': '2026-10-09T19:00:33.720000+00:00', 'accepted': True, 'content': '---\ncore:\n  name: "SyntheticBannerName"\n  startup_catchphrase: "\\u001b[31mSyntheticBannerControlHidden\\u001b[0m"\n---\n# Assistant\n'}], 'signature': 'e03f2facb2cdb31aff991802623755a18d8228761cee02a41ceddcdd74a1692d', 'retirement_digest': '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.258s
+
+FAILED (failures=1)

@@ -1,0 +1,44 @@
+test_current_owner_prepares_native_hometown_and_source_selection (test_memory_local_refresh.MemoryLocalRefreshTests.test_current_owner_prepares_native_hometown_and_source_selection) ... ERROR
+test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader) ... ERROR
+test_native_user_sources_refuse_private_decoded_configuration (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_user_sources_refuse_private_decoded_configuration) ... ERROR
+
+======================================================================
+ERROR: test_current_owner_prepares_native_hometown_and_source_selection (test_memory_local_refresh.MemoryLocalRefreshTests.test_current_owner_prepares_native_hometown_and_source_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 26, in setUp
+    (self.root / 'skills/LocalIntelligence').symlink_to(self.skill, target_is_directory=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 1213, in symlink_to
+    os.symlink(target, self, target_is_directory)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-daily-text-20261007/atlas-insight-fourth/lifeos/LifeOS/install/skills/LocalIntelligence' -> '/tmp/native-memory-ivgy37l7/.claude/skills/LocalIntelligence'
+
+======================================================================
+ERROR: test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_hometown_preserves_current_parsing_and_refuses_unbound_reader)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 26, in setUp
+    (self.root / 'skills/LocalIntelligence').symlink_to(self.skill, target_is_directory=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 1213, in symlink_to
+    os.symlink(target, self, target_is_directory)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-daily-text-20261007/atlas-insight-fourth/lifeos/LifeOS/install/skills/LocalIntelligence' -> '/tmp/native-memory-egc1ex2f/.claude/skills/LocalIntelligence'
+
+======================================================================
+ERROR: test_native_user_sources_refuse_private_decoded_configuration (test_memory_local_refresh.MemoryLocalRefreshTests.test_native_user_sources_refuse_private_decoded_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh.py", line 26, in setUp
+    (self.root / 'skills/LocalIntelligence').symlink_to(self.skill, target_is_directory=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 1213, in symlink_to
+    os.symlink(target, self, target_is_directory)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-daily-text-20261007/atlas-insight-fourth/lifeos/LifeOS/install/skills/LocalIntelligence' -> '/tmp/native-memory-ilcne7cf/.claude/skills/LocalIntelligence'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.008s
+
+FAILED (errors=3)

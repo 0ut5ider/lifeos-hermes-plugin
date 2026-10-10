@@ -1,0 +1,37 @@
+test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant) ... FAIL
+test_actual_parser_refuses_arbitrary_job_before_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_arbitrary_job_before_native_writes) ... ok
+test_actual_parser_refuses_disabled_ownership_without_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_disabled_ownership_without_native_writes) ... ERROR
+
+======================================================================
+ERROR: test_actual_parser_refuses_disabled_ownership_without_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_disabled_ownership_without_native_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_job_command.py", line 65, in test_actual_parser_refuses_disabled_ownership_without_native_writes
+    self.assertEqual(json.loads(result.stdout)['status'], 'rejected')
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+FAIL: test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_job_command.py", line 51, in test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : hermes: 'lifeos-job' is not a `hermes` command.
+Did you mean: lifeos-probe, lifeos-backup, lifeos-infer?
+Run `hermes --help` to see all commands.
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.521s
+
+FAILED (failures=1, errors=1)

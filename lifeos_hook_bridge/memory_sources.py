@@ -13,14 +13,17 @@ from .memory_policy import CATEGORIES, MemoryScope
 
 PREFIXES = ('LIFEOS/MEMORY/LEARNING/', 'LIFEOS/MEMORY/WISDOM/FRAMES/',
             'LIFEOS/MEMORY/WISDOM/PRINCIPLES/', 'LIFEOS/MEMORY/WISDOM/META/', 'LIFEOS/MEMORY/RESEARCH/',
-            'LIFEOS/MEMORY/RELATIONSHIP/', 'LIFEOS/MEMORY/WORK/', 'LIFEOS/MEMORY/STATE/progress/')
-FILES = {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
+            'LIFEOS/MEMORY/RELATIONSHIP/', 'LIFEOS/MEMORY/WORK/', 'LIFEOS/MEMORY/STATE/progress/',
+            'LIFEOS/MEMORY/UPGRADES/records/')
+FILES = {'LIFEOS/USER/TELOS/' + name + '.md' for name in ('CURRENT', 'LEARNED', '2036', 'STATUS')} | {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
          'LIFEOS/MEMORY/STATE/events.jsonl'}
 LOG_FILES = {'LIFEOS/MEMORY/OBSERVABILITY/' + name for name in
     ('verification-gate.jsonl', 'format-gate.jsonl', 'writing-gate.jsonl', 'tool-failures.jsonl', 'hook-healer.jsonl')} | {'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl',
              'LIFEOS/MEMORY/OBSERVABILITY/memory-health.jsonl'}
 CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
 CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+                 'LIFEOS/USER/GEAR.md',
+                 'LIFEOS/USER/BOOKS.md', 'LIFEOS/USER/PROJECTS_RETIRED.md',
                  'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
                  'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'LIFEOS/USER/PROJECTS.md'}
 STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'
@@ -29,6 +32,11 @@ STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'
 TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
     ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'PROJECTS', 'CHALLENGES',
      'NARRATIVES', 'TRAUMAS', 'WRONG', 'MODELS', 'WISDOM'))
+TELOS_EDITOR_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
+    ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'CHALLENGES', 'NARRATIVES',
+     'BELIEFS', 'WISDOM', 'STATUS', 'PROJECTS', 'METRICS', 'TEAM', 'BUDGET', 'MODELS',
+     'PREDICTIONS', 'FRAMES', 'WRONG', 'LEARNED', 'IDEAS', 'AUTHORS', 'BOOKS', 'MOVIES',
+     'TRAUMAS', 'SPARKS', 'NEW_TEST'))
 FRESHNESS_TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
     ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'CHALLENGES', 'NARRATIVES',
      'TRAUMAS', 'WRONG', 'MODELS', 'BELIEFS', 'FRAMES', 'WISDOM', 'PREDICTIONS', 'IDEAS',
@@ -71,7 +79,9 @@ def is_deny_source(relative):
 
 
 def is_evidence_source(relative):
-    return relative in EVIDENCE_FILES or (str(Path(relative).parent) in EVIDENCE_DIRECTORIES
+    return (relative == 'LIFEOS/USER/SECURITY/THREATMODEL/risk-register.json'
+        or re.fullmatch(r'LIFEOS/MEMORY/STATE/Evals-Results/[^/.][^/]*/latest\.json', relative) is not None
+        or relative in EVIDENCE_FILES) or (str(Path(relative).parent) in EVIDENCE_DIRECTORIES
         and re.fullmatch(r'\d{4}-\d{2}-\d{2}\.json', Path(relative).name) is not None)
 
 
@@ -140,7 +150,7 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES
+        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | TELOS_SOURCES | TELOS_EDITOR_SOURCES | FRESHNESS_TELOS_SOURCES
                      or is_state_source(relative)
                      or relative.startswith(PREFIXES) or system)
     if not permitted:
@@ -163,7 +173,7 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
-def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=False, derived_sync=False):
+def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=True, derived_sync=False):
     source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes, derived_sync=derived_sync)
     if source.suffix != suffix:
         raise MemoryUnavailable('The declared wiki source must be native Markdown')
@@ -196,15 +206,22 @@ def markdown_projection(memory, relative, content):
     name = memory._native('interview_scan_name', content=content)
     if set(name) != {'name'} or not isinstance(name['name'], str):
         raise MemoryUnavailable('Native identity admission returns an invalid assistant name')
-    return content + '\n' + name['name'] if len(name['name']) <= 256 else None
+    banner = memory._native('banner_source_projection', content=content)
+    if (set(banner) != {'name', 'catchphrase'} or any(not isinstance(value, str) for value in banner.values())):
+        raise MemoryUnavailable('Native identity admission returns invalid banner fields')
+    decoded = '\n'.join(banner.values())
+    return content + '\n' + name['name'] + '\n' + decoded if len(name['name']) <= 256 and len(decoded.encode()) <= SOURCE_LIMIT else None
 
 
-def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None):
+def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None, review_content=None,
+           source_reviewed: bool | None = None):
     from .memory_source_review import is_reviewed
     labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
     return memory._filter_history(connection, scope, '\n'.join((content if projection is None else projection,
                                                               relative, labels)), timestamp,
-                                  reviewed=is_reviewed(memory, connection, scope, relative, content))
+                                  reviewed=(is_reviewed(memory, connection, scope, relative,
+                                                       content if review_content is None else review_content)
+                                            if source_reviewed is None else source_reviewed))
 
 
 def source_labels(relative: str) -> str:
@@ -351,7 +368,8 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
         source, relative = _source_path(memory,scope,path)
         if relative in CONTEXT_FILES and source.stat().st_size > 256 * 1024:
             raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
-        content = source.read_text(encoding='utf-8')
+        with source.open('r', encoding='utf-8', newline='') as stream:
+            content = stream.read()
         if relative in CONTEXT_FILES and len(content.encode('utf-8')) > 256 * 1024:
             raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
         timestamp = _source_time(source.stat())

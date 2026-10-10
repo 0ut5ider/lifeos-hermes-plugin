@@ -1,0 +1,152 @@
+{
+  "root": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-installed-first",
+  "hermes": {
+    "base_commit": "758ad514eb0e800547e015edf05aa18f78b78d82",
+    "patches": [
+      {
+        "name": "hermes-plugin-events.patch",
+        "sha256": "b9923533904918424bf704b9424ffd69d0f29c692c89d953cff849b3cb464e76"
+      },
+      {
+        "name": "hermes-turn-gates.patch",
+        "sha256": "0bde030f742c7062f0d7541077a5a0a7041a46e120dcad64ef45be7012f1bd6e"
+      },
+      {
+        "name": "hermes-command-policy.patch",
+        "sha256": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d"
+      },
+      {
+        "name": "hermes-session-lifecycle.patch",
+        "sha256": "b4960d8aecf2d28cbfb482a3ffda9c5117a89bb2ecd01b41064dc5aba7b1d0e6"
+      },
+      {
+        "name": "hermes-child-routing.patch",
+        "sha256": "1ac0a8e1ea1ca37b111199796e25b7079f9ec869f0a9190de53c359f235d7f38"
+      },
+      {
+        "name": "hermes-strict-inference.patch",
+        "sha256": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c"
+      },
+      {
+        "name": "hermes-remote-files.patch",
+        "sha256": "4e97e2866afeb86a7243a63858a2dd1e48c906c4690d2fa39fc7deb6d4a6ff10"
+      },
+      {
+        "name": "hermes-cron-bootstrap.patch",
+        "sha256": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445"
+      },
+      {
+        "name": "hermes-required-middleware.patch",
+        "sha256": "27351214aeebd8bd0d9994fc88d971b9de5c03d90be9d717842c758f8bbf8ab6"
+      },
+      {
+        "name": "hermes-web-result-status.patch",
+        "sha256": "629a345ced101eb06430c8d77d972e6efe4c53a3ec234f19199597f3181eca8d"
+      },
+      {
+        "name": "hermes-protected-instruction-approval.patch",
+        "sha256": "89a129ea558e04775d818b3d75d9cce817484546633eed66bd056831fff81b03"
+      }
+    ],
+    "tree_sha256": "55af6de42da102bc3f25b0d0165cd111780d9b56427afc62ef4cf51df94d76dc"
+  },
+  "lifeos": {
+    "upstream": "/home/outsider/.cache/lifeos-daily-text-20261007/channel-sources/lifeos",
+    "upstream_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+    "patches": [
+      {
+        "name": "lifeos-task-governance.patch",
+        "sha256": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798"
+      },
+      {
+        "name": "lifeos-agent-watchdog.patch",
+        "sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808"
+      },
+      {
+        "name": "lifeos-terminal-audit.patch",
+        "sha256": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886"
+      },
+      {
+        "name": "lifeos-checkpoint-verification.patch",
+        "sha256": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f"
+      },
+      {
+        "name": "lifeos-failure-capture.patch",
+        "sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e"
+      },
+      {
+        "name": "lifeos-remote-desktop-gate.patch",
+        "sha256": "4e27328544015177a6ffbb962421c794eba53da355c6c6d2961f0b43b66c5146"
+      },
+      {
+        "name": "lifeos-remote-isa-view.patch",
+        "sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b"
+      },
+      {
+        "name": "lifeos-model-rung-effort.patch",
+        "sha256": "708cd3cb994b21440bb54267c975b71b0f82a71415df0338693c862d2e0942d7"
+      },
+      {
+        "name": "lifeos-hermes-carrier-probe.patch",
+        "sha256": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae"
+      },
+      {
+        "name": "lifeos-memory-access.patch",
+        "sha256": "fea8f17b4428681d9a53e1766a4049c4c9a144fbb2a5b555b77df026be57979c"
+      },
+      {
+        "name": "lifeos-mount-yaml-blocks.patch",
+        "sha256": "a77bcadb08eb263b2ab3bb3a56821023732978867151ccd6ec3e17acea567084"
+      },
+      {
+        "name": "lifeos-config-audit.patch",
+        "sha256": "972ec11722ccf66935d5bfa398562fbc0907aa49ba2d71d6e0fbc17c923beaff"
+      },
+      {
+        "name": "lifeos-shell-literal-guard.patch",
+        "sha256": "7b3230838abb75be2f43215fc1f61b4002e10152604ca6667618bf7219d8dfb2"
+      },
+      {
+        "name": "lifeos-pulse-hook-switch.patch",
+        "sha256": "271c54ded25480ea883c6b5ba38ff8d6b7e8702dbd5228b413b0c4e148ccb5cf"
+      },
+      {
+        "name": "lifeos-evaluation-publication.patch",
+        "sha256": "58a024c58355784149b239fce270bc64a8da900d9ee1b93fba035302e94f8311"
+      },
+      {
+        "name": "lifeos-system-surface.patch",
+        "sha256": "2aa2eb24b8bb90ac62633a649a61704d051cc789b4c2ac69c6dd0cd611563327"
+      },
+      {
+        "name": "lifeos-version-drift-state.patch",
+        "sha256": "33bd1d7cbeb0154ee154e8b60ab5842bccc4996d3647252ca97baff6ead9f70c"
+      },
+      {
+        "name": "lifeos-work-learning-identity.patch",
+        "sha256": "66c2c7e72731fa591b0f2b6aeaac659179895a0b03ad49e2daf3e252e92ce98c"
+      },
+      {
+        "name": "lifeos-completion-state.patch",
+        "sha256": "88c0e6e3e37eeb5fb9ab822d4caebdbf656872327966418ab60a3edf7188b2b4"
+      },
+      {
+        "name": "lifeos-render-inference.patch",
+        "sha256": "2fd60494c1318f241ca9394d3a868986392254c2fb8882b3552d843697839c58"
+      },
+      {
+        "name": "lifeos-feedback-admission.patch",
+        "sha256": "478398a28d6a92832572eb339ab71d4cf2502aa0295a4ce41b9be5bccca31dc9"
+      },
+      {
+        "name": "lifeos-reminder-publication.patch",
+        "sha256": "419df3fe10f88024721489ee9858719954ff85679a5ff89839a9532b8c70a6a6"
+      },
+      {
+        "name": "lifeos-review-admission.patch",
+        "sha256": "ee4644d3f5ab5615e6f6b7098d8a4bec67ad3bb4eae58147923fad74da73664d"
+      }
+    ],
+    "tree_sha256": "961f1c3b54f3a68166ebf7f520248dd10946ed405aa60bcc4c3cac1fc02274ca"
+  }
+}

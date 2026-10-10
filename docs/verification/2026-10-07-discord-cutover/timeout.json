@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-07",
+  "status": "passed",
+  "scope": "Actual Discord question timeout with no user answer",
+  "host": "192.168.8.252",
+  "source_message_id": "1557442286965755995",
+  "source_timestamp": "2026-10-07T17:19:37.091000+00:00",
+  "question_message_id": "1557442341525266544",
+  "question_timestamp": "2026-10-07T17:19:50.099000+00:00",
+  "reply_message_id": "1557442869613170803",
+  "reply_timestamp": "2026-10-07T17:21:56.005000+00:00",
+  "tool_call_id": "chatcmpl-tool-a18bb8a18ff51798",
+  "tool_commit_event_id": "5eb1087a88c24836aa90963c41d41793",
+  "tool_commit_timestamp": "2026-10-07T17:21:52.077242+00:00",
+  "configured_timeout_seconds": 120,
+  "tool_duration_seconds": 120.37823152542114,
+  "user_response": "",
+  "tool_notice": "[user did not respond within 2m]",
+  "no_intervening_user_text": true,
+  "tool_is_error": false,
+  "native_question_hooks": [
+    {
+      "completed_at": "2026-10-07T17:19:49.967329+00:00",
+      "status": "completed",
+      "exit_code": 0,
+      "registration_id": "d9483ded6b066ed8aa78867557fa2ab61d959a070b48071871c6ae297c551b28:PreToolUse:3:0"
+    },
+    {
+      "completed_at": "2026-10-07T17:21:51.971928+00:00",
+      "status": "completed",
+      "exit_code": 0,
+      "registration_id": "2b84bc4e5091b0f1375d3d9b9cd6da4cbf181624cac19a0481996d1f03671544:PostToolUse:5:0"
+    }
+  ],
+  "capture_health": {
+    "events": 873,
+    "incomplete_invocations": 0,
+    "known_lost_events": 0,
+    "capture_gaps": 0,
+    "integrity_issues": {}
+  },
+  "limits": [
+    "The recorder redacts the timed_out boolean. The empty answer, timeout notice, wait duration, and delivered timeout report remain observable.",
+    "Cancellation and post-cancellation recovery require separate live checks."
+  ]
+}

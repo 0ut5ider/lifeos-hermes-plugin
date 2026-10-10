@@ -1,0 +1,62 @@
+test_knowledge_result_is_withheld_after_account_revocation (test_memory_dashboard_response_authority.MemoryDashboardResponseAuthorityTests.test_knowledge_result_is_withheld_after_account_revocation) ... FAIL
+test_pulse_result_is_withheld_after_account_revocation (test_memory_dashboard_response_authority.MemoryDashboardResponseAuthorityTests.test_pulse_result_is_withheld_after_account_revocation) ... FAIL
+test_wiki_result_is_withheld_after_account_revocation (test_memory_dashboard_response_authority.MemoryDashboardResponseAuthorityTests.test_wiki_result_is_withheld_after_account_revocation) ... FAIL
+
+======================================================================
+FAIL: test_knowledge_result_is_withheld_after_account_revocation (test_memory_dashboard_response_authority.MemoryDashboardResponseAuthorityTests.test_knowledge_result_is_withheld_after_account_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_response_authority.py", line 27, in test_knowledge_result_is_withheld_after_account_revocation
+    def test_knowledge_result_is_withheld_after_account_revocation(self):self.assert_view_withheld('knowledge')
+                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_response_authority.py", line 24, in assert_view_withheld
+    self.assertEqual(json.loads(result.stdout),{'rendered':True,'withheld':True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': True, 'withheld': False} != {'rendered': True, 'withheld': True}
+- {'rendered': True, 'withheld': False}
+?                                ^^^^
+
++ {'rendered': True, 'withheld': True}
+?                                ^^^
+
+
+======================================================================
+FAIL: test_pulse_result_is_withheld_after_account_revocation (test_memory_dashboard_response_authority.MemoryDashboardResponseAuthorityTests.test_pulse_result_is_withheld_after_account_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_response_authority.py", line 28, in test_pulse_result_is_withheld_after_account_revocation
+    def test_pulse_result_is_withheld_after_account_revocation(self):self.assert_view_withheld('pulse')
+                                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_response_authority.py", line 24, in assert_view_withheld
+    self.assertEqual(json.loads(result.stdout),{'rendered':True,'withheld':True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': True, 'withheld': False} != {'rendered': True, 'withheld': True}
+- {'rendered': True, 'withheld': False}
+?                                ^^^^
+
++ {'rendered': True, 'withheld': True}
+?                                ^^^
+
+
+======================================================================
+FAIL: test_wiki_result_is_withheld_after_account_revocation (test_memory_dashboard_response_authority.MemoryDashboardResponseAuthorityTests.test_wiki_result_is_withheld_after_account_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_response_authority.py", line 26, in test_wiki_result_is_withheld_after_account_revocation
+    def test_wiki_result_is_withheld_after_account_revocation(self):self.assert_view_withheld('wiki')
+                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_response_authority.py", line 24, in assert_view_withheld
+    self.assertEqual(json.loads(result.stdout),{'rendered':True,'withheld':True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': True, 'withheld': False} != {'rendered': True, 'withheld': True}
+- {'rendered': True, 'withheld': False}
+?                                ^^^^
+
++ {'rendered': True, 'withheld': True}
+?                                ^^^
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.500s
+
+FAILED (failures=3)

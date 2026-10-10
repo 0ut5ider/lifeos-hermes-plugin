@@ -1,0 +1,20 @@
+{
+  "native_source_manifest_sha256": "2973a2ae1ebabcba2e2ce12100bbe3dbec6d72883c83efc0efce95d7907ace32",
+  "source_preparation_complete": true,
+  "mount_sha256": "c1f8175b95ba0447f52f484148221487b1dd8ed295f70b839b57fab6bf3f854f",
+  "patches": {
+    "patches/lifeos-mount-yaml-blocks.patch": "1cc07e111db11ad88288b5b7d2d333d53d0b0c85ff9a54d77c5bf10ea1976d78",
+    "lifeos_hook_bridge/patches/lifeos-mount-yaml-blocks.patch": "1cc07e111db11ad88288b5b7d2d333d53d0b0c85ff9a54d77c5bf10ea1976d78"
+  },
+  "tests": {
+    "mount_and_recovery": {
+      "cases": 44,
+      "elapsed_seconds": 94.32,
+      "exit_code": 0
+    },
+    "strict_types": {
+      "exit_code": 0
+    }
+  },
+  "live_profile_changed": false
+}

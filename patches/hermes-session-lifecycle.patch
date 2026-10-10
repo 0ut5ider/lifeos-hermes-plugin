@@ -1,5 +1,5 @@
 diff --git a/cli.py b/cli.py
-index 5d3055be6..e56f3ff34 100644
+index 5d3055be..e56f3ff3 100644
 --- a/cli.py
 +++ b/cli.py
 @@ -495,7 +495,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
@@ -23,8 +23,129 @@ index 5d3055be6..e56f3ff34 100644
          try:
              _shutdown_agent_memory_provider(_active_agent_ref)
          except Exception as e:
+diff --git a/gateway/run_agent_cache.py b/gateway/run_agent_cache.py
+index e1867212..87c0a382 100644
+--- a/gateway/run_agent_cache.py
++++ b/gateway/run_agent_cache.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Owns cached gateway agents and session run generations.
++# ABOUTME: Interrupts displaced turns and releases their pending control state.
+ """Agent cache, session model overrides, turn leases, run generations and conversation-scope reset
+ for GatewayRunner (MRO mixin). ``gateway.run`` internals are imported lazily inside method bodies
+ (import cycle), so ``patch("gateway.run.X")`` keeps intercepting them at call time."""
+@@ -466,6 +468,10 @@ class GatewayAgentCacheMixin:
+         # again and the closure sees a stale generation and skips — the replacement's own baseline
+         # covers its cleanup, so nothing stays unreaped.
+         _generation_at_interrupt = self._invalidate_session_run_generation(session_key, reason=invalidation_reason)
++        # A clarify callback blocks its worker until its entry is signalled. Release it before
++        # any await can admit a successor's prompt under this session key.
++        from tools import clarify_gateway
++        clarify_gateway.clear_session(session_key)
+         if _process_task_id and _process_baseline is not None:
+             threading.Thread(
+                 target=copy_context().run,
+diff --git a/gateway/run_turn_runner.py b/gateway/run_turn_runner.py
+index 76d8e5ec..e3f22318 100644
+--- a/gateway/run_turn_runner.py
++++ b/gateway/run_turn_runner.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Runs progress, approval, clarification, and status callbacks for one gateway turn.
++# ABOUTME: Carries actual platform wait outcomes into the agent's tool results.
+ """Per-turn callback runner (progress/status/voice/run_sync) for the gateway agent turn.
+ 
+ ``TurnRunner`` owns the per-turn callbacks ``GatewayRunner._run_agent_inner`` binds. ``gateway.run``
+@@ -1364,10 +1366,14 @@ class TurnRunner:
+                 entry.get("question", ""), entry.get("choices"), bool(entry.get("multi_select")),
+                 rearm=index == last)
+             if not answered:
++                from tools.clarify_outcome import ClarifyCancellation
+                 # The surface's own no-answer text ("could not be delivered", "did not respond
+                 # within Nm") rides along as ``notice``: blank answers alone read as user
+                 # inactivity, which is the misreport #112684 describes for an undelivered card.
+-                payload.update(timed_out=True, notice=raw)
++                if isinstance(raw, ClarifyCancellation):
++                    payload.update(cancelled=True, notice=str(raw))
++                else:
++                    payload.update(timed_out=True, notice=raw)
+                 break
+             answers[entry.get("qid") or f"q{index}"] = raw
+         return json.dumps(payload, ensure_ascii=False)
+@@ -1397,7 +1403,7 @@ class TurnRunner:
+             """Schedule the plain-text prompt when the native card cannot render; None = no such path."""
+             coro = text_fallback_coro(ctx._status_adapter, **send_kwargs)
+             return None if coro is None else self._schedule(coro, "Clarify text fallback failed to schedule")
+-        clarify_mod.register(
++        entry = clarify_mod.register(
+             clarify_id=clarify_id, session_key=session_key, question=question, choices=choices,
+             multi_select=bool(multi_select),
+         )
+@@ -1427,7 +1433,7 @@ class TurnRunner:
+         # failure — immediate or late — retries once as plain text before giving up.
+         response, answered = _clarify_send_then_wait(
+             fut, clarify_id=clarify_id, session_key=session_key, clarify_mod=clarify_mod,
+-            fallback=_text_fallback)
++            fallback=_text_fallback, entry=entry)
+         # Branch on the explicit flag, never on the text: a real answer can start with '[' (a
+         # "[A] staging" label, "[urgent] ..." free text) and must not be mistaken for a sentinel.
+         if not answered:
+@@ -1435,8 +1441,11 @@ class TurnRunner:
+             # looking answerable. Adapters without a persistent card have no such method.
+             retire = getattr(type(ctx._status_adapter), "retire_clarify_card", None)
+             if callable(retire):
++                from tools.clarify_outcome import ClarifyCancellation
++                notice = ('This prompt was cancelled. No answer was recorded.'
++                          if isinstance(response, ClarifyCancellation) else _CLARIFY_EXPIRED_NOTICE)
+                 self._schedule(
+-                    retire(ctx._status_adapter, clarify_id, _CLARIFY_EXPIRED_NOTICE),
++                    retire(ctx._status_adapter, clarify_id, notice),
+                     "Clarify card retire failed to schedule")
+         elif rearm:
+             # Reopen typing IMMEDIATELY, not on the LLM's first post-answer token (native streaming
+diff --git a/gateway/run_turn_runner_clarify_delivery.py b/gateway/run_turn_runner_clarify_delivery.py
+index 1370d1b3..1f3fa10b 100644
+--- a/gateway/run_turn_runner_clarify_delivery.py
++++ b/gateway/run_turn_runner_clarify_delivery.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Separates clarification delivery failure, cancellation, timeout, and user replies.
++# ABOUTME: Watches actual send disposition and releases or retires the pending prompt accordingly.
+ """Clarify prompt delivery on messaging platforms: send disposition, plain-text fallback, bounded wait.
+ 
+ A native clarify card (Telegram inline keyboard, Slack blocks, …) can fail to render in three ways
+@@ -13,6 +15,7 @@ from __future__ import annotations
+ 
+ import logging
+ from typing import Any, Callable, Optional
++from tools.clarify_outcome import ClarifyCancellation
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -77,7 +80,7 @@ def _clarify_send_disposition(fut, *, session_key: str, clarify_mod) -> Optional
+ 
+ 
+ def _clarify_send_then_wait(fut, *, clarify_id: str, session_key: str, clarify_mod,
+-                            fallback: Optional[Callable[[], Any]] = None) -> tuple[str, bool]:
++                            fallback: Optional[Callable[[], Any]] = None, entry=None) -> tuple[str, bool]:
+     """Resolve a clarify prompt: send disposition, plain-text fallback, then the bounded wait.
+ 
+     ``fallback()`` schedules the plain-text ``send_clarify`` and returns its future (or ``None``);
+@@ -106,11 +109,13 @@ def _clarify_send_then_wait(fut, *, clarify_id: str, session_key: str, clarify_m
+     late = _LateFailureWatch(fut, clarify_id=clarify_id, session_key=session_key,
+                              clarify_mod=clarify_mod, fallback=fallback)
+     timeout = clarify_mod.get_clarify_timeout()
+-    response = clarify_mod.wait_for_response(clarify_id, timeout=float(timeout))
++    response = clarify_mod.wait_for_response(entry if entry is not None else clarify_id, timeout=float(timeout))
+     late.disarm()
+     if late.undeliverable:
+         return late.undeliverable, False
+-    if response is None or response == "":
++    if isinstance(response, ClarifyCancellation):
++        return response, False
++    if response is None:
+         return f"[user did not respond within {int(timeout / 60)}m]", False
+     return response, True
+ 
 diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
-index 23c856091..ab8e0aa33 100644
+index 23c85609..ab8e0aa3 100644
 --- a/gateway/slash_commands_session.py
 +++ b/gateway/slash_commands_session.py
 @@ -896,6 +896,12 @@ class GatewaySessionCommandsMixin:
@@ -41,7 +162,7 @@ index 23c856091..ab8e0aa33 100644
          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
 diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
-index eaba807d2..739c28f0a 100644
+index eaba807d..739c28f0 100644
 --- a/hermes_cli/cli_commands_mixin.py
 +++ b/hermes_cli/cli_commands_mixin.py
 @@ -1306,6 +1306,8 @@ class CLICommandsMixin:
@@ -54,7 +175,7 @@ index eaba807d2..739c28f0a 100644
          _sync_process_session_id(target_id)
          # One lineage SELECT, two projections: model_history is alternation-repaired for live
 diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
-index f78528388..28e1463d5 100644
+index f7852838..28e1463d 100644
 --- a/hermes_cli/cli_session_mixin.py
 +++ b/hermes_cli/cli_session_mixin.py
 @@ -425,16 +425,16 @@ class CLISessionMixin:
@@ -88,7 +209,7 @@ index f78528388..28e1463d5 100644
          if self._session_db and old_session_id:
              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
 diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
-index 9eeb62a63..439d5e04b 100644
+index 9eeb62a6..439d5e04 100644
 --- a/hermes_cli/cli_tui_runtime_mixin.py
 +++ b/hermes_cli/cli_tui_runtime_mixin.py
 @@ -494,8 +494,9 @@ class CLITuiRuntimeMixin:
@@ -102,8 +223,1031 @@ index 9eeb62a63..439d5e04b 100644
 +        _run_cleanup(reason="prompt_input_exit" if at_prompt else "shutdown", session_id=self.session_id)
          self._print_exit_summary()
          self._release_active_session()
+diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
+index 905186ce..97afc5c4 100644
+--- a/plugins/platforms/discord/adapter.py
++++ b/plugins/platforms/discord/adapter.py
+@@ -1,3 +1,6 @@
++# ABOUTME: Connects the Discord gateway and routes messages, interactions, and replies.
++# ABOUTME: Synchronizes application commands while retaining existing command identities.
++
+ from __future__ import annotations
+ 
+ """
+@@ -281,6 +284,17 @@ from gateway.platforms._shared import (
+ _UNAUTHORIZED = unauthorized_action_notice(Platform.DISCORD)
+ 
+ 
++def _guild_channel_target(restriction, allowed: set):
++    """Return the selected channel, None for disabled mode, or empty for refusal."""
++    if restriction is None or str(restriction).lower() in {'false', '0', 'no'}:
++        return None
++    if str(restriction).lower() not in {'true', '1', 'yes'}:
++        return ''
++    if len(allowed) == 1 and all(value.isascii() and value.isdecimal() for value in allowed):
++        return next(iter(allowed))
++    return ''
++
++
+ async def _read_url_image_with_redirect_guard(
+     session: Any, url: str, *, timeout: Any, request_kwargs: Dict[str, Any],
+ ) -> Tuple[int, bytes, Dict[str, str]]:
+@@ -556,6 +570,7 @@ _GATE_ENV_KEYS = (
+     "DISCORD_IGNORED_CHANNELS", "DISCORD_NO_THREAD_CHANNELS", "DISCORD_FREE_RESPONSE_CHANNELS",
+     "DISCORD_MISSED_MESSAGE_BACKFILL_CHANNELS", "DISCORD_ALLOW_ALL_USERS", "DISCORD_ALLOW_BOTS",
+     "GATEWAY_ALLOW_ALL_USERS", "GATEWAY_ALLOWED_USERS",
++    "DISCORD_GUILD_CHANNEL_ONLY",
+ )
+ 
+ 
+@@ -1441,6 +1456,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 return False, False
+         elif self._dedup.contains(message_id):
+             return False, False
++        if not self._guild_channel_allows(getattr(message, 'channel', None)):
++            return False, False
+         if message.author == self._client.user:
+             return False, False
+         if message.type not in {discord.MessageType.default, discord.MessageType.reply}:
+@@ -2899,15 +2916,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+             current_existing_payload = self._existing_command_to_payload(current)
+             current_payload = self._canonicalize_app_command_payload(current_existing_payload)
+             desired_payload = self._canonicalize_app_command_payload(desired)
++            # Unset contexts inherit Discord's defaults; an explicit server value is not a change.
++            for field in ("contexts", "integration_types"):
++                if desired.get(field) is None:
++                    desired_payload[field] = current_payload[field]
+             if current_payload == desired_payload:
+                 summary["unchanged"] += 1
+                 continue
+-            if self._patchable_app_command_payload(current_existing_payload) == self._patchable_app_command_payload(desired):
+-                await mutate(http.delete_global_command, app_id, current.id)
+-                await mutate(http.upsert_global_command, app_id, desired)
+-                summary["recreated"] += 1
+-                continue
+-            await mutate(http.edit_global_command, app_id, current.id, desired)
++            # Discord's same-name/type upsert updates all fields and preserves the command ID.
++            await mutate(http.upsert_global_command, app_id, desired)
+             summary["updated"] += 1
+         summary["total"] = len(desired_payloads)
+         return summary
+@@ -3001,6 +3018,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+             kept.append(notice)
+         return kept
+ 
++    async def _require_private_delivery(self, channel):
++        if self._guild_channel_restriction() is None:
++            return
++        if not self._guild_channel_allows(channel):
++            raise PermissionError('Private Discord delivery requires the selected guild text channel')
++        from plugins.platforms.discord.delivery import authorize_delivery
++        await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
++                                 token=getattr(self._client.http, 'token', ''))
++
+     async def send(
+         self,
+         chat_id: str,
+@@ -3052,6 +3078,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 else:  # "first" (default) or "off"
+                     chunk_reference = reference if i == 0 else None
+                 try:
++                    await self._require_private_delivery(channel)
+                     msg = await channel.send(content=chunk, reference=chunk_reference)
+                 except Exception as e:
+                     if chunk_reference is not None and self._is_reply_reference_rejected(e):
+@@ -3060,6 +3087,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                             self.name, reply_to,
+                         )
+                         reference = None
++                        await self._require_private_delivery(channel)
+                         msg = await channel.send(content=chunk, reference=None)
+                     else:
+                         raise
+@@ -3219,6 +3247,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 # Content shrank under the cap: clear saturation state so dedup can't mask a real edit.
+                 self._last_overflow_preview.pop(_preview_key, None)
+             try:
++                await self._require_private_delivery(channel)
+                 await msg.edit(content=formatted)
+                 if _saturated_preview:
+                     self._last_overflow_preview[_preview_key] = formatted
+@@ -3231,6 +3260,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                     if self._last_overflow_preview.get(_preview_key) == truncated:
+                         # Saturated-preview dedup (see pre-flight path above).
+                         return SendResult(success=True, message_id=message_id)
++                    await self._require_private_delivery(channel)
+                     await msg.edit(content=truncated)
+                     self._last_overflow_preview[_preview_key] = truncated
+                 else:
+@@ -3271,9 +3301,11 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         chunks = self._cap_split_chunks(self.truncate_message(formatted, self.MAX_MESSAGE_LENGTH))
+         if len(chunks) <= 1:
+             # Defensive: pre-flight should guarantee >1 chunk; otherwise edit normally.
++            await self._require_private_delivery(channel)
+             await msg.edit(content=chunks[0] if chunks else formatted)
+             return SendResult(success=True, message_id=message_id)
+         try:
++            await self._require_private_delivery(channel)
+             await msg.edit(content=chunks[0])
+         except Exception as e:
+             logger.error(
+@@ -3294,6 +3326,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 # Prior message without to_reference (duck-typed): build the reference from ids.
+                 reference = self._message_reference_from_ids(prev_msg.id, channel)
+             try:
++                await self._require_private_delivery(channel)
+                 sent = await channel.send(content=chunk, reference=reference)
+             except Exception as send_err:
+                 # Drop the reply anchor and retry once: deleted anchor (10008) / system message (50035).
+@@ -3302,6 +3335,7 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                     self.name, send_err,
+                 )
+                 try:
++                    await self._require_private_delivery(channel)
+                     sent = await channel.send(content=chunk, reference=None)
+                 except Exception as retry_err:
+                     logger.warning(
+@@ -3310,7 +3344,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                     )
+                     last_id = continuation_ids[-1] if continuation_ids else message_id
+                     return SendResult(
+-                        success=True,
++                        success=not isinstance(retry_err, PermissionError),
++                        error=str(retry_err) if isinstance(retry_err, PermissionError) else None,
+                         message_id=last_id,
+                         continuation_message_ids=tuple(continuation_ids),
+                         raw_response={
+@@ -4003,6 +4038,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         Fail closed on malformed payloads: with an allowlist, a missing channel id/user REJECTS.
+         """
+         chan_obj = getattr(interaction, "channel", None)
++        if not self._guild_channel_allows(chan_obj):
++            return (False, 'The bot accepts commands only in its selected guild text channel')
+         in_dm = isinstance(chan_obj, discord.DMChannel) if chan_obj is not None else False
+         channel_ids: set = set()
+         channel_keys: set = set()
+@@ -4869,6 +4906,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         """This adapter's DISCORD_ALLOWED_CHANNELS gate (per-profile)."""
+         return self._gate_csv_set(self._gate_raw("allowed_channels", "DISCORD_ALLOWED_CHANNELS"))
+ 
++    def _guild_channel_restriction(self):
++        restriction = self._gate_raw('guild_channel_only', 'DISCORD_GUILD_CHANNEL_ONLY')
++        return _guild_channel_target(restriction, self._get_allowed_channels())
++
++    def _guild_channel_allows(self, channel) -> bool:
++        selected = self._guild_channel_restriction()
++        return (selected is None or isinstance(channel, discord.TextChannel)
++                and channel.type == discord.ChannelType.text and str(channel.id) == selected)
++
+     def _get_ignored_channels(self) -> set:
+         """This adapter's DISCORD_IGNORED_CHANNELS gate (per-profile)."""
+         return self._gate_csv_set(self._gate_raw("ignored_channels", "DISCORD_IGNORED_CHANNELS"))
+@@ -5210,10 +5256,13 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         dying in ``int()`` as a generic send failure."""
+         if isinstance(channel_id, str):
+             channel_id = discord_channel_id_from_link(channel_id.strip()) or channel_id
++        selected = self._guild_channel_restriction()
++        if selected is not None and str(channel_id) != selected:
++            return None
+         channel = self._client.get_channel(int(channel_id))
+         if not channel:
+             channel = await self._client.fetch_channel(int(channel_id))
+-        return channel
++        return channel if self._guild_channel_allows(channel) else None
+ 
+     def _thread_parent_channel(self, channel: Any) -> Any:
+         """Return the parent text channel when invoked from a thread."""
+@@ -5492,9 +5541,11 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         try:
+             channel = await self._resolve_channel(_prompt_target_id(chat_id, metadata))
+             send_kwargs, view = build(channel)
++            await self._require_private_delivery(channel)
+             msg = await channel.send(**send_kwargs)
+             if view is not None:
+                 view._message = msg
++                view._delivery_guard = lambda: self._require_private_delivery(channel)
+             return SendResult(success=True, message_id=str(msg.id))
+         except Exception as e:
+             if fail_log:
+@@ -6256,12 +6307,22 @@ def _define_discord_view_classes() -> None:
+             self.allowed_role_ids = allowed_role_ids or set()
+             self.resolved = False
+             self._message = None
++            self._delivery_guard = None
++
++        async def _check_delivery(self):
++            if self._delivery_guard is not None:
++                await self._delivery_guard()
+ 
+         def _check_auth(self, interaction: discord.Interaction) -> bool:
+             return _component_check_auth(interaction, self.allowed_user_ids, self.allowed_role_ids)
+ 
+         async def _gate(self, interaction: discord.Interaction, *, resolved_msg: Optional[str], unauth_msg: str) -> bool:
+             """Reject (ephemerally) an already-resolved or unauthorized click; True when it may proceed."""
++            try:
++                await self._check_delivery()
++            except PermissionError:
++                await interaction.response.send_message('Private channel access changed. This prompt is unavailable.', ephemeral=True)
++                return False
+             if resolved_msg is not None and self.resolved:
+                 await interaction.response.send_message(resolved_msg, ephemeral=True)
+                 return False
+@@ -6287,6 +6348,7 @@ def _define_discord_view_classes() -> None:
+                     if embed:
+                         embed.color = discord.Color.greyple()
+                         embed.set_footer(text=footer)
++                    await self._check_delivery()
+                     await msg.edit(embed=embed, view=self)
+                 except Exception:
+                     pass  # message deleted or too old to edit
+@@ -6299,6 +6361,7 @@ def _define_discord_view_classes() -> None:
+                 embed.color = color
+                 embed.set_footer(text=footer)
+             self._disable_all()
++            await self._check_delivery()
+             await interaction.response.edit_message(embed=embed, view=self)
+ 
+         async def on_timeout(self):
+@@ -6412,6 +6475,7 @@ def _define_discord_view_classes() -> None:
+                 from tools import slash_confirm as _slash_confirm_mod
+                 result_text = await _slash_confirm_mod.resolve(self.session_key, self.confirm_id, choice)
+                 if result_text:
++                    await self._check_delivery()
+                     await interaction.followup.send(result_text)
+                 logger.info(
+                     "Discord button resolved slash-confirm for session %s "
+@@ -6493,6 +6557,7 @@ def _define_discord_view_classes() -> None:
+ 
+         async def _edit(self, interaction: discord.Interaction, description: str, *, view=..., **embed_kw) -> None:
+             """Edit the picker message in place with a config embed (``view`` defaults to self)."""
++            await self._check_delivery()
+             await interaction.response.edit_message(
+                 embed=self._config_embed(description, **embed_kw), view=self if view is ... else view,
+             )
+@@ -6587,6 +6652,7 @@ def _define_discord_view_classes() -> None:
+                 result_text = await self.on_model_selected(str(interaction.channel_id), model_id, self._selected_provider)
+             except Exception as exc:
+                 result_text = f"Error switching model: {exc}"
++            await self._check_delivery()
+             await interaction.edit_original_response(
+                 embed=self._config_embed(result_text, title="⚙ Model Switched", color=discord.Color.green()),
+                 view=None,
+@@ -6639,6 +6705,7 @@ def _define_discord_view_classes() -> None:
+             if msg:
+                 try:
+                     embed = self._config_embed("⏱ Selection expired — no model change.", color=discord.Color.greyple())
++                    await self._check_delivery()
+                     await msg.edit(embed=embed, view=self)
+                 except Exception:
+                     pass
+@@ -6681,6 +6748,7 @@ def _define_discord_view_classes() -> None:
+             embed = discord.Embed(description=result_text, color=discord.Color.green())
+             self.clear_items()
+             self.stop()
++            await self._check_delivery()
+             await interaction.response.edit_message(embed=embed, view=self)
+ 
+         async def on_timeout(self):
+@@ -6691,6 +6759,7 @@ def _define_discord_view_classes() -> None:
+                 try:
+                     embed = discord.Embed(description="⏱ Selection expired — no change made.", color=discord.Color.greyple())
+                     self.clear_items()
++                    await self._check_delivery()
+                     await msg.edit(embed=embed, view=self)
+                 except Exception:
+                     pass
+@@ -6754,6 +6823,7 @@ def _define_discord_view_classes() -> None:
+                 embed.color = color
+                 embed.set_footer(text=footer)
+             try:
++                await self._check_delivery()
+                 await interaction.response.edit_message(embed=embed, view=self)
+             except Exception:
+                 if log_edit_failure:
+@@ -6924,6 +6994,9 @@ async def _standalone_response_json_or_error(resp: Any, error_prefix: str):
+     return await _standalone_read_json_limited(resp, _DISCORD_STANDALONE_JSON_BODY_LIMIT_BYTES), None
+ 
+ 
++_DISCORD_API_BASE = 'https://discord.com/api/v10'
++
++
+ async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_kw: dict, req_kw: dict) -> bool:
+     """Forum detection: channel directory → process-local probe cache → memoized ``GET /channels/{id}``."""
+     _channel_type = None
+@@ -6939,7 +7012,7 @@ async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_k
+         return cached
+     is_forum = False
+     try:
+-        info_url = f"https://discord.com/api/v10/channels/{chat_id}"
++        info_url = f"{_DISCORD_API_BASE}/channels/{chat_id}"
+         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15), **sess_kw) as info_sess:
+             async with info_sess.get(info_url, headers=json_headers, **req_kw) as info_resp:
+                 if info_resp.status == 200:
+@@ -6959,6 +7032,15 @@ async def _standalone_send(
+     Forum channels (type 15) reject ``POST /messages``, so a thread post is created via
+     ``POST /channels/{id}/threads`` with media as multipart attachments. Channel type: directory
+     cache → process-local probe cache → memoized GET. ``force_document`` accepted but unused."""
++    extra = getattr(pconfig, 'extra', None)
++    extra = extra if isinstance(extra, dict) else {}
++    restriction = (_scoped_gate_env('DISCORD_GUILD_CHANNEL_ONLY')
++                   or extra.get('guild_channel_only'))
++    allowed = (_scoped_gate_env('DISCORD_ALLOWED_CHANNELS')
++               or extra.get('allowed_channels'))
++    selected = _guild_channel_target(restriction, DiscordAdapter._gate_csv_set(allowed))
++    if selected is not None and (str(chat_id) != selected or thread_id):
++        return send_error('Discord delivery requires the selected guild text channel')
+     try:
+         import aiohttp
+     except ImportError:
+@@ -6971,6 +7053,11 @@ async def _standalone_send(
+     if not token:
+         return send_error("Discord standalone send: DISCORD_BOT_TOKEN is not set")
+     try:
++        async def check_delivery():
++            if selected is not None:
++                from plugins.platforms.discord.delivery import authorize_delivery
++                await authorize_delivery(chat_id, token=token)
++        await check_delivery()
+         from gateway.platforms.base import resolve_proxy_url, proxy_kwargs_for_aiohttp
+         _proxy = resolve_proxy_url(platform_env_var="DISCORD_PROXY")
+         _sess_kw, _req_kw = proxy_kwargs_for_aiohttp(_proxy)
+@@ -6980,12 +7067,12 @@ async def _standalone_send(
+         last_data = None
+         warnings = []
+         if thread_id:
+-            url = f"https://discord.com/api/v10/channels/{thread_id}/messages"
++            url = f"{_DISCORD_API_BASE}/channels/{thread_id}/messages"
+         else:
+             # Forum channels (type 15) reject POST /messages — create a thread post.
+             if await _standalone_is_forum(aiohttp, chat_id, json_headers, _sess_kw, _req_kw):
+                 thread_name = _derive_forum_thread_name(message)
+-                thread_url = f"https://discord.com/api/v10/channels/{chat_id}/threads"
++                thread_url = f"{_DISCORD_API_BASE}/channels/{chat_id}/threads"
+                 # Filter readable media first to pick JSON vs multipart before opening a session.
+                 valid_media = []
+                 for media_path, _is_voice in media_files:
+@@ -7035,9 +7122,10 @@ async def _standalone_send(
+                 if warnings:
+                     result["warnings"] = warnings
+                 return result
+-            url = f"https://discord.com/api/v10/channels/{chat_id}/messages"
++            url = f"{_DISCORD_API_BASE}/channels/{chat_id}/messages"
+         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30), **_sess_kw) as session:
+             if message.strip() or not media_files:
++                await check_delivery()
+                 async with session.post(url, headers=json_headers, json={"content": message}, **_req_kw) as resp:
+                     last_data, err = await _standalone_response_json_or_error(resp, "Discord API error")
+                     if err:
+@@ -7050,6 +7138,7 @@ async def _standalone_send(
+                     warnings.append(_standalone_warn_missing_media(media_path))
+                     if caption_pending:
+                         try:
++                            await check_delivery()
+                             async with session.post(
+                                 url, headers=json_headers, json={"content": caption}, **_req_kw,
+                             ) as resp:
+@@ -7058,6 +7147,8 @@ async def _standalone_send(
+                                         resp, _DISCORD_STANDALONE_JSON_BODY_LIMIT_BYTES,
+                                     )
+                                     caption_pending = False
++                        except PermissionError:
++                            raise
+                         except Exception:
+                             logger.warning("Discord caption-fallback send failed for missing media")
+                     continue
+@@ -7072,6 +7163,7 @@ async def _standalone_send(
+                         caption_pending = False
+                     with open(media_path, "rb") as f:
+                         form.add_field("files[0]", f, filename=filename)
++                        await check_delivery()
+                         async with session.post(url, headers=auth_headers, data=form, **_req_kw) as resp:
+                             data, err = await _standalone_response_json_or_error(resp, "Discord API error")
+                             if err:
+@@ -7080,6 +7172,8 @@ async def _standalone_send(
+                                 warnings.append(warning)
+                                 continue
+                             last_data = data
++                except PermissionError:
++                    raise
+                 except Exception as e:
+                     warning = send_error(f"Failed to send media {media_path}: {e}")["error"]
+                     logger.error(warning)
+@@ -7298,6 +7392,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
+         seeded_extra["missed_message_backfill"] = dict(backfill_cfg)
+     _gate("ignored_channels", "DISCORD_IGNORED_CHANNELS", from_platform_extra=False)
+     _gate("allowed_channels", "DISCORD_ALLOWED_CHANNELS", from_platform_extra=False)
++    _gate("guild_channel_only", "DISCORD_GUILD_CHANNEL_ONLY", from_platform_extra=True, lower=True)
+     _gate("no_thread_channels", "DISCORD_NO_THREAD_CHANNELS", from_platform_extra=False)
+     # history_backfill: recover mention-gated channel messages between bot turns.
+     if "history_backfill" in discord_cfg:
+diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
+index 6afa1663..4ab75471 100644
+--- a/plugins/platforms/discord/adapter_media.py
++++ b/plugins/platforms/discord/adapter_media.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Delivers Discord native media and attachment fallbacks.
++# ABOUTME: Checks private channel authority before each native upload or caption write.
+ """Discord native media uploads and delivery fallbacks."""
+ from __future__ import annotations
+ 
+@@ -65,12 +67,14 @@ class DiscordMediaMixin:
+             if shown:
+                 # Legacy: the notice is posted in-channel only (forum parents get no bare notice).
+                 if not self._is_forum_parent(channel):
++                    await self._require_private_delivery(channel)
+                     await channel.send(content=notice)
+             elif caption:
+                 # Hidden: the requested caption still travels, on the channel's native shape.
+                 if self._is_forum_parent(channel):
+                     await self._send_to_forum(channel, caption)
+                 else:
++                    await self._require_private_delivery(channel)
+                     await channel.send(content=caption)
+         except Exception:
+             logger.debug("[%s] Failed to send oversized-file notice for %s", self.name, filename, exc_info=True)
+@@ -95,6 +99,7 @@ class DiscordMediaMixin:
+         channel = await self._resolve_channel(_prompt_target_id(chat_id, metadata))
+         if not channel:
+             return SendResult(success=False, error=f"Channel {chat_id} not found")
++        await self._require_private_delivery(channel)
+         filename = file_name or os.path.basename(file_path)
+         rejected = await self._reject_oversized_upload(channel, file_path, filename, caption=caption)
+         if rejected is not None:
+@@ -110,6 +115,11 @@ class DiscordMediaMixin:
+                 channel, content=(caption or "").strip(), files=[discord_file],
+             )
+             return result
++        try:
++            await self._require_private_delivery(channel)
++        except BaseException:
++            discord_file.close()
++            raise
+         msg = await channel.send(content=caption if caption else None, files=[discord_file])
+         attachments = getattr(msg, "attachments", None) or []
+         if not attachments:
+@@ -233,9 +243,11 @@ class DiscordMediaMixin:
+                         if self._is_forum_parent(channel):
+                             await self._send_to_forum(channel, captions[0])
+                         else:
++                            await self._require_private_delivery(channel)
+                             await channel.send(content=captions[0])
+                     if skip_notices and shown and not self._is_forum_parent(channel):
+                         try:
++                            await self._require_private_delivery(channel)
+                             await channel.send(content="\n".join(skip_notices))
+                         except Exception:
+                             logger.debug(
+@@ -256,6 +268,7 @@ class DiscordMediaMixin:
+                         channel, content=(content or "").strip(), files=files,
+                     )
+                 else:
++                    await self._require_private_delivery(channel)
+                     await channel.send(content=content, files=files)
+                 delivered = True
+             except Exception as e:
+@@ -325,6 +338,7 @@ class DiscordMediaMixin:
+                         "content_type": "audio/ogg",
+                     },
+                 ]
++                await self._require_private_delivery(channel)
+                 msg_data = await self._client.http.request(
+                     discord.http.Route("POST", "/channels/{channel_id}/messages", channel_id=channel.id),
+                     form=form,
+@@ -334,9 +348,11 @@ class DiscordMediaMixin:
+                 logger.debug("Voice message flag failed, falling back to file: %s", voice_err)
+                 file = discord.File(io.BytesIO(file_data), filename=filename)
+                 try:
++                    await self._require_private_delivery(channel)
+                     msg = await channel.send(file=file, reference=reference)
+                 except Exception as send_err:
+                     if reference is not None and self._is_reply_reference_rejected(send_err):
++                        await self._require_private_delivery(channel)
+                         msg = await channel.send(file=file, reference=None)
+                     else:
+                         raise
+@@ -398,6 +414,7 @@ class DiscordMediaMixin:
+                 file = discord.File(io.BytesIO(data), filename=filename_for(headers))
+                 if self._is_forum_parent(channel):
+                     return await self._forum_post_file(channel, content=(caption or "").strip(), file=file)
++                await self._require_private_delivery(channel)
+                 msg = await channel.send(content=caption if caption else None, file=file)
+                 return SendResult(success=True, message_id=str(msg.id))
+         except ImportError:
+@@ -456,4 +473,3 @@ class DiscordMediaMixin:
+             chat_id, file_path, caption, file_name=file_name, not_found="File not found", kind="document",
+             metadata=metadata,
+         )
+-
+diff --git a/plugins/platforms/discord/delivery.py b/plugins/platforms/discord/delivery.py
+new file mode 100644
+index 00000000..cdb15ca4
+--- /dev/null
++++ b/plugins/platforms/discord/delivery.py
+@@ -0,0 +1,16 @@
++# ABOUTME: Requires current profile policy before private Discord content delivery.
++# ABOUTME: Binds the transport credential without exposing it to plugin callbacks.
++from hmac import compare_digest
++
++
++async def authorize_delivery(chat_id, *, guild_id='', token=''):
++    from agent.secret_scope import get_secret
++    from hermes_constants import get_hermes_home
++    from hermes_cli.plugins import get_plugin_manager
++    expected = get_secret('DISCORD_BOT_TOKEN', '')
++    if not isinstance(token, str) or not token or not isinstance(expected, str) or not compare_digest(token, expected):
++        raise PermissionError('Private Discord delivery has a different profile credential')
++    results = await get_plugin_manager().ainvoke_hook('pre_message_delivery',
++        platform='discord', chat_id=str(chat_id), guild_id=str(guild_id), hermes_home=str(get_hermes_home()))
++    if not results or any(not isinstance(result, dict) or result.get('action') != 'allow' for result in results):
++        raise PermissionError('Current Discord permissions do not admit private delivery')
+diff --git a/tests/gateway/test_clarify_cancellation_outcome.py b/tests/gateway/test_clarify_cancellation_outcome.py
+new file mode 100644
+index 00000000..e4f206c5
+--- /dev/null
++++ b/tests/gateway/test_clarify_cancellation_outcome.py
+@@ -0,0 +1,154 @@
++# ABOUTME: Checks cancellation, timeout, and deliberate empty answers through the actual question queue.
++# ABOUTME: Preserves earlier batch answers and prevents cancellation notices from becoming user answers.
++from concurrent.futures import Future, ThreadPoolExecutor
++import asyncio
++import contextvars
++import json
++from pathlib import Path
++import tempfile
++import threading
++from types import SimpleNamespace
++import unittest
++
++from hermes_constants import set_hermes_home_override, reset_hermes_home_override
++from gateway.platforms.base import SendResult
++from gateway.run_turn_runner_clarify_delivery import _clarify_send_then_wait
++from tools import clarify_gateway as queue
++from tools.clarify_tool import clarify_tool
++
++
++class ClarifyCancellationOutcomeTests(unittest.TestCase):
++    def setUp(self):
++        directory = tempfile.TemporaryDirectory()
++        self.addCleanup(directory.cleanup)
++        token = set_hermes_home_override(Path(directory.name))
++        self.addCleanup(reset_hermes_home_override, token)
++        self.addCleanup(queue.clear_session, 'synthetic-cancellation')
++        self.addCleanup(queue.clear_session, 'synthetic-cancellation-other')
++        (Path(directory.name) / 'config.yaml').write_text('agent:\n  clarify_timeout: 1\n')
++        self.assertEqual(queue.get_clarify_timeout(), 1)
++
++    def completed_send(self):
++        future = Future()
++        future.set_result(SendResult(success=True, message_id='synthetic-offline-card'))
++        return future
++
++    def test_cancellation_is_not_a_timeout_or_an_answer(self):
++        entry = queue.register('cancel-outcome', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        sent = self.completed_send()
++        started = threading.Event()
++
++        class ObservedEvent(threading.Event):
++            def wait(self, timeout=None):
++                started.set()
++                return super().wait(timeout)
++
++        entry.event = ObservedEvent()
++
++        def wait():
++            return _clarify_send_then_wait(sent, clarify_id=entry.clarify_id,
++                session_key=entry.session_key, clarify_mod=queue)
++
++        with ThreadPoolExecutor(max_workers=1) as executor:
++            response = executor.submit(contextvars.copy_context().run, wait)
++            self.assertTrue(started.wait(2))
++            queue.clear_session(entry.session_key)
++            raw, answered = response.result(timeout=3)
++        result = json.loads(clarify_tool('Choose', ['A', 'B'], callback=lambda *_: raw))
++        self.assertFalse(answered)
++        self.assertEqual(result['user_response'], '')
++        self.assertTrue(result.get('cancelled'), result)
++        self.assertNotIn('timed_out', result)
++        self.assertNotIn('within', result.get('notice', ''))
++        self.assertFalse(queue.resolve_gateway_clarify(entry.clarify_id, 'A'))
++
++    def test_actual_timeout_keeps_the_timeout_outcome(self):
++        entry = queue.register('timeout-outcome', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        response = _clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
++            session_key=entry.session_key, clarify_mod=queue)
++        self.assertFalse(response[1])
++        self.assertIn('did not respond', response[0])
++
++    def test_cancelled_entry_does_not_remove_a_successor_with_the_same_identifier(self):
++        from tools.clarify_outcome import ClarifyCancellation
++        entry = queue.register('reused-outcome', 'synthetic-cancellation', 'First', ['A', 'B'])
++        queue.clear_session(entry.session_key)
++        successor = queue.register(entry.clarify_id, entry.session_key, 'Second', ['A', 'B'])
++        self.assertIsInstance(queue.wait_for_response(entry, 1), ClarifyCancellation)
++        self.assertIs(queue.get_pending_for_session(entry.session_key, include_choice_prompts=True), successor)
++        self.assertTrue(queue.resolve_gateway_clarify(successor.clarify_id, 'B'))
++        self.assertEqual(queue.wait_for_response(successor, 1), 'B')
++
++    def test_deliberate_empty_answer_does_not_report_a_timeout(self):
++        entry = queue.register('empty-outcome', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        self.assertTrue(queue.resolve_gateway_clarify(entry.clarify_id, ''))
++        self.assertEqual(_clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
++            session_key=entry.session_key, clarify_mod=queue), ('', True))
++
++    def test_batch_callback_accepts_the_actual_queue_cancellation_marker(self):
++        entry = queue.register('batch-marker', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        queue.clear_session(entry.session_key)
++
++        def callback(_question, _choices, *, questions):
++            return queue.wait_for_response(entry, 1)
++
++        result = json.loads(clarify_tool('', questions=[{'question': 'Choose', 'choices': ['A', 'B']}],
++                                        callback=callback))
++        self.assertTrue(result.get('cancelled'), result)
++        self.assertNotIn('timed_out', result)
++        self.assertEqual(result['responses'][0]['user_response'], '')
++
++    def test_user_text_that_matches_the_cancellation_notice_remains_an_answer(self):
++        entry = queue.register('literal-outcome', 'synthetic-cancellation', 'Choose', None)
++        self.assertTrue(queue.resolve_gateway_clarify(entry.clarify_id, '[clarify cancelled]'))
++        response = _clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
++            session_key=entry.session_key, clarify_mod=queue)
++        self.assertEqual(response, ('[clarify cancelled]', True))
++
++    def test_batch_cancellation_during_send_preserves_earlier_answers(self):
++        from gateway.run_turn_runner import TurnRunner
++
++        class CardSurface:
++            def __init__(self):
++                self.questions = []
++                self.retired = []
++
++            def pause_typing_for_chat(self, _chat):
++                pass
++
++            async def send_clarify(self, **arguments):
++                self.questions.append(arguments['question'])
++                if len(self.questions) == 1:
++                    queue.resolve_gateway_clarify(arguments['clarify_id'], 'A')
++                else:
++                    queue.clear_session(arguments['session_key'])
++                return SendResult(success=True, message_id='synthetic-offline-card')
++
++            async def retire_clarify_card(self, identifier, notice):
++                self.retired.append(notice)
++
++        surface = CardSurface()
++        runner = object.__new__(TurnRunner)
++        runner._ctx = SimpleNamespace(_status_adapter=surface, _status_chat_id='synthetic-channel',
++            _status_thread_metadata={}, session_key='synthetic-cancellation', stream_consumer_holder=[None])
++        runner._close_native_stream_boundary = lambda *args, **kwargs: None
++
++        def schedule(coroutine, _label):
++            future = Future()
++            future.set_result(asyncio.run(coroutine))
++            return future
++
++        runner._schedule = schedule
++        result = json.loads(clarify_tool('', questions=[{'question': question, 'choices': ['A', 'B']}
++            for question in ('First', 'Second', 'Third')], callback=runner._clarify_callback_sync))
++        self.assertEqual(surface.questions, ['First', 'Second'])
++        self.assertEqual([row['user_response'] for row in result['responses']], ['A', '', ''])
++        self.assertTrue(result.get('cancelled'), result)
++        self.assertNotIn('timed_out', result)
++        self.assertEqual(len(surface.retired), 1)
++        self.assertIn('cancel', surface.retired[0].lower())
++        self.assertNotIn('expired', surface.retired[0].lower())
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tests/gateway/test_clarify_delivery_fallback.py b/tests/gateway/test_clarify_delivery_fallback.py
+index 62d54002..00a7073d 100644
+--- a/tests/gateway/test_clarify_delivery_fallback.py
++++ b/tests/gateway/test_clarify_delivery_fallback.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Exercises clarification fallback and late delivery outcomes on an actual event loop.
++# ABOUTME: Drains scheduled retirement work before the fixture closes the loop.
+ """A clarify card that cannot render is retried as plain text, and a card that fails late does
+ not pass for user inactivity (#112684).
+ 
+@@ -65,8 +67,20 @@ def loop():
+     thread = threading.Thread(target=loop.run_forever, daemon=True)
+     thread.start()
+     yield loop
++
++    async def finish():
++        # Submitted retirement coroutines must enter the loop before its task inventory.
++        await asyncio.sleep(0)
++        pending = asyncio.all_tasks() - {asyncio.current_task()}
++        if pending:
++            await asyncio.gather(*pending)
++        await loop.shutdown_asyncgens()
++
++    asyncio.run_coroutine_threadsafe(finish(), loop).result(timeout=5)
+     loop.call_soon_threadsafe(loop.stop)
+     thread.join(timeout=5)
++    assert not thread.is_alive()
++    loop.close()
+ 
+ 
+ def _runner(adapter, loop, monkeypatch, timeout=5):
+diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
+new file mode 100644
+index 00000000..a2021d51
+--- /dev/null
++++ b/tests/gateway/test_discord_command_identity.py
+@@ -0,0 +1,107 @@
++# ABOUTME: Exercises command synchronization with real Discord command models and trees.
++# ABOUTME: Checks inherited settings, explicit updates, and command identity with isolated transport state.
++
++import copy
++import unittest
++
++import discord
++from discord.ext import commands
++
++from gateway.config import PlatformConfig
++from plugins.platforms.discord.adapter import DiscordAdapter
++
++
++class CommandTransport:
++    """Keep API state in memory for unit tests; live Discord acceptance is separate."""
++
++    def __init__(self, payload):
++        self.payloads = {payload["id"]: copy.deepcopy(payload)}
++        self.operations = []
++
++    async def get_global_commands(self, application_id):
++        return copy.deepcopy(list(self.payloads.values()))
++
++    async def close(self):
++        pass
++
++    async def delete_global_command(self, application_id, command_id):
++        self.operations.append(("delete", command_id))
++        del self.payloads[str(command_id)]
++
++    async def upsert_global_command(self, application_id, payload):
++        current = next((item for item in self.payloads.values()
++                        if item["name"] == payload["name"] and item["type"] == payload["type"]), None)
++        command_id = current["id"] if current else "456"
++        result = {**(current or {}), **copy.deepcopy(payload), "id": command_id,
++                  "application_id": str(application_id)}
++        self.payloads[command_id] = result
++        self.operations.append(("upsert", command_id))
++        return copy.deepcopy(result)
++
++    async def edit_global_command(self, application_id, command_id, payload):
++        # discord.py only forwards these fields on its edit route.
++        result = self.payloads[str(command_id)]
++        result.update({key: copy.deepcopy(payload[key]) for key in ("name", "description", "options")
++                       if key in payload})
++        self.operations.append(("edit", str(command_id)))
++        return copy.deepcopy(result)
++
++
++class DiscordCommandIdentityTests(unittest.IsolatedAsyncioTestCase):
++    async def asyncSetUp(self):
++        self.bot = commands.Bot(command_prefix="!", intents=discord.Intents.none(), application_id=999)
++        self.addAsyncCleanup(self.bot.close)
++
++        async def stop(interaction):
++            pass
++
++        self.command = discord.app_commands.Command(name="stop", description="Stop Hermes", callback=stop)
++        self.bot.tree.add_command(self.command)
++        self.payload = {**self.command.to_dict(self.bot.tree), "id": "123", "application_id": "999",
++                        "integration_types": [0, 1], "contexts": [0, 1, 2]}
++        self.transport = CommandTransport(self.payload)
++        self.bot.http = self.transport
++        self.bot.tree._http = self.transport
++        self.adapter = DiscordAdapter(PlatformConfig(enabled=True, token="synthetic-offline-token"))
++        self.adapter._client = self.bot
++
++    async def test_inherited_settings_keep_an_unchanged_command(self):
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["unchanged"], 1)
++        self.assertEqual(self.transport.operations, [])
++        self.assertIn("123", self.transport.payloads)
++
++    async def test_explicit_settings_change_keeps_the_command_id(self):
++        self.command.nsfw = True
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(summary["recreated"], 0)
++        self.assertIn("123", self.transport.payloads)
++        self.assertTrue(self.transport.payloads["123"]["nsfw"])
++        self.assertNotIn(("delete", 123), self.transport.operations)
++
++    async def test_description_and_settings_change_both_reach_the_api(self):
++        self.command.description = "Stop the running Hermes agent"
++        self.command.nsfw = True
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(self.transport.payloads["123"]["description"], self.command.description)
++        self.assertTrue(self.transport.payloads["123"]["nsfw"])
++
++    async def test_explicit_contexts_do_not_match_other_contexts(self):
++        self.command.allowed_contexts = discord.app_commands.AppCommandContext(guild=True, dm_channel=False,
++                                                                               private_channel=False)
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(self.transport.payloads["123"]["contexts"], [0])
++
++    async def test_description_change_updates_the_existing_command(self):
++        self.command.description = "Stop the running Hermes agent"
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(self.transport.payloads["123"]["description"], self.command.description)
++        self.assertEqual(summary["deleted"], 0)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/gateway/test_discord_connect.py b/tests/gateway/test_discord_connect.py
+index ad141325..4f29dd9e 100644
+--- a/tests/gateway/test_discord_connect.py
++++ b/tests/gateway/test_discord_connect.py
+@@ -1,9 +1,12 @@
++# ABOUTME: Checks Discord connection, command synchronization, and gateway recovery behavior.
++# ABOUTME: Isolates network transport while verifying adapter state and command decisions.
++
+ import asyncio
+ import json
+ import os
+ import sys
+ from types import SimpleNamespace
+-from unittest.mock import AsyncMock, MagicMock
++from unittest.mock import AsyncMock, MagicMock, call
+ 
+ import pytest
+ 
+@@ -459,8 +462,10 @@ async def test_safe_sync_slash_commands_only_mutates_diffs():
+         "created": 1,
+         "deleted": 1,
+     }
+-    fake_http.edit_global_command.assert_awaited_once_with(999, 12, desired_updated)
+-    fake_http.upsert_global_command.assert_awaited_once_with(999, desired_created)
++    fake_http.edit_global_command.assert_not_awaited()
++    assert fake_http.upsert_global_command.await_args_list == [
++        call(999, desired_updated), call(999, desired_created),
++    ]
+     fake_http.delete_global_command.assert_awaited_once_with(999, 13)
+ 
+ 
+diff --git a/tests/gateway/test_discord_guild_channel_only.py b/tests/gateway/test_discord_guild_channel_only.py
+new file mode 100644
+index 00000000..572cbc3d
+--- /dev/null
++++ b/tests/gateway/test_discord_guild_channel_only.py
+@@ -0,0 +1,118 @@
++# ABOUTME: Verifies one guild channel gates Discord message and slash-command admission.
++# ABOUTME: Uses the actual Discord SDK and isolated pairing records for protocol controls.
++import json
++import asyncio
++from pathlib import Path
++import tempfile
++import unittest
++
++import discord
++from gateway.config import PlatformConfig
++from gateway.pairing import PairingStore
++from agent.secret_scope import set_secret_scope, reset_secret_scope
++from hermes_constants import set_hermes_home_override, reset_hermes_home_override
++from plugins.platforms.discord.adapter import DiscordAdapter, _GATE_ENV_KEYS, _standalone_send
++
++
++class GuildChannelOnlyTests(unittest.TestCase):
++    def setUp(self):
++        directory = tempfile.TemporaryDirectory()
++        self.addCleanup(directory.cleanup)
++        token = set_hermes_home_override(Path(directory.name))
++        self.addCleanup(reset_hermes_home_override, token)
++        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
++        self.addCleanup(reset_secret_scope, secret_scope)
++        self.client = discord.Client(intents=discord.Intents.none())
++        state = self.client._connection
++        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
++        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
++        state.user = discord.ClientUser(state=state, data=self.bot_data)
++        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
++            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
++            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
++        state._guilds[10] = self.guild
++        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
++        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
++        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
++        self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
++        self.guild._channels.update({60:self.channel, 61:self.other})
++        state._private_channels[70] = self.dm
++        self.adapter = DiscordAdapter(PlatformConfig(enabled=True))
++        self.adapter._client = self.client
++        self.adapter._allowed_user_ids = {'20'}
++        self.adapter._gate_env_snapshot = {key:'' for key in _GATE_ENV_KEYS}
++        self.adapter.config.extra = {'allowed_channels':['60'], 'guild_channel_only':True}
++
++    def message(self, channel):
++        return discord.Message(state=self.client._connection, channel=channel, data={
++            'id':'100000000000000000','type':0,'author':self.user_data,
++            'content':'<@30> synthetic request','mentions':[self.bot_data],'mention_roles':[],
++            'attachments':[], 'embeds':[], 'flags':0,'pinned':False,'tts':False,
++            'timestamp':'2026-10-07T20:00:00+00:00','edited_timestamp':None})
++
++    def interaction(self, channel):
++        payload = {'id':'100000000000000001','application_id':'30','type':2,'token':'synthetic-token',
++            'attachment_size_limit':33554432, 'entitlements':[],
++            'version':1,'locale':'en-US','app_permissions':'0',
++            'data':{'id':'200000000000000000','name':'status','type':1},
++            'channel_id':str(channel.id), 'channel':{**self.channel_data,'id':str(channel.id)}}
++        if isinstance(channel, discord.DMChannel):
++            payload.update(user=self.user_data,channel={'id':'70','type':1,'recipients':[self.user_data]})
++        else:
++            payload.update(guild_id='10',guild_locale='en-US',member={'user':self.user_data,
++                'roles':[],'joined_at':'2026-10-01T00:00:00+00:00','deaf':False,'mute':False,'permissions':'0','flags':0})
++        return discord.Interaction(data=payload,state=self.client._connection)
++
++    def test_private_channel_accepts_owner_messages_and_status(self):
++        self.assertTrue(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
++        self.assertTrue(self.adapter._evaluate_slash_authorization(self.interaction(self.channel))[0])
++
++    def test_direct_messages_refuse_an_allowlisted_owner(self):
++        self.assertFalse(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
++        self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.dm))[0])
++
++    def test_pairing_does_not_bypass_the_channel_restriction(self):
++        store = PairingStore()
++        code = store.generate_code('discord','20','SyntheticOwner')
++        self.assertIsNotNone(store.approve_code('discord',code))
++        self.assertTrue(store.is_approved('discord','20'))
++        self.assertFalse(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
++        self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.dm))[0])
++
++    def test_other_guild_channel_refuses_messages_and_status(self):
++        self.assertFalse(self.adapter._discord_message_admission(self.message(self.other),claim=False)[0])
++        self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.other))[0])
++
++    def test_outbound_messages_and_files_cannot_resolve_another_destination(self):
++        self.assertIs(asyncio.run(self.adapter._resolve_channel('60')), self.channel)
++        self.assertIsNone(asyncio.run(self.adapter._resolve_channel('61')))
++        self.assertIsNone(asyncio.run(self.adapter._resolve_channel('70')))
++
++    def test_standalone_text_and_media_refuse_another_channel_before_credentials(self):
++        config = PlatformConfig(enabled=True,extra={'guild_channel_only':True,'allowed_channels':['60']})
++        for target, thread in (('61',None), ('70',None), ('60','80')):
++            with self.subTest(target=target,thread=thread):
++                result = asyncio.run(_standalone_send(config,target,'Synthetic outbound request',
++                    thread_id=thread,media_files=[('/synthetic/attachment.txt',False)]))
++                self.assertIn('selected guild text channel',result['error'])
++
++    def test_standalone_selected_channel_reaches_credential_validation(self):
++        config = PlatformConfig(enabled=True,extra={'guild_channel_only':True,'allowed_channels':['60']})
++        result = asyncio.run(_standalone_send(config,'60','Synthetic outbound request'))
++        self.assertEqual(result['error'],'Discord standalone send: DISCORD_BOT_TOKEN is not set')
++
++    def test_channel_only_requires_one_numeric_channel_id(self):
++        for allowed in ([], ['60','61'], ['*'], ['synthetic-private']):
++            with self.subTest(allowed=allowed):
++                self.adapter.config.extra['allowed_channels'] = allowed
++                self.assertFalse(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
++                self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.channel))[0])
++
++    def test_absent_opt_in_preserves_direct_message_admission(self):
++        self.adapter.config.extra.pop('guild_channel_only')
++        self.assertTrue(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
++        self.assertTrue(self.adapter._evaluate_slash_authorization(self.interaction(self.dm))[0])
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tests/gateway/test_discord_sync_limit.py b/tests/gateway/test_discord_sync_limit.py
+index ca8f298f..4a94ec58 100644
+--- a/tests/gateway/test_discord_sync_limit.py
++++ b/tests/gateway/test_discord_sync_limit.py
+@@ -1,3 +1,6 @@
++# ABOUTME: Checks that Discord command synchronization stays below the command limit.
++# ABOUTME: Uses the actual payload comparison with isolated command transport calls.
++
+ """Test Discord slash command sync respects the 100-command hard limit."""
+ 
+ from types import SimpleNamespace
+@@ -51,7 +54,6 @@ def adapter():
+ 
+     adapter._sleep_between_command_sync_mutations = AsyncMock()
+     adapter._existing_command_to_payload = MagicMock(side_effect=lambda cmd: {"name": cmd.name})
+-    adapter._canonicalize_app_command_payload = MagicMock(side_effect=lambda p: p)
+     adapter._patchable_app_command_payload = MagicMock(side_effect=lambda p: p)
+ 
+     return adapter
+@@ -81,7 +83,6 @@ async def test_safe_sync_deletes_before_creating():
+     adapter._client.application_id = "test_app_id"
+     adapter._sleep_between_command_sync_mutations = AsyncMock()
+     adapter._existing_command_to_payload = MagicMock(side_effect=lambda cmd: {"name": cmd.name})
+-    adapter._canonicalize_app_command_payload = MagicMock(side_effect=lambda p: p)
+     adapter._patchable_app_command_payload = MagicMock(side_effect=lambda p: p)
+ 
+     # Simulate having 100 commands on Discord, with 1 that's no longer desired
 diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
-index a114eae37..ee2a0c2f1 100644
+index a114eae3..ee2a0c2f 100644
 --- a/tests/gateway/test_resume_command.py
 +++ b/tests/gateway/test_resume_command.py
 @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
@@ -131,8 +1275,128 @@ index a114eae37..ee2a0c2f1 100644
      @pytest.mark.asyncio
      async def test_resume_clears_session_model_overrides(self, tmp_path):
          """Resume must not carry a previous session's /model override into the
+diff --git a/tests/gateway/test_stop_clarify_waiters.py b/tests/gateway/test_stop_clarify_waiters.py
+new file mode 100644
+index 00000000..93e49c32
+--- /dev/null
++++ b/tests/gateway/test_stop_clarify_waiters.py
+@@ -0,0 +1,114 @@
++# ABOUTME: Verifies that gateway interruption releases actual clarification waiters.
++# ABOUTME: Checks session isolation and late answers without model or Discord requests.
++
++import asyncio
++import contextvars
++import sqlite3
++import tempfile
++import threading
++import unittest
++from concurrent.futures import ThreadPoolExecutor
++from pathlib import Path
++
++from gateway.config import GatewayConfig, Platform
++from gateway.run import GatewayRunner, _AGENT_PENDING_SENTINEL
++from gateway.session import SessionSource
++from hermes_constants import reset_hermes_home_override, set_hermes_home_override
++from tools import clarify_gateway as queue
++
++
++class StopClarifyWaiterTests(unittest.IsolatedAsyncioTestCase):
++    def setUp(self):
++        self.directory = tempfile.TemporaryDirectory(prefix="gateway-clarify-stop-")
++        self.addCleanup(self.directory.cleanup)
++        home = Path(self.directory.name)
++        (home / "config.yaml").write_text("database:\n  journal_mode: wal\n")
++        database = sqlite3.connect(home / "state.db")
++        try:
++            database.execute("PRAGMA journal_mode=WAL")
++        finally:
++            database.close()
++        token = set_hermes_home_override(home)
++        self.addCleanup(reset_hermes_home_override, token)
++        self.runner = GatewayRunner(config=GatewayConfig())
++        self.source = SessionSource(platform=Platform.DISCORD, chat_id="synthetic-stop",
++                                    chat_type="group", user_id="synthetic-user")
++        self.key = "synthetic-clarify-stop"
++        self.addCleanup(queue.clear_session, self.key)
++        self.addCleanup(queue.clear_session, "synthetic-other-chat")
++        self.addCleanup(self.runner._session_db._db.close)
++
++    async def stop(self):
++        await self.runner._interrupt_and_clear_session(
++            self.key, self.source, interrupt_reason="explicit stop requested",
++            invalidation_reason="stop_command")
++
++    async def test_stop_without_a_prompt_invalidates_and_releases_the_turn(self):
++        self.runner._running_agents[self.key] = _AGENT_PENDING_SENTINEL
++        generation = self.runner._begin_session_run_generation(self.key)
++        await self.stop()
++        self.assertGreater(self.runner._current_session_run_generation(self.key), generation)
++        self.assertNotIn(self.key, self.runner._running_agents)
++        self.assertIsNone(queue.get_pending_for_session(self.key, include_choice_prompts=True))
++
++    async def test_an_answer_already_received_survives_stop_cleanup(self):
++        entry = queue.register("answered-before-stop", self.key, "Choose", ["A", "B"])
++        self.assertTrue(queue.resolve_gateway_clarify(entry.clarify_id, "A"))
++        # The waiter retains the entry while the session cleanup removes its public lookup.
++        with ThreadPoolExecutor(max_workers=1) as workers:
++            response = workers.submit(queue.wait_for_response, entry.clarify_id, 2)
++            self.assertEqual(response.result(timeout=3), "A")
++        await self.stop()
++        self.assertFalse(queue.resolve_gateway_clarify(entry.clarify_id, "B"))
++
++    async def test_stop_releases_waiter_and_rejects_late_answers(self):
++        from run_agent import AIAgent
++        agent = AIAgent(api_key="synthetic-offline-key", base_url="http://127.0.0.1:1/v1",
++                        provider="custom", api_mode="chat_completions", model="synthetic-offline-model",
++                        enabled_toolsets=[], quiet_mode=True, platform="discord",
++                        skip_memory=True, skip_background_review=True)
++        from hermes_logging import _reset_queued_handlers
++        self.addCleanup(_reset_queued_handlers)
++        self.addCleanup(agent.close)
++        self.runner._running_agents[self.key] = agent
++        entry = queue.register("pending-stop-question", self.key, "Choose", ["A", "B"])
++        other = queue.register("other-chat-question", "synthetic-other-chat", "Choose", ["A", "B"])
++        started = threading.Event()
++
++        def wait():
++            started.set()
++            return queue.wait_for_response(entry.clarify_id, 30)
++
++        context = contextvars.copy_context()
++        with ThreadPoolExecutor(max_workers=1) as workers:
++            response = workers.submit(context.run, wait)
++            self.assertTrue(started.wait(timeout=2))
++            try:
++                await self.stop()
++                self.assertTrue(agent._hard_interrupt_requested.is_set())
++                from tools.clarify_outcome import ClarifyCancellation
++                self.assertIsInstance(await asyncio.wait_for(asyncio.wrap_future(response), timeout=2), ClarifyCancellation)
++                self.assertIsNone(queue.get_pending_for_session(self.key, include_choice_prompts=True))
++                self.assertFalse(queue.resolve_gateway_clarify(entry.clarify_id, "late"))
++                self.assertFalse(other.event.is_set())
++                self.assertTrue(queue.resolve_gateway_clarify(other.clarify_id, "B"))
++            finally:
++                queue.clear_session(self.key)
++
++    async def test_sync_interruption_clears_all_prompts_before_a_successor_registers(self):
++        entries = [queue.register("pending-" + str(index), self.key, "Choose", None)
++                   for index in range(2)]
++        self.runner._interrupt_running_turn(self.key, interrupt_reason="session evicted",
++                                            invalidation_reason="eviction")
++        successor = queue.register("successor-question", self.key, "Choose again", ["A", "B"])
++        try:
++            self.assertTrue(all(entry.event.is_set() for entry in entries))
++            self.assertFalse(successor.event.is_set())
++            self.assertIs(queue.get_pending_for_session(self.key, include_choice_prompts=True), successor)
++            self.assertTrue(queue.resolve_gateway_clarify(successor.clarify_id, "A"))
++        finally:
++            queue.clear_session(self.key)
++
++
++if __name__ == "__main__":
++    unittest.main()
 diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
-index 365499669..a1548102d 100644
+index 36549966..a1548102 100644
 --- a/tests/hermes_cli/test_cli_resume_command.py
 +++ b/tests/hermes_cli/test_cli_resume_command.py
 @@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:
@@ -183,3 +1447,212 @@ index 365499669..a1548102d 100644
  class TestResumeFlushesBeforeEndSession:
      """Regression for #47202: /resume must flush un-persisted messages to
      the session DB before ending the old session, just like /new and
+diff --git a/tests/tools/test_clarify_gateway.py b/tests/tools/test_clarify_gateway.py
+index 5a92a1a5..70686123 100644
+--- a/tests/tools/test_clarify_gateway.py
++++ b/tests/tools/test_clarify_gateway.py
+@@ -77,7 +77,7 @@ class TestClarifyPrimitive:
+ 
+ 
+     def test_clear_session_cancels_pending_entries(self):
+-        """clear_session unblocks blocked threads with empty response."""
++        """clear_session unblocks blocked threads with an explicit cancellation outcome."""
+         from tools import clarify_gateway as cm
+ 
+         cm.register("id7", "sk7", "Q?", ["A"])
+@@ -91,8 +91,8 @@ class TestClarifyPrimitive:
+             cancelled = cm.clear_session("sk7")
+             assert cancelled == 1
+             result = fut.result(timeout=10.0)
+-            # clear_session sets response="" then the wait returns it
+-            assert result == ""
++            from tools.clarify_outcome import ClarifyCancellation
++            assert isinstance(result, ClarifyCancellation)
+ 
+ 
+     def test_clear_session_preserves_resolved_response(self):
+diff --git a/tools/clarify_gateway.py b/tools/clarify_gateway.py
+index e33a5ff0..f2d7025e 100644
+--- a/tools/clarify_gateway.py
++++ b/tools/clarify_gateway.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Stores clarification requests and releases blocked waiters on replies or session cleanup.
++# ABOUTME: Preserves the outcome when cancellation races with a scheduled prompt send.
+ """Gateway-side clarify primitive (blocking event-based queue). The agent runs on a worker
+ thread while the event loop handles the user's reply, so a pending clarify is stored
+ module-level (same shape as ``tools.approval``) and the agent thread blocks on an ``Event``
+@@ -12,6 +14,7 @@ import threading
+ import time
+ from dataclasses import dataclass, field
+ from typing import Callable, Dict, List, Optional
++from tools.clarify_outcome import CANCELLED_RESPONSE
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -55,14 +58,15 @@ def register(clarify_id: str, session_key: str, question: str, choices: Optional
+     return entry
+ 
+ 
+-def wait_for_response(clarify_id: str, timeout: float) -> Optional[str]:
++def wait_for_response(clarify_id: str | _ClarifyEntry, timeout: float) -> Optional[str]:
+     """Block until the entry resolves or ``timeout`` (``<= 0`` = unlimited) elapses; None on
+     timeout/unknown id. Polls in 1s slices so the inactivity heartbeat keeps firing (a
+     single long ``Event.wait`` would let the gateway watchdog kill a live prompt)."""
+     with _lock:
+-        entry = _entries.get(clarify_id)
++        entry = clarify_id if isinstance(clarify_id, _ClarifyEntry) else _entries.get(clarify_id)
+     if entry is None:
+         return None
++    clarify_id = entry.clarify_id
+     try:
+         from tools.environments.base import touch_activity_if_due
+     except Exception:  # pragma: no cover - optional
+@@ -78,6 +82,9 @@ def wait_for_response(clarify_id: str, timeout: float) -> Optional[str]:
+         if touch_activity_if_due is not None:
+             touch_activity_if_due(activity_state, "waiting for user clarify response")
+     with _lock:
++        current = _entries.get(clarify_id)
++        if current is not None and current is not entry:
++            return entry.response
+         _entries.pop(clarify_id, None)  # regardless of outcome
+         ids = _session_index.get(entry.session_key) or []
+         if clarify_id in ids:
+@@ -240,8 +247,7 @@ def has_pending(session_key: str) -> bool:
+ def clear_session(session_key: str) -> int:
+     """Drop every pending clarify for a session (``/new``, shutdown, cached-agent eviction) so
+     blocked agent threads don't outlive it; returns how many were cancelled. Cancelled waiters
+-    see "" (callers tell it from a real reply only via their own timeout bookkeeping; most treat
+-    any falsy result as no response). First-writer-wins: an already-set entry was answered for
++    receive a typed cancellation notice. First-writer-wins: an already-set entry was answered for
+     real, so it is dropped but its response preserved. The loop stays inside the lock so a button
+     callback cannot slip between pop and check; entries go regardless of state so a cleared
+     session is never resurrected by late callbacks."""
+@@ -250,7 +256,7 @@ def clear_session(session_key: str) -> int:
+         for entry in (_entries.pop(cid, None) for cid in list(_session_index.pop(session_key, []) or [])):
+             if entry is None or entry.event.is_set():
+                 continue
+-            entry.response = ""
++            entry.response = CANCELLED_RESPONSE
+             entry.event.set()
+             cancelled += 1
+     return cancelled
+diff --git a/tools/clarify_outcome.py b/tools/clarify_outcome.py
+new file mode 100644
+index 00000000..a90bb34f
+--- /dev/null
++++ b/tools/clarify_outcome.py
+@@ -0,0 +1,9 @@
++# ABOUTME: Marks cancelled clarification waits without confusing user text with control state.
++# ABOUTME: Carries cancellation through the gateway callback until the tool serializes its result.
++
++
++class ClarifyCancellation(str):
++    """A typed notice distinguishes cancellation from an answer with identical text."""
++
++
++CANCELLED_RESPONSE = ClarifyCancellation('[clarify cancelled]')
+diff --git a/tools/clarify_tool.py b/tools/clarify_tool.py
+index 70d3a99d..58e402b6 100644
+--- a/tools/clarify_tool.py
++++ b/tools/clarify_tool.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Validates structured questions and serializes the platform's answer or wait outcome.
++# ABOUTME: Preserves skipped answers, actual timeouts, and explicit cancellation as distinct results.
+ """Clarify tool: structured multiple-choice / open-ended questions to the user.
+ Schema, validation and a thin dispatcher; the UI lives in a platform-provided
+ callback (cli.py, gateway/run.py, tui_gateway)."""
+@@ -5,6 +7,7 @@ callback (cli.py, gateway/run.py, tui_gateway)."""
+ import inspect
+ import json
+ from typing import Dict, List, Optional, Callable
++from tools.clarify_outcome import ClarifyCancellation
+ 
+ MAX_CHOICES = 4  # the UI always appends an "Other (type your answer)" row
+ MAX_QUESTIONS = 5  # independent questions per batch call
+@@ -136,11 +139,10 @@ def _normalize_questions(questions) -> tuple:
+     return normalized, None
+ 
+ 
+-def _batch_result(normalized: List[dict], answers: dict, timed_out: bool, notice: Optional[str] = None) -> str:
+-    """Batch result JSON; unanswered -> "". The top-level ``timed_out`` flag (present only when
+-    true) tells the agent whether blanks are deliberate skips or the user walking away; ``notice``
+-    (surface-supplied, only beside ``timed_out``) says WHY the wait ended, so an undeliverable
+-    prompt never reads as user inactivity."""
++def _batch_result(normalized: List[dict], answers: dict, timed_out: bool, notice: Optional[str] = None,
++                  *, cancelled: bool = False) -> str:
++    """Batch result JSON; unanswered -> "". A timeout or cancellation flag identifies
++    why the wait ends. The surface notice distinguishes delivery failure from inactivity."""
+     responses = []
+     for entry in normalized:
+         raw = answers.get(entry["qid"])
+@@ -149,10 +151,12 @@ def _batch_result(normalized: List[dict], answers: dict, timed_out: bool, notice
+             "question": entry["question"], "choices_offered": entry["choices_offered"],
+             "user_response": _clean_answer(raw, entry["multi_select"]) if raw else ""})
+     result: Dict[str, object] = {"responses": responses}
+-    if timed_out:
++    if cancelled:
++        result['cancelled'] = True
++    elif timed_out:
+         result["timed_out"] = True
+-        if notice:
+-            result["notice"] = str(notice)
++    if (timed_out or cancelled) and notice:
++        result["notice"] = str(notice)
+     return json.dumps(result, ensure_ascii=False)
+ 
+ 
+@@ -165,24 +169,31 @@ def _run_batch(normalized: List[dict], callback, question: str) -> str:
+     walked away so the loop aborts instead of pestering them; earlier answers are kept."""
+     answers: dict = {}
+     timed_out = False
++    cancelled = False
+     notice = None
+     if _accepts_kwarg(callback, "questions"):
+         raw = callback(question, None, questions=normalized)
++        if isinstance(raw, ClarifyCancellation):
++            return _batch_result(normalized, answers, False, str(raw), cancelled=True)
+         timed_out = _is_timeout(raw)
+         if isinstance(raw, str):
+             raw = _json_as(raw, dict)  # the sentinel is not JSON -> None, timed_out stays True
+         if isinstance(raw, dict):
+             answers = dict(raw.get("answers") or {})
+             timed_out = bool(raw.get("timed_out"))
++            cancelled = bool(raw.get('cancelled'))
+             notice = raw.get("notice")
+-        return _batch_result(normalized, answers, timed_out, notice)
++        return _batch_result(normalized, answers, timed_out, notice, cancelled=cancelled)
+     for entry in normalized:
+         raw = _invoke_callback(callback, entry["question"], entry["choices"], entry["multi_select"])
++        if isinstance(raw, ClarifyCancellation):
++            cancelled, notice = True, str(raw)
++            break
+         if _is_timeout(raw):
+             timed_out = True
+             break
+         answers[entry["qid"]] = raw
+-    return _batch_result(normalized, answers, timed_out)
++    return _batch_result(normalized, answers, timed_out, notice, cancelled=cancelled)
+ 
+ 
+ def clarify_tool(question: str, choices: Optional[List[str]] = None, multi_select: bool = False,
+@@ -231,6 +242,9 @@ def clarify_tool(question: str, choices: Optional[List[str]] = None, multi_selec
+         raw_response = _invoke_callback(callback, question, shown, multi_select)
+     except Exception as exc:
+         return tool_error(f"Failed to get user input: {exc}")
++    if isinstance(raw_response, ClarifyCancellation):
++        return json.dumps({'question': question, 'choices_offered': choices, 'user_response': '',
++                           'cancelled': True, 'notice': str(raw_response)}, ensure_ascii=False)
+     return json.dumps({"question": question, "choices_offered": choices,
+                        "user_response": _clean_answer(raw_response, multi_select and choices is not None)},
+                       ensure_ascii=False)
+@@ -257,8 +271,8 @@ CLARIFY_SCHEMA = {
+         "enumerated inside the question text (choices render as pickable "
+         "rows; options written into the question are dead prose the user "
+         "can't click). Result: {responses: [...]} in question order (plus "
+-        "timed_out=true, and a notice saying why, if the user stopped "
+-        "part-way or the prompt could not be delivered). Prefer deciding "
++        "timed_out=true with a notice if the wait expires or delivery fails; "
++        "cancelled=true with a notice if the user or session cancels the wait). Prefer deciding "
+         "low-stakes questions yourself; don't use this for dangerous-command "
+         "confirmation (the terminal tool handles that)."
+     ),

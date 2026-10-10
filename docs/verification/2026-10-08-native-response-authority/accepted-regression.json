@@ -1,0 +1,2827 @@
+{
+  "status": "passed",
+  "tests": 1428,
+  "modules": 127,
+  "skips": 0,
+  "warnings": 0,
+  "original_run_status": 1,
+  "source_environment": {
+    "modules": [
+      "test_memory_admin_dashboard",
+      "test_memory_admin_install",
+      "test_memory_administration",
+      "test_memory_adoption",
+      "test_memory_agent",
+      "test_memory_archive",
+      "test_memory_authorization",
+      "test_memory_background_audience",
+      "test_memory_backup",
+      "test_memory_backup_command",
+      "test_memory_backup_recovery",
+      "test_memory_canonical",
+      "test_memory_children",
+      "test_memory_compression",
+      "test_memory_context",
+      "test_memory_context_audit",
+      "test_memory_context_builder",
+      "test_memory_cortex_health",
+      "test_memory_counts",
+      "test_memory_curation",
+      "test_memory_dashboard",
+      "test_memory_delegation",
+      "test_memory_delta",
+      "test_memory_deny_hashes",
+      "test_memory_deny_hashes_consistency",
+      "test_memory_deny_hashes_environment",
+      "test_memory_deny_hashes_sources",
+      "test_memory_derived_sync",
+      "test_memory_derived_sync_adapter",
+      "test_memory_derived_sync_consistency",
+      "test_memory_diagnostics",
+      "test_memory_distill",
+      "test_memory_distill_mark",
+      "test_memory_distill_synthesis",
+      "test_memory_freshness",
+      "test_memory_freshness_cache",
+      "test_memory_freshness_consistency",
+      "test_memory_freshness_health",
+      "test_memory_freshness_health_current",
+      "test_memory_freshness_migration",
+      "test_memory_freshness_relay",
+      "test_memory_freshness_writes",
+      "test_memory_graph",
+      "test_memory_graph_boundaries",
+      "test_memory_graph_relay",
+      "test_memory_graph_view_consistency",
+      "test_memory_hermes_soul_backup",
+      "test_memory_hermes_soul_names",
+      "test_memory_hermes_soul_retirement",
+      "test_memory_hermes_soul_writer",
+      "test_memory_history",
+      "test_memory_host",
+      "test_memory_http",
+      "test_memory_hypotheses",
+      "test_memory_import",
+      "test_memory_import_dashboard",
+      "test_memory_inference_log",
+      "test_memory_inference_log_publication",
+      "test_memory_interview_due",
+      "test_memory_interview_scan",
+      "test_memory_interview_scan_consistency",
+      "test_memory_interview_scan_review",
+      "test_memory_knowledge_graph",
+      "test_memory_knowledge_harvest",
+      "test_memory_knowledge_query",
+      "test_memory_knowledge_relay",
+      "test_memory_knowledge_render",
+      "test_memory_knowledge_views",
+      "test_memory_learning_ratings",
+      "test_memory_lineage_recovery",
+      "test_memory_mcp",
+      "test_memory_model_calls",
+      "test_memory_mounted_soul",
+      "test_memory_native",
+      "test_memory_native_response_authority",
+      "test_memory_owner_job_command",
+      "test_memory_owner_job_processes",
+      "test_memory_owner_jobs",
+      "test_memory_ownership",
+      "test_memory_policy",
+      "test_memory_preferences",
+      "test_memory_profile_alias",
+      "test_memory_prompt",
+      "test_memory_proposal_delegation",
+      "test_memory_proposal_gc",
+      "test_memory_proposals",
+      "test_memory_publication_authority",
+      "test_memory_publication_modes",
+      "test_memory_publication_recovery",
+      "test_memory_pulse",
+      "test_memory_pulse_adapter",
+      "test_memory_pulse_adapter_consistency",
+      "test_memory_pulse_adapter_data",
+      "test_memory_pulse_adapter_destination",
+      "test_memory_pulse_adapter_inference",
+      "test_memory_pulse_adapter_stale",
+      "test_memory_pulse_auth",
+      "test_memory_pulse_relay",
+      "test_memory_recurrence",
+      "test_memory_remount_relay",
+      "test_memory_restore",
+      "test_memory_resume",
+      "test_memory_review",
+      "test_memory_review_fixes",
+      "test_memory_rotation",
+      "test_memory_runtime",
+      "test_memory_seed_pulse",
+      "test_memory_seed_recovery",
+      "test_memory_service",
+      "test_memory_session_harvest",
+      "test_memory_sharing",
+      "test_memory_source_labels",
+      "test_memory_source_registry_alias",
+      "test_memory_source_review",
+      "test_memory_sources",
+      "test_memory_ssh",
+      "test_memory_staging",
+      "test_memory_staging_writers",
+      "test_memory_state",
+      "test_memory_state_evidence",
+      "test_memory_telos",
+      "test_memory_tool_arguments",
+      "test_memory_wiki_corpus",
+      "test_memory_wiki_relay",
+      "test_memory_wiki_render",
+      "test_memory_wisdom_frame",
+      "test_memory_wisdom_readers"
+    ],
+    "hermes": "/home/outsider/.cache/lifeos-daily-text-20261007/knowledge-views-final/hermes",
+    "lifeos": "/home/outsider/.cache/lifeos-daily-text-20261007/knowledge-views-final/lifeos/LifeOS/install",
+    "control": "/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install",
+    "workers": 3,
+    "isolation": "one unittest process per module",
+    "plugin_commit": "86a2a9d1fdc182b0ebae8fda117554df7cb1bd39",
+    "versions": {
+      "fastapi": "0.142.2",
+      "starlette": "1.3.1",
+      "anyio": "4.14.2",
+      "httpx": "0.28.1"
+    },
+    "results": [
+      {
+        "module": "test_memory_admin_dashboard",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_admin_dashboard",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_admin_install",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_admin_install",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_administration",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_administration",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_adoption",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_adoption",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_agent",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_agent",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_archive",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_archive",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_authorization",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_authorization",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_background_audience",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_background_audience",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_backup",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_backup",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_backup_command",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_backup_command",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_backup_recovery",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_backup_recovery",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_canonical",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_canonical",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_children",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_children",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_compression",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_compression",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_context",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_context",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_context_audit",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_context_audit",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_context_builder",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_context_builder",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_cortex_health",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_cortex_health",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_counts",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_counts",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_curation",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_curation",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_dashboard",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_dashboard",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_delegation",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_delegation",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_delta",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_delta",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_deny_hashes",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_deny_hashes",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_deny_hashes_consistency",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_deny_hashes_consistency",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_deny_hashes_environment",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_deny_hashes_environment",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_deny_hashes_sources",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_deny_hashes_sources",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_derived_sync",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_derived_sync",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_derived_sync_adapter",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_derived_sync_adapter",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_derived_sync_consistency",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_derived_sync_consistency",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_diagnostics",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_diagnostics",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_distill",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_distill",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_distill_mark",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_distill_mark",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_distill_synthesis",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_distill_synthesis",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_cache",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_cache",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_consistency",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_consistency",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_health",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_health",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_health_current",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_health_current",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_migration",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_migration",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_relay",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_relay",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_freshness_writes",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_freshness_writes",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_graph",
+        "exit_code": 1,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_graph",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_graph_boundaries",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_graph_boundaries",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_graph_relay",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_graph_relay",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_graph_view_consistency",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_graph_view_consistency",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_hermes_soul_backup",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_hermes_soul_backup",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_hermes_soul_names",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_hermes_soul_names",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_hermes_soul_retirement",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_hermes_soul_retirement",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_hermes_soul_writer",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_hermes_soul_writer",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_history",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_history",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_host",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_host",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_http",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_http",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_hypotheses",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_hypotheses",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_import",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_import",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_import_dashboard",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_import_dashboard",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_inference_log",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_inference_log",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_inference_log_publication",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_inference_log_publication",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_interview_due",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_interview_due",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_interview_scan",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_interview_scan",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_interview_scan_consistency",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_interview_scan_consistency",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_interview_scan_review",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_interview_scan_review",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_knowledge_graph",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_knowledge_graph",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_knowledge_harvest",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_knowledge_harvest",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_knowledge_query",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_knowledge_query",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_knowledge_relay",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_knowledge_relay",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_knowledge_render",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_knowledge_render",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_knowledge_views",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_knowledge_views",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_learning_ratings",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_learning_ratings",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_lineage_recovery",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_lineage_recovery",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_mcp",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_mcp",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_model_calls",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_model_calls",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_mounted_soul",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_mounted_soul",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_native",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_native",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_native_response_authority",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_native_response_authority",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_owner_job_command",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_owner_job_command",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_owner_job_processes",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_owner_job_processes",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_owner_jobs",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_owner_jobs",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_ownership",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_ownership",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_policy",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_policy",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_preferences",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_preferences",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_profile_alias",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_profile_alias",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_prompt",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_prompt",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_proposal_delegation",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_proposal_delegation",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_proposal_gc",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_proposal_gc",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_proposals",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_proposals",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_publication_authority",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_publication_authority",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_publication_modes",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_publication_modes",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_publication_recovery",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_publication_recovery",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_adapter",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_adapter",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_adapter_consistency",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_adapter_consistency",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_adapter_data",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_adapter_data",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_adapter_destination",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_adapter_destination",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_adapter_inference",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_adapter_inference",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_adapter_stale",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_adapter_stale",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_auth",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_auth",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_pulse_relay",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_pulse_relay",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_recurrence",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_recurrence",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_remount_relay",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_remount_relay",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_restore",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_restore",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_resume",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_resume",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_review",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_review",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_review_fixes",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_review_fixes",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_rotation",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_rotation",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_runtime",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_runtime",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_seed_pulse",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_seed_pulse",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_seed_recovery",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_seed_recovery",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_service",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_service",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_session_harvest",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_session_harvest",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_sharing",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_sharing",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_source_labels",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_source_labels",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_source_registry_alias",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_source_registry_alias",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_source_review",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_source_review",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_sources",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_sources",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_ssh",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_ssh",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_staging",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_staging",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_staging_writers",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_staging_writers",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_state",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_state",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_state_evidence",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_state_evidence",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_telos",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_telos",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_tool_arguments",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_tool_arguments",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_wiki_corpus",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_wiki_corpus",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_wiki_relay",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_wiki_relay",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_wiki_render",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_wiki_render",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_wisdom_frame",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_wisdom_frame",
+          "-v"
+        ]
+      },
+      {
+        "module": "test_memory_wisdom_readers",
+        "exit_code": 0,
+        "command": [
+          "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+          "-W",
+          "error",
+          "-m",
+          "unittest",
+          "test_memory_wisdom_readers",
+          "-v"
+        ]
+      }
+    ],
+    "exit_code": 1
+  },
+  "results": [
+    {
+      "module": "test_memory_admin_dashboard",
+      "tests": 37,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_admin_dashboard.txt",
+      "log_sha256": "860318fe58b5de927590f5c111c9606bbbdd85047bebee4acf920e3ca611691d",
+      "test_source_sha256": "64d3d7ed4ad31c63f10a00e787c3cc425f66a7e1f83a3b325200a99936f4cba5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_admin_install",
+      "tests": 6,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_admin_install.txt",
+      "log_sha256": "ba59f4cd455b72c0763b77f473c3dc65dc2dd9821b9c05d1de382afb32cbe407",
+      "test_source_sha256": "fcfb20698d5e390a9bd9c68385c0320f8b862543d16005eb1a3c48646523f724",
+      "correction": false
+    },
+    {
+      "module": "test_memory_administration",
+      "tests": 11,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_administration.txt",
+      "log_sha256": "d72783116badf2f50bee24b9c58ecb369cfc6d9e5ecaa29b1c54ebda32631dd1",
+      "test_source_sha256": "cac95bb2044cfa0ff7bc49452814634b2a997d286278024a9fd1dc6b81c55ac7",
+      "correction": false
+    },
+    {
+      "module": "test_memory_adoption",
+      "tests": 16,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_adoption.txt",
+      "log_sha256": "f38c7ce0a63171176ca9b1ec6df6081dd0a9e2f9d56b423c14d539cd452585d9",
+      "test_source_sha256": "f1be1589b54187de9b34c03674b65299764a80a32cf260d3e033b5f173276221",
+      "correction": false
+    },
+    {
+      "module": "test_memory_agent",
+      "tests": 9,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_agent.txt",
+      "log_sha256": "9d06daf0e27cf425faec1b6a2de56d03d32103e6dba60affcfaaa187f391fb81",
+      "test_source_sha256": "710a64366af9af5e9ed2ed7ca201f3d91b94685f199427261d27e0de1a6ef7c0",
+      "correction": false
+    },
+    {
+      "module": "test_memory_archive",
+      "tests": 6,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_archive.txt",
+      "log_sha256": "c95f01dbe7ed9ae09477c85eff177393f39005ef764991a7a994851375010da4",
+      "test_source_sha256": "67ad4b8afafd9cf85fc13b2b286a4257c539eabbc6c87ec5d5ec2b0b1133e4e7",
+      "correction": false
+    },
+    {
+      "module": "test_memory_authorization",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_authorization.txt",
+      "log_sha256": "f2f309aa29f805a662e258fc595f4bef6689b39e78810d1b38a6a19a1f7a9a72",
+      "test_source_sha256": "f5531c0760922ecc5f6650a29737026af834da6a9a41f739259c009d6b6cb014",
+      "correction": false
+    },
+    {
+      "module": "test_memory_background_audience",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_background_audience.txt",
+      "log_sha256": "fae2e60c949aa81c94bcef28e73218bee8cb89ee7094425370715646ee41dd92",
+      "test_source_sha256": "e060f6d1d71b25405dd0c5c7a3cc282f8884847136e4f7f63af76bae4b965875",
+      "correction": false
+    },
+    {
+      "module": "test_memory_backup",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_backup.txt",
+      "log_sha256": "979a4d7ecd6af6548e51942e19401623ec8dba1df1c76a448ae6fdfa6bd8af08",
+      "test_source_sha256": "919293d19a447688fcd91a142d6d99ba5a188dce07384a5a500534b6753da812",
+      "correction": false
+    },
+    {
+      "module": "test_memory_backup_command",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_backup_command.txt",
+      "log_sha256": "0cb02efd0aa1fe7d842ecdd574b772af8e089bb5515a14447f028e8ee8937095",
+      "test_source_sha256": "0520ec98977da1e599251bf5ab88ed8ab24c3320e0e95e0ad36c8cf45f7d8f5a",
+      "correction": false
+    },
+    {
+      "module": "test_memory_backup_recovery",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_backup_recovery.txt",
+      "log_sha256": "1bfb3c0d3abc8a4c3c80dcfcfd701affe0669810ad6ec97b77930ac207776076",
+      "test_source_sha256": "1245a2caeac8c95f1ba8156d39bc4d3bcaa6f507f2929b5fed86f436e96c09c8",
+      "correction": false
+    },
+    {
+      "module": "test_memory_canonical",
+      "tests": 17,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_canonical.txt",
+      "log_sha256": "566d420c99b052bf0d8e9a1659e2ee60baf485343d41b7c01c40d3f74297790d",
+      "test_source_sha256": "7ffbe81eba3efaee2371e78d111b11613125814b1923de373e8f5faef7965b2a",
+      "correction": false
+    },
+    {
+      "module": "test_memory_children",
+      "tests": 2,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_children.txt",
+      "log_sha256": "156a73f8b7e200c8effe5298805ca9f532287b998a3cfa1d263687fa4444308d",
+      "test_source_sha256": "e0056624790f3752fe5e11da6b3dbe1933f3e75b30b6d73a5a81e3f11232358a",
+      "correction": false
+    },
+    {
+      "module": "test_memory_compression",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_compression.txt",
+      "log_sha256": "abc754fac146d0f48e4d73b3723d4a22d68695d0efe97feae88db91fa8dafb18",
+      "test_source_sha256": "10e5697f0806de420402e25336f6adb9652c6595f20737ca2f490d2fa304dbfe",
+      "correction": false
+    },
+    {
+      "module": "test_memory_context",
+      "tests": 5,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_context.txt",
+      "log_sha256": "656d6b877f29f8a98933fe70028b1295d3422e7b3a9a1bf234a36df4d7ffd10e",
+      "test_source_sha256": "119307c0ba7738b25ecbf6d57df68dd2afa129b399d3c42da46448cb4f55e2e1",
+      "correction": false
+    },
+    {
+      "module": "test_memory_context_audit",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_context_audit.txt",
+      "log_sha256": "720a1588599a07bb1b768a3e409d738a258a22a1b297d93a3da6bd3abd97e5c3",
+      "test_source_sha256": "a6aabce2ed68cb2af36231f9cf53244ce652618893fc15b46f614f73c9812c5e",
+      "correction": false
+    },
+    {
+      "module": "test_memory_context_builder",
+      "tests": 18,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_context_builder.txt",
+      "log_sha256": "208713a2fe5678f797c384850d26f59a98c5fd446ad0e484267df01d961857db",
+      "test_source_sha256": "8f2dc9ab7b652f2c4e60907dca385a783ac63ca16d5d62682e42f0033d01e166",
+      "correction": false
+    },
+    {
+      "module": "test_memory_cortex_health",
+      "tests": 41,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_cortex_health.txt",
+      "log_sha256": "c9cf8fa650f942e485988ca77bac2c9bbcccead7c728a7ae3c332abe653c3842",
+      "test_source_sha256": "4ac3bfc5fc3617cc16f558ad9480f679960ed4d24c6b3531407edca9c4e4013d",
+      "correction": false
+    },
+    {
+      "module": "test_memory_counts",
+      "tests": 11,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_counts.txt",
+      "log_sha256": "d9c7617aabbcd81b3b34e9093c0b8ab24ec809a82dc5d5f1ceb7324641acb282",
+      "test_source_sha256": "cb9902c26d7e4aee6f1403750a8660164dc583a3c928255142b9dd39746ac9e5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_curation",
+      "tests": 10,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_curation.txt",
+      "log_sha256": "656ba4ad02c1130c2f69585fb181375bad3702d4c742426f41030b8157b05c32",
+      "test_source_sha256": "a3fd4b7ff170ba2a3358396b79da0cc24e1e2efcd6948ab0f22e49373f9391f9",
+      "correction": false
+    },
+    {
+      "module": "test_memory_dashboard",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_dashboard.txt",
+      "log_sha256": "2faf84fc3fbc444a9109b891985bfd899a57025d450aa36ad6815ab836e94c77",
+      "test_source_sha256": "58b8a02d1313c20601be284d70c7c20ebbc0b856c27babb06f1918620418cc05",
+      "correction": false
+    },
+    {
+      "module": "test_memory_delegation",
+      "tests": 13,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_delegation.txt",
+      "log_sha256": "bfbbd2d124983e4472cb0037d53afd46a6c4f503326a6995e91d79aae3bd1e07",
+      "test_source_sha256": "ffddefb8d77404ff63696fc9b9f9504cebc55dc442bcc116daf049c7818af0e8",
+      "correction": false
+    },
+    {
+      "module": "test_memory_delta",
+      "tests": 23,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_delta.txt",
+      "log_sha256": "fdc98a25827a8d3f4e24581fab0cd6d4c8841c301e88aff7e3cb09901c7415ae",
+      "test_source_sha256": "8e0d2663bab5460e9036d727545b3d41d2f0308d597ccae6e319cd3038459a7e",
+      "correction": false
+    },
+    {
+      "module": "test_memory_deny_hashes",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_deny_hashes.txt",
+      "log_sha256": "68d0c20cfeeb98af44a99c26898cd4cabe50bf87ff258b0607e4a87f5459401f",
+      "test_source_sha256": "9bf065423a1337ee15e8170331eb82ea7f3933c9e44b452e0c3366ab2280ba98",
+      "correction": false
+    },
+    {
+      "module": "test_memory_deny_hashes_consistency",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_deny_hashes_consistency.txt",
+      "log_sha256": "e41f951c1607dfbddf16e6e30900735ab454b4c46a722c3759d9a8728d5d321d",
+      "test_source_sha256": "13ca76728227570be1da2146fe247caa3dfaaedc10ab6b6d50cee3e29fd66b0d",
+      "correction": false
+    },
+    {
+      "module": "test_memory_deny_hashes_environment",
+      "tests": 1,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_deny_hashes_environment.txt",
+      "log_sha256": "0fbae9cdfd5bcbba7008d4fe983e198753d538be6be0529967217ac66d2cf018",
+      "test_source_sha256": "0bed31cb5d31f1f8805be7e5b60353c1ceb83cd282d1cd21ffda0013ccbf09f5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_deny_hashes_sources",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_deny_hashes_sources.txt",
+      "log_sha256": "1004db75e1e12bf6133f16448e545d10d75e7df70148a8104f80b326d41c192e",
+      "test_source_sha256": "06ce7c9e28a9addeaa176714b1f617ec0058f66bb0acb1baaa8cce7594cb436e",
+      "correction": false
+    },
+    {
+      "module": "test_memory_derived_sync",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_derived_sync.txt",
+      "log_sha256": "1aca98435e378e4914bfdb53305853962c27ee0929f28fff7cc5dfbe6de4b520",
+      "test_source_sha256": "1ebde2d364b7ce19235f7f9ab0443859aefb748ffe31e12f9908a0343e00522a",
+      "correction": false
+    },
+    {
+      "module": "test_memory_derived_sync_adapter",
+      "tests": 5,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_derived_sync_adapter.txt",
+      "log_sha256": "599b7aef5afce6902f020516abdbd25256f2b5424af41ded81fb16468fde1428",
+      "test_source_sha256": "d45b9f56a5c6f49c70c880f1f98d02fd6265d01fb6e2b13182b3fa11aaf722f3",
+      "correction": false
+    },
+    {
+      "module": "test_memory_derived_sync_consistency",
+      "tests": 6,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_derived_sync_consistency.txt",
+      "log_sha256": "b771b4178f734225fb1fa9409be8ef36ca390ed43b09a27b582dc4f115f86ac4",
+      "test_source_sha256": "19244c699ac9c66f3bf6fd4d2111f35c1736d75dafc0454b621c67f6e7d54f13",
+      "correction": false
+    },
+    {
+      "module": "test_memory_diagnostics",
+      "tests": 21,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_diagnostics.txt",
+      "log_sha256": "15a16c999a0ff4a49e29dbda8572c0158c79757985dadf698a798dfdeae03dfa",
+      "test_source_sha256": "fb4d4286cad40f85bcfe1b83cadc52bf13b7dd9fc0a1239d4ec61990d496cacf",
+      "correction": false
+    },
+    {
+      "module": "test_memory_distill",
+      "tests": 11,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_distill.txt",
+      "log_sha256": "c34bd351e264ddc30bae8ad2ef60c1f0942b5724dbd14369e05119b35ee47272",
+      "test_source_sha256": "c25e38594965a7c5b12e0a15960733524a88a516140df66cbf3f1dcfa2c3197a",
+      "correction": false
+    },
+    {
+      "module": "test_memory_distill_mark",
+      "tests": 14,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_distill_mark.txt",
+      "log_sha256": "5fc6efe957300d7c970d06b3266dd418ab138f00cfb3dc6c6403ad927bbbbfcf",
+      "test_source_sha256": "ad7164ba7421e2cc54a59d6cd27cec5e8fb2a13b657448241dcf51ebb487d7e5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_distill_synthesis",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_distill_synthesis.txt",
+      "log_sha256": "c65ce19119ae0c1c766b2eb593560785a5df23e0b4e9d3a8bc9a7a563e8f155e",
+      "test_source_sha256": "4083abcffcb53aa8cb87a3c5da88f63025b3caed81ae4f1d448e0fb9886a0600",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness",
+      "tests": 22,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness.txt",
+      "log_sha256": "90821ee1ea19c2e9bbb7e87812264ea95ac1b3c7fbfbdea5392154cb262d7787",
+      "test_source_sha256": "7468287b3baa3d7d7ea6d3e7d293cedd395bf3569d3f5f3a8e3b0c742a410714",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_cache",
+      "tests": 15,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_cache.txt",
+      "log_sha256": "4fa2e471c738fcfd9d7e7a23846112daa2e588bbc2e01921814c79527ed44f88",
+      "test_source_sha256": "9f056af157375e1a91b2f327d7090916bf873df39c05b40440057a2e30986a3f",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_consistency",
+      "tests": 5,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_consistency.txt",
+      "log_sha256": "6e3f0d4ebd74e1cb214bea9b9f87b6950f3489638226ee71669ece1c9eba7729",
+      "test_source_sha256": "69c649097447a91ce5691ec597982665a864ac1f10ff779ca6a84d2c8d787d59",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_health",
+      "tests": 4,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_health.txt",
+      "log_sha256": "60aee051caf7c8a0ddd5216963bcbd26b0081d7ed2a947dbcb7104b143651ce8",
+      "test_source_sha256": "88328758755fb33f0fa4ecb476ce1d4cd55f43165796ca8ec1f57d5a4b99f399",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_health_current",
+      "tests": 6,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_health_current.txt",
+      "log_sha256": "3907c9683603acc1cf81edb0ddc226040cad9445541bff732f913d27f69e2f51",
+      "test_source_sha256": "63e6bffac92170a42ba9b10535779242d74759ad84cacd4de85f86af2dcd6a45",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_migration",
+      "tests": 24,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_migration.txt",
+      "log_sha256": "c40396f350dffe975df9213315a3cf2c52e700b2bd7ab2df01175e97a39d9b5c",
+      "test_source_sha256": "a01f40134b7dd5fa4d106bb8b7023ec8352669ea0d5ab8a6734afc40c0999e87",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_relay",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_relay.txt",
+      "log_sha256": "38dce21ef7b93cd9e02fba20b7957b3c422ae5b76318c7444b28c1bf01aa401a",
+      "test_source_sha256": "9a4bbdefca31e665a84f2e85aa76e95692af974bf95f8ed9000d1d927cc8b60f",
+      "correction": false
+    },
+    {
+      "module": "test_memory_freshness_writes",
+      "tests": 23,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_freshness_writes.txt",
+      "log_sha256": "12a77ef450144251adebdcb15ccc5dda3787076f24104995b7ffea31662bfa7a",
+      "test_source_sha256": "46d3e01ffadb1b30fc788211b48e6bc5c4e1bbc4f9b5c21c22f5d2f85d52361c",
+      "correction": false
+    },
+    {
+      "module": "test_memory_graph",
+      "tests": 18,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/graph-response-authority.txt",
+      "log_sha256": "8deb3c979d712d526f46cf46b5250026bd1d1df7719fa551a40f4220ce07d72c",
+      "test_source_sha256": "0fa8408e4376ebd00dad1764cab27a5bfdb540f4080d3c191ea0517635f5e54c",
+      "correction": true
+    },
+    {
+      "module": "test_memory_graph_boundaries",
+      "tests": 4,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_graph_boundaries.txt",
+      "log_sha256": "2037053fb843db69ca8a584ac2836feded1c59aea3412f4aa40a93a0145980de",
+      "test_source_sha256": "468275c7c2428cddcedad233b08b1756dbadd5ffdf29d9a6411552458fc60407",
+      "correction": false
+    },
+    {
+      "module": "test_memory_graph_relay",
+      "tests": 10,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_graph_relay.txt",
+      "log_sha256": "20a8aa103f53c739473a241f1e585c21b29a6c80e8234bb53f0216ef06d46e61",
+      "test_source_sha256": "274a7e8236aeb9528c14b1c8151d865a1ddc0fddd0e224a79eca03cff8ce3b0e",
+      "correction": false
+    },
+    {
+      "module": "test_memory_graph_view_consistency",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_graph_view_consistency.txt",
+      "log_sha256": "55933e0305edb53268e282485510d7ab06dabd4d423458042e09c2b4a85a0a16",
+      "test_source_sha256": "35c22e58a0eb7883946e27240c2bb06f71b972ae43c5d502db61a93b3ccf9b80",
+      "correction": false
+    },
+    {
+      "module": "test_memory_hermes_soul_backup",
+      "tests": 1,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_hermes_soul_backup.txt",
+      "log_sha256": "cf8f5fb70925eeb009c1230a71d1835d8ddfe4e7250ee345a670587d97d53e9a",
+      "test_source_sha256": "810d0c07aad792f628b240473d93bf1d826e6caf91b36a67277ac481b864babc",
+      "correction": false
+    },
+    {
+      "module": "test_memory_hermes_soul_names",
+      "tests": 1,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_hermes_soul_names.txt",
+      "log_sha256": "6b175d10606b30e9e2450c9cfc894cbb6cc8de3eb9f7a75287a87712f4723fc6",
+      "test_source_sha256": "45b270665e01722e49fdbcfe74c54e8deabf3725f4778b568e5bc363662b2252",
+      "correction": false
+    },
+    {
+      "module": "test_memory_hermes_soul_retirement",
+      "tests": 2,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_hermes_soul_retirement.txt",
+      "log_sha256": "3126c4985a539cee8c205f63f1a0cbb9c4e692450ce4bdb8f548ff7294acdeb3",
+      "test_source_sha256": "49b269eaae9b6665ff40f70c7ac03ae87df2b2fdfac65d1411180b8dba0eb2e7",
+      "correction": false
+    },
+    {
+      "module": "test_memory_hermes_soul_writer",
+      "tests": 13,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_hermes_soul_writer.txt",
+      "log_sha256": "2df084f5155307112d7dc135d587e7772554775b24374b1062f2a561fa10b01f",
+      "test_source_sha256": "f1e21f96680afa37e433c89e244b4691816aa823ca69dd7828163db08e183471",
+      "correction": false
+    },
+    {
+      "module": "test_memory_history",
+      "tests": 26,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_history.txt",
+      "log_sha256": "fbd1ef974fa89440a011b1d22c7564b6d2d09affd1c27c243e8f1d892a3769f8",
+      "test_source_sha256": "09b23c0c3181ce9d340649646942b1705bf4d02766d959a5505db74698e5ff28",
+      "correction": false
+    },
+    {
+      "module": "test_memory_host",
+      "tests": 4,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_host.txt",
+      "log_sha256": "49f3781c94987c14815b2a02fdc68a4a52faa3858c29f9719cbe6bad8182c2e5",
+      "test_source_sha256": "9065eaba05dba8ef5c91a077250c7870da2eaedbb4abc2db978ce36e95907c73",
+      "correction": false
+    },
+    {
+      "module": "test_memory_http",
+      "tests": 14,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_http.txt",
+      "log_sha256": "f3214f53e8c31343002b4681e53a3d8dd7297f77070f074bc3abca040f39230a",
+      "test_source_sha256": "655bf209037602ff435c9f11738ed44c10e24a32f7f110806b2eecddfec52247",
+      "correction": false
+    },
+    {
+      "module": "test_memory_hypotheses",
+      "tests": 21,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_hypotheses.txt",
+      "log_sha256": "91bf35d64e1ebd101f3fdd8e51c7c7ff6068636cf3d1d228a746d6e3cdd248dc",
+      "test_source_sha256": "96212ceb0453efbc13d0195fe4ae4d157aa13d4bef8f855e2f51e195739bdf39",
+      "correction": false
+    },
+    {
+      "module": "test_memory_import",
+      "tests": 18,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_import.txt",
+      "log_sha256": "268701b1bf00e24896135d4e15c3ddaae1e926c573f0c3f1b34ae74b0c67fe09",
+      "test_source_sha256": "66f294baeb24b8240f6a6e46f0c22d5d2f9cd6544d2d65cbe3499586028adb27",
+      "correction": false
+    },
+    {
+      "module": "test_memory_import_dashboard",
+      "tests": 19,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_import_dashboard.txt",
+      "log_sha256": "ba744e0bb007fefb2d03fab9ec96bb2310e4a1669f4efd6de2ebbd827e72e8f3",
+      "test_source_sha256": "317714fd53fa899772638bffd069d9322a2b35247cd602d0c200c774a2af23fb",
+      "correction": false
+    },
+    {
+      "module": "test_memory_inference_log",
+      "tests": 2,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_inference_log.txt",
+      "log_sha256": "c18fe588368d7307a1e40dc4429e8c728aef50aae4ebc6b9baa38ff7b625aad2",
+      "test_source_sha256": "10a17c244ee189970f2f0d2a84c5cee5562269a5014d24514da00c07db7eb836",
+      "correction": false
+    },
+    {
+      "module": "test_memory_inference_log_publication",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_inference_log_publication.txt",
+      "log_sha256": "2337da7da355da74713c00e00fc1ec1d2c7ef11ae6d8d0a1707cf7b5f8bea94f",
+      "test_source_sha256": "f4f4bfc87bd5987504ffcd309b24ed1dc9da2d8435cf1bcaeb057fd17560ccaa",
+      "correction": false
+    },
+    {
+      "module": "test_memory_interview_due",
+      "tests": 19,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_interview_due.txt",
+      "log_sha256": "c7350ff21999b774bdfdbf609d80b863c8fe120469822ceb04d8eae3834631d3",
+      "test_source_sha256": "a60eb0d8e03da13b0d6850535e4a4162e89f613fbaeda0afeec77fd8c9ecec37",
+      "correction": false
+    },
+    {
+      "module": "test_memory_interview_scan",
+      "tests": 11,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_interview_scan.txt",
+      "log_sha256": "726fe4f4b37b2e7479580cb92bdab573ad762d513054385784394e3cd2ae0087",
+      "test_source_sha256": "08aa05b72e743c04ddfc793c1516089db312a3dde51261a67638466e78cb0251",
+      "correction": false
+    },
+    {
+      "module": "test_memory_interview_scan_consistency",
+      "tests": 1,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_interview_scan_consistency.txt",
+      "log_sha256": "49a236f5cd6597a71c10bafc71c5227e491be998ee700a26d9bd63d5b1a93e1b",
+      "test_source_sha256": "0a62548670de55ea75b2cf9edf0d0cf7bd89ee05517db85ac03cd48a4e01d8ed",
+      "correction": false
+    },
+    {
+      "module": "test_memory_interview_scan_review",
+      "tests": 4,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_interview_scan_review.txt",
+      "log_sha256": "7ced27e5d65197b942c3fc6614f9034d14838487da1b43f64c0f7bee1818c596",
+      "test_source_sha256": "2bf980b65d9c443a5962f9736f4857d2612a8c78db4e19f65463d9a30ad7ab43",
+      "correction": false
+    },
+    {
+      "module": "test_memory_knowledge_graph",
+      "tests": 11,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_knowledge_graph.txt",
+      "log_sha256": "4fa882035cdbe8a2e54a30ed87c98a711ffb677bedcd2285b1666ba2cb417cf1",
+      "test_source_sha256": "81a3fea61c2faf1eb6cd8529a0a5eb0fd5fedf4a97082549f0087a14e895b10e",
+      "correction": false
+    },
+    {
+      "module": "test_memory_knowledge_harvest",
+      "tests": 27,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_knowledge_harvest.txt",
+      "log_sha256": "94dc4169691bc8292bb603b8630b1be4de1906813046ae46f6ba9de0cbd43d66",
+      "test_source_sha256": "b4599b46a3382136ec72d4d2999940d5b2d5494ca401300eabdaee46ff8db3d2",
+      "correction": false
+    },
+    {
+      "module": "test_memory_knowledge_query",
+      "tests": 10,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_knowledge_query.txt",
+      "log_sha256": "63afa733d9fcbfea3a5fc97f80562d9b7d4d1a7e9adb6551b6b484e324606202",
+      "test_source_sha256": "43aac471f796065e8359d0856c1e9cc66235ff410029d0a22606ce2cf27b64dd",
+      "correction": false
+    },
+    {
+      "module": "test_memory_knowledge_relay",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_knowledge_relay.txt",
+      "log_sha256": "3875bf74a3a0a4de535f468275912b7ecacc2bbc7afb15aa40200e0011832fad",
+      "test_source_sha256": "a348a94ef16b5c5604149a2dbba04d6d825b1742cc91c8e849e770d5ca9f4ff9",
+      "correction": false
+    },
+    {
+      "module": "test_memory_knowledge_render",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_knowledge_render.txt",
+      "log_sha256": "c73d1229f7f561fccfb686f6778893cbb390851db078ad047b72cb78323d684e",
+      "test_source_sha256": "8ad122ac70d0cf19a64100197a4b61989bb131c3bb131b5b498547cab9891a6b",
+      "correction": false
+    },
+    {
+      "module": "test_memory_knowledge_views",
+      "tests": 13,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_knowledge_views.txt",
+      "log_sha256": "3fe7cb3096e676717550c39670eb11ad4bf6b9858e0e9c80c81bf40c6cf06c4c",
+      "test_source_sha256": "b04370e7c41b40e6d3845cdda4af37e4891ce8e76d311cb7fc4c8219dd9020cf",
+      "correction": false
+    },
+    {
+      "module": "test_memory_learning_ratings",
+      "tests": 13,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_learning_ratings.txt",
+      "log_sha256": "2c4fbd5b615fef20de7017e1e16b366cfa152c1965ea9861ef14b26102ac0053",
+      "test_source_sha256": "91f8a27853dbd6c7e6ad1ce041947628437aa7fda72c8f072a4a22e249c91a85",
+      "correction": false
+    },
+    {
+      "module": "test_memory_lineage_recovery",
+      "tests": 15,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_lineage_recovery.txt",
+      "log_sha256": "be4f70d495c9e07213d12914367e9f1f57c40b334700beb794ad88ff214c602d",
+      "test_source_sha256": "085b07d3f9885044f1820d0b1211ad5ddce3cd6fa5a08168650c909bba5b0dfe",
+      "correction": false
+    },
+    {
+      "module": "test_memory_mcp",
+      "tests": 1,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_mcp.txt",
+      "log_sha256": "b2be381faa036004a18bdd32128d2e852de33405a582efb335601d2234828a9d",
+      "test_source_sha256": "7147fe9819b708bb13d93d6b149e0c38bf481cbb5bd75d72fb81345c8df241cd",
+      "correction": false
+    },
+    {
+      "module": "test_memory_model_calls",
+      "tests": 16,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_model_calls.txt",
+      "log_sha256": "2892afdc9b12b96e818fa076b376911b474e3f7336e52c87651a86f910ddcab2",
+      "test_source_sha256": "2481fe89a64e0e37b407bbe72a2b4178a773451a1e68b18d85b982bafdd8edea",
+      "correction": false
+    },
+    {
+      "module": "test_memory_mounted_soul",
+      "tests": 5,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_mounted_soul.txt",
+      "log_sha256": "9d82557c98905397ccdd13645a8668323bcd30072a82458f1d65b1dac66ca044",
+      "test_source_sha256": "1ec6602c7bcd78c001fae6026772560fab426e886e5322758556e30ac41c497b",
+      "correction": false
+    },
+    {
+      "module": "test_memory_native",
+      "tests": 26,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_native.txt",
+      "log_sha256": "f41130e6d598ad22eea4440b27e5b81c973a1100a8d226739f2c0f34562a4794",
+      "test_source_sha256": "3a518fa8f05c488e1a2789a75104ef52435fbd2b79bf68277a3f3253dfeca43f",
+      "correction": false
+    },
+    {
+      "module": "test_memory_native_response_authority",
+      "tests": 4,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_native_response_authority.txt",
+      "log_sha256": "152a6e5ac229a06c0e80092582d7a48732a5e5c9b160be0ecaa9cec1574bbaa7",
+      "test_source_sha256": "4cf7dbdfe274e2fefdba8ead935d9081f5061be90ad21f209a2e2888b54a780c",
+      "correction": false
+    },
+    {
+      "module": "test_memory_owner_job_command",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_owner_job_command.txt",
+      "log_sha256": "7895bc1c76365753221ea41974239b7e551afdd95e697f99f452a6b783605e8e",
+      "test_source_sha256": "d6f52e927d532258b4f50421b19a7179ef54ba6fb4275013978ff356d1958861",
+      "correction": false
+    },
+    {
+      "module": "test_memory_owner_job_processes",
+      "tests": 2,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_owner_job_processes.txt",
+      "log_sha256": "76b41e4b664818ec1c3131a0a7fce35b88bdfb7d30555f3217bcdf46bff23910",
+      "test_source_sha256": "26cbc6e05215fd275a457aa1eef6c0a394e2f8f6d43cd38a0b5c298c3070ec08",
+      "correction": false
+    },
+    {
+      "module": "test_memory_owner_jobs",
+      "tests": 11,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_owner_jobs.txt",
+      "log_sha256": "b4393c51c7eae2f38fb1a0fc41874ee19ab07a6592f6e748d0c0260aca74fa53",
+      "test_source_sha256": "f029de6146912ceab32380146e69e244ea475062515f17f9f4e1d8d1d2d7813d",
+      "correction": false
+    },
+    {
+      "module": "test_memory_ownership",
+      "tests": 14,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_ownership.txt",
+      "log_sha256": "c4919161d74e5e27ea5fbdb68ea0953ccb94bfa26c38cea3d040e9b135573d36",
+      "test_source_sha256": "660952bd7675f146bbe703cf774a86d33ad7c1384f770d2f7768a4d1b4d62ced",
+      "correction": false
+    },
+    {
+      "module": "test_memory_policy",
+      "tests": 6,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_policy.txt",
+      "log_sha256": "a093fc6641988c8d41e380a33c892457b2249f7889b8df4290899fa1defeac8a",
+      "test_source_sha256": "6abe724b38249fb29e0e7b3def5727d3f659ecd648a47b49dda38d3801152228",
+      "correction": false
+    },
+    {
+      "module": "test_memory_preferences",
+      "tests": 9,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_preferences.txt",
+      "log_sha256": "e16c5ef774102a0b4cb0d41474fd5179c93fdf95b4a22dd6f00cc201a1672820",
+      "test_source_sha256": "873fb681338a07ae5129985f9f0a071759d5144f111dcd874d4ea2d23209c703",
+      "correction": false
+    },
+    {
+      "module": "test_memory_profile_alias",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_profile_alias.txt",
+      "log_sha256": "02f044e5c8c7685c468448a1c20524d5fb973c779e1f22dd25b3f2e3ceb635d4",
+      "test_source_sha256": "422a9e32787d7b0a8394e62d09971dfd0c7acb87b3a5697c542e09f8d7ecaa9b",
+      "correction": false
+    },
+    {
+      "module": "test_memory_prompt",
+      "tests": 25,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_prompt.txt",
+      "log_sha256": "5ab4fff597ed65a192b56ddb277a3cf39be219d159d91e5fe53abfb21371a44c",
+      "test_source_sha256": "02183c5f047117de91e070892b376e4ed28a28a9866ff7c418aecbf93c5667e1",
+      "correction": false
+    },
+    {
+      "module": "test_memory_proposal_delegation",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_proposal_delegation.txt",
+      "log_sha256": "adcc1578c5c54d35e39a7e1d64f2625b9e7164b82d9589c75d5ebdc6f099a1c0",
+      "test_source_sha256": "5c8edfb30e906f3d6f7338773b21fd06678214d266eea6699ae9b2752d89cf9c",
+      "correction": false
+    },
+    {
+      "module": "test_memory_proposal_gc",
+      "tests": 15,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_proposal_gc.txt",
+      "log_sha256": "6c4403c5bef71c33e979786edc76adc32192faf45bd14c456bd486ed053bd629",
+      "test_source_sha256": "181dc1d9389c2ea4fdddb736b0cf3fa5952d8655dd491f8be9e902da24838ef5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_proposals",
+      "tests": 16,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_proposals.txt",
+      "log_sha256": "71ea97453707420c60e7339ed8778773d2c6ac2491f0423839909560a77bbabc",
+      "test_source_sha256": "44bd49febc9f2c60d12ad7c2423d49d17d963c7b889e4711697340498697bb3b",
+      "correction": false
+    },
+    {
+      "module": "test_memory_publication_authority",
+      "tests": 14,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_publication_authority.txt",
+      "log_sha256": "ebc6850d64c9cb37c332ec2d8943714562ee5a7fb06b82cd85177ec352eea7d4",
+      "test_source_sha256": "cbe887d4d79566adc6cf2a69c94f27be8d7c7e4bac7c0dd22750916b89d7cee5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_publication_modes",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_publication_modes.txt",
+      "log_sha256": "7887d77bfc3dc0fde73b7bbaf5226866b8c849f816fa1baad7cd6e0d8a8ec296",
+      "test_source_sha256": "2afada5d3890edc4953d30d2e596829fb0845382254c3539012ffaf37038ba23",
+      "correction": false
+    },
+    {
+      "module": "test_memory_publication_recovery",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_publication_recovery.txt",
+      "log_sha256": "073c1f37f9c901b11b8d838fb06b1e9c0f48328c792068ff10d7092a283aaf24",
+      "test_source_sha256": "ee0d2d651794ab491e671d2d4d3eee88b5d6dd705b4aeac9ba5cc9dc787f860d",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse",
+      "tests": 16,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse.txt",
+      "log_sha256": "5a71fe8af9e9a71fefb06510713fa2754d763046c15a11813bbcf9704dbf3d3d",
+      "test_source_sha256": "8236ce312e4e7d94bb95c3908a3c2f819c3a438b38fa3bee15ac2876b5916d79",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_adapter",
+      "tests": 10,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_adapter.txt",
+      "log_sha256": "1d3c9f2fa4e09ceab00d6a692edca0b6944b30863ae641b703751198f1144bfd",
+      "test_source_sha256": "381a0244ac526b320cb870d7567dd72fe82f76beefd711230cf470f54c8f02ba",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_adapter_consistency",
+      "tests": 4,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_adapter_consistency.txt",
+      "log_sha256": "6641b6b700abb492a3f73c8031f1974d3631db7b9eb94a32e00d1c6cdde9216e",
+      "test_source_sha256": "59d2815df006fbb50233a3766a9b36ff6c7ef9b04c1ae62b24c9a7a82489b755",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_adapter_data",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_adapter_data.txt",
+      "log_sha256": "45a8827870db58f5ca10a8d4b89d276a75dfa42a2ec0ce35a0ed2707261b6a24",
+      "test_source_sha256": "9172a20655374143a8471a0b211f7e947abd65ba225d4460da4e9fb7f4d03aed",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_adapter_destination",
+      "tests": 10,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_adapter_destination.txt",
+      "log_sha256": "9c415cf3ee88f0d28c1841bdb49d2ca5d657a1f968b72b9e9110c8d35a25637d",
+      "test_source_sha256": "b5583dab3bf94146122d46a092390b2112e98f1c44d835be3dbdf0c6cb06a097",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_adapter_inference",
+      "tests": 5,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_adapter_inference.txt",
+      "log_sha256": "f8283abdb9dc44f14cffc7945c4c1c488fb9e2e89a3fb6000e8dc0ddd48daff3",
+      "test_source_sha256": "72e9572cb056530e94197a9cdf06e9f497ce188b2bca4c727308ba31b76d8af9",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_adapter_stale",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_adapter_stale.txt",
+      "log_sha256": "4a3d027270a2550898561040f5598aae166092d9ca3971331d3993ceb0321f6a",
+      "test_source_sha256": "955156903215e96b72f7097b01272fb4101cd011500e4c6ecabe7a55d1787802",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_auth",
+      "tests": 15,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_auth.txt",
+      "log_sha256": "eaca61ac6c36d599c4b9fe6881c91cbb010d4ded6b03e94278db62e3a52fa0ef",
+      "test_source_sha256": "af848781f57df72070e573dc4942151152c83e045bc266d940ba7767c01df1c7",
+      "correction": false
+    },
+    {
+      "module": "test_memory_pulse_relay",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_pulse_relay.txt",
+      "log_sha256": "35dcdf946cf7846faadc20ab6ec623d177f8bb6eee88d14248ba0fe783f724b0",
+      "test_source_sha256": "58431db171d24e12d97b571a4b8b25bf63cf5cf1609e55a3d1aa355890585fb4",
+      "correction": false
+    },
+    {
+      "module": "test_memory_recurrence",
+      "tests": 18,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_recurrence.txt",
+      "log_sha256": "3328789d8287070d8519fc5d17799a43ef1ac357bdb1757b4ee58e97856cd8c2",
+      "test_source_sha256": "97352c0bdd981375c4a74b8ee4f074357e43d6049d0cbdfc3cdb4f946aefc813",
+      "correction": false
+    },
+    {
+      "module": "test_memory_remount_relay",
+      "tests": 3,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_remount_relay.txt",
+      "log_sha256": "e350e0fe578b3cee5d36567a4597a06241d2cc7cee48d694dd9940b1a0290d4e",
+      "test_source_sha256": "aa647b46bb79ba6ddc03e47f2a28eba6487394cc9ecc8b15d40ff62c687db732",
+      "correction": false
+    },
+    {
+      "module": "test_memory_restore",
+      "tests": 18,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_restore.txt",
+      "log_sha256": "72a5b91f20c9d7022e7d67ea3394a79f87a79e713c2c5310a9d3eaf261cd86e6",
+      "test_source_sha256": "bd90c6e3c5ae1e23f73d6223ae8be3c20bc85c25600f23cb2df0cb0edfda4508",
+      "correction": false
+    },
+    {
+      "module": "test_memory_resume",
+      "tests": 10,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_resume.txt",
+      "log_sha256": "44bdc6fb7e0a3e19dba3708bdf30b1df92519b024ccdbc0037481a29caf6f553",
+      "test_source_sha256": "ec313940a9a0c5fca99a0867d4159541d2ba8e54fd17be9e312740c680fbeaca",
+      "correction": false
+    },
+    {
+      "module": "test_memory_review",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_review.txt",
+      "log_sha256": "8c6802b400473d097a73ca952401fff2a1607d83b26b434a0da5c90bea7e64e0",
+      "test_source_sha256": "32e2022274f105c1fe449d2d7e3bcda1b00e6e0599dbbe0fddbae2240f9ae443",
+      "correction": false
+    },
+    {
+      "module": "test_memory_review_fixes",
+      "tests": 9,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/review-connection-cleanup.txt",
+      "log_sha256": "0d9f32c5203af091753084ed195dac048786891c842aab73897fbbf61c81e8bb",
+      "test_source_sha256": "66a7b9ebdf22618f54557e30cfee743e35ad2060655b0cd10b05f13b7e638926",
+      "correction": true
+    },
+    {
+      "module": "test_memory_rotation",
+      "tests": 13,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_rotation.txt",
+      "log_sha256": "f311dc582da2b26c56d8ce7f1b9030d9bcca2148d96c10771a42c846d9c3d503",
+      "test_source_sha256": "db08179f2e272b16270485df8d603caae274ef370dd4f645bd731644ef5fb11d",
+      "correction": false
+    },
+    {
+      "module": "test_memory_runtime",
+      "tests": 26,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_runtime.txt",
+      "log_sha256": "4a22c1dcbfe0c097ce0c4d3c1e459ae16e7e37f80cc1ccb1355c0134a787b08f",
+      "test_source_sha256": "d0ee710da36cbde6b21f88a0b0668b6ca7aa7e67f3dbf293057e9bb345d28547",
+      "correction": false
+    },
+    {
+      "module": "test_memory_seed_pulse",
+      "tests": 7,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_seed_pulse.txt",
+      "log_sha256": "06d7a5c28aa4198d1a1cf9c37331e4a29228d77479720d18929dc33be7adc3cf",
+      "test_source_sha256": "07b3fe00009202ba26a7389a514b36bd7090542aa431afed691783ed164394b5",
+      "correction": false
+    },
+    {
+      "module": "test_memory_seed_recovery",
+      "tests": 9,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_seed_recovery.txt",
+      "log_sha256": "4c0a9866f69ffaf0f428e669d5c19b3fa4e43ab523cf630f249bd6ca24b840dc",
+      "test_source_sha256": "1009df78b080da5c4d1ebff6351e151a5f7e015ce190a63437a978f883bc2ef3",
+      "correction": false
+    },
+    {
+      "module": "test_memory_service",
+      "tests": 9,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_service.txt",
+      "log_sha256": "f27fc715ef5c678f7c05df9dabce6ca015c205d25b28e037872eb52bec6b1334",
+      "test_source_sha256": "6c2b8e2b0331a9d8e447f394bd35b1eac8cdb998a50fb85ce192876a6bf9aaf0",
+      "correction": false
+    },
+    {
+      "module": "test_memory_session_harvest",
+      "tests": 17,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_session_harvest.txt",
+      "log_sha256": "88d51648050a19cd6a61f8481c4cc9bb7340b74e1a83019049185b283462dcb1",
+      "test_source_sha256": "2d700266c0d6af2b861e58872451083465fe5868d880d596af63681006c8e581",
+      "correction": false
+    },
+    {
+      "module": "test_memory_sharing",
+      "tests": 8,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_sharing.txt",
+      "log_sha256": "1b946daa05e16c4e8e22e1249f64578c5daf3a8e7538b71268ac7c887761aea7",
+      "test_source_sha256": "b60d00e60b5558c28ec12ac6195741f5ac2c80f41c38b7331077b07742080fc3",
+      "correction": false
+    },
+    {
+      "module": "test_memory_source_labels",
+      "tests": 6,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_source_labels.txt",
+      "log_sha256": "168427aadcfa67233914821a15ec6879db3e337ac3e9e91a71fc3ef11a5ad9ef",
+      "test_source_sha256": "f86ccb81e3d2bd44b846c887603d9fafe07c5ee1fd3ec603ea79c83db6ecf2fa",
+      "correction": false
+    },
+    {
+      "module": "test_memory_source_registry_alias",
+      "tests": 2,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_source_registry_alias.txt",
+      "log_sha256": "bbf8575743806372c89b708541a1156ea61a9337a5d4bff3942ee97ddbab1f3a",
+      "test_source_sha256": "048f5f9ac3b1e0b4ec3919fe69cdb068c10235ca94b7a68593856392f7d71694",
+      "correction": false
+    },
+    {
+      "module": "test_memory_source_review",
+      "tests": 14,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_source_review.txt",
+      "log_sha256": "5fb0e48ac7628e33160726e7bf630cf4594e0bfe13e04ba407fb32ed52d2a752",
+      "test_source_sha256": "5344b89d62c0abeece26961251844f3acce38e9b8eb75a7471a26a42f160a3cd",
+      "correction": false
+    },
+    {
+      "module": "test_memory_sources",
+      "tests": 17,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_sources.txt",
+      "log_sha256": "276660d219af52664e6ff0f889af93e52a450b73d16f1e6954d890b1f725721d",
+      "test_source_sha256": "217151b52dad95ffbcfd3226b7f48505e154acf8d7d45ab5d8ba5835d48e96e8",
+      "correction": false
+    },
+    {
+      "module": "test_memory_ssh",
+      "tests": 1,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_ssh.txt",
+      "log_sha256": "dbc60e15cb21f943ea325687f5b18c2fbff496e6001303d5832c7dc8fa7605c0",
+      "test_source_sha256": "b1c0d20d6c382328a95035cf5183e3ac14bd8bc4281291a57c4cd95cddd6b391",
+      "correction": false
+    },
+    {
+      "module": "test_memory_staging",
+      "tests": 20,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_staging.txt",
+      "log_sha256": "6175b53d5e95a284078922ddc8800806e47ab0b29113e33143ce0f312ab2566d",
+      "test_source_sha256": "a6dc3f137a876cd0c836e4a2716044bc1bb342698d186f282bbafe4f416af472",
+      "correction": false
+    },
+    {
+      "module": "test_memory_staging_writers",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_staging_writers.txt",
+      "log_sha256": "0462256ecdf3e586f1dde9e99b584adab0c9206e7d6c9e72d956f4c14a47d7db",
+      "test_source_sha256": "c46049c9ae8745e2c69b3a3aad49593558af2515392b0d728779a98eabe4eeb2",
+      "correction": false
+    },
+    {
+      "module": "test_memory_state",
+      "tests": 20,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_state.txt",
+      "log_sha256": "347beff9e7b3f6fecfa8c5528142e411ae1a43341087cc662b31a474084b599a",
+      "test_source_sha256": "ff1799eb062f48600faec4bf09db18b663ab713bcaa8c0ba56dd384614aa1635",
+      "correction": false
+    },
+    {
+      "module": "test_memory_state_evidence",
+      "tests": 24,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_state_evidence.txt",
+      "log_sha256": "96686f10f28b6fff6cce41620e20f846340d27f7cce40777e2464afdb625f576",
+      "test_source_sha256": "927f8498289409fd359ce197200c91d494e01e232e71741ce7209d0cb8b00b54",
+      "correction": false
+    },
+    {
+      "module": "test_memory_telos",
+      "tests": 22,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_telos.txt",
+      "log_sha256": "e349c295ae60f0182a643401683a03efd23ba9b8ecd77c23e1285ac7283bacd3",
+      "test_source_sha256": "9c040cb9f0eae5e89f2d0142c005911a8ef5ff155c164d1dabb27d2b10a4a7db",
+      "correction": false
+    },
+    {
+      "module": "test_memory_tool_arguments",
+      "tests": 2,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_tool_arguments.txt",
+      "log_sha256": "e3540ed5cdbf82dd44bb2e7ae794db9e9f68810f00c0bc4e00b2bed78292cb2f",
+      "test_source_sha256": "6f8bfda10261f4f2d957f6347407b303c9086baa2d6e245beeae589a10720968",
+      "correction": false
+    },
+    {
+      "module": "test_memory_wiki_corpus",
+      "tests": 24,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_wiki_corpus.txt",
+      "log_sha256": "910bef18877b58f3373abf55e9377bfdde26950029e03b77f4aa4c43db47a92a",
+      "test_source_sha256": "84cdda2f04f1ee0bcc54e294c1aaaf4f9f1ea8404889b1ac7c6746d068b17b28",
+      "correction": false
+    },
+    {
+      "module": "test_memory_wiki_relay",
+      "tests": 17,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_wiki_relay.txt",
+      "log_sha256": "2f7c5de81e22203705b6ea8388f7275b4fcee91a0d8491d33a849b0590d6fd20",
+      "test_source_sha256": "51a8fc4395c70c87760e9593b0d4802d520601482415b481a5c484ddc8bcdeb0",
+      "correction": false
+    },
+    {
+      "module": "test_memory_wiki_render",
+      "tests": 9,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_wiki_render.txt",
+      "log_sha256": "5daed66c1a6ccdc5d552a335aa0488b7c647e0e533ba90ad8549506a18dfa402",
+      "test_source_sha256": "13f6c0f962c33b613f14a0394d5a1589fb31520dc89e7c39d8975f8033f3b06b",
+      "correction": false
+    },
+    {
+      "module": "test_memory_wisdom_frame",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_wisdom_frame.txt",
+      "log_sha256": "9552819bcba025edb5ce53277d2fee7f145ed8474f20085fb0c42e4edbfc8d0a",
+      "test_source_sha256": "8334e178246907cc7facf0f25302d9126c0e1b356d967215c0f343fbcc1b3f30",
+      "correction": false
+    },
+    {
+      "module": "test_memory_wisdom_readers",
+      "tests": 12,
+      "accepted_log": "docs/verification/2026-10-08-native-response-authority/regression-modules/test_memory_wisdom_readers.txt",
+      "log_sha256": "f638211b46bbea4af6c062ce7913de33c38e6f4970fb6b72bdaf20512719a1be",
+      "test_source_sha256": "c28bb73d699821d7b472daf3673e68b137175147bb1fddb7fc67afaa069e4103",
+      "correction": false
+    }
+  ],
+  "limits": [
+    "Source memory regression only; complete caller policy coverage and installed release acceptance remain open.",
+    "Two corrected test modules replace their original results. The original failing and warning logs remain retained."
+  ]
+}

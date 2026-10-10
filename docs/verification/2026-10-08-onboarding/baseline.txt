@@ -1,0 +1,156 @@
+FFFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_anonymous_and_ambient_flags_cannot_read_assistant_name (test_memory_onboarding.MemoryOnboardingTests.test_anonymous_and_ambient_flags_cannot_read_assistant_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 39, in test_anonymous_and_ambient_flags_cannot_read_assistant_name
+    self.assertEqual(response.status_code, 401, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_forgotten_assistant_name_cannot_return_from_original_identity (test_memory_onboarding.MemoryOnboardingTests.test_forgotten_assistant_name_cannot_return_from_original_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 81, in test_forgotten_assistant_name_cannot_return_from_original_identity
+    self.assertEqual(response.json()['daName'], 'your DA')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticOnboardingRetired' != 'your DA'
+- SyntheticOnboardingRetired
++ your DA
+
+
+======================================================================
+FAIL: test_methods_selectors_origin_and_invalid_bearer_refuse (test_memory_onboarding.MemoryOnboardingTests.test_methods_selectors_origin_and_invalid_bearer_refuse) (method='POST', target='/api/onboarding/state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 119, in test_methods_selectors_origin_and_invalid_bearer_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405 : not found
+
+======================================================================
+FAIL: test_methods_selectors_origin_and_invalid_bearer_refuse (test_memory_onboarding.MemoryOnboardingTests.test_methods_selectors_origin_and_invalid_bearer_refuse) (method='GET', target='/api/onboarding/state?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 119, in test_methods_selectors_origin_and_invalid_bearer_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_methods_selectors_origin_and_invalid_bearer_refuse (test_memory_onboarding.MemoryOnboardingTests.test_methods_selectors_origin_and_invalid_bearer_refuse) (method='GET', target='/api/onboarding/state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 119, in test_methods_selectors_origin_and_invalid_bearer_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_methods_selectors_origin_and_invalid_bearer_refuse (test_memory_onboarding.MemoryOnboardingTests.test_methods_selectors_origin_and_invalid_bearer_refuse) (method='GET', target='/api/onboarding/state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 119, in test_methods_selectors_origin_and_invalid_bearer_refuse
+    self.assertEqual(response.status_code, status, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_native_name_and_template_personalization_fields_match (test_memory_onboarding.MemoryOnboardingTests.test_native_name_and_template_personalization_fields_match) (name='SyntheticOnboardingAssistant', mission='', marker=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 58, in test_native_name_and_template_personalization_fields_match
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_native_name_and_template_personalization_fields_match (test_memory_onboarding.MemoryOnboardingTests.test_native_name_and_template_personalization_fields_match) (name='SyntheticOnboardingAssistant', mission='### M0: (sample) Synthetic example\n', marker=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 58, in test_native_name_and_template_personalization_fields_match
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_native_name_and_template_personalization_fields_match (test_memory_onboarding.MemoryOnboardingTests.test_native_name_and_template_personalization_fields_match) (name='SyntheticOnboardingAssistant', mission='### M0: Synthetic real mission\n', marker=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 58, in test_native_name_and_template_personalization_fields_match
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_native_name_and_template_personalization_fields_match (test_memory_onboarding.MemoryOnboardingTests.test_native_name_and_template_personalization_fields_match) (name='your DA', mission='', marker=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 58, in test_native_name_and_template_personalization_fields_match
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_native_name_and_template_personalization_fields_match (test_memory_onboarding.MemoryOnboardingTests.test_native_name_and_template_personalization_fields_match) (name='SyntheticOnboardingAssistant', mission='', marker=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 58, in test_native_name_and_template_personalization_fields_match
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_private_name_and_mission_cannot_change_public_onboarding (test_memory_onboarding.MemoryOnboardingTests.test_private_name_and_mission_cannot_change_public_onboarding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 68, in test_private_name_and_mission_cannot_change_public_onboarding
+    self.assertEqual(response.json(), {'templateMode': True, 'daName': 'your DA', 'interviewCommand': '/interview'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'templateMode': False, 'daName': '<private>SyntheticOnboa[53 chars]iew'} != {'templateMode': True, 'daName': 'your DA', 'interviewComm[14 chars]iew'}
++ {'daName': 'your DA', 'interviewCommand': '/interview', 'templateMode': True}
+- {'daName': '<private>SyntheticOnboardingPrivate</private>',
+-  'interviewCommand': '/interview',
+-  'templateMode': False}
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_identity_refuse (test_memory_onboarding.MemoryOnboardingTests.test_revocation_connector_loss_and_redirected_identity_refuse) (mode='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 106, in test_revocation_connector_loss_and_redirected_identity_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_identity_refuse (test_memory_onboarding.MemoryOnboardingTests.test_revocation_connector_loss_and_redirected_identity_refuse) (mode='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 106, in test_revocation_connector_loss_and_redirected_identity_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_identity_refuse (test_memory_onboarding.MemoryOnboardingTests.test_revocation_connector_loss_and_redirected_identity_refuse) (mode='revoked')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 106, in test_revocation_connector_loss_and_redirected_identity_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_redirected_identity_refuse (test_memory_onboarding.MemoryOnboardingTests.test_revocation_connector_loss_and_redirected_identity_refuse) (mode='missing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_onboarding.py", line 106, in test_revocation_connector_loss_and_redirected_identity_refuse
+    self.assertEqual(response.status_code, expected, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"templateMode":true,"daName":"SyntheticOnboardingAssistant","interviewCommand":"/interview"}
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.231s
+
+FAILED (failures=16)

@@ -1,0 +1,24 @@
+test_malformed_tool_and_queue_target_return_a_refusal (test_memory_manual_state.MemoryManualStateTests.test_malformed_tool_and_queue_target_return_a_refusal) ... ERROR
+
+======================================================================
+ERROR: test_malformed_tool_and_queue_target_return_a_refusal (test_memory_manual_state.MemoryManualStateTests.test_malformed_tool_and_queue_target_return_a_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_manual_state.py", line 250, in test_malformed_tool_and_queue_target_return_a_refusal
+    result = service.native(self.fixture.context,'manual_state',{'tool':[], 'args':[]})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 252, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 269, in _native_operation
+    return run(memory, scope, **arguments,
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_manual_state.py", line 142, in run
+    writing = _arguments(tool, args)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_manual_state.py", line 29, in _arguments
+    if tool not in TOOLS or not isinstance(args, list) or len(args) > 6 or any(
+       ^^^^^^^^^^^^^^^^^
+TypeError: cannot use 'list' as a set element (unhashable type: 'list')
+
+----------------------------------------------------------------------
+Ran 1 test in 0.005s
+
+FAILED (errors=1)

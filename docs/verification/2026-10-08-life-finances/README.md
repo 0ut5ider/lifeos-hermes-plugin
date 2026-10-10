@@ -1,0 +1,23 @@
+# Native Life finance admission
+
+Date: 2026-10-08. The source tree uses the prepared finance-view candidate and Bun 1.3.14.
+
+Managed `/api/life/finances` uses the fixed authenticated Life relay. It requires current owner recall. Anonymous requests, revoked accounts, foreign Origin, invalid bearer credentials, non-GET requests, and source selectors refuse access. Connector loss keeps the managed route closed.
+
+The owner operation checks 14 fixed sources: 11 files in USER/FINANCES, two transaction summaries in MEMORY/OBSERVABILITY, and USER/CONFIG/LIFEOS_CONFIG.toml. It requires the selected physical owner files. Redirects, hardlinks, different file owners, registry aliases, and oversized sources refuse access. A source has a 256 KiB limit. Admission has a 2,048-record limit. Source projection, transport, and response budgets have a 3 MiB limit.
+
+The supplied-source renderer uses the original native finance calculations and parsers. Its default callers keep their filesystem behavior. Currency uses the native configuration validator and fallback. The supplied-source form does not reopen files. The YAML parser remains the pinned `yaml` 2.9.0 package. TOML strings use Bun's parser. These are existing dependencies. See the [YAML parsing contract](https://eemeli.org/yaml/#parsing-yaml) and [Bun TOML contract](https://bun.com/docs/runtime/toml).
+
+Admission validates original and decoded structured text. Private or retired Markdown, JSON, YAML, or configuration sources do not enter the renderer. Transaction rows receive individual admission. Rejected or malformed rows become nonempty null placeholders. This preserves the native rule that only the first nonempty line can establish a statement header. Other admitted transaction rows remain available.
+
+The operation rechecks exact bytes, file identity, size, timestamps, missing-source state, and the account binding after native rendering. Separate processes observe actual completed rendering before changing a source or revoking authority. Each change withholds the response. Final response validation also checks retained-source policy.
+
+The [baseline](baseline.txt) runs ten tests in 12.133 seconds. Eight assertions fail. The populated, empty, and currency comparison cases pass. Negative cases expose anonymous access, connector loss, private content, retirement, source redirects, and missing source limits. The source-change probe also shows that the route lacks a governed owner operation. The [compressed raw baseline](baseline.raw.txt.gz) preserves exact output. The [receipt](baseline-receipt.json) records its byte count and digest. The readable baseline removes trailing ASCII whitespace only.
+
+The [first candidate gate](first-gate.txt) cannot start the native listener. Its configuration file has comments above its executable shebang. The [raw gate archive](first-gate.raw.txt.gz) and [receipt](first-gate-receipt.json) preserve that output. The readable gate removes trailing ASCII whitespace only. The correction restores the shebang to the first line. The [second gate](second-gate.txt) passes nine tests and fails one preservation assertion. The existing retirement policy excludes unreviewed sources that predate the latest retirement, including unrelated historical text. The fixture now checks that exclusion explicitly. It then refreshes source timestamps without changing bytes and verifies decoded retired claims remain excluded while an unrelated statement remains visible. This does not relax the retirement policy.
+
+The [expanded gate](expanded-gate.txt) passes 14 tests in 20.569 seconds with warnings treated as errors. It compares complete native responses for populated, empty, and currency fixtures. It covers malformed transaction header placement, escaped private YAML/JSON/TOML text, escaped retired claims in current retained sources, transaction limits, HTTP authority, hardlinks, redirects, connector loss, and changes after rendering.
+
+The [adjacent gate](adjacent-gate.txt) passes 133 cases in 140.441 seconds without skips and with warnings treated as errors. It covers these finance cases and the neighboring Life, source, native job, profile, authority, patch, and preparation tests. The [source identity](source-identity.json) and [dependency selection](dependency-selection-second.json) record exact source bytes and unchanged manifests. Preparation applies all 11 Hermes and 23 LifeOS patch groups. Both distributed memory patch copies have identical bytes.
+
+Installed activation, remaining Life routes, source-review coverage for these additional source classes, and user-index publication remain open. This candidate is not deployed to `.252` during this gate.

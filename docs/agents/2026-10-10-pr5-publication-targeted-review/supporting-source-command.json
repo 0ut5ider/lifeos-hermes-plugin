@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python",
+    "-c",
+    "from pathlib import Path; import sys; [(print('FILE '+p+'\\n'+Path(p).read_text())) for p in sys.argv[1:]]",
+    "lifeos_hook_bridge/memory_access.py",
+    "lifeos_hook_bridge/memory_transaction.py",
+    "lifeos_hook_bridge/memory_service.py",
+    "lifeos_hook_bridge/memory_algorithm_summary.py",
+    "lifeos_hook_bridge/memory_local_refresh.py",
+    "lifeos_hook_bridge/memory_conduit_insight.py"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "exit_code": 0,
+  "stdout": "supporting-source.txt",
+  "stderr": "",
+  "archived_output": "supporting-source.json"
+}

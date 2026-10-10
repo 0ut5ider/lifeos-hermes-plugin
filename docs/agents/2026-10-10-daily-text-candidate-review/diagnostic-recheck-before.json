@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_log_change_during_collection_after_start_retains_recovery"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/content-response-first/lifeos/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 0.4242696762084961,
+  "stdout": "",
+  "stderr": "F\n======================================================================\nFAIL: test_log_change_during_collection_after_start_retains_recovery (test_memory_local_refresh_runs.MemoryLocalRefreshRunTests.test_log_change_during_collection_after_start_retains_recovery)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_local_refresh_runs.py\", line 82, in test_log_change_during_collection_after_start_retains_recovery\n    self.assertTrue(memory.transaction.journal.exists())\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 1 test in 0.319s\n\nFAILED (failures=1)\n"
+}

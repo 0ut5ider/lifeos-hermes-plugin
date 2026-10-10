@@ -1,0 +1,15 @@
+fixture_prepared
+browser_launched
+signed_in
+board_live
+response_received
+{"status": 200, "headers": {"cache-control": "no-store", "content-length": "68", "date": "Sat, 10 Oct 2026 04:23:00 GMT", "content-type": "application/json"}}
+queued_visible
+queued_screenshot
+response_received
+{"finished": [], "wire_finished": []}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-09-daily-release-installed/verify_installed_content_browser_third.py", line 90, in <module>
+    assert len(finished) == 2 and len(wire_finished) == 2, (finished, wire_finished)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([], [])

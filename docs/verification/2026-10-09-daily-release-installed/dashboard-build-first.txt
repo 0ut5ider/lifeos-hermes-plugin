@@ -1,0 +1,81 @@
+Preparing the isolated Hermes runtime…
+Using CPython 3.14.7 interpreter at: /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/profile/tools/python-3.14.7+20260901-linux-x64/bin/python3
+Creating virtual environment at: 9400abc7844b46e19ee4ba398b7e371a
+Activate with: source 9400abc7844b46e19ee4ba398b7e371a/bin/activate
+Resolved 5 packages in 3ms
+Prepared 4 packages in 205ms
+Installed 4 packages in 29ms
+Bytecode compiled 57 files in 258ms
+ + packaging==26.0
+ + ruamel-yaml==0.18.16
+ + tomli-w==1.2.0
+ + truststore==0.10.4
+  → Preparing Node dependencies…
+node-deps: installing workspace dependencies with npm ci (web)...
+npm notice run hermes-agent@1.0.0 postinstall
+npm notice run echo '✅ Node dependencies installed. Run: python run_agent.py --help'
+✅ Node dependencies installed. Run: python run_agent.py --help
+
+added 496 packages in 10s
+  → Building the web UI…
+[36mvite v8.2.0 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...✓ 2251 modules transformed.
+rendering chunks...
+computing gzip size...
+hermes_cli/.web_dist-build-4Mcrs7/product/index.html                                       1.50 kB │ gzip:   0.54 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/Mondwest-Regular-CWscgue7.woff2          23.82 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/RulesExpanded-Regular-l8uVympt.woff2     33.82 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/RulesExpanded-Bold-DZA7s8Pa.woff2        35.01 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/RulesCompressed-Regular-BSXFyF4x.woff2   37.76 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/RulesCompressed-Medium-CA76_CrB.woff2    38.84 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/Collapse-Bold-mgICk9-_.woff2             59.14 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/Collapse-Regular-DysayoTY.woff2          62.81 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/xterm-BrP-ENHg.css                        3.93 kB │ gzip:   1.01 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/index-CVz44OD6.css                      112.46 kB │ gzip:  17.61 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/chat-activation-BiaqYo9D.js               0.04 kB │ gzip:   0.06 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/page-header-context-Cv8A-rTa.js           0.15 kB │ gzip:   0.14 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/useProfileScope-CZ2qacRL.js               0.26 kB │ gzip:   0.21 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/usePageHeader-BtGwRGnc.js                 0.30 kB │ gzip:   0.23 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/utils-DYyongUp.js                         0.53 kB │ gzip:   0.29 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/rolldown-runtime-CbXtAM7H.js              0.58 kB │ gzip:   0.36 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/DeleteConfirmDialog-CqzjftSj.js           0.61 kB │ gzip:   0.38 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/useModalBehavior-oWox1GPh.js              0.62 kB │ gzip:   0.39 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/clipboard-owkvc3zk.js                     0.73 kB │ gzip:   0.44 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/terminal-font-refit-Dmois6_8.js           0.83 kB │ gzip:   0.44 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/mcp-server-create-B0VgoYzF.js             0.92 kB │ gzip:   0.46 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/LoadErrorNotice-BO1qDiT0.js               1.74 kB │ gzip:   0.90 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/DocsPage-Dn0q1-5_.js                      1.96 kB │ gzip:   1.08 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/PairingPage-C9Bh4KGg.js                   4.88 kB │ gzip:   1.67 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/plugins-y53D0Tft.js                       5.55 kB │ gzip:   2.61 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/LogsPage-BYYeIrcx.js                      7.50 kB │ gzip:   3.29 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/FilesPage-D_Z17hIB.js                     9.81 kB │ gzip:   3.26 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/WebhooksPage-DutHw6df.js                 12.59 kB │ gzip:   3.85 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/themes-BpGZYoHQ.js                       12.99 kB │ gzip:   4.39 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ModelReloadConfirm-kH32fgeA.js           13.95 kB │ gzip:   5.15 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ProfileBuilderPage-tmnsKpet.js           14.87 kB │ gzip:   4.50 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/McpPage-YW59Kn_o.js                      17.82 kB │ gzip:   5.22 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ConfigPage-DLcvloen.js                   18.00 kB │ gzip:   6.02 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/AnalyticsPage-DSYX1PWo.js                20.17 kB │ gzip:   6.04 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ProfilesPage-nwcK5rOE.js                 25.27 kB │ gzip:   7.11 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ChannelsPage-B9wRS4y8.js                 29.19 kB │ gzip:   8.10 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/EnvPage-DnPjnVT0.js                      29.76 kB │ gzip:   7.97 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ModelsPage-BvA_JhRj.js                   33.98 kB │ gzip:  10.52 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/PluginsPage-BlSBXLi8.js                  34.08 kB │ gzip:   9.91 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/SystemPage-COcjfhd3.js                   43.11 kB │ gzip:  11.63 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/SkillsPage-C4eDayIo.js                   44.70 kB │ gzip:  12.63 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/CronPage-B2RuUAIe.js                     45.43 kB │ gzip:  14.67 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/SessionsPage-bb73693y.js                 46.42 kB │ gzip:  14.19 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/api-xvjTxPQj.js                          47.88 kB │ gzip:  12.30 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/vendor-C3j-S1CW.js                       50.37 kB │ gzip:  17.89 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ChatPage-BgmFnKtA.js                     52.28 kB │ gzip:  18.29 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/index-ClbkbbFg.js                        68.15 kB │ gzip:  23.43 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/react-vendor-BoVnYuL4.js                226.99 kB │ gzip:  72.78 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/ui-bBVPPEcD.js                          290.19 kB │ gzip:  94.89 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/xterm-CXxU4Y2B.js                       474.38 kB │ gzip: 122.64 kB
+hermes_cli/.web_dist-build-4Mcrs7/product/assets/i18n-C3hdy-JT.js                        488.81 kB │ gzip: 144.77 kB
+
+[33m[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugin `@rolldown/plugin-babel`. See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+[39m
+[32m✓ built in 5.51s[39m
+built /home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/hermes/hermes_cli/web_dist/index.html
+{"dashboard_entry": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/package/hermes/hermes_cli/web_dist/index.html", "live_services_changed": false}

@@ -1,0 +1,26 @@
+test_recovery_keeps_a_copy_before_it_removes_a_file_that_did_not_exist (test_memory_review_fixes.RecoveryPreservationTests.test_recovery_keeps_a_copy_before_it_removes_a_file_that_did_not_exist) ... ok
+test_recovery_keeps_a_copy_of_bytes_that_differ_from_the_journal_original (test_memory_review_fixes.RecoveryPreservationTests.test_recovery_keeps_a_copy_of_bytes_that_differ_from_the_journal_original) ... ok
+test_recovery_of_an_unchanged_or_missing_file_preserves_nothing (test_memory_review_fixes.RecoveryPreservationTests.test_recovery_of_an_unchanged_or_missing_file_preserves_nothing) ... ok
+test_correction_and_forget_after_revocation_change_nothing (test_memory_review_fixes.RevocationDuringCallTests.test_correction_and_forget_after_revocation_change_nothing) ... Exception ignored while finalizing database connection <sqlite3.Connection object at 0x7fe01071ae30>:
+Traceback (most recent call last):
+  File "<string>", line 0, in <module>
+ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fe01071ae30>
+Exception ignored while finalizing database connection <sqlite3.Connection object at 0x7fe0105d4d60>:
+Traceback (most recent call last):
+  File "<string>", line 0, in <module>
+ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fe0105d4d60>
+Exception ignored while finalizing database connection <sqlite3.Connection object at 0x7fe0105d4e50>:
+Traceback (most recent call last):
+  File "<string>", line 0, in <module>
+ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fe0105d4e50>
+ok
+test_narrowed_grant_during_a_call_withholds_the_result (test_memory_review_fixes.RevocationDuringCallTests.test_narrowed_grant_during_a_call_withholds_the_result) ... ok
+test_read_by_reference_that_finishes_after_revocation_returns_no_fact (test_memory_review_fixes.RevocationDuringCallTests.test_read_by_reference_that_finishes_after_revocation_returns_no_fact) ... ok
+test_search_that_finishes_after_revocation_returns_no_fact (test_memory_review_fixes.RevocationDuringCallTests.test_search_that_finishes_after_revocation_returns_no_fact) ... ok
+test_unchanged_grant_still_returns_the_fact (test_memory_review_fixes.RevocationDuringCallTests.test_unchanged_grant_still_returns_the_fact) ... ok
+test_write_that_reaches_publication_after_revocation_is_not_published (test_memory_review_fixes.RevocationDuringCallTests.test_write_that_reaches_publication_after_revocation_is_not_published) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 2.727s
+
+OK

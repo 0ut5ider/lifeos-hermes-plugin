@@ -1,0 +1,25 @@
+test_move_reservation_requires_expected_ledger_identity (test_memory_moves.MemoryMoveTests.test_move_reservation_requires_expected_ledger_identity) ... FAIL
+test_move_recovery_requires_expected_ledger_identity_before_any_effect (test_memory_moves.MemoryMoveTests.test_move_recovery_requires_expected_ledger_identity_before_any_effect) ... FAIL
+
+======================================================================
+FAIL: test_move_reservation_requires_expected_ledger_identity (test_memory_moves.MemoryMoveTests.test_move_reservation_requires_expected_ledger_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_moves.py", line 168, in test_move_reservation_requires_expected_ledger_identity
+    with self.assertRaises(MemoryUnavailable):self.transaction.prepare_moves(self.entries())
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_move_recovery_requires_expected_ledger_identity_before_any_effect (test_memory_moves.MemoryMoveTests.test_move_recovery_requires_expected_ledger_identity_before_any_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_moves.py", line 180, in test_move_recovery_requires_expected_ledger_identity_before_any_effect
+    with self.assertRaises(MemoryUnavailable):self.transaction.recover(self.connection)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.008s
+
+FAILED (failures=2)

@@ -1,0 +1,15 @@
+# Publication failures must retain their recovery reservation
+
+Date: 2026-10-10. Candidate reviewed: `bf53c16dd23d72c9824843cbb85f31db5a48e723`.
+
+The independent review finds two defects despite passing earlier publication checks. An outer access refusal does not undo an operation that has already committed. Three native batch publishers check authority before their write loop. Revocation after the first real write still permits later writes or queue consumption. The primary agent reproduces all three cases. New tests revoke the actual owner account after each publication boundary and after queue deletion. They require an unknown operation receipt, a retained journal, and restoration of prior files through a fresh transaction.
+
+The second defect comes from exception meaning. `MemoryConflict` describes an ordinary rejected operation and the operation framework finalizes that receipt. Algorithm editing raises it after publishing a new version, changelog, and `LATEST`. An HTTP 503 therefore leaves the new version active and removes the journal that the response says recovery needs. The correction uses `MemoryUnavailable` after publication. That exception leaves the reserved receipt unknown and rolls back pending database changes. A fresh transaction restores unchanged operation destinations. The existing expected-digest checks retain the journal and refuse rollback if a later edit changes a publication destination.
+
+The caller audit reproduces the same exception problem in Algorithm summary caches, LocalIntelligence digests, LocalIntelligence run logs, and Conduit insights. All four receive the same correction at their checks after publication. Checks before publication continue to return ordinary conflicts. The tests use actual native rendering, authenticated HTTP for doctrine edits, real SQLite metadata, and real synthetic file and configuration changes. Observation functions call the original publisher before inserting the deterministic concurrent change.
+
+The first correction handles the explicit checks after writing. A second experiment changes the source during the native recheck itself. All three native planners still raise a nested `MemoryConflict`, and all three remove the journal. The correction therefore also converts source conflicts from rechecks after publication into the recoverable failure path. The native results and source checks remain intact.
+
+Two standalone test fixtures also retain an admitted managed context after removing their connector. That combination must refuse access. The fixtures now remove the managed context for standalone native compatibility checks. Separate connector-loss tests retain the context and require refusal without file changes. These fixture changes preserve the runtime policy.
+
+The [verification directory](../docs/verification/2026-10-10-publication-review-fixes/) retains the combined command and output. The original review evidence remains separate from the correction evidence. No server, memory ownership setting, Discord bot, or source pin changes in this work.

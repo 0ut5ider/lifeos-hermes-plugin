@@ -1,0 +1,55 @@
+..........................................................................EEEEE...................................................................................................
+======================================================================
+ERROR: test_owner_preserves_all_native_http_payload_shapes (test_memory_freshness_relay.MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes) (route='/api/telos/freshness')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_freshness_relay.py", line 91, in test_owner_preserves_all_native_http_payload_shapes
+    control = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) / 'LIFEOS/PULSE/modules/telos.ts'
+                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_owner_preserves_all_native_http_payload_shapes (test_memory_freshness_relay.MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes) (route='/api/telos/freshness/stale')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_freshness_relay.py", line 91, in test_owner_preserves_all_native_http_payload_shapes
+    control = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) / 'LIFEOS/PULSE/modules/telos.ts'
+                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_owner_preserves_all_native_http_payload_shapes (test_memory_freshness_relay.MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes) (route='/api/telos/freshness/summary')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_freshness_relay.py", line 91, in test_owner_preserves_all_native_http_payload_shapes
+    control = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) / 'LIFEOS/PULSE/modules/telos.ts'
+                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_owner_preserves_all_native_http_payload_shapes (test_memory_freshness_relay.MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes) (route='/api/freshness')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_freshness_relay.py", line 91, in test_owner_preserves_all_native_http_payload_shapes
+    control = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) / 'LIFEOS/PULSE/modules/telos.ts'
+                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_owner_preserves_all_native_http_payload_shapes (test_memory_freshness_relay.MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes) (route='/api/freshness/summary')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_freshness_relay.py", line 91, in test_owner_preserves_all_native_http_payload_shapes
+    control = Path(os.environ['LIFEOS_FRESHNESS_CONTROL_SOURCE']) / 'LIFEOS/PULSE/modules/telos.ts'
+                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_FRESHNESS_CONTROL_SOURCE'
+
+----------------------------------------------------------------------
+Ran 174 tests in 212.183s
+
+FAILED (errors=5)

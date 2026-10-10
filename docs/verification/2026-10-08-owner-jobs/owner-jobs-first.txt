@@ -1,0 +1,22 @@
+test_actual_cleanup_uses_the_same_owner_job_admission (test_memory_owner_jobs.MemoryOwnerJobsTests.test_actual_cleanup_uses_the_same_owner_job_admission) ... ok
+test_actual_consolidation_publishes_one_private_learning_and_preserves_repeat (test_memory_owner_jobs.MemoryOwnerJobsTests.test_actual_consolidation_publishes_one_private_learning_and_preserves_repeat) ... FAIL
+test_disabled_ownership_cannot_fall_back_to_unmanaged_commands (test_memory_owner_jobs.MemoryOwnerJobsTests.test_disabled_ownership_cannot_fall_back_to_unmanaged_commands) ... ok
+test_job_name_cannot_run_an_arbitrary_program (test_memory_owner_jobs.MemoryOwnerJobsTests.test_job_name_cannot_run_an_arbitrary_program) ... ok
+test_native_environment_uses_selected_home_and_actual_local_author (test_memory_owner_jobs.MemoryOwnerJobsTests.test_native_environment_uses_selected_home_and_actual_local_author) ... ok
+test_read_only_job_refuses_before_any_consolidation (test_memory_owner_jobs.MemoryOwnerJobsTests.test_read_only_job_refuses_before_any_consolidation) ... ok
+test_removed_local_account_cannot_borrow_a_discord_or_retained_context (test_memory_owner_jobs.MemoryOwnerJobsTests.test_removed_local_account_cannot_borrow_a_discord_or_retained_context) ... ok
+test_unknown_route_refuses_before_any_consolidation (test_memory_owner_jobs.MemoryOwnerJobsTests.test_unknown_route_refuses_before_any_consolidation) ... ok
+
+======================================================================
+FAIL: test_actual_consolidation_publishes_one_private_learning_and_preserves_repeat (test_memory_owner_jobs.MemoryOwnerJobsTests.test_actual_consolidation_publishes_one_private_learning_and_preserves_repeat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_jobs.py", line 44, in test_actual_consolidation_publishes_one_private_learning_and_preserves_repeat
+    self.assertIn('Harvested 1 learning', first['output'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Harvested 1 learning' not found in 'No sessions found to harvest\nNo ratings file found at: /tmp/native-memory-ji8f6iuy/.claude/LIFEOS/MEMORY/LEARNING/SIGNALS/ratings.jsonl\n'
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.611s
+
+FAILED (failures=1)

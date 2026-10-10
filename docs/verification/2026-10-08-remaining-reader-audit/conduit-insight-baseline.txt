@@ -1,0 +1,47 @@
+test_original_cached_insight_preserves_bytes_without_model_call (test_memory_conduit_insight.MemoryConduitInsightTests.test_original_cached_insight_preserves_bytes_without_model_call) ... ok
+test_original_empty_cli_and_exported_initialization_characterization (test_memory_conduit_insight.MemoryConduitInsightTests.test_original_empty_cli_and_exported_initialization_characterization) ... ok
+test_owner_empty_publication_and_cached_native_result (test_memory_conduit_insight.MemoryConduitInsightTests.test_owner_empty_publication_and_cached_native_result) ... FAIL
+test_private_retired_and_read_only_sources_refuse_without_publication (test_memory_conduit_insight.MemoryConduitInsightTests.test_private_retired_and_read_only_sources_refuse_without_publication) ... FAIL
+test_unbound_cli_refuses_before_config_or_insight_creation (test_memory_conduit_insight.MemoryConduitInsightTests.test_unbound_cli_refuses_before_config_or_insight_creation) ... FAIL
+test_unbound_exported_reader_cannot_disclose_cached_insight (test_memory_conduit_insight.MemoryConduitInsightTests.test_unbound_exported_reader_cannot_disclose_cached_insight) ... FAIL
+
+======================================================================
+FAIL: test_owner_empty_publication_and_cached_native_result (test_memory_conduit_insight.MemoryConduitInsightTests.test_owner_empty_publication_and_cached_native_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py", line 95, in test_owner_empty_publication_and_cached_native_result
+    self.assertEqual(self.insight.stat().st_mode & 0o777, 0o600)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 420 != 384
+
+======================================================================
+FAIL: test_private_retired_and_read_only_sources_refuse_without_publication (test_memory_conduit_insight.MemoryConduitInsightTests.test_private_retired_and_read_only_sources_refuse_without_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py", line 110, in test_private_retired_and_read_only_sources_refuse_without_publication
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_cli_refuses_before_config_or_insight_creation (test_memory_conduit_insight.MemoryConduitInsightTests.test_unbound_cli_refuses_before_config_or_insight_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py", line 80, in test_unbound_cli_refuses_before_config_or_insight_creation
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unbound_exported_reader_cannot_disclose_cached_insight (test_memory_conduit_insight.MemoryConduitInsightTests.test_unbound_exported_reader_cannot_disclose_cached_insight)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_insight.py", line 88, in test_unbound_exported_reader_cannot_disclose_cached_insight
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.213s
+
+FAILED (failures=4)
