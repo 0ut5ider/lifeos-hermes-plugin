@@ -6,6 +6,8 @@ Audio and video processing move to the later voice release. Do not start the Con
 
 Use the actual Hermes dashboard for administration. The first-release profile disables the native Pulse Hermes core-file editor. Its legacy status and file routes do not have governed owner adapters. Adrian confirms this launch selection on October 10. It preserves the main Pulse personal dashboards and the governed gateway health readers. Do not enable the editor until its read and write routes pass current owner admission and publication checks.
 
+Complete the governed Pulse editor in a later tested release. The [project to-do list](../../../TODO.md) retains its required read, write, remount, revocation, and recovery checks.
+
 The operator deployment must perform these actions:
 
 1. Back up the selected profile, native user configuration, and release manifest.
