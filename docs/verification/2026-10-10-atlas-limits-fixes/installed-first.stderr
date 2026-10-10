@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-5163a0ce/verify_installed_limits.py", line 166, in <module>
+    assert result.returncode==0 and not result.stderr,result
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CompletedProcess(args=['/home/lifeos-hermes/.local/bin/bun', '--no-install', '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-5163a0ce/package/tests/native_daily_pulse_profile.ts', '/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/pulse-daemon-types-source/lifeos/LifeOS/install', '/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/USER/CONFIG/PULSE.user.toml', 'atlas-sync'], returncode=1, stdout='', stderr="error: Cannot find package 'smol-toml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/pulse-daemon-types-source/lifeos/LifeOS/install/LIFEOS/PULSE/lib.ts'\n\nBun v1.3.14 (Linux x64)\n")

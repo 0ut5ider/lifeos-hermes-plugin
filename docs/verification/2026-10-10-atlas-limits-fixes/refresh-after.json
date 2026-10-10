@@ -1,0 +1,38 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_atlas_capacity",
+    "test_daily_pulse_profile",
+    "test_memory_atlas_jobs.MemoryAtlasJobCommandTests"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-daily-text-20261007/daily-text-0.2.0-content-fixed/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits-refresh/LifeOS/install",
+    "LIFEOS_HARVEST_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install"
+  },
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_atlas_sync.py": "73d56536b9a44de716eb9e85c2f979d3ed092307e477066c4c88e5d6da10330a",
+    "lifeos_hook_bridge/memory_atlas_insight.py": "9a73481125ae69722fe3036bc80a7b95d2ab972a3b7b2b55eb88e31f39d23dc6",
+    "lifeos_hook_bridge/memory_access.py": "dccc65123be7a5114c4438b2657fe4d83a863559648db71c92f4300b5f7850cc",
+    "lifeos_hook_bridge/memory_service.py": "0e1b1b9df65a05973c2f4a9c581ad320590dd3f9738720d2294cff19438ddc7b",
+    "lifeos_hook_bridge/memory_owner_jobs.py": "a25a643cd100c3232e34ab3be4e7ce3e5036a617cc02c0edaa8140aff9e65b5b",
+    "lifeos_hook_bridge/memory_native.ts": "fde1a09c8074d059f77c95f3bbf91d0a0668d80185e561418e2753cbf3b07a90",
+    "lifeos_hook_bridge/patches/lifeos-memory-access.patch": "6bbca9c481c7df23efa31afd8e22c74c93dc12bcf8f2ee7e757d261d896a524c",
+    "tests/test_memory_atlas_sync.py": "3f340e15c9f3c8e1a6dbf10754da2d62d2db805fdcaddb5f61de87da9a06d9ee",
+    "tests/memory_atlas_sync_process.py": "5841f3a36bfa2e70c72df0f7a24b7a6e53bab5a5e7195c9bd79f2005c3063a77",
+    "tests/test_memory_atlas_capacity.py": "3457d9b1cceb5e2280b48af196a13fa37ed918b699b37ab0b048fdda230137a4",
+    "lifeos_hook_bridge/memory_atlas.py": "767d597c2837f5cd452d06c1ef340b570560c2d797cd2626a107102ee1795836",
+    "lifeos_hook_bridge/memory_operational_views.py": "189800a9b9ed02fed6df4b245fccfbc402c352e369afcc3b72fb3db2286c684f",
+    "docs/deployment/daily-text/PULSE.user.toml": "112bef056043bc09f4581118293f4b98f566a080c0d413c70160b2ec3aa5183b"
+  },
+  "exit_code": 0,
+  "duration_seconds": 73.40057403598621,
+  "stdout": "",
+  "stderr": "test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts) ... ok\ntest_retained_history_refuses_before_any_live_publication (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_retained_history_refuses_before_any_live_publication) ... ok\ntest_success_reports_bounded_capacity_and_warning_without_source_text (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_success_reports_bounded_capacity_and_warning_without_source_text) ... ok\ntest_table_limit_refuses_before_publication_and_preserves_previous_graph (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_table_limit_refuses_before_publication_and_preserves_previous_graph) ... ok\ntest_empty_regeneration_initializes_graph_and_remains_idle (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_empty_regeneration_initializes_graph_and_remains_idle) ... ok\ntest_owner_command_reports_capacity_refusal_without_inference (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_owner_command_reports_capacity_refusal_without_inference) ... ok\ntest_regeneration_reconciles_changed_sources_before_actual_model_request (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request) ... ok\ntest_native_job_merger_has_no_raw_memory_command_or_external_output (test_daily_pulse_profile.DailyPulseProfileTests.test_native_job_merger_has_no_raw_memory_command_or_external_output) ... ok\ntest_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) ... ok\ntest_native_schedule_spawn_initializes_and_refreshes_atlas_without_inference (test_daily_pulse_profile.DailyPulseProfileTests.test_native_schedule_spawn_initializes_and_refreshes_atlas_without_inference) ... ok\ntest_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis) ... ok\ntest_native_spawn_and_actual_hermes_parser_render_the_morning_brief (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_render_the_morning_brief) ... ok\ntest_native_spawn_cannot_borrow_a_discord_author_when_local_grant_is_removed (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_cannot_borrow_a_discord_author_when_local_grant_is_removed) ... ok\ntest_native_spawn_refuses_memory_job_when_ownership_is_disabled (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_refuses_memory_job_when_ownership_is_disabled) ... ok\ntest_native_spawn_runs_healthcheck_without_an_external_destination (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_healthcheck_without_an_external_destination) ... ok\ntest_native_spawn_runs_proposal_cleanup_through_the_actual_owner_command (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_proposal_cleanup_through_the_actual_owner_command) ... ok\ntest_actual_selected_profile_command_reports_absent_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_reports_absent_graph_without_inference) ... ok\n\n----------------------------------------------------------------------\nRan 17 tests in 72.642s\n\nOK\n"
+}

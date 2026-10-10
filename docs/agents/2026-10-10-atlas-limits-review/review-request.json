@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-10",
+  "agent": "/root/atlas_limits_review",
+  "review_head": "77615801f89bfcd63167468d1fb7dd75a9af6477",
+  "base": "38f5534628be21a62fea87553313b964282e8e8d",
+  "scope": [
+    "Measured native database growth and effective transport/source/publication limits",
+    "Daily refresh and current dashboard behavior",
+    "External Atlas state backup and recovery coverage",
+    "Smallest safe recommendation and launch blockers"
+  ],
+  "mode": "review only, synthetic local experiments",
+  "report": "atlas-limits-review.md",
+  "publication_order": "Review, verify findings, resolve blockers, retest, then create PR"
+}
