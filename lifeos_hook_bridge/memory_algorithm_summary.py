@@ -143,6 +143,8 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
             raise MemoryUnavailable('Algorithm summary recheck requires publication recovery') from error
         if any(after[key] != snapshot[key] for key in ('inputs', 'scope', 'root', 'retirement')):
             raise MemoryUnavailable('Algorithm inputs change during summary publication and require recovery')
+        if memory._publication_path(CACHE).read_bytes() != content:
+            raise MemoryUnavailable('Algorithm summary destination changes during publication and requires recovery')
         check_current()
         return {'status': 'committed'}
     receipt = memory._operation(scope, 'algorithm-summary-' + uuid4().hex, payload, apply,

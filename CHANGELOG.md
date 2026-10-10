@@ -24,6 +24,7 @@ Private-channel acceptance, Atlas graph initialization, final package checks, an
 - Complete native Content action responses and display HTTP failures. Verify actual browser owner refusal and restoration.
 - Recheck current owner authority between session learning writes, proposal cleanup writes, Knowledge record transitions, and queue deletion. Retain recovery after revocation.
 - Keep unknown receipts and recovery journals when Algorithm, Conduit insight, or LocalIntelligence publication detects a later change after writing files.
+- Verify every Algorithm summary, LocalIntelligence digest, and Conduit insight destination before committing its receipt. Preserve later destination edits and retain recovery for incomplete groups.
 - Record the conditional Hermes upgrade that can remove one of the 36 functional patches after complete qualification.
 
 The following changes also belong to this candidate:

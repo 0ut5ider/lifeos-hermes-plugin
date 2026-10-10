@@ -184,6 +184,9 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
         untouched = lambda record: [row for row in record['sources'] if row[0] not in paths]
         if untouched(published_snapshot) != untouched(snapshot):
             raise MemoryUnavailable('LocalIntelligence inputs change during publication and require recovery')
+        for relative in paths:
+            if memory._publication_path(relative).read_bytes() != content:
+                raise MemoryUnavailable('LocalIntelligence destination changes during publication and requires recovery')
         check_current()
         return {'status': 'committed'}
     receipt = memory._operation(scope, 'local-refresh-' + uuid4().hex, payload, apply,

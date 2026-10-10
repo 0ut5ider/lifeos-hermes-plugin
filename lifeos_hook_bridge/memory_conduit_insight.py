@@ -179,6 +179,10 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
             untouched = lambda value: [row for row in value['sources'] if row[0] not in paths]
             if untouched(published_snapshot) != untouched(snapshot):
                 raise MemoryUnavailable('Conduit insight sources change during publication and require recovery')
+            for relative in paths:
+                if memory._publication_path(relative).read_bytes() != contents[relative].encode():
+                    raise MemoryUnavailable('Conduit insight destination changes during publication and requires recovery')
+            check_current()
             return {'status': 'committed'}
         receipt = memory._operation(scope, 'conduit-insight-' + uuid4().hex, payload, apply,
             publication_digests={relative: hashlib.sha256(contents[relative].encode()).hexdigest() for relative in paths})
