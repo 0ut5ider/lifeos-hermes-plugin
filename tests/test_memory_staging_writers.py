@@ -54,10 +54,16 @@ class MemoryStagingWriterTests(unittest.TestCase):
         self.assertEqual(json.loads(retry.stdout)['receipt'], receipt)
 
     def test_standalone_rejection_retains_the_native_command_behavior(self):
-        result = self.fixture.native_call('reject', self.fixture.selector, managed=False)
+        result = self.fixture.native_call('reject', self.fixture.selector, managed=False, context=False)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertFalse(self.fixture.staged.exists())
         self.assertIn('rejected:', result.stdout)
+
+    def test_admitted_caller_cannot_reject_after_connector_loss(self):
+        before = self.fixture.staged.read_bytes()
+        result = self.fixture.native_call('reject', self.fixture.selector, managed=False, context=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.fixture.staged.read_bytes(), before)
 
     def test_revoked_native_owner_cannot_remove_staging(self):
         self.fixture.fixture.configuration.update(lambda value: value['accounts'].pop('chat-a:100'))

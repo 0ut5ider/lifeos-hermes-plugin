@@ -139,7 +139,7 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
         publish(memory._publication_path(CACHE), content)
         after = _snapshot(memory, scope, connection, check_current)
         if any(after[key] != snapshot[key] for key in ('inputs', 'scope', 'root', 'retirement')):
-            raise MemoryConflict('Algorithm inputs change during summary publication')
+            raise MemoryUnavailable('Algorithm inputs change during summary publication and require recovery')
         check_current()
         return {'status': 'committed'}
     receipt = memory._operation(scope, 'algorithm-summary-' + uuid4().hex, payload, apply,

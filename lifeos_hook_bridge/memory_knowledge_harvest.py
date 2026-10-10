@@ -240,17 +240,27 @@ def run(memory, scope, *, source, dry_run, max_notes, request_id, source_session
         if _snapshot(memory) != snapshot:
             return {'status':'conflict', 'reason':'Knowledge sources change before publication'}
         for relative,text in writes.items():
+            if check_current is not None:
+                check_current()
             publish(_file(memory,relative), text.encode())
         for move in moves:
+            if check_current is not None:
+                check_current()
             connection.execute("UPDATE records SET path=?,status='superseded',revision=revision+1,updated=? WHERE path=? AND status='active'",
                                (move['path'],_now(),move['source']))
+            if check_current is not None:
+                check_current()
             connection.execute('UPDATE records SET path=? WHERE path=?', (move['path'],move['source']))
         for relative in deletes:
+            if check_current is not None:
+                check_current()
             _file(memory,relative).unlink()
         output = plan['stdout']
         projection = output+'\n'+output.replace('_',' ').replace('-',' ')
         if memory._filter_history(connection, scope, projection, datetime.now(timezone.utc).isoformat())['excluded']:
             output = 'Native Knowledge publication completes under current memory policy.\n'
+        if check_current is not None:
+            check_current()
         return {'status':'committed' if writes or deletes else 'unchanged', 'notes_staged':len(staged),
                 'notes_archived':len(moves), 'stdout':output}
     receipt = memory._operation(scope, request_id, payload, apply, identity_payload=identity)

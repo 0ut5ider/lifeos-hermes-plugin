@@ -45,12 +45,19 @@ class MemoryStagingTests(unittest.TestCase):
 
     def test_standalone_native_promotion_retains_original_content_and_indexes(self):
         original=self.staged.read_text()
-        result=self.native_call('promote',self.selector,managed=False)
+        result=self.native_call('promote',self.selector,managed=False,context=False)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertEqual(self.target.read_text(),original.replace('status: pending-review\n',''))
         self.assertFalse(self.staged.exists())
         self.assertIn('Synthetic staged note',(self.knowledge/'Research/_index.md').read_text())
         self.assertIn('Synthetic staged note',(self.knowledge/'_index.md').read_text())
+
+    def test_admitted_caller_cannot_promote_after_connector_loss(self):
+        before = self.staged.read_bytes()
+        result = self.native_call('promote', self.selector, managed=False, context=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.staged.read_bytes(), before)
+        self.assertFalse(self.target.exists())
 
     def test_reviewed_promotion_preserves_native_note_and_registers_project_reference(self):
         from lifeos_hook_bridge.memory_staging import preview, promote

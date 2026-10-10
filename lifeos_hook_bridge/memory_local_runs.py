@@ -85,10 +85,10 @@ def run(memory, scope, operation, arguments, *, check_current):
             publish(memory._publication_path(relative), value.encode())
         published = _snapshot(memory, scope, connection, run_id, check_current)
         if any(published[key] != snapshot[key] for key in ('scope', 'root', 'retirement')):
-            raise MemoryConflict('LocalIntelligence diagnostic authority changes during publication')
+            raise MemoryUnavailable('LocalIntelligence diagnostic authority changes during publication and requires recovery')
         expected = dict(snapshot['contents'], **contents)
         if published['contents'] != expected:
-            raise MemoryConflict('LocalIntelligence diagnostics change during publication')
+            raise MemoryUnavailable('LocalIntelligence diagnostics change during publication and require recovery')
         return {'status': 'committed'}
     receipt = memory._operation(scope, 'local-run-' + uuid4().hex, payload, apply,
         publication_digests={relative: hashlib.sha256(value.encode()).hexdigest() for relative, value in contents.items()})

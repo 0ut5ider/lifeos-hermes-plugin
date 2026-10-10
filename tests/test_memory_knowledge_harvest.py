@@ -82,7 +82,7 @@ class MemoryKnowledgeHarvestTests(unittest.TestCase):
         self.assertNotEqual(self.call().returncode,0)
 
     def test_standalone_mining_preserves_native_staging_and_state(self):
-        result=self.call(managed=False)
+        result=self.call(managed=False,context=False)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertIn('1 note(s) staged',result.stdout)
         self.assertFalse(self.queue.exists())
@@ -90,6 +90,14 @@ class MemoryKnowledgeHarvestTests(unittest.TestCase):
         state=json.loads(self.state.read_text())
         self.assertEqual(state['harvestedPaths'],['synthetic-manual-source'])
         self.assertEqual(state['totalHarvested'],0)
+
+    def test_admitted_caller_cannot_mine_after_connector_loss(self):
+        before = self.queue.read_bytes()
+        result = self.call(managed=False, context=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.queue.read_bytes(), before)
+        self.assertFalse(self.note.exists())
+        self.assertFalse(self.state.exists())
 
 
     def seed(self,domain='Research',slug='synthetic-seed',body='SyntheticStaleClaimMarker',quality=2,created='2000-01-01',metadata=''):

@@ -177,7 +177,7 @@ def edit(memory, scope, target, body, *, check_current):
             publish(memory._publication_path(name), text.encode())
         check_current()
         if not _matches(memory, admitted, changes):
-            raise MemoryConflict('Algorithm publication preserves later source edits')
+            raise MemoryUnavailable('Algorithm publication preserves later source edits and requires recovery')
         if target.endswith('/file'):
             name = next(iter(changes))
             message = 'fix(algorithm): save file\n\nThe owner saves ' + name + '.'
@@ -186,7 +186,7 @@ def edit(memory, scope, target, body, *, check_current):
         response['commit'] = memory._native('algorithm_edit_commit', paths=list(changes), message=message)
         check_current()
         if not _matches(memory, admitted, changes) or _retirement_digest(connection) != retired:
-            raise MemoryConflict('Algorithm commit preserves later source and authority changes')
+            raise MemoryUnavailable('Algorithm commit preserves later source and authority changes and requires recovery')
         if target.endswith('/file'):
             info = memory._publication_path(next(iter(changes))).stat()
             seconds, milliseconds = divmod(int(info.st_mtime_ns / 1000000), 1000)

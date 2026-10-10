@@ -174,13 +174,13 @@ def synthesis(memory, scope, operation, arguments, *, check_current):
             publish(memory._publication_path(relative), content)
         published_snapshot = _snapshot(memory, scope, connection, check_current)
         for key in snapshot.keys() - {'sources', 'plan'}:
-            if published_snapshot[key] != snapshot[key]: raise MemoryConflict('LocalIntelligence authority changes during publication')
+            if published_snapshot[key] != snapshot[key]: raise MemoryUnavailable('LocalIntelligence authority changes during publication and requires recovery')
         for key in snapshot['plan'].keys() - {'latest'}:
             if published_snapshot['plan'][key] != snapshot['plan'][key]:
-                raise MemoryConflict('LocalIntelligence inputs change during publication')
+                raise MemoryUnavailable('LocalIntelligence inputs change during publication and require recovery')
         untouched = lambda record: [row for row in record['sources'] if row[0] not in paths]
         if untouched(published_snapshot) != untouched(snapshot):
-            raise MemoryConflict('LocalIntelligence inputs change during publication')
+            raise MemoryUnavailable('LocalIntelligence inputs change during publication and require recovery')
         check_current()
         return {'status': 'committed'}
     receipt = memory._operation(scope, 'local-refresh-' + uuid4().hex, payload, apply,

@@ -173,8 +173,10 @@ def run(memory, scope, configuration, profile, *, recent, all, session, projects
                 if memory._filter_history(connection, scope, row['content'],
                         datetime.now(timezone.utc).isoformat(), reviewed=True)['excluded']:
                     raise MemoryUnavailable('Native session consolidation contains retired content')
+                check_current()
                 publish(path, row['content'].encode())
                 saved.append(row['file'])
+        check_current()
         return {'status':'committed' if saved else 'unchanged', 'files':saved,
                 'count':result['count'], 'sessions':len(snapshot['sessions'])}
 

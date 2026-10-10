@@ -6,6 +6,8 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sqlite3
+from contextlib import closing
 import unittest
 import test_memory_algorithm_summary as fixture
 from test_memory_native import OWNER
@@ -16,6 +18,33 @@ class MemoryAlgorithmSummaryEdgeTests(unittest.TestCase):
     call = fixture.MemoryAlgorithmSummaryTests.call
     prepare = fixture.MemoryAlgorithmSummaryTests.prepare
     value = fixture.MemoryAlgorithmSummaryTests.value
+
+    def test_source_change_after_cache_write_retains_recovery_and_later_source(self):
+        from lifeos_hook_bridge import memory_algorithm_summary as module
+        prepared = self.prepare()
+        original = module.publish
+        later = b'# Synthetic source edit after summary publication\n'
+        seen = []
+        def observed(path, content):
+            original(path, content)
+            if path == self.cache:
+                self.rules.write_bytes(later)
+                seen.append(path)
+        module.publish = observed
+        try:
+            result = self.call('algorithm_summary_publish', signature=prepared['signature'], value=self.value(prepared))
+        finally:
+            module.publish = original
+        self.assertFalse(result['ok'], result)
+        self.assertEqual(seen, [self.cache])
+        memory = self.owner.fixture.memory
+        self.assertTrue(memory.transaction.journal.exists())
+        with closing(sqlite3.connect(memory.database)) as connection:
+            receipt = json.loads(connection.execute("SELECT receipt FROM operations WHERE request_id LIKE 'algorithm-summary-%'").fetchone()[0])
+        self.assertEqual(receipt['status'], 'unknown')
+        with memory._transaction(): pass
+        self.assertFalse(self.cache.exists())
+        self.assertEqual(self.rules.read_bytes(), later)
 
     def test_full_source_bytes_and_inode_replacement_invalidate_native_plan(self):
         for mode in ('bytes', 'inode'):

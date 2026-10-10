@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from dataclasses import asdict
 import unittest
+import sqlite3
+from contextlib import closing
 import test_memory_local_refresh as fixture
 from lifeos_hook_bridge.memory_local_intelligence import PRIMARY, FALLBACK, HISTORY
 
@@ -49,6 +51,35 @@ class MemoryLocalRefreshPublicationTests(unittest.TestCase):
             self.assertEqual(json.loads(path.read_text()), value)
             self.assertEqual(path.stat().st_mode & 0o777, 0o600)
         self.assertFalse(result['summary']['latestSkipped'])
+
+    def test_source_change_after_digest_write_retains_recovery_and_later_identity(self):
+        from lifeos_hook_bridge import memory_transaction as module
+        prepared = self.prepare()
+        dated = self.dated(prepared)
+        original = module.publish
+        later = self.identity.read_bytes() + b'\nSynthetic later owner identity detail.\n'
+        seen = []
+        def observed(path, content):
+            original(path, content)
+            seen.append(path)
+            if path == dated:
+                self.identity.write_bytes(later)
+        module.publish = observed
+        try:
+            result = self.publish(prepared, self.digest())
+        finally:
+            module.publish = original
+        self.assertFalse(result['ok'], result)
+        self.assertIn(dated, seen)
+        memory = self.owner.fixture.memory
+        self.assertTrue(memory.transaction.journal.exists())
+        with closing(sqlite3.connect(memory.database)) as connection:
+            receipt = json.loads(connection.execute("SELECT receipt FROM operations WHERE request_id LIKE 'local-refresh-%'").fetchone()[0])
+        self.assertEqual(receipt['status'], 'unknown')
+        with memory._transaction(): pass
+        for path in (dated, self.root / PRIMARY, self.root / FALLBACK):
+            self.assertFalse(path.exists())
+        self.assertEqual(self.identity.read_bytes(), later)
 
     def test_empty_run_preserves_populated_native_latest_copies(self):
         for relative in (PRIMARY, FALLBACK):

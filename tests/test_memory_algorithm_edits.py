@@ -9,6 +9,8 @@ import os
 import sys
 import signal
 import time
+import sqlite3
+from contextlib import closing
 from lifeos_hook_bridge.memory_access import NativeMemory
 import httpx
 import test_memory_algorithm_jobs as fixture
@@ -256,6 +258,55 @@ class MemoryAlgorithmEditTests(unittest.TestCase):
             self.assertEqual(result.status_code,503,result.text)
         self.assertEqual(seen,['committed'])
         self.assertEqual(path.read_text(),later)
+
+    def test_source_conflict_after_doctrine_publication_retains_recovery(self):
+        for stage in ('publication', 'commit'):
+            with self.subTest(stage=stage):
+                directory = self.root / 'LIFEOS/ALGORITHM'
+                before = {name:(directory/name).read_bytes() for name in ('LATEST', 'changelog.md', 'v3.2.1.md')}
+                self.fixture.login()
+                self.fixture.client.get('/api/plugins/lifeos-hook-bridge/memory/pulse/state')
+                module = importlib.import_module('lifeos_memory_settings.memory_algorithm_edit')
+                memory_module = importlib.import_module('lifeos_memory_settings.memory_access')
+                original_publish = module.publish
+                original_native = memory_module.NativeMemory._native
+                later = b'Synthetic concurrent source edit after ' + stage.encode() + b'.\n'
+                seen = []
+                def observed_publish(path, data):
+                    original_publish(path, data)
+                    if stage == 'publication' and path == directory/'LATEST':
+                        (directory/'v3.2.1.md').write_bytes(later)
+                        seen.append(stage)
+                def observed_native(memory, action, **arguments):
+                    result = original_native(memory, action, **arguments)
+                    if stage == 'commit' and action == 'algorithm_edit_commit':
+                        (directory/'v3.2.1.md').write_bytes(later)
+                        seen.append(stage)
+                    return result
+                module.publish = observed_publish
+                memory_module.NativeMemory._native = observed_native
+                try:
+                    with httpx.Client(timeout=45) as client:
+                        self.login(client)
+                        response = client.post(self.native+'/api/algorithm-tab/doctrine', json={
+                            'content':'# The Algorithm 3.2.1\n\n'+'Synthetic requested next doctrine. '*30,
+                            'bump':'patch', 'note':'Synthetic next version.'})
+                finally:
+                    module.publish = original_publish
+                    memory_module.NativeMemory._native = original_native
+                self.assertEqual(response.status_code, 503, response.text)
+                self.assertEqual(seen, [stage])
+                memory = NativeMemory(self.root)
+                self.assertTrue(memory.transaction.journal.exists())
+                with closing(sqlite3.connect(memory.database)) as connection:
+                    receipt = json.loads(connection.execute("SELECT receipt FROM operations WHERE request_id LIKE 'algorithm-edit-%'").fetchone()[0])
+                self.assertEqual(receipt['status'], 'unknown')
+                with memory._transaction(): pass
+                self.assertFalse(memory.transaction.journal.exists())
+                self.assertFalse((directory/'v3.2.2.md').exists())
+                for name in ('LATEST', 'changelog.md'):
+                    self.assertEqual((directory/name).read_bytes(), before[name])
+                self.assertEqual((directory/'v3.2.1.md').read_bytes(), later)
 
     def test_git_environment_cannot_redirect_snapshot_or_owner_commits(self):
         path=self.seed()

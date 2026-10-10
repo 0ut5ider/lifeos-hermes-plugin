@@ -8,6 +8,8 @@ import subprocess
 import sys
 import threading
 import unittest
+import sqlite3
+from contextlib import closing
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import test_memory_manual_state as state_fixture
@@ -194,6 +196,40 @@ class MemoryConduitInsightTests(unittest.TestCase):
             {'date': self.date, 'initialize': initialize})
         self.assertTrue(result['ok'], result)
         return result
+
+    def test_event_change_after_insight_write_retains_recovery_and_later_events(self):
+        from lifeos_hook_bridge import memory_conduit_insight as module
+        prepared = self.prepare(initialize=True)
+        value = {'date':self.date, 'generatedAt':'2026-10-09T12:00:00Z', 'conduitVersion':'1.0.0',
+            'level':'low', 'model':'(none)', 'since':None, 'eventsConsidered':0, 'skipped':True,
+            'narrative':'No activity captured yet today.', 'contentTypes':[]}
+        later = (json.dumps({'ts':self.date+'T12:00:00Z', 'type':'app-focus', 'source':'synthetic',
+            'app':'Synthetic later application'}) + '\n').encode()
+        original = module.publish
+        seen = []
+        def observed(path, content):
+            original(path, content)
+            if path == self.insight:
+                self.events.parent.mkdir(parents=True, exist_ok=True)
+                self.events.write_bytes(later)
+                seen.append(path)
+        module.publish = observed
+        try:
+            result = MemoryService(self.fixture.configuration).native(self.fixture.context, 'conduit_publish',
+                {'date':self.date, 'initialize':True, 'signature':prepared['signature'], 'value':value, 'reuse':False})
+        finally:
+            module.publish = original
+        self.assertFalse(result['ok'], result)
+        self.assertEqual(seen, [self.insight])
+        memory = self.fixture.fixture.memory
+        self.assertTrue(memory.transaction.journal.exists())
+        with closing(sqlite3.connect(memory.database)) as connection:
+            receipt = json.loads(connection.execute("SELECT receipt FROM operations WHERE request_id LIKE 'conduit-insight-%'").fetchone()[0])
+        self.assertEqual(receipt['status'], 'unknown')
+        with memory._transaction(): pass
+        self.assertFalse(self.insight.exists())
+        self.assertFalse(self.config.exists())
+        self.assertEqual(self.events.read_bytes(), later)
 
     def check(self, prepared, initialize=False):
         return MemoryService(self.fixture.configuration).native(self.fixture.context, 'conduit_check',

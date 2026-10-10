@@ -89,6 +89,7 @@ def run(memory, scope, *, apply, auto, route, check_current):
         check_current()
         publication_paths(memory, scope, payload)
         for row in result['writes']:
+            check_current()
             publish(_target(memory, row['file']), row['content'].encode())
         log = _target(memory, LOG)
         previous = log.read_bytes() if log.exists() else b''
@@ -98,7 +99,9 @@ def run(memory, scope, *, apply, auto, route, check_current):
         content = previous + (json.dumps(entry) + '\n').encode()
         if len(content) > SOURCE_LIMIT:
             raise MemoryUnavailable('Proposal cleanup log exceeds its supported size')
+        check_current()
         publish(log, content)
+        check_current()
         return {'status':'committed', 'artifacts':len(result['writes'])}
 
     receipt = memory._operation(scope, 'proposal-gc-' + uuid4().hex, payload, commit)

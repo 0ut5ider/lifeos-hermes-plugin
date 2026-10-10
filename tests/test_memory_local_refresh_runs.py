@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from dataclasses import asdict
 import unittest
+import sqlite3
+from contextlib import closing
 from datetime import datetime, timezone
 import test_memory_local_refresh as fixture
 
@@ -32,6 +34,34 @@ class MemoryLocalRefreshRunTests(unittest.TestCase):
         self.assertTrue(self.finish(started, exit_code=1)['ok'])
         self.assertEqual(log.read_text(), 'Synthetic refresh summary\n\n[exit] code=1\n')
         self.assertEqual([file.stat().st_mode & 0o777 for file in (marker, log)], [0o600, 0o600])
+
+    def test_later_log_edit_during_start_retains_unknown_receipt_and_recovery(self):
+        from lifeos_hook_bridge import memory_transaction as module
+        from lifeos_hook_bridge.memory_access import MemoryUnavailable
+        original = module.publish
+        later = b'Synthetic later diagnostic owner edit.\n'
+        seen = []
+        def observed(path, content):
+            original(path, content)
+            if path.name.endswith('.log.started'):
+                path.with_suffix('').write_bytes(later)
+                seen.append(path)
+        module.publish = observed
+        try:
+            result = self.start()
+        finally:
+            module.publish = original
+        self.assertFalse(result['ok'], result)
+        self.assertEqual(len(seen), 1)
+        memory = self.owner.fixture.memory
+        self.assertTrue(memory.transaction.journal.exists())
+        with closing(sqlite3.connect(memory.database)) as connection:
+            receipt = json.loads(connection.execute("SELECT receipt FROM operations WHERE request_id LIKE 'local-run-%'").fetchone()[0])
+        self.assertEqual(receipt['status'], 'unknown')
+        with self.assertRaisesRegex(MemoryUnavailable, 'preserves a later artifact edit'):
+            with memory._transaction(): pass
+        self.assertEqual((self.directory / (self.run_id+'.log')).read_bytes(), later)
+        self.assertTrue(memory.transaction.journal.exists())
 
     def test_later_log_edits_and_revoked_writer_remain_intact(self):
         started = self.start()

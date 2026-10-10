@@ -22,6 +22,9 @@ Private-channel acceptance, Atlas graph initialization, final package checks, an
 - Admit bounded owner-job output through its four MiB byte limit. Preserve reviewer limits and complete retirement filtering.
 - Send complete Algorithm overview prompts through the shared inference function. Avoid Linux argument limits.
 - Complete native Content action responses and display HTTP failures. Verify actual browser owner refusal and restoration.
+- Recheck current owner authority between session learning writes, proposal cleanup writes, Knowledge record transitions, and queue deletion. Retain recovery after revocation.
+- Keep unknown receipts and recovery journals when Algorithm, Conduit insight, or LocalIntelligence publication detects a later change after writing files.
+- Record the conditional Hermes upgrade that can remove one of the 36 functional patches after complete qualification.
 
 The following changes also belong to this candidate:
 
