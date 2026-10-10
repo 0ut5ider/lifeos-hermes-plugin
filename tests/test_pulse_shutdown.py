@@ -16,8 +16,8 @@ SOURCE = Path(os.environ['LIFEOS_MEMORY_SOURCE'])
 
 class PulseShutdownTests(unittest.TestCase):
     def test_idle_native_daemon_exits_promptly_and_persists_state(self):
-        for observability in (False, True):
-            with self.subTest(observability=observability), tempfile.TemporaryDirectory() as directory:
+        for observability, assistant in ((False, False), (True, False), (False, True)):
+            with self.subTest(observability=observability, assistant=assistant), tempfile.TemporaryDirectory() as directory:
                 home = Path(directory)
                 root = home / '.claude'
                 pulse = root / 'LIFEOS/PULSE'
@@ -38,7 +38,8 @@ class PulseShutdownTests(unittest.TestCase):
                     listener.bind(('127.0.0.1', 0))
                     port = listener.getsockname()[1]
                 (pulse / 'PULSE.toml').write_text('port=' + str(port) + '\n[modules]\n'
-                    + ''.join(name + '=false\n' for name in json.loads(modules.stdout))
+                    + ''.join(name + '=' + str(assistant and name == 'da').lower() + '\n'
+                        for name in json.loads(modules.stdout))
                     + '[hooks]\nenabled=false\n[observability]\nenabled='
                     + str(observability).lower() + '\n')
                 environment = {key: os.environ[key] for key in ('PATH', 'LANG', 'TZ') if key in os.environ}
@@ -65,6 +66,9 @@ class PulseShutdownTests(unittest.TestCase):
                         elapsed = time.monotonic() - started
                         self.assertEqual(process.returncode, 0, output.read_text())
                         self.assertIn('LifeOS Pulse stopped', output.read_text())
+                        if assistant:
+                            self.assertFalse((pulse / 'Assistant/module.ts').exists())
+                            self.assertNotIn('Assistant module not available', output.read_text())
                         state = json.loads((pulse / 'state/state.json').read_text())
                         self.assertEqual(state['jobs'], {})
                         self.assertLess(elapsed, 3)
