@@ -6,7 +6,8 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
-No changes recorded.
+- Refuse `MEDIA:`, `[[audio_as_voice]]`, and `[[as_document]]` directives in the daily text morning operator before delivery.
+- Verify native goals, sparks, and next actions against actual attachment parsing. Deploy the tested operator correction on `.253`.
 
 ## 0.2.0 (2026-10-11)
 

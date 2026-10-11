@@ -1,0 +1,21 @@
+# Daily morning text transport correction
+
+Date: 2026-10-11. Adrian authorizes resolution of the high-priority PR8 review finding.
+
+The native morning renderer preserves a MEDIA directive in a goal, spark, or next action. Hermes interprets that narration as an attachment request. The current audience guard controls the private destination; it does not approve unrelated attachment contents. A synthetic mode-0600 file in the install-input layout reproduces the attachment admission. No real credential is read or uploaded by that probe.
+
+The correction adds an explicit ValueError before the send subprocess when narration contains `MEDIA:`, `[[audio_as_voice]]`, or `[[as_document]]`. It refuses the entire dispatch. It does not silently remove the directive or read the named file. The refusal survives Python optimization. The frozen plugin and native application files remain unchanged.
+
+The [regression](../../../tests/test_daily_morning_delivery.py) records external generation and send subprocess calls as component test doubles. It executes the actual operator validation and verifies that rejected narration never invokes the send command. Separate checks use the actual native renderer and Hermes media parser. They establish the trigger in goals, sparks, and next actions using synthetic files. These component checks are not a live Discord delivery replay.
+
+The [initial run](before.json) preserves ordinary narration but fails all ten directive subcases with `ValueError not raised`. The [corrected run](after.json) passes four tests and all subcases. The [optimized run](optimized.json) also passes. The [combined gate](combined.json) passes 40 local tests, including actual SDK delivery, audience changes, and grouped filesystem recovery. Resource warnings are treated as errors.
+
+The [development receipt](development-verification.json) verifies the corrected bytes against the retained certified renderer and Hermes parser on `.252`. Normal and optimized regressions pass without changing its active profile or sending Discord messages. The first development harness attempt lacks Bun on its non-login PATH. Selecting the installed Bun directory resolves that harness error; the product correction does not change.
+
+The [daily deployment receipt](daily-deployment.json) records source commit `fda445af`, the old and corrected hashes, and the rollback file. The operator is replaced atomically after confirming its prior hash, private mode, owner, and absence of an active morning process. The correction manifest and both operator versions remain in the guest's private release directory.
+
+The [installed verification](installed-verification.json) runs the same component regressions against a link to the exact installed daily file. It uses the actual installed renderer and parser. Normal and optimized cases pass. Dashboard, gateway, and Pulse remain active with zero restarts. The existing 07:00 command remains configured. Ownership remains enabled, and sharing remains disabled. Verification changes no personal data and sends no Discord message.
+
+The corrected hash is `2f66951818c626c0df57b90dc92d6e643bfdcd0fb27aa883abcb2ab2a09df4bf`. The previous hash is `a387aece9b5cd64626131b8495a48b7f356d82dfb5b2f1cb0d03b4b32abc779e`. The previous operator is retained only for reviewed rollback; restoring it restores the known attachment defect. The active schedule uses the same program path, so no service restart is required.
+
+The retained activated archive predates this correction. Before resuming that restored guest, apply the corrected operator and verify its hash. Future whole-guest backups include the installed operator and correction manifest. This work does not add an isolated restore result for the activated archive or claim the first scheduled 07:00 execution was observed.
