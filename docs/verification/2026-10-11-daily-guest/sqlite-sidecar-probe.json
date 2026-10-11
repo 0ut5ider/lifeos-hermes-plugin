@@ -1,0 +1,36 @@
+{
+  "source": "actual offline pct exec 103 probe",
+  "integrity": "ok",
+  "observations": [
+    {
+      "stage": "before",
+      "sha256": "07107aa24f1e6679f101704c3c93ae11309e5396a848d11b3b2e010f7e56cee7",
+      "sidecars": {
+        "-wal": false,
+        "-shm": false
+      }
+    },
+    {
+      "stage": "open",
+      "sha256": "07107aa24f1e6679f101704c3c93ae11309e5396a848d11b3b2e010f7e56cee7",
+      "sidecars": {
+        "-wal": true,
+        "-shm": true
+      }
+    },
+    {
+      "stage": "closed",
+      "sha256": "07107aa24f1e6679f101704c3c93ae11309e5396a848d11b3b2e010f7e56cee7",
+      "sidecars": {
+        "-wal": false,
+        "-shm": false
+      }
+    }
+  ],
+  "native_transaction_row_type": "sqlite3.Row",
+  "native_transaction_row_values": [
+    [
+      "ok"
+    ]
+  ]
+}

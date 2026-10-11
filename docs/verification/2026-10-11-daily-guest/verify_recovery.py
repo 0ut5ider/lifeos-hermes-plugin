@@ -59,7 +59,8 @@ if mode == 'later-edit':
     assert memory.transaction.journal.exists()
 else:
     with memory._transaction() as connection:
-        assert connection.execute('PRAGMA integrity_check').fetchall() == [('ok',)]
+        with closing(connection.execute('PRAGMA integrity_check')) as cursor:
+            assert [tuple(row) for row in cursor.fetchall()] == [('ok',)]
     assert not memory.transaction.journal.exists()
     assert {str(path): sha(path) for path in artifacts} == {str(path): originals[str(path)] for path in artifacts}
     with closing(sqlite3.connect(memory.database)) as connection:

@@ -21,6 +21,22 @@ if action == 'prepare':
     roots = [home / '.hermes', root.parent / '.config/LIFEOS',
         root.parent / '.local/state/lifeos', home / '.config/systemd/user', home / 'runtime/hermes/hermes_cli/web_dist']
     files, links, sqlite = {}, {}, {}
+    # Checkpoint stopped writers before recording bytes. Close cursors as well as connections.
+    for selected in roots:
+        for path in selected.rglob('*'):
+            if not path.is_file() or path.is_symlink():
+                continue
+            if selected == home / '.hermes' and {'installs', 'tools', 'plugins', '__pycache__'} & set(path.relative_to(selected).parts):
+                continue
+            with path.open('rb') as source:
+                header = source.read(16)
+            if header == b'SQLite format 3\x00':
+                with closing(sqlite3.connect(path)) as connection:
+                    with closing(connection.execute('PRAGMA wal_checkpoint(TRUNCATE)')) as cursor:
+                        assert cursor.fetchall()[0][0] == 0, str(path)
+                    with closing(connection.execute('PRAGMA integrity_check')) as cursor:
+                        assert cursor.fetchall() == [('ok',)], str(path)
+                sqlite[str(path)] = True
     for selected in roots:
         assert selected.exists(), selected
         for path in selected.rglob('*'):
@@ -34,10 +50,6 @@ if action == 'prepare':
                 links[str(path)] = os.readlink(path)
             elif path.is_file():
                 files[str(path)] = {'sha256': sha(path), 'mode': mode & 0o777, 'bytes': path.stat().st_size}
-                if path.read_bytes()[:16] == b'SQLite format 3\x00':
-                    with closing(sqlite3.connect(path)) as connection:
-                        assert connection.execute('PRAGMA integrity_check').fetchall() == [('ok',)], str(path)
-                    sqlite[str(path)] = True
     # Source settings, selection, manifests, and external Atlas are explicit coverage members.
     for path in (root / 'settings.json', root / 'LIFEOS/VERSION', home / '.local/bin/hermes'):
         files[str(path)] = {'sha256': sha(path), 'mode': path.stat().st_mode & 0o777, 'bytes': path.stat().st_size}
@@ -49,7 +61,20 @@ if action == 'prepare':
 else:
     assert action == 'verify'
     value = json.loads(destination.read_text())
+    volatile_sidecars = []
     for name, expected in value['files'].items():
+        if name.endswith(('-wal', '-shm')):
+            database = name[:-4]
+            wal = value['files'].get(database + '-wal')
+            main = value['files'].get(database)
+            # An integrity check can record empty WAL and shared-memory files in a manifest.
+            # Require an exact main database and an empty recorded WAL. Nonempty WAL remains mandatory.
+            if main and wal and wal['bytes'] == 0 and wal['sha256'] == hashlib.sha256(b'').hexdigest():
+                assert sha(Path(database)) == main['sha256'], database
+                restored_wal = Path(database + '-wal')
+                assert not restored_wal.exists() or restored_wal.stat().st_size == 0, database
+                volatile_sidecars.append(name)
+                continue
         if '/.config/systemd/user/' in name:
             # The recovery operator retains original definitions next to explicit service masks.
             retained = Path(name + '.before-recovery')
@@ -63,11 +88,13 @@ else:
         assert os.readlink(name) == target, name
     for name in value['sqlite_integrity']:
         with closing(sqlite3.connect(name)) as connection:
-            assert connection.execute('PRAGMA integrity_check').fetchall() == [('ok',)], name
+            with closing(connection.execute('PRAGMA integrity_check')) as cursor:
+                assert cursor.fetchall() == [('ok',)], name
     configuration = json.loads((home / '.hermes/lifeos-memory.json').read_text())
     assert not configuration['ownership_enabled'] and not configuration['sharing_enabled']
     (evidence / ('coverage-' + case + '-restored.json')).write_text(json.dumps({
-        'status': 'PASS', 'case': case, 'exact_files_verified': len(value['files']),
+        'status': 'PASS', 'case': case, 'exact_files_verified': len(value['files']) - len(volatile_sidecars),
+        'empty_wal_volatile_sidecars': volatile_sidecars,
         'symlinks_verified': len(value['symlinks']), 'sqlite_databases_verified': len(value['sqlite_integrity']),
         'external_atlas_covered': True, 'daily_ownership_enabled': False, 'sharing_enabled': False}, indent=2) + '\n')
 print(json.dumps({'action': action, 'case': case, 'files': len(value['files']),

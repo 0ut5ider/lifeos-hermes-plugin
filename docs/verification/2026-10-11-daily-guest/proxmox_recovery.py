@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
 
 os.umask(0o077)
@@ -11,13 +12,15 @@ here = Path('/root/lifeos-daily-install/recovery')
 here.mkdir(mode=0o700, exist_ok=True)
 python = '/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python'
 guest_evidence = '/home/lifeos-hermes/deployment/2026-10-11'
-progress = []
+start_index = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+assert start_index in (0, 1, 2)
+progress = json.loads((here / 'progress.json').read_text()) if start_index else []
 
 def run(args, label, *, input=None):
     started = time.monotonic()
     # Proxmox stages configuration for the mapped container root to read.
     result = subprocess.run(args, input=input, capture_output=True, text=True, timeout=1800,
-        umask=0o022 if args[0] == 'vzdump' else -1)
+        umask=0o022 if args[0] == 'vzdump' or args[:2] == ['pct', 'restore'] else -1)
     (here / (label + '.stdout')).write_text(result.stdout)
     (here / (label + '.stderr')).write_text(result.stderr)
     progress.append({'label': label, 'command': args, 'exit_code': result.returncode,
@@ -33,14 +36,20 @@ def guest(vmid, script, args, label):
         python, '-B', '/home/lifeos-hermes/install-input/' + script, *args], label)
 
 status = 'FAIL'
-receipts = []
+receipts = json.loads((here / 'receipts.json').read_text()) if start_index else []
+assert [row['case'] for row in receipts] == ['baseline', 'interrupted'][:start_index]
 try:
     run(['pct', 'config', '102'], 'daily-config')
     run(['pct', 'exec', '102', '--', 'runuser', '-u', 'lifeos-hermes', '--', 'env',
         'XDG_RUNTIME_DIR=/run/user/1000', 'DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus',
         'systemctl', '--user', 'stop', 'hermes-dashboard.service', 'com.lifeos.pulse.service',
         'hermes-gateway.service'], 'drain-daily-writers')
+    run(['pct', 'exec', '102', '--', 'runuser', '-u', 'lifeos-hermes', '--', 'env',
+        'XDG_RUNTIME_DIR=/run/user/1000', 'DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus',
+        'systemctl', '--user', 'disable', 'hermes-dashboard.service'], 'disable-daily-dashboard-restarts')
     for index, case in enumerate(('baseline', 'interrupted', 'later-edit')):
+        if index < start_index:
+            continue
         vmid = 103 + index
         retained = subprocess.run(['pct', 'exec', '102', '--', 'test', '-f',
             guest_evidence + '/recovery-fixtures/' + case + '/prepared.json'], capture_output=True)
