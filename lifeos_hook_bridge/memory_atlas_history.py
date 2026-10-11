@@ -147,7 +147,7 @@ def _read_file(memory, relative):
 def read(memory, scope, identifier, table, offset, *, check_current):
     _request(scope)
     archive_paths(identifier)
-    if table not in {'sync_run', 'lifecycle_event'} or type(offset) is not int or not 0 <= offset <= 2048:
+    if not isinstance(table, str) or table not in {'sync_run', 'lifecycle_event'} or type(offset) is not int or not 0 <= offset <= 2048:
         raise ValueError('Atlas history requires a declared table and bounded row offset')
     with memory._transaction() as connection:
         check_current()

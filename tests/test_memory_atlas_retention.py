@@ -129,7 +129,7 @@ class MemoryAtlasRetentionTests(unittest.TestCase):
         self.prepare_history()
         archive = self.archive(self.sync())
         arguments = {'archive_id': archive.name, 'table': 'sync_run', 'offset': 0}
-        for change in ({'archive_id': '../atlas.db'}, {'table': 'asset; DELETE FROM asset'}, {'offset': True}, {'offset': 2049}):
+        for change in ({'archive_id': '../atlas.db'}, {'table': 'asset; DELETE FROM asset'}, {'table': {}}, {'offset': True}, {'offset': 2049}):
             self.assertFalse(self.call('atlas_history', **(arguments | change))['ok'])
         (archive/'snapshot.json').write_bytes(b'{"synthetic":"later edit"}')
         self.assertFalse(self.call('atlas_history', **arguments)['ok'])
