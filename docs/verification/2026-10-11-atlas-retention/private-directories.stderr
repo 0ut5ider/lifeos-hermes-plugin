@@ -1,0 +1,30 @@
+test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication) ... ok
+test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference) ... ok
+test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits) ... ok
+test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery) ... ok
+test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events) ... ok
+test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group) ... ok
+test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads) ... ok
+test_empty_graph_reader_does_not_request_automatic_generation (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_empty_graph_reader_does_not_request_automatic_generation) ... ok
+test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts) ... ok
+test_private_planned_graph_is_refused_without_publishing_public_snapshot (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_private_planned_graph_is_refused_without_publishing_public_snapshot) ... ok
+test_retained_history_archives_before_projection_capacity_is_exhausted (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_retained_history_archives_before_projection_capacity_is_exhausted) ... ok
+test_run_table_archives_before_the_next_publication_exceeds_capacity (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_run_table_archives_before_the_next_publication_exceeds_capacity) ... FAIL
+test_success_reports_bounded_capacity_and_warning_without_source_text (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_success_reports_bounded_capacity_and_warning_without_source_text) ... ok
+test_empty_regeneration_initializes_graph_and_remains_idle (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_empty_regeneration_initializes_graph_and_remains_idle) ... ok
+test_owner_command_reports_capacity_refusal_without_inference (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_owner_command_reports_capacity_refusal_without_inference) ... ok
+test_regeneration_reconciles_changed_sources_before_actual_model_request (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request) ... ok
+
+======================================================================
+FAIL: test_run_table_archives_before_the_next_publication_exceeds_capacity (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_run_table_archives_before_the_next_publication_exceeds_capacity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_capacity.py", line 88, in test_run_table_archives_before_the_next_publication_exceeds_capacity
+    self.assertTrue(result['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Atlas capacity: graph projection fields 30726 exceed 10000'}
+
+----------------------------------------------------------------------
+Ran 16 tests in 94.812s
+
+FAILED (failures=1)

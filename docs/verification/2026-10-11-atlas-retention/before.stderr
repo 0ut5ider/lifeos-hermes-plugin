@@ -1,0 +1,94 @@
+test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication) ... FAIL
+test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference) ... ERROR
+test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits) ... ERROR
+test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery) ... FAIL
+test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events) ... ERROR
+test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group) ... FAIL
+test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads) ... ERROR
+
+======================================================================
+ERROR: test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 44, in test_archive_preserves_exact_inputs_and_every_observation_reference
+    archive = self.archive(result)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 35, in archive
+    identifier = result['history']['archive_id']
+                 ~~~~~~^^^^^^^^^^^
+KeyError: 'history'
+
+======================================================================
+ERROR: test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 96, in test_archive_reads_require_current_owner_and_preserve_later_archive_edits
+    archive = self.archive(self.sync())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 35, in archive
+    identifier = result['history']['archive_id']
+                 ~~~~~~^^^^^^^^^^^
+KeyError: 'history'
+
+======================================================================
+ERROR: test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 86, in test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events
+    archive = self.archive(self.sync())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 35, in archive
+    identifier = result['history']['archive_id']
+                 ~~~~~~^^^^^^^^^^^
+KeyError: 'history'
+
+======================================================================
+ERROR: test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 65, in test_repeated_retention_preserves_lifetime_counts_and_archive_reads
+    archive = self.archive(result)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 35, in archive
+    identifier = result['history']['archive_id']
+                 ~~~~~~^^^^^^^^^^^
+KeyError: 'history'
+
+======================================================================
+FAIL: test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 107, in test_archive_alias_refuses_without_live_publication
+    self.assertFalse(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 137, in test_later_archive_edit_blocks_group_recovery
+    self.assertFalse(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 116, in test_process_death_after_archive_publication_recovers_the_whole_group
+    self.assertEqual((result.returncode, result.stderr), (73, ''))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, '') != (73, '')
+
+First differing element 0:
+0
+73
+
+- (0, '')
+?  ^
+
++ (73, '')
+?  ^^
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 33.137s
+
+FAILED (failures=3, errors=4)

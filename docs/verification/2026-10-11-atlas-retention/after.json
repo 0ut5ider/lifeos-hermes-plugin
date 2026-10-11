@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-W",
+    "error::ResourceWarning",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_atlas_retention"
+  ],
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-atlas-20261010/daily-text-0.2.0-11577ed4/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/daily-text-0.2.0-11577ed4/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits-refresh/LifeOS/install"
+  },
+  "exit_code": 1,
+  "duration_seconds": 3.1880493779899552,
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_atlas.py": "767d597c2837f5cd452d06c1ef340b570560c2d797cd2626a107102ee1795836",
+    "lifeos_hook_bridge/memory_atlas_insight.py": "9a73481125ae69722fe3036bc80a7b95d2ab972a3b7b2b55eb88e31f39d23dc6",
+    "lifeos_hook_bridge/memory_atlas_sync.py": "1544454e81bd15f69ff301b429cecd0eb078b0500c53d52eb4af52511e94d488",
+    "lifeos_hook_bridge/memory_atlas_history.py": "67ba14cc1aed354dd8b6ead37bfd9a2cebd28e59a402e5dfe368a470a1ff787d",
+    "lifeos_hook_bridge/memory_access.py": "cd6855fde04d217844f38881e86dc5c8ea632a15545b35a9c7d23c8e26b8026b",
+    "lifeos_hook_bridge/memory_service.py": "bd3b0b15d1fff3afa231b9ccc75a97eda551eb5d7f834aece48acaad5a501f7a",
+    "tests/test_memory_atlas_retention.py": "9eb993c570aeeba808e6680b4152d44c0b3aea97aeed8fdb323a3d51e4f90e80",
+    "tests/memory_atlas_retention_process.py": "b9b49c2645606a8b29a5fbba18c984037b915ef776b8b0c343555afd3e55e7b6"
+  }
+}

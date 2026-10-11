@@ -1,0 +1,144 @@
+test_offline_group_restore_preserves_archives_and_owner_reads (test_memory_atlas_retention.MemoryAtlasArchiveRecoveryTests.test_offline_group_restore_preserves_archives_and_owner_reads) ... ok
+test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership (test_memory_atlas_retention.MemoryAtlasHistoryCommandTests.test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership) ... ok
+test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication) ... ok
+test_archive_history_pagination_keeps_complete_ordered_rows (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_history_pagination_keeps_complete_ordered_rows) ... ok
+test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference) ... ok
+test_archive_read_refuses_changed_bytes_and_arbitrary_paths (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_bytes_and_arbitrary_paths) ... ok
+test_archive_read_refuses_changed_provenance_manifest (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_provenance_manifest) ... ok
+test_archive_reads_require_current_owner (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner) ... ok
+test_authority_revocation_after_archive_stops_before_live_graph_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_authority_revocation_after_archive_stops_before_live_graph_publication) ... ok
+test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery) ... ok
+test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events) ... ok
+test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group) ... ok
+test_projection_pressure_archives_before_the_fixed_run_trigger (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_projection_pressure_archives_before_the_fixed_run_trigger) ... ok
+test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads) ... ok
+test_retention_preserves_native_maximum_collector_timestamp (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retention_preserves_native_maximum_collector_timestamp) ... ok
+test_retired_archive_text_is_withheld_without_erasing_the_archive (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retired_archive_text_is_withheld_without_erasing_the_archive) ... ok
+test_already_unadmitted_history_refuses_and_preserves_previous_graph (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_already_unadmitted_history_refuses_and_preserves_previous_graph) ... ok
+test_empty_graph_reader_does_not_request_automatic_generation (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_empty_graph_reader_does_not_request_automatic_generation) ... ok
+test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts) ... ok
+test_private_planned_graph_is_refused_without_publishing_public_snapshot (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_private_planned_graph_is_refused_without_publishing_public_snapshot) ... ok
+test_retained_history_archives_before_projection_capacity_is_exhausted (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_retained_history_archives_before_projection_capacity_is_exhausted) ... ok
+test_success_reports_bounded_capacity_and_warning_without_source_text (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_success_reports_bounded_capacity_and_warning_without_source_text) ... ok
+test_empty_regeneration_initializes_graph_and_remains_idle (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_empty_regeneration_initializes_graph_and_remains_idle) ... ok
+test_owner_command_reports_capacity_refusal_without_inference (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_owner_command_reports_capacity_refusal_without_inference) ... ok
+test_regeneration_reconciles_changed_sources_before_actual_model_request (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request) ... FAIL
+test_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) ... ok
+test_actual_owner_job_initializes_graph_without_inference (test_memory_atlas_sync.MemoryAtlasOwnerSyncTests.test_actual_owner_job_initializes_graph_without_inference) ... ok
+test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes (test_memory_atlas_sync.MemoryAtlasSyncTests.test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes) ... ok
+test_database_companions_and_aliases_refuse_without_replacing_files (test_memory_atlas_sync.MemoryAtlasSyncTests.test_database_companions_and_aliases_refuse_without_replacing_files) ... ok
+test_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph (test_memory_atlas_sync.MemoryAtlasSyncTests.test_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph) ... ok
+test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules) ... ok
+test_fresh_sync_uses_native_graph_and_snapshot (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_sync_uses_native_graph_and_snapshot) ... ok
+test_inherited_atlas_directory_cannot_redirect_planner_effects (test_memory_atlas_sync.MemoryAtlasSyncTests.test_inherited_atlas_directory_cannot_redirect_planner_effects) ... ok
+test_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) ... ok
+test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) ... ok
+test_repeat_sync_preserves_native_identity_and_incomplete_observations (test_memory_atlas_sync.MemoryAtlasSyncTests.test_repeat_sync_preserves_native_identity_and_incomplete_observations) ... ok
+test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) ... ok
+test_collector_links_invalid_encoding_and_connector_loss_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_collector_links_invalid_encoding_and_connector_loss_refuse) ... ok
+test_owner_collectors_preserve_native_assets_edges_and_absence (test_memory_atlas.MemoryAtlasCollectorTests.test_owner_collectors_preserve_native_assets_edges_and_absence) ... ok
+test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) ... ok
+test_unbound_collectors_cannot_disclose_sources (test_memory_atlas.MemoryAtlasCollectorTests.test_unbound_collectors_cannot_disclose_sources) ... ok
+test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) ... ok
+test_admitted_insights_preserve_native_metrics_and_current_narrative (test_memory_atlas.MemoryAtlasTests.test_admitted_insights_preserve_native_metrics_and_current_narrative) ... ok
+test_anonymous_cannot_read_snapshot_or_start_insights (test_memory_atlas.MemoryAtlasTests.test_anonymous_cannot_read_snapshot_or_start_insights) ... ok
+test_cached_snapshot_cannot_survive_private_replacement_or_retirement (test_memory_atlas.MemoryAtlasTests.test_cached_snapshot_cannot_survive_private_replacement_or_retirement) ... ok
+test_current_collector_source_exclusion_withholds_prior_snapshot (test_memory_atlas.MemoryAtlasTests.test_current_collector_source_exclusion_withholds_prior_snapshot) ... ok
+test_custom_snapshot_environment_cannot_read_another_owner_source (test_memory_atlas.MemoryAtlasTests.test_custom_snapshot_environment_cannot_read_another_owner_source) ... ok
+test_exact_owner_review_restores_safe_old_snapshot_and_graph (test_memory_atlas.MemoryAtlasTests.test_exact_owner_review_restores_safe_old_snapshot_and_graph) ... ok
+test_fixed_methods_selectors_and_unknown_routes_refuse (test_memory_atlas.MemoryAtlasTests.test_fixed_methods_selectors_and_unknown_routes_refuse) ... ok
+test_graph_row_limit_refuses_without_returning_truncated_metrics (test_memory_atlas.MemoryAtlasTests.test_graph_row_limit_refuses_without_returning_truncated_metrics) ... ok
+test_owner_snapshot_fields_and_missing_source_match_native (test_memory_atlas.MemoryAtlasTests.test_owner_snapshot_fields_and_missing_source_match_native) ... ok
+test_private_graph_and_cache_refuse_counts_and_narrative (test_memory_atlas.MemoryAtlasTests.test_private_graph_and_cache_refuse_counts_and_narrative) ... ok
+test_revocation_connector_loss_and_origin_cannot_reuse_cache (test_memory_atlas.MemoryAtlasTests.test_revocation_connector_loss_and_origin_cannot_reuse_cache) ... ok
+test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) ... ok
+test_absent_graph_prepare_has_no_generated_cache_or_model_effect (test_memory_atlas_insight.MemoryAtlasInsightTests.test_absent_graph_prepare_has_no_generated_cache_or_model_effect) ... ok
+test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) ... ok
+test_current_graph_prepare_and_fixed_private_publication (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_graph_prepare_and_fixed_private_publication) ... ok
+test_current_revision_check_refuses_changed_graph_and_later_cache (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_revision_check_refuses_changed_graph_and_later_cache) ... ok
+test_graph_metadata_changes_invalidate_prepared_sources (test_memory_atlas_insight.MemoryAtlasInsightTests.test_graph_metadata_changes_invalidate_prepared_sources) ... ok
+test_private_collector_sources_refuse_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_private_collector_sources_refuse_generation) ... ok
+test_read_only_and_revoked_owners_cannot_prepare_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_read_only_and_revoked_owners_cannot_prepare_generation) ... ok
+test_wrong_metadata_and_private_generated_text_cannot_publish (test_memory_atlas_insight.MemoryAtlasInsightTests.test_wrong_metadata_and_private_generated_text_cannot_publish) ... ok
+test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse) ... ok
+test_generated_retired_text_cannot_enter_the_private_cache (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_retired_text_cannot_enter_the_private_cache) ... ok
+test_graph_inode_replacement_invalidates_prepared_generation (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_graph_inode_replacement_invalidates_prepared_generation) ... ok
+test_linked_or_invalid_cache_cannot_prepare_or_replace_prior_data (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_linked_or_invalid_cache_cannot_prepare_or_replace_prior_data) ... ok
+test_offline_restore_preserves_graph_sources_cache_and_current_views (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_offline_restore_preserves_graph_sources_cache_and_current_views) ... ok
+test_restored_interrupted_group_recovers_exact_prior_artifacts (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_restored_interrupted_group_recovers_exact_prior_artifacts) ... ok
+test_restored_later_edit_blocks_every_member_of_recovery (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_restored_later_edit_blocks_every_member_of_recovery) ... ok
+test_anonymous_job_preparation_requires_real_authentication (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_anonymous_job_preparation_requires_real_authentication) ... ok
+test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation) ... ok
+test_owner_receives_only_a_current_configuration_restriction (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_owner_receives_only_a_current_configuration_restriction) ... ok
+test_preparation_refuses_caller_arguments (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_preparation_refuses_caller_arguments) ... ok
+test_actual_selected_profile_command_initializes_empty_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_initializes_empty_graph_without_inference) ... ok
+test_absent_graph_retains_exact_native_unavailable_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_absent_graph_retains_exact_native_unavailable_response) ... ok
+test_anonymous_regeneration_preserves_current_native_cache (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_anonymous_regeneration_preserves_current_native_cache) ... ok
+test_authenticated_native_regeneration_button_starts_selected_owner_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_authenticated_native_regeneration_button_starts_selected_owner_job) ... ok
+test_current_cache_does_not_start_a_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_cache_does_not_start_a_job) ... ok
+test_current_stale_insights_start_native_owner_regeneration (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_stale_insights_start_native_owner_regeneration) ... ok
+test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children) ... FAIL
+test_owner_revocation_during_automatic_preparation_withholds_prior_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_owner_revocation_during_automatic_preparation_withholds_prior_response) ... ok
+test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children) ... FAIL
+test_unbound_local_writer_keeps_stale_reader_without_generation (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_unbound_local_writer_keeps_stale_reader_without_generation) ... ok
+test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant) ... ok
+test_actual_parser_refuses_arbitrary_job_before_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_arbitrary_job_before_native_writes) ... ok
+test_actual_parser_refuses_disabled_ownership_without_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_disabled_ownership_without_native_writes) ... ok
+test_actual_parser_runs_morning_brief_without_a_model_call (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_runs_morning_brief_without_a_model_call) ... ok
+test_changed_expected_journal_hash_refuses_without_restoring_any_file (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_changed_expected_journal_hash_refuses_without_restoring_any_file) ... ok
+test_committed_original_operation_keeps_publications_and_removes_its_journal (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_committed_original_operation_keeps_publications_and_removes_its_journal) ... ok
+test_expected_deleted_publication_restores_original_and_absent_targets (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_expected_deleted_publication_restores_original_and_absent_targets) ... ok
+test_expected_publications_restore_only_original_or_owned_artifact_bytes (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_expected_publications_restore_only_original_or_owned_artifact_bytes) ... ok
+test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal) ... ok
+test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect) ... ok
+test_later_edit_refuses_before_any_member_of_the_group_is_restored (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_later_edit_refuses_before_any_member_of_the_group_is_restored) ... ok
+test_later_recreation_of_expected_deleted_file_blocks_all_recovery (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_later_recreation_of_expected_deleted_file_blocks_all_recovery) ... ok
+test_unknown_original_operation_restores_existing_and_absent_targets (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_unknown_original_operation_restores_existing_and_absent_targets) ... ok
+test_capability_requires_record_and_exact_native_bytes (test_footprint_contracts.FootprintContractsTests.test_capability_requires_record_and_exact_native_bytes) ... ok
+test_changed_native_installation_blocks_task_creation (test_footprint_contracts.FootprintContractsTests.test_changed_native_installation_blocks_task_creation) ... ok
+test_commands_register_before_lifeos_is_installed (test_footprint_contracts.FootprintContractsTests.test_commands_register_before_lifeos_is_installed) ... ok
+test_identical_top_routes_choose_fable_and_unknown_effort_stays_unknown (test_footprint_contracts.FootprintContractsTests.test_identical_top_routes_choose_fable_and_unknown_effort_stays_unknown) ... ok
+test_observation_binds_provider_model_and_effort (test_footprint_contracts.FootprintContractsTests.test_observation_binds_provider_model_and_effort) ... ok
+test_observation_skips_sidechains_and_reclassifies_after_configuration_changes (test_footprint_contracts.FootprintContractsTests.test_observation_skips_sidechains_and_reclassifies_after_configuration_changes) ... ok
+test_project_native_task_registration_requires_verified_capability (test_footprint_contracts.FootprintContractsTests.test_project_native_task_registration_requires_verified_capability) ... ok
+test_plugin_loads_before_lifeos_installation (test_plugin_lifecycle.PluginLifecycleTests.test_plugin_loads_before_lifeos_installation) ... ok
+test_stock_hermes_registers_only_supported_hooks (test_plugin_lifecycle.PluginLifecycleTests.test_stock_hermes_registers_only_supported_hooks) ... ok
+test_unload_stops_config_watcher (test_plugin_lifecycle.PluginLifecycleTests.test_unload_stops_config_watcher) ... ok
+
+======================================================================
+FAIL: test_regeneration_reconciles_changed_sources_before_actual_model_request (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention-final/tests/test_memory_atlas_capacity.py", line 182, in test_regeneration_reconciles_changed_sources_before_actual_model_request
+    self.assertTrue(cache.exists(),receipt)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'status': 'completed', 'job': 'atlas-insights', 'output': '{"ok":true,"runs":[{"collector":"gear","runId":3,"swept":true},{"collector":"projects","runId":4,"swept":false}],"capacity":{"graph_fields":{"used":98,"limit":10000},"graph_projection_bytes":{"used":4001,"limit":3145728},"tables":{"asset":{"used":1,"limit":2048},"edge":{"used":0,"limit":2048},"source_observation":{"used":1,"limit":2048},"edge_observation":{"used":0,"limit":2048},"lifecycle_event":{"used":0,"limit":2048},"sync_run":{"used":4,"limit":2048}},"database_bytes":{"used":49152,"limit":2097152},"snapshot_bytes":{"used":910,"limit":262144},"snapshot_fields":{"used":58,"limit":10000},"snapshot_projection_bytes":{"used":2472,"limit":3145728},"warnings":[]},"history":{"archive_id":null,"removed":{"sync_run":0,"lifecycle_event":0},"run_trigger":64,"run_retain":32,"event_trigger":128,"event_retain":64,"capacity_compacted":false}}\n[atlas] inference unavailable\n{"available":false,"error":"Atlas inference is unavailable"}\n'}
+
+======================================================================
+FAIL: test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention-final/tests/test_memory_atlas_jobs.py", line 200, in test_native_pulse_shutdown_ends_actual_atlas_inference_children
+    self.lifetime(daemon=True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention-final/tests/test_memory_atlas_jobs.py", line 176, in lifetime
+    self.assertTrue(received.wait(20), 'The actual Atlas child does not reach inference')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The actual Atlas child does not reach inference
+
+======================================================================
+FAIL: test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention-final/tests/test_memory_atlas_jobs.py", line 197, in test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children
+    self.lifetime(daemon=False)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention-final/tests/test_memory_atlas_jobs.py", line 176, in lifetime
+    self.assertTrue(received.wait(20), 'The actual Atlas child does not reach inference')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The actual Atlas child does not reach inference
+
+----------------------------------------------------------------------
+Ran 106 tests in 365.023s
+
+FAILED (failures=3)

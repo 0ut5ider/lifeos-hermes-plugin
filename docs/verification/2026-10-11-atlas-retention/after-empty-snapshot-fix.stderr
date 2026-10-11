@@ -1,0 +1,85 @@
+test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication) ... ok
+test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference) ... FAIL
+test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits) ... FAIL
+test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery) ... FAIL
+test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events) ... FAIL
+test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group) ... FAIL
+test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads) ... FAIL
+
+======================================================================
+FAIL: test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 44, in test_archive_preserves_exact_inputs_and_every_observation_reference
+    archive = self.archive(result)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 34, in archive
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Atlas synchronization needs recovery or a current retry'}
+
+======================================================================
+FAIL: test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 96, in test_archive_reads_require_current_owner_and_preserve_later_archive_edits
+    archive = self.archive(self.sync())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 34, in archive
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Atlas synchronization needs recovery or a current retry'}
+
+======================================================================
+FAIL: test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 140, in test_later_archive_edit_blocks_group_recovery
+    self.assertEqual(len(modified), 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 86, in test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events
+    archive = self.archive(self.sync())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 34, in archive
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Atlas synchronization needs recovery or a current retry'}
+
+======================================================================
+FAIL: test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 116, in test_process_death_after_archive_publication_recovers_the_whole_group
+    self.assertEqual((result.returncode, result.stderr), (73, ''))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, '') != (73, '')
+
+First differing element 0:
+0
+73
+
+- (0, '')
+?  ^
+
++ (73, '')
+?  ^^
+
+
+======================================================================
+FAIL: test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 65, in test_repeated_retention_preserves_lifetime_counts_and_archive_reads
+    archive = self.archive(result)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 34, in archive
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Atlas synchronization needs recovery or a current retry'}
+
+----------------------------------------------------------------------
+Ran 7 tests in 26.473s
+
+FAILED (failures=6)

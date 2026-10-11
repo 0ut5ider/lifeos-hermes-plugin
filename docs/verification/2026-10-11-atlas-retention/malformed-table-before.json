@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-W",
+    "error::ResourceWarning",
+    "-m",
+    "unittest",
+    "-v",
+    "test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_bytes_and_arbitrary_paths"
+  ],
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-atlas-20261010/daily-text-0.2.0-11577ed4/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/daily-text-0.2.0-11577ed4/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits-refresh/LifeOS/install",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-atlas-20261010/native-limits-refresh/LifeOS/install/hooks/TaskGovernance.hook.ts"
+  },
+  "exit_code": 1,
+  "duration_seconds": 5.076375946984626,
+  "source_hashes": {
+    "lifeos_hook_bridge/memory_atlas.py": "767d597c2837f5cd452d06c1ef340b570560c2d797cd2626a107102ee1795836",
+    "lifeos_hook_bridge/memory_atlas_insight.py": "9a73481125ae69722fe3036bc80a7b95d2ab972a3b7b2b55eb88e31f39d23dc6",
+    "lifeos_hook_bridge/memory_atlas_sync.py": "04401edfd5b5704fcbfd5257051a52bd454bd5b024dcbca9536af509105ed573",
+    "lifeos_hook_bridge/memory_atlas_history.py": "9775e7ca65979a68daa051a8a819ba19fbcbd76e1928be03c6d0d51824795a77",
+    "lifeos_hook_bridge/memory_access.py": "cd6855fde04d217844f38881e86dc5c8ea632a15545b35a9c7d23c8e26b8026b",
+    "lifeos_hook_bridge/memory_service.py": "bd3b0b15d1fff3afa231b9ccc75a97eda551eb5d7f834aece48acaad5a501f7a",
+    "lifeos_hook_bridge/cli.py": "dcaabd4c08030abef82eb26d0f1fc7775f5fa9adf6d92b1bfecb8f997610e563",
+    "tests/test_memory_atlas_retention.py": "e47d3030f4e9ee4f6e8b3588c79b5667358b16746e711ee80b7f63ebb633260e",
+    "tests/memory_atlas_retention_process.py": "690adf48ba398d5827d2063c4a7bcbabadee2ea8d087ffbadd44f0152d49d85b"
+  },
+  "source_hashes_unchanged": true
+}

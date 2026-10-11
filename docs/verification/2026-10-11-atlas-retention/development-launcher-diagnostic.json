@@ -1,0 +1,14 @@
+{
+  "before_mode": "0600",
+  "after_mode": "0700",
+  "before_discovery": null,
+  "after_discovery": "/home/lifeos-hermes/development/2026-10-11-atlas-retention-verified/lifeos_hook_bridge/bin/claude",
+  "before_direct_execution": {
+    "exit_code": 1,
+    "code": "EACCES",
+    "error": "permission denied, posix_spawn"
+  },
+  "probe": "Bun.which with an exact launcher directory; direct Bun.spawn under lifeos-hermes",
+  "cause": "The staging operator removes executable permissions from the launcher.",
+  "change": "The staging operator preserves executable intent and verifies file modes."
+}
