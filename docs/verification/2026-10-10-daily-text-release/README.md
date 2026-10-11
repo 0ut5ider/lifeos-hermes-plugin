@@ -52,7 +52,13 @@ Runtime inspection distinguishes generated output from sealed program bytes. Nat
 
 ## Remaining release gates
 
-The fresh-default and job-admission corrections must merge before certifying the final merged package. The [prepared pull request text](pull-request.md) describes the reviewed branch scope and validation. Documentation-only commits can follow the tested code head without changing program bytes. Any code change requires renewed validation of its affected checks.
+## Independent PR7 review
+
+The [independent review](../../agents/2026-10-10-pr7-daily-release-review/pr7-daily-release-review.md) finds no blocking product defect. It verifies data isolation, retained templates, timeout bounds, current authority, source identity, and release provenance. Its 66-test repetition exposes ten pre-existing warnings from worker-test subprocess pipes.
+
+The primary repeats that warning result and changes only worker-test process handling. The tests use `communicate` to drain and close captured output. The [follow-up gate](../2026-10-10-pr7-review-followup/README.md) explicitly rejects warning and ignored-exception lines. It also repeats the review's package and template audit and reproduces the unchanged release certificate. The earlier warning output stays retained. It must not be described as a clean-output result.
+
+The fresh-default and job-admission corrections must merge before certifying the final merged package. The [prepared pull request text](pull-request.md) describes the reviewed branch scope and validation. Documentation and test-harness-only commits follow the tested code head without changing plugin or native program bytes. The sealed source archive retains its earlier test harness. Follow-up validation records the corrected worker test separately. Any product code change requires renewed validation of its affected checks.
 
 Adrian has not authorized daily VM creation in this step. The next deployment uses a separate guest and fresh data. It requires a coherent off-server whole-guest restore that includes external Atlas state, sources, cache, governance receipts, and journals. This profile reconstruction test does not complete that gate. The [daily deployment guide](../../deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) defines the required restore cases.
 

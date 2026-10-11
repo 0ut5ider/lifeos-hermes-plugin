@@ -24,9 +24,15 @@ The native controls use Python 3.13.15 because their dependency versions use dep
 
 The bundle retains 11 Hermes patches and 25 LifeOS patches. The live development profile and private model routes remain unchanged.
 
+## Independent review
+
+The independent reviewer reports no blocking product finding. It verifies source identity, current authority, data preservation, and release evidence.
+
+The review finds ten pre-existing warnings from unclosed worker-test output pipes. The tests now use `communicate` to collect output and close both pipes. The primary repeats all 66 focused review tests. All tests pass without warnings, ignored exceptions, or skipped cases. The follow-up runner explicitly rejects finalization warnings. The primary also repeats the template audit and reproduces the release certificate.
+
 ## Release limits
 
-The release certificate records candidate `11577ed4873a0b6186a1dfa13aa44f893254cb99`. Documentation and evidence commits follow that code head. The sealed artifacts stay unchanged.
+The release certificate records candidate `11577ed4873a0b6186a1dfa13aa44f893254cb99`. Documentation, evidence, and a worker-test pipe correction follow that code head. The correction changes no plugin or native program bytes. The sealed artifacts stay unchanged.
 
 After merge, the operator must certify equivalent merged program bytes. The daily virtual machine, off-server whole-guest restore, private Discord channel, bot cutover, and memory activation remain required.
 

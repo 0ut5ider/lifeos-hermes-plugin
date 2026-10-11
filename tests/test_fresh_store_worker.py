@@ -48,7 +48,8 @@ class FreshStoreWorkerTests(FreshStoreStatusTests):
 
     def test_failed_preparation_is_reported_with_its_names_and_a_reason(self):
         process = self.start(self.fixture.fixture.home / 'missing-candidate')
-        self.assertNotEqual(process.wait(timeout=60), 0)
+        stdout, stderr = process.communicate(timeout=60)
+        self.assertNotEqual(process.returncode, 0, stdout + stderr)
         self.assertEqual(self.row(), {'identifier': 'a' * 32, 'state': 'failed',
                                       'names': {'principal': 'Adrian', 'assistant': 'Cerebo'},
                                       'reason': 'Fresh store preparation requires a verified native candidate'})
@@ -57,7 +58,8 @@ class FreshStoreWorkerTests(FreshStoreStatusTests):
         for identifier, principal in (('a' * 32, '<script>'), ('../outside', 'Adrian')):
             with self.subTest(identifier=identifier):
                 process = self.start(self.fixture.fixture.home / 'missing-candidate', identifier, principal)
-                self.assertNotEqual(process.wait(timeout=60), 0)
+                stdout, stderr = process.communicate(timeout=60)
+                self.assertNotEqual(process.returncode, 0, stdout + stderr)
                 self.assertEqual(self.status()['stores'], [])
 
     def test_removal_deletes_an_interrupted_or_failed_store_and_keeps_others(self):
@@ -85,7 +87,8 @@ class FreshStoreWorkerTests(FreshStoreStatusTests):
     @unittest.skipUnless(CANDIDATE and shutil.which('bun'), 'The complete native candidate and Bun are required')
     def test_detached_preparation_survives_its_launcher_and_reaches_review(self):
         process = self.start(CANDIDATE)
-        self.assertEqual(process.wait(timeout=900), 0, process.stderr.read())
+        stdout, stderr = process.communicate(timeout=900)
+        self.assertEqual(process.returncode, 0, stdout + stderr)
         row = self.row()
         self.assertEqual((row['state'], row['names'], row['active_facts']),
                          ('review', {'principal': 'Adrian', 'assistant': 'Cerebo'}, 0))
@@ -104,7 +107,7 @@ class FreshStoreWorkerTests(FreshStoreStatusTests):
                 os.kill(pid, signal.SIGKILL)
             except ProcessLookupError:
                 pass
-        process.wait(timeout=30)
+        process.communicate(timeout=30)
         self.assertEqual(self.row()['state'], 'interrupted')
         self.operation().remove('a' * 32, account='dashboard:owner')
         self.assertEqual(self.status()['stores'], [])
