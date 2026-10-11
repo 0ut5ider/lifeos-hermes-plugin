@@ -8,7 +8,7 @@ Adrian authorizes a separate daily VM or container. The operator provisions unpr
 
 The [daily guest verification](verification/2026-10-11-daily-guest/README.md) completes all three actual off-server backup and restore cases. Baseline recovery preserves the complete state. Interrupted publication recovers the exact prior Atlas group. A later edit prevents replacement and preserves the complete group and journal. The enabled backup job retains seven daily, four weekly, and three monthly backups on PBS-01. It uses stop mode at 01:00 in the Proxmox host timezone.
 
-The separate Cerebo bot connects in private channel `#cerebo`. Current audience checks and exact inbound owner acceptance pass. Governed memory ownership and Pulse are active. Five owner jobs and authenticated Pulse routes pass. A stale-policy test refuses delivery, and the actual morning brief reaches Discord. Cross-session Discord memory acceptance remains open. `.252` remains the development guest and runs Shiny Hermes Bot.
+The separate Cerebo bot connects in private channel `#cerebo`. Current audience checks and exact inbound owner acceptance pass. Governed memory ownership and Pulse are active. Five owner jobs and authenticated Pulse routes pass. A stale-policy test refuses delivery, and the actual morning brief reaches Discord. A protected current backup includes the activated setup. Services and authenticated memory routes pass after its cold restart. This newer archive has not received another isolated restore. Cross-session Discord memory acceptance remains open. `.252` remains the development guest and runs Shiny Hermes Bot.
 
 ## Latest combined acceptance (October 10)
 
