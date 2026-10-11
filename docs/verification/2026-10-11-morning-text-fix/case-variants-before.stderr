@@ -1,0 +1,58 @@
+test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) ... 
+  test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='media:') ... FAIL
+  test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='MeDiA:') ... FAIL
+  test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='MEDİA:') ... FAIL
+  test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='MEDıA:') ... FAIL
+
+======================================================================
+FAIL: test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='media:')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 132, in test_case_variants_accepted_by_the_parser_refuse_before_send
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 82, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='MeDiA:')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 132, in test_case_variants_accepted_by_the_parser_refuse_before_send
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 82, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='MEDİA:')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 132, in test_case_variants_accepted_by_the_parser_refuse_before_send
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 82, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) (marker='MEDıA:')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 132, in test_case_variants_accepted_by_the_parser_refuse_before_send
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 82, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.155s
+
+FAILED (failures=4)
