@@ -1,0 +1,120 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_stop_clarify_waiters.py"
+      ],
+      "exit_code": 0,
+      "stdout": "....                                                                     [100%]\n4 passed in 5.45s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_clarify_cancellation_outcome.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".......                                                                  [100%]\n7 passed in 3.36s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_clarify_delivery_fallback.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".......                                                                  [100%]\n7 passed in 5.69s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/tools/test_clarify_gateway.py"
+      ],
+      "exit_code": 0,
+      "stdout": "........................                                                 [100%]\n24 passed in 3.40s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/tools/test_clarify_tool.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".......................................                                  [100%]\n39 passed in 2.81s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-c",
+        "import discord, discord.ext.commands; import pytest, sys; sys.exit(pytest.main(sys.argv[1:]))",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_discord_guild_channel_only.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".........                                                         [100%]\n9 passed, 7 subtests passed in 1.62s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-c",
+        "import discord, discord.ext.commands; import pytest, sys; sys.exit(pytest.main(sys.argv[1:]))",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_discord_command_identity.py"
+      ],
+      "exit_code": 1,
+      "stdout": "FFFFF                                                                    [100%]\n=================================== FAILURES ===================================\n_ DiscordCommandIdentityTests.test_description_and_settings_change_both_reach_the_api _\n\nself = <tests.gateway.test_discord_command_identity.DiscordCommandIdentityTests testMethod=test_description_and_settings_change_both_reach_the_api>\n\n    async def asyncSetUp(self):\n>       self.bot = commands.Bot(command_prefix=\"!\", intents=discord.Intents.none(), application_id=999)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/gateway/test_discord_command_identity.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/bot.py:214: in __init__\n    self.help_command = DefaultHelpCommand()\n                        ^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:1087: in __init__\n    super().__init__(**options)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:402: in __init__\n    self._command_impl = _HelpCommandImpl(self, **self.command_attrs)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:254: in __init__\n    super().__init__(inject.command_callback, *args, **kwargs)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/core.py:430: in __init__\n    if not asyncio.iscoroutinefunction(func):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib64/python3.14/asyncio/coroutines.py:23: in iscoroutinefunction\n    warnings._deprecated(\"asyncio.iscoroutinefunction\",\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'asyncio.iscoroutinefunction'\nmessage = '{name!r} is deprecated and slated for removal in Python {remove}; use inspect.iscoroutinefunction() instead'\nremove = (3, 16)\n_version = sys.version_info(major=3, minor=14, micro=8, releaselevel='final', serial=0)\n\n    def _deprecated(name, message=_DEPRECATED_MSG, *, remove, _version=sys.version_info):\n        \"\"\"Warn that *name* is deprecated or should be removed.\n    \n        RuntimeError is raised if *remove* specifies a major/minor tuple older than\n        the current Python version or the same version but past the alpha.\n    \n        The *message* argument is formatted with *name* and *remove* as a Python\n        version tuple (e.g. (3, 11)).\n    \n        \"\"\"\n        remove_formatted = f\"{remove[0]}.{remove[1]}\"\n        if (_version[:2] > remove) or (_version[:2] == remove and _version[3] != \"alpha\"):\n            msg = f\"{name!r} was slated for removal after Python {remove_formatted} alpha\"\n            raise RuntimeError(msg)\n        else:\n            msg = message.format(name=name, remove=remove_formatted)\n>           _wm.warn(msg, DeprecationWarning, stacklevel=3)\nE           DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n\n/usr/lib64/python3.14/_py_warnings.py:833: DeprecationWarning\n------------------------------ Captured log call -------------------------------\nWARNING  discord.state:state.py:238 Guilds intent seems to be disabled. This may cause state related issues.\nWARNING  discord.client:client.py:341 PyNaCl is not installed, voice will NOT be supported\nWARNING  discord.client:client.py:345 davey is not installed, voice will NOT be supported\n_ DiscordCommandIdentityTests.test_description_change_updates_the_existing_command _\n\nself = <tests.gateway.test_discord_command_identity.DiscordCommandIdentityTests testMethod=test_description_change_updates_the_existing_command>\n\n    async def asyncSetUp(self):\n>       self.bot = commands.Bot(command_prefix=\"!\", intents=discord.Intents.none(), application_id=999)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/gateway/test_discord_command_identity.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/bot.py:214: in __init__\n    self.help_command = DefaultHelpCommand()\n                        ^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:1087: in __init__\n    super().__init__(**options)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:402: in __init__\n    self._command_impl = _HelpCommandImpl(self, **self.command_attrs)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:254: in __init__\n    super().__init__(inject.command_callback, *args, **kwargs)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/core.py:430: in __init__\n    if not asyncio.iscoroutinefunction(func):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib64/python3.14/asyncio/coroutines.py:23: in iscoroutinefunction\n    warnings._deprecated(\"asyncio.iscoroutinefunction\",\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'asyncio.iscoroutinefunction'\nmessage = '{name!r} is deprecated and slated for removal in Python {remove}; use inspect.iscoroutinefunction() instead'\nremove = (3, 16)\n_version = sys.version_info(major=3, minor=14, micro=8, releaselevel='final', serial=0)\n\n    def _deprecated(name, message=_DEPRECATED_MSG, *, remove, _version=sys.version_info):\n        \"\"\"Warn that *name* is deprecated or should be removed.\n    \n        RuntimeError is raised if *remove* specifies a major/minor tuple older than\n        the current Python version or the same version but past the alpha.\n    \n        The *message* argument is formatted with *name* and *remove* as a Python\n        version tuple (e.g. (3, 11)).\n    \n        \"\"\"\n        remove_formatted = f\"{remove[0]}.{remove[1]}\"\n        if (_version[:2] > remove) or (_version[:2] == remove and _version[3] != \"alpha\"):\n            msg = f\"{name!r} was slated for removal after Python {remove_formatted} alpha\"\n            raise RuntimeError(msg)\n        else:\n            msg = message.format(name=name, remove=remove_formatted)\n>           _wm.warn(msg, DeprecationWarning, stacklevel=3)\nE           DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n\n/usr/lib64/python3.14/_py_warnings.py:833: DeprecationWarning\n------------------------------ Captured log call -------------------------------\nWARNING  discord.state:state.py:238 Guilds intent seems to be disabled. This may cause state related issues.\n_ DiscordCommandIdentityTests.test_explicit_contexts_do_not_match_other_contexts _\n\nself = <tests.gateway.test_discord_command_identity.DiscordCommandIdentityTests testMethod=test_explicit_contexts_do_not_match_other_contexts>\n\n    async def asyncSetUp(self):\n>       self.bot = commands.Bot(command_prefix=\"!\", intents=discord.Intents.none(), application_id=999)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/gateway/test_discord_command_identity.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/bot.py:214: in __init__\n    self.help_command = DefaultHelpCommand()\n                        ^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:1087: in __init__\n    super().__init__(**options)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:402: in __init__\n    self._command_impl = _HelpCommandImpl(self, **self.command_attrs)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:254: in __init__\n    super().__init__(inject.command_callback, *args, **kwargs)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/core.py:430: in __init__\n    if not asyncio.iscoroutinefunction(func):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib64/python3.14/asyncio/coroutines.py:23: in iscoroutinefunction\n    warnings._deprecated(\"asyncio.iscoroutinefunction\",\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'asyncio.iscoroutinefunction'\nmessage = '{name!r} is deprecated and slated for removal in Python {remove}; use inspect.iscoroutinefunction() instead'\nremove = (3, 16)\n_version = sys.version_info(major=3, minor=14, micro=8, releaselevel='final', serial=0)\n\n    def _deprecated(name, message=_DEPRECATED_MSG, *, remove, _version=sys.version_info):\n        \"\"\"Warn that *name* is deprecated or should be removed.\n    \n        RuntimeError is raised if *remove* specifies a major/minor tuple older than\n        the current Python version or the same version but past the alpha.\n    \n        The *message* argument is formatted with *name* and *remove* as a Python\n        version tuple (e.g. (3, 11)).\n    \n        \"\"\"\n        remove_formatted = f\"{remove[0]}.{remove[1]}\"\n        if (_version[:2] > remove) or (_version[:2] == remove and _version[3] != \"alpha\"):\n            msg = f\"{name!r} was slated for removal after Python {remove_formatted} alpha\"\n            raise RuntimeError(msg)\n        else:\n            msg = message.format(name=name, remove=remove_formatted)\n>           _wm.warn(msg, DeprecationWarning, stacklevel=3)\nE           DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n\n/usr/lib64/python3.14/_py_warnings.py:833: DeprecationWarning\n------------------------------ Captured log call -------------------------------\nWARNING  discord.state:state.py:238 Guilds intent seems to be disabled. This may cause state related issues.\n_ DiscordCommandIdentityTests.test_explicit_settings_change_keeps_the_command_id _\n\nself = <tests.gateway.test_discord_command_identity.DiscordCommandIdentityTests testMethod=test_explicit_settings_change_keeps_the_command_id>\n\n    async def asyncSetUp(self):\n>       self.bot = commands.Bot(command_prefix=\"!\", intents=discord.Intents.none(), application_id=999)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/gateway/test_discord_command_identity.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/bot.py:214: in __init__\n    self.help_command = DefaultHelpCommand()\n                        ^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:1087: in __init__\n    super().__init__(**options)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:402: in __init__\n    self._command_impl = _HelpCommandImpl(self, **self.command_attrs)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:254: in __init__\n    super().__init__(inject.command_callback, *args, **kwargs)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/core.py:430: in __init__\n    if not asyncio.iscoroutinefunction(func):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib64/python3.14/asyncio/coroutines.py:23: in iscoroutinefunction\n    warnings._deprecated(\"asyncio.iscoroutinefunction\",\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'asyncio.iscoroutinefunction'\nmessage = '{name!r} is deprecated and slated for removal in Python {remove}; use inspect.iscoroutinefunction() instead'\nremove = (3, 16)\n_version = sys.version_info(major=3, minor=14, micro=8, releaselevel='final', serial=0)\n\n    def _deprecated(name, message=_DEPRECATED_MSG, *, remove, _version=sys.version_info):\n        \"\"\"Warn that *name* is deprecated or should be removed.\n    \n        RuntimeError is raised if *remove* specifies a major/minor tuple older than\n        the current Python version or the same version but past the alpha.\n    \n        The *message* argument is formatted with *name* and *remove* as a Python\n        version tuple (e.g. (3, 11)).\n    \n        \"\"\"\n        remove_formatted = f\"{remove[0]}.{remove[1]}\"\n        if (_version[:2] > remove) or (_version[:2] == remove and _version[3] != \"alpha\"):\n            msg = f\"{name!r} was slated for removal after Python {remove_formatted} alpha\"\n            raise RuntimeError(msg)\n        else:\n            msg = message.format(name=name, remove=remove_formatted)\n>           _wm.warn(msg, DeprecationWarning, stacklevel=3)\nE           DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n\n/usr/lib64/python3.14/_py_warnings.py:833: DeprecationWarning\n------------------------------ Captured log call -------------------------------\nWARNING  discord.state:state.py:238 Guilds intent seems to be disabled. This may cause state related issues.\n_ DiscordCommandIdentityTests.test_inherited_settings_keep_an_unchanged_command _\n\nself = <tests.gateway.test_discord_command_identity.DiscordCommandIdentityTests testMethod=test_inherited_settings_keep_an_unchanged_command>\n\n    async def asyncSetUp(self):\n>       self.bot = commands.Bot(command_prefix=\"!\", intents=discord.Intents.none(), application_id=999)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/gateway/test_discord_command_identity.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/bot.py:214: in __init__\n    self.help_command = DefaultHelpCommand()\n                        ^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:1087: in __init__\n    super().__init__(**options)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:402: in __init__\n    self._command_impl = _HelpCommandImpl(self, **self.command_attrs)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/help.py:254: in __init__\n    super().__init__(inject.command_callback, *args, **kwargs)\n../../../lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/discord/ext/commands/core.py:430: in __init__\n    if not asyncio.iscoroutinefunction(func):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib64/python3.14/asyncio/coroutines.py:23: in iscoroutinefunction\n    warnings._deprecated(\"asyncio.iscoroutinefunction\",\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'asyncio.iscoroutinefunction'\nmessage = '{name!r} is deprecated and slated for removal in Python {remove}; use inspect.iscoroutinefunction() instead'\nremove = (3, 16)\n_version = sys.version_info(major=3, minor=14, micro=8, releaselevel='final', serial=0)\n\n    def _deprecated(name, message=_DEPRECATED_MSG, *, remove, _version=sys.version_info):\n        \"\"\"Warn that *name* is deprecated or should be removed.\n    \n        RuntimeError is raised if *remove* specifies a major/minor tuple older than\n        the current Python version or the same version but past the alpha.\n    \n        The *message* argument is formatted with *name* and *remove* as a Python\n        version tuple (e.g. (3, 11)).\n    \n        \"\"\"\n        remove_formatted = f\"{remove[0]}.{remove[1]}\"\n        if (_version[:2] > remove) or (_version[:2] == remove and _version[3] != \"alpha\"):\n            msg = f\"{name!r} was slated for removal after Python {remove_formatted} alpha\"\n            raise RuntimeError(msg)\n        else:\n            msg = message.format(name=name, remove=remove_formatted)\n>           _wm.warn(msg, DeprecationWarning, stacklevel=3)\nE           DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\n\n/usr/lib64/python3.14/_py_warnings.py:833: DeprecationWarning\n------------------------------ Captured log call -------------------------------\nWARNING  discord.state:state.py:238 Guilds intent seems to be disabled. This may cause state related issues.\n=========================== short test summary info ============================\nFAILED tests/gateway/test_discord_command_identity.py::DiscordCommandIdentityTests::test_description_and_settings_change_both_reach_the_api\nFAILED tests/gateway/test_discord_command_identity.py::DiscordCommandIdentityTests::test_description_change_updates_the_existing_command\nFAILED tests/gateway/test_discord_command_identity.py::DiscordCommandIdentityTests::test_explicit_contexts_do_not_match_other_contexts\nFAILED tests/gateway/test_discord_command_identity.py::DiscordCommandIdentityTests::test_explicit_settings_change_keeps_the_command_id\nFAILED tests/gateway/test_discord_command_identity.py::DiscordCommandIdentityTests::test_inherited_settings_keep_an_unchanged_command\n5 failed in 2.17s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-m",
+        "pytest",
+        "-W",
+        "error",
+        "-q",
+        "tests/gateway/test_discord_sync_limit.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".                                                                        [100%]\n1 passed in 1.39s\n",
+      "stderr": ""
+    }
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 34.78133118500409,
+  "scope": "Native unit controls include simulated Discord transport. Installed acceptance is separate.",
+  "isolation": "One fresh pytest subprocess per file, as required by native tests/conftest.py. SDK controls preload real discord so gateway/conftest.py preserves its documented real-module branch."
+}

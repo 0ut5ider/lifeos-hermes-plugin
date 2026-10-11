@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "original_review_head": "4034bc27796433f71c6ba2ec061d1e7e8e135b8f",
+  "frozen_program_head": "11577ed4873a0b6186a1dfa13aa44f893254cb99",
+  "review_findings": [],
+  "test_harness_issue": "Five worker subprocesses leave two captured pipes each open after wait.",
+  "before": {
+    "tests": 35,
+    "unittest_exit_code": 0,
+    "clean_output_exit_code": 1,
+    "resource_warnings": 10
+  },
+  "after": {
+    "tests": 66,
+    "unittest_exit_code": 0,
+    "clean_output_exit_code": 0,
+    "warning_lines": 0,
+    "skipped": 0
+  },
+  "worker_test_sha256": "5c9f64dcdda3aa4eb57cddc4b01ebdff510de5636b014c9725a66f2fac3f4c8e",
+  "unchanged_plugin_files": 200,
+  "primary_certificate_verification": "primary-certificate-verification.json",
+  "primary_template_and_archive_audit": "input-audit.json",
+  "remote_system_changes": false,
+  "full_combined_batch_repeated": false,
+  "remaining_gates": [
+    "Merge PR7 and certify equivalent merged program bytes.",
+    "Provision the separate daily VM.",
+    "Complete coherent off-server whole-guest backup and isolated restore.",
+    "Verify private Discord channel and delivery before bot cutover and memory activation."
+  ]
+}

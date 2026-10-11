@@ -1,0 +1,45 @@
+{
+  "focused": {
+    "exit_code": 0,
+    "elapsed_seconds": 160.18899743699876,
+    "tests": 31,
+    "resource_warnings": 0,
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_fresh_store",
+      "test_memory_http",
+      "test_memory_algorithm_jobs"
+    ],
+    "completion_marker": "docs/agents/2026-10-10-pr7-daily-release-review/raw/focused.done"
+  },
+  "storage-gates": {
+    "exit_code": 0,
+    "elapsed_seconds": 26.344662117000553,
+    "tests": 35,
+    "resource_warnings": 10,
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_fresh_store_paths",
+      "test_fresh_store_status",
+      "test_fresh_store_worker",
+      "test_fresh_store_dashboard"
+    ],
+    "completion_marker": "docs/agents/2026-10-10-pr7-daily-release-review/raw/storage-gates.done"
+  },
+  "committed_fresh_final_resource_warnings": 10,
+  "review_head": "4034bc27796433f71c6ba2ec061d1e7e8e135b8f",
+  "base": "531f86169550ae118b1624a9cffe809211d7a3bf",
+  "local_project_agents_files": "",
+  "findings": [],
+  "verdict": "No actionable PR7 correctness, security, data loss, or materially misleading evidence findings."
+}

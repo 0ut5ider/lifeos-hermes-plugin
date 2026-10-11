@@ -1,0 +1,51 @@
+{
+  "host": "lifeos-dev",
+  "home": "/home/lifeos-hermes",
+  "profile": "/home/lifeos-hermes/.hermes",
+  "native_link": "/home/lifeos-hermes/.claude",
+  "services": {
+    "hermes-gateway.service": {
+      "UMask": "0077",
+      "WorkingDirectory": "/home/lifeos-hermes/.hermes",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/home/lifeos-hermes/.config/systemd/user/hermes-gateway.service"
+    },
+    "hermes-dashboard.service": {
+      "UMask": "0077",
+      "WorkingDirectory": "/home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores/8b938f7fab37b32a4e7d353b/57f85fcebda64a5ab44838ecfa9c3c6a/home",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/home/lifeos-hermes/.config/systemd/user/hermes-dashboard.service"
+    },
+    "com.lifeos.pulse.service": {
+      "UMask": "0077",
+      "WorkingDirectory": "/home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores/8b938f7fab37b32a4e7d353b/57f85fcebda64a5ab44838ecfa9c3c6a/home/.claude/LIFEOS/PULSE",
+      "ActiveState": "active",
+      "SubState": "running",
+      "FragmentPath": "/home/lifeos-hermes/.config/systemd/user/com.lifeos.pulse.service"
+    }
+  },
+  "home_directories": [
+    ".bun",
+    ".cache",
+    ".claude",
+    ".config",
+    ".hermes",
+    ".local",
+    ".npm",
+    "HermesWorkspace",
+    "migration",
+    "workspace"
+  ],
+  "memory_configuration": {
+    "version": 1,
+    "root": "/home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores/8b938f7fab37b32a4e7d353b/57f85fcebda64a5ab44838ecfa9c3c6a/home/.claude",
+    "ownership_enabled": false,
+    "sharing_enabled": false
+  },
+  "plugin_directory": {
+    "path": "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge",
+    "is_symlink": false
+  }
+}

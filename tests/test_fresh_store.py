@@ -81,6 +81,53 @@ class FreshStoreTests(unittest.TestCase):
                     self.operation().prepare(CANDIDATE,principal_name=name,assistant_name='Cerebo',account='dashboard:owner')
         for path,content in self.original.items():self.assertEqual(path.read_bytes(),content)
 
+    def test_personal_templates_start_empty_and_keep_reviewable_originals(self):
+        result=self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account='dashboard:owner')
+        root=Path(result['installed']);user=Path(result['data'])
+        retained=root.parent.parent/'template-originals'
+        goals=user/'TELOS/GOALS.md'
+        self.assertNotIn('(sample)',goals.read_text())
+        self.assertNotIn('Ship MVP',goals.read_text())
+        self.assertEqual((retained/'TELOS/GOALS.md').read_bytes(),
+                         (CANDIDATE/'LifeOS/install/USER/TELOS/GOALS.md').read_bytes())
+        self.assertIn('## Active',goals.read_text())
+        self.assertIn('provenance: template',goals.read_text())
+        self.assertGreater(len(result['empty_personal_templates']),30)
+        self.assertEqual(len(result['omitted_personal_templates']),3)
+        self.assertFalse((user/'WORK/YOUR_COMPANIES/SAMPLE_COMPANY').exists())
+        for relative in result['omitted_personal_templates']:
+            self.assertFalse((user/relative).exists())
+            self.assertEqual((retained/relative).read_bytes(),
+                             (CANDIDATE/'LifeOS/install/USER'/relative).read_bytes())
+        for relative in result['empty_personal_templates']:
+            with self.subTest(relative=relative):
+                text=(user/relative).read_text()
+                self.assertNotIn('(sample)',text)
+                self.assertNotIn('SAMPLE TEMPLATE',text)
+                self.assertEqual((retained/relative).read_bytes(),
+                                 (CANDIDATE/'LifeOS/install/USER'/relative).read_bytes())
+                self.assertEqual((retained/relative).stat().st_mode & 0o077,0)
+        sources=[{'filename':name,'content':(user/'TELOS'/name).read_text()}
+                 for name in ('GOALS.md','TELOS.md')]
+        rendered=NativeMemory(root)._native('morning_brief',sources=sources)['stdout']
+        self.assertNotIn('Your top goals',rendered)
+        self.assertNotIn('(sample)',rendered)
+        from ruamel.yaml import YAML
+        for name in ('vendors','obligations'):
+            path=user/'FINANCES'/(name+'.yaml')
+            self.assertEqual(YAML(typ='safe').load(path.read_text()),{name:[]})
+            self.assertEqual((retained/'FINANCES'/(name+'.yaml')).read_bytes(),
+                             (CANDIDATE/'LifeOS/install/USER/FINANCES'/(name+'.yaml')).read_bytes())
+        from lifeos_hook_bridge.memory_life_finances import view as finance_view
+        from lifeos_hook_bridge.memory_life_health import view as health_view
+        from lifeos_hook_bridge.memory_life_business import view as business_view
+        for view in (finance_view,health_view,business_view):
+            response=view(NativeMemory(root),OWNER)
+            self.assertEqual(response['status'],200)
+            self.assertNotIn('Sample ',json.dumps(response['body']))
+            self.assertNotIn('(sample)',json.dumps(response['body']))
+        for path,content in self.original.items():self.assertEqual(path.read_bytes(),content)
+
 
 if __name__=='__main__':
     unittest.main()

@@ -1,0 +1,4 @@
+Playwright TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.
+Call log:
+  - waiting for get_by_text("Gateway Running", exact=True) to be visible
+The actual dashboard label is "Gateway Status: Running". This operator selection failure occurs before the plugin page check.

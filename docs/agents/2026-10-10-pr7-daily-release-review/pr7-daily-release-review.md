@@ -1,0 +1,47 @@
+Date: 2026-10-10
+Reviewer role: Independent PR7 correctness and release-evidence reviewer
+Question: Does PR7 safely prepare empty personal stores, give owner-job admission the correct bounded allowance, preserve data and authority, and support its combined release acceptance claims?
+Model: gpt-6.1-sol
+Exact base: 531f86169550ae118b1624a9cffe809211d7a3bf
+Exact head: 4034bc27796433f71c6ba2ec061d1e7e8e135b8f
+PR: https://github.com/0ut5ider/lifeos-hermes-plugin/pull/7
+
+No actionable correctness, security, data loss, or materially misleading evidence findings. The reviewed production changes satisfy the stated scope. The release evidence supports acceptance of the candidate on the isolated development profile. The documentation retains the merge, daily guest, off-server restoration, and private Discord delivery gates.
+
+The reviewer loaded the coding-rules skill before reviewing code. The repository and its project ancestors contain no local AGENTS.md. The supplied shared instructions apply. The review uses the exact base and head above. The local main branch does not establish the review base.
+
+The production diff contains the personal-template helper, its preparation call and review metadata, and one relay-timeout condition. No other production files change. The reviewer did not change product code, commit, push, merge, post GitHub comments, or contact remote hosts. Review scripts and reports exist only in this agent output directory.
+
+Fresh preparation validates the candidate before installation. It verifies that the separate installed USER tree matches the pinned source templates before the helper runs. The tree collector rejects symlinks and non-regular files. The helper uses bounded owner-file reads with O_NOFOLLOW. It retains each exact original before it rewrites or removes the active file. Atomic publication creates mode 0600 files. The prepared destination has mode 0700 and protects the retained-original tree. Intermediate retained directories can have ordinary directory permissions, but the private prepared ancestor blocks access by other users.
+
+The helper runs only inside FreshStore.prepare. It does not traverse the selected existing store. The helper preserves frontmatter and native headings while it removes sample content. It writes vendors: [] and obligations: [] as valid YAML. The pinned three sample directories contain the removed Markdown files and become empty before rmdir. An independent replay confirms 54 emptied files and three omitted files. Every retained original equals its pinned source file. All other template files and the pinned source remain unchanged. Native morning-brief, Finance, Health, and Business checks pass against actual fresh installation.
+
+The preparation writes its final review record after the helper, private-permission pass, empty-memory check, and final owner/source revalidation. The record includes the emptied and omitted inventories and the active-tree file digests in its checksum. A failed or interrupted preparation does not receive a reviewed state. The existing worker reports failure or interruption and supports removal of that separate directory. The reproduced path, status, worker, and dashboard tests verify retained-store isolation, altered-review refusal, interrupted-worker removal, and current owner admission.
+
+The relay change at lifeos_hook_bridge/memory_http.py:200 gives conduit_job, atlas_job, local_job, and algorithm_job requests 30 seconds. It preserves the eight-second default for other ordinary views and the existing runtime, action, and remount allowances. The native asynchronous bridge retains its 40-second child deadline at LIFEOS/TOOLS/lib/MemoryAccess.ts:260. The timeout change does not alter credentials, installation binding, source admission, configuration revision, or chain-hash checks.
+
+The Algorithm backend rechecks current owner authority before and during source preparation. The final response checks current configuration again. The native launcher admits only a valid configuration revision and chain hash. Its synchronous generating guard prevents duplicate summary children after concurrent admissions. The independently repeated Algorithm suite verifies anonymous refusal, owner revocation during preparation, an unbound writer, fixed methods and origins, one child under three concurrent stale reads, module-stop cleanup, and daemon-shutdown cleanup. All cases pass with clean output.
+
+The reviewer reproduced the certification assertions without modifying committed release evidence. A copy of certify_release.py writes its two output files into raw/. The regenerated certificate equals the committed DAILY-RELEASE.json exactly. The checks verify both immutable archive hashes, 200 tested plugin files, native fixture equivalence, Hermes fixture equivalence, all recorded local counts, all 12 installed command exits, the selected browser records, and exact live-baseline equality.
+
+A separate audit reads the program tar archive directly without extracting it. All 200 archived plugin files equal the combined test source hashes and the current PR head. The archive includes compiled Pulse pages. The candidate-to-head diff contains no plugin, test, version, or manifest code change in the checked paths. The older 56b1af9f fixture header remains in the combined record. Its separate source hashes establish the actual tested plugin identity. The package retains the original build metadata, and the external certificate records ACCEPTANCE_PASS_MERGE_PENDING.
+
+The recorded gates report 490 combined tests, 38 fresh-store tests, 42 channel/model tests, and 96 native Hermes tests. These counts agree with their raw command output. The groups overlap and the README states that limit. The native controls use Python 3.13.15, while installed acceptance uses Python 3.14.7. The README states the dependency-deprecation reason and does not claim final Discord delivery from simulated transport checks.
+
+The installed recovery record preserves six sessions, 28 messages, and synthetic reference 6b95bbd59a3b446788286a690fc16c5a at revision 1. It leaves recovered ownership and sharing disabled. It explicitly reports offserver_restore_verified: false. The release plan and deployment guide retain coherent off-server whole-guest restoration, external Atlas recovery, and final private-channel delivery as later gates. The existing acceptance store retains native examples. Separate new-store checks establish blank personal defaults. The README states this distinction.
+
+Independent verification results:
+
+- raw/focused.json records the exact command and environment for test_fresh_store, test_memory_http, and test_memory_algorithm_jobs. All 31 tests pass in 159.204 seconds. raw/focused.stderr has no ResourceWarning. raw/focused.done contains 0.
+- raw/storage-gates.json records the path, status, worker, and dashboard command. All 35 tests pass their assertions in 25.433 seconds. raw/storage-gates.done contains 0. The worker cases emit ten ResourceWarnings from unclosed test subprocess pipes. The committed fresh-final.json contains the same ten warnings. These destructor exceptions do not change the unittest exit code.
+- raw/input-audit.json records archive identity, current-head identity, exact certificate reproduction, recovery scope, and the personal-template replay. The helper refuses missing provenance, a symlink leaf, and a missing Finance template marker.
+- raw/certificate-verification.stdout records successful certification assertions. raw/certificate-verification.stderr is empty. raw/regenerated-certificate.json and raw/regression-source-identity.json retain the reproduced outputs.
+- git diff --check for the exact base/head passes.
+
+The fresh-worker test output is not clean, despite its zero exit code and -W error::ResourceWarning flag. The unclosed handles are in pre-existing tests. They do not establish a product resource leak. The new fresh-store tests and all repeated Algorithm tests have clean output. The reviewer treats this as a test-harness limitation rather than a PR7 finding.
+
+Two reviewer audit attempts fail before the final successful audit. The first assumes an archive root prefix that the tar archive does not have. The second requires private mode on each retained directory rather than checking private files and the enclosing private prepared destination. raw/input-audit-attempt1.stderr and raw/input-audit-attempt2.stderr retain those failed assertions. The final audit corrects those reviewer assumptions. Neither failure identifies a product defect.
+
+Scope limits: The reviewer does not rerun the complete 490-test batch, native Hermes controls, remote installed sequence, or browser interaction. The reviewer verifies their stored output, assertion code, source identities, and release artifacts. The local repetition covers 66 tests, including all 38 fresh-store cases and all Algorithm job cases. The direct adversarial replay exercises helper refusal paths after source admission. It does not simulate an attacker with the same operating-system identity changing directories during execution. The review does not certify the daily guest, off-server recovery, or final private Discord delivery.
+
+Adrian's review should focus on the remaining release gates and the distinction between local profile recovery and whole-guest restoration. The two production changes do not require a blocking correction from this review.

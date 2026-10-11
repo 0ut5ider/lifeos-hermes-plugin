@@ -1,6 +1,18 @@
 # Full LifeOS experience release
 
-Date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. The active `.212` profiles retain the October 4 tested code while candidate work proceeds in isolated fixtures.
+Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest does not exist yet.
+
+## Latest combined acceptance (October 10)
+
+Adrian authorizes package freeze and combined development acceptance. The [release certificate](verification/2026-10-10-daily-text-release/DAILY-RELEASE.json) binds candidate `11577ed4873a0b6186a1dfa13aa44f893254cb99`, version 0.2.0, and both immutable archives. It retains 11 Hermes patches and 25 LifeOS patches. All 200 tested plugin files match the package. The installed runtime also matches 16,525 canonical Hermes source files and 771 native program and compiled Pulse files.
+
+The [combined gate](verification/2026-10-10-daily-text-release/README.md) passes 490 tests. Separate gates pass 38 fresh-store tests, 42 channel and model controls, and 96 native Hermes tests. Twelve installed commands pass, including actual private-model memory across two sessions, Atlas regeneration and capacity refusal, two-minute Conduit capture, service interruption and restart, local profile reconstruction, and retained-version rollback. Thirteen Pulse pages and both Hermes administration pages pass browser checks. All six disabled Pulse editor routes refuse requests. The live development baseline and model routes remain unchanged.
+
+Acceptance exposes two corrections. New-store preparation removes sample personal records while retaining exact native examples outside the active tree. Owner-job admission receives the existing 30-second runtime allowance because concurrent source checks exceed its earlier eight-second deadline. The frozen corrected code awaits merge. Certify equivalent merged program bytes before provisioning the daily guest.
+
+The next gates are the separate daily VM, a coherent off-server whole-guest backup and isolated restore, the verified private Discord channel, bot cutover, and lasting-memory activation. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
+
+The sections below retain the dated evidence and earlier open-state descriptions. This October 10 record supplies the current combined development status.
 
 ## Current daily-use release (October 7)
 

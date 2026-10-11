@@ -1,0 +1,40 @@
+{
+  "responses": [
+    {
+      "status": 401,
+      "body": "{\"error\": \"An authenticated Hermes session is required\"}"
+    },
+    {
+      "status": 503,
+      "body": "{\"error\": \"Authenticated memory is unavailable\"}"
+    },
+    {
+      "status": 503,
+      "body": "{\"error\": \"Authenticated memory is unavailable\"}"
+    },
+    {
+      "status": 503,
+      "body": "{\"error\": \"Authenticated memory is unavailable\"}"
+    }
+  ],
+  "requests": [],
+  "admissions": [],
+  "direct_job": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-m",
+      "hermes_cli.main",
+      "lifeos-job",
+      "algorithm-summaries",
+      "--configuration-revision",
+      "a0224df57e2be14cd69d79622b825c6186363c1f64ff7ea7d675cf68cc94ce43"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"status\": \"failed\", \"job\": \"algorithm-summaries\", \"exit_code\": 2}\n",
+    "stderr": "",
+    "inference_reached": false
+  },
+  "stderr": [],
+  "artifacts": {},
+  "native_child_output": null
+}

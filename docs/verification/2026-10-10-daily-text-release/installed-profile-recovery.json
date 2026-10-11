@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "backup": {
+    "status": "committed",
+    "snapshot": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/final-application-tested-profile-backup",
+    "signature": "b8d533b4ec7a5e8029a2244cac88503cc7e35568e07170d67447e37f4e2cc84c",
+    "profile_files": 614,
+    "native_files": 192,
+    "excluded_entries": 16
+  },
+  "recovery": {
+    "status": "recovered",
+    "profile": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/final-application-tested-profile-recovery/profile",
+    "root": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/final-application-tested-profile-recovery/native/.claude",
+    "signature": "b8d533b4ec7a5e8029a2244cac88503cc7e35568e07170d67447e37f4e2cc84c",
+    "profile_files": 614,
+    "native_files": 192,
+    "ownership_enabled": false,
+    "sharing_enabled": false,
+    "program_tools": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/.local/state/lifeos-hook-bridge/fresh-stores/2fb47301305bebd900627488/cf78f043880f4d1b91893c556a209693/home/.claude/LIFEOS/TOOLS",
+    "recovery_manifest": "/home/lifeos-hermes/migration/2026-10-09/daily-text-581d76a7/final-application-tested-profile-recovery/.profile-recovery.json"
+  },
+  "elapsed_seconds": 3.437,
+  "reference": {
+    "id": "6b95bbd59a3b446788286a690fc16c5a",
+    "revision": 1
+  },
+  "history_before": {
+    "sessions": 6,
+    "messages": 28
+  },
+  "history_recovered": {
+    "sessions": 6,
+    "messages": 28
+  },
+  "backup_file_count": 614,
+  "configuration_sha256": "e49ae4b93167099b0a5cd103362ee1364e7475a26d693980dbed835466ae9fff",
+  "source_preserved": true,
+  "candidate_ownership_disabled": true,
+  "candidate_services_started": false,
+  "rebound_connector_verified": true,
+  "source_service_state": {
+    "state": "active",
+    "recovery_required": false,
+    "owner_turn_verified": false
+  },
+  "synthetic_data_only": true,
+  "live_profile_changed": false,
+  "offserver_restore_verified": false
+}

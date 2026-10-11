@@ -6,6 +6,11 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Start fresh personal sections without shipped example goals, health records, finances, gear, projects, or companies.
+- Retain the exact personal templates outside the active user tree for fresh-store review. Preserve existing stores.
+- Allow bounded owner-job source checks to complete under concurrent native requests. Keep current authority checks before job launch.
+- Close fresh-worker test pipes and reject warnings from subprocess finalization in the review gate.
+
 - Admit complete planned Atlas graphs and snapshots before publication. Refuse projection, row, and byte limits without replacing live artifacts.
 - Report Atlas capacity dimensions and warnings at 80 percent of each selected limit.
 - Synchronize Atlas daily at 06:50 through the current owner command. Refresh before dashboard narrative regeneration.
@@ -21,8 +26,9 @@ Keep it equal to the version in both plugin manifests.
 ## 0.2.0 (release candidate)
 
 This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
-Private-channel acceptance, final release backup, daily guest deployment, and combined review remain open.
+Private-channel acceptance, final release backup, and daily guest deployment remain open.
 Atlas initialization and fresh-store acceptance pass on the isolated development profile.
+The independent PR7 review finds no blocking product defect. The review follow-up closes test subprocess pipes and repeats the focused checks.
 
 - Select the main Pulse dashboard and defer audio and video processing with voice.
 - Verify actual private-model memory write and search across separate installed Hermes sessions.

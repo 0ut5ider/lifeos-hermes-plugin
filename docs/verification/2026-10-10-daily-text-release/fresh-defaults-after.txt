@@ -1,0 +1,92 @@
+test_named_store_has_no_adopted_facts_and_preserves_originals (test_fresh_store.FreshStoreTests.test_named_store_has_no_adopted_facts_and_preserves_originals) ... ok
+test_personal_templates_start_empty_and_keep_reviewable_originals (test_fresh_store.FreshStoreTests.test_personal_templates_start_empty_and_keep_reviewable_originals) ... ok
+test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) ... ok
+test_fresh_install_excludes_inherited_user_store_and_path_settings (test_fresh_store_paths.FreshStorePathTests.test_fresh_install_excludes_inherited_user_store_and_path_settings) ... ok
+test_native_install_contract_and_selected_names (test_fresh_store_paths.FreshStorePathTests.test_native_install_contract_and_selected_names) ... ok
+test_owner_reads_the_listing_and_other_requests_are_refused (test_fresh_store_status.FreshStoreStatusRouteTests.test_owner_reads_the_listing_and_other_requests_are_refused) ... ok
+test_altered_review_is_reported_without_its_unverified_content (test_fresh_store_status.FreshStoreStatusTests.test_altered_review_is_reported_without_its_unverified_content) ... ok
+test_listing_orders_the_latest_preparation_first (test_fresh_store_status.FreshStoreStatusTests.test_listing_orders_the_latest_preparation_first) ... ok
+test_listing_refuses_a_linked_store_and_preserves_every_file (test_fresh_store_status.FreshStoreStatusTests.test_listing_refuses_a_linked_store_and_preserves_every_file) ... ok
+test_listing_requires_the_installation_owner (test_fresh_store_status.FreshStoreStatusTests.test_listing_requires_the_installation_owner) ... ok
+test_profile_without_preparations_reports_an_empty_idle_listing (test_fresh_store_status.FreshStoreStatusTests.test_profile_without_preparations_reports_an_empty_idle_listing) ... ok
+test_signed_review_reports_names_and_inactive_selection (test_fresh_store_status.FreshStoreStatusTests.test_signed_review_reports_names_and_inactive_selection) ... ok
+test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs (test_fresh_store_status.FreshStoreStatusTests.test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs) ... ok
+test_unfinished_preparation_is_running_while_the_installation_lock_is_held (test_fresh_store_status.FreshStoreStatusTests.test_unfinished_preparation_is_running_while_the_installation_lock_is_held) ... ok
+test_altered_review_is_reported_without_its_unverified_content (test_fresh_store_status.FreshStoreStatusTests.test_altered_review_is_reported_without_its_unverified_content) ... ok
+test_listing_orders_the_latest_preparation_first (test_fresh_store_status.FreshStoreStatusTests.test_listing_orders_the_latest_preparation_first) ... ok
+test_listing_refuses_a_linked_store_and_preserves_every_file (test_fresh_store_status.FreshStoreStatusTests.test_listing_refuses_a_linked_store_and_preserves_every_file) ... ok
+test_listing_requires_the_installation_owner (test_fresh_store_status.FreshStoreStatusTests.test_listing_requires_the_installation_owner) ... ok
+test_profile_without_preparations_reports_an_empty_idle_listing (test_fresh_store_status.FreshStoreStatusTests.test_profile_without_preparations_reports_an_empty_idle_listing) ... ok
+test_signed_review_reports_names_and_inactive_selection (test_fresh_store_status.FreshStoreStatusTests.test_signed_review_reports_names_and_inactive_selection) ... ok
+test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs (test_fresh_store_status.FreshStoreStatusTests.test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs) ... ok
+test_unfinished_preparation_is_running_while_the_installation_lock_is_held (test_fresh_store_status.FreshStoreStatusTests.test_unfinished_preparation_is_running_while_the_installation_lock_is_held) ... ok
+test_owner_starts_a_detached_preparation_and_removes_its_failed_store (test_fresh_store_worker.FreshStoreWorkerRouteTests.test_owner_starts_a_detached_preparation_and_removes_its_failed_store) ... ok
+test_altered_review_is_reported_without_its_unverified_content (test_fresh_store_worker.FreshStoreWorkerTests.test_altered_review_is_reported_without_its_unverified_content) ... ok
+test_detached_preparation_survives_its_launcher_and_reaches_review (test_fresh_store_worker.FreshStoreWorkerTests.test_detached_preparation_survives_its_launcher_and_reaches_review) ... Exception ignored while finalizing file <_io.FileIO name=6 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=6 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=4 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='UTF-8'>
+ok
+test_failed_preparation_is_reported_with_its_names_and_a_reason (test_fresh_store_worker.FreshStoreWorkerTests.test_failed_preparation_is_reported_with_its_names_and_a_reason) ... Exception ignored while finalizing file <_io.FileIO name=6 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=6 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=4 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='UTF-8'>
+ok
+test_invalid_names_or_identifier_create_no_store (test_fresh_store_worker.FreshStoreWorkerTests.test_invalid_names_or_identifier_create_no_store) ... Exception ignored while finalizing file <_io.FileIO name=6 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py", line 59, in test_invalid_names_or_identifier_create_no_store
+    process = self.start(self.fixture.fixture.home / 'missing-candidate', identifier, principal)
+ResourceWarning: unclosed file <_io.TextIOWrapper name=6 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=4 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py", line 59, in test_invalid_names_or_identifier_create_no_store
+    process = self.start(self.fixture.fixture.home / 'missing-candidate', identifier, principal)
+ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=8 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=8 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=5 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=5 encoding='UTF-8'>
+ok
+test_killed_preparation_is_interrupted_and_can_be_removed (test_fresh_store_worker.FreshStoreWorkerTests.test_killed_preparation_is_interrupted_and_can_be_removed) ... Exception ignored while finalizing file <_io.FileIO name=6 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=6 encoding='UTF-8'>
+Exception ignored while finalizing file <_io.FileIO name=4 mode='rb' closefd=True>:
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/case.py", line 615, in _callTestMethod
+    result = method()
+ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='UTF-8'>
+ok
+test_listing_orders_the_latest_preparation_first (test_fresh_store_worker.FreshStoreWorkerTests.test_listing_orders_the_latest_preparation_first) ... ok
+test_listing_refuses_a_linked_store_and_preserves_every_file (test_fresh_store_worker.FreshStoreWorkerTests.test_listing_refuses_a_linked_store_and_preserves_every_file) ... ok
+test_listing_requires_the_installation_owner (test_fresh_store_worker.FreshStoreWorkerTests.test_listing_requires_the_installation_owner) ... ok
+test_profile_without_preparations_reports_an_empty_idle_listing (test_fresh_store_worker.FreshStoreWorkerTests.test_profile_without_preparations_reports_an_empty_idle_listing) ... ok
+test_removal_deletes_an_interrupted_or_failed_store_and_keeps_others (test_fresh_store_worker.FreshStoreWorkerTests.test_removal_deletes_an_interrupted_or_failed_store_and_keeps_others) ... ok
+test_removal_refuses_a_running_preparation_an_unknown_name_and_other_owners (test_fresh_store_worker.FreshStoreWorkerTests.test_removal_refuses_a_running_preparation_an_unknown_name_and_other_owners) ... ok
+test_signed_review_reports_names_and_inactive_selection (test_fresh_store_worker.FreshStoreWorkerTests.test_signed_review_reports_names_and_inactive_selection) ... ok
+test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs (test_fresh_store_worker.FreshStoreWorkerTests.test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs) ... ok
+test_unfinished_preparation_is_running_while_the_installation_lock_is_held (test_fresh_store_worker.FreshStoreWorkerTests.test_unfinished_preparation_is_running_while_the_installation_lock_is_held) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 39.781s
+
+OK
