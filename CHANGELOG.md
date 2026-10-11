@@ -6,6 +6,19 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+No changes recorded.
+
+## 0.2.0 (2026-10-11)
+
+This version identifies the daily Discord text release deployed on `192.168.8.253`.
+Private-channel admission, inbound delivery, ownership activation, and cross-session lasting memory pass.
+Three isolated off-server restores pass. A protected backup includes the activated configuration.
+The newest activated archive has not received another isolated restore test.
+Actual morning generation and Discord delivery pass. The first scheduled 07:00 execution remains unobserved.
+See the [daily deployment record](docs/verification/2026-10-11-daily-guest/README.md).
+Atlas initialization and fresh-store acceptance pass on the isolated development profile.
+The independent PR7 review finds no blocking product defect. The review follow-up closes test subprocess pipes and repeats the focused checks.
+
 - Start fresh personal sections without shipped example goals, health records, finances, gear, projects, or companies.
 - Retain the exact personal templates outside the active user tree for fresh-store review. Preserve existing stores.
 - Allow bounded owner-job source checks to complete under concurrent native requests. Keep current authority checks before job launch.
@@ -23,13 +36,6 @@ Keep it equal to the version in both plugin manifests.
 - Keep Atlas insight recovery when source or destination changes occur after publication.
 - Bind the Atlas planner directory before loading native code. Ignore inherited directory overrides.
 
-## 0.2.0 (release candidate)
-
-This version identifies the staged daily Discord text release. The release is not deployed to a daily guest.
-Private-channel acceptance, final release backup, and daily guest deployment remain open.
-Atlas initialization and fresh-store acceptance pass on the isolated development profile.
-The independent PR7 review finds no blocking product defect. The review follow-up closes test subprocess pipes and repeats the focused checks.
-
 - Select the main Pulse dashboard and defer audio and video processing with voice.
 - Verify actual private-model memory write and search across separate installed Hermes sessions.
 - Verify installed governed Content actions, current owner revocation, and authenticated native dashboard reads.
@@ -46,7 +52,7 @@ The independent PR7 review finds no blocking product defect. The review follow-u
 - Verify every Algorithm summary, LocalIntelligence digest, and Conduit insight destination before committing its receipt. Preserve later destination edits and retain recovery for incomplete groups.
 - Record the conditional Hermes upgrade that can remove one of the 36 functional patches after complete qualification.
 
-The following changes also belong to this candidate:
+The following changes also belong to this release:
 
 - Preserve Discord command IDs during synchronization. Compare inherited settings without recreating unchanged commands.
 - Release pending clarification waiters when the gateway interrupts their turn.

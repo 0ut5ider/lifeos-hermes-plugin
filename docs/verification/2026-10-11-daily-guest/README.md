@@ -2,6 +2,25 @@
 
 Date: 2026-10-11. Adrian authorizes a new daily guest and release installation.
 
+**Final acceptance status: PASS for daily Discord text.** The records below follow installation order. Initial receipts keep their original pending or inactive state. Later receipts complete those gates; they do not change the earlier snapshots. Counts of active facts and session messages describe the synthetic acceptance checkpoint.
+
+| Final check | Retained receipt |
+| --- | --- |
+| Certified installed program bytes | [installation-verification.json](installation-verification.json) |
+| Three isolated off-server restores | [whole-guest-receipts.json](whole-guest-receipts.json) |
+| Exact private audience and refused destinations | [discord-channel.json](discord-channel.json) |
+| Actual inbound owner reply | [discord-inbound.json](discord-inbound.json) |
+| Governed memory activation | [daily-ownership-activation.json](daily-ownership-activation.json) |
+| Authenticated Pulse routes | [daily-application-auth.json](daily-application-auth.json) |
+| Five owner jobs and actual capture schedule | [daily-jobs-verification.json](daily-jobs-verification.json) |
+| Morning delivery and stale-policy refusal | [morning-delivery-verification.json](morning-delivery-verification.json) |
+| Activated backup and service resumption | [active-backup.json](active-backup.json) |
+| Cross-session Discord memory and cleanup | [discord-memory-verification.json](discord-memory-verification.json) |
+
+The first scheduled 07:00 brief is unobserved at this checkpoint. The activated backup has not received another isolated restore. Its receipt explicitly records that limit.
+
+The [publication checks](publication-checks.json) validate the retained JSON, operator syntax, local documentation targets, credential exclusion, and receipt consistency. They do not replay acceptance against Adrian's active daily profile. Historical operator programs target fixed acceptance fixtures; review their inputs before reuse.
+
 The daily guest is `lifeos-daily`, unprivileged Proxmox container `102`, on `pve-tr1950x` at `192.168.8.101`. Its address is `192.168.8.253/24`, its gateway is `192.168.8.1`, and its timezone is `America/Toronto`. It uses Ubuntu 24.04, four CPU cores, eight GiB of memory, and an 80 GiB root disk on `local-zfs`. The guest has no additional mounted data disks. The existing processing VM and development container remain unchanged.
 
 Key-based SSH accepts the operator key for `lifeos-hermes` and `root`. The operator verifies the guest host key through Proxmox before adding it to known hosts. The account home is `/home/lifeos-hermes`. The selected LifeOS home and data paths are in [installation.json](installation.json). The selected Hermes profile is `/home/lifeos-hermes/.hermes`.

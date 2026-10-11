@@ -6,13 +6,13 @@ The [Hermes Discord guide](https://hermes-agent.nousresearch.com/docs/user-guide
 
 ## Permanent move to .252 on October 7
 
-Adrian selects `192.168.8.252` as the sole future server and decommissions `.212`. The existing Shiny Hermes Bot now connects from the permanent `lifeos-hermes` account on `.252`, UID 1008. Its existing Discord application, token, guild membership, user allowlist, and channel routing are retained. The channel remains `#hermes-212`, ID `1554859357374513222`. A new bot invitation is unnecessary.
+At the October 7 checkpoint, Adrian selects `192.168.8.252` as the replacement for `.212`. The October 11 daily deployment uses `.253`; `.252` remains the development server. The existing Shiny Hermes Bot now connects from the permanent `lifeos-hermes` account on `.252`, UID 1008. Its existing Discord application, token, guild membership, user allowlist, and channel routing are retained. The channel remains `#hermes-212`, ID `1554859357374513222`. A new bot invitation is unnecessary.
 
 The source gateway is stopped and masked. Its active `.env` no longer contains `DISCORD_BOT_TOKEN`. Existing source backups are not erased by this operation. Do not restore the bot to `.212`. Recovery configuration stays in the private destination directory `~/migration/2026-10-07/`.
 
-The destination contains the merged plugin runtime, all 11 supported Hermes patch groups, and all 23 native LifeOS patch groups. A fresh native installation uses Adrian and Cerebo. No source conversations, personal memory, or scheduled jobs are imported. Managed memory ownership and sharing remain disabled. The existing private FlashNext tier mapping is unchanged, and the carrier probe reports `HOLDS` at xhigh effort.
+The destination contains the merged plugin runtime, all 11 supported Hermes patch groups, and all 23 native LifeOS patch groups. A fresh native installation uses Adrian and Cerebo. No source conversations, personal memory, or scheduled jobs are imported. Managed memory ownership and sharing are disabled at this October 7 checkpoint. The existing private FlashNext tier mapping is unchanged, and the carrier probe reports `HOLDS` at xhigh effort.
 
-The user gateway service is enabled with systemd linger. The private development recorder is installed outside the plugin and writes a new capture on `.252`. Installation and connection checks pass. Actual Discord question, answer, timeout, and cancellation acceptance remains in progress. The temporary acceptance timeout is 120 seconds; restore the normal 3600-second value after the live checks.
+The user gateway service is enabled with systemd linger. The private development recorder is installed outside the plugin and writes a new capture on `.252`. Installation and connection checks pass. The subsequent [live Discord acceptance](verification/2026-10-07-discord-cutover/README.md) passes question, answer, timeout, cancellation, and recovery checks. The 120-second test timeout is historical. The deployed gateway uses the normal 3600-second timeout.
 
 ## 1. Create and install the Discord bot
 
@@ -22,13 +22,13 @@ Adrian retains Shiny Hermes Bot on `.252` for development in `#hermes-212`. The 
 
 The selected destination guild is Outsider's server, ID `1553540018302099486`. Discord accepts the invitation after Adrian completes human verification. A current guild-member request verifies Cerebo's bot identity and its join time, `2026-10-11T15:49:11.975000+00:00`. A separate Developer Portal read confirms both required intents remain enabled. Adrian completes multi-factor authentication for token generation. The operator transfers the token privately and verifies Cerebo's identity before installing it in the daily profile with mode `0600`.
 
-Adrian authorizes creation of the daily channel. The operator creates private text channel `#cerebo`, ID `1558870196784205927`. It denies View Channel to the default role and allows the Cerebo member. The actual installed audience resolver verifies that only Adrian and Cerebo can read the channel. It refuses a different channel, a different author, and a thread. The daily configuration binds that guild, owner, bot, private destination, and selected model route. Direct messages and threads remain disabled. A real outbound setup marker arrives from Cerebo, and the daily gateway connects as `Cerebo#1748`. Inbound live acceptance and lasting-memory activation remain pending. The operator does not move or reset the development bot token.
+Adrian authorizes creation of the daily channel. The operator creates private text channel `#cerebo`, ID `1558870196784205927`. It denies View Channel to the default role and allows the Cerebo member. The actual installed audience resolver verifies that only Adrian and Cerebo can read the channel. It refuses a different channel, a different author, and a thread. The daily configuration binds that guild, owner, bot, private destination, and selected model route. Direct messages and threads remain disabled. A real outbound setup marker arrives from Cerebo, and the daily gateway connects as `Cerebo#1748`. [Daily acceptance](verification/2026-10-11-daily-guest/README.md) passes exact inbound delivery, ownership activation, and save and recall across separate Discord sessions. Pulse is active. Governed cleanup removes the synthetic fact from active recall. Sharing remains disabled. The operator does not move or reset the development bot token.
 
 ### Daily release: one private text channel
 
-The daily release uses a private server text channel. Direct messages are disabled for this profile. The candidate patch introduces `DISCORD_GUILD_CHANNEL_ONLY=true`; this setting requires exactly one numeric ID in `DISCORD_ALLOWED_CHANNELS`. It gates messages, slash commands, adapter sends, and standalone text or attachment sends. Threads are refused. Older installed patches do not provide this setting.
+The daily release uses a private server text channel. Direct messages are disabled for this profile. The deployed 0.2.0 patch provides `DISCORD_GUILD_CHANNEL_ONLY=true`; this setting requires exactly one numeric ID in `DISCORD_ALLOWED_CHANNELS`. It gates messages, slash commands, adapter sends, and standalone text or attachment sends. Threads are refused. Older installed patches do not provide this setting.
 
-Configure the tested candidate with these values after verifying the channel permissions:
+Configure the tested release with these values after verifying the channel permissions:
 
 ```dotenv
 DISCORD_ALLOWED_USERS=<owner-user-id>
@@ -43,7 +43,7 @@ DISCORD_HOME_CHANNEL=<private-text-channel-id>
 
 The channel must deny **View Channel** to `@everyone`. Only the installation owner and the selected bot may read it. Discord server owners and administrators bypass channel permission overwrites. The memory check reads current roles and members, applies the channel permission rules, and refuses additional readers. The selected bot needs the Server Members privileged intent for that check.
 
-The memory configuration separately binds the channel to its guild, owner, bot, and private destination grant. A channel allowlist alone does not grant private-memory access. Memory requests recheck the audience, including before native publication and after tool reads. Installed application acceptance and the final delivery check remain release gates. See the [control results](verification/2026-10-07-private-channel/README.md).
+The memory configuration separately binds the channel to its guild, owner, bot, and private destination grant. A channel allowlist alone does not grant private-memory access. Memory requests recheck the audience, including before native publication and after tool reads. The [October 11 installed acceptance](verification/2026-10-11-daily-guest/README.md) passes application and final delivery checks. See the [control results](verification/2026-10-07-private-channel/README.md).
 
 1. Create an application in the [Discord Developer Portal](https://discord.com/developers/applications). Choose the bot template or create a blank application. Set the bot's username on its **Bot** page.
 2. On **Bot**, enable **Public Bot** if you will use Discord's provided install link. Leave **Requires OAuth2 Code Grant** off. Enable the **Message Content** and **Server Members** privileged gateway intents, then save. The message content intent was required to clear the connection error in our setup.
