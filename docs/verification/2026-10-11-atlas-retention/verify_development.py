@@ -10,7 +10,8 @@ import sys
 import time
 
 
-STAGE = Path('/home/lifeos-hermes/development/2026-10-11-atlas-retention'+('-final' if '--final' in sys.argv else ''))
+STAGE = Path('/home/lifeos-hermes/development/2026-10-11-atlas-retention'+(
+    '-verified' if '--verified' in sys.argv else '-final' if '--final' in sys.argv else ''))
 PACKAGE = Path('/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package')
 PYTHON = '/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python'
 SUITE = ['test_memory_atlas_retention', 'test_memory_atlas_capacity', 'test_memory_atlas_sync',
@@ -40,7 +41,9 @@ def guest():
             for name in ('config.yaml','lifeos-memory.json')}
         return {'services':result.stdout,'profile_configuration_hashes':files}
     hashes = json.loads((STAGE/'source-hashes.json').read_text())
-    verify = lambda: all(hashlib.sha256((STAGE/name).read_bytes()).hexdigest()==value for name,value in hashes.items())
+    modes = json.loads((STAGE/'source-modes.json').read_text())
+    verify = lambda: all(hashlib.sha256((STAGE/name).read_bytes()).hexdigest()==value
+        and (STAGE/name).stat().st_mode & 0o777 == modes[name] for name,value in hashes.items())
     assert verify(), 'The isolated source files differ before verification'
     before = state()
     command = [sys.executable,'-W','error::ResourceWarning','-m','unittest','-v',*SUITE]
@@ -49,7 +52,7 @@ def guest():
         result = subprocess.run(command, cwd=STAGE, env=environment, stdout=stdout, stderr=stderr, timeout=900)
     after = state()
     report = {'host':'192.168.8.252','exit_code':result.returncode,'command':command,
-        'duration_seconds':round(time.monotonic()-started,3),'source_hashes':hashes,
+        'duration_seconds':round(time.monotonic()-started,3),'source_hashes':hashes,'source_modes':modes,
         'source_hashes_unchanged':verify(),'live_before':before,'live_after':after,
         'live_configuration_and_services_unchanged':before==after,
         'native_store_sha256':hashlib.sha256((native/'LIFEOS/ATLAS/Store.ts').read_bytes()).hexdigest(),
@@ -68,11 +71,12 @@ def stage(retry=False):
     files = sorted(set(files))
     payload = {name:base64.b64encode((root/name).read_bytes()).decode() for name in files}
     hashes = {name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in files}
+    modes = {name:0o700 if (root/name).stat().st_mode & 0o111 else 0o600 for name in files}
     script = 'import base64,json,os,pwd,subprocess\nfrom pathlib import Path\n'
-    script += f'stage=Path({str(STAGE)!r})\npayload={payload!r}\nhashes={hashes!r}\n'
+    script += f'stage=Path({str(STAGE)!r})\npayload={payload!r}\nhashes={hashes!r}\nmodes={modes!r}\n'
     script += f'python={PYTHON!r}\noperator={str(Path(__file__).relative_to(root))!r}\n'
     script += f'retry={retry!r}\n'
-    script += f'guest_arguments={["--guest", *(["--final"] if "--final" in sys.argv else [])]!r}\n'
+    script += f'guest_arguments={["--guest", *(["--verified"] if "--verified" in sys.argv else ["--final"] if "--final" in sys.argv else [])]!r}\n'
     script += '''os.umask(0o077)
 if stage.exists():
     assert retry, 'The isolated retention stage already exists'
@@ -90,8 +94,9 @@ else:
 for name,content in payload.items():
     path=stage/name
     path.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
-    path.write_bytes(base64.b64decode(content));path.chmod(0o600)
+    path.write_bytes(base64.b64decode(content));path.chmod(modes[name])
 (stage/'source-hashes.json').write_text(json.dumps(hashes,indent=2)+'\\n')
+(stage/'source-modes.json').write_text(json.dumps(modes,indent=2)+'\\n')
 account=pwd.getpwnam('lifeos-hermes')
 for path in [stage,*stage.rglob('*')]:
     os.chown(path,account.pw_uid,account.pw_gid)
