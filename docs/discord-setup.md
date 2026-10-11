@@ -16,6 +16,12 @@ The user gateway service is enabled with systemd linger. The private development
 
 ## 1. Create and install the Discord bot
 
+### Separate development and daily bots
+
+Adrian retains Shiny Hermes Bot on `.252` for development in `#hermes-212`. The daily guest at `.253` uses a separate Cerebo application, ID `1558867947152347198`. The operator creates Cerebo on October 11 and enables the Message Content and Server Members intents. Presence intent and the OAuth2 code grant remain disabled. Guild installation requests `bot` and `applications.commands`, with View Channels, Send Messages, Embed Links, Attach Files, Read Message History, and Add Reactions. User installation is disabled. This text profile does not request thread, voice, or Administrator permissions.
+
+The selected destination guild is Outsider's server, ID `1553540018302099486`. The invitation waits for Discord's human verification. The daily token, private channel binding, and live acceptance remain pending. Creation alone does not establish a connected daily gateway. The operator does not move or reset the development bot token.
+
 ### Daily release: one private text channel
 
 The daily release uses a private server text channel. Direct messages are disabled for this profile. The candidate patch introduces `DISCORD_GUILD_CHANNEL_ONLY=true`; this setting requires exactly one numeric ID in `DISCORD_ALLOWED_CHANNELS`. It gates messages, slash commands, adapter sends, and standalone text or attachment sends. Threads are refused. Older installed patches do not provide this setting.
