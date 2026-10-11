@@ -4,6 +4,7 @@ import importlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 
@@ -33,7 +34,7 @@ assert body['status'] == 'completed' and body['job'] == 'life-morning-brief'
 output = body['output'].strip()
 assert output and len(output.encode()) <= 65536, 'The morning brief has invalid output'
 # Hermes interprets these markers as attachment instructions rather than narration.
-if any(marker in output for marker in ('MEDIA:', '[[audio_as_voice]]', '[[as_document]]')):
+if re.search(r'MEDIA:|\[\[(?:audio_as_voice|as_document)\]\]', output, re.IGNORECASE):
     raise ValueError('The text morning brief refuses transport directives')
 configuration.check_revision(configuration.load(), revision)
 assert guard.check(platform='discord', chat_id=channel, hermes_home=str(profile))['action'] == 'allow'

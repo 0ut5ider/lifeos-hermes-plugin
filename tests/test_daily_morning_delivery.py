@@ -122,6 +122,15 @@ class DailyMorningDeliveryTests(unittest.TestCase):
             with self.subTest(marker=marker):
                 self.assert_refused_before_send('Good morning. ' + marker)
 
+    def test_case_variants_accepted_by_the_parser_refuse_before_send(self):
+        for marker in ('media:', 'MeDiA:', 'MED\u0130A:', 'MED\u0131A:'):
+            with self.subTest(marker=marker):
+                output = 'Good morning. ' + marker + str(self.private)
+                attachments, _ = BasePlatformAdapter.extract_media(output)
+                self.assertEqual(BasePlatformAdapter.filter_media_delivery_paths(attachments),
+                    [(str(self.private), False)])
+                self.assert_refused_before_send(output)
+
 
 if __name__ == '__main__':
     unittest.main()
