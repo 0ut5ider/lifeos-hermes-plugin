@@ -1,0 +1,28 @@
+INFO: starting new backup job: vzdump 102 --storage PBS-01 --mode stop --notes-template 'LifeOS daily synthetic whole-guest recovery interrupted'
+INFO: Starting Backup of VM 102 (lxc)
+INFO: Backup started at 2026-10-11 00:35:09
+INFO: status = stopped
+INFO: backup mode: stop
+INFO: ionice priority: 7
+INFO: CT Name: lifeos-daily
+INFO: including mount point rootfs ('/') in backup
+INFO: creating Proxmox Backup Server archive 'ct/102/2026-10-11T05:35:09Z'
+INFO: set max number of entries in memory for file-based backups to 1048576
+INFO: run: lxc-usernsexec -m u:0:100000:65536 -m g:0:100000:65536 -- /usr/bin/proxmox-backup-client backup --crypt-mode=none pct.conf:/var/tmp/vzdumptmp3465543_102/etc/vzdump/pct.conf root.pxar:/mnt/vzsnap0 --include-dev /mnt/vzsnap0/./ --skip-lost-and-found --exclude=/tmp/?* --exclude=/var/tmp/?* --exclude=/var/run/?*.pid --backup-type ct --backup-id 102 --backup-time 1791696909 --entries-max 1048576 --repository admin@pbs@192.168.8.24:PlutoNAS_Backup
+INFO: Starting backup: ct/102/2026-10-11T05:35:09Z    
+INFO: Client name: pve-tr1950x    
+INFO: Starting backup protocol: Sun Oct 11 00:35:09 2026    
+INFO: Downloading previous manifest (Sun Oct 11 00:33:28 2026)    
+INFO: Upload config file '/var/tmp/vzdumptmp3465543_102/etc/vzdump/pct.conf' to 'admin@pbs@192.168.8.24:8007:PlutoNAS_Backup' as pct.conf.blob    
+INFO: Upload directory '/mnt/vzsnap0' to 'admin@pbs@192.168.8.24:8007:PlutoNAS_Backup' as root.pxar.didx    
+INFO: root.pxar: had to backup 138.879 MiB of 10.336 GiB (compressed 8.231 MiB) in 35.28 s (average 3.937 MiB/s)
+INFO: root.pxar: backup was done incrementally, reused 10.201 GiB (98.7%)
+INFO: Uploaded backup catalog (14.096 MiB)
+INFO: catalog.pcat1: backup was done incrementally, reused 2.032 MiB (14.4%)
+INFO: Duration: 38.98s    
+INFO: End Time: Sun Oct 11 00:35:48 2026    
+INFO: adding notes to backup
+INFO: Finished Backup of VM 102 (00:00:40)
+INFO: Backup finished at 2026-10-11 00:35:49
+INFO: Backup job finished successfully
+INFO: notified via target `mail-to-root`

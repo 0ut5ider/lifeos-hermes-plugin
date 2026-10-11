@@ -1,0 +1,84 @@
+{
+  "status": "PASS",
+  "address": "192.168.8.253",
+  "guest": 102,
+  "guest_reboot_verified": true,
+  "services": {
+    "hermes-dashboard.service": {
+      "ActiveState": "active",
+      "UnitFileState": "enabled"
+    },
+    "hermes-gateway.service": {
+      "ActiveState": "inactive",
+      "UnitFileState": "disabled"
+    },
+    "com.lifeos.pulse.service": {
+      "ActiveState": "inactive",
+      "UnitFileState": "disabled"
+    }
+  },
+  "backup_job": {
+    "enabled": 1,
+    "id": "lifeos-daily-offserver",
+    "mode": "stop",
+    "node": "pve-tr1950x",
+    "notes-template": "LifeOS daily certified release, whole-guest backup",
+    "prune-backups": {
+      "keep-daily": "7",
+      "keep-monthly": "3",
+      "keep-weekly": "4"
+    },
+    "schedule": "01:00",
+    "storage": "PBS-01",
+    "type": "vzdump",
+    "vmid": "102"
+  },
+  "disposable_restore_guests_removed": [
+    103,
+    104,
+    105
+  ],
+  "development_guest_preserved": 101,
+  "discord_cutover_pending": true,
+  "ownership_enabled": false,
+  "sharing_enabled": false,
+  "active_facts": 0,
+  "operations": [
+    {
+      "label": "enable-dashboard",
+      "exit_code": 0
+    },
+    {
+      "label": "final-daily-shutdown",
+      "exit_code": 0
+    },
+    {
+      "label": "final-daily-start",
+      "exit_code": 0
+    },
+    {
+      "label": "final-hermes-dashboard.service",
+      "exit_code": 0
+    },
+    {
+      "label": "final-hermes-gateway.service",
+      "exit_code": 0
+    },
+    {
+      "label": "final-com.lifeos.pulse.service",
+      "exit_code": 0
+    },
+    {
+      "label": "final-addresses",
+      "exit_code": 0
+    },
+    {
+      "label": "final-installation-check",
+      "exit_code": 0
+    },
+    {
+      "label": "final-backup-job",
+      "exit_code": 0
+    }
+  ]
+}

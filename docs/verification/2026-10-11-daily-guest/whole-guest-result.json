@@ -1,0 +1,997 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "baseline",
+      "archive": "PBS-01:backup/ct/102/2026-10-11T05:15:25Z",
+      "restored_guest": 103,
+      "network_removed_before_start": true,
+      "application_services_masked_before_start": true,
+      "restored_ownership_enabled": false,
+      "restored_sharing_enabled": false,
+      "status": "PASS"
+    },
+    {
+      "case": "interrupted",
+      "archive": "PBS-01:backup/ct/102/2026-10-11T05:35:09Z",
+      "restored_guest": 104,
+      "network_removed_before_start": true,
+      "application_services_masked_before_start": true,
+      "restored_ownership_enabled": false,
+      "restored_sharing_enabled": false,
+      "status": "PASS"
+    },
+    {
+      "case": "later-edit",
+      "archive": "PBS-01:backup/ct/102/2026-10-11T05:39:58Z",
+      "restored_guest": 105,
+      "network_removed_before_start": true,
+      "application_services_masked_before_start": true,
+      "restored_ownership_enabled": false,
+      "restored_sharing_enabled": false,
+      "status": "PASS"
+    }
+  ],
+  "operations": [
+    {
+      "label": "daily-config",
+      "command": [
+        "pct",
+        "config",
+        "102"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.802409271011129
+    },
+    {
+      "label": "drain-daily-writers",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "stop",
+        "hermes-dashboard.service",
+        "com.lifeos.pulse.service",
+        "hermes-gateway.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.9654925731010735
+    },
+    {
+      "label": "baseline-coverage",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "baseline",
+        "prepare"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.9931547229643911
+    },
+    {
+      "label": "baseline-shutdown",
+      "command": [
+        "pct",
+        "shutdown",
+        "102",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.4713868069229648
+    },
+    {
+      "label": "baseline-backup",
+      "command": [
+        "vzdump",
+        "102",
+        "--storage",
+        "PBS-01",
+        "--mode",
+        "stop",
+        "--notes-template",
+        "LifeOS daily synthetic whole-guest recovery baseline"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 244.31403032306116
+    },
+    {
+      "label": "baseline-archives",
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content",
+        "--content",
+        "backup",
+        "--vmid",
+        "102",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.1681317909387872
+    },
+    {
+      "label": "baseline-restore",
+      "command": [
+        "pct",
+        "restore",
+        "103",
+        "PBS-01:backup/ct/102/2026-10-11T05:15:25Z",
+        "--storage",
+        "local-zfs",
+        "--unprivileged",
+        "1",
+        "--onboot",
+        "0",
+        "--hostname",
+        "lifeos-recovery-baseline"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 426.6250490419334
+    },
+    {
+      "label": "baseline-disconnect",
+      "command": [
+        "pct",
+        "set",
+        "103",
+        "--delete",
+        "net0",
+        "--onboot",
+        "0",
+        "--tags",
+        "disposable;lifeos-recovery"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.963302789023146
+    },
+    {
+      "label": "baseline-mount",
+      "command": [
+        "pct",
+        "mount",
+        "103"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.9740206979913637
+    },
+    {
+      "label": "baseline-unmount",
+      "command": [
+        "pct",
+        "unmount",
+        "103"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.9207045369548723
+    },
+    {
+      "label": "baseline-start-isolated",
+      "command": [
+        "pct",
+        "start",
+        "103"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.210510202101432
+    },
+    {
+      "label": "baseline-network",
+      "command": [
+        "pct",
+        "exec",
+        "103",
+        "--",
+        "ip",
+        "-brief",
+        "address"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.9241669829934835
+    },
+    {
+      "label": "baseline-services",
+      "command": [
+        "pct",
+        "exec",
+        "103",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "show",
+        "-p",
+        "ActiveState",
+        "hermes-dashboard.service",
+        "hermes-gateway.service",
+        "com.lifeos.pulse.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.9171915360493585
+    },
+    {
+      "label": "baseline-coverage-verify",
+      "command": [
+        "pct",
+        "exec",
+        "103",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "baseline",
+        "verify"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 0.9702349540311843
+    },
+    {
+      "label": "daily-config",
+      "command": [
+        "pct",
+        "config",
+        "102"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8294802679447457
+    },
+    {
+      "label": "drain-daily-writers",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "stop",
+        "hermes-dashboard.service",
+        "com.lifeos.pulse.service",
+        "hermes-gateway.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8317033550702035
+    },
+    {
+      "label": "disable-daily-dashboard-restarts",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "disable",
+        "hermes-dashboard.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8736905689584091
+    },
+    {
+      "label": "interrupted-prepare",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/prepare_recovery.py",
+        "interrupted"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 32.222958154045045
+    },
+    {
+      "label": "interrupted-coverage",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "interrupted",
+        "prepare"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.5706107550067827
+    },
+    {
+      "label": "interrupted-shutdown",
+      "command": [
+        "pct",
+        "shutdown",
+        "102",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.5278842479456216
+    },
+    {
+      "label": "interrupted-backup",
+      "command": [
+        "vzdump",
+        "102",
+        "--storage",
+        "PBS-01",
+        "--mode",
+        "stop",
+        "--notes-template",
+        "LifeOS daily synthetic whole-guest recovery interrupted"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 45.91159365698695
+    },
+    {
+      "label": "interrupted-archives",
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content",
+        "--content",
+        "backup",
+        "--vmid",
+        "102",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.1846792849246413
+    },
+    {
+      "label": "interrupted-restore",
+      "command": [
+        "pct",
+        "restore",
+        "104",
+        "PBS-01:backup/ct/102/2026-10-11T05:33:28Z",
+        "--storage",
+        "local-zfs",
+        "--unprivileged",
+        "1",
+        "--onboot",
+        "0",
+        "--hostname",
+        "lifeos-recovery-interrupted"
+      ],
+      "exit_code": 255,
+      "elapsed_seconds": 1.2944803399732336
+    },
+    {
+      "label": "daily-config",
+      "command": [
+        "pct",
+        "config",
+        "102"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.7988096890039742
+    },
+    {
+      "label": "drain-daily-writers",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "stop",
+        "hermes-dashboard.service",
+        "com.lifeos.pulse.service",
+        "hermes-gateway.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8281147419475019
+    },
+    {
+      "label": "disable-daily-dashboard-restarts",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "disable",
+        "hermes-dashboard.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8705153120681643
+    },
+    {
+      "label": "interrupted-coverage",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "interrupted",
+        "prepare"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.319780988036655
+    },
+    {
+      "label": "interrupted-shutdown",
+      "command": [
+        "pct",
+        "shutdown",
+        "102",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.5315298070199788
+    },
+    {
+      "label": "interrupted-backup",
+      "command": [
+        "vzdump",
+        "102",
+        "--storage",
+        "PBS-01",
+        "--mode",
+        "stop",
+        "--notes-template",
+        "LifeOS daily synthetic whole-guest recovery interrupted"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 40.37009793391917
+    },
+    {
+      "label": "interrupted-archives",
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content",
+        "--content",
+        "backup",
+        "--vmid",
+        "102",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.148385819979012
+    },
+    {
+      "label": "interrupted-restore",
+      "command": [
+        "pct",
+        "restore",
+        "104",
+        "PBS-01:backup/ct/102/2026-10-11T05:35:09Z",
+        "--storage",
+        "local-zfs",
+        "--unprivileged",
+        "1",
+        "--onboot",
+        "0",
+        "--hostname",
+        "lifeos-recovery-interrupted"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 188.22390949598048
+    },
+    {
+      "label": "interrupted-disconnect",
+      "command": [
+        "pct",
+        "set",
+        "104",
+        "--delete",
+        "net0",
+        "--onboot",
+        "0",
+        "--tags",
+        "disposable;lifeos-recovery"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8875259559135884
+    },
+    {
+      "label": "interrupted-mount",
+      "command": [
+        "pct",
+        "mount",
+        "104"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8758312610443681
+    },
+    {
+      "label": "interrupted-unmount",
+      "command": [
+        "pct",
+        "unmount",
+        "104"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8422494310652837
+    },
+    {
+      "label": "interrupted-start-isolated",
+      "command": [
+        "pct",
+        "start",
+        "104"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.010343833011575
+    },
+    {
+      "label": "interrupted-network",
+      "command": [
+        "pct",
+        "exec",
+        "104",
+        "--",
+        "ip",
+        "-brief",
+        "address"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8638792029814795
+    },
+    {
+      "label": "interrupted-services",
+      "command": [
+        "pct",
+        "exec",
+        "104",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "show",
+        "-p",
+        "ActiveState",
+        "hermes-dashboard.service",
+        "hermes-gateway.service",
+        "com.lifeos.pulse.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8150519870687276
+    },
+    {
+      "label": "interrupted-coverage-verify",
+      "command": [
+        "pct",
+        "exec",
+        "104",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "interrupted",
+        "verify"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.0217883840668947
+    },
+    {
+      "label": "interrupted-recovery-verify",
+      "command": [
+        "pct",
+        "exec",
+        "104",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/verify_recovery.py",
+        "interrupted"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.0396691790083423
+    },
+    {
+      "label": "interrupted-pull-interrupted-coverage-restored.json",
+      "command": [
+        "pct",
+        "pull",
+        "104",
+        "/home/lifeos-hermes/deployment/2026-10-11/coverage-interrupted-restored.json",
+        "/root/lifeos-daily-install/recovery/interrupted-coverage-restored.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.844203663058579
+    },
+    {
+      "label": "interrupted-pull-interrupted-restored-verification.json",
+      "command": [
+        "pct",
+        "pull",
+        "104",
+        "/home/lifeos-hermes/deployment/2026-10-11/recovery-fixtures/interrupted/restored-verification.json",
+        "/root/lifeos-daily-install/recovery/interrupted-restored-verification.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8453364319866523
+    },
+    {
+      "label": "interrupted-stop-restore",
+      "command": [
+        "pct",
+        "shutdown",
+        "104",
+        "--timeout",
+        "30"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.425965082948096
+    },
+    {
+      "label": "interrupted-restart-daily",
+      "command": [
+        "pct",
+        "start",
+        "102"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.78222877997905
+    },
+    {
+      "label": "later-edit-prepare",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/prepare_recovery.py",
+        "later-edit"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 33.47999777097721
+    },
+    {
+      "label": "later-edit-coverage",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "later-edit",
+        "prepare"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.6800722319167107
+    },
+    {
+      "label": "later-edit-shutdown",
+      "command": [
+        "pct",
+        "shutdown",
+        "102",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.5073476480320096
+    },
+    {
+      "label": "later-edit-backup",
+      "command": [
+        "vzdump",
+        "102",
+        "--storage",
+        "PBS-01",
+        "--mode",
+        "stop",
+        "--notes-template",
+        "LifeOS daily synthetic whole-guest recovery later-edit"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 50.6220519579947
+    },
+    {
+      "label": "later-edit-archives",
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content",
+        "--content",
+        "backup",
+        "--vmid",
+        "102",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.2378661329858005
+    },
+    {
+      "label": "later-edit-restore",
+      "command": [
+        "pct",
+        "restore",
+        "105",
+        "PBS-01:backup/ct/102/2026-10-11T05:39:58Z",
+        "--storage",
+        "local-zfs",
+        "--unprivileged",
+        "1",
+        "--onboot",
+        "0",
+        "--hostname",
+        "lifeos-recovery-later-edit"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 208.83114031795412
+    },
+    {
+      "label": "later-edit-disconnect",
+      "command": [
+        "pct",
+        "set",
+        "105",
+        "--delete",
+        "net0",
+        "--onboot",
+        "0",
+        "--tags",
+        "disposable;lifeos-recovery"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8587850719923154
+    },
+    {
+      "label": "later-edit-mount",
+      "command": [
+        "pct",
+        "mount",
+        "105"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8816672080429271
+    },
+    {
+      "label": "later-edit-unmount",
+      "command": [
+        "pct",
+        "unmount",
+        "105"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8559026969596744
+    },
+    {
+      "label": "later-edit-start-isolated",
+      "command": [
+        "pct",
+        "start",
+        "105"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.95019169698935
+    },
+    {
+      "label": "later-edit-network",
+      "command": [
+        "pct",
+        "exec",
+        "105",
+        "--",
+        "ip",
+        "-brief",
+        "address"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.93783871200867
+    },
+    {
+      "label": "later-edit-services",
+      "command": [
+        "pct",
+        "exec",
+        "105",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "env",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus",
+        "systemctl",
+        "--user",
+        "show",
+        "-p",
+        "ActiveState",
+        "hermes-dashboard.service",
+        "hermes-gateway.service",
+        "com.lifeos.pulse.service"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8226068230578676
+    },
+    {
+      "label": "later-edit-coverage-verify",
+      "command": [
+        "pct",
+        "exec",
+        "105",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/guest_coverage.py",
+        "later-edit",
+        "verify"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.0364822540432215
+    },
+    {
+      "label": "later-edit-recovery-verify",
+      "command": [
+        "pct",
+        "exec",
+        "105",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-B",
+        "/home/lifeos-hermes/install-input/verify_recovery.py",
+        "later-edit"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.84648126992397
+    },
+    {
+      "label": "later-edit-pull-later-edit-coverage-restored.json",
+      "command": [
+        "pct",
+        "pull",
+        "105",
+        "/home/lifeos-hermes/deployment/2026-10-11/coverage-later-edit-restored.json",
+        "/root/lifeos-daily-install/recovery/later-edit-coverage-restored.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.841106403968297
+    },
+    {
+      "label": "later-edit-pull-later-edit-restored-verification.json",
+      "command": [
+        "pct",
+        "pull",
+        "105",
+        "/home/lifeos-hermes/deployment/2026-10-11/recovery-fixtures/later-edit/restored-verification.json",
+        "/root/lifeos-daily-install/recovery/later-edit-restored-verification.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8524611600441858
+    },
+    {
+      "label": "later-edit-stop-restore",
+      "command": [
+        "pct",
+        "shutdown",
+        "105",
+        "--timeout",
+        "30"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.3918482480803505
+    },
+    {
+      "label": "later-edit-restart-daily",
+      "command": [
+        "pct",
+        "start",
+        "102"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.833425867022015
+    }
+  ]
+}

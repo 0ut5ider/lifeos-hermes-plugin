@@ -1,6 +1,14 @@
 # Full LifeOS experience release
 
-Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest does not exist yet.
+Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest is container 102 at `192.168.8.253`.
+
+## Daily guest installation and recovery (October 11)
+
+Adrian authorizes a separate daily VM or container. The operator provisions unprivileged Ubuntu container `lifeos-daily` at `192.168.8.253` on Proxmox `192.168.8.101`. The guest has four CPU cores, eight GiB memory, and an 80 GiB root disk. It installs certified version 0.2.0 with fresh Adrian and Cerebo data. All 200 plugin files match merged main commit `2514eea8` and the frozen program archive. The installed Hermes and native files match their release manifests. A real private FlashNext conversation passes with zero active lasting facts.
+
+The [daily guest verification](verification/2026-10-11-daily-guest/README.md) completes all three actual off-server backup and restore cases. Baseline recovery preserves the complete state. Interrupted publication recovers the exact prior Atlas group. A later edit prevents replacement and preserves the complete group and journal. The enabled backup job retains seven daily, four weekly, and three monthly backups on PBS-01. It uses stop mode at 01:00 in the Proxmox host timezone.
+
+Private-channel admission, bot cutover, managed memory activation, and final daily Discord acceptance remain open. Adrian must supply the new private channel ID. `.252` remains the development guest and currently runs Shiny Hermes Bot.
 
 ## Latest combined acceptance (October 10)
 
@@ -8,9 +16,9 @@ Adrian authorizes package freeze and combined development acceptance. The [relea
 
 The [combined gate](verification/2026-10-10-daily-text-release/README.md) passes 490 tests. Separate gates pass 38 fresh-store tests, 42 channel and model controls, and 96 native Hermes tests. Twelve installed commands pass, including actual private-model memory across two sessions, Atlas regeneration and capacity refusal, two-minute Conduit capture, service interruption and restart, local profile reconstruction, and retained-version rollback. Thirteen Pulse pages and both Hermes administration pages pass browser checks. All six disabled Pulse editor routes refuse requests. The live development baseline and model routes remain unchanged.
 
-Acceptance exposes two corrections. New-store preparation removes sample personal records while retaining exact native examples outside the active tree. Owner-job admission receives the existing 30-second runtime allowance because concurrent source checks exceed its earlier eight-second deadline. The frozen corrected code awaits merge. Certify equivalent merged program bytes before provisioning the daily guest.
+Acceptance exposes two corrections. New-store preparation removes sample personal records while retaining exact native examples outside the active tree. Owner-job admission receives the existing 30-second runtime allowance because concurrent source checks exceed its earlier eight-second deadline. PR7 merges the frozen corrections as main commit `2514eea8`. The October 11 installation certifies equivalent program bytes before provisioning the daily guest.
 
-The next gates are the separate daily VM, a coherent off-server whole-guest backup and isolated restore, the verified private Discord channel, bot cutover, and lasting-memory activation. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
+Daily guest provisioning and coherent off-server restoration pass on October 11. The remaining gates are the verified private Discord channel, bot cutover, and lasting-memory activation. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
 
 The sections below retain the dated evidence and earlier open-state descriptions. This October 10 record supplies the current combined development status.
 
