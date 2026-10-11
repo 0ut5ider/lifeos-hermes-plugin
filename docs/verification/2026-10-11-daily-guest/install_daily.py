@@ -70,6 +70,7 @@ route = module('memory_context').route_identity('custom', selected['model']['def
     selected['model']['base_url'], selected['model'].get('api_mode', 'chat_completions'))
 configuration.update(lambda value: value.update(root=str(root), hermes_workspace=str(workspace),
     accounts={'dashboard:basic:adrian': 'adrian', 'terminal:' + str(os.getuid()): 'adrian'},
+    pulse_http={'dashboard_base_url': 'http://127.0.0.1:18819'},
     destinations={'terminal:' + str(profile): {'visibility': 'private', 'participants': ['adrian'],
         'read': ['principal', 'assistant', 'project'], 'write': ['principal', 'assistant', 'project'],
         'projects': ['*'], 'model_routes': [route]}}))
@@ -127,7 +128,8 @@ for role, name in units.items():
     lines = ['# ABOUTME: Runs the selected daily Hermes and LifeOS service.',
         '# ABOUTME: Uses the frozen program package and the private selected store.',
         '[Unit]', 'Description=LifeOS daily ' + role, '[Service]', 'Type=simple',
-        'UMask=0077', 'KillMode=control-group', 'TimeoutStopSec=45', 'Restart=on-failure',
+        'UMask=0077', 'KillMode=control-group', 'TimeoutStopSec=' + ('90' if role == 'gateway' else '45'),
+        'Restart=on-failure',
         'RestartSec=5', 'WorkingDirectory=' + str(working[role]), 'ExecStart=' + commands[role]]
     lines.extend('Environment="' + key + '=' + value + '"' for key, value in environment.items())
     lines.extend(['[Install]', 'WantedBy=default.target'])

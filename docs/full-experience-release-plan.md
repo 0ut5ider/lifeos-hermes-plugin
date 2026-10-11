@@ -8,7 +8,7 @@ Adrian authorizes a separate daily VM or container. The operator provisions unpr
 
 The [daily guest verification](verification/2026-10-11-daily-guest/README.md) completes all three actual off-server backup and restore cases. Baseline recovery preserves the complete state. Interrupted publication recovers the exact prior Atlas group. A later edit prevents replacement and preserves the complete group and journal. The enabled backup job retains seven daily, four weekly, and three monthly backups on PBS-01. It uses stop mode at 01:00 in the Proxmox host timezone.
 
-Private-channel admission, bot cutover, managed memory activation, and final daily Discord acceptance remain open. Adrian must supply the new private channel ID. `.252` remains the development guest and currently runs Shiny Hermes Bot.
+The separate Cerebo bot connects in private channel `#cerebo`. Current audience checks and exact inbound owner acceptance pass. Governed memory ownership and Pulse are active. Five owner jobs and authenticated Pulse routes pass. A stale-policy test refuses delivery, and the actual morning brief reaches Discord. Cross-session Discord memory acceptance remains open. `.252` remains the development guest and runs Shiny Hermes Bot.
 
 ## Latest combined acceptance (October 10)
 
@@ -18,7 +18,7 @@ The [combined gate](verification/2026-10-10-daily-text-release/README.md) passes
 
 Acceptance exposes two corrections. New-store preparation removes sample personal records while retaining exact native examples outside the active tree. Owner-job admission receives the existing 30-second runtime allowance because concurrent source checks exceed its earlier eight-second deadline. PR7 merges the frozen corrections as main commit `2514eea8`. The October 11 installation certifies equivalent program bytes before provisioning the daily guest.
 
-Daily guest provisioning and coherent off-server restoration pass on October 11. The remaining gates are the verified private Discord channel, bot cutover, and lasting-memory activation. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
+Daily guest provisioning and coherent off-server restoration pass on October 11. Private-channel admission, inbound owner delivery, and lasting-memory activation also pass on October 11. Cross-session Discord memory acceptance remains open. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
 
 The sections below retain the dated evidence and earlier open-state descriptions. This October 10 record supplies the current combined development status.
 
