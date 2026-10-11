@@ -1,0 +1,79 @@
+{
+  "release-gate.json": {
+    "sha256": "e5bdbb5572dd3881a5e511944f02bb0db2e123cb1bb3ef6b7110ecd9674eb29e",
+    "top_level_keys": [
+      "command",
+      "duration_seconds",
+      "environment_overrides",
+      "exit_code",
+      "source_hashes",
+      "source_hashes_unchanged"
+    ],
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_memory_atlas_retention",
+      "test_memory_atlas_capacity",
+      "test_memory_atlas_sync",
+      "test_memory_atlas",
+      "test_memory_atlas_insight",
+      "test_memory_atlas_insight_edges",
+      "test_memory_atlas_guest_recovery",
+      "test_memory_atlas_jobs",
+      "test_memory_owner_job_command",
+      "test_memory_publication_recovery",
+      "test_footprint_contracts",
+      "test_plugin_lifecycle"
+    ],
+    "exit_code": 0,
+    "duration_seconds": 372.0358404419967,
+    "source_hashes_unchanged": true
+  },
+  "development-verification.json": {
+    "sha256": "300dc4659840db3082350acf3a3519a54c5939ff0336f3ba4e635ea91fe1b56f",
+    "top_level_keys": [
+      "command",
+      "daily_guest_modified",
+      "duration_seconds",
+      "exit_code",
+      "host",
+      "live_after",
+      "live_before",
+      "live_configuration_and_services_unchanged",
+      "live_discord_messages_sent",
+      "native_source_root",
+      "native_store_sha256",
+      "profile_scope",
+      "source_hashes",
+      "source_hashes_unchanged",
+      "source_modes"
+    ],
+    "command": [
+      "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_memory_atlas_retention",
+      "test_memory_atlas_capacity",
+      "test_memory_atlas_sync",
+      "test_memory_atlas",
+      "test_memory_atlas_insight",
+      "test_memory_atlas_insight_edges",
+      "test_memory_atlas_guest_recovery",
+      "test_memory_atlas_jobs",
+      "test_memory_owner_job_command",
+      "test_memory_publication_recovery",
+      "test_footprint_contracts",
+      "test_plugin_lifecycle"
+    ],
+    "exit_code": 0,
+    "duration_seconds": 350.267,
+    "source_hashes_unchanged": true
+  }
+}
