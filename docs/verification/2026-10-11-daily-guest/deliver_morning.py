@@ -32,6 +32,9 @@ body = json.loads(result.stdout)
 assert body['status'] == 'completed' and body['job'] == 'life-morning-brief'
 output = body['output'].strip()
 assert output and len(output.encode()) <= 65536, 'The morning brief has invalid output'
+# Hermes interprets these markers as attachment instructions rather than narration.
+if any(marker in output for marker in ('MEDIA:', '[[audio_as_voice]]', '[[as_document]]')):
+    raise ValueError('The text morning brief refuses transport directives')
 configuration.check_revision(configuration.load(), revision)
 assert guard.check(platform='discord', chat_id=channel, hermes_home=str(profile))['action'] == 'allow'
 sent = subprocess.run([str(home / '.local/bin/hermes'), 'send', '--to', 'discord:' + channel,
