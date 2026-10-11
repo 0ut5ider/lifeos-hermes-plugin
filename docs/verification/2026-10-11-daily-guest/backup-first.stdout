@@ -1,0 +1,16 @@
+INFO: starting new backup job: vzdump 102 --notes-template 'LifeOS daily synthetic whole-guest recovery baseline' --storage PBS-01 --mode stop
+INFO: Starting Backup of VM 102 (lxc)
+INFO: Backup started at 2026-10-11 00:14:20
+INFO: status = stopped
+INFO: backup mode: stop
+INFO: ionice priority: 7
+INFO: CT Name: lifeos-daily
+INFO: including mount point rootfs ('/') in backup
+INFO: creating Proxmox Backup Server archive 'ct/102/2026-10-11T05:14:20Z'
+INFO: set max number of entries in memory for file-based backups to 1048576
+INFO: run: lxc-usernsexec -m u:0:100000:65536 -m g:0:100000:65536 -- /usr/bin/proxmox-backup-client backup --crypt-mode=none pct.conf:/var/tmp/vzdumptmp3439828_102/etc/vzdump/pct.conf root.pxar:/mnt/vzsnap0 --include-dev /mnt/vzsnap0/./ --skip-lost-and-found --exclude=/tmp/?* --exclude=/var/tmp/?* --exclude=/var/run/?*.pid --backup-type ct --backup-id 102 --backup-time 1791695660 --entries-max 1048576 --repository admin@pbs@192.168.8.24:PlutoNAS_Backup
+INFO: Error: unable to access '/var/tmp/vzdumptmp3439828_102/etc/vzdump/pct.conf' - Permission denied (os error 13)
+ERROR: Backup of VM 102 failed - command 'lxc-usernsexec -m u:0:100000:65536 -m g:0:100000:65536 -- /usr/bin/proxmox-backup-client backup '--crypt-mode=none' pct.conf:/var/tmp/vzdumptmp3439828_102/etc/vzdump/pct.conf root.pxar:/mnt/vzsnap0 --include-dev /mnt/vzsnap0/./ --skip-lost-and-found '--exclude=/tmp/?*' '--exclude=/var/tmp/?*' '--exclude=/var/run/?*.pid' --backup-type ct --backup-id 102 --backup-time 1791695660 --entries-max 1048576 --repository admin@pbs@192.168.8.24:PlutoNAS_Backup' failed: exit code 255
+INFO: Failed at 2026-10-11 00:14:20
+INFO: Backup job finished with errors
+INFO: notified via target `mail-to-root`
