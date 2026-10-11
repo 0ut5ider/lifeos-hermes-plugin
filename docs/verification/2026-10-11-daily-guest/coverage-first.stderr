@@ -1,0 +1,15 @@
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/install-input/guest_coverage.py", line 59, in <module>
+    assert sha(path) == expected['sha256'], name
+           ~~~^^^^^^
+  File "/home/lifeos-hermes/install-input/guest_coverage.py", line 17, in <lambda>
+    sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+                                      ~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lifeos-hermes/.hermes/state.db-wal'

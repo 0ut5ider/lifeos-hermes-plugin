@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/deployment/2026-10-11/activate_daily.py", line 91, in <module>
+    main()
+    ~~~~^^
+  File "/home/lifeos-hermes/deployment/2026-10-11/activate_daily.py", line 57, in main
+    plan = setup.prepare(evidence / 'daily-ownership-profile-backup', account=account)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/ownership_setup.py", line 128, in prepare
+    snapshot = create(self.configuration, destination, account=account, installation_lease=lease)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 187, in create
+    databases = _databases(profile, user, stack)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 105, in _databases
+    for path, kind, _, _ in _entries(profile, user):
+                            ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 67, in _entries
+    _directory(directory)
+    ~~~~~~~~~~^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/memory_backup.py", line 36, in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+lifeos-hook-bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/deployment/2026-10-11/activate_daily.py", line 91, in <module>
+    main()
+    ~~~~^^
+  File "/home/lifeos-hermes/deployment/2026-10-11/activate_daily.py", line 57, in main
+    plan = setup.prepare(evidence / 'daily-ownership-profile-backup', account=account)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/ownership_setup.py", line 128, in prepare
+    snapshot = create(self.configuration, destination, account=account, installation_lease=lease)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 187, in create
+    databases = _databases(profile, user, stack)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 105, in _databases
+    for path, kind, _, _ in _entries(profile, user):
+                            ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_backup.py", line 67, in _entries
+    _directory(directory)
+    ~~~~~~~~~~^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/memory_backup.py", line 36, in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+lifeos-hook-bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions

@@ -1,0 +1,139 @@
+test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) ... 
+  test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:/tmp/morning-text-nq9bultc/install-input/dashboard-access.json') ... FAIL
+  test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. `MEDIA:/tmp/morning-text-nq9bultc/install-input/dashboard-access.json`') ... FAIL
+  test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:/synthetic/missing.pdf') ... FAIL
+  test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:/synthetic/file') ... FAIL
+  test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:"/synthetic/file with spaces.json"') ... FAIL
+test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) ... 
+  test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) (source='GOALS.md') ... FAIL
+  test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) (source='SPARKS.md') ... FAIL
+  test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) (source='CURRENT.md') ... FAIL
+test_normal_narration_preserves_text_and_fixed_destination (test_daily_morning_delivery.DailyMorningDeliveryTests.test_normal_narration_preserves_text_and_fixed_destination) ... ok
+test_voice_and_document_transport_markers_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_voice_and_document_transport_markers_refuse_before_send) ... 
+  test_voice_and_document_transport_markers_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_voice_and_document_transport_markers_refuse_before_send) (marker='[[audio_as_voice]]') ... FAIL
+  test_voice_and_document_transport_markers_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_voice_and_document_transport_markers_refuse_before_send) (marker='[[as_document]]') ... FAIL
+
+======================================================================
+FAIL: test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:/tmp/morning-text-nq9bultc/install-input/dashboard-access.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 117, in test_media_directives_refuse_even_when_quoted_missing_or_extensionless
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. `MEDIA:/tmp/morning-text-nq9bultc/install-input/dashboard-access.json`')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 117, in test_media_directives_refuse_even_when_quoted_missing_or_extensionless
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:/synthetic/missing.pdf')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 117, in test_media_directives_refuse_even_when_quoted_missing_or_extensionless
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:/synthetic/file')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 117, in test_media_directives_refuse_even_when_quoted_missing_or_extensionless
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) (output='Good morning. MEDIA:"/synthetic/file with spaces.json"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 117, in test_media_directives_refuse_even_when_quoted_missing_or_extensionless
+    self.assert_refused_before_send(output)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) (source='GOALS.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 108, in test_native_goals_sparks_and_next_actions_refuse_file_uploads
+    self.assert_refused_before_send(rendered)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) (source='SPARKS.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 108, in test_native_goals_sparks_and_next_actions_refuse_file_uploads
+    self.assert_refused_before_send(rendered)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) (source='CURRENT.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 108, in test_native_goals_sparks_and_next_actions_refuse_file_uploads
+    self.assert_refused_before_send(rendered)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_voice_and_document_transport_markers_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_voice_and_document_transport_markers_refuse_before_send) (marker='[[audio_as_voice]]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 122, in test_voice_and_document_transport_markers_refuse_before_send
+    self.assert_refused_before_send('Good morning. ' + marker)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_voice_and_document_transport_markers_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_voice_and_document_transport_markers_refuse_before_send) (marker='[[as_document]]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 122, in test_voice_and_document_transport_markers_refuse_before_send
+    self.assert_refused_before_send('Good morning. ' + marker)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_morning_delivery.py", line 81, in assert_refused_before_send
+    with self.assertRaisesRegex(ValueError, 'transport directives'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.269s
+
+FAILED (failures=10)

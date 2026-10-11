@@ -1,0 +1,167 @@
+{
+  "status": "PASS",
+  "save_session": "20261011_133758_2630a29c",
+  "recall_session": "20261011_133952_a6694676",
+  "separate_sessions_verified": true,
+  "exact_save_call_count": 1,
+  "save_status": "committed",
+  "recall_status": "ok",
+  "reference": {
+    "id": "5ef768b788a94926ab2b889689f64f91",
+    "revision": 1
+  },
+  "exact_content_recalled": true,
+  "cleanup_status": "committed",
+  "post_cleanup_search_results": 0,
+  "active_facts": 0,
+  "prior_unverified_session_refused": "20261011_121558_feea1717",
+  "prior_session_has_verified_context": false,
+  "sessions": [
+    {
+      "id": "20261011_133758_2630a29c",
+      "source": "discord",
+      "chat_id": "1558870196784205927",
+      "parent_session_id": "20261011_121558_feea1717",
+      "started_at": 1791740278.5081499,
+      "ended_at": 1791740392.716405,
+      "end_reason": "session_reset",
+      "message_count": 5,
+      "tool_call_count": 1
+    },
+    {
+      "id": "20261011_133952_a6694676",
+      "source": "discord",
+      "chat_id": "1558870196784205927",
+      "parent_session_id": "20261011_133758_2630a29c",
+      "started_at": 1791740392.7204628,
+      "ended_at": 1791740646.8306298,
+      "end_reason": "session_reset",
+      "message_count": 11,
+      "tool_call_count": 3
+    }
+  ],
+  "fresh_daily_session": {
+    "id": "20261011_134406_839e0541",
+    "started_at": 1791740646.8315213,
+    "message_count": 0
+  },
+  "discord_delivery": {
+    "save": {
+      "message_id": "1558896828135641200",
+      "timestamp": "2026-10-11T17:39:26.730000+00:00",
+      "content": "**\u2705 Saved to LifeOS memory**\n\nStatus: committed (revision 1, reference id `5ef768b788a94926ab2b889689f64f91`). The fact landed under category project, project `daily-release-acceptance`, title \"Synthetic daily setup acceptance\", request_id `daily-discord-acceptance-1011` \u2014 exactly one call, verbatim content: \"Synthetic daily setup verification code is D253-CEREBO-1011.\"\n\n\ud83d\udde3\ufe0f It's in the archive and recallable by that request id whenever you want it back."
+    },
+    "recall": {
+      "message_id": "1558897345184403457",
+      "timestamp": "2026-10-11T17:41:30.004000+00:00",
+      "content": "**Memory Search: D253-CEREBO-1011**\n\nFound one active fact.\n\n- **Content:** \"Synthetic daily setup verification code is D253-CEREBO-1011.\"\n- **Reference:** id `5ef768b788a94926ab2b889689f64f91`, revision 1\n- Category: project (`daily-release-acceptance`), status active\n- Source: `LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-daily-setup-acceptance.md`, written by discord:708089927468056648\n\n\ud83d\udde3\ufe0f One match, exact hit on the code."
+    },
+    "cleanup": {
+      "message_id": "1558897747703373856",
+      "timestamp": "2026-10-11T17:43:05.972000+00:00",
+      "content": "**\ud83e\uddf9 Acceptance cleanup \u2014 D253-CEREBO-1011**\n\nForget: status `committed`, reference id `5ef768b788a94926ab2b889689f64f91` now at revision 2, request_id `daily-discord-cleanup-1011`. Retained copies: native history, audit evidence, backups, conversation history, development logs.\n\nVerification search for \"D253-CEREBO-1011\": status `ok`, result count 0 \u2014 the fact is excluded from ordinary recall. No new fact was saved.\n\n\ud83d\udde3\ufe0f Done and verified: forgotten, zero recall hits, nothing written."
+    },
+    "fresh_reset": {
+      "message_id": "1558898016637952093",
+      "timestamp": "2026-10-11T17:44:10.091000+00:00",
+      "content": "\u2728 Session reset! Starting fresh.\n\n\u25c6 Model: `flashnext-w4a16-fp8ple`\n\u25c6 Provider: custom\n\u25c6 Context: 131K tokens (config)\n\u2726 Tip: Set security.website_blocklist.enabled: true to block specific domains from web tools."
+    }
+  },
+  "tool_receipts": [
+    {
+      "session_id": "20261011_133758_2630a29c",
+      "name": "lifeos_memory_remember",
+      "arguments": {
+        "category": "project",
+        "content": "Synthetic daily setup verification code is D253-CEREBO-1011.",
+        "title": "Synthetic daily setup acceptance",
+        "project": "daily-release-acceptance",
+        "request_id": "daily-discord-acceptance-1011"
+      },
+      "result": {
+        "status": "committed",
+        "reference": {
+          "id": "5ef768b788a94926ab2b889689f64f91",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": "20261011_133758_2630a29c"
+        },
+        "writer": "discord:708089927468056648",
+        "request_id": "daily-discord-acceptance-1011"
+      },
+      "host_annotation": ""
+    },
+    {
+      "session_id": "20261011_133952_a6694676",
+      "name": "lifeos_memory_search",
+      "arguments": {
+        "query": "D253-CEREBO-1011"
+      },
+      "result": {
+        "status": "ok",
+        "results": [
+          {
+            "reference": {
+              "id": "5ef768b788a94926ab2b889689f64f91",
+              "revision": 1
+            },
+            "content": "Synthetic daily setup verification code is D253-CEREBO-1011.",
+            "category": "project",
+            "project": "daily-release-acceptance",
+            "writer": "discord:708089927468056648",
+            "status": "active",
+            "source": {
+              "kind": "explicit",
+              "session": "20261011_133758_2630a29c",
+              "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-daily-setup-acceptance.md"
+            },
+            "score": 1
+          }
+        ]
+      },
+      "host_annotation": ""
+    },
+    {
+      "session_id": "20261011_133952_a6694676",
+      "name": "lifeos_memory_forget",
+      "arguments": {
+        "reference": {
+          "id": "5ef768b788a94926ab2b889689f64f91",
+          "revision": 1
+        },
+        "request_id": "daily-discord-cleanup-1011"
+      },
+      "result": {
+        "status": "committed",
+        "reference": {
+          "id": "5ef768b788a94926ab2b889689f64f91",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "discord:708089927468056648",
+        "request_id": "daily-discord-cleanup-1011"
+      },
+      "host_annotation": ""
+    },
+    {
+      "session_id": "20261011_133952_a6694676",
+      "name": "lifeos_memory_search",
+      "arguments": {
+        "query": "D253-CEREBO-1011"
+      },
+      "result": {
+        "status": "ok",
+        "results": []
+      },
+      "host_annotation": "[LOOP DETECTED] You've called lifeos_memory_search 3 times with the same input this session without progress. Last input: {\"query\":\"D253-CEREBO-1011\"}."
+    }
+  ]
+}

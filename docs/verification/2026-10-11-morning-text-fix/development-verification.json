@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "host": "192.168.8.252",
+  "isolated_staging_path": "/home/lifeos-hermes/development/2026-10-11-morning-text-fix",
+  "operator_sha256": "426b2c2b4f5aa319b5ff956858fc5d99707e1c17e8439e1980472cdecfda7089",
+  "renderer_sha256": "79b6c5173f5d9ff615f54e5b943b478b1a38ede4805b3e9a761b8c5518456dd3",
+  "checks": [
+    {
+      "label": "normal",
+      "command": [
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_daily_morning_delivery"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.467
+    },
+    {
+      "label": "optimized",
+      "command": [
+        "/home/lifeos-hermes/.hermes/installs/995dd15ff6e15ed0/environments/65f4231f26e94a2d989e89eb96b98808/venv/bin/python",
+        "-O",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_daily_morning_delivery"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.264
+    }
+  ],
+  "live_profile_modified": false,
+  "discord_messages_sent": 0
+}

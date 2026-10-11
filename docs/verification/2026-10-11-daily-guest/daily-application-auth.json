@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "path": "/api/memory",
+      "authenticated": false,
+      "status": 401
+    },
+    {
+      "path": "/api/memory",
+      "authenticated": true,
+      "status": 200
+    },
+    {
+      "path": "/api/telos/freshness/summary",
+      "authenticated": false,
+      "status": 401
+    },
+    {
+      "path": "/api/telos/freshness/summary",
+      "authenticated": true,
+      "status": 200
+    },
+    {
+      "path": "/api/conduit/status",
+      "authenticated": false,
+      "status": 401
+    },
+    {
+      "path": "/api/conduit/status",
+      "authenticated": true,
+      "status": 200
+    },
+    {
+      "path": "/api/atlas",
+      "authenticated": false,
+      "status": 401
+    },
+    {
+      "path": "/api/atlas",
+      "authenticated": true,
+      "status": 200
+    },
+    {
+      "path": "/api/content",
+      "authenticated": false,
+      "status": 401
+    },
+    {
+      "path": "/api/content",
+      "authenticated": true,
+      "status": 200
+    }
+  ]
+}

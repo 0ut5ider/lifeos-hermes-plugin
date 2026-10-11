@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "archive": "PBS-01:backup/ct/102/2026-10-11T16:31:32Z",
+  "guest": 102,
+  "writer_drain_verified": true,
+  "new_archive_restore_tested": false,
+  "operations": [
+    {
+      "label": "drain",
+      "exit_code": 0,
+      "elapsed_seconds": 2.761
+    },
+    {
+      "label": "shutdown",
+      "exit_code": 0,
+      "elapsed_seconds": 2.543
+    },
+    {
+      "label": "backup",
+      "exit_code": 0,
+      "elapsed_seconds": 69.836
+    },
+    {
+      "label": "archives",
+      "exit_code": 0,
+      "elapsed_seconds": 1.334
+    },
+    {
+      "label": "protect",
+      "exit_code": 0,
+      "elapsed_seconds": 1.172
+    },
+    {
+      "label": "attributes",
+      "exit_code": 0,
+      "elapsed_seconds": 1.201
+    },
+    {
+      "label": "start",
+      "exit_code": 0,
+      "elapsed_seconds": 2.917
+    },
+    {
+      "label": "resume",
+      "exit_code": 0,
+      "elapsed_seconds": 11.488
+    }
+  ]
+}
