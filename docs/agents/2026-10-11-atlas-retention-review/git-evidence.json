@@ -1,0 +1,35 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD",
+      "c9fdf51ca92c937a4d01e5c7903cf659a1e46552"
+    ],
+    "exit_code": 0,
+    "stdout": "72b0d4a2aaf7b1d7cf07e7bd7a16e078cf019388\nc9fdf51ca92c937a4d01e5c7903cf659a1e46552\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--short",
+      "--untracked-files=no"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--name-only",
+      "c9fdf51c..72b0d4a2"
+    ],
+    "exit_code": 0,
+    "stdout": "CHANGELOG.md\nREADME.md\nTODO.md\ndocs/deployment/daily-text/README.md\ndocs/verification/2026-10-11-atlas-retention/README.md\ndocs/verification/2026-10-11-atlas-retention/after-empty-snapshot-fix.done\ndocs/verification/2026-10-11-atlas-retention/after-empty-snapshot-fix.json\ndocs/verification/2026-10-11-atlas-retention/after-empty-snapshot-fix.stderr\ndocs/verification/2026-10-11-atlas-retention/after-empty-snapshot-fix.stdout\ndocs/verification/2026-10-11-atlas-retention/after.done\ndocs/verification/2026-10-11-atlas-retention/after.json\ndocs/verification/2026-10-11-atlas-retention/after.stderr\ndocs/verification/2026-10-11-atlas-retention/after.stdout\ndocs/verification/2026-10-11-atlas-retention/archive-policy.done\ndocs/verification/2026-10-11-atlas-retention/archive-policy.json\ndocs/verification/2026-10-11-atlas-retention/archive-policy.stderr\ndocs/verification/2026-10-11-atlas-retention/archive-policy.stdout\ndocs/verification/2026-10-11-atlas-retention/before.done\ndocs/verification/2026-10-11-atlas-retention/before.json\ndocs/verification/2026-10-11-atlas-retention/before.stderr\ndocs/verification/2026-10-11-atlas-retention/before.stdout\ndocs/verification/2026-10-11-atlas-retention/combined.done\ndocs/verification/2026-10-11-atlas-retention/combined.json\ndocs/verification/2026-10-11-atlas-retention/combined.stderr\ndocs/verification/2026-10-11-atlas-retention/combined.stdout\ndocs/verification/2026-10-11-atlas-retention/command-before.done\ndocs/verification/2026-10-11-atlas-retention/command-before.json\ndocs/verification/2026-10-11-atlas-retention/command-before.stderr\ndocs/verification/2026-10-11-atlas-retention/command-before.stdout\ndocs/verification/2026-10-11-atlas-retention/development-environment-before-development-verification.json\ndocs/verification/2026-10-11-atlas-retention/development-environment-before-development.done\ndocs/verification/2026-10-11-atlas-retention/development-environment-before-development.stderr\ndocs/verification/2026-10-11-atlas-retention/development-environment-before-development.stdout\ndocs/verification/2026-10-11-atlas-retention/development-harness-development-verification.json\ndocs/verification/2026-10-11-atlas-retention/development-harness-development.done\ndocs/verification/2026-10-11-atlas-retention/development-harness-development.stderr\ndocs/verification/2026-10-11-atlas-retention/development-harness-development.stdout\ndocs/verification/2026-10-11-atlas-retention/development-launcher-diagnostic.json\ndocs/verification/2026-10-11-atlas-retention/development-verification.json\ndocs/verification/2026-10-11-atlas-retention/development.done\ndocs/verification/2026-10-11-atlas-retention/development.stderr\ndocs/verification/2026-10-11-atlas-retention/development.stdout\ndocs/verification/2026-10-11-atlas-retention/final-combined.done\ndocs/verification/2026-10-11-atlas-retention/final-combined.json\ndocs/verification/2026-10-11-atlas-retention/final-combined.stderr\ndocs/verification/2026-10-11-atlas-retention/final-combined.stdout\ndocs/verification/2026-10-11-atlas-retention/final-focused.done\ndocs/verification/2026-10-11-atlas-retention/final-focused.json\ndocs/verification/2026-10-11-atlas-retention/final-focused.stderr\ndocs/verification/2026-10-11-atlas-retention/final-focused.stdout\ndocs/verification/2026-10-11-atlas-retention/focused.done\ndocs/verification/2026-10-11-atlas-retention/focused.json\ndocs/verification/2026-10-11-atlas-retention/focused.stderr\ndocs/verification/2026-10-11-atlas-retention/focused.stdout\ndocs/verification/2026-10-11-atlas-retention/harness-missing-yaml.done\ndocs/verification/2026-10-11-atlas-retention/harness-missing-yaml.json\ndocs/verification/2026-10-11-atlas-retention/harness-missing-yaml.stderr\ndocs/verification/2026-10-11-atlas-retention/harness-missing-yaml.stdout\ndocs/verification/2026-10-11-atlas-retention/malformed-table-before.done\ndocs/verification/2026-10-11-atlas-retention/malformed-table-before.json\ndocs/verification/2026-10-11-atlas-retention/malformed-table-before.stderr\ndocs/verification/2026-10-11-atlas-retention/malformed-table-before.stdout\ndocs/verification/2026-10-11-atlas-retention/pressure-before.done\ndocs/verification/2026-10-11-atlas-retention/pressure-before.json\ndocs/verification/2026-10-11-atlas-retention/pressure-before.stderr\ndocs/verification/2026-10-11-atlas-retention/pressure-before.stdout\ndocs/verification/2026-10-11-atlas-retention/private-directories.done\ndocs/verification/2026-10-11-atlas-retention/private-directories.json\ndocs/verification/2026-10-11-atlas-retention/private-directories.stderr\ndocs/verification/2026-10-11-atlas-retention/private-directories.stdout\ndocs/verification/2026-10-11-atlas-retention/provenance-before.done\ndocs/verification/2026-10-11-atlas-retention/provenance-before.json\ndocs/verification/2026-10-11-atlas-retention/provenance-before.stderr\ndocs/verification/2026-10-11-atlas-retention/provenance-before.stdout\ndocs/verification/2026-10-11-atlas-retention/publication-checks.json\ndocs/verification/2026-10-11-atlas-retention/release-gate.done\ndocs/verification/2026-10-11-atlas-retention/release-gate.json\ndocs/verification/2026-10-11-atlas-retention/release-gate.stderr\ndocs/verification/2026-10-11-atlas-retention/release-gate.stdout\ndocs/verification/2026-10-11-atlas-retention/run_checks.py\ndocs/verification/2026-10-11-atlas-retention/timestamps-before.done\ndocs/verification/2026-10-11-atlas-retention/timestamps-before.json\ndocs/verification/2026-10-11-atlas-retention/timestamps-before.stderr\ndocs/verification/2026-10-11-atlas-retention/timestamps-before.stdout\ndocs/verification/2026-10-11-atlas-retention/verify_development.py\ndocs/verification/2026-10-11-atlas-retention/verify_publication.py\nlifeos_hook_bridge/cli.py\nlifeos_hook_bridge/memory_access.py\nlifeos_hook_bridge/memory_atlas_history.py\nlifeos_hook_bridge/memory_atlas_sync.py\nlifeos_hook_bridge/memory_service.py\nnotes/2026-10-11-atlas-history-retention.md\ntests/memory_atlas_retention_process.py\ntests/test_footprint_contracts.py\ntests/test_memory_atlas_capacity.py\ntests/test_memory_atlas_retention.py\n",
+    "stderr": ""
+  }
+]

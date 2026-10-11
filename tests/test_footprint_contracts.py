@@ -18,16 +18,20 @@ class FootprintContractsTests(unittest.TestCase):
         class Context:
             def __init__(self):
                 self.commands = {}
+                self.hooks = {}
 
             def register_cli_command(self, name, **entry):
                 self.commands[name] = entry
+
+            def register_hook(self, name, callback):
+                self.hooks[name] = callback
 
         ctx = Context()
         with tempfile.TemporaryDirectory() as directory, patch.dict(
             os.environ, {"LIFEOS_HOOK_SETTINGS": str(Path(directory) / "missing.json")}
         ):
             register(ctx)
-        self.assertEqual(set(ctx.commands), {"lifeos-infer", "lifeos-probe", "lifeos-backup"})
+        self.assertEqual(set(ctx.commands), {"lifeos-infer", "lifeos-probe", "lifeos-backup", "lifeos-job", "lifeos-atlas-history"})
 
     def test_observation_binds_provider_model_and_effort(self):
         from lifeos_hook_bridge.model_tiers import carrier_observation

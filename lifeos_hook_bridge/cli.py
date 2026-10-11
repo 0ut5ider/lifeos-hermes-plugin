@@ -120,6 +120,30 @@ def run_owner_job(args: argparse.Namespace, read_setting) -> int:
     return 0 if result['status'] == 'completed' else 1
 
 
+def configure_atlas_history(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument('archive_id', help='Read one archive identifier returned by Atlas synchronization.')
+    parser.add_argument('--table', choices=('sync_run', 'lifecycle_event'), default='sync_run')
+    parser.add_argument('--offset', type=int, default=0, help='Read up to 100 rows from this offset.')
+
+
+def run_atlas_history(args: argparse.Namespace) -> int:
+    from hermes_constants import get_hermes_home
+    from hermes_cli.inventory import load_picker_context
+    from hermes_cli.runtime_provider import resolve_runtime_provider
+    from .memory_atlas_history import read_owner
+    try:
+        current = load_picker_context()
+        provider = resolve_runtime_provider(requested=current.current_provider, target_model=current.current_model)
+        route = {'provider': provider['provider'], 'model': current.current_model,
+                 'base_url': provider['base_url'], 'api_mode': provider['api_mode']}
+        result = read_owner(get_hermes_home()/'lifeos-memory.json', route,
+            args.archive_id, args.table, args.offset)
+    except (ValueError, OSError, RuntimeError, KeyError, sqlite3.Error, subprocess.TimeoutExpired):
+        result = {'ok': False, 'message': 'Atlas history needs current local owner permission and a verified archive.'}
+    print(json.dumps(result))
+    return 0 if result.get('ok') else 1
+
+
 def register_commands(ctx) -> None:
     ctx.register_cli_command(
         "lifeos-infer", help="Run a LifeOS child call with the selected Hermes provider.",
@@ -136,4 +160,8 @@ def register_commands(ctx) -> None:
     ctx.register_cli_command(
         'lifeos-job', help='Run a native background job with current local owner permission.',
         setup_fn=configure_owner_job, handler_fn=lambda args: run_owner_job(args, ctx.get_config),
+    )
+    ctx.register_cli_command(
+        'lifeos-atlas-history', help='Read verified Atlas archive rows with current local owner permission.',
+        setup_fn=configure_atlas_history, handler_fn=run_atlas_history,
     )

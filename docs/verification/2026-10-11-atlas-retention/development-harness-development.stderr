@@ -1,0 +1,1235 @@
+test_offline_group_restore_preserves_archives_and_owner_reads (test_memory_atlas_retention.MemoryAtlasArchiveRecoveryTests.test_offline_group_restore_preserves_archives_and_owner_reads) ... FAIL
+Exception ignored while calling weakref callback <finalize object at 0x743aff7d7d80; dead>:
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/tempfile.py", line 962, in _cleanup
+    _warnings.warn(warn_message, ResourceWarning)
+ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/native-memory-ueprkat8'>
+test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership (test_memory_atlas_retention.MemoryAtlasHistoryCommandTests.test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership) ... FAIL
+test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication) ... FAIL
+test_archive_history_pagination_keeps_complete_ordered_rows (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_history_pagination_keeps_complete_ordered_rows) ... FAIL
+test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference) ... FAIL
+test_archive_read_refuses_changed_bytes_and_arbitrary_paths (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_bytes_and_arbitrary_paths) ... FAIL
+test_archive_read_refuses_changed_provenance_manifest (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_provenance_manifest) ... FAIL
+test_archive_reads_require_current_owner (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner) ... FAIL
+test_authority_revocation_after_archive_stops_before_live_graph_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_authority_revocation_after_archive_stops_before_live_graph_publication) ... FAIL
+test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery) ... FAIL
+test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events) ... FAIL
+test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group) ... FAIL
+test_projection_pressure_archives_before_the_fixed_run_trigger (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_projection_pressure_archives_before_the_fixed_run_trigger) ... FAIL
+test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads) ... FAIL
+test_retention_preserves_native_maximum_collector_timestamp (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retention_preserves_native_maximum_collector_timestamp) ... FAIL
+test_retired_archive_text_is_withheld_without_erasing_the_archive (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retired_archive_text_is_withheld_without_erasing_the_archive) ... FAIL
+test_already_unadmitted_history_refuses_and_preserves_previous_graph (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_already_unadmitted_history_refuses_and_preserves_previous_graph) ... FAIL
+test_empty_graph_reader_does_not_request_automatic_generation (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_empty_graph_reader_does_not_request_automatic_generation) ... FAIL
+test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts) ... FAIL
+test_private_planned_graph_is_refused_without_publishing_public_snapshot (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_private_planned_graph_is_refused_without_publishing_public_snapshot) ... FAIL
+test_retained_history_archives_before_projection_capacity_is_exhausted (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_retained_history_archives_before_projection_capacity_is_exhausted) ... FAIL
+test_success_reports_bounded_capacity_and_warning_without_source_text (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_success_reports_bounded_capacity_and_warning_without_source_text) ... FAIL
+test_empty_regeneration_initializes_graph_and_remains_idle (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_empty_regeneration_initializes_graph_and_remains_idle) ... FAIL
+test_owner_command_reports_capacity_refusal_without_inference (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_owner_command_reports_capacity_refusal_without_inference) ... FAIL
+test_regeneration_reconciles_changed_sources_before_actual_model_request (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request) ... FAIL
+test_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) ... 
+  test_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) (phase='publication') ... FAIL
+  test_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) (phase='snapshot') ... FAIL
+test_actual_owner_job_initializes_graph_without_inference (test_memory_atlas_sync.MemoryAtlasOwnerSyncTests.test_actual_owner_job_initializes_graph_without_inference) ... FAIL
+test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes (test_memory_atlas_sync.MemoryAtlasSyncTests.test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes) ... FAIL
+test_database_companions_and_aliases_refuse_without_replacing_files (test_memory_atlas_sync.MemoryAtlasSyncTests.test_database_companions_and_aliases_refuse_without_replacing_files) ... FAIL
+test_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph (test_memory_atlas_sync.MemoryAtlasSyncTests.test_disabled_read_only_private_and_undeclared_collectors_do_not_create_graph) ... ok
+test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules) ... FAIL
+test_fresh_sync_uses_native_graph_and_snapshot (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_sync_uses_native_graph_and_snapshot) ... FAIL
+test_inherited_atlas_directory_cannot_redirect_planner_effects (test_memory_atlas_sync.MemoryAtlasSyncTests.test_inherited_atlas_directory_cannot_redirect_planner_effects) ... FAIL
+test_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) ... 
+  test_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) (destination='atlas.db') ... FAIL
+  test_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) (destination='snapshot.json') ... FAIL
+test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) ... 
+  test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) (mode='interrupt') ... FAIL
+  test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) (mode='source') ... FAIL
+  test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) (mode='authority') ... FAIL
+test_repeat_sync_preserves_native_identity_and_incomplete_observations (test_memory_atlas_sync.MemoryAtlasSyncTests.test_repeat_sync_preserves_native_identity_and_incomplete_observations) ... FAIL
+test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) ... 
+  test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='source') ... FAIL
+  test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='metadata') ... FAIL
+  test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='created') ... FAIL
+  test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='authority') ... FAIL
+test_collector_links_invalid_encoding_and_connector_loss_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_collector_links_invalid_encoding_and_connector_loss_refuse) ... ok
+test_owner_collectors_preserve_native_assets_edges_and_absence (test_memory_atlas.MemoryAtlasCollectorTests.test_owner_collectors_preserve_native_assets_edges_and_absence) ... 
+  test_owner_collectors_preserve_native_assets_edges_and_absence (test_memory_atlas.MemoryAtlasCollectorTests.test_owner_collectors_preserve_native_assets_edges_and_absence) (name='Gear') ... FAIL
+  test_owner_collectors_preserve_native_assets_edges_and_absence (test_memory_atlas.MemoryAtlasCollectorTests.test_owner_collectors_preserve_native_assets_edges_and_absence) (name='Projects') ... FAIL
+test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) ... 
+  test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) (name='Gear') ... ERROR
+  test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) (name='Projects') ... ERROR
+test_unbound_collectors_cannot_disclose_sources (test_memory_atlas.MemoryAtlasCollectorTests.test_unbound_collectors_cannot_disclose_sources) ... ok
+test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) ... 
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='source', view='snapshot') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='metadata', view='snapshot') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='created', view='snapshot') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='collector', view='snapshot') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='authority', view='snapshot') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='graph', view='insights') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='cache', view='insights') ... FAIL
+  test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='authority', view='insights') ... FAIL
+test_admitted_insights_preserve_native_metrics_and_current_narrative (test_memory_atlas.MemoryAtlasTests.test_admitted_insights_preserve_native_metrics_and_current_narrative) ... FAIL
+test_anonymous_cannot_read_snapshot_or_start_insights (test_memory_atlas.MemoryAtlasTests.test_anonymous_cannot_read_snapshot_or_start_insights) ... ok
+test_cached_snapshot_cannot_survive_private_replacement_or_retirement (test_memory_atlas.MemoryAtlasTests.test_cached_snapshot_cannot_survive_private_replacement_or_retirement) ... FAIL
+test_current_collector_source_exclusion_withholds_prior_snapshot (test_memory_atlas.MemoryAtlasTests.test_current_collector_source_exclusion_withholds_prior_snapshot) ... FAIL
+test_custom_snapshot_environment_cannot_read_another_owner_source (test_memory_atlas.MemoryAtlasTests.test_custom_snapshot_environment_cannot_read_another_owner_source) ... ok
+test_exact_owner_review_restores_safe_old_snapshot_and_graph (test_memory_atlas.MemoryAtlasTests.test_exact_owner_review_restores_safe_old_snapshot_and_graph) ... ERROR
+test_fixed_methods_selectors_and_unknown_routes_refuse (test_memory_atlas.MemoryAtlasTests.test_fixed_methods_selectors_and_unknown_routes_refuse) ... ok
+test_graph_row_limit_refuses_without_returning_truncated_metrics (test_memory_atlas.MemoryAtlasTests.test_graph_row_limit_refuses_without_returning_truncated_metrics) ... ok
+test_owner_snapshot_fields_and_missing_source_match_native (test_memory_atlas.MemoryAtlasTests.test_owner_snapshot_fields_and_missing_source_match_native) ... FAIL
+test_private_graph_and_cache_refuse_counts_and_narrative (test_memory_atlas.MemoryAtlasTests.test_private_graph_and_cache_refuse_counts_and_narrative) ... ok
+test_revocation_connector_loss_and_origin_cannot_reuse_cache (test_memory_atlas.MemoryAtlasTests.test_revocation_connector_loss_and_origin_cannot_reuse_cache) ... FAIL
+test_snapshot_links_invalid_encoding_and_size_refuse (test_memory_atlas.MemoryAtlasTests.test_snapshot_links_invalid_encoding_and_size_refuse) ... ok
+test_absent_graph_prepare_has_no_generated_cache_or_model_effect (test_memory_atlas_insight.MemoryAtlasInsightTests.test_absent_graph_prepare_has_no_generated_cache_or_model_effect) ... FAIL
+test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) ... 
+  test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='source') ... ERROR
+  test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='destination') ... ERROR
+  test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='authority') ... ERROR
+  test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='projection-source') ... ERROR
+  test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='projection-authority') ... ERROR
+  test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='interrupt') ... ERROR
+test_current_graph_prepare_and_fixed_private_publication (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_graph_prepare_and_fixed_private_publication) ... FAIL
+test_current_revision_check_refuses_changed_graph_and_later_cache (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_revision_check_refuses_changed_graph_and_later_cache) ... FAIL
+test_graph_metadata_changes_invalidate_prepared_sources (test_memory_atlas_insight.MemoryAtlasInsightTests.test_graph_metadata_changes_invalidate_prepared_sources) ... FAIL
+test_private_collector_sources_refuse_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_private_collector_sources_refuse_generation) ... ok
+test_read_only_and_revoked_owners_cannot_prepare_generation (test_memory_atlas_insight.MemoryAtlasInsightTests.test_read_only_and_revoked_owners_cannot_prepare_generation) ... ok
+test_wrong_metadata_and_private_generated_text_cannot_publish (test_memory_atlas_insight.MemoryAtlasInsightTests.test_wrong_metadata_and_private_generated_text_cannot_publish) ... FAIL
+test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse) ... FAIL
+test_generated_retired_text_cannot_enter_the_private_cache (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_retired_text_cannot_enter_the_private_cache) ... ERROR
+test_graph_inode_replacement_invalidates_prepared_generation (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_graph_inode_replacement_invalidates_prepared_generation) ... FAIL
+test_linked_or_invalid_cache_cannot_prepare_or_replace_prior_data (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_linked_or_invalid_cache_cannot_prepare_or_replace_prior_data) ... ok
+test_offline_restore_preserves_graph_sources_cache_and_current_views (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_offline_restore_preserves_graph_sources_cache_and_current_views) ... FAIL
+test_restored_interrupted_group_recovers_exact_prior_artifacts (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_restored_interrupted_group_recovers_exact_prior_artifacts) ... FAIL
+test_restored_later_edit_blocks_every_member_of_recovery (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_restored_later_edit_blocks_every_member_of_recovery) ... FAIL
+test_anonymous_job_preparation_requires_real_authentication (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_anonymous_job_preparation_requires_real_authentication) ... ok
+test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_disabled_read_only_and_unbound_terminal_jobs_refuse_preparation) ... ok
+test_owner_receives_only_a_current_configuration_restriction (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_owner_receives_only_a_current_configuration_restriction) ... ok
+test_preparation_refuses_caller_arguments (test_memory_atlas_jobs.MemoryAtlasJobAuthenticationTests.test_preparation_refuses_caller_arguments) ... ok
+test_actual_selected_profile_command_initializes_empty_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_initializes_empty_graph_without_inference) ... FAIL
+test_absent_graph_retains_exact_native_unavailable_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_absent_graph_retains_exact_native_unavailable_response) ... FAIL
+test_anonymous_regeneration_preserves_current_native_cache (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_anonymous_regeneration_preserves_current_native_cache) ... ok
+test_authenticated_native_regeneration_button_starts_selected_owner_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_authenticated_native_regeneration_button_starts_selected_owner_job) ... ok
+test_current_cache_does_not_start_a_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_cache_does_not_start_a_job) ... FAIL
+test_current_stale_insights_start_native_owner_regeneration (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_stale_insights_start_native_owner_regeneration) ... FAIL
+test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children) ... FAIL
+test_owner_revocation_during_automatic_preparation_withholds_prior_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_owner_revocation_during_automatic_preparation_withholds_prior_response) ... FAIL
+test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children) ... FAIL
+test_unbound_local_writer_keeps_stale_reader_without_generation (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_unbound_local_writer_keeps_stale_reader_without_generation) ... FAIL
+test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant) ... FAIL
+test_actual_parser_refuses_arbitrary_job_before_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_arbitrary_job_before_native_writes) ... ok
+test_actual_parser_refuses_disabled_ownership_without_native_writes (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_refuses_disabled_ownership_without_native_writes) ... ok
+test_actual_parser_runs_morning_brief_without_a_model_call (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_runs_morning_brief_without_a_model_call) ... FAIL
+test_changed_expected_journal_hash_refuses_without_restoring_any_file (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_changed_expected_journal_hash_refuses_without_restoring_any_file) ... ok
+test_committed_original_operation_keeps_publications_and_removes_its_journal (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_committed_original_operation_keeps_publications_and_removes_its_journal) ... ok
+test_expected_deleted_publication_restores_original_and_absent_targets (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_expected_deleted_publication_restores_original_and_absent_targets) ... ok
+test_expected_publications_restore_only_original_or_owned_artifact_bytes (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_expected_publications_restore_only_original_or_owned_artifact_bytes) ... ok
+test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal) ... ok
+test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect) ... ok
+test_later_edit_refuses_before_any_member_of_the_group_is_restored (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_later_edit_refuses_before_any_member_of_the_group_is_restored) ... ok
+test_later_recreation_of_expected_deleted_file_blocks_all_recovery (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_later_recreation_of_expected_deleted_file_blocks_all_recovery) ... ok
+test_unknown_original_operation_restores_existing_and_absent_targets (test_memory_publication_recovery.MemoryPublicationRecoveryTests.test_unknown_original_operation_restores_existing_and_absent_targets) ... ok
+test_capability_requires_record_and_exact_native_bytes (test_footprint_contracts.FootprintContractsTests.test_capability_requires_record_and_exact_native_bytes) ... ok
+test_changed_native_installation_blocks_task_creation (test_footprint_contracts.FootprintContractsTests.test_changed_native_installation_blocks_task_creation) ... ok
+test_commands_register_before_lifeos_is_installed (test_footprint_contracts.FootprintContractsTests.test_commands_register_before_lifeos_is_installed) ... ok
+test_identical_top_routes_choose_fable_and_unknown_effort_stays_unknown (test_footprint_contracts.FootprintContractsTests.test_identical_top_routes_choose_fable_and_unknown_effort_stays_unknown) ... ok
+test_observation_binds_provider_model_and_effort (test_footprint_contracts.FootprintContractsTests.test_observation_binds_provider_model_and_effort) ... ok
+test_observation_skips_sidechains_and_reclassifies_after_configuration_changes (test_footprint_contracts.FootprintContractsTests.test_observation_skips_sidechains_and_reclassifies_after_configuration_changes) ... ok
+test_project_native_task_registration_requires_verified_capability (test_footprint_contracts.FootprintContractsTests.test_project_native_task_registration_requires_verified_capability) ... ok
+test_plugin_loads_before_lifeos_installation (test_plugin_lifecycle.PluginLifecycleTests.test_plugin_loads_before_lifeos_installation) ... ok
+test_stock_hermes_registers_only_supported_hooks (test_plugin_lifecycle.PluginLifecycleTests.test_stock_hermes_registers_only_supported_hooks) ... ok
+test_unload_stops_config_watcher (test_plugin_lifecycle.PluginLifecycleTests.test_unload_stops_config_watcher) ... ok
+
+======================================================================
+ERROR: test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) (name='Gear')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 330, in test_private_and_retired_collector_sources_refuse
+    self.fixture.fixture.memory.forget(OWNER, saved['reference'], 'atlas-retire-' + name)
+                                              ~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+ERROR: test_private_and_retired_collector_sources_refuse (test_memory_atlas.MemoryAtlasCollectorTests.test_private_and_retired_collector_sources_refuse) (name='Projects')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 330, in test_private_and_retired_collector_sources_refuse
+    self.fixture.fixture.memory.forget(OWNER, saved['reference'], 'atlas-retire-' + name)
+                                              ~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+ERROR: test_exact_owner_review_restores_safe_old_snapshot_and_graph (test_memory_atlas.MemoryAtlasTests.test_exact_owner_review_restores_safe_old_snapshot_and_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 232, in test_exact_owner_review_restores_safe_old_snapshot_and_graph
+    memory.forget(OWNER, saved['reference'], 'atlas-review-unrelated-forget')
+                         ~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+ERROR: test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 114, in test_actual_post_render_changes_and_process_death_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_atlas_insight_process.py')), str(self.configuration.path), mode,
+        json.dumps(asdict(self.owner.context))], capture_output=True, text=True, timeout=30)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='destination')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 114, in test_actual_post_render_changes_and_process_death_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_atlas_insight_process.py')), str(self.configuration.path), mode,
+        json.dumps(asdict(self.owner.context))], capture_output=True, text=True, timeout=30)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 114, in test_actual_post_render_changes_and_process_death_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_atlas_insight_process.py')), str(self.configuration.path), mode,
+        json.dumps(asdict(self.owner.context))], capture_output=True, text=True, timeout=30)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='projection-source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 114, in test_actual_post_render_changes_and_process_death_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_atlas_insight_process.py')), str(self.configuration.path), mode,
+        json.dumps(asdict(self.owner.context))], capture_output=True, text=True, timeout=30)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='projection-authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 114, in test_actual_post_render_changes_and_process_death_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_atlas_insight_process.py')), str(self.configuration.path), mode,
+        json.dumps(asdict(self.owner.context))], capture_output=True, text=True, timeout=30)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_changes_and_process_death_preserve_recovery (test_memory_atlas_insight.MemoryAtlasInsightTests.test_actual_post_render_changes_and_process_death_preserve_recovery) (mode='interrupt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 114, in test_actual_post_render_changes_and_process_death_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_atlas_insight_process.py')), str(self.configuration.path), mode,
+        json.dumps(asdict(self.owner.context))], capture_output=True, text=True, timeout=30)
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_generated_retired_text_cannot_enter_the_private_cache (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_retired_text_cannot_enter_the_private_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight_edges.py", line 55, in test_generated_retired_text_cannot_enter_the_private_cache
+    memory.forget(OWNER, saved['reference'], 'atlas-edge-forget')
+                         ~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+FAIL: test_offline_group_restore_preserves_archives_and_owner_reads (test_memory_atlas_retention.MemoryAtlasArchiveRecoveryTests.test_offline_group_restore_preserves_archives_and_owner_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 252, in test_offline_group_restore_preserves_archives_and_owner_reads
+    fixture.setUp()
+    ~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_guest_recovery.py", line 26, in setUp
+    self.assertTrue(self.fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership (test_memory_atlas_retention.MemoryAtlasHistoryCommandTests.test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 285, in test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership
+    self.assertEqual(initial.returncode, 0, initial.stdout+initial.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : {"status": "failed", "job": "atlas-sync", "exit_code": 1, "output": "{\"ok\":false,\"code\":\"EINVAL_PATH\",\"message\":\"Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'\"}\n"}
+
+
+======================================================================
+FAIL: test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 200, in test_archive_alias_refuses_without_live_publication
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_archive_history_pagination_keeps_complete_ordered_rows (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_history_pagination_keeps_complete_ordered_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 147, in test_archive_history_pagination_keeps_complete_ordered_rows
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 56, in test_archive_preserves_exact_inputs_and_every_observation_reference
+    database, snapshot = self.prepare_history()
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_archive_read_refuses_changed_bytes_and_arbitrary_paths (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_bytes_and_arbitrary_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 129, in test_archive_read_refuses_changed_bytes_and_arbitrary_paths
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_archive_read_refuses_changed_provenance_manifest (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_provenance_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 138, in test_archive_read_refuses_changed_provenance_manifest
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_archive_reads_require_current_owner (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 122, in test_archive_reads_require_current_owner
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_authority_revocation_after_archive_stops_before_live_graph_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_authority_revocation_after_archive_stops_before_live_graph_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 181, in test_authority_revocation_after_archive_stops_before_live_graph_publication
+    database, snapshot = self.prepare_history()
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 226, in test_later_archive_edit_blocks_group_recovery
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 107, in test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 210, in test_process_death_after_archive_publication_recovers_the_whole_group
+    database, snapshot = self.prepare_history()
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_projection_pressure_archives_before_the_fixed_run_trigger (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_projection_pressure_archives_before_the_fixed_run_trigger)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 35, in test_projection_pressure_archives_before_the_fixed_run_trigger
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 78, in test_repeated_retention_preserves_lifetime_counts_and_archive_reads
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_retention_preserves_native_maximum_collector_timestamp (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retention_preserves_native_maximum_collector_timestamp)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 95, in test_retention_preserves_native_maximum_collector_timestamp
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 45, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_retired_archive_text_is_withheld_without_erasing_the_archive (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retired_archive_text_is_withheld_without_erasing_the_archive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_retention.py", line 160, in test_retired_archive_text_is_withheld_without_erasing_the_archive
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_already_unadmitted_history_refuses_and_preserves_previous_graph (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_already_unadmitted_history_refuses_and_preserves_previous_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 84, in test_already_unadmitted_history_refuses_and_preserves_previous_graph
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_empty_graph_reader_does_not_request_automatic_generation (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_empty_graph_reader_does_not_request_automatic_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 94, in test_empty_graph_reader_does_not_request_automatic_generation
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 67, in test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts
+    self.assertIn('capacity',result['message'].lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'capacity' not found in "native memory operation failed: resolvemessage: cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/lifeos/install/hooks/lib/identity.ts'"
+
+======================================================================
+FAIL: test_private_planned_graph_is_refused_without_publishing_public_snapshot (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_private_planned_graph_is_refused_without_publishing_public_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 119, in test_private_planned_graph_is_refused_without_publishing_public_snapshot
+    self.assertEqual(seen,['atlas_sync_plan'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['atlas_sync_plan']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'atlas_sync_plan'
+
+- []
++ ['atlas_sync_plan']
+
+======================================================================
+FAIL: test_retained_history_archives_before_projection_capacity_is_exhausted (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_retained_history_archives_before_projection_capacity_is_exhausted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 49, in test_retained_history_archives_before_projection_capacity_is_exhausted
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_success_reports_bounded_capacity_and_warning_without_source_text (test_memory_atlas_capacity.MemoryAtlasCapacityTests.test_success_reports_bounded_capacity_and_warning_without_source_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 74, in test_success_reports_bounded_capacity_and_warning_without_source_text
+    self.assertTrue(result['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_empty_regeneration_initializes_graph_and_remains_idle (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_empty_regeneration_initializes_graph_and_remains_idle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 197, in test_empty_regeneration_initializes_graph_and_remains_idle
+    self.assertEqual(result.returncode,0,receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : {'status': 'failed', 'job': 'atlas-insights', 'exit_code': 1, 'output': '{"ok":false,"code":"EINVAL_PATH","message":"Native memory operation failed: ResolveMessage: Cannot find package \'yaml\' from \'/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts\'"}\n'}
+
+======================================================================
+FAIL: test_owner_command_reports_capacity_refusal_without_inference (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_owner_command_reports_capacity_refusal_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 208, in test_owner_command_reports_capacity_refusal_without_inference
+    self.assertIn('capacity',receipt['output'].lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'capacity' not found in '{"ok":false,"code":"einval_path","message":"native memory operation failed: resolvemessage: cannot find package \'yaml\' from \'/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/lifeos/install/hooks/lib/identity.ts\'"}\n'
+
+======================================================================
+FAIL: test_regeneration_reconciles_changed_sources_before_actual_model_request (test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_capacity.py", line 178, in test_regeneration_reconciles_changed_sources_before_actual_model_request
+    self.assertEqual(result.returncode,0,receipt)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : {'status': 'failed', 'job': 'atlas-sync', 'exit_code': 1, 'output': '{"ok":false,"code":"EINVAL_PATH","message":"Native memory operation failed: ResolveMessage: Cannot find package \'yaml\' from \'/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts\'"}\n'}
+
+======================================================================
+FAIL: test_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) (phase='publication')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 238, in test_atlas_destination_changes_retain_recovery
+    prepared = fixture.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_atlas_destination_changes_retain_recovery (test_memory_atlas_sync.MemoryAtlasNarrativeFinalizationTests.test_atlas_destination_changes_retain_recovery) (phase='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 238, in test_atlas_destination_changes_retain_recovery
+    prepared = fixture.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_actual_owner_job_initializes_graph_without_inference (test_memory_atlas_sync.MemoryAtlasOwnerSyncTests.test_actual_owner_job_initializes_graph_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 256, in test_actual_owner_job_initializes_graph_without_inference
+    self.assertEqual(result['status'], 'completed', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'completed'
+- failed
++ completed
+ : {'status': 'failed', 'job': 'atlas-sync', 'exit_code': 1, 'output': '{"ok":false,"code":"EINVAL_PATH","message":"Native memory operation failed: ResolveMessage: Cannot find package \'yaml\' from \'/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts\'"}\n'}
+
+======================================================================
+FAIL: test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes (test_memory_atlas_sync.MemoryAtlasSyncTests.test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 84, in test_actual_managed_cli_routes_sync_and_refuses_unbound_raw_writes
+    self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1, '48 | \n49 | async function runSync(na[1033 chars])\n') != (0, '')
+
+First differing element 0:
+1
+0
+
+Diff is 1212 characters long. Set self.maxDiff to None to see it. : {"ok":false,"code":"EINVAL_PATH","message":"Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+48 | 
+49 | async function runSync(names: string[], scope: string): Promise<number> {
+50 |   const admitted = memoryAccess("atlas_sync", {collectors: names, scope}, memoryObject);
+51 |   if (admitted !== undefined) {
+52 |     console.log(JSON.stringify(admitted));
+53 |     if (admitted.ok !== true || !Array.isArray(admitted.runs)) throw new Error(typeof admitted.message === "string" ? admitted.message : "Atlas synchronization requires current owner admission");
+                                                                              ^
+error: Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'
+      at runSync (/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/LIFEOS/ATLAS/Atlas.ts:53:74)
+      at /home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/LIFEOS/ATLAS/Atlas.ts:120:24
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_database_companions_and_aliases_refuse_without_replacing_files (test_memory_atlas_sync.MemoryAtlasSyncTests.test_database_companions_and_aliases_refuse_without_replacing_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 182, in test_database_companions_and_aliases_refuse_without_replacing_files
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 66, in test_fresh_empty_graph_and_targeted_runs_keep_native_sweep_rules
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_fresh_sync_uses_native_graph_and_snapshot (test_memory_atlas_sync.MemoryAtlasSyncTests.test_fresh_sync_uses_native_graph_and_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 40, in test_fresh_sync_uses_native_graph_and_snapshot
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_inherited_atlas_directory_cannot_redirect_planner_effects (test_memory_atlas_sync.MemoryAtlasSyncTests.test_inherited_atlas_directory_cannot_redirect_planner_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 202, in test_inherited_atlas_directory_cannot_redirect_planner_effects
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) (destination='atlas.db')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 113, in test_later_edits_preserve_the_whole_publication_group_and_recovery
+    self.assertTrue(fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_later_edits_preserve_the_whole_publication_group_and_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_later_edits_preserve_the_whole_publication_group_and_recovery) (destination='snapshot.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 113, in test_later_edits_preserve_the_whole_publication_group_and_recovery
+    self.assertTrue(fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) (mode='interrupt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 157, in test_process_death_and_post_publication_changes_keep_recovery
+    self.assertTrue(fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 157, in test_process_death_and_post_publication_changes_keep_recovery
+    self.assertTrue(fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_process_death_and_post_publication_changes_keep_recovery (test_memory_atlas_sync.MemoryAtlasSyncTests.test_process_death_and_post_publication_changes_keep_recovery) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 157, in test_process_death_and_post_publication_changes_keep_recovery
+    self.assertTrue(fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_repeat_sync_preserves_native_identity_and_incomplete_observations (test_memory_atlas_sync.MemoryAtlasSyncTests.test_repeat_sync_preserves_native_identity_and_incomplete_observations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_sync.py", line 54, in test_repeat_sync_preserves_native_identity_and_incomplete_observations
+    self.assertTrue(self.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 367, in test_actual_collector_render_rechecks_bytes_inode_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='metadata')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 367, in test_actual_collector_render_rechecks_bytes_inode_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='created')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 367, in test_actual_collector_render_rechecks_bytes_inode_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_collector_render_rechecks_bytes_inode_and_authority (test_memory_atlas.MemoryAtlasCollectorTests.test_actual_collector_render_rechecks_bytes_inode_and_authority) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 367, in test_actual_collector_render_rechecks_bytes_inode_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_owner_collectors_preserve_native_assets_edges_and_absence (test_memory_atlas.MemoryAtlasCollectorTests.test_owner_collectors_preserve_native_assets_edges_and_absence) (name='Gear')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 309, in test_owner_collectors_preserve_native_assets_edges_and_absence
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 54 | export const gear: Collector = {
+55 |   name: "gear",
+56 |   async collect(): Promise<CollectResult> {
+57 |     const admitted = memoryAccess("atlas_collect", {collector: "gear"}, memoryObject);
+58 |     if (admitted !== undefined) {
+59 |       if (admitted.ok !== true || !collectResult(admitted.result)) throw new Error("Atlas collector admission is unavailable");
+                                                                                  ^
+error: Atlas collector admission is unavailable
+      at collect (/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/LIFEOS/ATLAS/collectors/Gear.ts:59:78)
+      at /home/lifeos-hermes/development/2026-10-11-atlas-retention/[eval]:2:39
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_owner_collectors_preserve_native_assets_edges_and_absence (test_memory_atlas.MemoryAtlasCollectorTests.test_owner_collectors_preserve_native_assets_edges_and_absence) (name='Projects')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 309, in test_owner_collectors_preserve_native_assets_edges_and_absence
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : 69 | export const projects: Collector = {
+70 |   name: "projects",
+71 |   async collect(): Promise<CollectResult> {
+72 |     const admitted = memoryAccess("atlas_collect", {collector: "projects"}, memoryObject);
+73 |     if (admitted !== undefined) {
+74 |       if (admitted.ok !== true || !collectResult(admitted.result)) throw new Error("Atlas collector admission is unavailable");
+                                                                                  ^
+error: Atlas collector admission is unavailable
+      at collect (/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/LIFEOS/ATLAS/collectors/Projects.ts:74:78)
+      at /home/lifeos-hermes/development/2026-10-11-atlas-retention/[eval]:2:43
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='source', view='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='metadata', view='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='created', view='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='collector', view='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='authority', view='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='graph', view='insights')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='cache', view='insights')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_actual_native_render_rechecks_graph_sources_and_authority (test_memory_atlas.MemoryAtlasTests.test_actual_native_render_rechecks_graph_sources_and_authority) (mode='authority', view='insights')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 265, in test_actual_native_render_rechecks_graph_sources_and_authority
+    self.assertEqual(json.loads(result.stdout), {'rendered': True, 'withheld': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rendered': False, 'withheld': True} != {'rendered': True, 'withheld': True}
+- {'rendered': False, 'withheld': True}
+?              ^^^^
+
++ {'rendered': True, 'withheld': True}
+?              ^^^
+
+
+======================================================================
+FAIL: test_admitted_insights_preserve_native_metrics_and_current_narrative (test_memory_atlas.MemoryAtlasTests.test_admitted_insights_preserve_native_metrics_and_current_narrative)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 185, in test_admitted_insights_preserve_native_metrics_and_current_narrative
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_cached_snapshot_cannot_survive_private_replacement_or_retirement (test_memory_atlas.MemoryAtlasTests.test_cached_snapshot_cannot_survive_private_replacement_or_retirement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 93, in test_cached_snapshot_cannot_survive_private_replacement_or_retirement
+    self.assertEqual(client.get(self.native + '/api/atlas').status_code, 200)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200
+
+======================================================================
+FAIL: test_current_collector_source_exclusion_withholds_prior_snapshot (test_memory_atlas.MemoryAtlasTests.test_current_collector_source_exclusion_withholds_prior_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 112, in test_current_collector_source_exclusion_withholds_prior_snapshot
+    self.assertEqual(client.get(self.native + '/api/atlas').status_code, 200)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200
+
+======================================================================
+FAIL: test_owner_snapshot_fields_and_missing_source_match_native (test_memory_atlas.MemoryAtlasTests.test_owner_snapshot_fields_and_missing_source_match_native)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 76, in test_owner_snapshot_fields_and_missing_source_match_native
+    self.assertEqual(response.status_code, 200, response.text[:300])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_revocation_connector_loss_and_origin_cannot_reuse_cache (test_memory_atlas.MemoryAtlasTests.test_revocation_connector_loss_and_origin_cannot_reuse_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas.py", line 122, in test_revocation_connector_loss_and_origin_cannot_reuse_cache
+    self.assertEqual(client.get(self.native + '/api/atlas').status_code, 200)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200
+
+======================================================================
+FAIL: test_absent_graph_prepare_has_no_generated_cache_or_model_effect (test_memory_atlas_insight.MemoryAtlasInsightTests.test_absent_graph_prepare_has_no_generated_cache_or_model_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 61, in test_absent_graph_prepare_has_no_generated_cache_or_model_effect
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_current_graph_prepare_and_fixed_private_publication (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_graph_prepare_and_fixed_private_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 51, in test_current_graph_prepare_and_fixed_private_publication
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_current_revision_check_refuses_changed_graph_and_later_cache (test_memory_atlas_insight.MemoryAtlasInsightTests.test_current_revision_check_refuses_changed_graph_and_later_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 67, in test_current_revision_check_refuses_changed_graph_and_later_cache
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_graph_metadata_changes_invalidate_prepared_sources (test_memory_atlas_insight.MemoryAtlasInsightTests.test_graph_metadata_changes_invalidate_prepared_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 96, in test_graph_metadata_changes_invalidate_prepared_sources
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_wrong_metadata_and_private_generated_text_cannot_publish (test_memory_atlas_insight.MemoryAtlasInsightTests.test_wrong_metadata_and_private_generated_text_cannot_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 77, in test_wrong_metadata_and_private_generated_text_cannot_publish
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight_edges.py", line 70, in test_generated_empty_or_excessive_narrative_and_invalid_timestamp_refuse
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_graph_inode_replacement_invalidates_prepared_generation (test_memory_atlas_insight_edges.MemoryAtlasInsightEdgeTests.test_graph_inode_replacement_invalidates_prepared_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight_edges.py", line 20, in test_graph_inode_replacement_invalidates_prepared_generation
+    prepared = self.prepare()
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_insight.py", line 42, in prepare
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_offline_restore_preserves_graph_sources_cache_and_current_views (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_offline_restore_preserves_graph_sources_cache_and_current_views)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_guest_recovery.py", line 26, in setUp
+    self.assertTrue(self.fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_restored_interrupted_group_recovers_exact_prior_artifacts (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_restored_interrupted_group_recovers_exact_prior_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_guest_recovery.py", line 26, in setUp
+    self.assertTrue(self.fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_restored_later_edit_blocks_every_member_of_recovery (test_memory_atlas_guest_recovery.MemoryAtlasGuestRecoveryTests.test_restored_later_edit_blocks_every_member_of_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_guest_recovery.py", line 26, in setUp
+    self.assertTrue(self.fixture.sync()['ok'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_actual_selected_profile_command_initializes_empty_graph_without_inference (test_memory_atlas_jobs.MemoryAtlasJobCommandTests.test_actual_selected_profile_command_initializes_empty_graph_without_inference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 220, in test_actual_selected_profile_command_initializes_empty_graph_without_inference
+    self.assertEqual((result.returncode, result.stderr), (0, ''), result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1, '') != (0, '')
+
+First differing element 0:
+1
+0
+
+- (1, '')
+?  ^
+
++ (0, '')
+?  ^
+ : {"status": "failed", "job": "atlas-insights", "exit_code": 1, "output": "{\"ok\":false,\"code\":\"EINVAL_PATH\",\"message\":\"Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'\"}\n"}
+
+
+======================================================================
+FAIL: test_absent_graph_retains_exact_native_unavailable_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_absent_graph_retains_exact_native_unavailable_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 87, in test_absent_graph_retains_exact_native_unavailable_response
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_current_cache_does_not_start_a_job (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_cache_does_not_start_a_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 109, in test_current_cache_does_not_start_a_job
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_current_stale_insights_start_native_owner_regeneration (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_current_stale_insights_start_native_owner_regeneration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 79, in test_current_stale_insights_start_native_owner_regeneration
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_native_pulse_shutdown_ends_actual_atlas_inference_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_native_pulse_shutdown_ends_actual_atlas_inference_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 200, in test_native_pulse_shutdown_ends_actual_atlas_inference_children
+    self.lifetime(daemon=True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 154, in lifetime
+    self.assertTrue(synced['ok'],synced)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_owner_revocation_during_automatic_preparation_withholds_prior_response (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_owner_revocation_during_automatic_preparation_withholds_prior_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 134, in test_owner_revocation_during_automatic_preparation_withholds_prior_response
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 403 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 197, in test_simultaneous_stale_readers_start_one_job_and_module_stop_ends_children
+    self.lifetime(daemon=False)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 154, in lifetime
+    self.assertTrue(synced['ok'],synced)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': "Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/lifeos-hermes/migration/2026-10-09/daily-text-0.2.0-11577ed4/package/lifeos/LifeOS/install/hooks/lib/identity.ts'"}
+
+======================================================================
+FAIL: test_unbound_local_writer_keeps_stale_reader_without_generation (test_memory_atlas_jobs.MemoryAtlasJobRelayTests.test_unbound_local_writer_keeps_stale_reader_without_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_atlas_jobs.py", line 99, in test_unbound_local_writer_keeps_stale_reader_without_generation
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_owner_job_command.py", line 55, in test_actual_parser_publishes_weekly_synthesis_under_selected_owner_grant
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : {"status": "failed", "job": "memory-consolidation", "exit_code": 1}
+
+
+======================================================================
+FAIL: test_actual_parser_runs_morning_brief_without_a_model_call (test_memory_owner_job_command.MemoryOwnerJobCommandTests.test_actual_parser_runs_morning_brief_without_a_model_call)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/development/2026-10-11-atlas-retention/tests/test_memory_owner_job_command.py", line 86, in test_actual_parser_runs_morning_brief_without_a_model_call
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : {"status": "failed", "job": "life-morning-brief", "exit_code": 1}
+
+
+----------------------------------------------------------------------
+Ran 106 tests in 54.500s
+
+FAILED (failures=78, errors=10)

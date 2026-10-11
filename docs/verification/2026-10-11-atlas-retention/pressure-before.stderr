@@ -1,0 +1,17 @@
+test_projection_pressure_archives_before_the_fixed_run_trigger (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_projection_pressure_archives_before_the_fixed_run_trigger) ... FAIL
+
+======================================================================
+FAIL: test_projection_pressure_archives_before_the_fixed_run_trigger (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_projection_pressure_archives_before_the_fixed_run_trigger)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 37, in test_projection_pressure_archives_before_the_fixed_run_trigger
+    archive = self.archive(result)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 48, in archive
+    self.assertTrue(result['ok'], result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Atlas capacity: graph projection fields 10006 exceed 10000'}
+
+----------------------------------------------------------------------
+Ran 1 test in 3.567s
+
+FAILED (failures=1)

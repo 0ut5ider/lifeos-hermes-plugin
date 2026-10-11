@@ -1,0 +1,370 @@
+{
+  "mixed_accounting": {
+    "before": {
+      "gear": {
+        "runs": 65,
+        "successes": 23
+      },
+      "projects": {
+        "runs": 1,
+        "successes": 1
+      }
+    },
+    "first": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 67,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 68,
+          "swept": true
+        }
+      ],
+      "capacity": {
+        "graph_fields": {
+          "used": 666,
+          "limit": 10000
+        },
+        "graph_projection_bytes": {
+          "used": 26023,
+          "limit": 3145728
+        },
+        "tables": {
+          "asset": {
+            "used": 3,
+            "limit": 2048
+          },
+          "edge": {
+            "used": 1,
+            "limit": 2048
+          },
+          "source_observation": {
+            "used": 3,
+            "limit": 2048
+          },
+          "edge_observation": {
+            "used": 1,
+            "limit": 2048
+          },
+          "lifecycle_event": {
+            "used": 0,
+            "limit": 2048
+          },
+          "sync_run": {
+            "used": 37,
+            "limit": 2048
+          }
+        },
+        "database_bytes": {
+          "used": 49152,
+          "limit": 2097152
+        },
+        "snapshot_bytes": {
+          "used": 1994,
+          "limit": 262144
+        },
+        "snapshot_fields": {
+          "used": 129,
+          "limit": 10000
+        },
+        "snapshot_projection_bytes": {
+          "used": 5444,
+          "limit": 3145728
+        },
+        "warnings": []
+      },
+      "history": {
+        "archive_id": "06370d9f05d3a8f3a1748b9adb23332fcdd8c9413e95d55e681c0cda72e2cf64",
+        "removed": {
+          "sync_run": 31,
+          "lifecycle_event": 0
+        },
+        "run_trigger": 64,
+        "run_retain": 32,
+        "event_trigger": 128,
+        "event_retain": 64,
+        "capacity_compacted": false
+      }
+    },
+    "first_totals": {
+      "gear": {
+        "runs": 66,
+        "successes": 24
+      },
+      "projects": {
+        "runs": 2,
+        "successes": 2
+      }
+    },
+    "second": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 133,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 134,
+          "swept": true
+        }
+      ],
+      "capacity": {
+        "graph_fields": {
+          "used": 666,
+          "limit": 10000
+        },
+        "graph_projection_bytes": {
+          "used": 26103,
+          "limit": 3145728
+        },
+        "tables": {
+          "asset": {
+            "used": 3,
+            "limit": 2048
+          },
+          "edge": {
+            "used": 1,
+            "limit": 2048
+          },
+          "source_observation": {
+            "used": 3,
+            "limit": 2048
+          },
+          "edge_observation": {
+            "used": 1,
+            "limit": 2048
+          },
+          "lifecycle_event": {
+            "used": 0,
+            "limit": 2048
+          },
+          "sync_run": {
+            "used": 37,
+            "limit": 2048
+          }
+        },
+        "database_bytes": {
+          "used": 49152,
+          "limit": 2097152
+        },
+        "snapshot_bytes": {
+          "used": 2036,
+          "limit": 262144
+        },
+        "snapshot_fields": {
+          "used": 132,
+          "limit": 10000
+        },
+        "snapshot_projection_bytes": {
+          "used": 5552,
+          "limit": 3145728
+        },
+        "warnings": []
+      },
+      "history": {
+        "archive_id": "af75bc99741067a3ce54b3199edcf8e7ac2e6b0902b67c3280d63ef1b8b12f5b",
+        "removed": {
+          "sync_run": 66,
+          "lifecycle_event": 0
+        },
+        "run_trigger": 64,
+        "run_retain": 32,
+        "event_trigger": 128,
+        "event_retain": 64,
+        "capacity_compacted": false
+      }
+    },
+    "second_totals": {
+      "gear": {
+        "runs": 131,
+        "successes": 25
+      },
+      "projects": {
+        "runs": 3,
+        "successes": 3
+      }
+    }
+  },
+  "protected_only": {
+    "initial": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 1,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 2,
+          "swept": true
+        }
+      ],
+      "capacity": {
+        "graph_fields": {
+          "used": 9948,
+          "limit": 10000
+        },
+        "graph_projection_bytes": {
+          "used": 475695,
+          "limit": 3145728
+        },
+        "tables": {
+          "asset": {
+            "used": 252,
+            "limit": 2048
+          },
+          "edge": {
+            "used": 168,
+            "limit": 2048
+          },
+          "source_observation": {
+            "used": 252,
+            "limit": 2048
+          },
+          "edge_observation": {
+            "used": 168,
+            "limit": 2048
+          },
+          "lifecycle_event": {
+            "used": 0,
+            "limit": 2048
+          },
+          "sync_run": {
+            "used": 2,
+            "limit": 2048
+          }
+        },
+        "database_bytes": {
+          "used": 167936,
+          "limit": 2097152
+        },
+        "snapshot_bytes": {
+          "used": 120620,
+          "limit": 262144
+        },
+        "snapshot_fields": {
+          "used": 7100,
+          "limit": 10000
+        },
+        "snapshot_projection_bytes": {
+          "used": 332670,
+          "limit": 3145728
+        },
+        "warnings": [
+          "graph_fields"
+        ]
+      },
+      "history": {
+        "archive_id": null,
+        "removed": {
+          "sync_run": 0,
+          "lifecycle_event": 0
+        },
+        "run_trigger": 64,
+        "run_retain": 32,
+        "event_trigger": 128,
+        "event_retain": 64,
+        "capacity_compacted": false
+      }
+    },
+    "result": {
+      "ok": true,
+      "runs": [
+        {
+          "collector": "gear",
+          "runId": 5,
+          "swept": true
+        },
+        {
+          "collector": "projects",
+          "runId": 6,
+          "swept": true
+        }
+      ],
+      "capacity": {
+        "graph_fields": {
+          "used": 9978,
+          "limit": 10000
+        },
+        "graph_projection_bytes": {
+          "used": 476839,
+          "limit": 3145728
+        },
+        "tables": {
+          "asset": {
+            "used": 252,
+            "limit": 2048
+          },
+          "edge": {
+            "used": 168,
+            "limit": 2048
+          },
+          "source_observation": {
+            "used": 252,
+            "limit": 2048
+          },
+          "edge_observation": {
+            "used": 168,
+            "limit": 2048
+          },
+          "lifecycle_event": {
+            "used": 0,
+            "limit": 2048
+          },
+          "sync_run": {
+            "used": 4,
+            "limit": 2048
+          }
+        },
+        "database_bytes": {
+          "used": 172032,
+          "limit": 2097152
+        },
+        "snapshot_bytes": {
+          "used": 120655,
+          "limit": 262144
+        },
+        "snapshot_fields": {
+          "used": 7103,
+          "limit": 10000
+        },
+        "snapshot_projection_bytes": {
+          "used": 332760,
+          "limit": 3145728
+        },
+        "warnings": [
+          "graph_fields"
+        ]
+      },
+      "history": {
+        "archive_id": "858a9ac7f22233b438c00dc5d10d69b0e310f22ec3f3267a094f571f0d617638",
+        "removed": {
+          "sync_run": 2,
+          "lifecycle_event": 0
+        },
+        "run_trigger": 64,
+        "run_retain": 0,
+        "event_trigger": 128,
+        "event_retain": 0,
+        "capacity_compacted": true
+      }
+    },
+    "prior_references": [
+      2
+    ],
+    "after_run_identifiers": [
+      2,
+      4,
+      5,
+      6
+    ],
+    "before_sha256": "ec8dfcf1b506b86b44da220c8b46cba4768a2b27fe7ee16b81b2cd96aa52bbb3"
+  }
+}

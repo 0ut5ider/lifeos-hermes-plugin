@@ -1,0 +1,26 @@
+test_archive_read_refuses_changed_bytes_and_arbitrary_paths (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_bytes_and_arbitrary_paths) ... ERROR
+
+======================================================================
+ERROR: test_archive_read_refuses_changed_bytes_and_arbitrary_paths (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_read_refuses_changed_bytes_and_arbitrary_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 133, in test_archive_read_refuses_changed_bytes_and_arbitrary_paths
+    self.assertFalse(self.call('atlas_history', **(arguments | change))['ok'])
+                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 273, in _native_operation
+    return read(memory, scope, arguments['archive_id'], arguments['table'], arguments['offset'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_history.py", line 150, in read
+    if table not in {'sync_run', 'lifecycle_event'} or type(offset) is not int or not 0 <= offset <= 2048:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+
+----------------------------------------------------------------------
+Ran 1 test in 4.909s
+
+FAILED (errors=1)

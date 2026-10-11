@@ -44,21 +44,20 @@ class MemoryAtlasCapacityTests(unittest.TestCase):
             env=dict(os.environ,HOME=str(self.root.parent),LIFEOS_MEMORY_INTERNAL='1'),timeout=30)
         self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'',''))
 
-    def test_retained_history_refuses_before_any_live_publication(self):
+    def test_retained_history_archives_before_projection_capacity_is_exhausted(self):
         self.inventory(50,20)
         self.assertTrue(self.sync()['ok'])
         self.seed_runs(398)
         near = self.sync()
         self.assertTrue(near['ok'],near)
-        before = self.artifact_bytes()
         result = self.sync()
-        self.assertFalse(result['ok'],result)
-        self.assertIn('capacity',result['message'].lower())
-        self.assertIn('10026',result['message'])
-        self.assertEqual(self.artifact_bytes(),before)
+        self.assertTrue(result['ok'],result)
+        self.assertIsNotNone(near['history']['archive_id'])
+        self.assertGreater(near['history']['removed']['sync_run'],0)
+        self.assertLess(result['capacity']['graph_fields']['used'],10000)
         self.assertFalse(self.owner.fixture.memory.transaction.journal.exists())
         with closing(sqlite3.connect(self.graph())) as connection:
-            self.assertEqual(connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0],402)
+            self.assertLessEqual(connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0],38)
 
     def test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts(self):
         self.inventory(0,85)
@@ -80,7 +79,7 @@ class MemoryAtlasCapacityTests(unittest.TestCase):
         self.assertNotIn('Synthetic',json.dumps(capacity))
         self.assertEqual(capacity['database_bytes']['used'],self.graph().stat().st_size)
 
-    def test_table_limit_refuses_before_publication_and_preserves_previous_graph(self):
+    def test_already_unadmitted_history_refuses_and_preserves_previous_graph(self):
         self.inventory(0,0)
         self.assertTrue(self.sync()['ok'])
         self.seed_runs(2046)

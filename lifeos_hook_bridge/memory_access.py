@@ -197,6 +197,9 @@ class NativeMemory:
         return path
 
     def _publication_path(self, name: str) -> Path:
+        if name.startswith('atlas/history/'):
+            from .memory_atlas_history import publication_path
+            return publication_path(self, name)
         if name in {'atlas/graph.json', 'atlas/snapshot.json'}:
             from .memory_atlas_sync import publication_path
             return publication_path(self, name)

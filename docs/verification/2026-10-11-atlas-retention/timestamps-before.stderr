@@ -1,0 +1,18 @@
+test_retention_preserves_native_maximum_collector_timestamp (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retention_preserves_native_maximum_collector_timestamp) ... FAIL
+
+======================================================================
+FAIL: test_retention_preserves_native_maximum_collector_timestamp (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_retention_preserves_native_maximum_collector_timestamp)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 103, in test_retention_preserves_native_maximum_collector_timestamp
+    self.assertEqual(gear['last_run'],'2099-01-01T00:00:00Z')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2026-10-11T19:34:42.851Z' != '2099-01-01T00:00:00Z'
+- 2026-10-11T19:34:42.851Z
++ 2099-01-01T00:00:00Z
+
+
+----------------------------------------------------------------------
+Ran 1 test in 4.799s
+
+FAILED (failures=1)

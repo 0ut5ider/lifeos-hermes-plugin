@@ -1,0 +1,26 @@
+test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership (test_memory_atlas_retention.MemoryAtlasHistoryCommandTests.test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership) ... FAIL
+
+======================================================================
+FAIL: test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership (test_memory_atlas_retention.MemoryAtlasHistoryCommandTests.test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 209, in test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership
+    self.assertEqual((read.returncode, read.stderr), (0, ''), read.stdout+read.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (2, "hermes: 'lifeos-atlas-history' is not[61 chars].\n") != (0, '')
+
+First differing element 0:
+2
+0
+
++ (0, '')
+- (2,
+-  "hermes: 'lifeos-atlas-history' is not a `hermes` command.\n"
+-  'Run `hermes --help` to see all commands.\n') : hermes: 'lifeos-atlas-history' is not a `hermes` command.
+Run `hermes --help` to see all commands.
+
+
+----------------------------------------------------------------------
+Ran 1 test in 13.555s
+
+FAILED (failures=1)

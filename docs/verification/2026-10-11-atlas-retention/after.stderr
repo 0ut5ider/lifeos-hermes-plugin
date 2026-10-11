@@ -1,0 +1,205 @@
+test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication) ... ERROR
+test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference) ... ERROR
+test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits) ... ERROR
+test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery) ... ERROR
+test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events) ... ERROR
+test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group) ... ERROR
+test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads) ... ERROR
+
+======================================================================
+ERROR: test_archive_alias_refuses_without_live_publication (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_alias_refuses_without_live_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 102, in test_archive_alias_refuses_without_live_publication
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 29, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+======================================================================
+ERROR: test_archive_preserves_exact_inputs_and_every_observation_reference (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_preserves_exact_inputs_and_every_observation_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 40, in test_archive_preserves_exact_inputs_and_every_observation_reference
+    database, snapshot = self.prepare_history()
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 29, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+======================================================================
+ERROR: test_archive_reads_require_current_owner_and_preserve_later_archive_edits (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_archive_reads_require_current_owner_and_preserve_later_archive_edits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 95, in test_archive_reads_require_current_owner_and_preserve_later_archive_edits
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 29, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+======================================================================
+ERROR: test_later_archive_edit_blocks_group_recovery (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_later_archive_edit_blocks_group_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 126, in test_later_archive_edit_blocks_group_recovery
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 29, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+======================================================================
+ERROR: test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 80, in test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+======================================================================
+ERROR: test_process_death_after_archive_publication_recovers_the_whole_group (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_process_death_after_archive_publication_recovers_the_whole_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 112, in test_process_death_after_archive_publication_recovers_the_whole_group
+    database, snapshot = self.prepare_history()
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 29, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+======================================================================
+ERROR: test_repeated_retention_preserves_lifetime_counts_and_archive_reads (test_memory_atlas_retention.MemoryAtlasRetentionTests.test_repeated_retention_preserves_lifetime_counts_and_archive_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 62, in test_repeated_retention_preserves_lifetime_counts_and_archive_reads
+    self.prepare_history()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_retention.py", line 29, in prepare_history
+    self.assertTrue(self.sync()['ok'])
+                    ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_sync.py", line 32, in sync
+    return self.call('atlas_sync', collectors=collectors or ['gear', 'projects'], scope=scope)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_atlas_insight.py", line 38, in call
+    return self.service.native(self.owner.context, operation, arguments)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 260, in native
+    result = self._native_operation(context, operation, arguments, configuration, scope)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 277, in _native_operation
+    return run(memory, scope, arguments['collectors'], arguments['scope'],
+        check_current=lambda:self._check_current_context(configuration,context,scope))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in run
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_atlas_sync.py", line 94, in <genexpr>
+    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT), None)
+                           ~~~^^^
+IndexError: tuple index out of range
+
+----------------------------------------------------------------------
+Ran 7 tests in 3.016s
+
+FAILED (errors=7)

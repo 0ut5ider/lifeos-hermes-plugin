@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Archive Atlas history during governed synchronization while preserving observation references, collector timestamps, and cumulative run counts.
+- Read verified archive rows through `hermes lifeos-atlas-history` with current owner admission and retired-text refusal.
+- Recover archive files and the live graph as one publication group. Use smaller retained windows when planned output exceeds capacity.
 - Refuse `MEDIA:`, `[[audio_as_voice]]`, and `[[as_document]]` directives in the daily text morning operator before delivery.
 - Verify native goals, sparks, and next actions against actual attachment parsing. Deploy the tested operator correction on `.253`.
 

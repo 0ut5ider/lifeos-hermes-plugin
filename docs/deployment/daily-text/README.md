@@ -42,7 +42,7 @@ The existing native and profile backup formats do not include the external Atlas
 
 - The selected Hermes profile, ownership configuration, session database, and release manifest.
 - Native USER_DATA, including Gear, Projects, narrative cache, and governance SQLite metadata.
-- `memory.root.parent/.local/state/lifeos/atlas`, including `atlas.db`, `snapshot.json`, and event hints.
+- `memory.root.parent/.local/state/lifeos/atlas`, including `atlas.db`, `snapshot.json`, event hints, and every `history/<archive-id>` directory when history retention is installed.
 - Pending owner publication journals and any preserved recovery files.
 - The selected program installation and its exact source and plugin manifests.
 

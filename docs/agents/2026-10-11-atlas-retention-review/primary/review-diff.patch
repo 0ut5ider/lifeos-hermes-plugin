@@ -1,0 +1,854 @@
+diff --git a/lifeos_hook_bridge/cli.py b/lifeos_hook_bridge/cli.py
+index b72c3a30..8258ebda 100644
+--- a/lifeos_hook_bridge/cli.py
++++ b/lifeos_hook_bridge/cli.py
+@@ -120,6 +120,30 @@ def run_owner_job(args: argparse.Namespace, read_setting) -> int:
+     return 0 if result['status'] == 'completed' else 1
+ 
+ 
++def configure_atlas_history(parser: argparse.ArgumentParser) -> None:
++    parser.add_argument('archive_id', help='Read one archive identifier returned by Atlas synchronization.')
++    parser.add_argument('--table', choices=('sync_run', 'lifecycle_event'), default='sync_run')
++    parser.add_argument('--offset', type=int, default=0, help='Read up to 100 rows from this offset.')
++
++
++def run_atlas_history(args: argparse.Namespace) -> int:
++    from hermes_constants import get_hermes_home
++    from hermes_cli.inventory import load_picker_context
++    from hermes_cli.runtime_provider import resolve_runtime_provider
++    from .memory_atlas_history import read_owner
++    try:
++        current = load_picker_context()
++        provider = resolve_runtime_provider(requested=current.current_provider, target_model=current.current_model)
++        route = {'provider': provider['provider'], 'model': current.current_model,
++                 'base_url': provider['base_url'], 'api_mode': provider['api_mode']}
++        result = read_owner(get_hermes_home()/'lifeos-memory.json', route,
++            args.archive_id, args.table, args.offset)
++    except (ValueError, OSError, RuntimeError, KeyError, sqlite3.Error, subprocess.TimeoutExpired):
++        result = {'ok': False, 'message': 'Atlas history needs current local owner permission and a verified archive.'}
++    print(json.dumps(result))
++    return 0 if result.get('ok') else 1
++
++
+ def register_commands(ctx) -> None:
+     ctx.register_cli_command(
+         "lifeos-infer", help="Run a LifeOS child call with the selected Hermes provider.",
+@@ -137,3 +161,7 @@ def register_commands(ctx) -> None:
+         'lifeos-job', help='Run a native background job with current local owner permission.',
+         setup_fn=configure_owner_job, handler_fn=lambda args: run_owner_job(args, ctx.get_config),
+     )
++    ctx.register_cli_command(
++        'lifeos-atlas-history', help='Read verified Atlas archive rows with current local owner permission.',
++        setup_fn=configure_atlas_history, handler_fn=run_atlas_history,
++    )
+diff --git a/lifeos_hook_bridge/memory_access.py b/lifeos_hook_bridge/memory_access.py
+index 4e402065..34d27038 100644
+--- a/lifeos_hook_bridge/memory_access.py
++++ b/lifeos_hook_bridge/memory_access.py
+@@ -197,6 +197,9 @@ class NativeMemory:
+         return path
+ 
+     def _publication_path(self, name: str) -> Path:
++        if name.startswith('atlas/history/'):
++            from .memory_atlas_history import publication_path
++            return publication_path(self, name)
+         if name in {'atlas/graph.json', 'atlas/snapshot.json'}:
+             from .memory_atlas_sync import publication_path
+             return publication_path(self, name)
+diff --git a/lifeos_hook_bridge/memory_atlas_history.py b/lifeos_hook_bridge/memory_atlas_history.py
+new file mode 100644
+index 00000000..1029a112
+--- /dev/null
++++ b/lifeos_hook_bridge/memory_atlas_history.py
+@@ -0,0 +1,193 @@
++# ABOUTME: Retains Atlas observation provenance while archiving exact prior graph bytes.
++# ABOUTME: Bounds live history and supplies current-owner reads of verified archive rows.
++from contextlib import closing
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import sqlite3
++
++from .memory_access import MemoryUnavailable, _now
++from .memory_atlas import DATABASE, SNAPSHOT
++from .memory_atlas_insight import _request, _admit_output
++
++
++RUN_TRIGGER = 64
++RUN_RETAIN = 32
++EVENT_TRIGGER = 128
++EVENT_RETAIN = 64
++WINDOWS = ((RUN_RETAIN, EVENT_RETAIN), (16, 50), (0, 0))
++ARCHIVE_FILES = frozenset({'atlas.db', 'snapshot.json', 'manifest.json'})
++ARCHIVE_PATTERN = r'atlas/history/([0-9a-f]{64})/(atlas\.db|snapshot\.json|manifest\.json)'
++
++
++def archive_paths(identifier):
++    if not isinstance(identifier, str) or re.fullmatch('[0-9a-f]{64}', identifier) is None:
++        raise ValueError('Atlas history requires one exact archive identifier')
++    return ['atlas/history/' + identifier + '/' + name for name in sorted(ARCHIVE_FILES)]
++
++
++def publication_path(memory, relative):
++    if re.fullmatch(ARCHIVE_PATTERN, relative) is None:
++        raise MemoryUnavailable('Atlas archives require fixed digest destinations')
++    base = memory.root.parent / '.local/state/lifeos/atlas'
++    path = base / Path(relative).relative_to('atlas')
++    for selected in (base/'history', path.parent, path):
++        if selected.is_symlink() or selected.resolve() != selected:
++            raise MemoryUnavailable('Atlas archive destinations require private physical owner files')
++        if selected.exists():
++            info = selected.stat()
++            regular = selected.is_file() and info.st_nlink == 1 if selected == path else selected.is_dir()
++            if not regular or info.st_uid != os.getuid() or info.st_mode & 0o077:
++                raise MemoryUnavailable('Atlas archive destinations require private physical owner files')
++    return path
++
++
++def _history(snapshot):
++    empty = {'version': 1, 'archived_collectors': {}, 'archived_events': 0}
++    if snapshot is None:
++        return empty
++    decoded = json.loads(snapshot)
++    if not isinstance(decoded, dict):
++        raise MemoryUnavailable('Atlas history requires its native snapshot object')
++    value = decoded.get('history', empty)
++    if (not isinstance(value, dict) or set(value) != set(empty) or type(value['version']) is not int or value['version'] != 1
++            or type(value['archived_events']) is not int or value['archived_events'] < 0
++            or not isinstance(value['archived_collectors'], dict)
++            or any(not isinstance(name, str) or not isinstance(row, dict) or set(row) != {'runs', 'successes'}
++                or any(type(count) is not int or count < 0 for count in row.values())
++                or row['successes'] > row['runs'] for name, row in value['archived_collectors'].items())):
++        raise MemoryUnavailable('Atlas history requires valid cumulative archive counts')
++    return value
++
++
++def prepare(database, snapshot, *, force=False, run_retain=RUN_RETAIN, event_retain=EVENT_RETAIN):
++    history = _history(snapshot)
++    removed = {'sync_run': 0, 'lifecycle_event': 0}
++    if database is None:
++        return database, history, removed
++    with closing(sqlite3.connect(':memory:')) as connection:
++        connection.deserialize(database)
++        connection.execute('PRAGMA trusted_schema=OFF')
++        runs = connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0]
++        events = connection.execute('SELECT COUNT(*) FROM lifecycle_event').fetchone()[0]
++        if runs > RUN_TRIGGER or force:
++            # Keep the maximum run identifier, every referenced run, and each collector's latest run.
++            connection.execute('CREATE TEMP TABLE retained_run (id INTEGER PRIMARY KEY)')
++            connection.execute('INSERT OR IGNORE INTO retained_run SELECT id FROM sync_run ORDER BY id DESC LIMIT ?', (run_retain,))
++            connection.execute('INSERT OR IGNORE INTO retained_run SELECT MAX(id) FROM sync_run GROUP BY collector')
++            connection.execute('INSERT OR IGNORE INTO retained_run SELECT (SELECT id FROM sync_run AS run '
++                'WHERE run.collector=collector.collector ORDER BY finished_at DESC,id DESC LIMIT 1) '
++                'FROM (SELECT DISTINCT collector FROM sync_run) AS collector')
++            for table in ('source_observation', 'edge_observation'):
++                connection.execute('INSERT OR IGNORE INTO retained_run SELECT last_run_id FROM ' + table)
++            counts = connection.execute("SELECT collector,COUNT(*),SUM(status='success') FROM sync_run "
++                'WHERE id NOT IN (SELECT id FROM retained_run) GROUP BY collector').fetchall()
++            for name, count, successes in counts:
++                previous = history['archived_collectors'].setdefault(name, {'runs': 0, 'successes': 0})
++                previous['runs'] += count
++                previous['successes'] += successes
++            removed['sync_run'] = connection.execute('DELETE FROM sync_run WHERE id NOT IN (SELECT id FROM retained_run)').rowcount
++        if events > EVENT_TRIGGER or force:
++            removed['lifecycle_event'] = connection.execute('DELETE FROM lifecycle_event WHERE id NOT IN '
++                '(SELECT id FROM lifecycle_event ORDER BY id DESC LIMIT ?)', (event_retain,)).rowcount
++            history['archived_events'] += removed['lifecycle_event']
++        if not any(removed.values()):
++            return database, history, removed
++        connection.commit()
++        connection.execute('VACUUM')
++        return connection.serialize(), history, removed
++
++
++def complete_snapshot(snapshot, history):
++    # The public collector totals count archived and retained runs, rather than resetting at retention.
++    for row in snapshot['status']['collectors']:
++        previous = history['archived_collectors'].get(row['collector'], {'runs': 0, 'successes': 0})
++        row['runs'] += previous['runs']
++        row['successes'] += previous['successes']
++    snapshot['history'] = history
++
++
++def archive_contents(before, database, snapshot, removed):
++    prior_snapshot = next((row[2].encode() for row in before['sources'][2] if row[0] == SNAPSHOT and len(row) == 3), None)
++    if prior_snapshot is None:
++        raise MemoryUnavailable('Atlas retention requires the previous admitted snapshot')
++    digest = lambda content: hashlib.sha256(content).hexdigest()
++    old = {'database': digest(before['database']), 'snapshot': digest(prior_snapshot)}
++    manifest = {'version': 1, 'created_at': _now(), 'before': old,
++        'after': {'database': digest(database), 'snapshot': digest(snapshot)}, 'removed': removed,
++        'scope': before['scope'], 'retirement': before['retirement'],
++        'sources': {row[0]: digest(row[2].encode()) if len(row) == 3 else None
++            for row in before['sources'][2] if row[0] != SNAPSHOT}}
++    identifier = digest(json.dumps(manifest, sort_keys=True, allow_nan=False).encode())
++    manifest['archive_id'] = identifier
++    contents = {'atlas/history/'+identifier+'/atlas.db': before['database'],
++        'atlas/history/'+identifier+'/snapshot.json': prior_snapshot,
++        'atlas/history/'+identifier+'/manifest.json': json.dumps(manifest, sort_keys=True).encode()}
++    return identifier, contents
++
++
++def _read_file(memory, relative):
++    path = publication_path(memory, relative)
++    limit = 2*1024*1024 if path.name == 'atlas.db' else 256*1024
++    if not path.is_file() or path.stat().st_size > limit:
++        raise MemoryUnavailable('Atlas history requires complete bounded archive files')
++    before = path.stat()
++    with path.open('rb') as stream:
++        content = stream.read(limit + 1)
++    publication_path(memory, relative)
++    after = path.stat()
++    keys = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
++    if len(content) > limit or keys(before) != keys(after):
++        raise MemoryUnavailable('Atlas history changes during its bounded byte read')
++    return content
++
++
++def read(memory, scope, identifier, table, offset, *, check_current):
++    _request(scope)
++    archive_paths(identifier)
++    if not isinstance(table, str) or table not in {'sync_run', 'lifecycle_event'} or type(offset) is not int or not 0 <= offset <= 2048:
++        raise ValueError('Atlas history requires a declared table and bounded row offset')
++    with memory._transaction() as connection:
++        check_current()
++        contents = {}
++        for relative in archive_paths(identifier):
++            contents[Path(relative).name] = _read_file(memory, relative)
++        manifest = json.loads(contents['manifest.json'])
++        digest = lambda content: hashlib.sha256(content).hexdigest()
++        unsigned = {key: value for key, value in manifest.items() if key != 'archive_id'} if isinstance(manifest, dict) else {}
++        if (not isinstance(manifest, dict) or manifest.get('version') != 1 or manifest.get('archive_id') != identifier
++                or manifest.get('before') != {'database': digest(contents['atlas.db']), 'snapshot': digest(contents['snapshot.json'])}
++                or digest(json.dumps(unsigned, sort_keys=True, allow_nan=False).encode()) != identifier
++                or json.dumps(manifest, sort_keys=True, allow_nan=False).encode() != contents['manifest.json']):
++            raise MemoryUnavailable('Atlas history preserves changed archive files')
++        with closing(sqlite3.connect(':memory:')) as archive:
++            archive.deserialize(contents['atlas.db'])
++            archive.row_factory = sqlite3.Row
++            rows = [dict(row) for row in archive.execute('SELECT * FROM '+table+' ORDER BY id LIMIT 100 OFFSET ?', (offset,))]
++            total = archive.execute('SELECT COUNT(*) FROM '+table).fetchone()[0]
++        _admit_output(memory, scope, connection, rows)
++        check_current()
++        for relative in archive_paths(identifier):
++            if _read_file(memory, relative) != contents[Path(relative).name]:
++                raise MemoryUnavailable('Atlas history changes during current owner admission')
++        return {'ok': True, 'archive_id': identifier, 'table': table, 'rows': rows, 'total': total,
++            'next_offset': offset + len(rows) if offset + len(rows) < total else None}
++
++
++def read_owner(configuration, route, identifier, table, offset):
++    from uuid import uuid4
++    from .memory_runtime import MemoryRuntime, MemoryAdmissionError
++    from .memory_service import MemoryService
++    runtime = MemoryRuntime(configuration)
++    runtime.clear()
++    try:
++        if not runtime.enabled():
++            raise MemoryAdmissionError('Atlas history requires activated memory ownership')
++        runtime.admit({'HERMES_SESSION_PLATFORM': 'cli', 'HERMES_SESSION_ID': 'atlas-history-'+uuid4().hex},
++            **route, is_first_turn=True)
++        return MemoryService(runtime.configuration).native(runtime.context(), 'atlas_history',
++            {'archive_id': identifier, 'table': table, 'offset': offset})
++    finally:
++        runtime.clear()
+diff --git a/lifeos_hook_bridge/memory_atlas_sync.py b/lifeos_hook_bridge/memory_atlas_sync.py
+index c718eb88..54df9b85 100644
+--- a/lifeos_hook_bridge/memory_atlas_sync.py
++++ b/lifeos_hook_bridge/memory_atlas_sync.py
+@@ -13,6 +13,7 @@ from .memory_atlas_insight import _request, _admit_output
+ from .memory_source_review import _retirement_digest
+ from .memory_sources import SOURCE_LIMIT, CORPUS_LIMIT
+ from .memory_transaction import publish
++from . import memory_atlas_history as history
+ 
+ 
+ DATABASE_LIMIT = 2 * 1024 * 1024
+@@ -31,14 +32,19 @@ def publication_path(memory, relative):
+ 
+ def publication_paths(memory, scope, payload):
+     _request(scope)
+-    if payload != {'operation': 'atlas_sync'}:
++    if (payload != {'operation': 'atlas_sync'} and
++            (set(payload) != {'operation', 'archive_id'} or payload['operation'] != 'atlas_sync')):
+         raise ValueError('Choose declared Atlas synchronization publication')
+     for name in PUBLICATIONS:
+         path = publication_path(memory, name)
+         limit = DATABASE_LIMIT if name == DATABASE else SOURCE_LIMIT
+         if path.exists() and (not path.is_file() or path.stat().st_size > limit):
+             raise MemoryUnavailable('Atlas synchronization requires bounded fixed destinations')
+-    return sorted(PUBLICATIONS)
++    archives = history.archive_paths(payload['archive_id']) if 'archive_id' in payload else []
++    for name in archives:
++        if history.publication_path(memory, name).exists():
++            raise MemoryUnavailable('Atlas synchronization preserves existing archive files')
++    return sorted(PUBLICATIONS) + archives
+ 
+ 
+ def _database(memory):
+@@ -72,6 +78,47 @@ def _snapshot(memory, scope, connection, check_current):
+         'root': str(memory.physical_root)}
+ 
+ 
++def _plan(memory, scope, connection, before, runs, attempt):
++    prior_snapshot = next((row[2] for row in before['sources'][2] if row[0] == SNAPSHOT and len(row) == 3), None)
++    run_retain, event_retain = history.WINDOWS[attempt]
++    retained, counts, removed = history.prepare(before['database'], prior_snapshot, force=attempt > 0,
++        run_retain=run_retain, event_retain=event_retain)
++    plan = memory._native('atlas_sync_plan',
++        database=base64.b64encode(retained).decode() if retained is not None else None,
++        runs=runs)
++    if (set(plan) != {'database', 'snapshot', 'graph', 'runs'} or not isinstance(plan['database'], str)
++            or not isinstance(plan['snapshot'], dict) or not isinstance(plan['runs'], list)
++            or len(json.dumps(plan).encode()) > 2 * CORPUS_LIMIT):
++        raise MemoryUnavailable('Native Atlas synchronization changes its bounded publication plan')
++    try:
++        database = base64.b64decode(plan['database'], validate=True)
++    except ValueError as error:
++        raise MemoryUnavailable('Native Atlas synchronization requires complete database bytes') from error
++    history.complete_snapshot(plan['snapshot'], counts)
++    snapshot = json.dumps(plan['snapshot'], ensure_ascii=False).encode()
++    for label, count, limit in (('database bytes', len(database), DATABASE_LIMIT),
++                               ('snapshot bytes', len(snapshot), SOURCE_LIMIT)):
++        if count > limit:
++            raise MemoryUnavailable(f'Atlas capacity: {label} {count} exceed {limit}')
++    if (not database.startswith(b'SQLite format 3\x00') or len(plan['runs']) != len(runs)
++            or any(not isinstance(row, dict) or set(row) != {'collector', 'runId', 'swept'}
++                or row['collector'] != name or type(row['runId']) is not int or row['runId'] < 1
++                or type(row['swept']) is not bool for row, name in zip(plan['runs'], [run['collector'] for run in runs]))):
++        raise MemoryUnavailable('Native Atlas synchronization requires declared database, snapshot, and run fields')
++    _admit_output(memory, scope, connection, plan['snapshot'])
++    capacity = admit_graph(memory, scope, connection, plan['graph'], _now())
++    projected, fields = capacity_projection(snapshot.decode(), 'snapshot')
++    capacity.update(database_bytes={'used': len(database), 'limit': DATABASE_LIMIT},
++        snapshot_bytes={'used': len(snapshot), 'limit': SOURCE_LIMIT},
++        snapshot_fields={'used': fields, 'limit': PROJECTION_FIELD_LIMIT},
++        snapshot_projection_bytes={'used': len(projected.encode()), 'limit': CORPUS_LIMIT})
++    dimensions = {name: value for name, value in capacity.items() if name != 'tables'}
++    dimensions.update({'tables.'+name: value for name, value in capacity['tables'].items()})
++    capacity['warnings'] = sorted(name for name, value in dimensions.items()
++                                  if value['used'] * 5 >= value['limit'] * 4)
++    return plan, database, snapshot, capacity, removed
++
++
+ def run(memory, scope, collectors, scope_name, *, check_current):
+     if (not isinstance(collectors, list) or not 1 <= len(collectors) <= 2
+             or any(not isinstance(name, str) or name not in {'gear', 'projects'} for name in collectors)
+@@ -85,51 +132,35 @@ def run(memory, scope, collectors, scope_name, *, check_current):
+         runs = [{'collector': name, 'scope': scope_name, 'result': memory._native('atlas_collect',
+             collector=name, content=rows['LIFEOS/USER/' + ('GEAR.md' if name == 'gear' else 'PROJECTS.md')])}
+             for name in collectors]
+-        plan = memory._native('atlas_sync_plan',
+-            database=base64.b64encode(before['database']).decode() if before['database'] is not None else None,
+-            runs=runs)
+-        if (set(plan) != {'database', 'snapshot', 'graph', 'runs'} or not isinstance(plan['database'], str)
+-                or not isinstance(plan['snapshot'], dict) or not isinstance(plan['runs'], list)
+-                or len(json.dumps(plan).encode()) > 2 * CORPUS_LIMIT):
+-            raise MemoryUnavailable('Native Atlas synchronization changes its bounded publication plan')
+-        try:
+-            database = base64.b64decode(plan['database'], validate=True)
+-        except ValueError as error:
+-            raise MemoryUnavailable('Native Atlas synchronization requires complete database bytes') from error
+-        snapshot = json.dumps(plan['snapshot'], ensure_ascii=False).encode()
+-        for label, count, limit in (('database bytes', len(database), DATABASE_LIMIT),
+-                                   ('snapshot bytes', len(snapshot), SOURCE_LIMIT)):
+-            if count > limit:
+-                raise MemoryUnavailable(f'Atlas capacity: {label} {count} exceed {limit}')
+-        if (not database.startswith(b'SQLite format 3\x00') or len(plan['runs']) != len(collectors)
+-                or any(not isinstance(row, dict) or set(row) != {'collector', 'runId', 'swept'}
+-                    or row['collector'] != name or type(row['runId']) is not int or row['runId'] < 1
+-                    or type(row['swept']) is not bool for row, name in zip(plan['runs'], collectors))):
+-            raise MemoryUnavailable('Native Atlas synchronization requires declared database, snapshot, and run fields')
+-        _admit_output(memory, scope, connection, plan['snapshot'])
+-        capacity = admit_graph(memory, scope, connection, plan['graph'], _now())
+-        projected, fields = capacity_projection(snapshot.decode(), 'snapshot')
+-        capacity.update(database_bytes={'used': len(database), 'limit': DATABASE_LIMIT},
+-            snapshot_bytes={'used': len(snapshot), 'limit': SOURCE_LIMIT},
+-            snapshot_fields={'used': fields, 'limit': PROJECTION_FIELD_LIMIT},
+-            snapshot_projection_bytes={'used': len(projected.encode()), 'limit': CORPUS_LIMIT})
+-        dimensions = {name: value for name, value in capacity.items() if name != 'tables'}
+-        dimensions.update({'tables.'+name: value for name, value in capacity['tables'].items()})
+-        capacity['warnings'] = sorted(name for name, value in dimensions.items()
+-                                      if value['used'] * 5 >= value['limit'] * 4)
++        for attempt in range(len(history.WINDOWS)):
++            try:
++                plan, database, snapshot, capacity, removed = _plan(memory, scope, connection, before, runs, attempt)
++                break
++            except MemoryUnavailable as error:
++                if attempt == len(history.WINDOWS)-1 or not str(error).startswith('Atlas capacity:'):
++                    raise
+         if _snapshot(memory, scope, connection, check_current) != before:
+             raise MemoryConflict('Atlas inputs change during native synchronization planning')
+-    contents = {DATABASE: database, SNAPSHOT: snapshot}
++    archive_id, contents = history.archive_contents(before, database, snapshot, removed) if any(removed.values()) else (None, {})
++    # Preserve the exact archive before replacing the live graph. All files share one recovery journal.
++    contents.update({DATABASE: database, SNAPSHOT: snapshot})
+     after = before
+ 
+     def apply(connection):
+         nonlocal after
+         if _snapshot(memory, scope, connection, check_current) != before:
+             raise MemoryConflict('Atlas synchronization preserves later source and destination changes')
+-        check_current()
+-        for name, content in contents.items():
+-            publish(memory._publication_path(name), content)
+         try:
++            for name, content in contents.items():
++                check_current()
++                path = memory._publication_path(name)
++                if name not in PUBLICATIONS and path.exists():
++                    raise MemoryUnavailable('Atlas synchronization preserves a later archive publication')
++                if name not in PUBLICATIONS:
++                    path.parent.parent.mkdir(mode=0o700, exist_ok=True)
++                    path.parent.mkdir(mode=0o700, exist_ok=True)
++                    memory._publication_path(name)
++                publish(path, content)
+             after = _snapshot(memory, scope, connection, check_current)
+         except MemoryConflict as error:
+             raise MemoryUnavailable('Atlas synchronization recheck requires publication recovery') from error
+@@ -141,7 +172,8 @@ def run(memory, scope, collectors, scope_name, *, check_current):
+         check_current()
+         return {'status': 'committed'}
+ 
+-    receipt = memory._operation(scope, 'atlas-sync-' + uuid4().hex, {'operation': 'atlas_sync'}, apply,
++    payload = {'operation': 'atlas_sync'} if archive_id is None else {'operation': 'atlas_sync', 'archive_id': archive_id}
++    receipt = memory._operation(scope, 'atlas-sync-' + uuid4().hex, payload, apply,
+         publication_digests={name: hashlib.sha256(content).hexdigest() for name, content in contents.items()})
+     if receipt['status'] != 'committed':
+         raise MemoryUnavailable('Atlas synchronization needs recovery or a current retry')
+@@ -149,4 +181,7 @@ def run(memory, scope, collectors, scope_name, *, check_current):
+         if _snapshot(memory, scope, connection, check_current) != after:
+             raise MemoryConflict('Atlas synchronization preserves later changes before delivery')
+         check_current()
+-    return {'ok': True, 'runs': plan['runs'], 'capacity': capacity}
++    return {'ok': True, 'runs': plan['runs'], 'capacity': capacity,
++        'history': {'archive_id': archive_id, 'removed': removed, 'run_trigger': history.RUN_TRIGGER,
++            'run_retain': history.WINDOWS[attempt][0], 'event_trigger': history.EVENT_TRIGGER,
++            'event_retain': history.WINDOWS[attempt][1], 'capacity_compacted': attempt > 0}}
+diff --git a/lifeos_hook_bridge/memory_service.py b/lifeos_hook_bridge/memory_service.py
+index d10290c8..b0bf6e19 100644
+--- a/lifeos_hook_bridge/memory_service.py
++++ b/lifeos_hook_bridge/memory_service.py
+@@ -268,6 +268,10 @@ class MemoryService:
+     def _native_operation(self, context, operation, arguments, configuration, scope):
+         try:
+             memory = NativeMemory(Path(configuration["root"]))
++            if operation == 'atlas_history' and set(arguments) == {'archive_id', 'table', 'offset'}:
++                from .memory_atlas_history import read
++                return read(memory, scope, arguments['archive_id'], arguments['table'], arguments['offset'],
++                    check_current=lambda:self._check_current_context(configuration,context,scope))
+             if operation == 'atlas_sync' and set(arguments) == {'collectors', 'scope'}:
+                 from .memory_atlas_sync import run
+                 return run(memory, scope, arguments['collectors'], arguments['scope'],
+diff --git a/tests/memory_atlas_retention_process.py b/tests/memory_atlas_retention_process.py
+new file mode 100644
+index 00000000..062979b1
+--- /dev/null
++++ b/tests/memory_atlas_retention_process.py
+@@ -0,0 +1,24 @@
++# ABOUTME: Interrupts an actual Atlas retention transaction after archive publication.
++# ABOUTME: Leaves the recovery journal for the next independent owner process.
++import json
++import os
++from pathlib import Path
++import sys
++
++from lifeos_hook_bridge import memory_atlas_sync
++from lifeos_hook_bridge.memory_policy import SessionContext
++from lifeos_hook_bridge.memory_service import MemoryConfiguration, MemoryService
++
++original = memory_atlas_sync.publish
++selected = sys.argv[3] if len(sys.argv) > 3 else 'archive-manifest.json'
++def observe(path, content):
++    original(path, content)
++    label = 'archive-'+path.name if 'history' in path.parts else path.name
++    if label == selected:
++        os._exit(73)
++
++memory_atlas_sync.publish = observe
++configuration = MemoryConfiguration(Path(sys.argv[1]))
++context = SessionContext(**json.loads(sys.argv[2]))
++print(json.dumps(MemoryService(configuration).native(context, 'atlas_sync',
++    {'collectors': ['gear', 'projects'], 'scope': 'full'})))
+diff --git a/tests/test_footprint_contracts.py b/tests/test_footprint_contracts.py
+index 8ff0ecc9..78ec6f15 100644
+--- a/tests/test_footprint_contracts.py
++++ b/tests/test_footprint_contracts.py
+@@ -18,16 +18,20 @@ class FootprintContractsTests(unittest.TestCase):
+         class Context:
+             def __init__(self):
+                 self.commands = {}
++                self.hooks = {}
+ 
+             def register_cli_command(self, name, **entry):
+                 self.commands[name] = entry
+ 
++            def register_hook(self, name, callback):
++                self.hooks[name] = callback
++
+         ctx = Context()
+         with tempfile.TemporaryDirectory() as directory, patch.dict(
+             os.environ, {"LIFEOS_HOOK_SETTINGS": str(Path(directory) / "missing.json")}
+         ):
+             register(ctx)
+-        self.assertEqual(set(ctx.commands), {"lifeos-infer", "lifeos-probe", "lifeos-backup"})
++        self.assertEqual(set(ctx.commands), {"lifeos-infer", "lifeos-probe", "lifeos-backup", "lifeos-job", "lifeos-atlas-history"})
+ 
+     def test_observation_binds_provider_model_and_effort(self):
+         from lifeos_hook_bridge.model_tiers import carrier_observation
+diff --git a/tests/test_memory_atlas_capacity.py b/tests/test_memory_atlas_capacity.py
+index 17d84e60..4ea0db72 100644
+--- a/tests/test_memory_atlas_capacity.py
++++ b/tests/test_memory_atlas_capacity.py
+@@ -44,21 +44,20 @@ class MemoryAtlasCapacityTests(unittest.TestCase):
+             env=dict(os.environ,HOME=str(self.root.parent),LIFEOS_MEMORY_INTERNAL='1'),timeout=30)
+         self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'',''))
+ 
+-    def test_retained_history_refuses_before_any_live_publication(self):
++    def test_retained_history_archives_before_projection_capacity_is_exhausted(self):
+         self.inventory(50,20)
+         self.assertTrue(self.sync()['ok'])
+         self.seed_runs(398)
+         near = self.sync()
+         self.assertTrue(near['ok'],near)
+-        before = self.artifact_bytes()
+         result = self.sync()
+-        self.assertFalse(result['ok'],result)
+-        self.assertIn('capacity',result['message'].lower())
+-        self.assertIn('10026',result['message'])
+-        self.assertEqual(self.artifact_bytes(),before)
++        self.assertTrue(result['ok'],result)
++        self.assertIsNotNone(near['history']['archive_id'])
++        self.assertGreater(near['history']['removed']['sync_run'],0)
++        self.assertLess(result['capacity']['graph_fields']['used'],10000)
+         self.assertFalse(self.owner.fixture.memory.transaction.journal.exists())
+         with closing(sqlite3.connect(self.graph())) as connection:
+-            self.assertEqual(connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0],402)
++            self.assertLessEqual(connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0],38)
+ 
+     def test_fresh_inventory_above_projection_capacity_creates_no_live_artifacts(self):
+         self.inventory(0,85)
+@@ -80,7 +79,7 @@ class MemoryAtlasCapacityTests(unittest.TestCase):
+         self.assertNotIn('Synthetic',json.dumps(capacity))
+         self.assertEqual(capacity['database_bytes']['used'],self.graph().stat().st_size)
+ 
+-    def test_table_limit_refuses_before_publication_and_preserves_previous_graph(self):
++    def test_already_unadmitted_history_refuses_and_preserves_previous_graph(self):
+         self.inventory(0,0)
+         self.assertTrue(self.sync()['ok'])
+         self.seed_runs(2046)
+diff --git a/tests/test_memory_atlas_retention.py b/tests/test_memory_atlas_retention.py
+new file mode 100644
+index 00000000..f3dfca24
+--- /dev/null
++++ b/tests/test_memory_atlas_retention.py
+@@ -0,0 +1,307 @@
++# ABOUTME: Exercises governed Atlas history archives with the actual native graph store.
++# ABOUTME: Verifies observation references, cumulative counts, refusal, and grouped recovery.
++from contextlib import closing
++from dataclasses import asdict
++import hashlib
++import json
++import os
++from pathlib import Path
++import sqlite3
++import subprocess
++import sys
++import unittest
++
++import test_memory_atlas_sync as sync_fixture
++import test_memory_atlas_capacity as capacity_fixture
++import test_memory_atlas_guest_recovery as recovery_fixture
++import test_memory_owner_job_command as command_fixture
++import test_memory_model_calls as model_fixture
++from lifeos_hook_bridge import memory_atlas_sync
++from lifeos_hook_bridge.memory_access import MemoryUnavailable
++from test_memory_native import OWNER
++
++
++class MemoryAtlasRetentionTests(unittest.TestCase):
++    setUp = sync_fixture.MemoryAtlasSyncTests.setUp
++    call = sync_fixture.MemoryAtlasSyncTests.call
++    sync = sync_fixture.MemoryAtlasSyncTests.sync
++    graph = sync_fixture.MemoryAtlasSyncTests.graph
++    sources = sync_fixture.MemoryAtlasSyncTests.sources
++    seed_runs = capacity_fixture.MemoryAtlasCapacityTests.seed_runs
++    inventory = capacity_fixture.MemoryAtlasCapacityTests.inventory
++
++    def test_projection_pressure_archives_before_the_fixed_run_trigger(self):
++        self.inventory(100, 50)
++        self.assertTrue(self.sync()['ok'])
++        self.seed_runs(56)
++        database = self.graph().read_bytes()
++        result = self.sync()
++        archive = self.archive(result)
++        self.assertEqual((archive/'atlas.db').read_bytes(), database)
++        self.assertLess(result['capacity']['graph_fields']['used'], 10000)
++
++    def prepare_history(self):
++        self.sources()
++        self.assertTrue(self.sync()['ok'])
++        self.seed_runs(64)
++        return self.graph().read_bytes(), self.graph().with_name('snapshot.json').read_bytes()
++
++    def archive(self, result):
++        self.assertTrue(result['ok'], result)
++        identifier = result['history']['archive_id']
++        self.assertRegex(identifier, '^[0-9a-f]{64}$')
++        return self.graph().parent/'history'/identifier
++
++    def test_archive_preserves_exact_inputs_and_every_observation_reference(self):
++        database, snapshot = self.prepare_history()
++        # A missing collector leaves its earlier observation and run reference intact.
++        (self.root/'LIFEOS/USER/GEAR.md').unlink()
++        result = self.sync(['gear'])
++        archive = self.archive(result)
++        self.assertEqual((archive/'atlas.db').read_bytes(), database)
++        self.assertEqual((archive/'snapshot.json').read_bytes(), snapshot)
++        manifest = json.loads((archive/'manifest.json').read_text())
++        self.assertEqual(manifest['before']['database'], hashlib.sha256(database).hexdigest())
++        self.assertGreater(manifest['removed']['sync_run'], 0)
++        with closing(sqlite3.connect(self.graph())) as connection:
++            self.assertLessEqual(connection.execute('SELECT COUNT(*) FROM sync_run').fetchone()[0], 35)
++            self.assertEqual(connection.execute('SELECT COUNT(*) FROM source_observation o '
++                'LEFT JOIN sync_run r ON r.id=o.last_run_id WHERE r.id IS NULL').fetchone()[0], 0)
++            self.assertEqual(connection.execute('SELECT COUNT(*) FROM edge_observation o '
++                'LEFT JOIN sync_run r ON r.id=o.last_run_id WHERE r.id IS NULL').fetchone()[0], 0)
++            self.assertEqual(connection.execute("SELECT fresh FROM source_observation WHERE collector='gear'").fetchone()[0], 1)
++        for path in archive.iterdir():
++            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
++        self.assertFalse(self.owner.fixture.memory.transaction.journal.exists())
++
++    def test_repeated_retention_preserves_lifetime_counts_and_archive_reads(self):
++        self.prepare_history()
++        for iteration in range(3):
++            result = self.sync()
++            archive = self.archive(result)
++            snapshot = json.loads(self.graph().with_name('snapshot.json').read_text())
++            counts = {row['collector']: row['runs'] for row in snapshot['status']['collectors']}
++            self.assertEqual(counts['gear'], 66 + iteration*65)
++            self.assertEqual(counts['projects'], 2 + iteration)
++            history = self.call('atlas_history', archive_id=archive.name, table='sync_run', offset=0)
++            self.assertTrue(history['ok'], history)
++            self.assertGreater(len(history['rows']), 0)
++            self.assertLessEqual(len(history['rows']), 100)
++            if iteration != 2:
++                self.seed_runs(64)
++        self.assertEqual(len(list((self.graph().parent/'history').iterdir())), 3)
++
++    def test_retention_preserves_native_maximum_collector_timestamp(self):
++        self.prepare_history()
++        with closing(sqlite3.connect(self.graph())) as connection:
++            connection.execute("UPDATE sync_run SET finished_at='2099-01-01T00:00:00Z' WHERE id=3")
++            connection.commit()
++        result = self.sync()
++        self.archive(result)
++        snapshot = json.loads(self.graph().with_name('snapshot.json').read_text())
++        gear = next(row for row in snapshot['status']['collectors'] if row['collector']=='gear')
++        self.assertEqual(gear['last_run'],'2099-01-01T00:00:00Z')
++
++    def test_lifecycle_retention_keeps_recent_snapshot_and_exact_old_events(self):
++        self.sources()
++        self.assertTrue(self.sync()['ok'])
++        with closing(sqlite3.connect(self.graph())) as connection:
++            connection.executemany('INSERT INTO lifecycle_event (asset_id,event,at,detail) VALUES (?,?,?,?)',
++                [(1, 'synthetic', '2026-10-11T00:00:00Z', str(index)) for index in range(140)])
++            connection.commit()
++        database = self.graph().read_bytes()
++        archive = self.archive(self.sync())
++        self.assertEqual((archive/'atlas.db').read_bytes(), database)
++        with closing(sqlite3.connect(self.graph())) as connection:
++            self.assertEqual(connection.execute('SELECT COUNT(*) FROM lifecycle_event').fetchone()[0], 64)
++        snapshot = json.loads(self.graph().with_name('snapshot.json').read_text())
++        self.assertEqual(len(snapshot['lifecycle']), 50)
++        self.assertEqual(snapshot['lifecycle'][0]['detail'], '139')
++
++    def test_archive_reads_require_current_owner(self):
++        self.prepare_history()
++        archive = self.archive(self.sync())
++        arguments = {'archive_id': archive.name, 'table': 'sync_run', 'offset': 0}
++        self.configuration.update(lambda value: value['accounts'].clear())
++        self.assertFalse(self.call('atlas_history', **arguments)['ok'])
++
++    def test_archive_read_refuses_changed_bytes_and_arbitrary_paths(self):
++        self.prepare_history()
++        archive = self.archive(self.sync())
++        arguments = {'archive_id': archive.name, 'table': 'sync_run', 'offset': 0}
++        for change in ({'archive_id': '../atlas.db'}, {'table': 'asset; DELETE FROM asset'}, {'table': {}}, {'offset': True}, {'offset': 2049}):
++            self.assertFalse(self.call('atlas_history', **(arguments | change))['ok'])
++        (archive/'snapshot.json').write_bytes(b'{"synthetic":"later edit"}')
++        self.assertFalse(self.call('atlas_history', **arguments)['ok'])
++
++    def test_archive_read_refuses_changed_provenance_manifest(self):
++        self.prepare_history()
++        archive = self.archive(self.sync())
++        manifest = json.loads((archive/'manifest.json').read_text())
++        manifest['sources'] = {'synthetic': 'later owner edit'}
++        (archive/'manifest.json').write_text(json.dumps(manifest))
++        result = self.call('atlas_history', archive_id=archive.name, table='sync_run', offset=0)
++        self.assertFalse(result['ok'], result)
++
++    def test_archive_history_pagination_keeps_complete_ordered_rows(self):
++        self.prepare_history()
++        self.seed_runs(80)
++        archive = self.archive(self.sync())
++        first = self.call('atlas_history', archive_id=archive.name, table='sync_run', offset=0)
++        second = self.call('atlas_history', archive_id=archive.name, table='sync_run', offset=first['next_offset'])
++        self.assertTrue(first['ok'], first)
++        self.assertTrue(second['ok'], second)
++        self.assertEqual((len(first['rows']), len(second['rows'])), (100, 46))
++        self.assertIsNone(second['next_offset'])
++        self.assertEqual([row['id'] for row in first['rows']+second['rows']], list(range(1,147)))
++
++    def test_retired_archive_text_is_withheld_without_erasing_the_archive(self):
++        self.sources()
++        self.assertTrue(self.sync()['ok'])
++        memory = self.owner.fixture.memory
++        marker = 'SyntheticAtlasArchivedRetiredObservation'
++        saved = memory.remember(OWNER, category='principal', content=marker, title='Synthetic archive policy',
++            project='', request_id='atlas-history-save')
++        with closing(sqlite3.connect(self.graph())) as connection:
++            connection.executemany('INSERT INTO lifecycle_event (asset_id,event,at,detail) VALUES (?,?,?,?)',
++                [(1,'synthetic','2026-10-11T00:00:00Z',marker if index==0 else str(index)) for index in range(140)])
++            connection.commit()
++        archive = self.archive(self.sync())
++        original = {path:path.read_bytes() for path in archive.iterdir()}
++        before = self.call('atlas_history', archive_id=archive.name, table='lifecycle_event', offset=0)
++        self.assertTrue(before['ok'],before)
++        self.assertIn(marker,json.dumps(before['rows']))
++        memory.forget(OWNER,saved['reference'],'atlas-history-forget')
++        after = self.call('atlas_history', archive_id=archive.name, table='lifecycle_event', offset=0)
++        self.assertFalse(after['ok'],after)
++        self.assertNotIn(marker,json.dumps(after))
++        self.assertEqual({path:path.read_bytes() for path in archive.iterdir()},original)
++
++    def test_authority_revocation_after_archive_stops_before_live_graph_publication(self):
++        database, snapshot = self.prepare_history()
++        original = memory_atlas_sync.publish
++        published = []
++        def observe(path, content):
++            original(path, content)
++            published.append(path.name)
++            if path.name == 'atlas.db' and 'history' in path.parts:
++                self.configuration.update(lambda value: value['accounts'].clear())
++        memory_atlas_sync.publish = observe
++        try:
++            self.assertFalse(self.sync()['ok'])
++        finally:
++            memory_atlas_sync.publish = original
++        self.assertEqual(published, ['atlas.db'])
++        self.assertEqual(self.graph().read_bytes(), database)
++        self.assertEqual(self.graph().with_name('snapshot.json').read_bytes(), snapshot)
++        self.assertTrue(self.owner.fixture.memory.transaction.journal.exists())
++
++    def test_archive_alias_refuses_without_live_publication(self):
++        self.prepare_history()
++        before = self.graph().read_bytes()
++        outside = self.root.parent/'synthetic-outside'
++        outside.mkdir()
++        (self.graph().parent/'history').symlink_to(outside, target_is_directory=True)
++        self.assertFalse(self.sync()['ok'])
++        self.assertEqual(self.graph().read_bytes(), before)
++        self.assertEqual(list(outside.iterdir()), [])
++
++    def test_process_death_after_archive_publication_recovers_the_whole_group(self):
++        database, snapshot = self.prepare_history()
++        memory = self.owner.fixture.memory
++        for boundary in ('archive-atlas.db', 'archive-snapshot.json', 'archive-manifest.json', 'atlas.db', 'snapshot.json'):
++            with self.subTest(boundary=boundary):
++                result = subprocess.run([sys.executable, str(Path(__file__).with_name('memory_atlas_retention_process.py')),
++                    str(self.configuration.path), json.dumps(asdict(self.owner.context)), boundary],
++                    capture_output=True, text=True, timeout=40)
++                self.assertEqual((result.returncode, result.stdout, result.stderr), (73, '', ''))
++                self.assertTrue(memory.transaction.journal.exists())
++                with memory._transaction():
++                    pass
++                self.assertEqual(self.graph().read_bytes(), database)
++                self.assertEqual(self.graph().with_name('snapshot.json').read_bytes(), snapshot)
++                self.assertEqual(list((self.graph().parent/'history').rglob('*.db')), [])
++
++    def test_later_archive_edit_blocks_group_recovery(self):
++        self.prepare_history()
++        memory = self.owner.fixture.memory
++        original = memory_atlas_sync.publish
++        modified = []
++        def observe(path, content):
++            original(path, content)
++            if path.name == 'manifest.json':
++                path.write_bytes(content + b' ')
++                modified.append(path)
++        memory_atlas_sync.publish = observe
++        try:
++            self.assertFalse(self.sync()['ok'])
++        finally:
++            memory_atlas_sync.publish = original
++        self.assertEqual(len(modified), 1)
++        before = self.graph().read_bytes()
++        with self.assertRaisesRegex(MemoryUnavailable, 'later artifact edit'):
++            with memory._transaction():
++                pass
++        self.assertEqual(self.graph().read_bytes(), before)
++        self.assertTrue(memory.transaction.journal.exists())
++
++
++class MemoryAtlasArchiveRecoveryTests(unittest.TestCase):
++    def test_offline_group_restore_preserves_archives_and_owner_reads(self):
++        fixture = recovery_fixture.MemoryAtlasGuestRecoveryTests()
++        fixture.setUp()
++        self.addCleanup(fixture.doCleanups)
++        capacity_fixture.MemoryAtlasCapacityTests.seed_runs(fixture.fixture,64)
++        result = fixture.fixture.sync()
++        self.assertTrue(result['ok'],result)
++        identifier = result['history']['archive_id']
++        archive = fixture.fixture.graph().parent/'history'/identifier
++        files = [*fixture.artifacts, *archive.iterdir()]
++        original = {path:path.read_bytes() for path in files}
++        fixture.offline_round_trip()
++        self.assertEqual({path:path.read_bytes() for path in files},original)
++        history = fixture.fixture.call('atlas_history', archive_id=identifier, table='sync_run', offset=0)
++        self.assertTrue(history['ok'],history)
++        self.assertEqual(history['total'],66)
++
++
++class MemoryAtlasHistoryCommandTests(unittest.TestCase):
++    def setUp(self):
++        self.fixture = command_fixture.MemoryOwnerJobCommandTests()
++        self.fixture.setUp()
++        self.addCleanup(self.fixture.doCleanups)
++        self.root = self.fixture.native.root
++        for name in ('ATLAS', 'PULSE'):
++            target = self.root/'LIFEOS'/name
++            if not target.exists():
++                target.symlink_to(Path(os.environ['LIFEOS_MEMORY_SOURCE'])/'LIFEOS'/name)
++        self.environment = {key: os.environ[key] for key in ('PATH', 'LANG', 'TZ') if key in os.environ}
++        self.environment.update(HOME=str(self.fixture.native.home), HERMES_HOME=str(self.fixture.fixture.home),
++            PYTHONPATH=str(model_fixture.HOST), LIFEOS_HOOK_SETTINGS=str(self.root/'settings.json'),
++            BUN_CONFIG_NO_AUTO_INSTALL='1')
++
++    def test_actual_hermes_command_reads_archive_and_refuses_disabled_ownership(self):
++        initial = self.fixture.call('atlas-sync')
++        self.assertEqual(initial.returncode, 0, initial.stdout+initial.stderr)
++        script = 'import {Store} from '+json.dumps(str(self.root/'LIFEOS/ATLAS/Store.ts'))+';const s=new Store();'
++        script += 'for(let i=0;i<64;i++)s.applyRun("gear","full",{complete:false,assets:[],edges:[]});'
++        script += 's.db.exec("PRAGMA wal_checkpoint(TRUNCATE)");s.db.exec("PRAGMA journal_mode=DELETE");s.close();'
++        seeded = subprocess.run(['bun', '--no-install', '-e', script], capture_output=True, text=True,
++            env=dict(os.environ, HOME=str(self.root.parent), LIFEOS_MEMORY_INTERNAL='1'), timeout=30)
++        self.assertEqual((seeded.returncode, seeded.stdout, seeded.stderr), (0, '', ''))
++        synced = self.fixture.call('atlas-sync')
++        self.assertEqual(synced.returncode, 0, synced.stdout+synced.stderr)
++        identifier = json.loads(json.loads(synced.stdout)['output'])['history']['archive_id']
++        command = [sys.executable, '-m', 'hermes_cli.main', 'lifeos-atlas-history', identifier, '--table', 'sync_run']
++        read = subprocess.run(command, env=self.environment, capture_output=True, text=True, timeout=40)
++        self.assertEqual((read.returncode, read.stderr), (0, ''), read.stdout+read.stderr)
++        self.assertTrue(json.loads(read.stdout)['ok'])
++        self.fixture.configuration.update(lambda value: value.update(ownership_enabled=False))
++        refused = subprocess.run(command, env=self.environment, capture_output=True, text=True, timeout=40)
++        self.assertEqual(refused.stderr, '')
++        self.assertNotEqual(refused.returncode, 0)
++        self.assertFalse(json.loads(refused.stdout)['ok'])
++
++
++if __name__ == '__main__':
++    unittest.main()
