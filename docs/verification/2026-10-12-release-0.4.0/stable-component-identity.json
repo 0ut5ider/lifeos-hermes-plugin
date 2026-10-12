@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "prior_program_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
+  "stable_program_commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
+  "changed_program_files": {
+    "lifeos_hook_bridge": [
+      "dashboard/manifest.json",
+      "plugin.yaml"
+    ],
+    "optional/lifeos_release_manager": [
+      "dashboard/manifest.json",
+      "plugin.yaml"
+    ],
+    "hermes": [],
+    "lifeos": [],
+    "python-runtime": [],
+    "docs/deployment/daily-text": []
+  },
+  "excluded_from_program_comparison": [
+    ".git metadata",
+    "__pycache__",
+    ".bytecode-fingerprint test output"
+  ],
+  "native_tests_reused": 716,
+  "native_test_files": 38,
+  "native_source_checks_reused": 12,
+  "native_rerun_claimed": false,
+  "initial_comparison": "Refused equality because Git index/log timestamps and the native test bytecode fingerprint differ. The corrected comparison preserves all program files."
+}

@@ -1,17 +1,35 @@
 {
-  "status": "QUALIFICATION_PENDING",
+  "status": "QUALIFYING",
   "version": "0.4.0",
   "merged_pr": 14,
   "merged_commit": "be215380dcbda35c92e6f28b23b4a1d7bc15004e",
   "production_qualified": false,
   "daily_server_changed": false,
   "completed": [
-    "PR14 merged"
+    "PR14 merged",
+    "Stable version declarations verified",
+    "Exact stable package built",
+    "Program equivalence to reviewed candidate verified"
   ],
   "remaining": [
     "Build exact stable archive",
     "Verify stable archive controls",
     "Verify development installation and recovery",
     "Publish complete qualified assets"
-  ]
+  ],
+  "program_commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
+  "archive_sha256": "a8e79e394b18b189ed9be3d41e112e7b803b65f565d9c0fb8c7d4ab67e5437e1",
+  "archive_bytes": 119132852,
+  "running": [
+    "Sealed integration suite",
+    "Stock installation and directory-retained recovery",
+    "Development update preparation"
+  ],
+  "native_controls": {
+    "tests": 716,
+    "files": 38,
+    "source_checks": 12,
+    "reused_by_exact_program_identity": true,
+    "receipt": "stable-component-identity.json"
+  }
 }
