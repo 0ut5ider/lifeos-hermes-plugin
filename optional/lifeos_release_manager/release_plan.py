@@ -13,7 +13,7 @@ from .release_programs import fingerprint
 from .release_stage import load_bridge, sha, validate_package
 
 
-def inspect_operation(job, request):
+def inspect_operation(job, request, *, installation_lease=None):
     profile = Path(request['profile'])
     package = job / 'package'
     validate_package(package, request['certificate'])
@@ -59,7 +59,8 @@ def inspect_operation(job, request):
     current.memory_module('update_worker').check_template_compatibility(source, package / 'lifeos/LifeOS/install')
     changes = current.memory_module('update_plan').plan_system_files(installed, prior,
         package / 'lifeos/LifeOS/install', Path(request['runtime']['reference']))
-    services = current.memory_module('profile_services').ProfileServices(profile, installed)
+    services = current.memory_module('profile_services').ProfileServices(profile, installed,
+        installation_lease=installation_lease)
     preview = services.preview()
     launchers = set()
     for role in ('gateway', 'dashboard'):
@@ -72,7 +73,14 @@ def inspect_operation(job, request):
                 or fingerprint(executable) is None or not executable.is_file()):
             raise ReleaseRejected('The bound service launcher is not a regular account program')
         launchers.add(executable)
-    result.update(prior_source=source, native_changes=any(changes[key] for key in ('add', 'replace', 'remove')),
+    dependency_module = current.memory_module('update_dependencies')
+    next_source = package / 'lifeos/LifeOS/install'
+    dependency_roots = dependency_module._package_roots(source) | dependency_module._package_roots(next_source)
+    dependency_changes = any(
+        (sha(source / root / name) if (source / root / name).is_file() else None)
+        != (sha(next_source / root / name) if (next_source / root / name).is_file() else None)
+        for root in dependency_roots for name in ('package.json', 'bun.lock'))
+    result.update(prior_source=source, native_changes=dependency_changes or any(changes[key] for key in ('add', 'replace', 'remove')),
                   services=preview, launchers=sorted(launchers))
     return result
 

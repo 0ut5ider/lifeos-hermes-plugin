@@ -23,31 +23,53 @@ from .release_catalog import ReleaseRejected
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, publish
 from .release_stage import load_bridge, sha
+from .release_operation import (action_state, operation_lock, seal_plan,
+    validate_admission, validate_plan, write_admission, request_digest)
 
 
 def review_operation(job, request):
-    selected = inspect_operation(job, request)
+    with operation_lock(job):
+        return _review_operation(job, request)
+
+
+def _review_operation(job, request, *, installation_lease=None):
+    action_state(job, 'apply')
+    selected = inspect_operation(job, request, installation_lease=installation_lease)
     plan = {'fresh': selected['fresh'], 'native_mount_required': selected['native_changes'],
             'launchers': [str(path) for path in selected['launchers']], 'services': selected['services']}
-    publish(job / 'plan.json', (json.dumps(plan, indent=2) + '\n').encode())
+    seal_plan(job, request, plan)
     return selected, plan
 
 
 def admit_operation(job, request, action, *, authorization=None):
+    profile = Path(request['profile'])
+    current = recovery_bridge(job, profile)
+    lock = current.memory_module('installation_lock').installation_lock
+    with operation_lock(job), lock(profile) as lease:
+        if read_private(job / 'request.json') != request:
+            raise ReleaseRejected('The operation changes after owner review')
+        for sibling in job.parent.iterdir():
+            if sibling != job and sibling.is_dir() and (sibling / 'status.json').is_file():
+                state = read_private(sibling / 'status.json')['state']
+                if state.startswith('queued-') or state in {'applying', 'recovering', 'restoring', 'recovery_required'}:
+                    raise ReleaseRejected('Finish the active release operation before another action')
+        return _admit_operation(job, request, action, authorization=authorization, installation_lease=lease)
+
+
+def _admit_operation(job, request, action, *, authorization=None, installation_lease=None):
     if action not in {'apply', 'recover', 'restore'}:
         raise ReleaseRejected('Choose an apply, recovery, or rollback action')
+    action_state(job, action)
     if action == 'apply':
-        if read_private(job / 'status.json')['state'] != 'ready':
-            raise ReleaseRejected('The release operation is not ready')
-        selected, plan = review_operation(job, request)
+        selected, plan = _review_operation(job, request, installation_lease=installation_lease)
         if sha(Path(request['profile']) / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes after preparation')
     else:
-        plan = read_private(job / 'plan.json')
+        plan = validate_plan(job, request)
         if plan['fresh']:
             raise ReleaseRejected('A first installation has no prior integration version to select')
         selected = {'profile': Path(request['profile']), 'installed': Path(request['installed']),
-                    'current': load_bridge(Path(request['profile']) / 'plugins/lifeos-hook-bridge')}
+                    'current': recovery_bridge(job, Path(request['profile']))}
     administration = selected['current'].memory_administration()
     if plan['native_mount_required'] and administration.required(selected['installed'], selected['profile']):
         if authorization is None:
@@ -57,7 +79,27 @@ def admit_operation(job, request, action, *, authorization=None):
     if authorization is not None:
         request = {**request, 'memory_authorization': str(authorization)}
     publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
+    write_admission(job, request, action)
     write_state(job, 'queued-' + action)
+
+
+def recovery_bridge(job, profile):
+    active = profile / 'plugins/lifeos-hook-bridge'
+    if active.is_dir():
+        return load_bridge(active)
+    snapshot = ProgramTransaction(job / 'program-snapshot')
+    if snapshot.journal.is_file():
+        value = snapshot._load()
+        for index, entry in enumerate(value['entries']):
+            retained = snapshot.snapshot / ('before-' + str(index))
+            if entry['target'] == str(active) and fingerprint(retained) == entry['before']:
+                return load_bridge(retained)
+        raise ReleaseRejected('The retained bridge does not match its recorded identity')
+    request = read_private(job / 'request.json')
+    candidate = job / 'package/lifeos_hook_bridge'
+    from .release_stage import validate_package
+    validate_package(job / 'package', request['certificate'])
+    return load_bridge(candidate)
 
 
 def _yaml_configuration(profile, native):
@@ -164,21 +206,27 @@ def _fresh_native(job, request, selected):
 
 
 def execute(job, action):
+    with operation_lock(job):
+        return _execute(job, action)
+
+
+def _execute(job, action):
     request = read_private(job / 'request.json')
     profile = Path(request['profile'])
     job, request = operation(profile, job.name)
     sys.path.insert(0, request['runtime']['source'])
     active_bridge = profile / 'plugins/lifeos-hook-bridge'
-    current = load_bridge(active_bridge if active_bridge.is_dir() else job / 'package/lifeos_hook_bridge')
+    current = recovery_bridge(job, profile)
     lock = current.memory_module('installation_lock').installation_lock
     with lock(profile, wait=True) as lease:
         request = read_private(job / 'request.json')
+        validate_admission(job, request, action)
         if action == 'apply':
-            selected = inspect_operation(job, request)
+            selected = inspect_operation(job, request, installation_lease=lease)
         else:
             selected = {'profile': profile, 'installed': Path(request['installed']), 'current': current,
                 'baseline': current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)}
-        plan = read_private(job / 'plan.json')
+        plan = validate_plan(job, request)
         services = None
         if plan['services']:
             services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
@@ -200,6 +248,7 @@ def execute(job, action):
                 services.resume()
             verify_runtime(request, restored=True)
             write_state(job, 'rolled_back')
+            _revoke(administration, profile, request)
             return {'state': 'rolled_back'}
         if sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
@@ -244,9 +293,13 @@ def execute(job, action):
             write_state(job, 'rolled_back')
             raise
         finally:
-            authorization = request.get('memory_authorization')
-            if authorization is not None:
-                administration.revoke(administration.MemoryConfiguration(profile / 'lifeos-memory.json'), authorization)
+            _revoke(administration, profile, request)
+
+
+def _revoke(administration, profile, request):
+    authorization = request.get('memory_authorization')
+    if authorization is not None:
+        administration.revoke(administration.MemoryConfiguration(profile / 'lifeos-memory.json'), authorization)
 
 
 def _restore_mount(job, request, mount):
@@ -255,6 +308,9 @@ def _restore_mount(job, request, mount):
         return
     if sha(mount.journal) == read_private(intent)['prior_journal_sha256']:
         return
+    expected = {'job': str(job.absolute()), 'request_digest': request_digest(request), 'action': 'apply'}
+    if read_private(mount.journal).get('binding') != expected:
+        raise ReleaseRejected('The native mount journal belongs to another release operation')
     candidate = load_bridge(job / 'package/lifeos_hook_bridge')
     transaction = candidate.memory_module('mount_transaction').MountTransaction(
         Path(request['installed']), Path(request['profile']), mount.baseline)
@@ -273,8 +329,11 @@ def main():
     sys.dont_write_bytecode = True
     try:
         result = execute(args.job.absolute(), args.action)
-    except (ValueError, OSError, RuntimeError, PermissionError):
-        write_state(args.job, 'recovery_required', error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
+    except (ValueError, OSError, RuntimeError, PermissionError, ImportError, KeyError):
+        state = read_private(args.job / 'status.json')['state']
+        if state != 'rolled_back':
+            write_state(args.job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
+                error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
         return 1
     print(json.dumps(result))
     return 0

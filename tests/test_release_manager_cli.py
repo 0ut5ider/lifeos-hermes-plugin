@@ -9,10 +9,20 @@ import tempfile
 import unittest
 
 from optional.lifeos_release_manager import register
-from optional.lifeos_release_manager.cli import configure, run
+from optional.lifeos_release_manager.cli import configure, run, status, write_state
 
 
 class ReleaseManagerCommandTests(unittest.TestCase):
+    def test_status_includes_preparation_before_the_request_exists(self):
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            write_state(job, 'preparing')
+            self.assertEqual(status(profile)['operations'], [{'identifier': job.name, 'state': 'preparing'}])
+            write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
+            self.assertEqual(status(profile, job.name)['state'], 'preparation_failed')
+
     def test_registers_release_management_without_loading_the_runtime_bridge(self):
         commands = {}
         class Context:

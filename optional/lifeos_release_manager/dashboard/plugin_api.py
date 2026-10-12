@@ -37,7 +37,15 @@ def owner(request: Request):
     selected = profile()
     if (selected / 'lifeos-memory.json').exists():
         try:
-            source = stage.load_bridge(selected / 'plugins/lifeos-hook-bridge')
+            active = selected / 'plugins/lifeos-hook-bridge'
+            if active.is_dir():
+                source = stage.load_bridge(active)
+            else:
+                identifier = request.path_params.get('identifier')
+                if identifier is None:
+                    raise PermissionError('Select the interrupted release for owner recovery')
+                job, value = commands.operation(selected, identifier)
+                source = worker.recovery_bridge(job, selected)
             configuration = source.memory_module('memory_service').MemoryConfiguration(selected / 'lifeos-memory.json')
             configuration.check_owner(configuration.load(), account)
         except (ValueError, OSError, RuntimeError, PermissionError, ImportError) as error:
@@ -82,8 +90,8 @@ async def apply(identifier: str, action: str, request: Request, account: str = D
         if action == 'apply':
             selected, plan = worker.review_operation(job, value)
         else:
-            plan = commands.read_private(job / 'plan.json')
-            selected = {'installed': Path(value['installed']), 'current': stage.load_bridge(profile() / 'plugins/lifeos-hook-bridge')}
+            plan = worker.validate_plan(job, value)
+            selected = {'installed': Path(value['installed']), 'current': worker.recovery_bridge(job, profile())}
         administration = selected['current'].memory_administration()
         if plan['native_mount_required'] and administration.required(selected['installed'], profile()):
             configuration = administration.MemoryConfiguration(profile() / 'lifeos-memory.json')

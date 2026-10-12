@@ -55,7 +55,7 @@ def read_private(path, *, limit=2 * 1024 * 1024):
         return _json(stream.read(limit + 1))
 
 
-def operation(profile, identifier):
+def job_directory(profile, identifier):
     if not isinstance(identifier, str) or IDENTIFIER.fullmatch(identifier) is None:
         raise ReleaseRejected('Choose an operation identifier returned by release preparation')
     profile = profile_directory(profile)
@@ -64,6 +64,12 @@ def operation(profile, identifier):
     if (job.resolve() != job or not stat.S_ISDIR(info.st_mode)
             or info.st_uid != os.getuid() or info.st_mode & 0o077):
         raise ReleaseRejected('The release operation requires private profile storage')
+    return job
+
+
+def operation(profile, identifier):
+    job = job_directory(profile, identifier)
+    profile = Path(profile).absolute()
     request = read_private(job / 'request.json')
     if request.get('profile') != str(profile) or request.get('identifier') != identifier:
         raise ReleaseRejected('The operation belongs to another profile')
@@ -121,12 +127,15 @@ def status(profile, identifier=None):
     profile = profile_directory(profile)
     state = profile / '.lifeos-releases'
     if identifier is not None:
+        job = job_directory(profile, identifier)
+        if not (job / 'request.json').exists():
+            return read_private(job / 'status.json')
         job, request = operation(profile, identifier)
         return {**read_private(job / 'status.json'), 'version': request['version'], 'commit': request['commit']}
     operations = []
     if state.exists():
         for path in sorted(state.iterdir()):
-            if IDENTIFIER.fullmatch(path.name) and (path / 'request.json').is_file():
+            if IDENTIFIER.fullmatch(path.name):
                 operations.append(status(profile, path.name))
     return {'operations': operations}
 
@@ -144,6 +153,8 @@ def launch(profile, identifier, action, *, authorization=None):
             *['--setenv=' + key + '=' + value for key, value in environment.items()], *command],
             text=True, capture_output=True, timeout=30)
         if launched.returncode:
+            write_state(job, 'ready' if action == 'apply' else 'recovery_required',
+                error='The detached release worker does not start.')
             raise ReleaseRejected('The owner service manager cannot start the release worker')
     else:
         with (job / 'worker.stdout').open('ab') as stdout, (job / 'worker.stderr').open('ab') as stderr:

@@ -461,6 +461,7 @@ class MountTransaction:
                 'snapshot': str(snapshot), 'state': 'prepared', 'entries': entries,
                 'workspace': str(workspace),
                 'retain_for_rollback': retain_for_rollback,
+                'binding': binding,
                 'absent_directories': [name for name in ('plugins', 'plugins/lifeos')
                                        if not (self.profile / name).exists()] + ([] if workspace.exists() else ['workspace'])}
             _sync_directory(snapshot)
