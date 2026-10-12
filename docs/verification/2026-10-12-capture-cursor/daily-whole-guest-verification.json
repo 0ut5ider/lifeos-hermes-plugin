@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "archive": "PBS-01:backup/ct/102/2026-10-12T06:22:19Z",
+  "source_guest": 102,
+  "restored_guest": 110,
+  "network_disconnected": true,
+  "application_services_masked": true,
+  "cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 16,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 20,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 20,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "daily_coverage": {
+    "status": "PASS",
+    "version": "0.3.1",
+    "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+    "artifacts": 41742,
+    "bytes_modes_and_links_verified": true,
+    "selected_profile_and_credentials_verified": true,
+    "personal_store_and_atlas_verified": true,
+    "selected_programs_and_service_originals_verified": true,
+    "contents_exported": false
+  },
+  "source_application_data_changed": false
+}

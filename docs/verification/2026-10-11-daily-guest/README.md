@@ -1,5 +1,7 @@
 # Daily guest installation
 
+The [October 12 release acceptance](../2026-10-12-capture-cursor/README.md) records the current 0.3.1 installation. This page preserves the initial deployment evidence.
+
 Date: 2026-10-11. Adrian authorizes a new daily guest and release installation.
 
 **Final acceptance status: PASS for daily Discord text.** The records below follow installation order. Initial receipts keep their original pending or inactive state. Later receipts complete those gates; they do not change the earlier snapshots. Counts of active facts and session messages describe the synthetic acceptance checkpoint.
