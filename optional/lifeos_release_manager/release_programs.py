@@ -301,21 +301,29 @@ class ProgramTransaction:
         value['state'] = 'applied'
         self._record(value)
 
-    def restore(self):
+    def check_recovery(self, *, overrides=None):
+        overrides = {} if overrides is None else overrides
         value = self._load()
         if value['state'] not in {'prepared', 'applying', 'applied', 'restoring', 'restored'}:
             raise ProgramConflict('The program transaction cannot restore this state')
         for index, entry in enumerate(value['entries']):
             current = fingerprint(entry['target'], allow_links=entry['allow_links'])
-            if value['state'] == 'applied' and current != entry['after']:
-                raise ProgramConflict('Program recovery preserves a later artifact edit')
-            absent_swap = (current is None and entry['kind'] == 'directory'
-                           and (self.snapshot / ('before-' + str(index))).exists())
-            if current not in (entry['before'], entry['after']) and not absent_swap:
+            after = overrides.get(entry['target'], entry['after'])
+            if value['state'] == 'applied' and current != after:
                 raise ProgramConflict('Program recovery preserves a later artifact edit')
             backup = self.snapshot / ('before-' + str(index))
-            if backup.exists() and fingerprint(backup, allow_links=entry['allow_links']) != entry['before']:
+            retained = fingerprint(backup, allow_links=entry['allow_links'])
+            absent_swap = current is None and entry['kind'] == 'directory' and retained == entry['before'] and retained is not None
+            if current not in (entry['before'], entry['after'], after) and not absent_swap:
+                raise ProgramConflict('Program recovery preserves a later artifact edit')
+            if retained is not None and retained != entry['before']:
                 raise ProgramConflict('The retained program differs from its recorded identity')
+            if current != entry['before'] and entry['before'] is not None and retained != entry['before']:
+                raise ProgramConflict('Program recovery requires its retained prior artifact')
+        return value
+
+    def restore(self):
+        value = self.check_recovery()
         value['state'] = 'restoring'
         self._record(value)
         for index, entry in reversed(list(enumerate(value['entries']))):

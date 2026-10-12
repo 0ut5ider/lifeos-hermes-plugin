@@ -8,6 +8,27 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_recovery_refuses_missing_prior_copy_before_journal_or_target_changes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target, source = root / 'target', root / 'source'
+            target.write_text('Prior bytes')
+            source.write_text('Candidate bytes')
+            transaction = ProgramTransaction(root / 'snapshot')
+            transaction.prepare(directories={}, files={target: source})
+            transaction.apply()
+            prior = transaction.snapshot / 'before-0'
+            original = prior.read_bytes()
+            prior.unlink()
+            journal = transaction.journal.read_bytes()
+            with self.assertRaisesRegex(ProgramConflict, 'retained prior artifact'):
+                transaction.restore()
+            self.assertEqual(transaction.journal.read_bytes(), journal)
+            self.assertEqual(target.read_text(), 'Candidate bytes')
+            prior.write_bytes(original)
+            transaction.restore()
+            self.assertEqual(target.read_text(), 'Prior bytes')
+
     def test_applied_preflight_checks_native_overrides_and_retained_programs(self):
         import hashlib
         with tempfile.TemporaryDirectory() as temp:
@@ -26,6 +47,7 @@ class ProgramTransactionTests(unittest.TestCase):
             with self.assertRaises(ProgramConflict):
                 transaction.check_applied()
             transaction.check_applied(overrides=override)
+            transaction.check_recovery(overrides=override)
             program.write_text('Later program edit')
             with self.assertRaises(ProgramConflict):
                 transaction.check_applied(overrides=override)

@@ -23,6 +23,7 @@ This development candidate is not a qualified production release.
 - Hide expired native rollback and check current and retained programs before stopping services.
 - Check retained native recovery copies before rollback admission and service interruption.
 - Keep worker failure reporting and grant cleanup inside the execution lock.
+- Preserve recovery retry after refusal. Check native targets and retained programs before recovery changes files or stops services.
 
 
 This file records changes to the LifeOS plugin for Hermes. Version numbers use

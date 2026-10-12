@@ -321,9 +321,14 @@ def _execute(job, action, *, checkpoint=lambda point: None):
         programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
         mount = current.memory_module('mount_transaction').MountTransaction(selected['installed'], profile, selected['baseline'])
         if action != 'apply' and not fresh_recovery:
-            check_mount_recovery(job, request, mount)
+            manifest = check_mount_recovery(job, request, mount)
             if action == 'restore':
                 check_restore(job, request, plan, mount)
+            else:
+                overrides = {} if manifest is None or manifest['state'] == 'rolled_back' else {
+                    entry['target']: fingerprint(entry['target'])
+                    for entry in manifest['entries']}
+                programs.check_recovery(overrides=overrides)
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             if services is not None:
                 services.quiesce()
@@ -456,6 +461,15 @@ def check_mount_recovery(job, request, mount):
     manifest = _restore_mount_manifest(job, request, mount.journal)
     if manifest is not None and manifest['state'] != 'rolled_back':
         _check_mount_copies(manifest, Path(request['profile']))
+    if manifest is not None:
+        with mount._lock():
+            selected = mount._manifest()
+            if selected is None:
+                raise ReleaseRejected('The native recovery changes its selected installation')
+            acceptable = ('after',) if selected['state'] == 'committed' else (
+                ('before',) if selected['state'] == 'rolled_back' else ('before', 'after'))
+            mount._checks(selected['entries'], acceptable, restoring=selected['state'] == 'restoring')
+    return manifest
 
 
 def restore_available(job, request, plan):
