@@ -1,10 +1,10 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.3.1` (development). Both servers run release `0.3.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
-The [current cursor correction](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. Release 0.3.0 passes installed conversation, audience, and authenticated dashboard checks on both guests. Daily owner-job acceptance remains pending the correction. Earlier acceptance paragraphs describe their checkpoint state.
+The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore are in progress. The automatic 07:00 Toronto brief remains pending its scheduled observation. Earlier acceptance paragraphs describe their checkpoint state.
 
-The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) supplies the current installed acceptance status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
+The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) describes the initial daily installation. The [October 12 acceptance record](docs/verification/2026-10-12-capture-cursor/README.md) supplies the current release status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
 
 Fresh-store preparation leaves personal TELOS, health, finance, work, gear, and project sections empty. It retains native section headings and template metadata. It stores the exact examples outside the active user tree for review, and omits the three example company and customer directories. Existing stores keep their data.
 
