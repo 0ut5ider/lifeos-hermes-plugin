@@ -7,10 +7,12 @@ import io
 import importlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import sys
 import types
+import traceback
 
 if not __package__:
     namespace = types.ModuleType('lifeos_release_worker')
@@ -191,8 +193,19 @@ def _fresh_native(job, request, selected):
     helpers = selected['candidate'].memory_module('fresh_store')
     source_user = (reference / 'LIFEOS/USER').resolve(strict=True)
     helpers._empty_personal_templates(source_user, job / 'fresh-templates')
-    config = source_user / 'CONFIG/config.toml'
-    publish(config, helpers._config_names(config.read_bytes(), helpers._name(request['name']), helpers._name(request['assistant'])))
+    principal, assistant = helpers._name(request['name']), helpers._name(request['assistant'])
+    for name in helpers.IDENTITY_FILES:
+        path = source_user / name
+        data = path.read_bytes()
+        helpers.publish(job / 'fresh-templates/identity-originals' / name, data)
+        if name == 'CONFIG/LIFEOS_CONFIG.toml':
+            rendered = helpers._config_names(data, principal, assistant)
+        elif name.startswith('PRINCIPAL/'):
+            rendered = re.sub(r'\bUser\b', lambda _: principal, data.decode()).encode()
+        else:
+            text = data.decode().replace('LifeOS Assistant', assistant).replace('LifeOS', assistant)
+            rendered = re.sub(r'\bUser\b', lambda _: principal, text).encode()
+        publish(path, rendered)
     user.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     shutil.copytree(source_user, user)
     shutil.copytree(reference, installed, symlinks=True)
@@ -201,6 +214,11 @@ def _fresh_native(job, request, selected):
         raise ReleaseRejected('The fresh native installation has no expected user-data link')
     link.unlink()
     link.symlink_to(user, target_is_directory=True)
+    memory = installed / 'LIFEOS/MEMORY'
+    if memory.is_symlink() or not memory.is_dir() or (user / 'MEMORY').exists():
+        raise ReleaseRejected('The fresh native memory scaffold differs from its expected layout')
+    memory.rename(user / 'MEMORY')
+    memory.symlink_to(user / 'MEMORY', target_is_directory=True)
     settings = installed / 'settings.json'
     publish(settings, settings.read_bytes().replace(str(reference.parent).encode(), str(installed.parent).encode()))
 
@@ -283,7 +301,8 @@ def _execute(job, action):
                 services.resume()
             write_state(job, 'applied')
             return {'state': 'applied'}
-        except BaseException:
+        except BaseException as error:
+            record_failure(job, error)
             if services is not None:
                 services.quiesce()
             _restore_mount(job, request, mount)
@@ -300,6 +319,12 @@ def _revoke(administration, profile, request):
     authorization = request.get('memory_authorization')
     if authorization is not None:
         administration.revoke(administration.MemoryConfiguration(profile / 'lifeos-memory.json'), authorization)
+
+
+def record_failure(job, error):
+    frames = [{'file': frame.filename, 'line': frame.lineno, 'function': frame.name}
+              for frame in traceback.extract_tb(error.__traceback__)]
+    publish(job / 'worker-failure.json', (json.dumps({'exception': type(error).__name__, 'frames': frames}) + '\n').encode())
 
 
 def _restore_mount(job, request, mount):
@@ -329,7 +354,8 @@ def main():
     sys.dont_write_bytecode = True
     try:
         result = execute(args.job.absolute(), args.action)
-    except (ValueError, OSError, RuntimeError, PermissionError, ImportError, KeyError):
+    except (ValueError, OSError, RuntimeError, PermissionError, ImportError, KeyError) as error:
+        record_failure(args.job, error)
         state = read_private(args.job / 'status.json')['state']
         if state != 'rolled_back':
             write_state(args.job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
