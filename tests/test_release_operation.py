@@ -57,8 +57,10 @@ class ReleaseOperationTests(unittest.TestCase):
                 os.close(reader)
                 os.close(resume_writer)
             self.assertEqual(os.waitstatus_to_exitcode(result), 1)
-            self.assertEqual(read_private(job / 'status.json')['state'], 'rejected')
+            self.assertEqual(read_private(job / 'status.json')['state'], 'recovery_required')
             self.assertTrue((job / 'worker-failure.json').is_file())
+            worker.admit_operation(job, read_private(job / 'request.json'), 'recover')
+            validate_admission(job, read_private(job / 'request.json'), 'recover')
 
     def test_restore_admission_checks_the_recorded_profile(self):
         from optional.lifeos_release_manager.release_programs import ProgramTransaction
@@ -73,6 +75,12 @@ class ReleaseOperationTests(unittest.TestCase):
             write_state(job, 'applied')
             admit_operation(job, request, 'restore')
             self.assertEqual(read_private(job / 'status.json')['state'], 'queued-restore')
+            validate_admission(job, read_private(job / 'request.json'), 'restore')
+            from optional.lifeos_release_manager.release_worker import execute
+            with self.assertRaisesRegex(ValueError, 'selected native installation'):
+                execute(job, 'restore')
+            self.assertEqual(read_private(job / 'status.json')['state'], 'applied')
+            admit_operation(job, read_private(job / 'request.json'), 'restore')
             validate_admission(job, read_private(job / 'request.json'), 'restore')
 
     def recovery_fixture(self, root):

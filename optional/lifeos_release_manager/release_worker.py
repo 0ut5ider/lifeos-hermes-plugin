@@ -256,7 +256,9 @@ def execute(job, action, *, checkpoint=lambda point: None):
             record_failure(job, error)
             state = read_private(job / 'status.json')['state']
             if state not in {'rolled_back', 'applied', 'recovery_required'}:
-                write_state(job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
+                failed_state = ('recovery_required' if state in {'applying', 'recovering', 'restoring', 'queued-recover'}
+                                else 'applied' if state == 'queued-restore' else 'rejected')
+                write_state(job, failed_state,
                     error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
             raise
         finally:
