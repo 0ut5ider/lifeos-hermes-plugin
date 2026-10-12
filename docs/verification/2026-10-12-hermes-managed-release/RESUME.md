@@ -1,34 +1,53 @@
 # Managed release continuation
 
-The authorized task remains incomplete. Finish roadmap and observer work, complete installation and updates from Hermes, and qualify latest stable Hermes on .252. Do not change .253.
+The authorized task remains incomplete. Roadmap and observer work are committed. Complete installation and updates from Hermes, qualify latest stable Hermes, and evaluate the whole package on .252. Do not change .253 or replace immutable v0.3.1 assets. Do not read memory records outside memory MCP tools.
 
-Current branch: feature/hermes-managed-release. Last root commit: f289f41f. Roadmap and observer commits already exist. Candidate version declarations are now 0.4.0-dev.1, uncommitted.
+Current branch: feature/hermes-managed-release. Program checkpoint: 485ace66cefc01f1d997e67ba92c49fb9178da63. Candidate version 0.4.0-dev.1. No push or PR exists for this branch. Respect approval requirements for pushing. Do not spawn agents without explicit applicable authorization.
 
-The current ported native tree is /home/outsider/.cache/lifeos-hermes-managed-20261012/ported at commit 12d8f4237. It targets v0.21.7 at 71d34bad1045610252eda02ee79549436896e784. All twelve upstream checks pass in native-lint-qualified.*. The official expanded native runner passes 716 tests across 38 files in native-official-final.*. Root canonical and packaged ten-group patches have been regenerated from regeneration-qualified. GROUPS contains 92 files. Twenty-five LifeOS groups stay unchanged. The unused protected-instruction patch remains inactive.
+The current ported native tree is /home/outsider/.cache/lifeos-hermes-managed-20261012/ported at b3c6b3fd4. It targets v0.21.7 at 71d34bad1045610252eda02ee79549436896e784. GitHub latest stable confirms that target during this task. All twelve native blocking checks pass. The sealed reconstructed package at 5ad7570f passes 716 cases across 38 files through the official runner. The root integration package at 1043369a passes 595 cases in 982.858 seconds with no failures. Later manager changes still need a combined repeat. Ten Hermes groups and twenty-five LifeOS groups apply. The unused protected-instruction patch remains inactive.
 
-New manager package: optional/lifeos_release_manager. Its catalog, archive extraction, program transaction, validation, CLI, staged dependency preparation, worker prototype, and dashboard prototype are on disk. The last focused run passes 29 tests and 11 subtests, including release_version, catalog, stage validation, program recovery, and CLI. Full worker admission and installed execution are NOT verified.
+Important measured failures and fixes:
+- Native lint and tests passed, but package reconstruction failed whitespace validation. Eight files had trailing blank lines. Git stripspace normalizes the files. The patch builder now rejects whitespace before publishing groups. Regeneration-whitespace is the valid rebuild fixture.
+- The first fresh run requested CONFIG/config.toml. The native file is CONFIG/LIFEOS_CONFIG.toml. Fresh tests now cover all three identity files, empty personal templates, existing USER refusal, and the USER/MEMORY link.
+- Config check passed while the selected installed launcher refused startup. A build_environment venv did not establish the installed environment contract. The manager now uses public PM APIs, native AgentInputs, and scripts.build.agent.assemble to create a sealed payload. Stable launchers are absolute pointers to the payload launcher. The verifier runs the selected installed lifeos-version command and checks exact identity.
+- The full be06fe81 fresh run passes, including stock native plugin installation with scanning enabled, actual command discovery, HTTP asset preparation, frozen dependencies, native initialization, worker selection, and installed version identity.
+- Snapshot review now prepares the program transaction before approval. Its immutable entries digest is part of the reviewed plan and owner request binding. Changed targets refuse. The worker holds the existing native program lock. A d4bff560 fresh regression treated an absent prior bridge as a retained directory. 485ace66 fixes that path. Its sealed fresh repeat passes, including installed command identity.
 
-The first combined diagnostic runs 574 cases with five legacy clarify fixture errors and two assertion failures. Those fixture/assertion changes are now in tests/test_native_clarify.py, test_profile_backup_recovery.py, and test_footprint_contracts.py. The updated clarify fixture passes six cases on the current native batch callback and queue. Full combined repeat still required.
+Manager: optional/lifeos_release_manager. It provides the lifeos-release CLI, registered lifeos-release skill, authenticated dashboard, fixed public catalog, bounded extraction, qualified Bun, frozen dependency closure, native payload assembly, program transaction, and governed native mount retention. The manager remains unqualified as a complete release until remaining installed update and recovery gates pass. Existing v0.3.1 archives lack the new closure and do not qualify for this fresh-install flow. They remain valid historical releases and retained rollback inputs.
 
-MountTransaction now has restore_completed() and execute(retain_for_rollback=True). Two completed restoration tests plus the existing credential-snapshot-pruning test pass. Ordinary mounting still prunes completed credential snapshots. This addition is uncommitted and requires the full mount suite.
+Latest package:
+/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-dev.1-485ace66
+Archive SHA256 bb70c6a9e7d649a04f87fdad51745083dab6247f6a114b5d906a67d08891026a, 119116598 bytes.
+Prepared Python closure source is the adjacent workspace of dependency-profile/installs/86c8a0d486dc06f6/environments/279bc6c8268c436487b3322f8bd97285.
+Test Python: /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python.
+Current Hermes web asset: /home/outsider/.cache/lifeos-hermes-managed-20261012/frontend-profile/hermes-dashboard.tgz, SHA256 e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec. The native public source builder creates it. Do not reuse the old 0.3.1 dashboard.
 
-Critical unfinished worker issues to address before qualification:
-- request/plan binding and action-state admission need real authority and crash tests. Bind plan fingerprints into the request before issuing owner grants.
-- recovery while the bridge directory is absent needs a verified retained bridge fallback.
-- generated native files are projected by the existing system-file planner. USER and MEMORY roots never move during existing-store updates. Internal dependency links are allowed only inside a package directory.
-- native mount uses current installed helpers. After bridge publication the worker reloads mount_transaction to obtain the retention option; test this across actual 0.3.1 to new candidate namespaces.
-- mount-intent.json gates completed or interrupted mount rollback. Test interruption before mount execution and after mount commit.
-- fresh native installation copies only a newly prepared native reference, empties template personal sections, sets names, and retargets USER. Test every generated path and preservation of a new store on failure.
-- runtime fingerprint can change after normal native boot creates .bytecode-fingerprint or other known caches; use a bounded source-file identity rather than accepting arbitrary new files.
-- fresh account launchers/dependency parent paths require preparation.
-- verify resumed services, exact loaded program identity, model/effort preservation, and complete native baseline.
-- owner API recovery while installed bridge is absent needs a safe fallback.
-- rollback eligibility for a fresh first installation needs a clear safe UI state.
+Current detached local jobs:
+- qualify_fresh_install.py at 485ace66 is complete and passes. Read fresh-install-485ace66.json and .done.
+- The integration-sealed-1043369a run is complete and passes. No need to repeat that unchanged historical gate. Run a new gate against the final package after changes.
 
-No reusable current package builder exists yet. Build committed source with prepare_supported_hermes(stock v0.21.7) and prepare_lifeos(pinned clean cache). Include python-runtime pyproject.toml, uv.lock, and plugin-deps manifests copied from the native PM workspace. Record python_runtime_files and manager_files in DAILY-CANDIDATE.json. Build the current Hermes dashboard through native source_build APIs and distribute as a separate bound asset. Do not reuse the old frontend. All existing v0.3.1 assets remain immutable.
+.252 state:
+- Linux account lifeos-hermes, UID1008, HOME /home/lifeos-hermes.
+- The active bridge remains verified 0.3.1 at 9af63325, with no modified bridge files. The native Hermes runtime is not selected to the candidate yet.
+- The standalone manager at d4bff560 is installed and enabled through stock Hermes plugin installation with scanning enabled. It registers the skill on the accepted host. Native enablement reloads gateway plugins.
+- Qualification files live in /home/lifeos-hermes/releases/qualification-20261012-d4. A Git bundle clone supplies the stock installer. Certificate is explicitly test_fixture_only and is not a published qualification claim.
+- Actual prepare runs as lifeos-hermes, downloads real loopback HTTP assets, builds native dependencies, and reviews the snapshot. Safe receipt is development-preparation-d4bff560.json in this directory.
+- Operation 184278822a7e45c1a45d388363d0ef1c is ready. It requires native mounting. It has not been started.
+- Stable launcher is /home/lifeos-hermes/workspace/hermes-agent/.hermes/bin/hermes. Actual source home is selected through lifeos_installation.selection, under the existing fresh-store home. Do not assume account-home/.claude.
+- The prior baseline source points to 0.3.0-dev.2-7d171931. New versus prior source bytes are identical for the sampled files. Installed files differ from new source: the plan replaces seven reviewed source files and removes obsolete compiled Pulse chunks. New and accepted 0.3.1 local source trees each carry 228 compiled output entries. Do not mistake removal of obsolete chunks for an absent new dashboard. Dependency source package.json and bun.lock hashes have no changes.
+- The plan therefore correctly requires a real dashboard owner grant. Do not fabricate a Session or call administration.issue with an account inferred from config.
+- An async question asks Adrian to sign in to the shared browser at http://192.168.8.252:9119/lifeos-releases. Adrian authorizes signing in on his behalf. The existing private credential authenticates through the normal browser form. Native owner review returns HTTP 200. No credentials are exported or reset.
+- T3 preview tab tab_c_6cbd26ac-befc-4d03-95f7-0b4474990134, profile default, currently shows the authenticated release-manager page. Use preview_status before acting. If the tab is human-owned, only read it until released.
+- .253 remains untouched at 0.3.1. No personal data is imported or reset.
 
-Dependency runtime: /home/outsider/.cache/lifeos-hermes-managed-20261012/dependency-profile/installs/86c8a0d486dc06f6/environments/279bc6c8268c436487b3322f8bd97285/venv/bin/python. Its adjacent workspace has the combined frozen lock. Test environment: /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python, built through public PM with Discord, Anthropic, and dev group. The release runtime does not include the optional Anthropic test addition.
+Remaining work:
+1. Final sealed fresh control at 485ace66 passes. Manager fixes at 0ec86713 pass 37 tests. A real HTTP regression proves review keeps the dashboard responsive. A real process-exit regression proves partial preparation retry retains the incomplete copy.
+2. Finish fresh interruption/recovery eligibility. Current admit rejects recovery for fresh plans; that is unfinished. Preserve USER and MEMORY on failure. Do not claim fresh crash recovery is complete from component tests.
+3. Review partial snapshot preparation after process death. A ready operation with a snapshot directory but no journal needs safe retained/quarantined handling.
+4. Owner dashboard authentication and review pass. The scoped .252 dashboard restart loads the manager. An authenticated apply request for operation 184278822a7e45c1a45d388363d0ef1c is in flight. Inspect status and browser window.__lifeosApply before repeating any action. The candidate is the D4 fixture checkpoint, not the final program package.
+5. Run actual 0.3.1 to candidate update, process interruption, later-edit refusal, and installed rollback on .252. Current staged d4 operation differs from the final candidate; prepare and select the final package for final acceptance.
+6. Verify resumed services, exact loaded runtime, model and tier preservation, native baseline, and safe observer command. Runtime verifier now checks actual installed lifeos-version, but a complete service and model preservation gate is still needed.
+7. Re-run final sealed combined acceptance and native checks when justified by changes. Current native source is unchanged since the successful 716-case gate.
+8. Update README, CHANGELOG, evidence, and PROGRESS honestly. Obtain publication approval when the complete reviewable package is ready. No GitHub assets have been published or replaced.
 
-Actual .252 Linux account is lifeos-hermes, UID 1008. Gateway/dashboard ExecStart is /home/lifeos-hermes/workspace/hermes-agent/.hermes/bin/hermes. The stable launcher runs accepted 0.3.1 runtime. Pulse uses /home/lifeos-hermes/.local/bin/bun at 1.3.14. Selected native home is the existing private fresh-store home below /home/lifeos-hermes/.local/state/lifeos-hook-bridge/fresh-stores. Use lifeos_installation.selection; do not assume account-home/.claude. .252 has about 80 GB free. Neither .252 nor .253 has been changed or deployed in this task. Installed qualification has NOT begun.
-
-No push or PR has occurred for this branch. Current explicit task authorizes implementation and development evaluation. Respect approval requirements for pushing. Do not spawn agents without applicable explicit authorization. Memory MCP is unavailable with integrity_error; do not bypass through files.
+Memory MCP still returns integrity_error. Do not bypass it with SSH files or transcript searches. Engineering notes retain the measured installation failures in notes/2026-10-12-managed-install-boundaries.md.

@@ -57,7 +57,7 @@
     "live_ssh_fixture": true
   },
   "deployment": {
-    "192.168.8.252": "0.3.1 unchanged",
+    "192.168.8.252": "active 0.3.1 unchanged; standalone manager d4bff560 installed and enabled; complete package staged, not selected",
     "192.168.8.253": "0.3.1 unchanged"
   },
   "immutable_v031_assets_changed": false,
@@ -130,7 +130,7 @@
       "upstream SQLite journal warning wording",
       "observer absent from command assertion"
     ],
-    "repeat_required": true
+    "repeat_required": false
   },
   "manager_implementation": {
     "path": "optional/lifeos_release_manager",
@@ -147,15 +147,53 @@
     ],
     "local_controls_passed": 29,
     "remaining": [
-      "worker authority and crash admission fixes",
-      "fresh installation and second-release acceptance",
-      "reusable package build with frozen dependency closure and current dashboard",
-      "combined package acceptance",
-      "installed development evaluation"
+      "fresh interruption and recovery eligibility",
+      "installed update, process interruption, and rollback",
+      "latest combined package acceptance",
+      "documentation and publication approval",
+      "development candidate selection and rollback"
     ],
     "local_subtests_passed": 11
   },
   "candidate_version": "0.4.0-dev.1",
-  "next_action": "Build and exercise the worker on an isolated profile. Fix admission and recovery cases before any live promotion.",
-  "installed_development_qualification": "not_started"
+  "next_action": "Inspect the real authenticated .252 apply result. Complete installed update and rollback, fresh recovery, and final combined qualification. Do not change .253.",
+  "installed_development_qualification": "prepared; not selected",
+  "checkpoint_commit": "0ec86713",
+  "sealed_integration": {
+    "commit": "1043369a73f59819f1102ce7f11da3b09bd7f7a7",
+    "tests": 595,
+    "exit_code": 0,
+    "elapsed_seconds": 982.858,
+    "latest_repeat_required": true
+  },
+  "sealed_native": {
+    "commit": "5ad7570fb4ce44ab3775ecd0947f4b3d660d014d",
+    "tests": 716,
+    "files": 38,
+    "exit_code": 0
+  },
+  "fresh_install": {
+    "commit": "485ace66cefc01f1d997e67ba92c49fb9178da63",
+    "status": "PASS",
+    "stock_installer_scanning_enabled": true,
+    "native_command_discovery": "PASS",
+    "installed_release_identity": "PASS",
+    "final_snapshot_binding_repeat": "PASS"
+  },
+  "development_preparation": {
+    "status": "PASS",
+    "commit": "d4bff560f4d89eea5db20a3899df78cb6da29e6b",
+    "operation": "184278822a7e45c1a45d388363d0ef1c",
+    "state": "ready",
+    "native_mount_required": true,
+    "model_selection_unchanged": true,
+    "owner_dashboard_authentication": "PASS",
+    "owner_review": "PASS"
+  },
+  "owner_authentication_receipt": "development-owner-authentication.json",
+  "manager_regressions": {
+    "commit": "0ec86713",
+    "tests": 37,
+    "status": "PASS"
+  }
 }
