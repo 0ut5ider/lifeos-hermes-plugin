@@ -142,6 +142,11 @@ with installation_lock(profile) as lease:
         assert after_model==before_model
         status=release_version.status(profile,bridge)
         assert status['active']['verification']=='verified',status
+        candidate=profile/'integration-candidate.json'
+        if candidate.is_file():
+            staged=json.loads(candidate.read_text())
+            if staged.get('commit')==manifest['head'] and staged.get('package_sha256')==args.archive_sha256:
+                save(candidate);candidate.unlink()
         services.resume()
         report.update(status='SELECTED',active=status['active'],services=services.status(),
             preserved_files=len(before_data),retained_program_files=len(retained),runtime=str(runtime))

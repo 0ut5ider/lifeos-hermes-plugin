@@ -6,6 +6,8 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+## 0.3.0 (2026-10-12)
+
 - Report active and staged integration versions through `hermes lifeos-version`. Verify installed plugin hashes before reporting an exact release.
 - Accept matching development and release-candidate version declarations. Record exact commit and package identities in private deployment receipts.
 
