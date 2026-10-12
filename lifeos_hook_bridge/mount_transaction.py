@@ -77,10 +77,12 @@ def _check_prepared_config(installed, environment, stage):
     code = ('from argparse import Namespace\n'
             'from hermes_constants import set_hermes_home_override\n'
             'set_hermes_home_override(sys.argv[1])\n'
+            'from hermes_cli.post_update import step_migrate_config\n'
+            'step_migrate_config()\n'
             'from hermes_cli.config import config_command\n'
             'config_command(Namespace(config_command="check"))\n')
     command = _launchers.runtime_command(source, [str(stage)], code=code, python=sys.executable)
-    return _run(command, installed, environment, 'Hermes prepared config check')
+    return _run(command, installed, {**environment, 'HERMES_HOME': str(stage)}, 'Hermes prepared config check')
 
 
 def _enable_batch_edits(stage):
@@ -440,6 +442,8 @@ class MountTransaction:
                     or plan['version'] != 1 or plan['home'] != str(self.profile) or type(plan['keepOutputFormat']) is not bool):
                 raise MountError('The native mount plan is invalid')
             _enable_batch_edits(stage)
+            checker_environment = {key: value for key, value in environment.items() if key != ENVIRONMENT}
+            _check_prepared_config(self.installed, checker_environment, stage)
             entries = []
             outputs = [(self.profile / name, *originals[name], _read(stage / name)[0]) for name in FILES]
             if baseline_data is not None:
@@ -454,8 +458,6 @@ class MountTransaction:
                 publish(snapshot / 'selected' / str(index), selected)
                 entries.append({'target': str(target), 'before': before, 'after': {
                     'digest': hashlib.sha256(selected).hexdigest(), 'mode': 0o600}, 'copy': index})
-            checker_environment = {key: value for key, value in environment.items() if key != ENVIRONMENT}
-            _check_prepared_config(self.installed, checker_environment, stage)
             manifest = {'version': 1, 'installed': str(self.installed), 'profile': str(self.profile),
                 'baseline': str(self.baseline) if self.baseline is not None else None,
                 'snapshot': str(snapshot), 'state': 'prepared', 'entries': entries,

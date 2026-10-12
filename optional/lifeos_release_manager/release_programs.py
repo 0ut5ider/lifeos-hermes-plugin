@@ -42,7 +42,7 @@ def sync_directory(path):
         os.close(descriptor)
 
 
-def fingerprint(path, *, allow_links=False):
+def fingerprint(path, *, allow_links=False, excluded_root_entries=()):
     path = Path(path).absolute()
     if path.parent.resolve() != path.parent:
         raise ProgramConflict('A program artifact changes its physical directory')
@@ -59,6 +59,9 @@ def fingerprint(path, *, allow_links=False):
         raise ProgramConflict('Program artifacts must be regular files or directories')
     digest = hashlib.sha256()
     for parent, directories, files in os.walk(path, followlinks=False):
+        if Path(parent) == path:
+            directories[:] = [name for name in directories if name not in excluded_root_entries]
+            files = [name for name in files if name not in excluded_root_entries]
         directories[:] = sorted(name for name in directories if name != '__pycache__')
         for name in (*directories, *sorted(files)):
             child = Path(parent) / name

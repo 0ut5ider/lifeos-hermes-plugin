@@ -6,11 +6,30 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from optional.lifeos_release_manager.release_stage import validate_files, validate_package
+from optional.lifeos_release_manager.release_stage import validate_files, validate_package, runtime_source_fingerprint
 from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
 class ReleaseStageTests(unittest.TestCase):
+    def test_runtime_source_seal_accepts_boot_outputs_and_refuses_program_changes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            program = root / 'program.py'
+            program.write_text('qualified')
+            expected = runtime_source_fingerprint(root)
+            generated = root / '.hermes'
+            generated.mkdir(mode=0o775)
+            (generated / 'bin').mkdir(mode=0o775)
+            marker = root / '.bytecode-fingerprint'
+            marker.write_text('native boot marker')
+            marker.chmod(0o664)
+            self.assertEqual(runtime_source_fingerprint(root), expected)
+            program.write_text('changed')
+            self.assertNotEqual(runtime_source_fingerprint(root), expected)
+            program.write_text('qualified')
+            (root / 'added.py').write_text('unrecorded program')
+            self.assertNotEqual(runtime_source_fingerprint(root), expected)
+
     def test_exact_file_map_refuses_extra_changed_or_escaping_program_files(self):
         for change in ('changed', 'extra', 'escaping', 'link'):
             with tempfile.TemporaryDirectory() as temp:

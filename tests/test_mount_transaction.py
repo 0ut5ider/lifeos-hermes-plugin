@@ -89,6 +89,16 @@ class MountTransactionTests(unittest.TestCase):
         self.assertEqual(after['file_tools']['patch_format'], 'v4a')
         self.assertEqual(after.get('model'), before.get('model'))
 
+    def test_mount_commits_an_explicit_prior_schema_after_native_migration(self):
+        from ruamel.yaml import YAML
+        from hermes_cli.config_defaults import DEFAULT_CONFIG
+        (self.profile / 'config.yaml').write_text('_config_version: 46\nmodel:\n  default: local\n')
+        result = self.execute()
+        self.assertEqual(result['state'], 'committed')
+        self.assertEqual(YAML(typ='safe').load((self.profile / 'config.yaml').read_bytes())['_config_version'],
+                         DEFAULT_CONFIG['_config_version'])
+        self.transaction().check_completed()
+
     def test_completed_mount_can_restore_its_exact_prior_profile(self):
         before = (self.profile / 'config.yaml').read_bytes()
         self.transaction().execute(self.environment, self.fixture.fixture.memory.bun,

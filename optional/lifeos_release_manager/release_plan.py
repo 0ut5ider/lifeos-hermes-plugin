@@ -10,7 +10,7 @@ import subprocess
 
 from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint
-from .release_stage import load_bridge, sha, validate_package
+from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint
 
 
 def inspect_operation(job, request, *, installation_lease=None):
@@ -21,7 +21,7 @@ def inspect_operation(job, request, *, installation_lease=None):
     if (sha(archive) != request['package_sha256']
             or sha(job / 'manifest.json') != request['runtime_metadata_sha256']
             or sha(package / 'python-runtime/uv.lock') != request['python_lock_sha256']
-            or fingerprint(Path(request['runtime']['source'])) != request['runtime_fingerprint']):
+            or runtime_source_fingerprint(Path(request['runtime']['source'])) != request['runtime_fingerprint']):
         raise ReleaseRejected('A prepared release artifact changes before selection')
     candidate = load_bridge(package / 'lifeos_hook_bridge')
     selected = candidate.memory_module('lifeos_installation').selection(profile)

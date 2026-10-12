@@ -13,13 +13,17 @@ import sys
 import types
 
 from .release_catalog import ReleaseRejected, _directory, extract_package, _json
-from .release_programs import publish
+from .release_programs import publish, fingerprint
 from .release_tools import prepare_bun
 
 
 def sha(path):
     with Path(path).open('rb') as source:
         return hashlib.file_digest(source, 'sha256').hexdigest()
+
+
+def runtime_source_fingerprint(path):
+    return fingerprint(path, excluded_root_entries=frozenset({'.hermes', '.bytecode-fingerprint'}))
 
 
 def validate_files(root, files, *, forbid_bytecode=False):

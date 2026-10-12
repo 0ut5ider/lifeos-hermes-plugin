@@ -14,8 +14,8 @@ import sys
 from uuid import uuid4
 
 from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, _json
-from .release_programs import fingerprint, publish
-from .release_stage import load_bridge, prepare_runtime, sha, validate_package
+from .release_programs import publish
+from .release_stage import load_bridge, prepare_runtime, sha, validate_package, runtime_source_fingerprint
 
 IDENTIFIER = re.compile('[0-9a-f]{32}')
 
@@ -108,7 +108,7 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
             'version': manifest['version'], 'commit': manifest['head'],
             'package_sha256': sha(downloaded['archive']), 'certificate': downloaded['certificate'],
             'configuration_sha256': sha(profile / 'config.yaml'),
-            'runtime': runtime, 'runtime_fingerprint': fingerprint(Path(runtime['source'])),
+            'runtime': runtime, 'runtime_fingerprint': runtime_source_fingerprint(Path(runtime['source'])),
             'runtime_metadata_sha256': sha(job / 'manifest.json'),
             'python_lock_sha256': sha(package / 'python-runtime/uv.lock'),
             'name': name.strip(), 'assistant': assistant.strip()}
