@@ -149,7 +149,10 @@ def _program_plan(job, request, selected):
     package = selected['package']
     native = package / 'lifeos/LifeOS/install'
     generated = job / 'generated'
-    generated.mkdir(mode=0o700)
+    generated.mkdir(mode=0o700, exist_ok=True)
+    if (generated.resolve() != generated or generated.stat().st_uid != os.getuid()
+            or generated.stat().st_mode & 0o077):
+        raise ReleaseRejected('Release preparation outputs require a private owner directory')
     files, dependencies = {}, {}
     directories = {selected['bridge']: package / 'lifeos_hook_bridge',
                    profile / 'plugins/lifeos-release-manager': package / 'optional/lifeos_release_manager'}

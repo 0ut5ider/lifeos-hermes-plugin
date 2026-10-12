@@ -7,6 +7,7 @@ import sys
 import types
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from starlette.concurrency import run_in_threadpool
 
 directory = Path(__file__).resolve().parents[1]
 namespace_name = 'lifeos_release_dashboard'
@@ -68,6 +69,10 @@ def operations():
 async def review(identifier: str, request: Request):
     if await request.body() or request.query_params:
         raise HTTPException(status_code=400, detail='Release review uses the prepared operation')
+    return await run_in_threadpool(review_release, identifier)
+
+
+def review_release(identifier):
     try:
         job, value = commands.operation(profile(), identifier)
         selected, plan = worker.review_operation(job, value)
@@ -84,6 +89,10 @@ async def review(identifier: str, request: Request):
 async def apply(identifier: str, action: str, request: Request, account: str = Depends(owner)):
     if action not in {'apply', 'recover', 'restore'} or await request.body() or request.query_params:
         raise HTTPException(status_code=400, detail='Release actions use a fixed prepared operation')
+    return await run_in_threadpool(apply_release, identifier, action, account)
+
+
+def apply_release(identifier, action, account):
     authorization = None
     try:
         job, value = commands.operation(profile(), identifier)

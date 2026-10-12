@@ -8,6 +8,49 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_preparation_retries_after_process_exit_and_retains_partial_copy(self):
+        import os
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            current, incoming = root / 'bridge', root / 'incoming'
+            current.mkdir(); incoming.mkdir()
+            (current / 'program.py').write_text('before')
+            (incoming / 'program.py').write_text('after')
+            snapshot = root / 'snapshot'
+            child = os.fork()
+            if child == 0:
+                def terminate(point):
+                    if point == 'artifact-staged':
+                        os._exit(73)
+                ProgramTransaction(snapshot).prepare(directories={current: incoming}, files={}, checkpoint=terminate)
+                os._exit(74)
+            _, result = os.waitpid(child, 0)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 73)
+            self.assertFalse((snapshot / 'programs.json').exists())
+            transaction = ProgramTransaction(snapshot)
+            transaction.prepare(directories={current: incoming}, files={})
+            transaction.check_prepared()
+            retained = list(root.glob('snapshot-incomplete-*'))
+            self.assertEqual(len(retained), 1)
+            self.assertEqual((retained[0] / 'incoming-0/program.py').read_text(), 'after')
+            self.assertEqual((current / 'program.py').read_text(), 'before')
+
+    def test_preparation_preserves_a_sealed_or_untrusted_snapshot(self):
+        for state in ('sealed', 'linked', 'shared'):
+            with self.subTest(state=state), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                snapshot = root / 'snapshot'
+                if state == 'linked':
+                    (root / 'retained').mkdir(mode=0o700)
+                    snapshot.symlink_to(root / 'retained')
+                else:
+                    snapshot.mkdir(mode=0o700 if state == 'sealed' else 0o755)
+                    (snapshot / 'keep.txt').write_text('preserve')
+                expected = 'a' * 64 if state == 'sealed' else None
+                with self.assertRaises(ProgramConflict):
+                    ProgramTransaction(snapshot, expected_entries_sha256=expected).prepare(directories={}, files={})
+                self.assertFalse(list(root.glob('snapshot-incomplete-*')))
+
     def test_reviewed_entry_digest_refuses_journal_target_substitution(self):
         import json
         from optional.lifeos_release_manager.release_programs import fingerprint

@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 import stat
 import tempfile
+import uuid
 
 
 class ProgramConflict(ValueError):
@@ -130,7 +131,7 @@ class ProgramTransaction:
     def entries_digest(self):
         return self._entries_digest(self._load()['entries'])
 
-    def prepare(self, *, directories, files, dependencies=None):
+    def prepare(self, *, directories, files, dependencies=None, checkpoint=lambda point: None):
         dependencies = {} if dependencies is None else dependencies
         targets = [Path(path).absolute() for path in (*directories, *files, *dependencies)]
         if (len(targets) != len(set(targets)) or any(left.is_relative_to(right)
@@ -152,6 +153,15 @@ class ProgramTransaction:
                     continue
                 entries.append({'target': str(target), 'source': None if incoming is None else str(incoming),
                     'before': before, 'after': after, 'kind': kind, 'allow_links': allow_links})
+        if self.snapshot.exists() or self.snapshot.is_symlink():
+            info = self.snapshot.lstat()
+            if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077
+                    or self.journal.exists() or self.journal.is_symlink()
+                    or self.expected_entries_sha256 is not None):
+                raise ProgramConflict('An existing program snapshot requires its recorded review')
+            retained = self.snapshot.with_name(self.snapshot.name + '-incomplete-' + uuid.uuid4().hex)
+            os.rename(self.snapshot, retained)
+            sync_directory(self.snapshot.parent)
         self.snapshot.mkdir(mode=0o700)
         for index, entry in enumerate(entries):
             incoming = self.snapshot / ('incoming-' + str(index))
@@ -166,6 +176,7 @@ class ProgramTransaction:
                     shutil.copy2(entry['target'], self.snapshot / ('before-' + str(index)))
             if fingerprint(incoming, allow_links=entry['allow_links']) != entry['after']:
                 raise ProgramConflict('The staged program copy differs from its source')
+            checkpoint('artifact-staged')
         self._record({'format': 1, 'state': 'prepared', 'entries': entries})
 
     def apply(self, *, checkpoint=lambda point: None):

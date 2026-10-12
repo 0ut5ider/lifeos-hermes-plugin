@@ -54,11 +54,14 @@ class ReleaseDashboardTests(unittest.TestCase):
         app.state.auth_required = True
         app.middleware('http')(gated_auth_middleware)
         app.include_router(router, prefix='/api/plugins/lifeos-release-manager')
+        @app.get('/health')
+        async def health():
+            return {'status': 'ok'}
         listener = socket.socket()
         listener.bind(('127.0.0.1', 0))
         self.addCleanup(listener.close)
         self.origin = 'http://127.0.0.1:' + str(listener.getsockname()[1])
-        self.server = uvicorn.Server(uvicorn.Config(app, log_level='critical', access_log=False, lifespan='off'))
+        self.server = uvicorn.Server(uvicorn.Config(app, log_level='critical', access_log=False, lifespan='off', ws='none'))
         self.thread = Thread(target=self.server.run, kwargs={'sockets': [listener]})
         self.thread.start()
         def stop():
@@ -72,7 +75,7 @@ class ReleaseDashboardTests(unittest.TestCase):
                 self.fail('The actual dashboard authorization server does not start')
             time.sleep(0.01)
 
-    def request(self, token=None, *, path='/operations', method='GET', body=None, origin=None):
+    def request(self, token=None, *, path='/operations', method='GET', body=None, origin=None, timeout=10):
         headers = {}
         if token:
             headers['Authorization'] = 'Bearer ' + token
@@ -81,7 +84,7 @@ class ReleaseDashboardTests(unittest.TestCase):
         request = Request(self.origin + '/api/plugins/lifeos-release-manager' + path,
             data=body, method=method, headers=headers)
         try:
-            with urlopen(request, timeout=10) as response:
+            with urlopen(request, timeout=timeout) as response:
                 return response.status, json.loads(response.read())
         except HTTPError as error:
             with error:
@@ -101,3 +104,40 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.assertEqual(self.request(self.owner, path=path, method='POST', origin='https://other.invalid')[0], 403)
         self.assertEqual(self.request(self.owner, path=path, method='POST', body=b'{"account":"owner"}', origin=self.origin)[0], 400)
         self.assertFalse((self.profile / '.lifeos-releases').exists())
+
+    @unittest.skipUnless(os.environ.get('LIFEOS_MANAGED_FRESH_OPERATION'), 'An actual prepared fresh operation is required')
+    def test_native_review_keeps_the_dashboard_responsive(self):
+        import fcntl
+        job = Path(os.environ['LIFEOS_MANAGED_FRESH_OPERATION'])
+        request = json.loads((job / 'request.json').read_bytes())
+        previous_home = os.environ.get('HOME')
+        os.environ['HOME'] = request['account_home']
+        os.environ['HERMES_HOME'] = request['profile']
+        self.addCleanup(lambda: os.environ.__setitem__('HOME', previous_home) if previous_home is not None else os.environ.pop('HOME', None))
+        results = []
+        def review():
+            try:
+                results.append(self.request(self.owner, path='/operations/' + job.name + '/review', method='POST', timeout=120))
+            except Exception as error:
+                results.append(error)
+        thread = Thread(target=review)
+        thread.start()
+        try:
+            deadline = time.monotonic() + 5
+            with (job / 'operation.lock').open('rb') as lock:
+                while time.monotonic() < deadline:
+                    try:
+                        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                        fcntl.flock(lock, fcntl.LOCK_UN)
+                    except BlockingIOError:
+                        break
+                    time.sleep(0.01)
+                else:
+                    self.fail('The actual operation review does not acquire its lock')
+            health = Request(self.origin + '/health', headers={'Authorization': 'Bearer ' + self.owner})
+            with urlopen(health, timeout=0.75) as response:
+                self.assertEqual(json.loads(response.read()), {'status': 'ok'})
+        finally:
+            thread.join(timeout=130)
+            self.assertFalse(thread.is_alive())
+        self.assertEqual(results[0][0], 200)
