@@ -1,0 +1,38 @@
+test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call) ... FAIL
+test_receipt_paths_and_aliases_cannot_read_other_files (test_release_version.ReleaseVersionCommandTests.test_receipt_paths_and_aliases_cannot_read_other_files) ... ERROR
+test_receipt_version_cannot_mislabel_the_installed_code (test_release_version.ReleaseVersionCommandTests.test_receipt_version_cannot_mislabel_the_installed_code) ... ERROR
+
+======================================================================
+ERROR: test_receipt_paths_and_aliases_cannot_read_other_files (test_release_version.ReleaseVersionCommandTests.test_receipt_paths_and_aliases_cannot_read_other_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_version.py", line 101, in test_receipt_paths_and_aliases_cannot_read_other_files
+    value=self.receipt()
+          ^^^^^^^^^^^^
+AttributeError: 'ReleaseVersionCommandTests' object has no attribute 'receipt'
+
+======================================================================
+ERROR: test_receipt_version_cannot_mislabel_the_installed_code (test_release_version.ReleaseVersionCommandTests.test_receipt_version_cannot_mislabel_the_installed_code)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_version.py", line 112, in test_receipt_version_cannot_mislabel_the_installed_code
+    value=self.receipt();value['version']='0.4.0'
+          ^^^^^^^^^^^^
+AttributeError: 'ReleaseVersionCommandTests' object has no attribute 'receipt'
+
+======================================================================
+FAIL: test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_version.py", line 93, in test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : hermes: 'lifeos-version' is not a `hermes` command.
+Did you mean: lifeos-probe, lifeos-infer, lifeos-job?
+Run `hermes --help` to see all commands.
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.023s
+
+FAILED (failures=1, errors=2)

@@ -31,7 +31,7 @@ class FootprintContractsTests(unittest.TestCase):
             os.environ, {"LIFEOS_HOOK_SETTINGS": str(Path(directory) / "missing.json")}
         ):
             register(ctx)
-        self.assertEqual(set(ctx.commands), {"lifeos-infer", "lifeos-probe", "lifeos-backup", "lifeos-job", "lifeos-atlas-history"})
+        self.assertEqual(set(ctx.commands), {"lifeos-infer", "lifeos-probe", "lifeos-backup", "lifeos-job", "lifeos-atlas-history", "lifeos-version"})
 
     def test_observation_binds_provider_model_and_effort(self):
         from lifeos_hook_bridge.model_tiers import carrier_observation

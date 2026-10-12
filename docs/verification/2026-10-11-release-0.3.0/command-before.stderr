@@ -1,0 +1,18 @@
+test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call) ... FAIL
+
+======================================================================
+FAIL: test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_version.py", line 112, in test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : hermes: 'lifeos-version' is not a `hermes` command.
+Did you mean: lifeos-probe, lifeos-infer, lifeos-job?
+Run `hermes --help` to see all commands.
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.024s
+
+FAILED (failures=1)
