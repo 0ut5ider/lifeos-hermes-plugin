@@ -1,5 +1,5 @@
 {
-  "branch": "feature/release-0.3.0-deployment",
+  "branch": "feature/conduit-capture-cursor",
   "current_head": "01a50a2feb482b869ccde344e860ad8af44f568c",
   "base": "194c334bcdf85d6f2b97929e0e77f97f7409ae68",
   "authorization": "Proceed with complete versioning, active .252 update, combined acceptance, whole-guest restore, release publication and .253 promotion, then automatic morning observation.",
@@ -122,5 +122,29 @@
     "cursor": "2026-10-11T17:40:32.556Z",
     "cause": "Bridge validates the complete work ledger although native capture ignores entries at or before the cursor"
   },
-  "next_release": "0.3.1"
+  "next_release": "0.3.1",
+  "cursor_gate": {
+    "cases": 70,
+    "status": "PASS",
+    "code_head": "0cee51f6febd3f60aaadd40c811b7c61332dc232",
+    "development_build": {
+      "status": "PASS",
+      "version": "0.3.1-dev.1",
+      "head": "0cee51f6febd3f60aaadd40c811b7c61332dc232",
+      "package": "/home/outsider/.cache/lifeos-release-20261011/0.3.1-dev.1-0cee51f6",
+      "archive": "/home/outsider/.cache/lifeos-release-20261011/0.3.1-dev.1-0cee51f6.tgz",
+      "archive_bytes": 341576486,
+      "archive_sha256": "1107cac626f94740cbc4e1316a6a6a6d9b328db5a058709cc35311b6948affbb",
+      "plugin_file_count": 202,
+      "hermes_base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+      "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+      "hermes_patch_count": 11,
+      "lifeos_patch_count": 25,
+      "elapsed_seconds": 14.996,
+      "native_manifests_verified": true,
+      "live_selection_changed": false,
+      "combined_release_verified": false
+    },
+    "development_selection": "PASS: 141 files preserved, 0 native program changes"
+  }
 }
