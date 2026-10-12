@@ -4,12 +4,12 @@
   "base": "194c334bcdf85d6f2b97929e0e77f97f7409ae68",
   "authorization": "Proceed with complete versioning, active .252 update, combined acceptance, whole-guest restore, release publication and .253 promotion, then automatic morning observation.",
   "active_development": {
-    "version": "0.3.0",
+    "version": "0.3.1",
     "verification": "verified",
     "verification_scope": "plugin_sources",
-    "commit": "01a50a2feb482b869ccde344e860ad8af44f568c",
-    "package_sha256": "41c249d372093048dc31c4640efcd6f4770c29b30cba4461cd784b987110cdfa",
-    "recorded_version": "0.3.0",
+    "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+    "package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24",
+    "recorded_version": "0.3.1",
     "modified_files": []
   },
   "final_package": {
@@ -32,17 +32,9 @@
   },
   "combined_acceptance_pid": 1250307,
   "combined_acceptance_state": "PASS",
-  "production_version": "0.3.0",
-  "production_changed": false,
-  "remaining": [
-    "Write and run failing native capture cursor tests",
-    "Filter selected WORK rows before admission and copy only admitted pending rows into native scratch",
-    "Run focused, neighboring, and full sealed release gates",
-    "Create and merge correction PR, publish immutable 0.3.1 release, and promote exact package to both guests",
-    "Approve safe current operational sources without admitting the refused whole work ledger",
-    "Verify actual owner jobs, capture scheduler, private Discord, and final daily backup/restore",
-    "Schedule first actual 07:00 morning observation"
-  ],
+  "production_version": "0.3.1",
+  "production_changed": true,
+  "remaining": [],
   "operator": "docs/verification/2026-10-11-release-0.3.0/upgrade_guest.py",
   "operator_notes": [
     "Borrow the installation lease for ProfileServices",
@@ -52,7 +44,7 @@
   ],
   "github_identity": "0ut5ider; use gh auth token through subprocess environment without printing it",
   "memory_tools": "Cortex integrity_error; do not bypass shared memory tools",
-  "morning_observation": "Pending actual 07:00 Toronto run; observation is scheduled at 07:15 Toronto.",
+  "morning_observation": "PASS: real automatic October 12 morning execution and exactly one Cerebo delivery.",
   "native_controls_passed": 96,
   "pbs_controller_pid": 708249,
   "pbs_controller_path": "/root/proxmox_history_restore_030.py",
@@ -157,7 +149,7 @@
   "release_031_package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24",
   "development_031_installed_verified": true,
   "morning_schedule_id": "scheduled-task:command:mcp:07985ee4-3c72-4bc0-b484-8e1ee7334745:schedule-task:lifeos-031-morning-20261012-once",
-  "morning_observation_next_run": "2026-10-12T11:15:00.000Z",
+  "morning_observation_next_run": null,
   "daily_031_selected": true,
   "daily_031_installed_verified": true,
   "daily_031_preserved_files": 159,
@@ -174,5 +166,11 @@
   "final_daily_restore_disposable_removed": true,
   "final_daily_backup_protected": true,
   "steps_1_to_5_complete": true,
-  "step_6_state": "Pending actual automatic morning run and its scheduled observation."
+  "step_6_state": "PASS",
+  "morning_observation_schedule_deleted": true,
+  "steps_1_to_6_complete": true,
+  "automatic_morning_receipt": "../2026-10-12-capture-cursor/automatic-morning-verification.json",
+  "release_workflow_status": "PASS",
+  "current_release_url": "https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.3.1",
+  "current_deployment_acceptance": "../2026-10-12-capture-cursor/DEPLOYMENT-ACCEPTANCE.json"
 }

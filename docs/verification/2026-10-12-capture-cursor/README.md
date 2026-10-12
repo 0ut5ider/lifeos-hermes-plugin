@@ -2,7 +2,7 @@
 
 Date: 2026-10-12. This correction supports the authorized release workflow.
 
-**Current status:** Steps 1 through 5 pass. Both servers run the same 0.3.1 archive. The final daily backup, isolated restore, post-backup checks, and private Discord reply pass. Step 6 awaits the real automatic morning run. See [DEPLOYMENT-ACCEPTANCE.json](DEPLOYMENT-ACCEPTANCE.json). The sections below preserve the investigation and intermediate results.
+**Current status:** All six release steps pass. Both servers run the same 0.3.1 archive. The final daily backup, isolated restore, post-backup checks, and private Discord reply pass. The real automatic morning run and exactly one Cerebo delivery pass on October 12. See [DEPLOYMENT-ACCEPTANCE.json](DEPLOYMENT-ACCEPTANCE.json) and the [automatic morning receipt](automatic-morning-verification.json). The sections below preserve the investigation and intermediate results.
 
 Daily installation and authenticated acceptance pass on version 0.3.0. Capture remains blocked after synthetic memory cleanup. A governed metadata diagnostic identifies 12 processed work events and six pending events. One processed event contains unsafe retained text. No pending event contains private or retired text. Two pending events still predate the retirement cutoff and require explicit review.
 
@@ -28,4 +28,12 @@ The automatic observation runs at 07:15 America/Toronto on October 12. It must i
 
 The final daily restore passes all three Atlas recovery cases and verifies 41,742 artifacts by bytes, modes, ownership, and symlink targets. The restored guest has no network and masks all three application services. The controller removes container 110 after success. The source guest resumes its services and passes the complete installed gate again with zero restarts. The verified archive is `PBS-01:backup/ct/102/2026-10-12T06:22:19Z` and is protected from routine pruning. Personal source contents and credentials remain private; the repository contains only aggregate receipts.
 
-External changes select the release on both guests, record current-owner source approvals, recover the Conduit retry latch, enable the development services at boot, and isolate the development gateway HOME. Prior programs and unit definitions remain retained on each applicable guest. Program recovery must preserve later personal writes. Archive restore tests use only the disposable guest. The daily observation at 07:15 is the only pending acceptance step. The installed programs retain all 36 patches and the approved model efforts.
+External changes select the release on both guests, record current-owner source approvals, recover the Conduit retry latch, enable the development services at boot, and isolate the development gateway HOME. Prior programs and unit definitions remain retained on each applicable guest. Program recovery must preserve later personal writes. Archive restore tests use only the disposable guest. The daily observation completes the final acceptance step. The installed programs retain all 36 patches and the approved model efforts.
+
+## Automatic morning acceptance
+
+The existing observer verifies the real October 12 execution without starting a morning job or sending a substitute message. Pulse records exactly one completion in the 07:00 through 07:15 Toronto window, at `2026-10-12T07:01:17.511000-04:00`. Discord contains exactly one matching Cerebo morning brief in that window, delivered at `2026-10-12T07:01:16.767000-04:00`. Its message ID is `1559159014233743474` in channel `1558870196784205927` (`#cerebo`).
+
+The [safe observer receipt](automatic-morning-verification.json) binds this result to version `0.3.1` and program commit `9af633252004a0ac8dd780d5fc12e9644f97bb0c`. It retains only verification flags, release identity, timestamps, and message identifiers. The one-time observation schedule is deleted and its absence is confirmed. The existing daily `0 7 * * *` job remains in place. This check verifies one automatic morning window. It does not establish delivery reliability for future mornings.
+
+The release publishes `automatic-morning-verification.json` as a new asset. All 13 existing release assets retain their digests and sizes. The published initial `DEPLOYMENT-ACCEPTANCE.json` remains the historical checkpoint before automatic observation. The repository copy records final acceptance and links the new receipt. This evidence update changes no program, configuration, or personal data.
