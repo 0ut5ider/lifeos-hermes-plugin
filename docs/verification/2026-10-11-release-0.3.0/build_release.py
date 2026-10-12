@@ -19,7 +19,7 @@ version=(repo/'VERSION').read_text().strip()
 cache=Path('/home/outsider/.cache/lifeos-release-20261011')
 cache.mkdir(parents=True,exist_ok=True,mode=0o700)
 package=cache/(version+'-'+head[:8])
-archive=package.with_suffix('.tgz')
+archive=Path(str(package)+'.tgz')
 assert not package.exists() and not archive.exists()
 package.mkdir(mode=0o700)
 selected=['lifeos_hook_bridge','scripts','tests','docs/deployment/daily-text','VERSION','CHANGELOG.md','README.md',
