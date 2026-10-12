@@ -65,6 +65,50 @@ class MemoryLifeSourceReviewTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text[:500])
         return response.json()
 
+    def test_conduit_cursor_review_preserves_bytes_and_invalidates_after_change(self):
+        from lifeos_hook_bridge.memory_sources import _admit, _source_time
+        from lifeos_hook_bridge.memory_operational_views import projection
+        relative = 'LIFEOS/USER/CONDUIT/state.json'
+        path = self.root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        content = json.dumps({'lastClaudeCursor': '2026-10-11T12:00:00Z'})
+        path.write_text(content)
+        before = path.read_bytes(), path.stat().st_mtime_ns
+        self.forget()
+        memory = self.fixture.fixture.fixture.fixture.fixture.memory
+        def excluded():
+            with memory._transaction() as connection:
+                text = path.read_text()
+                return _admit(memory, connection, life_fixture.OWNER, text, relative,
+                    _source_time(path.stat()), projection=projection(text))['excluded']
+        self.assertTrue(excluded())
+        with httpx.Client(timeout=35) as client:
+            self.login(client)
+            snapshot = self.preview(client, [relative])
+            self.assertTrue(snapshot['sources'][0]['accepted'], snapshot)
+            self.assertEqual(self.approve(client, [relative], snapshot)['status'], 'committed')
+            self.assertFalse(excluded())
+            self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
+            path.write_text(json.dumps({'lastClaudeCursor': '2026-10-11T13:00:00Z'}))
+            os.utime(path, ns=(before[1], before[1]))
+            self.assertTrue(excluded())
+            self.assertEqual(self.approve(client, [relative], snapshot)['status'], 'conflict')
+
+    def test_conduit_cursor_review_refuses_decoded_retired_and_private_text(self):
+        relative = 'LIFEOS/USER/CONDUIT/state.json'
+        path = self.root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self.forget('SyntheticRetiredCursor')
+        with httpx.Client(timeout=35) as client:
+            self.login(client)
+            for content in ('{"lastClaudeCursor":"SyntheticRetired\\u0043ursor"}',
+                            json.dumps({'note': '<private>SyntheticPrivateCursor</private>'})):
+                path.write_text(content)
+                snapshot = self.preview(client, [relative])
+                self.assertFalse(snapshot['sources'][0]['accepted'], snapshot)
+                self.assertEqual(snapshot['sources'][0]['content'], '')
+                self.assertEqual(self.approve(client, [relative], snapshot)['status'], 'rejected')
+
     def test_safe_old_life_sources_restore_without_changing_bytes_or_timestamps(self):
         paths = self.seed()
         files = [path for path in paths if (self.root / path).is_file()]
