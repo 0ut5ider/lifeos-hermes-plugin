@@ -1,0 +1,35 @@
+[
+  {
+    "label": "native",
+    "command": [
+      "bash",
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/pr14-native-review-repeat/scripts/run_tests.sh",
+      "-j",
+      "4",
+      "tests/hermes_cli/test_plugin_policy_arguments.py",
+      "tests/hermes_cli/test_plugin_async_dispatch.py",
+      "tests/hermes_cli/test_required_middleware.py",
+      "tests/gateway/test_discord_guild_channel_only.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 21.207948721013963
+  },
+  {
+    "label": "integration",
+    "command": [
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+      "-B",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_release_catalog",
+      "test_release_stage",
+      "test_release_programs",
+      "test_morning_observation"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 8.279762210033368
+  }
+]

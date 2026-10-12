@@ -1,0 +1,17 @@
+public recovery admitted with damaged retained copy: queued-recover
+actual worker refusal: MountError A mount target changed. Recovery will preserve the later edit.
+worker failure frames: {'exception': 'MountError', 'frames': [{'file': '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py', 'line': 254, 'function': 'execute'}, {'file': '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py', 'line': 324, 'function': '_execute'}, {'file': '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py', 'line': 471, 'function': 'check_mount_recovery'}, {'file': '/tmp/native-memory-qyxbj_hu/plugins/lifeos-hook-bridge/mount_transaction.py', 'line': 323, 'function': '_checks'}]}
+state after recover refusal: recovery_required
+profile preserved: True
+native journal state after refusal: committed
+program journal state after refusal: applied
+retained copy restored, native preflight passes: Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-3/probe-native-edit-recovery.py", line 75, in <module>
+    worker.check_mount_recovery(job, request, transaction)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py", line 471, in check_mount_recovery
+    mount._checks(selected['entries'], acceptable, restoring=selected['state'] == 'restoring')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 323, in _checks
+    raise MountError('A mount target changed. Recovery will preserve the later edit.')
+lifeos_hook_bridge.mount_transaction.MountError: A mount target changed. Recovery will preserve the later edit.

@@ -6,7 +6,23 @@ The accepted daily release remains 0.3.1 on `.253`. Historical release assets re
 
 The roadmap now marks Atlas retention and all six 0.3.1 release steps complete. The current plan distinguishes current status from dated checkpoints.
 
-## Final candidate acceptance
+## Final reviewed candidate acceptance
+
+The final package is 0.4.0-dev.1 at program commit c801feef00744ed8eb5d23b5e21da49706518351. Its archive SHA256 is fc5dcc6b14d1dc4edc11781e8660fe0ea165a717e43a6a679d7a615b0c6f9087. The archive contains 119,131,788 bytes. FINAL-ACCEPTANCE.json records the safe qualification receipt. The package certificate remains private and test_fixture_only. No production certificate or public release asset is published.
+
+Three independent PR14 reviews establish eight findings. All eight findings are resolved. The final reviewer reports no unresolved actionable finding. The recorded final review diff exactly matches the committed fix. Read PR14-REVIEW-RESPONSE.md and pr14-review-clear.json. The primary agent repeats the actual governed repair and refusal probes.
+
+The final frozen package passes 625 integration tests. The final primary focused suite passes 67 checks. The primary operation/program repeat passes 31 checks. The reviewer also passes 14 actual catalog, staging, and authenticated HTTP boundary checks. The native sources, bridge, dependency closure, daily configuration, and operator files exactly match the earlier verified package. Its official 716-test native result across 38 files and twelve source checks remain applicable through that exact component proof. These native checks are not reported as a new run. Read unchanged-components-c801feef.json. A final GitHub check confirms Hermes v0.21.7 remains the latest stable release.
+
+The final fresh installation uses the stock scanner and native command discovery. Preparation seals the candidate plan before readiness. An actual worker exit at the retained-directory boundary recovers, preserves later synthetic data, and returns the exact installed identity. Earlier three-boundary checks remain historical component evidence.
+
+The final development interruption exits 73 after publishing all programs. The actual owner dashboard admits recovery. The observer verifies exact prior configuration, all three command hashes, unchanged model and tier mapping, and all three running services. The normal unmodified frozen worker also applies the complete candidate. The observer verifies its exact version, commit, archive hash, commands, models, and services. The installed manager then admits authenticated owner rollback. The final observer verifies exact accepted 0.3.1 and all three running services. Both final development operations are rolled_back.
+
+The activated-memory workflow at 3a072309 remains its historical acceptance checkpoint. The memory policy and bridge files are unchanged. The final grant, admission, and authenticated boundary regressions supplement that checkpoint. The removed synthetic account is not recreated. A read-only daily check verifies exact accepted 0.3.1 on .253. No personal data import or reset occurs. Immutable 0.3.1 assets remain unchanged.
+
+The next work is an authorized merge, then qualification and publication of the next complete production release. An older incompatible coordinator safely refuses incomplete plans. Install the qualified manager before preparing that next release. A later native remount can expire an earlier retained rollback. Status hides that expired action.
+
+## Initial candidate acceptance at 3a072309
 
 The candidate package is 0.4.0-dev.1 at program commit 3a07230930e5a6c386b644438277188559b751f6. Its archive SHA256 is 048d348c0e96333be931200fb6d9d0a94c788213a2b8dedb8bce3a8dad2f69e9. The archive contains 119,128,690 bytes. All candidate certificates in these checks are private test fixtures. No qualified production certificate or new public release asset is published.
 

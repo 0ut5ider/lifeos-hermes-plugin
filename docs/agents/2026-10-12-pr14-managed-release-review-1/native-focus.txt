@@ -1,0 +1,24 @@
+▶ not activated — using HERMES_PYTHON: /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 4 test files (~22 tests) under ['tests/hermes_cli/test_plugin_policy_arguments.py', 'tests/hermes_cli/test_plugin_async_dispatch.py', 'tests/hermes_cli/test_required_middleware.py', 'tests/gateway/test_discord_guild_channel_only.py']; running with -j 4
+[  4.5% |     1/~22 | ✓1 | ✗0] ✓ tests/hermes_cli/test_plugin_async_dispatch.py (1✓, 1.1s)
+[  9.1% |     2/~22 | ✓2 | ✗0] ✓ tests/hermes_cli/test_plugin_policy_arguments.py (1✓, 1.4s)
+[ 50.0% |    11/~22 | ✓11 | ✗ 0] ✓ tests/gateway/test_discord_guild_channel_only.py (9✓, 1.5s)
+[100.0% |    22/~22 | ✓27 | ✗ 0] ✓ tests/hermes_cli/test_required_middleware.py (16✓, 6.4s)
+
+=== Summary: 4 files, 27 tests passed, 0 failed (100% complete) in 6.4s (4 workers) ===
+  Durations cached to test_durations.json (4 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   4
+  Total subprocess CPU-wall: 10.4s  (runner wall: 6.4s, parallelism: 4x)
+  P50: 1.54s  P90: 6.36s  P95: 6.36s  P99: 6.36s  Max: 6.36s
+  <1s: 0 files (0%)  <2s: 3 files (75%)
+  Top 10 slowest:
+      6.36s  tests/hermes_cli/test_required_middleware.py
+      1.54s  tests/gateway/test_discord_guild_channel_only.py
+      1.41s  tests/hermes_cli/test_plugin_policy_arguments.py
+      1.11s  tests/hermes_cli/test_plugin_async_dispatch.py

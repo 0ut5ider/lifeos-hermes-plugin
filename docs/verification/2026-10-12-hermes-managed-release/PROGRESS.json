@@ -57,7 +57,7 @@
     "live_ssh_fixture": true
   },
   "deployment": {
-    "192.168.8.252": "Final candidate update and interruption recovery pass. Exact accepted 0.3.1 restored through the owner dashboard. All three services run.",
+    "192.168.8.252": "Final reviewed c801feef update, actual interruption recovery, and owner rollback pass. Exact accepted 0.3.1 is restored. All three services run.",
     "192.168.8.253": "0.3.1 unchanged"
   },
   "immutable_v031_assets_changed": false,
@@ -147,17 +147,16 @@
     ],
     "local_controls_passed": 29,
     "remaining": [
-      "agent PR review",
       "production certificate and release publication"
     ],
     "local_subtests_passed": 11
   },
   "candidate_version": "0.4.0-dev.1",
-  "next_action": "Resolve PR14 review findings and repeat review. Candidate acceptance must be repeated where product fixes change verified behavior.",
+  "next_action": "Review and merge PR14 when authorized. Qualify and publish the next complete release before updating the daily server.",
   "installed_development_qualification": "PASS",
-  "checkpoint_commit": "3a07230930e5a6c386b644438277188559b751f6",
+  "checkpoint_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
   "sealed_integration": {
-    "package_commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "package_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
     "command": [
       "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
       "-W",
@@ -226,10 +225,9 @@
       "test_release_dashboard"
     ],
     "exit_code": 0,
-    "elapsed_seconds": 1112.7001157809864,
+    "elapsed_seconds": 1007.6796737440163,
     "live_selection_changed": false,
-    "tests": 614,
-    "latest_repeat_required": false
+    "tests": 625
   },
   "sealed_native": {
     "command": [
@@ -285,17 +283,19 @@
     "files": 38
   },
   "fresh_install": {
-    "commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "commit": "c801feef00744ed8eb5d23b5e21da49706518351",
     "status": "PASS",
     "stock_installer_scanning_enabled": true,
+    "candidate_plan_before_ready": "PASS",
     "native_command_discovery": "PASS",
     "installed_release_identity": "PASS",
-    "interruption_cases": 3
+    "interruption_cases": 1,
+    "receipt": "fresh-install-c801feef-final-review.json"
   },
   "development_preparation": {
     "status": "PASS",
-    "commit": "3a07230930e5a6c386b644438277188559b751f6",
-    "operation": "48d18c56bd5042cbbfd0e0fb8ea8e959",
+    "commit": "c801feef00744ed8eb5d23b5e21da49706518351",
+    "operation": "13e04e6c587e4463b09addc8f0b0d977",
     "state": "rolled_back",
     "native_mount_required": true,
     "model_selection_unchanged": true,
@@ -311,19 +311,17 @@
     "native_mount_status": "PASS"
   },
   "development_update": {
-    "candidate_commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "candidate_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
     "status": "PASS",
-    "receipt": "development-update-3a072309.json",
+    "receipt": "development-update-c801feef.json",
     "model_and_tier_selection_unchanged": true,
     "native_owner_grant_required": false
   },
   "fresh_install_recovery": {
-    "commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "commit": "c801feef00744ed8eb5d23b5e21da49706518351",
     "status": "PASS",
     "phases": [
-      "user-published",
-      "directory-retained",
-      "native-mounted"
+      "directory-retained"
     ],
     "later_synthetic_data_preserved": true,
     "stock_scanner_enabled": true,
@@ -383,16 +381,16 @@
     "receipt": "native-sealed-0deb335e.json"
   },
   "development_interruption": {
-    "candidate_commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "candidate_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
     "status": "PASS",
     "checkpoint": "programs-published",
     "actual_exit_code": 73,
-    "recovery_receipt": "development-interruption-recovery-3a072309.json",
-    "exit_receipt": "development-interruption-exit-3a072309.json"
+    "recovery_receipt": "development-interruption-recovery-c801feef.json",
+    "exit_receipt": "development-interruption-exit-c801feef.json"
   },
   "development_rollback": {
     "status": "PASS",
-    "receipt": "development-rollback-3a072309.json",
+    "receipt": "development-rollback-c801feef.json",
     "prior_configuration_exact": true,
     "services_running": true
   },
@@ -414,7 +412,46 @@
   "review": {
     "pr": 14,
     "url": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/14",
-    "round": 1,
-    "status": "in_progress"
+    "round": 3,
+    "status": "CLEAR",
+    "findings_resolved": 8,
+    "unresolved_findings": [],
+    "receipt": "pr14-review-clear.json"
+  },
+  "final_review_package": {
+    "program_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
+    "archive_sha256": "fc5dcc6b14d1dc4edc11781e8660fe0ea165a717e43a6a679d7a615b0c6f9087",
+    "archive_bytes": 119131788,
+    "test_fixture_only": true,
+    "production_qualified": false,
+    "qualification": "PASS"
+  },
+  "sealed_native_source_reuse": {
+    "tests": 716,
+    "files": 38,
+    "original_program_commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "current_program_commit": "c801feef00744ed8eb5d23b5e21da49706518351",
+    "component_proof": "unchanged-components-c801feef.json",
+    "rerun_claimed": false
+  },
+  "fresh_install_3a_checkpoint": {
+    "commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "status": "PASS",
+    "stock_installer_scanning_enabled": true,
+    "native_command_discovery": "PASS",
+    "installed_release_identity": "PASS",
+    "interruption_cases": 3
+  },
+  "fresh_install_recovery_3a_checkpoint": {
+    "commit": "3a07230930e5a6c386b644438277188559b751f6",
+    "status": "PASS",
+    "phases": [
+      "user-published",
+      "directory-retained",
+      "native-mounted"
+    ],
+    "later_synthetic_data_preserved": true,
+    "stock_scanner_enabled": true,
+    "installed_identity_verified": true
   }
 }

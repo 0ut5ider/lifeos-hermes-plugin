@@ -4,7 +4,7 @@
 The native port passes 716 selected tests and all twelve upstream source checks. The candidate applies ten Hermes patch groups and twenty-five LifeOS patch groups.
 
 The complete release manager in `optional/lifeos_release_manager` passes development acceptance for fresh installation, update, interruption recovery, and rollback.
-Independent PR review and publication of a qualified release remain required before deployment.
+Three independent PR review rounds resolve eight findings. The final frozen candidate passes 625 integration checks and actual development update, recovery, and rollback. Publication of a qualified complete release remains required before daily deployment.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records its current state.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 

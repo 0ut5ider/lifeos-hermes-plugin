@@ -1,8 +1,14 @@
 # Managed release continuation
 
-2026-10-12. Branch: feature/hermes-managed-release.
+## PR14 review completion and final qualification
 
-Adrian authorizes pushing this branch, creating a PR, obtaining an agent PR review, fixing findings, and repeating review when needed. No merge authorization exists.
+PR14 contains the final evidence and review response. All eight findings across three independent reviews are resolved. The final review patch exactly matches program commit c801feef00744ed8eb5d23b5e21da49706518351. Read FINAL-ACCEPTANCE.json, PR14-REVIEW-RESPONSE.md, and pr14-review-clear.json. No merge authorization exists.
+
+The final package passes 625 sealed integration checks, 67 primary focused checks, and 31 primary operation/program checks. The final fresh retained-directory interruption passes. The final .252 interrupted operation 013c67e4b9bb4f43aabc406598280329 and normal operation 13e04e6c587e4463b09addc8f0b0d977 are both rolled_back. Actual observer receipts verify exact accepted 0.3.1, original configuration and commands, unchanged model and tier mapping, and all three running services. Do not replay these completed operations.
+
+The native sources, bridge, dependency closure, daily configuration, and operators exactly match the earlier verified package. Read unchanged-components-c801feef.json before attributing its 716 native tests and twelve source checks. The synthetic account remains removed. Read-only daily verification confirms exact accepted 0.3.1 on .253.
+
+All candidate certificates remain private and test_fixture_only. No public certificate or immutable 0.3.1 asset changes. The superseded 08e249c0 prepared operation 0dbbcecf9bc5442488d4db1dfc902e86 remains ready and unselected. Its integration run is intentionally terminated. The final candidate acceptance is the c801feef record.
 
 ## Verified program package
 

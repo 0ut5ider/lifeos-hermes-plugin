@@ -1,0 +1,18 @@
+ CHANGELOG.md                                       |   3 +
+ README.md                                          |   3 +
+ .../PROGRESS.json                                  |  24 ++++-
+ .../2026-10-12-hermes-managed-release/RESUME.md    |  12 +--
+ .../pr14-fixes-focused.json                        |   7 ++
+ .../pr14-fixes-focused.stderr                      |  68 +++++++++++++
+ .../pr14-fixes-focused.stdout                      |   0
+ .../synthetic-account-cleanup.json                 |  14 +++
+ optional/lifeos_release_manager/cli.py             |  25 ++++-
+ .../lifeos_release_manager/release_operation.py    |   8 +-
+ .../lifeos_release_manager/release_programs.py     |  31 ++++++
+ optional/lifeos_release_manager/release_worker.py  | 106 ++++++++++++++++++---
+ .../skills/lifeos-release/SKILL.md                 |   2 +
+ tests/test_mount_transaction.py                    |  42 ++++++++
+ tests/test_release_manager_cli.py                  |  29 ++++++
+ tests/test_release_operation.py                    |  86 +++++++++++++++++
+ tests/test_release_programs.py                     |  43 +++++++++
+ 17 files changed, 475 insertions(+), 28 deletions(-)

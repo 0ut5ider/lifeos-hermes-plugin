@@ -1,0 +1,10 @@
+public recovery admitted with later native target edit: queued-recover
+actual worker refusal: MountError A mount target changed. Recovery will preserve the later edit.
+worker failure frames: {'exception': 'MountError', 'frames': [{'file': '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py', 'line': 254, 'function': 'execute'}, {'file': '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py', 'line': 324, 'function': '_execute'}, {'file': '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py', 'line': 471, 'function': 'check_mount_recovery'}, {'file': '/tmp/native-memory-boznjjpk/plugins/lifeos-hook-bridge/mount_transaction.py', 'line': 323, 'function': '_checks'}]}
+state after recover refusal: recovery_required
+profile preserved: True
+native journal state after refusal: committed
+program journal state after refusal: applied
+original native target restored, preflight passes: True
+safe status after repair: {'identifier': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'state': 'recovery_required', 'error': 'The release worker refuses the current artifacts or authority. Review the private operation before recovery.', 'version': '0.4.0-dev.1', 'commit': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', 'restore_available': False, 'recover_available': True}
+public recovery retry: admitted

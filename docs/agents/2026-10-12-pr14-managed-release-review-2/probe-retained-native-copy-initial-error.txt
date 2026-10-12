@@ -1,0 +1,16 @@
+real bound mount: committed
+actual native restore: KeyError: 'entries'
+native journal state after refusal: committed
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-2/probe-retained-native-copy.py", line 37, in <module>
+    selected = next(entry for entry in first['entries'] if entry['before'] is not None)
+                                       ~~~~~^^^^^^^^^^^
+KeyError: 'entries'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-2/probe-retained-native-copy.py", line 49, in <module>
+    print('configuration preserved:', (fixture.profile / 'config.yaml').read_bytes() == before)
+                                                                                        ^^^^^^
+NameError: name 'before' is not defined
