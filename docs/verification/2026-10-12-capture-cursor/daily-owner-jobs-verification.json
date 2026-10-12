@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "owner_jobs": [
+    {
+      "job": "atlas-sync",
+      "status": "completed",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "job": "conduit-capture",
+      "status": "completed",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "job": "memory-consolidation",
+      "status": "completed",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "job": "proposal-gc",
+      "status": "completed",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "job": "life-morning-brief",
+      "status": "completed",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    }
+  ],
+  "scheduled_capture": {
+    "lastRun": 1791786056837,
+    "lastResult": "ok",
+    "consecutiveFailures": 0
+  },
+  "model_settings_changed": false,
+  "automatic_morning_brief_observed": false,
+  "capture_failure_latch_recovery": {
+    "previous": {
+      "lastRun": 1791784125278,
+      "lastResult": "error",
+      "consecutiveFailures": 5
+    },
+    "manual_capture_succeeded": true,
+    "last_result_and_timestamp_preserved": true
+  }
+}
