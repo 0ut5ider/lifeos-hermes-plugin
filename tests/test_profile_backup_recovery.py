@@ -234,8 +234,9 @@ print(json.dumps({'before':before,'after':after,'warnings':warnings.getvalue()})
             ['Synthetic actual retained user message', 'Synthetic actual retained assistant reply', 'Synthetic recovered continuation'])
         if outcome['warnings']:
             self.assertEqual(len(outcome['warnings'].splitlines()), 1)
-            self.assertIn('WAL-reset corruption bug', outcome['warnings'])
-            self.assertIn('using journal_mode=DELETE', outcome['warnings'])
+            self.assertIn('on-disk journal_mode was delete', outcome['warnings'])
+            self.assertIn('switched to WAL', outcome['warnings'])
+            self.assertIn('Set `database.journal_mode: delete`', outcome['warnings'])
         with closing(sqlite3.connect(self.fixture.database)) as history:
             original_count = history.execute('SELECT COUNT(*) FROM messages').fetchone()[0]
             self.assertEqual(original_count, 2)

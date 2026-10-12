@@ -67,6 +67,18 @@ class ProfileBackupTests(unittest.TestCase):
         self.assertIn('MEMORY/STATE/memory-access.sqlite', [item['path'] for item in native['files']])
         self.assertNotIn('Synthetic coherent profile backup fact', json.dumps(result))
 
+    def test_snapshot_keeps_data_and_records_release_runtime_exclusion(self):
+        runtime = self.profile / '.lifeos-releases' / ('a' * 32)
+        runtime.mkdir(parents=True, mode=0o700)
+        (runtime / 'qualified-program.tgz').write_bytes(b'Synthetic installed release runtime')
+        (runtime / 'status.json').write_text('{"state":"applied"}')
+        result, manifest = self.snapshot()
+        self.assertEqual(result['status'], 'committed')
+        self.assertIn({'path': '.lifeos-releases', 'reason': 'runtime'}, manifest['excluded'])
+        self.assertFalse(any(item['path'].startswith('.lifeos-releases/') for item in manifest['files']))
+        self.assertEqual((runtime / 'status.json').read_text(), '{"state":"applied"}')
+        self.assertIn('config.yaml', {item['path'] for item in manifest['files']})
+
     def test_snapshot_captures_committed_wal_history_without_changing_live_journal_mode(self):
         connection = sqlite3.connect(self.database)
         self.addCleanup(connection.close)

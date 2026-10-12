@@ -35,32 +35,35 @@ def hermes_agent(prompt):
     from hermes_cli.plugins import discover_plugins, unload_plugins
     from run_agent import AIAgent
     from tools import clarify_gateway as queue
+    from concurrent.futures import Future
+    from gateway.run_turn_runner import TurnRunner
+    from gateway.run_turn_runner_clarify_delivery import _clarify_send_then_wait
+    from gateway.platforms.base import SendResult
 
     discover_plugins()
     home = Path(os.environ['HOME'])
     config = json.loads((home / '.hermes/config.yaml').read_text())['model']
 
-    def answer(question, choices, multi_select=False):
+    def answer(question, choices, multi_select=False, rearm=True):
         save_waiting()
         entry = 'fixture-question'
-        queue.register(entry, 'fixture-chat', question, choices, multi_select)
+        pending = queue.register(entry, 'fixture-chat', question, choices, multi_select)
         (home / 'question-presented.json').write_text(json.dumps({'question': question, 'choices': choices}))
 
-        def choose():
-            time.sleep(0.1)
-            assert queue.resolve_gateway_clarify(entry, 'PAIR_QUESTION_A')
-
-        chooser = threading.Thread(target=choose)
-        chooser.start()
+        assert queue.resolve_gateway_clarify(entry, 'PAIR_QUESTION_A')
+        delivered = Future()
+        delivered.set_result(SendResult(success=True, message_id='fixture-question-card'))
         try:
-            return queue.wait_for_response(entry, 5)
+            return _clarify_send_then_wait(delivered, clarify_id=entry, session_key='fixture-chat',
+                                          clarify_mod=queue, entry=pending)
         finally:
-            chooser.join(timeout=6)
             queue.clear_session('fixture-chat')
 
+    runner = object.__new__(TurnRunner)
+    runner._ask_clarify_question = answer
     agent = AIAgent(api_key=config['api_key'], base_url=config['base_url'], provider='custom',
                     api_mode='chat_completions', model=config['default'], enabled_toolsets=['clarify'],
-                    quiet_mode=True, platform='cli', clarify_callback=answer, max_iterations=4,
+                    quiet_mode=True, platform='cli', clarify_callback=runner._clarify_callback_sync, max_iterations=4,
                     skip_memory=True, skip_background_review=True,
                     ephemeral_system_prompt=os.environ['HERMES_EPHEMERAL_SYSTEM_PROMPT'])
     try:

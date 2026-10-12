@@ -25,7 +25,7 @@ from typing import Callable
 
 UPSTREAM_LIFEOS = "https://github.com/danielmiessler/LifeOS.git"
 SUPPORTED_LIFEOS_COMMIT = "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c"
-SUPPORTED_HERMES_COMMIT = "758ad514eb0e800547e015edf05aa18f78b78d82"
+SUPPORTED_HERMES_COMMIT = "71d34bad1045610252eda02ee79549436896e784"
 HERMES_PATCHES = (
     "hermes-plugin-events.patch",
     "hermes-turn-gates.patch",
@@ -37,7 +37,6 @@ HERMES_PATCHES = (
     "hermes-cron-bootstrap.patch",
     "hermes-required-middleware.patch",
     "hermes-web-result-status.patch",
-    "hermes-protected-instruction-approval.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",

@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-2/probe-restore-admission.py", line 14, in <module>
+    admit_operation(job, request, 'restore')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py", line 74, in admit_operation
+    return _admit_operation(job, request, action, authorization=authorization, installation_lease=lease)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py", line 102, in _admit_operation
+    check_restore(job, request, plan, mount_module.MountTransaction(selected['installed'], profile, baseline))
+                                                                                           ^^^^^^^
+NameError: name 'profile' is not defined. Did you forget to import 'profile'?
+NameError: name 'profile' is not defined
+state after admission: applied
+admission written: False

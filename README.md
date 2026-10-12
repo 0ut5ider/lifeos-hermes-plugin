@@ -1,6 +1,14 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Development candidate:** `0.4.0-dev.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+The native port passes 716 selected tests and all twelve upstream source checks. The candidate applies ten Hermes patch groups and twenty-five LifeOS patch groups.
+
+The complete release manager in `optional/lifeos_release_manager` passes development acceptance for fresh installation, update, interruption recovery, and rollback.
+Three independent PR review rounds resolve eight findings. The final frozen candidate passes 625 integration checks and actual development update, recovery, and rollback. Publication of a qualified complete release remains required before daily deployment.
+The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records its current state.
+Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
+
+**Deployed version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
 
@@ -246,6 +254,36 @@ For an SSH workspace, create `~/.config/lifeos-hook-bridge/remote-projects.json`
 ```
 
 The `host`, `user`, `port`, and `root` must match the active Hermes SSH backend. For a Docker backend, use `{"type":"docker","image_id":"sha256:<64 hex digits>","root":"/workspace"}` instead. Get the immutable image ID with `docker image inspect --format '{{.Id}}' <image>`. The bridge checks the backend's physical path before loading `.claude/settings.json` and `.claude/settings.local.json`. It runs their command hooks inside that backend and sends HTTP hooks only to that backend's loopback address. Remote command transport requires Bash and `base64`; HTTP hooks also require `curl`. Set `LIFEOS_REMOTE_PROJECT_TRUST` in the Hermes process environment to use another trust-file path. Other remote backend types are not yet supported.
+
+## Install and update complete releases from Hermes
+
+The standalone manager in `optional/lifeos_release_manager` adds the `lifeos-release` command and a registered Hermes skill.
+The complete package includes the supported Hermes runtime, LifeOS programs, bridge, manager, dependencies, dashboard, and public commands.
+The current candidate has no published production certificate. The public installation path requires a qualified release with the frozen dependency closure.
+The existing 0.3.1 assets remain historical release and rollback inputs.
+
+After publication, replace `QUALIFIED_TAG` with the exact qualified release tag:
+
+```bash
+hermes plugins install 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager' --ref QUALIFIED_TAG
+hermes plugins enable lifeos-release-manager
+hermes lifeos-release status
+hermes lifeos-release prepare --name Adrian --assistant Cerebo
+```
+
+Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
+The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
+The owner reviews the operation in the authenticated Hermes dashboard and selects the installation action.
+A native mount under managed memory requires the owner's grant for that operation.
+After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the result and `hermes lifeos-version` verifies the installed identity.
+
+For an update, run `hermes lifeos-release prepare` and review the returned operation.
+The registered skill follows this process when the user asks Hermes to install or update LifeOS.
+Recovery and rollback use the prepared operation and retained program journal. They preserve current user data and refuse later program changes.
+Rollback requires the current release identity and retained native mount. A later native remount or release can expire that operation's rollback.
+Status hides an expired rollback. Admission checks current and retained programs before it stops services.
+Installation keeps the model and tier mapping and does not activate lasting memory automatically.
+The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records the tested paths and publication limits.
 
 ## Install the plugin
 

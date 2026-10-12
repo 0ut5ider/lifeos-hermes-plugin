@@ -1,0 +1,20 @@
+public recovery admitted with damaged retained copy: queued-recover
+actual worker refusal: ProgramConflict Program recovery preserves a later artifact edit
+state after recover refusal: recovery_required
+profile preserved: True
+native journal state after refusal: committed
+program journal state after refusal: applied
+retained copy restored, native preflight passes: Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-3/probe-program-recovery.py", line 72, in <module>
+    worker.check_mount_recovery(job, request, transaction)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py", line 456, in check_mount_recovery
+    manifest = _restore_mount_manifest(job, request, mount.journal)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_worker.py", line 434, in _check_mount_copies
+    or re.fullmatch(r'[0-9a-f]{32}', snapshot.name) is None):
+    ^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-hermes-managed-20261012/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 654, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-bax_qz3i/.lifeos-mount/8b8020af51bf4a419e36d00ecc6c03bc'

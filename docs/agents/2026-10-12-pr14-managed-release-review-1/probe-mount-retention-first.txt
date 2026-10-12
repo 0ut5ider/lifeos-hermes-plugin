@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-1/probe-mount-retention.py", line 19, in <module>
+    first = transaction.execute(fixture.environment, fixture.fixture.fixture.memory.bun,
+                                str(fixture.hermes), binding=binding, retain_for_rollback=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 415, in execute
+    checked = mount_environment(self.installed, self.profile, grant, binding=binding)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 198, in mount_environment
+    config, _ = validate(configuration, authorization, binding=binding, check_binding=True, purpose=purpose)
+                ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 170, in validate
+    raise PermissionError('Administrative configuration or job binding changed')
+PermissionError: Administrative configuration or job binding changed

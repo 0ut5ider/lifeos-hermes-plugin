@@ -21,6 +21,24 @@ def configure_probe(parser: argparse.ArgumentParser) -> None:
     checks.add_argument("--check-main-rung", metavar="TIER")
 
 
+def configure_morning_observation(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument('--date', required=True, help='Observe this date in America/Toronto (YYYY-MM-DD).')
+    parser.add_argument('--channel', help='Select a configured private Discord channel when more than one exists.')
+
+
+def run_morning_observation(args: argparse.Namespace) -> int:
+    from hermes_constants import get_hermes_home
+    from .morning_observation import observe
+    try:
+        receipt = observe(get_hermes_home(), args.date, args.channel)
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError):
+        print(json.dumps({'status': 'rejected', 'message':
+            'The automatic morning observation needs a completed cron run, a current schedule, and complete Discord coverage.'}), file=sys.stderr)
+        return 1
+    print(json.dumps(receipt, indent=2))
+    return 0
+
+
 def run_probe(args: argparse.Namespace) -> int:
     if args.check_main_rung:
         return carrier_probe.main(["--check-main-rung", args.check_main_rung])
@@ -157,6 +175,8 @@ def run_version(args: argparse.Namespace) -> int:
 
 
 def register_commands(ctx) -> None:
+    ctx.register_cli_command('lifeos-observe-morning', help='Verify an automatic morning run without starting it.',
+        setup_fn=configure_morning_observation, handler_fn=run_morning_observation)
     ctx.register_cli_command(
         'lifeos-version', help='Report the selected integration version, build identity, and staged candidate.',
         setup_fn=lambda parser:None, handler_fn=run_version,

@@ -1,5 +1,5 @@
 diff --git a/agent/auxiliary_hooks.py b/agent/auxiliary_hooks.py
-index 613d794ca2..b60065bd36 100644
+index 30008bf13..cf02a20ee 100644
 --- a/agent/auxiliary_hooks.py
 +++ b/agent/auxiliary_hooks.py
 @@ -225,6 +225,9 @@ def run_with_aux_hooks(
@@ -13,7 +13,7 @@ index 613d794ca2..b60065bd36 100644
                             provider=provider, model=model, api_mode=api_mode, streaming=streaming)
      try:
 @@ -241,6 +244,9 @@ async def arun_with_aux_hooks(
-     kwargs: Dict[str, Any], provider: str, model: str, api_mode: str,
+     kwargs: dict[str, Any], provider: str, model: str, api_mode: str,
  ) -> Any:
      """Async twin of :func:`run_with_aux_hooks`."""
 +    from hermes_cli.middleware import admit_llm_request
@@ -23,10 +23,10 @@ index 613d794ca2..b60065bd36 100644
                             provider=provider, model=model, api_mode=api_mode, streaming=False)
      try:
 diff --git a/agent/turn_request_assembly.py b/agent/turn_request_assembly.py
-index 79a56c6278..5577e3d185 100644
+index be7436e72..56277d115 100644
 --- a/agent/turn_request_assembly.py
 +++ b/agent/turn_request_assembly.py
-@@ -179,7 +179,7 @@ def assemble_api_request(
+@@ -188,7 +188,7 @@ def assemble_api_request(
      # Normalize whitespace and tool-call JSON for bit-perfect prefixes across turns
      # (KV-cache reuse on local servers, better cloud cache hits); API copy only.
      for am in api_messages:
@@ -36,7 +36,7 @@ index 79a56c6278..5577e3d185 100644
      _canonicalize_api_tool_calls(api_messages)
  
 diff --git a/hermes_cli/middleware.py b/hermes_cli/middleware.py
-index 1c6ed2ae24..336d01dc37 100644
+index 753b6643a..8d57944a3 100644
 --- a/hermes_cli/middleware.py
 +++ b/hermes_cli/middleware.py
 @@ -7,6 +7,7 @@ wrapping the actual execution callback. Agent-loop call sites and plugins share
@@ -66,7 +66,7 @@ index 1c6ed2ae24..336d01dc37 100644
  
  
 @@ -36,6 +39,15 @@ class RequestMiddlewareResult:
-     trace: List[Dict[str, Any]] = field(default_factory=list)
+     trace: list[dict[str, Any]] = field(default_factory=list)
  
  
 +def check_required_result(callback: Callable, result: Any) -> Any:
@@ -78,12 +78,12 @@ index 1c6ed2ae24..336d01dc37 100644
 +    return result
 +
 +
- def observer_payload(**kwargs: Any) -> Dict[str, Any]:
+ def observer_payload(**kwargs: Any) -> dict[str, Any]:
      kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
      return kwargs
 @@ -135,11 +147,20 @@ def apply_tool_request_middleware(
  def run_llm_execution_middleware(
-     request: Dict[str, Any], next_call: Callable[[Dict[str, Any]], Any], **context: Any) -> Any:
+     request: dict[str, Any], next_call: Callable[[dict[str, Any]], Any], **context: Any) -> Any:
      """Run provider execution through registered LLM execution middleware."""
 +    def admitted_call(payload):
 +        admit_llm_request(payload, **context)
@@ -94,14 +94,14 @@ index 1c6ed2ae24..336d01dc37 100644
          request=request, original_request=context.pop("original_request", request), **context)
  
  
-+def admit_llm_request(request: Dict[str, Any], **context: Any) -> None:
++def admit_llm_request(request: dict[str, Any], **context: Any) -> None:
 +    """Run model-request checks before provider dispatch. Admission results do not rewrite requests."""
 +    from hermes_cli.plugins import invoke_middleware
 +    invoke_middleware(LLM_ADMISSION_MIDDLEWARE, request=request, **context)
 +
 +
  def run_tool_execution_middleware(
-     tool_name: str, args: Dict[str, Any], next_call: Callable[[Dict[str, Any]], Any], **context: Any,
+     tool_name: str, args: dict[str, Any], next_call: Callable[[dict[str, Any]], Any], **context: Any,
  ) -> Any:
 @@ -198,13 +219,15 @@ def _run_execution_chain(kind: str, terminal_call: Callable[[Any], Any], **kwarg
          call_kwargs[payload_key] = payload
@@ -121,10 +121,10 @@ index 1c6ed2ae24..336d01dc37 100644
                  return next_result
              if next_called:
 diff --git a/hermes_cli/plugin_validate.py b/hermes_cli/plugin_validate.py
-index 98fa14a3e9..23e391cccc 100644
+index e58af8ce8..bb501e89e 100644
 --- a/hermes_cli/plugin_validate.py
 +++ b/hermes_cli/plugin_validate.py
-@@ -216,7 +216,9 @@ class RecordingContext:
+@@ -220,7 +220,9 @@ class RecordingContext:
      def register_hook(self, hook_name, callback):
          recorded["hooks"].append(str(hook_name))
  
@@ -137,7 +137,7 @@ index 98fa14a3e9..23e391cccc 100644
      def register_command(self, name, *args, **kwargs):
 diff --git a/tests/hermes_cli/test_required_middleware.py b/tests/hermes_cli/test_required_middleware.py
 new file mode 100644
-index 0000000000..037eca8d07
+index 000000000..037eca8d0
 --- /dev/null
 +++ b/tests/hermes_cli/test_required_middleware.py
 @@ -0,0 +1,148 @@

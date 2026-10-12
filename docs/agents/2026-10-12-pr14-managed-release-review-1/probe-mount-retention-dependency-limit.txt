@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr14-managed-release-review-1/probe-mount-retention.py", line 24, in <module>
+    MemoryService(fixture.fixture.configuration)._prompt(config, scope, 'prompt_preview', {'home': str(fixture.profile), 'keepOutputFormat': False})
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 222, in _prompt
+    result = {'ok': True, **preview(memory, scope, self.configuration.path.parent,
+                            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                   keep_output_format=arguments['keepOutputFormat'])}
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_prompt.py", line 105, in preview
+    plan = _collect(memory, scope, connection, keep_output_format)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_prompt.py", line 53, in _collect
+    selected = read_markdown(memory, scope, paths, connection=connection)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_sources.py", line 259, in read_markdown
+    projections[path] = markdown_projection(memory, source['relative'], source['content'])
+                        ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_sources.py", line 206, in markdown_projection
+    name = memory._native('interview_scan_name', content=content)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 178, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-dev.1-3a072309/lifeos/LifeOS/install/hooks/lib/identity.ts'

@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-12",
+  "reviewed_start": "08e249c0",
+  "retry_fix_commit": "6c104ece",
+  "final_recovery_fix": "shared working tree, captured final-recovery-preflight-fix.patch",
+  "unresolved_findings": [],
+  "checks": {
+    "focused_initial": {
+      "passed": 66,
+      "skipped": 0
+    },
+    "boundary": {
+      "passed": 14,
+      "skipped": 0
+    },
+    "final_operation_program": {
+      "passed": 31,
+      "skipped": 0
+    }
+  },
+  "real_probes": [
+    "probe-recovery-retry-fixed.txt",
+    "probe-program-recovery-fixed.txt",
+    "probe-native-edit-recovery.txt"
+  ],
+  "report_sha256": "e5ee10fd4bdd74833130920d6a8cd1cef7e825764d24b66b0863369287c9d5b8"
+}

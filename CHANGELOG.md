@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.4.0-dev.1
+
+This development candidate is not a qualified production release.
+
+- Prepare Hermes v0.21.7 at commit 71d34bad1045610252eda02ee79549436896e784.
+- Use ten Hermes patch groups and twenty-five LifeOS patch groups.
+- Verify complete Discord morning windows and the active Pulse schedule.
+- Add the standalone LifeOS release manager for complete package preparation and coordinated updates.
+- Keep the accepted 0.3.1 package on the daily server during qualification.
+- Keep the dashboard responsive during release review and admission.
+- Retain incomplete program copies before preparation retry.
+- Migrate the private native configuration before the mount records output hashes.
+- Exclude native boot outputs from the runtime source seal. Retain checks for changed and added code.
+- Resume interrupted first installations and preserve user data added after interruption.
+- Start detached workers through a portable process launch and reap finished workers.
+- Migrate generated program configuration before its expected bytes are recorded.
+- Update all native public command aliases with the selected runtime.
+- Record release runtime exclusions in data-only profile backups. Preserve full guest backup coverage.
+- Recover queued operations after a coordinator exits before launch recording. Preserve a successor grant when a stale worker refuses admission.
+- Build the program plan with the qualified candidate before reporting ready. Refuse incomplete plans before service interruption.
+- Hide expired native rollback and check current and retained programs before stopping services.
+- Check retained native recovery copies before rollback admission and service interruption.
+- Keep worker failure reporting and grant cleanup inside the execution lock.
+- Preserve recovery retry after refusal. Check native targets and retained programs before recovery changes files or stops services.
+
+
 This file records changes to the LifeOS plugin for Hermes. Version numbers use
 `MAJOR.MINOR.PATCH`. The [VERSION](VERSION) file records the current plugin version.
 Keep it equal to the version in both plugin manifests.

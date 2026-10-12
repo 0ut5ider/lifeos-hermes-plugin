@@ -1,0 +1,25 @@
+...F.....
+======================================================================
+FAIL: test_native_loader_and_observer_agree_on_user_override (test_morning_observation.MorningObservationTests.test_native_loader_and_observer_agree_on_user_override)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_morning_observation.py", line 124, in test_native_loader_and_observer_agree_on_user_override
+    self.assertEqual((result.returncode,result.stderr),(0,''),result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1, "error: Cannot find package 'smol-toml[137 chars])\n") != (0, '')
+
+First differing element 0:
+1
+0
+
++ (0, '')
+- (1,
+-  "error: Cannot find package 'smol-toml' from "
+-  "'/home/outsider/.cache/lifeos-release-20261011/0.3.1-9af63325/lifeos/LifeOS/install/LIFEOS/PULSE/lib.ts'\n"
+-  '\n'
+-  'Bun v1.3.14 (Linux x64)\n') : 
+
+----------------------------------------------------------------------
+Ran 9 tests in 4.039s
+
+FAILED (failures=1)
