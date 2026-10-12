@@ -25,7 +25,7 @@ from .cli import operation, read_private, write_state
 from .release_catalog import ReleaseRejected
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, publish
-from .release_stage import load_bridge, sha
+from .release_stage import load_bridge, sha, run_stage, _environment
 from .release_operation import (action_state, operation_lock, seal_plan,
     validate_admission, validate_plan, write_admission, request_digest)
 from .release_operation import worker_running, OperationBusy
@@ -166,6 +166,16 @@ def _program_plan(job, request, selected):
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
     publish(generated / 'config.yaml', _yaml_configuration(profile, native))
+    configuration_check = ('import sys\nfrom argparse import Namespace\n'
+        'from hermes_constants import set_hermes_home_override\n'
+        'set_hermes_home_override(sys.argv[1])\n'
+        'from hermes_cli.post_update import step_migrate_config\n'
+        'step_migrate_config()\n'
+        'from hermes_cli.config import config_command\n'
+        'config_command(Namespace(config_command="check"))\n')
+    run_stage([request['runtime']['python'], '-B', '-c', configuration_check, str(generated)],
+        job, 'program-configuration', environment=_environment(generated, home=job,
+            source=Path(request['runtime']['source'])))
     files[profile / 'config.yaml'] = generated / 'config.yaml'
     current = selected['current']
     if not selected['fresh']:

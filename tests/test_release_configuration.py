@@ -2,6 +2,9 @@
 # ABOUTME: Uses real YAML files with disabled plugin entries and existing tier settings.
 from pathlib import Path
 import tempfile
+import os
+import sys
+import subprocess
 import unittest
 
 from ruamel.yaml import YAML
@@ -15,9 +18,9 @@ class ReleaseConfigurationTests(unittest.TestCase):
             job, profile, package = root / 'job', root / '.hermes', root / 'package'
             for path in (job, profile, package):
                 path.mkdir(mode=0o700)
-            (profile / 'config.yaml').write_text('model:\n  default: synthetic-model\n')
+            (profile / 'config.yaml').write_text('_config_version: 46\nmodel:\n  default: synthetic-model\n')
             (package / 'DAILY-CANDIDATE.json').write_text('{"plugin_files":{}}')
-            request = {'account_home': str(root), 'runtime': {'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
+            request = {'profile': str(profile), 'account_home': str(root), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
                        'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
                            'hermes_patch_count': 10, 'lifeos_patch_count': 25},
                        'version': '0.4.0-dev.1', 'commit': 'a' * 40, 'package_sha256': 'b' * 64}
@@ -28,6 +31,18 @@ class ReleaseConfigurationTests(unittest.TestCase):
             second = _program_plan(job, request, selected)
             self.assertEqual(first, second)
             self.assertFalse(selected['installed'].exists())
+            from hermes_cli.config_defaults import DEFAULT_CONFIG
+            yaml = YAML(typ='safe')
+            staged = yaml.load((job / 'generated/config.yaml').read_bytes())
+            self.assertEqual(staged['_config_version'], DEFAULT_CONFIG['_config_version'])
+            before = (job / 'generated/config.yaml').read_bytes()
+            checked = subprocess.run([sys.executable, '-B', '-m', 'hermes_cli.main', 'config', 'check'],
+                env=dict(os.environ, HOME=str(job), HERMES_HOME=str(job / 'generated'),
+                         PYTHONPATH=str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), PYTHONDONTWRITEBYTECODE='1'),
+                capture_output=True, text=True, timeout=120)
+            self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+            self.assertEqual((job / 'generated/config.yaml').read_bytes(), before)
+            self.assertEqual(yaml.load((profile / 'config.yaml').read_bytes())['_config_version'], 46)
 
     def test_required_enablement_preserves_other_plugins_and_model_tiers(self):
         with tempfile.TemporaryDirectory() as temp:
