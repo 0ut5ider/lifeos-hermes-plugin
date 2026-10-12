@@ -18,6 +18,9 @@ This development candidate is not a qualified production release.
 - Migrate generated program configuration before its expected bytes are recorded.
 - Update all native public command aliases with the selected runtime.
 - Record release runtime exclusions in data-only profile backups. Preserve full guest backup coverage.
+- Recover queued operations after a coordinator exits before launch recording. Preserve a successor grant when a stale worker refuses admission.
+- Build the program plan with the qualified candidate before reporting ready. Refuse incomplete plans before service interruption.
+- Hide expired native rollback and check current and retained programs before stopping services.
 
 
 This file records changes to the LifeOS plugin for Hermes. Version numbers use

@@ -17,6 +17,35 @@ from optional.lifeos_release_manager.cli import configure, run, status, write_st
 
 
 class ReleaseManagerCommandTests(unittest.TestCase):
+    def test_preparation_uses_the_qualified_candidate_worker(self):
+        from optional.lifeos_release_manager import cli
+        from optional.lifeos_release_manager.release_stage import sha
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp)
+            profile = home / '.hermes'
+            profile.mkdir(mode=0o700)
+            (profile / 'config.yaml').write_text('Preserve active configuration')
+            job = profile / 'job'
+            worker = job / 'worker'
+            worker.mkdir(parents=True, mode=0o700)
+            program = worker / 'release_worker.py'
+            program.write_text('import json,os,sys\nfrom pathlib import Path\n'
+                'job=Path(sys.argv[1])\nassert sys.argv[2:]==["--action","prepare"]\n'
+                '(job/"candidate-planner.json").write_text(json.dumps({"home":os.environ["HOME"],'
+                '"profile":os.environ["HERMES_HOME"],"python":sys.executable}))\n')
+            files = {'release_worker.py': sha(program)}
+            request = {'profile': str(profile), 'account_home': str(home),
+                       'runtime': {'python': sys.executable, 'source': str(home / 'source')}}
+            cli.prepare_plan(job, request, files)
+            self.assertEqual(json.loads((job / 'candidate-planner.json').read_bytes()),
+                             {'home': str(home), 'profile': str(profile), 'python': sys.executable})
+            self.assertEqual((profile / 'config.yaml').read_text(), 'Preserve active configuration')
+            (job / 'candidate-planner.json').unlink()
+            program.write_text('raise SystemExit("Unqualified replacement")\n')
+            with self.assertRaises(ValueError):
+                cli.prepare_plan(job, request, files)
+            self.assertFalse((job / 'candidate-planner.json').exists())
+
     def test_status_includes_preparation_before_the_request_exists(self):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)

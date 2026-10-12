@@ -18,6 +18,8 @@ The complete release includes the supported Hermes source, LifeOS source, bridge
 
 An operation in preparation_failed has not selected new programs. An operation in recovery_required needs owner review. Use the dashboard recovery control or `hermes lifeos-release recover IDENTIFIER` when the owner authorizes recovery. An existing installation can select its retained prior programs with the dashboard control or `hermes lifeos-release rollback IDENTIFIER`. The first installation has no prior integration release.
 
+Rollback requires the current release identity and retained native mount. A later native remount or release can expire the earlier rollback. Use the current status response. Do not offer a historical applied operation as restorable without its restore_available flag. An expired operation refuses before service interruption.
+
 Report queued, preparing, applying, recovering, and restoring as unfinished states. Report rejected and rolled_back as actual outcomes. Do not report installation success from configuration validation or a queued worker.
 
 Keep the current model and tier mapping. Use the prepared operation and its fixed profile. Do not edit an operation request, plan, certificate, owner grant, or private journal. Do not read credentials or memory records to diagnose an installation. Do not replace user data, import data, start a background job, or send a messaging substitute as part of release preparation.

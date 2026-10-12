@@ -16,7 +16,8 @@ from threading import Thread
 
 from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, _json
 from .release_programs import publish
-from .release_stage import load_bridge, prepare_runtime, sha, validate_package, runtime_source_fingerprint
+from .release_stage import (load_bridge, prepare_runtime, sha, validate_package, runtime_source_fingerprint,
+                            validate_files, run_stage, _environment)
 
 IDENTIFIER = re.compile('[0-9a-f]{32}')
 
@@ -119,13 +120,25 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
         publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
         shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker',
                         ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-        write_state(job, 'ready')
+        prepare_plan(job, request, manifest['manager_files'])
+        if read_private(job / 'status.json')['state'] != 'ready':
+            raise ReleaseRejected('The candidate does not complete its program review')
         return {'identifier': job.name, 'state': 'ready', 'version': request['version'],
             'commit': request['commit'], 'package_sha256': request['package_sha256'], 'active_unchanged': True,
             'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + job.name}
     except BaseException:
         write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
         raise
+
+
+def prepare_plan(job, request, files):
+    validate_files(job / 'worker', files, forbid_bytecode=True)
+    environment = _environment(Path(request['profile']), home=Path(request['account_home']),
+                               source=Path(request['runtime']['source']))
+    environment.update(XDG_RUNTIME_DIR='/run/user/' + str(os.getuid()),
+                       DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(os.getuid()) + '/bus')
+    run_stage([request['runtime']['python'], '-B', job / 'worker/release_worker.py', job,
+               '--action', 'prepare'], job, 'candidate-review', environment=environment)
 
 
 def status(profile, identifier=None):
@@ -141,7 +154,9 @@ def status(profile, identifier=None):
         if (job / 'plan.json').exists():
             from .release_operation import validate_plan, operation_lock, OperationBusy, worker_running
             plan = validate_plan(job, request)
-            value['restore_available'] = value['state'] == 'applied' and not plan['fresh']
+            if value['state'] == 'applied':
+                from .release_worker import restore_available
+                value['restore_available'] = restore_available(job, request, plan)
             if value['state'] in {'applying', 'recovering', 'restoring', 'recovery_required'} or value['state'].startswith('queued-'):
                 try:
                     with operation_lock(job, name='launch.lock'), operation_lock(job):

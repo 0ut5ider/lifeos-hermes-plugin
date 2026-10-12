@@ -82,8 +82,12 @@ def action_state(job, action):
         raise ReleaseRejected('The release action does not match its current state')
 
 
-def seal_plan(job, request, plan):
-    action_state(job, 'apply')
+def seal_plan(job, request, plan, *, preparing=False):
+    if preparing:
+        if read_private(job / 'status.json')['state'] != 'preparing':
+            raise ReleaseRejected('The candidate review requires an unfinished preparation')
+    else:
+        action_state(job, 'apply')
     publish(job / 'plan.json', (json.dumps(plan, sort_keys=True, indent=2) + '\n').encode())
     request['plan_sha256'] = sha(job / 'plan.json')
     publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())

@@ -137,6 +137,37 @@ class ProgramTransaction:
     def entries_digest(self):
         return self._entries_digest(self._load()['entries'])
 
+    def check_plan(self, *, directories, files, dependencies=None):
+        dependencies = {} if dependencies is None else dependencies
+        expected = {}
+        for kind, sources, links in (('directory', directories, False), ('file', files, False),
+                                     ('directory', dependencies, True)):
+            for target, source in sources.items():
+                target = str(Path(target).absolute())
+                if target in expected:
+                    raise ProgramConflict('The candidate program plan repeats a target')
+                expected[target] = {'source': None if source is None else str(Path(source).absolute()),
+                                    'kind': kind, 'allow_links': links}
+        for entry in self._load()['entries']:
+            selected = expected.pop(entry['target'], None)
+            if selected != {key: entry[key] for key in ('source', 'kind', 'allow_links')}:
+                raise ProgramConflict('The reviewed entries differ from the candidate program plan')
+        for target, selected in expected.items():
+            if selected['source'] is not None or fingerprint(target, allow_links=selected['allow_links']) is not None:
+                raise ProgramConflict('The reviewed entries omit a required candidate program plan target')
+
+    def check_applied(self, *, overrides=None):
+        overrides = {} if overrides is None else overrides
+        value = self._load()
+        if value['state'] != 'applied':
+            raise ProgramConflict('The program transaction is not a completed release')
+        for index, entry in enumerate(value['entries']):
+            expected = overrides.get(entry['target'], entry['after'])
+            if fingerprint(entry['target'], allow_links=entry['allow_links']) != expected:
+                raise ProgramConflict('Program recovery preserves a later artifact edit')
+            if fingerprint(self.snapshot / ('before-' + str(index)), allow_links=entry['allow_links']) != entry['before']:
+                raise ProgramConflict('The retained program differs from its recorded identity')
+
     def prepare(self, *, directories, files, dependencies=None, checkpoint=lambda point: None):
         dependencies = {} if dependencies is None else dependencies
         targets = [Path(path).absolute() for path in (*directories, *files, *dependencies)]

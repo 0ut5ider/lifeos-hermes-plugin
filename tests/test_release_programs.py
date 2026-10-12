@@ -8,6 +8,49 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_applied_preflight_checks_native_overrides_and_retained_programs(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            program, config, source = root / 'program', root / 'config', root / 'source'
+            program.write_text('Prior program')
+            config.write_text('Prior config')
+            source.write_text('Candidate bytes')
+            transaction = ProgramTransaction(root / 'snapshot')
+            transaction.prepare(directories={}, files={program: source, config: source})
+            transaction.apply()
+            transaction.check_applied()
+            config.write_text('Native mounted config')
+            override = {str(config): {'type': 'file', 'mode': config.stat().st_mode & 0o777,
+                                     'sha256': hashlib.sha256(config.read_bytes()).hexdigest()}}
+            with self.assertRaises(ProgramConflict):
+                transaction.check_applied()
+            transaction.check_applied(overrides=override)
+            program.write_text('Later program edit')
+            with self.assertRaises(ProgramConflict):
+                transaction.check_applied(overrides=override)
+            self.assertEqual(program.read_text(), 'Later program edit')
+            program.write_text(source.read_text())
+            (transaction.snapshot / 'before-0').write_text('Changed retained program')
+            with self.assertRaises(ProgramConflict):
+                transaction.check_applied(overrides=override)
+
+    def test_candidate_plan_refuses_missing_or_substituted_targets(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / 'source'
+            source.write_text('Qualified candidate command')
+            first, second = root / 'hermes', root / 'hermes-agent'
+            transaction = ProgramTransaction(root / 'snapshot')
+            transaction.prepare(directories={}, files={first: source})
+            with self.assertRaisesRegex(ProgramConflict, 'candidate program plan'):
+                transaction.check_plan(directories={}, files={first: source, second: source})
+            replacement = root / 'replacement'
+            replacement.write_text(source.read_text())
+            with self.assertRaisesRegex(ProgramConflict, 'candidate program plan'):
+                transaction.check_plan(directories={}, files={first: replacement})
+            transaction.check_plan(directories={}, files={first: source, root / 'absent': None})
+
     def test_resume_completes_an_interrupted_directory_swap_and_keeps_personal_data(self):
         import os
         with tempfile.TemporaryDirectory() as temp:

@@ -161,6 +161,17 @@ class ReleaseOperationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'reviewed plan'):
                 validate_admission(job, request, 'apply')
 
+    def test_candidate_seals_preparation_without_early_apply_admission(self):
+        with tempfile.TemporaryDirectory() as temp:
+            job, request = self.fixture(Path(temp))
+            write_state(job, 'preparing')
+            seal_plan(job, request, {'fresh': True}, preparing=True)
+            self.assertEqual(read_private(job / 'status.json')['state'], 'preparing')
+            with self.assertRaises(ValueError):
+                action_state(job, 'apply')
+            write_state(job, 'ready')
+            write_admission(job, read_private(job / 'request.json'), 'apply')
+
     def test_request_changes_and_action_substitution_refuse(self):
         with tempfile.TemporaryDirectory() as temp:
             job, request = self.fixture(Path(temp))

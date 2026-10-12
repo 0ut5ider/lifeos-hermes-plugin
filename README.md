@@ -272,6 +272,7 @@ hermes lifeos-release prepare --name Adrian --assistant Cerebo
 ```
 
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
+The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
 The owner reviews the operation in the authenticated Hermes dashboard and selects the installation action.
 A native mount under managed memory requires the owner's grant for that operation.
 After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the result and `hermes lifeos-version` verifies the installed identity.
@@ -279,6 +280,8 @@ After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the res
 For an update, run `hermes lifeos-release prepare` and review the returned operation.
 The registered skill follows this process when the user asks Hermes to install or update LifeOS.
 Recovery and rollback use the prepared operation and retained program journal. They preserve current user data and refuse later program changes.
+Rollback requires the current release identity and retained native mount. A later native remount or release can expire that operation's rollback.
+Status hides an expired rollback. Admission checks current and retained programs before it stops services.
 Installation keeps the model and tier mapping and does not activate lasting memory automatically.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records the tested paths and publication limits.
 

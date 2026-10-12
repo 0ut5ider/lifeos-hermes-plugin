@@ -36,8 +36,12 @@ def review_operation(job, request):
         return _review_operation(job, request)
 
 
-def _review_operation(job, request, *, installation_lease=None):
-    action_state(job, 'apply')
+def _review_operation(job, request, *, installation_lease=None, preparing=False):
+    if preparing:
+        if read_private(job / 'status.json')['state'] != 'preparing':
+            raise ReleaseRejected('The candidate review requires an unfinished preparation')
+    else:
+        action_state(job, 'apply')
     selected = inspect_operation(job, request, installation_lease=installation_lease)
     plan = {'fresh': selected['fresh'], 'native_mount_required': selected['native_changes'],
             'launchers': [str(path) for path in selected['launchers']], 'services': selected['services']}
@@ -51,7 +55,7 @@ def _review_operation(job, request, *, installation_lease=None):
         directories, files, dependencies = _program_plan(job, request, selected)
         programs.prepare(directories=directories, files=files, dependencies=dependencies)
     plan['program_entries_sha256'] = programs.entries_digest()
-    seal_plan(job, request, plan)
+    seal_plan(job, request, plan, preparing=preparing)
     return selected, plan
 
 
@@ -92,6 +96,10 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
             raise PermissionError('The native mount requires installation owner authorization')
         administration.mount_environment(selected['installed'], selected['profile'], authorization,
             binding=administration.job_binding(job, request, action))
+    if action == 'restore':
+        mount_module = selected['current'].memory_module('mount_transaction')
+        baseline = selected['current'].memory_module('version_drift').default_baseline_path(selected['installed'].parent)
+        check_restore(job, request, plan, mount_module.MountTransaction(selected['installed'], profile, baseline))
     if authorization is not None:
         request = {**request, 'memory_authorization': str(authorization)}
     publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
@@ -304,6 +312,9 @@ def _execute(job, action, *, checkpoint=lambda point: None):
         programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
         mount = current.memory_module('mount_transaction').MountTransaction(selected['installed'], profile, selected['baseline'])
         if action != 'apply' and not fresh_recovery:
+            _restore_mount_manifest(job, request, mount.journal)
+            if action == 'restore':
+                check_restore(job, request, plan, mount)
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             if services is not None:
                 services.quiesce()
@@ -318,6 +329,8 @@ def _execute(job, action, *, checkpoint=lambda point: None):
         if not fresh_recovery and sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
         if not fresh_recovery:
+            directories, files, dependencies = _program_plan(job, request, selected)
+            programs.check_plan(directories=directories, files=files, dependencies=dependencies)
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
         try:
@@ -380,18 +393,70 @@ def record_failure(job, error):
     publish(job / 'worker-failure.json', (json.dumps({'exception': type(error).__name__, 'frames': frames}) + '\n').encode())
 
 
-def _restore_mount(job, request, mount):
+def _restore_mount_manifest(job, request, journal, *, required=False):
     intent = job / 'mount-intent.json'
-    if not intent.is_file() or not mount.journal.is_file():
-        return
-    if sha(mount.journal) == read_private(intent)['prior_journal_sha256']:
-        return
+    if not intent.is_file() or not journal.is_file():
+        if required:
+            raise ReleaseRejected('The release no longer has its retained native mount')
+        return None
+    if sha(journal) == read_private(intent)['prior_journal_sha256']:
+        if required:
+            raise ReleaseRejected('The release no longer has its retained native mount')
+        return None
     action = read_private(intent).get('action', 'apply')
     if action not in {'apply', 'recover'}:
         raise ReleaseRejected('The native mount intent changes its admitted action')
     expected = {'job': str(job.absolute()), 'request_digest': request_digest(request), 'action': action}
-    if read_private(mount.journal).get('binding') != expected:
+    manifest = read_private(journal)
+    if not isinstance(manifest, dict) or manifest.get('binding') != expected:
         raise ReleaseRejected('The native mount journal belongs to another release operation')
+    return manifest
+
+
+def _retained_mount(manifest, profile):
+    if manifest['state'] != 'committed' or manifest.get('retain_for_rollback') is not True:
+        raise ReleaseRejected('The release no longer has its retained native mount')
+    snapshot = Path(manifest['snapshot'])
+    if (snapshot.parent != profile / '.lifeos-mount' or snapshot.resolve() != snapshot
+            or re.fullmatch(r'[0-9a-f]{32}', snapshot.name) is None):
+        raise ReleaseRejected('The retained native mount changes its snapshot directory')
+    info = snapshot.stat()
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise ReleaseRejected('The retained native mount requires its private snapshot')
+
+
+def restore_available(job, request, plan):
+    if plan['fresh']:
+        return False
+    try:
+        profile = Path(request['profile'])
+        receipt = read_private(profile / 'integration-release.json')
+        if not isinstance(receipt, dict) or any(receipt.get(key) != request[key]
+                for key in ('version', 'commit', 'package_sha256')):
+            return False
+        if plan['native_mount_required']:
+            manifest = _restore_mount_manifest(job, request, profile / '.lifeos-mount/operation.json', required=True)
+            _retained_mount(manifest, profile)
+        return True
+    except (ValueError, OSError, RuntimeError, KeyError, TypeError):
+        return False
+
+
+def check_restore(job, request, plan, mount):
+    manifest = _restore_mount_manifest(job, request, mount.journal, required=plan['native_mount_required'])
+    overrides = {}
+    if manifest is not None:
+        _retained_mount(manifest, Path(request['profile']))
+        mount.check_completed()
+        overrides = {entry['target']: {'type': 'file', 'mode': entry['after']['mode'],
+                                      'sha256': entry['after']['digest']} for entry in manifest['entries']}
+    programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
+    programs.check_applied(overrides=overrides)
+
+
+def _restore_mount(job, request, mount):
+    if _restore_mount_manifest(job, request, mount.journal) is None:
+        return
     candidate = load_bridge(job / 'package/lifeos_hook_bridge')
     transaction = candidate.memory_module('mount_transaction').MountTransaction(
         Path(request['installed']), Path(request['profile']), mount.baseline)
@@ -405,14 +470,27 @@ def _restore_mount(job, request, mount):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('job', type=Path)
-    parser.add_argument('--action', choices=('apply', 'recover', 'restore'), default='apply')
+    parser.add_argument('--action', choices=('prepare', 'apply', 'recover', 'restore'), default='apply')
     args = parser.parse_args()
     sys.dont_write_bytecode = True
+    preparing_job = None
     try:
-        result = execute(args.job.absolute(), args.action)
+        if args.action == 'prepare':
+            request = read_private(args.job.absolute() / 'request.json')
+            preparing_job, request = operation(Path(request['profile']), args.job.name)
+            with operation_lock(preparing_job):
+                _, result = _review_operation(preparing_job, request, preparing=True)
+                write_state(preparing_job, 'ready')
+        else:
+            result = execute(args.job.absolute(), args.action)
     except OperationBusy:
         return 1
     except (ValueError, OSError, RuntimeError, PermissionError, ImportError, KeyError) as error:
+        if args.action == 'prepare':
+            if preparing_job is not None:
+                with operation_lock(preparing_job):
+                    record_failure(preparing_job, error)
+            return 1
         try:
             with operation_lock(args.job):
                 request = read_private(args.job / 'request.json')

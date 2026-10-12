@@ -14,6 +14,48 @@ from test_memory_admin_install import HOST
 
 
 class MountTransactionTests(unittest.TestCase):
+    def test_later_native_mount_expires_release_restore_before_service_work(self):
+        from optional.lifeos_release_manager.cli import status, write_state
+        from optional.lifeos_release_manager.release_operation import request_digest, seal_plan
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction, publish
+        from optional.lifeos_release_manager import release_worker
+        job = self.profile / '.lifeos-releases' / ('a' * 32)
+        job.mkdir(parents=True, mode=0o700)
+        request = {'identifier': job.name, 'profile': str(self.profile), 'installed': str(self.root),
+                   'version': '0.4.0-dev.1', 'commit': 'b' * 40, 'package_sha256': 'c' * 64}
+        publish(job / 'request.json', json.dumps(request).encode())
+        write_state(job, 'ready')
+        programs = ProgramTransaction(job / 'program-snapshot')
+        programs.prepare(directories={}, files={})
+        programs.apply()
+        plan = {'fresh': False, 'native_mount_required': True, 'services': None,
+                'program_entries_sha256': programs.entries_digest()}
+        seal_plan(job, request, plan)
+        publish(self.profile / 'integration-release.json', json.dumps(request).encode())
+        binding = {'job': str(job), 'request_digest': request_digest(request), 'action': 'apply'}
+        publish(job / 'mount-intent.json', b'{"prior_journal_sha256":null,"action":"apply"}')
+        grant = self.fixture.issue(binding=binding)
+        self.addCleanup(self.fixture.admin().revoke, self.fixture.configuration, grant)
+        environment = self.fixture.admin().mount_environment(self.root, self.profile, grant, binding=binding)
+        from lifeos_hook_bridge.memory_service import MemoryService
+        config, scope = self.fixture.admin().validate(self.fixture.configuration, grant)
+        MemoryService(self.fixture.configuration)._prompt(config, scope, 'prompt_preview',
+                                                        {'home': str(self.profile), 'keepOutputFormat': False})
+        transaction = self.transaction()
+        first = transaction.execute(environment, self.fixture.fixture.memory.bun,
+                                    str(self.hermes), binding=binding, retain_for_rollback=True)
+        write_state(job, 'applied')
+        self.assertTrue(status(self.profile, job.name)['restore_available'])
+        release_worker.check_restore(job, request, plan, transaction)
+        transaction.execute(self.environment, self.fixture.fixture.memory.bun, str(self.hermes))
+        self.assertFalse(Path(first['snapshot']).exists())
+        self.assertFalse(status(self.profile, job.name)['restore_available'])
+        before = (self.profile / 'config.yaml').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'another release operation'):
+            release_worker.check_restore(job, request, plan, transaction)
+        self.assertEqual((self.profile / 'config.yaml').read_bytes(), before)
+        self.assertEqual(status(self.profile, job.name)['state'], 'applied')
+
     def setUp(self):
         self.fixture = administration.MemoryAdministrationTests()
         self.fixture.setUp()
