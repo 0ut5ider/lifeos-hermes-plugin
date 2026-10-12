@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.3.1-dev.1` (development). Both servers run release `0.3.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Version:** `0.3.1` (development). Both servers run release `0.3.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current cursor correction](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. Release 0.3.0 passes installed conversation, audience, and authenticated dashboard checks on both guests. Daily owner-job acceptance remains pending the correction. Earlier acceptance paragraphs describe their checkpoint state.
 
