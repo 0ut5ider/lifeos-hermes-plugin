@@ -102,13 +102,14 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
         manifest = validate_package(package, downloaded['certificate'])
         source = load_bridge(package / 'lifeos_hook_bridge')
         selected = source.memory_module('lifeos_installation').selection(profile)
-        runtime = prepare_runtime(job, package, Path(downloaded['dashboard']))
+        runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
         request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
             'account_home': str(Path.home()), 'installed': str(selected.installed),
             'version': manifest['version'], 'commit': manifest['head'],
             'package_sha256': sha(downloaded['archive']), 'certificate': downloaded['certificate'],
             'configuration_sha256': sha(profile / 'config.yaml'),
             'runtime': runtime, 'runtime_fingerprint': fingerprint(Path(runtime['source'])),
+            'runtime_metadata_sha256': sha(job / 'manifest.json'),
             'python_lock_sha256': sha(package / 'python-runtime/uv.lock'),
             'name': name.strip(), 'assistant': assistant.strip()}
         publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())

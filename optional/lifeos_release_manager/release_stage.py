@@ -112,7 +112,7 @@ def run_stage(command, job, label, *, environment, cwd=None, timeout=1800):
         raise ReleaseRejected('Release preparation fails at ' + label + '. The active installation is unchanged.')
 
 
-def prepare_runtime(job, package, dashboard):
+def prepare_runtime(job, package, dashboard, profile):
     job, package = _directory(job), _directory(package)
     helpers = load_bridge(package / 'lifeos_hook_bridge')
     dependencies = _json((package / 'lifeos_hook_bridge/dependency_locks/catalog.json').read_bytes())
@@ -131,8 +131,7 @@ def prepare_runtime(job, package, dashboard):
     python = job / 'python-environment/bin/python'
     if not python.is_file():
         raise ReleaseRejected('The prepared Python environment has no interpreter')
-    runtime = job / 'runtime/hermes'
-    runtime.parent.mkdir(mode=0o700)
+    runtime = job / 'hermes'
     shutil.copytree(package / 'hermes', runtime, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     compiled = job / 'compiled-dashboard'
     extract_package(dashboard, compiled)
@@ -140,13 +139,14 @@ def prepare_runtime(job, package, dashboard):
     if not expected.is_dir() or any(not path.relative_to(compiled).as_posix().startswith('hermes_cli/web_dist/')
             for path in compiled.rglob('*') if path.is_file()):
         raise ReleaseRejected('The dashboard asset contains files outside its compiled output')
-    shutil.copytree(expected, runtime / 'hermes_cli/web_dist')
     commands = job / 'bin'
-    commands.mkdir(mode=0o700)
     environment = _environment(build_profile, home=job, source=runtime)
-    script = ('from pathlib import Path\nfrom hermes_cli._launchers import mint_launcher\nimport sys\n'
-        'assert mint_launcher("hermes",Path(sys.argv[1]),Path(sys.argv[2]),Path(sys.argv[3]),None) is not None\n')
-    run_stage([python, '-B', '-c', script, runtime, commands, python], job, 'launcher', environment=environment)
+    script = ('import importlib.util,sys\nfrom pathlib import Path\n'
+        'spec=importlib.util.spec_from_file_location("lifeos_release_payload",sys.argv[1])\n'
+        'module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n'
+        'module.assemble_runtime(*map(Path,sys.argv[2:]))\n')
+    run_stage([python, '-B', '-c', script, package / 'optional/lifeos_release_manager/release_payload.py',
+        job, runtime, package, expected, profile], job, 'launcher', environment=environment)
     reference = job / 'reference-home'
     reference.mkdir(mode=0o700)
     script = ('import importlib.util,sys\nfrom pathlib import Path\n'

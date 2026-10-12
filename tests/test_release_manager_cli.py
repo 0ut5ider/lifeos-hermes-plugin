@@ -25,14 +25,18 @@ class ReleaseManagerCommandTests(unittest.TestCase):
 
     def test_registers_release_management_without_loading_the_runtime_bridge(self):
         commands = {}
+        skills = {}
         class Context:
             def register_cli_command(self, name, **entry):
                 commands[name] = entry
+            def register_skill(self, name, path, description='', frontmatter=None):
+                skills[name] = Path(path)
         register(Context())
         parser = argparse.ArgumentParser()
         commands['lifeos-release']['setup_fn'](parser)
         self.assertEqual(parser.parse_args(['status']).action, 'status')
         self.assertEqual(parser.parse_args(['prepare', '--version', '0.4.0']).version, '0.4.0')
+        self.assertTrue(skills['lifeos-release'].is_file())
 
     def test_status_reports_no_operations_and_does_not_create_release_state(self):
         from hermes_constants import set_hermes_home_override, reset_hermes_home_override

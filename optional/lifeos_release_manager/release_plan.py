@@ -19,6 +19,7 @@ def inspect_operation(job, request, *, installation_lease=None):
     validate_package(package, request['certificate'])
     archive = job / 'download' / (request['version'] + '-' + request['commit'][:8] + '.tgz')
     if (sha(archive) != request['package_sha256']
+            or sha(job / 'manifest.json') != request['runtime_metadata_sha256']
             or sha(package / 'python-runtime/uv.lock') != request['python_lock_sha256']
             or fingerprint(Path(request['runtime']['source'])) != request['runtime_fingerprint']):
         raise ReleaseRejected('A prepared release artifact changes before selection')
@@ -30,7 +31,7 @@ def inspect_operation(job, request, *, installation_lease=None):
         raise ReleaseRejected('The operation changes its profile or installation binding')
     for key, expected in {'python': job / 'python-environment/bin/python',
                           'bun': job / 'tools/bun', 'hermes': job / 'bin/hermes',
-                          'source': job / 'runtime/hermes', 'reference': job / 'reference-home/.claude'}.items():
+                          'source': job / 'hermes', 'reference': job / 'reference-home/.claude'}.items():
         if request['runtime'].get(key) != str(expected):
             raise ReleaseRejected('The prepared runtime changes its fixed job paths')
     bridge = profile / 'plugins/lifeos-hook-bridge'
@@ -106,3 +107,19 @@ def verify_runtime(request, *, restored=False):
                             text=True, capture_output=True, timeout=90)
     if result.returncode:
         raise ReleaseRejected('The selected Hermes runtime refuses the preserved profile configuration')
+    if restored:
+        return
+    from .cli import read_private
+    job = profile / '.lifeos-releases' / request['identifier']
+    for launcher in read_private(job / 'plan.json')['launchers']:
+        result = subprocess.run([launcher, 'lifeos-version'], env=service_environment(request),
+                                text=True, capture_output=True, timeout=90)
+        if result.returncode:
+            raise ReleaseRejected('The selected installed launcher cannot load the integration commands')
+        try:
+            active = json.loads(result.stdout)['active']
+        except (ValueError, KeyError, TypeError) as error:
+            raise ReleaseRejected('The installed launcher does not return a release identity') from error
+        if (active.get('verification') != 'verified' or any(active.get(name) != request[name]
+                for name in ('version', 'commit', 'package_sha256'))):
+            raise ReleaseRejected('The installed command does not match the selected complete release')

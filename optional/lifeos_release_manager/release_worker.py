@@ -10,6 +10,7 @@ import os
 import re
 from pathlib import Path
 import shutil
+import shlex
 import sys
 import types
 import traceback
@@ -111,6 +112,15 @@ def _yaml_configuration(profile, native):
     if not isinstance(data, dict):
         raise ReleaseRejected('The selected profile configuration is not a mapping')
     plugins = data.setdefault('plugins', {})
+    enabled = plugins.setdefault('enabled', [])
+    disabled = plugins.setdefault('disabled', [])
+    if not isinstance(enabled, list) or not isinstance(disabled, list):
+        raise ReleaseRejected('The profile plugin selection requires named enablement lists')
+    for name in ('lifeos-hook-bridge', 'lifeos-release-manager'):
+        if name not in enabled:
+            enabled.append(name)
+        while name in disabled:
+            disabled.remove(name)
     entries = plugins.setdefault('entries', {})
     bridge = entries.setdefault('lifeos-hook-bridge', {})
     bridge['enabled'] = True
@@ -130,8 +140,10 @@ def _program_plan(job, request, selected):
     files, dependencies = {}, {}
     directories = {selected['bridge']: package / 'lifeos_hook_bridge',
                    profile / 'plugins/lifeos-release-manager': package / 'optional/lifeos_release_manager'}
+    launch = generated / 'hermes'
+    publish(launch, ('#!/bin/sh\nexec ' + shlex.quote(request['runtime']['hermes']) + ' "$@"\n').encode(), 0o700)
     for path in selected['launchers']:
-        files[path] = Path(request['runtime']['hermes'])
+        files[path] = launch
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
     publish(generated / 'config.yaml', _yaml_configuration(profile, native))
