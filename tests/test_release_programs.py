@@ -8,6 +8,48 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_resume_completes_an_interrupted_directory_swap_and_keeps_personal_data(self):
+        import os
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            transaction, current, launcher, receipt = self.fixture(root)
+            personal = root / 'personal'
+            personal.write_text('Synthetic retained data')
+            child = os.fork()
+            if child == 0:
+                def terminate(point):
+                    if point == 'directory-retained':
+                        os._exit(73)
+                transaction.apply(checkpoint=terminate)
+                os._exit(74)
+            _, result = os.waitpid(child, 0)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 73)
+            transaction.resume()
+            self.assertEqual((current / 'program.py').read_text(), 'after')
+            self.assertEqual(launcher.read_text(), 'after-launcher')
+            self.assertEqual(receipt.read_text(), 'qualified release')
+            self.assertEqual(personal.read_text(), 'Synthetic retained data')
+            transaction.restore()
+            self.assertEqual((current / 'program.py').read_text(), 'before')
+
+    def test_resume_refuses_later_edits_before_publishing_other_programs(self):
+        import os
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            transaction, current, launcher, receipt = self.fixture(root)
+            child = os.fork()
+            if child == 0:
+                transaction.apply(checkpoint=lambda point: os._exit(73) if point == 'artifact-published' else None)
+                os._exit(74)
+            _, result = os.waitpid(child, 0)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 73)
+            (current / 'program.py').write_text('later owner edit')
+            with self.assertRaisesRegex(ProgramConflict, 'later artifact edit'):
+                transaction.resume()
+            self.assertEqual((current / 'program.py').read_text(), 'later owner edit')
+            self.assertEqual(launcher.read_text(), 'before-launcher')
+            self.assertFalse(receipt.exists())
+
     def test_preparation_retries_after_process_exit_and_retains_partial_copy(self):
         import os
         with tempfile.TemporaryDirectory() as temp:

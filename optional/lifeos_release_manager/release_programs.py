@@ -217,6 +217,53 @@ class ProgramTransaction:
                     or fingerprint(entry['target'], allow_links=entry['allow_links']) != entry['before']):
                 raise ProgramConflict('A program target or source changes after preparation')
 
+    def resume(self, *, checkpoint=lambda point: None):
+        value = self._load()
+        if value['state'] not in {'prepared', 'applying', 'applied'}:
+            raise ProgramConflict('The program transaction cannot resume this state')
+        for index, entry in enumerate(value['entries']):
+            current = fingerprint(entry['target'], allow_links=entry['allow_links'])
+            backup = self.snapshot / ('before-' + str(index))
+            retained = fingerprint(backup, allow_links=entry['allow_links'])
+            absent_swap = current is None and entry['kind'] == 'directory' and retained == entry['before'] and retained is not None
+            if (current not in (entry['before'], entry['after']) and not absent_swap
+                    or value['state'] == 'applied' and current != entry['after']):
+                raise ProgramConflict('Program recovery preserves a later artifact edit')
+            if retained is not None and retained != entry['before']:
+                raise ProgramConflict('The retained program differs from its recorded identity')
+            if current == entry['after']:
+                if current != entry['before'] and entry['before'] is not None and retained != entry['before']:
+                    raise ProgramConflict('Program recovery requires its retained prior artifact')
+                continue
+            source = None if entry['source'] is None else fingerprint(entry['source'], allow_links=entry['allow_links'])
+            incoming = fingerprint(self.snapshot / ('incoming-' + str(index)), allow_links=entry['allow_links'])
+            if source != entry['after'] or incoming != entry['after']:
+                raise ProgramConflict('The staged program copy differs from its source')
+        value['state'] = 'applying'
+        self._record(value)
+        for index, entry in enumerate(value['entries']):
+            target, incoming = Path(entry['target']), self.snapshot / ('incoming-' + str(index))
+            if fingerprint(target, allow_links=entry['allow_links']) == entry['after']:
+                continue
+            if entry['kind'] == 'directory':
+                if target.exists():
+                    os.replace(target, self.snapshot / ('before-' + str(index)))
+                    sync_directory(target.parent)
+                    sync_directory(self.snapshot)
+                checkpoint('directory-retained')
+                if entry['after'] is not None:
+                    os.replace(incoming, target)
+                sync_directory(target.parent)
+                sync_directory(self.snapshot)
+            elif entry['after'] is None:
+                target.unlink()
+                sync_directory(target.parent)
+            else:
+                publish(target, incoming.read_bytes(), entry['after']['mode'])
+            checkpoint('artifact-published')
+        value['state'] = 'applied'
+        self._record(value)
+
     def restore(self):
         value = self._load()
         if value['state'] not in {'prepared', 'applying', 'applied', 'restoring', 'restored'}:
