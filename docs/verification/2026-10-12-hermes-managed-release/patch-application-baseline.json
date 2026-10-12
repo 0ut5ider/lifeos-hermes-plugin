@@ -1,0 +1,61 @@
+{
+  "target": "71d34bad1045610252eda02ee79549436896e784",
+  "checks": "Each existing patch against clean upstream; not an ordered preparation gate",
+  "results": [
+    {
+      "patch": "hermes-plugin-events.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: hermes_cli/plugins.py:107\nerror: hermes_cli/plugins.py: patch does not apply\nerror: patch failed: hermes_cli/plugins_dispatch.py:45\nerror: hermes_cli/plugins_dispatch.py: patch does not apply\nerror: patch failed: model_tools.py:847\nerror: model_tools.py: patch does not apply\nerror: patch failed: tools/memory_tool.py:45\nerror: tools/memory_tool.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-turn-gates.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: agent/conversation_loop.py:33\nerror: agent/conversation_loop.py: patch does not apply\nerror: patch failed: agent/turn_context.py:575\nerror: agent/turn_context.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-command-policy.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: agent/terminal_approval_batch.py:229\nerror: agent/terminal_approval_batch.py: patch does not apply\nerror: patch failed: tools/approval.py:794\nerror: tools/approval.py: patch does not apply\nerror: patch failed: tools/code_execution_tool.py:613\nerror: tools/code_execution_tool.py: patch does not apply\nerror: patch failed: tools/code_kernel.py:869\nerror: tools/code_kernel.py: patch does not apply\nerror: patch failed: tools/code_kernel_remote.py:336\nerror: tools/code_kernel_remote.py: patch does not apply\nerror: patch failed: tools/terminal_tool.py:146\nerror: tools/terminal_tool.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-session-lifecycle.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: cli.py:514\nerror: cli.py: patch does not apply\nerror: patch failed: gateway/run_turn_runner.py:1364\nerror: gateway/run_turn_runner.py: patch does not apply\nerror: patch failed: gateway/run_turn_runner_clarify_delivery.py:106\nerror: gateway/run_turn_runner_clarify_delivery.py: patch does not apply\nerror: patch failed: gateway/slash_commands_session.py:896\nerror: gateway/slash_commands_session.py: patch does not apply\nerror: patch failed: hermes_cli/cli_commands_mixin.py:1306\nerror: hermes_cli/cli_commands_mixin.py: patch does not apply\nerror: patch failed: hermes_cli/cli_session_mixin.py:425\nerror: hermes_cli/cli_session_mixin.py: patch does not apply\nerror: patch failed: plugins/platforms/discord/adapter.py:281\nerror: plugins/platforms/discord/adapter.py: patch does not apply\nerror: patch failed: tests/tools/test_clarify_gateway.py:77\nerror: tests/tools/test_clarify_gateway.py: patch does not apply\nerror: patch failed: tools/clarify_gateway.py:240\nerror: tools/clarify_gateway.py: patch does not apply\nerror: patch failed: tools/clarify_tool.py:5\nerror: tools/clarify_tool.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-child-routing.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: tools/delegate_tool.py:362\nerror: tools/delegate_tool.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-strict-inference.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: agent/auxiliary_client.py:7766\nerror: agent/auxiliary_client.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-remote-files.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: tools/file_tools.py:38\nerror: tools/file_tools.py: patch does not apply\nerror: patch failed: tools/file_tools_read_tracking.py:52\nerror: tools/file_tools_read_tracking.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-cron-bootstrap.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: cron/scheduler.py:3470\nerror: cron/scheduler.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-required-middleware.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: agent/auxiliary_hooks.py:241\nerror: agent/auxiliary_hooks.py: patch does not apply\nerror: patch failed: hermes_cli/middleware.py:36\nerror: hermes_cli/middleware.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-web-result-status.patch",
+      "exit_code": 1,
+      "stderr": "error: patch failed: agent/display.py:17\nerror: agent/display.py: patch does not apply\n"
+    },
+    {
+      "patch": "hermes-protected-instruction-approval.patch",
+      "exit_code": 0,
+      "stderr": ""
+    }
+  ]
+}
