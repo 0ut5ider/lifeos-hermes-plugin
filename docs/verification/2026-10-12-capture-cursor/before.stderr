@@ -1,0 +1,55 @@
+test_processed_private_work_never_enters_native_capture (test_memory_conduit_capture.MemoryConduitCaptureTests.test_processed_private_work_never_enters_native_capture) ... FAIL
+test_processed_retired_work_needs_no_whole_ledger_approval (test_memory_conduit_capture.MemoryConduitCaptureTests.test_processed_retired_work_needs_no_whole_ledger_approval) ... FAIL
+test_private_pending_work_preserves_processed_cursor_and_events (test_memory_conduit_capture.MemoryConduitCaptureTests.test_private_pending_work_preserves_processed_cursor_and_events) ... ok
+test_processed_work_edit_after_native_capture_withholds_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_processed_work_edit_after_native_capture_withholds_publication) ... FAIL
+test_unrecognized_timestamp_cannot_hide_private_work (test_memory_conduit_capture.MemoryConduitCaptureTests.test_unrecognized_timestamp_cannot_hide_private_work) ... ok
+test_missing_cursor_cannot_hide_processed_private_work (test_memory_conduit_capture.MemoryConduitCaptureTests.test_missing_cursor_cannot_hide_processed_private_work) ... ok
+
+======================================================================
+FAIL: test_processed_private_work_never_enters_native_capture (test_memory_conduit_capture.MemoryConduitCaptureTests.test_processed_private_work_never_enters_native_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 133, in test_processed_private_work_never_enters_native_capture
+    self.assertEqual(result,{'ok':True,'output':'captured 1 event(s)\n'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'ok': False, 'code': 'EINVAL_PATH', 'message': [49 chars]ent'} != {'ok': True, 'output': 'captured 1 event(s)\n'}
++ {'ok': True, 'output': 'captured 1 event(s)\n'}
+- {'code': 'EINVAL_PATH',
+-  'message': 'A complete state fold cannot omit an excluded event',
+-  'ok': False}
+
+======================================================================
+FAIL: test_processed_retired_work_needs_no_whole_ledger_approval (test_memory_conduit_capture.MemoryConduitCaptureTests.test_processed_retired_work_needs_no_whole_ledger_approval)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 156, in test_processed_retired_work_needs_no_whole_ledger_approval
+    self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'captured 1 event(s)\n',''))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1, '', '149 | const managed = cmd === "ve[671 chars])\n') != (0, 'captured 1 event(s)\n', '')
+
+First differing element 0:
+1
+0
+
+Diff is 846 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_processed_work_edit_after_native_capture_withholds_publication (test_memory_conduit_capture.MemoryConduitCaptureTests.test_processed_work_edit_after_native_capture_withholds_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_conduit_capture.py", line 178, in test_processed_work_edit_after_native_capture_withholds_publication
+    self.assertEqual(observed,['captured 1 event(s)\n'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['captured 1 event(s)\n']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'captured 1 event(s)\n'
+
+- []
++ ['captured 1 event(s)\n']
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.051s
+
+FAILED (failures=3)

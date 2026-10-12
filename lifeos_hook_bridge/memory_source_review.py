@@ -24,6 +24,9 @@ def _source_digest(memory, scope, relative, content):
 
 def _classification(relative):
     from .memory_life_source_review import classification
+    from .memory_conduit_capture import WORK_REVIEW
+    if relative == WORK_REVIEW:
+        return 'conduit_pending'
     if relative in INTERVIEW_SETUP_FILES:
         return 'interview_setup'
     if is_evidence_source(relative):
@@ -78,7 +81,10 @@ def _snapshot(memory, connection, scope, paths):
             raise ValueError('Source review needs exact installation-relative paths')
         classification = _classification(relative)
         from .memory_life_source_review import snapshot, projection as life_projection
-        source, timestamp = (snapshot(memory, scope, relative)
+        from .memory_conduit_capture import pending_work_review
+        source, timestamp = (pending_work_review(memory, scope)
+                             if classification == 'conduit_pending' else
+                             snapshot(memory, scope, relative)
                              if classification in {'life_text', 'life_metadata'} else
                              _text_source(memory, scope, str(memory.root / relative),
                                          suffix=Path(relative).suffix, interview_setup=True)
@@ -91,7 +97,9 @@ def _snapshot(memory, connection, scope, paths):
                              _text_source(memory, scope, str(memory.root / relative), suffix=Path(relative).suffix, derived_sync=True)
                              if classification == 'derived_sync' else
                              _markdown_source(memory, scope, str(memory.root / relative)))
-        projection = (life_projection(memory, relative, source['content']) if classification in {'life_text', 'life_metadata'} else
+        from .memory_operational_views import projection as operational_projection
+        projection = (operational_projection(source['content']) if classification == 'conduit_pending' else
+                      life_projection(memory, relative, source['content']) if classification in {'life_text', 'life_metadata'} else
                       json_projection(source['content']) if classification == 'evidence' or classification in {'deny_hashes', 'derived_sync'} and relative.endswith('.json') else
                       markdown_projection(memory, relative, source['content']))
         total += len(source['content'].encode()) + len((projection or '').encode())

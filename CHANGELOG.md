@@ -6,6 +6,11 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+## 0.3.1 (2026-10-12)
+
+- Select only pending Conduit work for native capture. Preserve whole-ledger fingerprints and refusal of private pending events.
+- Review pending work through `LIFEOS/MEMORY/STATE/work-events.jsonl#conduit-pending`. Bind approval to cursor, ledger bytes, and retirement state.
+
 ## 0.3.0 (2026-10-12)
 
 - Report active and staged integration versions through `hermes lifeos-version`. Verify installed plugin hashes before reporting an exact release.

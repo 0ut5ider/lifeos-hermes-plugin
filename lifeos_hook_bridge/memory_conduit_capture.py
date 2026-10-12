@@ -21,6 +21,7 @@ from .memory_transaction import publish
 from . import memory_operational_history as history
 
 WORK = 'LIFEOS/MEMORY/STATE/work-events.jsonl'
+WORK_REVIEW = WORK + '#conduit-pending'
 STATE = PREFIX + 'state.json'
 MAX_SNAPSHOT = 32 * 1024 * 1024
 COMMANDS = frozenset({'capture', 'rollup', 'today', 'status', 'init'})
@@ -130,6 +131,41 @@ def _validate(memory, scope, connection, text):
         raise MemoryUnavailable('Conduit command output is excluded under the current owner policy')
 
 
+def _pending_work(relative, row, cursor):
+    if (relative != WORK or not isinstance(cursor, str) or not cursor
+            or not isinstance(row, dict) or not isinstance(row.get('ts'), str)):
+        return True
+    # Native JavaScript compares timestamp strings as UTF-16 code units.
+    return row['ts'].encode('utf-16-be', 'surrogatepass') > cursor.encode('utf-16-be', 'surrogatepass')
+
+
+def pending_work_review(memory, scope):
+    authorize(scope)
+    before = [history.fingerprint(memory, path, sources={path:None}) for path in (STATE, WORK)]
+    state = _raw(memory, STATE, SOURCE_LIMIT)
+    work = _raw(memory, WORK, MAX_SNAPSHOT)
+    if work is None:
+        raise MemoryUnavailable('Pending Conduit review requires its current work ledger')
+    value = {} if state is None else json.loads(state)
+    cursor = value.get('lastClaudeCursor') if isinstance(value, dict) else None
+    rows = []
+    for line in work.decode('utf-8').splitlines():
+        if len(line.encode()) > SOURCE_LIMIT:
+            raise MemoryUnavailable('A pending Conduit review event exceeds its byte limit')
+        try: row = json.loads(line)
+        except (ValueError, RecursionError): continue
+        if _pending_work(WORK, row, cursor): rows.append(row)
+    content = json.dumps({'cursor':cursor, 'state_sha256':None if state is None else hashlib.sha256(state).hexdigest(),
+        'ledger_sha256':hashlib.sha256(work).hexdigest(), 'pending':rows}, ensure_ascii=False)
+    if len(content.encode()) > SOURCE_LIMIT:
+        raise MemoryUnavailable('Pending Conduit review exceeds its complete view limit')
+    if [history.fingerprint(memory, path, sources={path:None}) for path in (STATE, WORK)] != before:
+        raise MemoryUnavailable('Conduit cursor or work changes during pending review')
+    timestamp = _source_time((memory.root/WORK).stat())
+    return {'relative':WORK_REVIEW, 'path':str(memory.root/WORK), 'content':content,
+        'lastModified':timestamp}, timestamp
+
+
 def run(memory, scope, command, date, *, check_current):
     authorize(scope)
     if command not in COMMANDS or date is not None and (command != 'rollup' or not isinstance(date, str)
@@ -175,12 +211,41 @@ def run(memory, scope, command, date, *, check_current):
                 if _admit(memory, connection, scope, content, relative, _source_time((memory.root/relative).stat()),
                         projection=decoded)['excluded']:
                     raise MemoryUnavailable('Conduit command metadata is excluded under owner admission')
+            state = {} if originals.get(STATE) is None else json.loads(originals[STATE])
+            cursor = state.get('lastClaudeCursor') if isinstance(state, dict) else None
+            selected_work = None
+            reviews = {}
+            if (WORK in streamed and (memory.root/WORK).is_file()
+                    and connection.execute('SELECT 1 FROM source_reviews WHERE principal=? AND path=?',
+                        (scope.principal, WORK_REVIEW)).fetchone() is not None):
+                try:
+                    source, _ = pending_work_review(memory, scope)
+                except MemoryUnavailable:
+                    source = None
+                if source is not None: reviews[WORK] = (WORK_REVIEW, source['content'])
             with history.snapshot(memory, scope, connection, check_current=check_current, sources=streamed,
                     require_newline=False, objects_only=False, allow_unfinished_utf8=False,
-                    require_all_admitted=True) as (_, event_fingerprints):
+                    require_all_admitted=True,
+                    select=lambda relative, row: _pending_work(relative, row, cursor),
+                    reviews=reviews) as (descriptor, event_fingerprints):
                 fingerprints.extend(event_fingerprints)
                 for relative in streamed:
                     originals[relative] = _raw(memory, relative, MAX_SNAPSHOT)
+                if reviews:
+                    approved = json.loads(reviews[WORK][1])
+                    if (approved['ledger_sha256'] != hashlib.sha256(originals[WORK]).hexdigest()
+                            or approved['state_sha256'] != (None if originals.get(STATE) is None else
+                                hashlib.sha256(originals[STATE]).hexdigest())):
+                        raise MemoryUnavailable('Conduit pending review changes before native selection')
+                if WORK in streamed:
+                    selected_work = bytearray()
+                    with os.fdopen(os.dup(descriptor), 'rb') as admitted:
+                        for line in admitted:
+                            record = json.loads(line)
+                            if record['relative'] == WORK:
+                                selected_work.extend((record['content'] + '\n').encode('utf-8'))
+                                if len(selected_work) > MAX_SNAPSHOT:
+                                    raise MemoryUnavailable('Conduit selected work exceeds its source snapshot limit')
             if sum(len(data) for data in originals.values() if data is not None) > MAX_SNAPSHOT:
                 raise MemoryUnavailable('Conduit command exceeds its total source snapshot limit')
             if selection(memory, only_config=only_config) != (names, directories):
@@ -191,7 +256,7 @@ def run(memory, scope, command, date, *, check_current):
                     raise MemoryUnavailable('Conduit capture requires a complete terminated event ledger')
                 if hashlib.sha256(data).hexdigest() != next(item[2] for item in fingerprints if item[0]==relative):
                     raise MemoryUnavailable('Conduit sources change before isolated native execution')
-                publish(root/relative, data)
+                publish(root/relative, bytes(selected_work) if relative == WORK and selected_work is not None else data)
                 copied[relative] = _identity((root/relative).stat())
             check_current()
             output = _execute(memory, home, command, date)

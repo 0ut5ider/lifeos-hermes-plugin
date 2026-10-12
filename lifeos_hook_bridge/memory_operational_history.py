@@ -34,7 +34,7 @@ def fingerprint(memory, relative, *, sources=SOURCES):
 
 @contextmanager
 def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, require_newline=True,
-             objects_only=True, allow_unfinished_utf8=True, require_all_admitted=False):
+             objects_only=True, allow_unfinished_utf8=True, require_all_admitted=False, select=None, reviews=None):
     from .memory_operational_views import projection, _timestamp
     admitted_digest = hashlib.sha256()
     fingerprints = []
@@ -54,6 +54,9 @@ def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, 
                 try: original = original_bytes.decode('utf-8')
                 except UnicodeError: pass
             reviewed = original is not None and is_reviewed(memory, connection, scope, relative, original)
+            if reviews is not None and relative in reviews:
+                key, content = reviews[relative]
+                reviewed = reviewed or is_reviewed(memory, connection, scope, key, content)
             raw_digest = hashlib.sha256()
             batch, size = [], 2
 
@@ -94,6 +97,7 @@ def snapshot(memory, scope, connection, *, check_current=None, sources=SOURCES, 
                     try: row = json.loads(line)
                     except (ValueError, RecursionError): continue
                     if objects_only and not isinstance(row, dict): continue
+                    if select is not None and not select(relative, row): continue
                     decoded = projection(line)
                     if decoded is None:
                         if require_all_admitted:

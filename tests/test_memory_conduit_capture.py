@@ -1,7 +1,7 @@
 # ABOUTME: Characterizes native Conduit capture and requires current owner admission for work activity.
 # ABOUTME: Runs actual native command processes with synthetic work events and no inference or external adapters.
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
@@ -106,6 +106,185 @@ class MemoryConduitCaptureTests(unittest.TestCase):
         self.assertNotIn('Synthetic excluded',result.stdout+result.stderr)
         self.assertEqual(self.events(),[])
         self.assertFalse((self.data/'state.json').exists())
+
+    def cursor_work(self, note):
+        first=self.call()
+        self.assertEqual((first.returncode,first.stdout,first.stderr),(0,'captured 1 event(s)\n',''))
+        old=json.loads(self.work.read_text());old['note']=note
+        pending={'ts':(datetime.fromisoformat(old['ts'])+timedelta(seconds=1)).isoformat(),
+            'slug':'synthetic-pending-cursor-work','type':'work.started'}
+        self.work.write_text(json.dumps(old)+'\n'+json.dumps(pending)+'\n')
+        return old,pending
+
+    def test_processed_private_work_never_enters_native_capture(self):
+        self.cursor_work('<private>SyntheticProcessedPrivateWork</private>')
+        before=self.work.read_bytes()
+        original=capture._execute
+        observed=[]
+        def execute(memory,home,*arguments):
+            selected=(home/'.claude'/capture.WORK).read_text()
+            self.assertNotIn('SyntheticProcessedPrivateWork',selected)
+            self.assertEqual(len(selected.splitlines()),1)
+            observed.append(selected)
+            return original(memory,home,*arguments)
+        capture._execute=execute
+        self.addCleanup(setattr,capture,'_execute',original)
+        result=self.service()
+        self.assertEqual(result,{'ok':True,'output':'captured 1 event(s)\n'})
+        self.assertEqual(len(observed),1)
+        self.assertEqual(self.work.read_bytes(),before)
+        self.assertEqual(len(self.events()),2)
+        self.assertEqual(self.events()[-1]['detail']['lastSlug'],'synthetic-pending-cursor-work')
+
+    def test_processed_retired_work_needs_no_whole_ledger_approval(self):
+        from lifeos_hook_bridge import memory_source_review as review
+        from test_memory_native import OWNER
+        self.cursor_work('SyntheticProcessedRetiredCaptureClaim')
+        native=self.fixture.fixture.fixture
+        saved=native.remember('SyntheticProcessedRetiredCaptureClaim','cursor-retirement')
+        self.assertEqual(saved['status'],'committed',saved)
+        self.assertEqual(native.memory.forget(OWNER,saved['reference'],'cursor-forget')['status'],'committed')
+        rows=[json.loads(line) for line in self.work.read_text().splitlines()]
+        rows[-1]['ts']=(datetime.now(timezone.utc)+timedelta(seconds=1)).isoformat()
+        self.work.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        paths=[capture.CONFIG,capture.STATE,*[str(path.relative_to(self.root))
+            for path in (self.data/'events').glob('*.jsonl')]]
+        whole=review.preview(native.memory,OWNER,[capture.WORK])
+        self.assertFalse(whole['sources'][0]['accepted'])
+        snapshot=review.preview(native.memory,OWNER,paths)
+        self.assertTrue(all(row['accepted'] for row in snapshot['sources']))
+        self.assertEqual(review.approve(native.memory,OWNER,paths,snapshot['signature'])['status'],'committed')
+        before=self.work.read_bytes()
+        result=self.call()
+        self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'captured 1 event(s)\n',''))
+        self.assertEqual(self.work.read_bytes(),before)
+        self.assertEqual(len(self.events()),2)
+
+    def test_pending_work_review_does_not_approve_processed_retired_history(self):
+        from lifeos_hook_bridge import memory_source_review as review
+        from test_memory_native import OWNER
+        old,pending=self.cursor_work('SyntheticProcessedRetiredReviewClaim')
+        pending['ts']=(datetime.fromisoformat(old['ts'])+timedelta(microseconds=1)).isoformat()
+        self.work.write_text(json.dumps(old)+'\n'+json.dumps(pending)+'\n')
+        native=self.fixture.fixture.fixture
+        saved=native.remember('SyntheticProcessedRetiredReviewClaim','pending-review-retirement')
+        self.assertEqual(saved['status'],'committed',saved)
+        self.assertEqual(native.memory.forget(OWNER,saved['reference'],'pending-review-forget')['status'],'committed')
+        paths=[capture.CONFIG,capture.STATE,*[str(path.relative_to(self.root))
+            for path in (self.data/'events').glob('*.jsonl')]]
+        snapshot=review.preview(native.memory,OWNER,paths)
+        self.assertEqual(review.approve(native.memory,OWNER,paths,snapshot['signature'])['status'],'committed')
+        target=capture.WORK+'#conduit-pending'
+        selected=review.preview(native.memory,OWNER,[target])
+        self.assertTrue(selected['sources'][0]['accepted'],selected)
+        self.assertNotIn('SyntheticProcessedRetiredReviewClaim',selected['sources'][0]['content'])
+        self.assertIn('synthetic-pending-cursor-work',selected['sources'][0]['content'])
+        self.assertEqual(review.approve(native.memory,OWNER,[target],selected['signature'])['status'],'committed')
+        with native.memory._transaction() as connection:
+            self.assertFalse(review.is_reviewed(native.memory,connection,OWNER,capture.WORK,self.work.read_text()))
+        before=self.work.read_bytes()
+        result=self.call()
+        self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'captured 1 event(s)\n',''))
+        self.assertEqual(self.work.read_bytes(),before)
+        self.assertEqual(len(self.events()),2)
+
+    def test_pending_review_signature_binds_cursor_and_complete_work_bytes(self):
+        from lifeos_hook_bridge import memory_source_review as review
+        from test_memory_native import OWNER
+        self.cursor_work('Synthetic safe processed review work')
+        memory=self.fixture.fixture.fixture.memory
+        target=capture.WORK+'#conduit-pending'
+        snapshot=review.preview(memory,OWNER,[target])
+        self.work.write_text(self.work.read_text()+json.dumps({'ts':'2000-01-01T00:00:00Z',
+            'note':'Synthetic changed processed bytes'})+'\n')
+        self.assertEqual(review.approve(memory,OWNER,[target],snapshot['signature'])['status'],'conflict')
+        snapshot=review.preview(memory,OWNER,[target])
+        state=self.data/'state.json';value=json.loads(state.read_text())
+        value['lastClaudeCursor']='2099-01-01T00:00:00Z';state.write_text(json.dumps(value))
+        self.assertEqual(review.approve(memory,OWNER,[target],snapshot['signature'])['status'],'conflict')
+
+    def test_pending_review_refuses_private_or_decoded_retired_pending_rows(self):
+        from lifeos_hook_bridge import memory_source_review as review
+        from test_memory_native import OWNER
+        old,pending=self.cursor_work('Synthetic safe processed review work')
+        native=self.fixture.fixture.fixture
+        saved=native.remember('SyntheticRetiredPendingReviewClaim','private-pending-retirement')
+        self.assertEqual(saved['status'],'committed',saved)
+        self.assertEqual(native.memory.forget(OWNER,saved['reference'],'private-pending-forget')['status'],'committed')
+        target=capture.WORK+'#conduit-pending'
+        for note in ('<private>SyntheticPrivatePendingReview</private>','SyntheticRetiredPendingReviewClaim'):
+            with self.subTest(note=note):
+                pending['note']=note
+                text=json.dumps(pending).replace('SyntheticRetiredPendingReviewClaim','SyntheticRetiredPendingReview\\u0043laim')
+                self.work.write_text(json.dumps(old)+'\n'+text+'\n')
+                snapshot=review.preview(native.memory,OWNER,[target])
+                self.assertFalse(snapshot['sources'][0]['accepted'],snapshot)
+                self.assertEqual(snapshot['sources'][0]['content'],'')
+                self.assertEqual(review.approve(native.memory,OWNER,[target],snapshot['signature'])['status'],'rejected')
+
+    def test_private_pending_work_preserves_processed_cursor_and_events(self):
+        old,pending=self.cursor_work('Synthetic safe processed work')
+        pending['note']='<private>SyntheticPendingPrivateWork</private>'
+        self.work.write_text(json.dumps(old)+'\n'+json.dumps(pending)+'\n')
+        before=(self.work.read_bytes(),(self.data/'state.json').read_bytes(),self.events())
+        result=self.call()
+        self.assertNotEqual(result.returncode,0)
+        self.assertNotIn('SyntheticPendingPrivateWork',result.stdout+result.stderr)
+        self.assertEqual((self.work.read_bytes(),(self.data/'state.json').read_bytes(),self.events()),before)
+
+    def test_processed_work_edit_after_native_capture_withholds_publication(self):
+        self.cursor_work('<private>SyntheticProcessedPrivateRace</private>')
+        before=((self.data/'state.json').read_bytes(),self.events())
+        later=self.work.read_bytes()+json.dumps({'ts':'2000-01-01T00:00:00Z',
+            'note':'Synthetic later processed edit'}).encode()+b'\n'
+        observed=self.after_native(lambda:self.work.write_bytes(later))
+        result=self.service()
+        self.assertFalse(result['ok'],result)
+        self.assertEqual(observed,['captured 1 event(s)\n'])
+        self.assertEqual(self.work.read_bytes(),later)
+        self.assertEqual(((self.data/'state.json').read_bytes(),self.events()),before)
+
+    def test_unrecognized_timestamp_cannot_hide_private_work(self):
+        old,pending=self.cursor_work('Synthetic safe processed work')
+        old.update(ts=0,note='<private>SyntheticUnrecognizedPrivateWork</private>')
+        self.work.write_text(json.dumps(old)+'\n'+json.dumps(pending)+'\n')
+        before=((self.data/'state.json').read_bytes(),self.events())
+        result=self.call()
+        self.assertNotEqual(result.returncode,0)
+        self.assertEqual(((self.data/'state.json').read_bytes(),self.events()),before)
+
+    def test_missing_cursor_cannot_hide_processed_private_work(self):
+        self.cursor_work('<private>SyntheticPrivateWorkWithoutCursor</private>')
+        state=self.data/'state.json';state.unlink()
+        before=self.events()
+        result=self.call()
+        self.assertNotEqual(result.returncode,0)
+        self.assertFalse(state.exists())
+        self.assertEqual(self.events(),before)
+
+    def test_large_pending_work_keeps_capture_without_a_small_review_view(self):
+        old,pending=self.cursor_work('Synthetic safe processed work')
+        pending['note']='Synthetic safe pending padding ' * 6000
+        rows=[dict(pending, ts=(datetime.fromisoformat(pending['ts'])+timedelta(seconds=index)).isoformat()) for index in range(3)]
+        self.work.write_text(json.dumps(old)+'\n'+''.join(json.dumps(row)+'\n' for row in rows))
+        self.assertGreater(self.work.stat().st_size,capture.SOURCE_LIMIT)
+        result=self.call()
+        self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'captured 1 event(s)\n',''))
+        self.assertEqual(len(self.events()),2)
+
+    def test_expired_small_pending_review_does_not_block_current_large_work(self):
+        from lifeos_hook_bridge import memory_source_review as review
+        from test_memory_native import OWNER
+        old,pending=self.cursor_work('Synthetic safe processed work')
+        memory=self.fixture.fixture.fixture.memory
+        target=capture.WORK+'#conduit-pending'
+        snapshot=review.preview(memory,OWNER,[target])
+        self.assertEqual(review.approve(memory,OWNER,[target],snapshot['signature'])['status'],'committed')
+        pending['note']='Synthetic safe current padding ' * 6000
+        rows=[dict(pending, ts=(datetime.fromisoformat(pending['ts'])+timedelta(seconds=index)).isoformat()) for index in range(3)]
+        self.work.write_text(json.dumps(old)+'\n'+''.join(json.dumps(row)+'\n' for row in rows))
+        result=self.call()
+        self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'captured 1 event(s)\n',''))
 
     def test_limited_writer_cannot_publish_capture_or_advance_cursor(self):
         configuration=self.fixture.fixture.configuration

@@ -59,7 +59,7 @@ for source in native.rglob('*'):
 version = subprocess.run([str(launcher), 'lifeos-version'], capture_output=True, text=True, timeout=60)
 assert version.returncode == 0 and not version.stderr
 assert json.loads(version.stdout)['active'] == active
-marker = ('D253' if args.daily else 'D252') + '-RELEASE-030-PASS'
+marker = ('D253' if args.daily else 'D252') + '-RELEASE-' + manifest['version'].replace('.', '') + '-PASS'
 model = subprocess.run([str(launcher), 'chat', '--oneshot', '--quiet', '--max-turns', '2',
     '--run-budget', '240', '--query-file', '-'],
     input='Release verification. Do not call a tool. Reply exactly ' + marker + '.',
