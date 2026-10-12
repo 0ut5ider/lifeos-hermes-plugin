@@ -1,8 +1,8 @@
 diff --git a/agent/learning_graph.py b/agent/learning_graph.py
-index ca6c9e64..8725b5f3 100644
+index a7b15ed05..39ad468a5 100644
 --- a/agent/learning_graph.py
 +++ b/agent/learning_graph.py
-@@ -148,11 +148,14 @@ def memory_node_id(card: dict[str, Any], index: int) -> str:
+@@ -161,11 +161,14 @@ def memory_node_id(card: dict[str, Any], index: int) -> str:
  def _memory_cards() -> list[dict[str, Any]]:
      """``MEMORY.md`` / ``USER.md`` entries as the memory tool parses them; every
      entry becomes one card (MEMORY.md cards first, then USER.md)."""
@@ -19,7 +19,7 @@ index ca6c9e64..8725b5f3 100644
          try:
              file_ts = _to_int_ts(path.stat().st_mtime)
 diff --git a/agent/learning_mutations.py b/agent/learning_mutations.py
-index 415d22fa..679e3047 100644
+index 415d22fa1..679e30477 100644
 --- a/agent/learning_mutations.py
 +++ b/agent/learning_mutations.py
 @@ -37,6 +37,16 @@ def _parse_memory_id(node_id: str) -> tuple[str, int, str]:
@@ -56,7 +56,7 @@ index 415d22fa..679e3047 100644
      message = f"deleted memory from {name}" if replacement is None else f"updated memory in {name}"
  
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
-index bba82a3b..38e48407 100644
+index a652179cd..227f7fbf9 100644
 --- a/hermes_cli/plugins.py
 +++ b/hermes_cli/plugins.py
 @@ -32,7 +32,7 @@ from hermes_constants import get_hermes_home, get_process_hermes_home, hermes_ho
@@ -68,9 +68,9 @@ index bba82a3b..38e48407 100644
  from hermes_cli.plugin_capabilities import plugin_capability_granted
  from hermes_cli.relay_plugin_cutover import RELAY_PLUGINS_CONFIG_ENV, legacy_relay_plugin_keys
  # Sibling modules' names are re-exported here (origin) so plugins and tests keep one import path.
-@@ -107,15 +107,24 @@ _install_plugin_debug_handler()
+@@ -108,15 +108,24 @@ _install_plugin_debug_handler()
  
- VALID_HOOKS: Set[str] = {
+ VALID_HOOKS: set[str] = {
      "pre_tool_call", "post_tool_call", "transform_terminal_output", "transform_tool_result",
 +    "augment_tool_result",
 +    # pre_command_approval: recoverable command-pattern warning only, after hardline and
@@ -94,7 +94,7 @@ index bba82a3b..38e48407 100644
      # pre/post_auxiliary_call: once per physical provider attempt of an auxiliary LLM call
      # (agent/auxiliary_hooks.py — titling, compression, MoA, vision, approval, ...). Same payload
      # shape as pre/post_api_request plus ``aux_task``; distinct events so turn-scoped
-@@ -128,7 +137,7 @@ VALID_HOOKS: Set[str] = {
+@@ -129,7 +138,7 @@ VALID_HOOKS: set[str] = {
      # "should_rotate_credential"/"should_fallback": bool, "message": str, "error_context": dict}.
      # Run-all-then-pick-first (see get_plugin_error_classification). Privacy: error_message/
      # error_body may be unredacted.
@@ -103,7 +103,7 @@ index bba82a3b..38e48407 100644
      "on_session_finalize", "on_session_reset",
      # on_skill_lifecycle: successful skill lifecycle facts (local skill name visible to plugins).
      "on_skill_lifecycle", "subagent_start", "subagent_stop",
-@@ -931,9 +940,22 @@ class PluginContext:
+@@ -934,9 +943,22 @@ class PluginContext:
          """Register a lifecycle hook callback (unknown names warn but are still stored)."""
          return self._track_callback("hook", hook_name, callback, self._manager._hooks, VALID_HOOKS)
  
@@ -128,7 +128,7 @@ index bba82a3b..38e48407 100644
          return self._track_callback(
              "middleware", kind, callback, self._manager._middleware, VALID_MIDDLEWARE
          )
-@@ -1969,15 +1991,15 @@ def _get_pre_tool_call_directive_details(
+@@ -1995,15 +2017,15 @@ def _get_pre_tool_call_directive_details(
          if not isinstance(result, dict):
              continue
          action = result.get("action")
@@ -149,7 +149,7 @@ index bba82a3b..38e48407 100644
          if action not in ("block", "approve"):
              continue
          message = result.get("message")
-@@ -2086,6 +2108,33 @@ def get_pre_verify_continue_message(
+@@ -2112,6 +2134,33 @@ def get_pre_verify_continue_message(
      return None
  
  
@@ -182,9 +182,9 @@ index bba82a3b..38e48407 100644
 +
  def get_plugin_error_classification(
      *, provider: str = "", model: str = "", status_code: Optional[int] = None, error_type: str = "",
-     error_code: str = "", error_message: str = "", error_body: Optional[Dict[str, Any]] = None,
+     error_code: str = "", error_message: str = "", error_body: Optional[dict[str, Any]] = None,
 diff --git a/hermes_cli/plugins_dispatch.py b/hermes_cli/plugins_dispatch.py
-index 78c3927f..127fd2f3 100644
+index 3ca7e6baa..4048f9ca1 100644
 --- a/hermes_cli/plugins_dispatch.py
 +++ b/hermes_cli/plugins_dispatch.py
 @@ -16,6 +16,7 @@ import re
@@ -195,12 +195,12 @@ index 78c3927f..127fd2f3 100644
  from dataclasses import dataclass
  from typing import Any, Callable, Dict, List, Mapping, Optional, Set, Union
  
-@@ -45,8 +46,14 @@ _HOOK_TIMEOUT_BOUNDED_HOOKS: Set[str] = {
-     "pre_auxiliary_call", "post_auxiliary_call", "pre_verify", "on_session_start", "on_session_end",
+@@ -47,8 +48,14 @@ _HOOK_TIMEOUT_BOUNDED_HOOKS: set[str] = {
+     "post_gateway_admission",
  }
  
 -# Policy hooks: timeout / still-running must fail closed (block the tool).
--_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: Set[str] = {"pre_tool_call"}
+-_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: set[str] = {"pre_tool_call"}
 +# Policy hooks return a veto appropriate to the operation when a callback fails.
 +_HOOK_POLICY_FAILURE_ACTIONS = {
 +    "pre_tool_call": "block", "pre_prompt_admission": "block",
@@ -210,9 +210,9 @@ index 78c3927f..127fd2f3 100644
 +_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: Set[str] = set(_HOOK_POLICY_FAILURE_ACTIONS)
 +_REQUIRED_POLICY_HOOKS = {"pre_prompt_admission", "pre_command_approval", "pre_turn_stop", "pre_message_delivery"}
  # Documented parent-thread serialization contract — never run on a timeout worker (hooks.md).
- _HOOK_CALLER_THREAD_HOOKS: Set[str] = {"subagent_stop"}
+ _HOOK_CALLER_THREAD_HOOKS: set[str] = {"subagent_stop"}
  # After a timeout, suppress the same callback this long so a hung hook cannot pile up threads.
-@@ -61,9 +68,15 @@ def _policy_error_block_directive(hook_name: str, cb: Callable, exc: BaseExcepti
+@@ -63,9 +70,15 @@ def _policy_error_block_directive(hook_name: str, cb: Callable, exc: BaseExcepti
      error (truncated — a hook that embeds tool args in its exception must not grow the tool
      result) so the operator can tell a crashing guard from a slow one."""
      callback_name = getattr(cb, "__name__", repr(cb))
@@ -229,7 +229,7 @@ index 78c3927f..127fd2f3 100644
  # System-prompt sections are tightly bounded: they become high-trust prompt bytes charged every turn.
  SYSTEM_PROMPT_SECTION_POSITIONS = frozenset({"after_memory"})
  DEFAULT_SYSTEM_PROMPT_SECTION_MAX_CHARS = 4_000
-@@ -164,7 +177,7 @@ def _hook_call_identity(kwargs: Dict[str, Any]) -> Optional[str]:
+@@ -166,7 +179,7 @@ def _hook_call_identity(kwargs: dict[str, Any]) -> Optional[str]:
      payload; nothing new is plumbed. Deliberately not ``api_request_id`` — one API request
      carries many tool calls, which would re-collapse the keys.
      """
@@ -238,7 +238,7 @@ index 78c3927f..127fd2f3 100644
          value = kwargs.get(field)
          if isinstance(value, str) and value:
              return value
-@@ -212,16 +225,21 @@ class PluginDispatchMixin:
+@@ -214,16 +227,21 @@ class PluginDispatchMixin:
          Payloads evolve additively: ``**kwargs`` callbacks get everything, narrow signatures only
          what they declare. Each callback is isolated. Bounded hooks and ``pre_tool_call`` run under
          ``plugins.hook_callback_timeout`` (worker abandoned, never joined); ``pre_tool_call`` fails
@@ -253,16 +253,17 @@ index 78c3927f..127fd2f3 100644
          # unrelated adapter payloads into one monolithic compatibility contract.
          if hook_name != "gateway_platform_event":
              kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
+-        results: list[Any] = []
 +        if hook_name in _REQUIRED_POLICY_HOOKS:
 +            kwargs.setdefault("policy_call_id", uuid.uuid4().hex)
-         results: List[Any] = []
++        results: List[Any] = []
          timeout = _resolve_hook_callback_timeout()
 +        if hook_name in _REQUIRED_POLICY_HOOKS and timeout <= 0:
 +            timeout = 30.0
          use_timeout = _hook_uses_callback_timeout(hook_name, timeout)
          fail_closed = hook_name in _HOOK_TIMEOUT_FAIL_CLOSED_HOOKS
          for cb in self._hooks.get(hook_name, []):
-@@ -230,7 +248,7 @@ class PluginDispatchMixin:
+@@ -232,7 +250,7 @@ class PluginDispatchMixin:
                      ret = self._run_hook_callback_bounded(hook_name, cb, kwargs, timeout)
                      if ret is _HOOK_SKIPPED:
                          if fail_closed:  # policy hook: fail closed with a block directive
@@ -271,7 +272,7 @@ index 78c3927f..127fd2f3 100644
                          continue
                  else:
                      ret = self._invoke_hook_callback(cb, kwargs)
-@@ -488,28 +506,41 @@ class PluginDispatchMixin:
+@@ -490,28 +508,41 @@ class PluginDispatchMixin:
          callback that awaits anything scheduled on that loop can make progress. Through the
          sync path it runs on a helper thread while the caller blocks in ``done.wait()`` — on the
          gateway that stalls the whole event loop for the callback's duration. Sync callbacks
@@ -283,9 +284,10 @@ index 78c3927f..127fd2f3 100644
          from hermes_cli.plugins import _resolve_hook_callback_timeout
          if hook_name != "gateway_platform_event":
              kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
+-        results: list[Any] = []
 +        if hook_name in _REQUIRED_POLICY_HOOKS:
 +            kwargs.setdefault("policy_call_id", uuid.uuid4().hex)
-         results: List[Any] = []
++        results: List[Any] = []
          timeout = _resolve_hook_callback_timeout()
 +        if hook_name in _REQUIRED_POLICY_HOOKS and timeout <= 0:
 +            timeout = 30.0
@@ -310,7 +312,7 @@ index 78c3927f..127fd2f3 100644
 +                        ret = await (asyncio.wait_for(ret, timeout) if use_timeout else ret)
                  if ret is not None:
                      results.append(ret)
-             except asyncio.TimeoutError:
+             except TimeoutError:
                  logger.warning("Hook '%s' callback %s timed out after %.0fs", hook_name, callback_name, timeout)
                  if fail_closed:  # policy hook: fail closed with a block directive
 -                    results.append({"action": "block", "message": _PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE})
@@ -318,15 +320,17 @@ index 78c3927f..127fd2f3 100644
              except (Exception, SystemExit) as exc:
                  # Same isolation + failure contract as the sync path (#111922 warn-once, #109624
                  # a raising policy guard fails closed).
-@@ -593,10 +624,13 @@ class PluginDispatchMixin:
-         results: List[Any] = []
-         for cb in self._middleware.get(kind, []):
+@@ -609,7 +640,8 @@ class PluginDispatchMixin:
+                 call_kwargs = {**kwargs, _payload_key: _safe_copy(kwargs[_payload_key]),
+                                original_key: _safe_copy(kwargs[original_key])}
              try:
--                ret = cb(**kwargs)
+-                ret = cb(**call_kwargs)
 +                from hermes_cli.middleware import check_required_result
-+                ret = check_required_result(cb, cb(**kwargs))
++                ret = check_required_result(cb, cb(**call_kwargs))
                  if ret is not None:
                      results.append(ret)
+                     if _payload_key and isinstance(ret, dict) and isinstance(ret.get(_payload_key), dict):
+@@ -617,4 +649,6 @@ class PluginDispatchMixin:
              except (Exception, SystemExit) as exc:
                  # Runs once per tool call like a hook, so a mis-declared callback floods identically.
                  self._report_hook_failure(kind, cb, kwargs, exc, surface="Middleware")
@@ -334,7 +338,7 @@ index 78c3927f..127fd2f3 100644
 +                    raise
          return results
 diff --git a/model_tools.py b/model_tools.py
-index 9a068d5a..81017735 100644
+index a4ef18942..6e0dc4173 100644
 --- a/model_tools.py
 +++ b/model_tools.py
 @@ -1,3 +1,5 @@
@@ -343,9 +347,9 @@ index 9a068d5a..81017735 100644
  """Thin orchestration layer over the tool registry.
  
  Importing runs tool discovery (each tools/*.py self-registers via
-@@ -847,11 +849,12 @@ def _execute_tool(function_name: str, function_args: Dict[str, Any], original_ar
+@@ -847,11 +849,12 @@ def _execute_tool(function_name: str, function_args: dict[str, Any], original_ar
  
- def _apply_transform_tool_result_hook(function_name: str, function_args: Dict[str, Any], result: Any, duration_ms: int,
+ def _apply_transform_tool_result_hook(function_name: str, function_args: dict[str, Any], result: Any, duration_ms: int,
                                        ids: _CallIds) -> Any:
 -    """transform_tool_result: plugins may replace the final result string.
 +    """Replace the result, then append plugin context before it enters the conversation.
@@ -359,7 +363,7 @@ index 9a068d5a..81017735 100644
      try:
          from hermes_cli.lifecycle import has_hook, invoke_hook
          if has_hook("transform_tool_result"):
-@@ -859,10 +862,24 @@ def _apply_transform_tool_result_hook(function_name: str, function_args: Dict[st
+@@ -859,10 +862,24 @@ def _apply_transform_tool_result_hook(function_name: str, function_args: dict[st
              hook_results = invoke_hook("transform_tool_result", tool_name=function_name, args=function_args,
                                         result=result, **ids.hook_kwargs(), duration_ms=duration_ms,
                                         status=status, error_type=error_type, error_message=error_message)
@@ -420,7 +424,7 @@ index 9a068d5a..81017735 100644
          return _apply_transform_tool_result_hook(function_name, function_args, result, duration_ms, ids)
 diff --git a/tests/agent/test_tool_result_context_hook.py b/tests/agent/test_tool_result_context_hook.py
 new file mode 100644
-index 00000000..c2dea9ef
+index 000000000..c2dea9efe
 --- /dev/null
 +++ b/tests/agent/test_tool_result_context_hook.py
 @@ -0,0 +1,40 @@
@@ -465,10 +469,10 @@ index 00000000..c2dea9ef
 +    assert seen["status"] == "error"
 +    assert seen["error_message"] == "failed"
 diff --git a/tests/hermes_cli/test_plugins.py b/tests/hermes_cli/test_plugins.py
-index 3fe75a3b..e9eacc7f 100644
+index 57fb3ec60..0ad488160 100644
 --- a/tests/hermes_cli/test_plugins.py
 +++ b/tests/hermes_cli/test_plugins.py
-@@ -2718,3 +2718,17 @@ class TestAsyncHookOnCallerLoop:
+@@ -2714,3 +2714,17 @@ class TestAsyncHookOnCallerLoop:
              results = asyncio.run(mgr.ainvoke_hook("pre_gateway_dispatch", event="e", gateway="g"))
          assert results == [{"seen": "e"}, {"seen_async": "e"}]
          assert "async plugin blew up" in caplog.text
@@ -488,7 +492,7 @@ index 3fe75a3b..e9eacc7f 100644
 +    assert details.modified_args == {"path": "/tmp/changed.txt"}
 diff --git a/tests/hermes_cli/test_required_policy_hooks.py b/tests/hermes_cli/test_required_policy_hooks.py
 new file mode 100644
-index 00000000..45555fcb
+index 000000000..45555fcba
 --- /dev/null
 +++ b/tests/hermes_cli/test_required_policy_hooks.py
 @@ -0,0 +1,76 @@
@@ -569,7 +573,7 @@ index 00000000..45555fcb
 +        assert [call.result() for call in calls] == [[{"action": "allow"}], [{"action": "allow"}]]
 +    assert not caplog.text
 diff --git a/tests/hermes_cli/test_session_boundary_hooks.py b/tests/hermes_cli/test_session_boundary_hooks.py
-index 6b0ce767..d64c61d9 100644
+index 6b0ce767d..d64c61d94 100644
 --- a/tests/hermes_cli/test_session_boundary_hooks.py
 +++ b/tests/hermes_cli/test_session_boundary_hooks.py
 @@ -25,6 +25,7 @@ def test_session_finalize_on_reset(mock_finalize_session, mock_invoke_hook):
@@ -637,7 +641,7 @@ index 6b0ce767..d64c61d9 100644
      """Verify quiet single-query interruption emits a correlated session end."""
 diff --git a/tests/hermes_cli/test_stop_policy_dispatch.py b/tests/hermes_cli/test_stop_policy_dispatch.py
 new file mode 100644
-index 00000000..e0e9db05
+index 000000000..e0e9db058
 --- /dev/null
 +++ b/tests/hermes_cli/test_stop_policy_dispatch.py
 @@ -0,0 +1,26 @@
@@ -668,7 +672,7 @@ index 00000000..e0e9db05
 +    assert observed[0][1]["provider"] == "custom"
 +    assert observed[0][1]["reasoning_effort"] == "xhigh"
 diff --git a/tests/plugins/test_transform_tool_result_hook.py b/tests/plugins/test_transform_tool_result_hook.py
-index 810fd962..45fc7e65 100644
+index 810fd962a..45fc7e658 100644
 --- a/tests/plugins/test_transform_tool_result_hook.py
 +++ b/tests/plugins/test_transform_tool_result_hook.py
 @@ -60,7 +60,7 @@ def _run_handle_function_call(
@@ -681,7 +685,7 @@ index 810fd962..45fc7e65 100644
      assert out == "first"
  
 diff --git a/tools/memory_tool.py b/tools/memory_tool.py
-index 7577015e..213b489e 100644
+index a6e8a7225..0ae0b53bd 100644
 --- a/tools/memory_tool.py
 +++ b/tools/memory_tool.py
 @@ -7,6 +7,7 @@ Single `memory` tool: add/replace/remove or a batch `operations` list."""
@@ -692,13 +696,15 @@ index 7577015e..213b489e 100644
  from contextvars import ContextVar
  from pathlib import Path
  from hermes_constants import get_hermes_home
-@@ -45,18 +46,17 @@ from tools.memory_tool_store import (  # noqa: E402,F401  (re-exports)
+@@ -44,19 +45,18 @@ from tools.memory_tool_store import (
+     ENTRY_DELIMITER, FAILURE_CLASS, MEMORY_BLOCK_HEADERS, MemoryStore, _scan_memory_content)
  
  
- def load_on_disk_store() -> "MemoryStore":
+-def load_on_disk_store() -> MemoryStore:
 -    """Fresh on-disk MemoryStore with configured limits/flags for contexts with no live
 -    agent (gateway, Desktop, ``/memory``) so approvals enforce the SAME caps as
 -    ``agent_init``. Falls back to defaults if config can't load; never raises."""
++def load_on_disk_store() -> "MemoryStore":
 +    """Fresh on-disk MemoryStore with configured limits and flags for contexts with no live
 +    agent (gateway, Desktop, ``/memory``). Invalid configuration disables both stores."""
      try:
@@ -715,10 +721,16 @@ index 7577015e..213b489e 100644
      store.load_from_disk()
      return store
  
-@@ -241,18 +241,37 @@ def memory_tool(action: str = None, target: str = "memory", content: str = None,
-     return json.dumps(_STORE_ACTIONS[action][0](store, target, content, old_text), ensure_ascii=False)
+@@ -280,18 +280,37 @@ def _memory_tool(action, target, content, old_text, new_text, operations, store)
+     return _applied(_STORE_ACTIONS[action][0](store, target, content, old_text))
  
  
+-def get_builtin_memory_config(config: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+-    """Normalized ``memory`` config section ({} when missing/malformed → flags default to
+-    enabled). ``agent_init`` reads the same section so availability and store cannot diverge."""
+-    if config is None:
+-        try:
+-            from hermes_cli.config import load_config_readonly
 +def _memory_section(config: Any) -> Optional[Dict[str, Any]]:
 +    from hermes_cli.config_read_errors import FailedConfigRead
 +    if isinstance(config, FailedConfigRead) or not isinstance(config, dict):
@@ -734,12 +746,7 @@ index 7577015e..213b489e 100644
 +    return section
 +
 +
- def get_builtin_memory_config(config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
--    """Normalized ``memory`` config section ({} when missing/malformed → flags default to
--    enabled). ``agent_init`` reads the same section so availability and store cannot diverge."""
--    if config is None:
--        try:
--            from hermes_cli.config import load_config_readonly
++def get_builtin_memory_config(config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
 +    """Return the memory section. Failed reads and malformed sections disable both stores.
 +    A missing section retains the native defaults for an ordinary fresh profile."""
 +    disabled = {"memory_enabled": False, "user_profile_enabled": False}
@@ -762,4 +769,4 @@ index 7577015e..213b489e 100644
 +    return disabled if section is None else section
  
  
- def get_builtin_memory_store_flags(config: Optional[Dict[str, Any]] = None) -> Tuple[bool, bool]:
+ def get_builtin_memory_store_flags(config: Optional[dict[str, Any]] = None) -> tuple[bool, bool]:

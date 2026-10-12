@@ -19,3 +19,7 @@ The ten new observation checks and three existing lifecycle checks pass on the a
 The GitHub latest stable release at task start is `v0.21.7`, published October 12, at commit `71d34bad1045610252eda02ee79549436896e784`. The target stays immutable during qualification. A separate current main observation is retained for comparison and does not select production code.
 
 Ten of the eleven existing Hermes patches fail direct application checks against the clean target. These independent checks do not replace ordered source preparation. Three-way porting retains both required LifeOS behavior and upstream changes. Full compatibility, installation, update, recovery, and `.252` evaluation remain open.
+
+The port now prepares and validates the exact v0.21.7 source. Patch reconstruction passes with 117 subtests. The official native runner passes 469 tests across 33 files, with no failures or skipped SSH cases. The target uses ten Hermes patch groups and twenty-five LifeOS patch groups. The unused protected-instruction patch remains as an inactive historical file. The upstream protected-file behavior passes unattended and interactive controls.
+
+Compatibility qualification still needs the frozen dependency generation, combined integration checks, and installed development evaluation. Installation and update work remains in progress.

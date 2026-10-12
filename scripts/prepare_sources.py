@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = {
     "hermes": {
-        "base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+        "base": "71d34bad1045610252eda02ee79549436896e784",
         "patches": (
             "hermes-plugin-events.patch",
             "hermes-turn-gates.patch",
@@ -29,7 +29,6 @@ SOURCES = {
             "hermes-cron-bootstrap.patch",
             "hermes-required-middleware.patch",
             "hermes-web-result-status.patch",
-            "hermes-protected-instruction-approval.patch",
         ),
     },
     "lifeos": {

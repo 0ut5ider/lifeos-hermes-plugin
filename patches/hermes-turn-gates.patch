@@ -1,8 +1,8 @@
 diff --git a/agent/conversation_compression.py b/agent/conversation_compression.py
-index 0fe34c1ca..083255a77 100644
+index 3f2ce36b7..61914377e 100644
 --- a/agent/conversation_compression.py
 +++ b/agent/conversation_compression.py
-@@ -2255,7 +2255,7 @@ def _message_text(message: Any) -> str:
+@@ -2222,7 +2222,7 @@ def _message_text(message: Any) -> str:
  
  
  _SYNTHETIC_USER_FLAGS = (
@@ -12,19 +12,19 @@ index 0fe34c1ca..083255a77 100644
  )
  
 diff --git a/agent/conversation_loop.py b/agent/conversation_loop.py
-index 9028cb926..05740e2c6 100644
+index 411134b41..31bd877f2 100644
 --- a/agent/conversation_loop.py
 +++ b/agent/conversation_loop.py
-@@ -33,7 +33,7 @@ from agent.runtime_cwd import resolve_agent_cwd
+@@ -34,7 +34,7 @@ from agent.runtime_cwd import resolve_agent_cwd
  from agent.surface_switch import (
      identity_line_value, note_inert_pinned_tools, runtime_host_value, stage_surface_switch_note,
  )
 -from agent.turn_context import PreflightCompressionTimedOut, build_turn_context
 +from agent.turn_context import PreflightCompressionTimedOut, PromptBlocked, build_turn_context
+ from hermes_cli.observability.shared_metrics_efficiency import record_cache_break, record_prompt_rebuild
  from agent.turn_retry_state import TurnRetryState
- # Phase helpers of the turn loop, bound at import so a source-tree swap cannot load a
- # skewed phase mid-turn.
-@@ -1556,6 +1556,19 @@ def _run_conversation_turn(
+ from agent.turn_scripted_prelude import Prelude, play_prelude
+@@ -1612,6 +1612,19 @@ def _run_conversation_turn(
          )
      except PreflightCompressionTimedOut as _preflight_timeout_exc:
          return _preflight_timeout_result(agent, _preflight_timeout_exc, conversation_history)
@@ -41,12 +41,12 @@ index 9028cb926..05740e2c6 100644
 +            "failed": False,
 +            "turn_exit_reason": "prompt_blocked",
 +        }
- 
-     # Per-turn agent state (the gateway caches agents across turns, so none of this may
-     # leak into the next message): interim-commentary dedup spans the whole turn but not
-@@ -1697,6 +1710,21 @@ def run_conversation(
-         )
-     result = export_current_turn_boundary(agent, result, user_message)
+     # Voice turns may run on auxiliary.voice_chat: bound after the prompt/row/compaction were settled
+     # against the main model, undone in finalize_turn (and run_conversation's finally on early exits).
+     from agent.voice_turn_route import begin_voice_turn_route
+@@ -1763,6 +1776,21 @@ def run_conversation(
+     if isinstance(result, dict):
+         result["user_intervened"] = bool(getattr(agent, "_turn_user_intervened", False))
      _close_durable_failed_turn(agent, result)
 +    if not getattr(agent, "_persist_disabled", False) and isinstance(result, dict):
 +        try:
@@ -66,7 +66,7 @@ index 9028cb926..05740e2c6 100644
      return result
  
  
-@@ -1718,7 +1745,7 @@ def _close_durable_failed_turn(agent, result: Any) -> None:
+@@ -1828,7 +1856,7 @@ def _close_durable_failed_turn(agent, result: Any) -> None:
      another writer is a no-op, and the gateway's own closer then no-ops in turn.
      """
      try:
@@ -76,10 +76,10 @@ index 9028cb926..05740e2c6 100644
          if (
              result.get("compression_exhausted") or result.get("compression_deferred")
 diff --git a/agent/session_persistence.py b/agent/session_persistence.py
-index 1c5c04a5c..a2f3c9474 100644
+index 92a5772a3..7bbfd3c2c 100644
 --- a/agent/session_persistence.py
 +++ b/agent/session_persistence.py
-@@ -36,6 +36,7 @@ _EPHEMERAL_SCAFFOLDING_FLAGS = (
+@@ -39,6 +39,7 @@ _EPHEMERAL_SCAFFOLDING_FLAGS = (
      "_thinking_prefill",
      "_verification_stop_synthetic",  # verify-on-stop nudge; the assistant candidate itself is NOT synthetic
      "_pre_verify_synthetic",
@@ -88,10 +88,10 @@ index 1c5c04a5c..a2f3c9474 100644
      "_dropped_toolcall_nudge",  # internal retry instruction; must not replay as user context
  )
 diff --git a/agent/turn_api_call.py b/agent/turn_api_call.py
-index 36d8c977a..462829c4a 100644
+index ef0853084..3b966c968 100644
 --- a/agent/turn_api_call.py
 +++ b/agent/turn_api_call.py
-@@ -51,6 +51,9 @@ def _should_stream(agent: Any) -> bool:
+@@ -50,6 +50,9 @@ def _should_stream(agent: Any) -> bool:
      tests (SimpleNamespace, not stream iterators)."""
      if getattr(agent, "_disable_streaming", False):
          return False
@@ -102,10 +102,10 @@ index 36d8c977a..462829c4a 100644
      from hermes_cli.runtime_provider_backends import _is_external_process_provider
  
 diff --git a/agent/turn_context.py b/agent/turn_context.py
-index 452a2f519..d14a69da1 100644
+index 70d47a6c2..a008f4884 100644
 --- a/agent/turn_context.py
 +++ b/agent/turn_context.py
-@@ -295,7 +295,7 @@ def export_current_turn_boundary(agent: Any, result: Any, user_message: Any) ->
+@@ -330,7 +330,7 @@ def export_current_turn_boundary(agent: Any, result: Any, user_message: Any) ->
      A preflight-timeout envelope carries the prior history without this turn's row (#7100), so a
      repeated prompt would resolve to its historical copy: nothing is exported there.
      """
@@ -114,7 +114,7 @@ index 452a2f519..d14a69da1 100644
          return result
      messages = result.get("messages")
      turn_id = str(getattr(agent, "_current_turn_id", "") or "")
-@@ -341,6 +341,10 @@ class PreflightCompressionTimedOut(RuntimeError):
+@@ -376,6 +376,10 @@ class PreflightCompressionTimedOut(RuntimeError):
      """Raised when an oversized turn cannot safely finish preflight."""
  
  
@@ -125,8 +125,8 @@ index 452a2f519..d14a69da1 100644
  def _fail_closed_after_preflight_timeout(agent, request_tokens: int) -> None:
      """Stop an oversized turn instead of sending its unchanged provider payload.
      Only a request the model cannot accept (above its context window, or of unknown fit) is stopped: a
-@@ -575,7 +579,8 @@ _PER_TURN_RESET_STATE: Tuple[Tuple[str, Any], ...] = (
-     ("_tool_guardrail_halt_decision", None),
+@@ -612,7 +616,8 @@ _PER_TURN_RESET_STATE: tuple[tuple[str, Any], ...] = (
+     ("_harness_metrics_turn", None),
      ("_iteration_budget_warning_injected", False),
      ("_run_budget_wrapup_injected", False), ("_verification_stop_nudges", 0),
 -    ("_pre_verify_nudges", 0),
@@ -135,9 +135,9 @@ index 452a2f519..d14a69da1 100644
  )
  
  
-@@ -750,15 +755,14 @@ def _collect_pre_llm_call_context(
+@@ -794,15 +799,14 @@ def _collect_pre_llm_call_context(
      agent: Any, *, effective_task_id: str, turn_id: str, original_user_message: Any,
-     messages: List[Any], conversation_history: Optional[List[Any]],
+     messages: list[Any], conversation_history: Optional[list[Any]],
  ) -> str:
 -    """Run ``pre_llm_call`` plugins; their context is injected into the user message
 +    """Run required prompt admission, then optional context callbacks. Context goes into the user message
@@ -153,7 +153,7 @@ index 452a2f519..d14a69da1 100644
              session_id=agent.session_id,
              task_id=effective_task_id,
              turn_id=turn_id,
-@@ -766,10 +770,29 @@ def _collect_pre_llm_call_context(
+@@ -810,10 +814,29 @@ def _collect_pre_llm_call_context(
              conversation_history=list(messages),
              is_first_turn=(not bool(conversation_history)),
              model=agent.model,
@@ -183,7 +183,7 @@ index 452a2f519..d14a69da1 100644
          try:
              # Spill oversized per-hook context to disk so a runaway plugin can't inflate every subsequent
              # turn's prompt. Ported from openai/codex PR #21069 ("Spill large hook outputs from context").
-@@ -782,6 +805,8 @@ def _collect_pre_llm_call_context(
+@@ -826,6 +849,8 @@ def _collect_pre_llm_call_context(
              _spill_config_cached = None
          _ctx_parts: list[str] = []
          for r in _pre_results:
@@ -192,7 +192,7 @@ index 452a2f519..d14a69da1 100644
              if isinstance(r, dict) and r.get("context"):
                  _piece = str(r["context"])
              elif isinstance(r, str) and r.strip():
-@@ -798,9 +823,11 @@ def _collect_pre_llm_call_context(
+@@ -842,9 +867,11 @@ def _collect_pre_llm_call_context(
                      logger.warning("hook context spill failed: %s", _spill_exc)
              _ctx_parts.append(_piece)
          return "\n\n".join(_ctx_parts)
@@ -208,7 +208,7 @@ index 452a2f519..d14a69da1 100644
  
  def _merge_gateway_notes(
 diff --git a/agent/turn_failure_copy.py b/agent/turn_failure_copy.py
-index 115231f66..63da31337 100644
+index 52c0ca59d..cead4a6c3 100644
 --- a/agent/turn_failure_copy.py
 +++ b/agent/turn_failure_copy.py
 @@ -18,7 +18,7 @@ from hermes_constants import display_hermes_home
@@ -220,7 +220,7 @@ index 115231f66..63da31337 100644
  })
  
  
-@@ -98,6 +98,7 @@ _EXIT_REASON_FAILURES: Tuple[Tuple[str, str, bool, bool], ...] = (
+@@ -98,6 +98,7 @@ _EXIT_REASON_FAILURES: tuple[tuple[str, str, bool, bool], ...] = (
      # finalizer synthesizes the visible close and fails the turn.
      ("pending_tool_result", "loop_error", True, True),
      ("interpreter_shutdown", "interpreter_shutdown", False, True),
@@ -229,10 +229,10 @@ index 115231f66..63da31337 100644
      ("local_processing_error", "loop_error", False, False),
      ("repeated_outer_errors", "loop_error", True, True),
 diff --git a/agent/turn_final_response.py b/agent/turn_final_response.py
-index 6ebc40503..0ea5264ad 100644
+index 8b0c9b149..13ff0a2d6 100644
 --- a/agent/turn_final_response.py
 +++ b/agent/turn_final_response.py
-@@ -330,6 +330,10 @@ def finish_text_response(
+@@ -340,6 +340,10 @@ def finish_text_response(
      if _sg.continue_turn:
          final_response = None
          return _verdict("continue")
@@ -243,7 +243,7 @@ index 6ebc40503..0ea5264ad 100644
  
      # Plugins rewrite the reply BEFORE it is appended and flushed: SQLite treats a non-blank
      # assistant row as settled, so a transform after this write would reach the user but never
-@@ -360,7 +364,8 @@ def finish_text_response(
+@@ -370,7 +374,8 @@ def finish_text_response(
              exc_info=True,
          )
  
@@ -255,7 +255,7 @@ index 6ebc40503..0ea5264ad 100644
          agent._safe_print(f"🎉 Conversation completed after {api_call_count} OpenAI-compatible API call(s)")
      return _verdict("break")
 diff --git a/agent/turn_finalizer.py b/agent/turn_finalizer.py
-index 9c4446743..cb01a960f 100644
+index 9fd39ec52..7236eaa37 100644
 --- a/agent/turn_finalizer.py
 +++ b/agent/turn_finalizer.py
 @@ -22,10 +22,11 @@ from agent.message_metadata import append_message, stamp_message_timestamp
@@ -297,7 +297,7 @@ index 9c4446743..cb01a960f 100644
              # A verification gate withheld a composed answer, then the budget ran out:
              # preserve it rather than make another fallible call. The explicit pending
              # value is the provenance guard; unrelated error exits never enter here.
-@@ -214,8 +218,7 @@ def _rollback_interrupted_preflight_display(agent, interrupted) -> None:
+@@ -216,8 +220,7 @@ def _rollback_interrupted_preflight_display(agent, interrupted) -> None:
  
  def _drop_transcript_scaffolding(agent, messages) -> None:
      """Strip private retry scaffolding first, or a later "continue" replays
@@ -308,7 +308,7 @@ index 9c4446743..cb01a960f 100644
      _drop_verification_continuation_scaffolding(messages)
  
 diff --git a/agent/turn_stop_gates.py b/agent/turn_stop_gates.py
-index dc202a010..dd8f4b6f0 100644
+index 9580c635d..d7422c4c2 100644
 --- a/agent/turn_stop_gates.py
 +++ b/agent/turn_stop_gates.py
 @@ -1,12 +1,8 @@
@@ -557,7 +557,7 @@ index 000000000..163ccc0b9
 +    persist.assert_not_called()
 +    assert "pre_prompt_admission" in caplog.text
 diff --git a/tests/agent/test_turn_context.py b/tests/agent/test_turn_context.py
-index 41c3ecfb0..3f3b4aa12 100644
+index 749eba819..2e59de501 100644
 --- a/tests/agent/test_turn_context.py
 +++ b/tests/agent/test_turn_context.py
 @@ -541,3 +541,16 @@ def test_prologue_forwards_the_submit_title_preview_to_the_titler():

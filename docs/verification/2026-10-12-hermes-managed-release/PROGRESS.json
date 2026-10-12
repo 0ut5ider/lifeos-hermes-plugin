@@ -1,0 +1,64 @@
+{
+  "branch": "feature/hermes-managed-release",
+  "target_hermes": {
+    "version": "v0.21.7",
+    "commit": "71d34bad1045610252eda02ee79549436896e784"
+  },
+  "steps": {
+    "roadmap": "complete",
+    "observer": "complete",
+    "native_port": "complete",
+    "managed_install_update": "in_progress",
+    "combined_qualification": "pending"
+  },
+  "native_test_runner": {
+    "command": [
+      "bash",
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/ported/scripts/run_tests.sh",
+      "-j",
+      "4",
+      "tests/agent/test_prompt_hook_block.py",
+      "tests/agent/test_terminal_approval_batch.py",
+      "tests/agent/test_tool_result_context_hook.py",
+      "tests/agent/test_turn_context.py",
+      "tests/agent/test_verification_continuation_budget.py",
+      "tests/gateway/test_clarify_cancellation_outcome.py",
+      "tests/gateway/test_clarify_delivery_fallback.py",
+      "tests/gateway/test_discord_command_identity.py",
+      "tests/gateway/test_discord_connect.py",
+      "tests/gateway/test_discord_guild_channel_only.py",
+      "tests/gateway/test_discord_sync_limit.py",
+      "tests/gateway/test_resume_command.py",
+      "tests/gateway/test_stop_clarify_waiters.py",
+      "tests/hermes_cli/test_approval_transport.py",
+      "tests/hermes_cli/test_cli_resume_command.py",
+      "tests/hermes_cli/test_plugins.py",
+      "tests/hermes_cli/test_required_middleware.py",
+      "tests/hermes_cli/test_required_policy_hooks.py",
+      "tests/hermes_cli/test_session_boundary_hooks.py",
+      "tests/hermes_cli/test_stop_policy_dispatch.py",
+      "tests/plugins/test_transform_tool_result_hook.py",
+      "tests/test_lifeos_aux_no_fallback.py",
+      "tests/test_lifeos_batch_schema.py",
+      "tests/test_lifeos_delegate_tier_route.py",
+      "tests/test_lifeos_execute_code_session.py",
+      "tests/tools/test_approval_plugin_hooks.py",
+      "tests/tools/test_code_execution.py",
+      "tests/tools/test_code_execution_file_rpc.py",
+      "tests/tools/test_code_kernel.py",
+      "tests/tools/test_code_kernel_remote.py",
+      "tests/tools/test_plugin_command_approval.py",
+      "tests/tools/test_remote_file_staleness.py",
+      "tests/tools/test_protected_instruction_cli_channel.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 60.29230298200855,
+    "home_isolated": true,
+    "live_ssh_fixture": true
+  },
+  "deployment": {
+    "192.168.8.252": "0.3.1 unchanged",
+    "192.168.8.253": "0.3.1 unchanged"
+  },
+  "immutable_v031_assets_changed": false
+}
