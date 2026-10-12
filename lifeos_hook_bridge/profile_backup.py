@@ -21,8 +21,10 @@ from .memory_transaction import publish
 from .sqlite_snapshot import standalone
 
 
-# Top-level entries that Hermes or the plugin can create again. A backup records them and does not copy them.
+# Data-only profile backups record runtime, cache, and other-profile exclusions.
+# A full guest backup retains release workspaces and rollback artifacts.
 EXCLUDED_TOP_LEVEL = {
+    '.lifeos-releases': 'runtime',
     'installs': 'regenerable', 'tools': 'regenerable', 'cache': 'regenerable', 'image_cache': 'regenerable',
     'audio_cache': 'regenerable', 'logs': 'regenerable', 'hermes-agent': 'regenerable',
     'models_dev_cache.json': 'regenerable', 'models_dev_cache.etag': 'regenerable', 'profiles': 'other_profile',

@@ -13,6 +13,11 @@ This development candidate is not a qualified production release.
 - Retain incomplete program copies before preparation retry.
 - Migrate the private native configuration before the mount records output hashes.
 - Exclude native boot outputs from the runtime source seal. Retain checks for changed and added code.
+- Resume interrupted first installations and preserve user data added after interruption.
+- Start detached workers through a portable process launch and reap finished workers.
+- Migrate generated program configuration before its expected bytes are recorded.
+- Update all native public command aliases with the selected runtime.
+- Record release runtime exclusions in data-only profile backups. Preserve full guest backup coverage.
 
 
 This file records changes to the LifeOS plugin for Hermes. Version numbers use

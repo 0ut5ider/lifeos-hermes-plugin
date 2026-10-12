@@ -2,6 +2,7 @@
 # ABOUTME: Uses real YAML files with disabled plugin entries and existing tier settings.
 from pathlib import Path
 import tempfile
+import json
 import os
 import sys
 import subprocess
@@ -20,6 +21,9 @@ class ReleaseConfigurationTests(unittest.TestCase):
                 path.mkdir(mode=0o700)
             (profile / 'config.yaml').write_text('_config_version: 46\nmodel:\n  default: synthetic-model\n')
             (package / 'DAILY-CANDIDATE.json').write_text('{"plugin_files":{}}')
+            commands = {name: 'bin/' + name for name in ('hermes', 'hermes-agent', 'hermes-acp')}
+            (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
+            (job / 'manifest.json').chmod(0o600)
             request = {'profile': str(profile), 'account_home': str(root), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
                        'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
                            'hermes_patch_count': 10, 'lifeos_patch_count': 25},
@@ -31,6 +35,10 @@ class ReleaseConfigurationTests(unittest.TestCase):
             second = _program_plan(job, request, selected)
             self.assertEqual(first, second)
             self.assertFalse(selected['installed'].exists())
+            for name in commands:
+                target = root / '.local/bin' / name
+                self.assertIn(target, first[1])
+                self.assertEqual(first[1][target].read_text(), '#!/bin/sh\nexec ' + str(job / commands[name]) + ' "$@"\n')
             from hermes_cli.config_defaults import DEFAULT_CONFIG
             yaml = YAML(typ='safe')
             staged = yaml.load((job / 'generated/config.yaml').read_bytes())

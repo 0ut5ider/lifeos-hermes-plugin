@@ -6,6 +6,7 @@ The native port passes 716 selected tests and all twelve upstream source checks.
 The complete release manager in `optional/lifeos_release_manager` remains under qualification.
 Do not use this candidate for a live installation until fresh installation, update, interruption recovery, and rollback checks pass.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records its current state.
+Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
 **Deployed version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 

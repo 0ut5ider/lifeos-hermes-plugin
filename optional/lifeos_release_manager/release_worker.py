@@ -163,6 +163,13 @@ def _program_plan(job, request, selected):
     publish(launch, ('#!/bin/sh\nexec ' + shlex.quote(request['runtime']['hermes']) + ' "$@"\n').encode(), 0o700)
     for path in selected['launchers']:
         files[path] = launch
+    commands = read_private(job / 'manifest.json')['runtime']['commands']
+    for name in ('hermes', 'hermes-agent', 'hermes-acp'):
+        if commands.get(name) != 'bin/' + name:
+            raise ReleaseRejected('The prepared runtime changes a native command path')
+        command = generated / name
+        publish(command, ('#!/bin/sh\nexec ' + shlex.quote(str(job / commands[name])) + ' "$@"\n').encode(), 0o700)
+        files[Path(request['account_home']) / '.local/bin' / name] = command
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
     publish(generated / 'config.yaml', _yaml_configuration(profile, native))

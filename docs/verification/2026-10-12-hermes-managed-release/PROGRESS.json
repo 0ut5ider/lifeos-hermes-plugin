@@ -57,7 +57,7 @@
     "live_ssh_fixture": true
   },
   "deployment": {
-    "192.168.8.252": "restored verified 0.3.1 after candidate mounting failure; dashboard, gateway, and Pulse running; manager d4bff560 remains enabled",
+    "192.168.8.252": "Verified 0.3.1 restored automatically after f6 identity-check failure. All three services active. Manager f6 remains installed.",
     "192.168.8.253": "0.3.1 unchanged"
   },
   "immutable_v031_assets_changed": false,
@@ -156,9 +156,9 @@
     "local_subtests_passed": 11
   },
   "candidate_version": "0.4.0-dev.1",
-  "next_action": "Build a sealed candidate with the native config migration and runtime source identity fixes. Repeat the installed update and rollback on .252. Complete fresh interruption recovery and final combined qualification. Do not change .253.",
+  "next_action": "Finish the 0deb335e sealed integration gate. Diagnose the development installed-command failure with a frozen worker checkpoint. Complete installed interruption and rollback. Create the authorized PR and perform agent review until findings are resolved.",
   "installed_development_qualification": "FAIL, recovered to accepted 0.3.1",
-  "checkpoint_commit": "cff35f8a",
+  "checkpoint_commit": "0deb335e18232ac9afc860ec7740c4d2cf0b6973",
   "sealed_integration": {
     "commit": "1043369a73f59819f1102ce7f11da3b09bd7f7a7",
     "tests": 595,
@@ -192,8 +192,8 @@
   },
   "owner_authentication_receipt": "development-owner-authentication.json",
   "manager_regressions": {
-    "commit": "cff35f8a",
-    "tests": 41,
+    "commit": "0deb335e",
+    "tests": 49,
     "status": "PASS",
     "native_mount_cases": 26,
     "native_mount_status": "PASS"
@@ -206,5 +206,50 @@
     "receipt": "development-recovery-d4bff560.json",
     "model_and_tier_selection_unchanged": true,
     "native_owner_grant_required": false
+  },
+  "fresh_install_recovery": {
+    "commit": "0deb335e18232ac9afc860ec7740c4d2cf0b6973",
+    "status": "PASS",
+    "phases": [
+      "user-published",
+      "directory-retained",
+      "native-mounted"
+    ],
+    "later_synthetic_data_preserved": true,
+    "stock_scanner_enabled": true,
+    "installed_identity_verified": true
+  },
+  "managed_mount_workflow": {
+    "commit": "f6e8399813e4d36674c763d7897b95887e950a49",
+    "status": "PASS",
+    "receipt": "managed-update-f6e83998.json",
+    "native_owner_authentication": true,
+    "missing_grant_refusal": true,
+    "apply_and_rollback_grants_revoked": true,
+    "synthetic_memory_preserved": true
+  },
+  "development_update_f6": {
+    "commit": "f6e8399813e4d36674c763d7897b95887e950a49",
+    "status": "FAIL",
+    "automatic_rollback": "PASS",
+    "failure": "Installed service launcher cannot load lifeos-version; exact output requires the next observed worker.",
+    "prior_configuration_exact": true,
+    "services_running": true
+  },
+  "publication_authorization": {
+    "push_and_create_pr": true,
+    "agent_review_and_fix_rounds": true,
+    "merge": false
+  },
+  "sealed_integration_fc9": {
+    "commit": "fc9dc127aa4fff734b66f7dad45457d7646ce634",
+    "tests": 611,
+    "exit_code": 0,
+    "elapsed_seconds": 1095.92
+  },
+  "sealed_native_0deb": {
+    "commit": "0deb335e18232ac9afc860ec7740c4d2cf0b6973",
+    "exit_code": 0,
+    "receipt": "native-sealed-0deb335e.json"
   }
 }
