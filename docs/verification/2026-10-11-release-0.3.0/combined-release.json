@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "head": "01a50a2feb482b869ccde344e860ad8af44f568c",
+  "version": "0.3.0",
+  "distinct_integration_cases": 541,
+  "runs": [
+    {
+      "cases": 529,
+      "receipt": "combined-cursor-final.json"
+    },
+    {
+      "cases": 12,
+      "receipt": "source-review-final.json"
+    }
+  ],
+  "native_controls": 96,
+  "native_equivalence_receipt": "native-equivalence.json",
+  "source_hashes_unchanged": true,
+  "native_capture_after_review": "capture-after-review-retry.stdout",
+  "scope": "Sealed package, native subprocesses, authenticated HTTP fixtures, and simulated Discord transport; installed and whole-guest checks are separate"
+}

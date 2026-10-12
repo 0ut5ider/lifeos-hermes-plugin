@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "all_services_start_at_boot": true,
+  "gateway_definition_unchanged": true,
+  "units": {
+    "hermes-gateway.service": {
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "UnitFileState": "enabled"
+    },
+    "hermes-dashboard.service": {
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "UnitFileState": "enabled"
+    }
+  },
+  "second_reboot_after_enable": true
+}
