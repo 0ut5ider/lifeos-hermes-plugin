@@ -229,7 +229,8 @@ class MountTransaction:
             if (len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)
                     or directory.is_symlink() or not directory.is_dir()):
                 continue
-            if directory == active and manifest['state'] in PENDING:
+            if directory == active and (manifest['state'] in PENDING or
+                    manifest['state'] == 'committed' and manifest.get('retain_for_rollback') is True):
                 continue
             info = directory.stat()
             if info.st_uid != os.getuid() or info.st_mode & 0o077:
@@ -369,6 +370,17 @@ class MountTransaction:
                 raise MountError('There is no interrupted mount to recover')
             return self._restore(manifest)
 
+    def restore_completed(self):
+        """Restore a completed mount while preserving any later owner edit."""
+        with self._lock():
+            manifest = self._manifest()
+            if manifest is None or manifest['state'] != 'committed':
+                raise MountError('There is no completed mount to restore')
+            self._checks(manifest['entries'], ('after',))
+            manifest['state'] = 'restoring'
+            _json(self.journal, manifest)
+            return self._restore(manifest)
+
     def _publish(self, manifest):
         self._checks(manifest['entries'], ('before',))
         manifest['state'] = 'applying'
@@ -385,7 +397,9 @@ class MountTransaction:
                 _sync_directory(parent)
                 parent = parent.parent
 
-    def execute(self, environment, bun, hermes, *, baseline_data=None, binding=None):
+    def execute(self, environment, bun, hermes, *, baseline_data=None, binding=None, retain_for_rollback=False):
+        if type(retain_for_rollback) is not bool:
+            raise MountError('Mount rollback retention requires an explicit boolean')
         from .memory_administration import ENVIRONMENT, mount_environment, validate
         from .memory_service import MemoryConfiguration
         with self._lock():
@@ -446,6 +460,7 @@ class MountTransaction:
                 'baseline': str(self.baseline) if self.baseline is not None else None,
                 'snapshot': str(snapshot), 'state': 'prepared', 'entries': entries,
                 'workspace': str(workspace),
+                'retain_for_rollback': retain_for_rollback,
                 'absent_directories': [name for name in ('plugins', 'plugins/lifeos')
                                        if not (self.profile / name).exists()] + ([] if workspace.exists() else ['workspace'])}
             _sync_directory(snapshot)

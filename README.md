@@ -1,6 +1,13 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Development candidate:** `0.4.0-dev.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+The native port passes 716 selected tests and all twelve upstream source checks. The candidate applies ten Hermes patch groups and twenty-five LifeOS patch groups.
+
+The complete release manager in `optional/lifeos_release_manager` remains under qualification.
+Do not use this candidate for a live installation until fresh installation, update, interruption recovery, and rollback checks pass.
+The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records its current state.
+
+**Deployed version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
 

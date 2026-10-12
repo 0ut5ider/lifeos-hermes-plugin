@@ -60,5 +60,102 @@
     "192.168.8.252": "0.3.1 unchanged",
     "192.168.8.253": "0.3.1 unchanged"
   },
-  "immutable_v031_assets_changed": false
+  "immutable_v031_assets_changed": false,
+  "native_lint": {
+    "command": [
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/dependency-profile/installs/86c8a0d486dc06f6/environments/279bc6c8268c436487b3322f8bd97285/venv/bin/python",
+      "scripts/check",
+      "--base",
+      "71d34bad1045610252eda02ee79549436896e784"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 21.382927440979984
+  },
+  "expanded_native_tests": {
+    "command": [
+      "bash",
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/ported/scripts/run_tests.sh",
+      "-j",
+      "4",
+      "tests/agent/test_prompt_hook_block.py",
+      "tests/agent/test_terminal_approval_batch.py",
+      "tests/agent/test_tool_result_context_hook.py",
+      "tests/agent/test_turn_context.py",
+      "tests/agent/test_verification_continuation_budget.py",
+      "tests/gateway/test_clarify_cancellation_outcome.py",
+      "tests/gateway/test_clarify_delivery_fallback.py",
+      "tests/gateway/test_discord_command_identity.py",
+      "tests/gateway/test_discord_connect.py",
+      "tests/gateway/test_discord_guild_channel_only.py",
+      "tests/gateway/test_discord_sync_limit.py",
+      "tests/gateway/test_resume_command.py",
+      "tests/gateway/test_stop_clarify_waiters.py",
+      "tests/hermes_cli/test_approval_transport.py",
+      "tests/hermes_cli/test_cli_resume_command.py",
+      "tests/hermes_cli/test_plugins.py",
+      "tests/hermes_cli/test_required_middleware.py",
+      "tests/hermes_cli/test_required_policy_hooks.py",
+      "tests/hermes_cli/test_session_boundary_hooks.py",
+      "tests/hermes_cli/test_stop_policy_dispatch.py",
+      "tests/plugins/test_transform_tool_result_hook.py",
+      "tests/test_lifeos_aux_no_fallback.py",
+      "tests/test_lifeos_batch_schema.py",
+      "tests/test_lifeos_delegate_tier_route.py",
+      "tests/test_lifeos_execute_code_session.py",
+      "tests/tools/test_approval_plugin_hooks.py",
+      "tests/tools/test_code_execution.py",
+      "tests/tools/test_code_execution_file_rpc.py",
+      "tests/tools/test_code_kernel.py",
+      "tests/tools/test_code_kernel_remote.py",
+      "tests/tools/test_plugin_command_approval.py",
+      "tests/tools/test_remote_file_staleness.py",
+      "tests/tools/test_protected_instruction_cli_channel.py",
+      "tests/hermes_cli/test_plugin_policy_arguments.py",
+      "tests/hermes_cli/test_plugins_middleware_chain.py",
+      "tests/agent/test_auxiliary_client.py",
+      "tests/agent/test_auxiliary_fallback_multihop.py",
+      "tests/hermes_cli/test_plugin_async_dispatch.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 63.1205100119696,
+    "home_isolated": true,
+    "live_ssh_fixture": true
+  },
+  "integration_diagnostic": {
+    "tests": 574,
+    "errors": 5,
+    "failures": 2,
+    "causes": [
+      "old clarification fixture callback and schema",
+      "upstream SQLite journal warning wording",
+      "observer absent from command assertion"
+    ],
+    "repeat_required": true
+  },
+  "manager_implementation": {
+    "path": "optional/lifeos_release_manager",
+    "implemented": [
+      "qualified public download and extraction",
+      "durable program transaction",
+      "package validation and isolated runtime preparation",
+      "pinned Bun download",
+      "Hermes CLI registration and status parser",
+      "coordinated worker prototype",
+      "authenticated release dashboard prototype",
+      "system program removal and internal dependency link handling",
+      "explicit mount retention and completed rollback"
+    ],
+    "local_controls_passed": 29,
+    "remaining": [
+      "worker authority and crash admission fixes",
+      "fresh installation and second-release acceptance",
+      "reusable package build with frozen dependency closure and current dashboard",
+      "combined package acceptance",
+      "installed development evaluation"
+    ],
+    "local_subtests_passed": 11
+  },
+  "candidate_version": "0.4.0-dev.1",
+  "next_action": "Build and exercise the worker on an isolated profile. Fix admission and recovery cases before any live promotion.",
+  "installed_development_qualification": "not_started"
 }

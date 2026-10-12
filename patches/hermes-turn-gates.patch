@@ -12,7 +12,7 @@ index 3f2ce36b7..61914377e 100644
  )
  
 diff --git a/agent/conversation_loop.py b/agent/conversation_loop.py
-index 411134b41..31bd877f2 100644
+index 411134b41..fa58e127d 100644
 --- a/agent/conversation_loop.py
 +++ b/agent/conversation_loop.py
 @@ -34,7 +34,7 @@ from agent.runtime_cwd import resolve_agent_cwd
@@ -24,27 +24,19 @@ index 411134b41..31bd877f2 100644
  from hermes_cli.observability.shared_metrics_efficiency import record_cache_break, record_prompt_rebuild
  from agent.turn_retry_state import TurnRetryState
  from agent.turn_scripted_prelude import Prelude, play_prelude
-@@ -1612,6 +1612,19 @@ def _run_conversation_turn(
+@@ -1610,8 +1610,9 @@ def _run_conversation_turn(
+             moa_active=bool(moa_config),
+             title_user_message=title_user_message,
          )
-     except PreflightCompressionTimedOut as _preflight_timeout_exc:
-         return _preflight_timeout_result(agent, _preflight_timeout_exc, conversation_history)
-+    except PromptBlocked as _prompt_block:
-+        from agent.agent_runtime_helpers import note_turn_persisted
-+        note_turn_persisted(agent)
-+        agent._user_turn_count = max(0, agent._user_turn_count - 1)
-+        agent._pending_cli_user_message = None
-+        return {
-+            "final_response": str(_prompt_block),
-+            "messages": list(conversation_history or []),
-+            "api_calls": 0,
-+            "completed": True,
-+            "failed": False,
-+            "turn_exit_reason": "prompt_blocked",
-+        }
+-    except PreflightCompressionTimedOut as _preflight_timeout_exc:
+-        return _preflight_timeout_result(agent, _preflight_timeout_exc, conversation_history)
++    except (PreflightCompressionTimedOut, PromptBlocked) as error:
++        from agent.turn_admission import setup_failure_result
++        return setup_failure_result(agent, error, conversation_history)
      # Voice turns may run on auxiliary.voice_chat: bound after the prompt/row/compaction were settled
      # against the main model, undone in finalize_turn (and run_conversation's finally on early exits).
      from agent.voice_turn_route import begin_voice_turn_route
-@@ -1763,6 +1776,21 @@ def run_conversation(
+@@ -1763,6 +1764,21 @@ def run_conversation(
      if isinstance(result, dict):
          result["user_intervened"] = bool(getattr(agent, "_turn_user_intervened", False))
      _close_durable_failed_turn(agent, result)
@@ -62,11 +54,11 @@ index 411134b41..31bd877f2 100644
 +                final_response=result.get("final_response", ""),
 +            )
 +        except Exception as exc:
-+            logger.warning("on_turn_result hook failed: %s", exc)
++            logger.warning("on_turn_result hook failed: %s", exc, exc_info=True)
      return result
  
  
-@@ -1828,7 +1856,7 @@ def _close_durable_failed_turn(agent, result: Any) -> None:
+@@ -1828,7 +1844,7 @@ def _close_durable_failed_turn(agent, result: Any) -> None:
      another writer is a no-op, and the gateway's own closer then no-ops in turn.
      """
      try:
@@ -87,6 +79,26 @@ index 92a5772a3..7bbfd3c2c 100644
      "_kanban_stop_synthetic",  # kanban worker stop-guard
      "_dropped_toolcall_nudge",  # internal retry instruction; must not replay as user context
  )
+diff --git a/agent/turn_admission.py b/agent/turn_admission.py
+new file mode 100644
+index 000000000..04ddd7e85
+--- /dev/null
++++ b/agent/turn_admission.py
+@@ -0,0 +1,14 @@
++# ABOUTME: Resolves refused prompt setup without persisting the prompt or calling a provider.
++# ABOUTME: Preserves the native preflight compression timeout result.
++from agent.turn_context import PromptBlocked
++
++def setup_failure_result(agent, error, conversation_history):
++    if not isinstance(error, PromptBlocked):
++        from agent.conversation_loop import _preflight_timeout_result
++        return _preflight_timeout_result(agent, error, conversation_history)
++    from agent.agent_runtime_helpers import note_turn_persisted
++    note_turn_persisted(agent)
++    agent._user_turn_count = max(0, agent._user_turn_count - 1)
++    agent._pending_cli_user_message = None
++    return {"final_response": str(error), "messages": list(conversation_history or []),
++            "api_calls": 0, "completed": True, "failed": False, "turn_exit_reason": "prompt_blocked"}
 diff --git a/agent/turn_api_call.py b/agent/turn_api_call.py
 index ef0853084..3b966c968 100644
 --- a/agent/turn_api_call.py
@@ -102,7 +114,7 @@ index ef0853084..3b966c968 100644
      from hermes_cli.runtime_provider_backends import _is_external_process_provider
  
 diff --git a/agent/turn_context.py b/agent/turn_context.py
-index 70d47a6c2..a008f4884 100644
+index 70d47a6c2..a3eb5a251 100644
 --- a/agent/turn_context.py
 +++ b/agent/turn_context.py
 @@ -330,7 +330,7 @@ def export_current_turn_boundary(agent: Any, result: Any, user_message: Any) ->
@@ -177,7 +189,7 @@ index 70d47a6c2..a008f4884 100644
 +        try:
 +            context_results = _invoke_hook("pre_llm_call", **hook_kwargs)
 +        except Exception as error:
-+            logger.warning("pre_llm_call hook failed: %s", error)
++            logger.warning("pre_llm_call hook failed: %s", error, exc_info=True)
 +            context_results = []
 +        _pre_results = admission_results + context_results
          try:
@@ -229,33 +241,42 @@ index 52c0ca59d..cead4a6c3 100644
      ("local_processing_error", "loop_error", False, False),
      ("repeated_outer_errors", "loop_error", True, True),
 diff --git a/agent/turn_final_response.py b/agent/turn_final_response.py
-index 8b0c9b149..13ff0a2d6 100644
+index 8b0c9b149..85f2f7fe2 100644
 --- a/agent/turn_final_response.py
 +++ b/agent/turn_final_response.py
-@@ -340,6 +340,10 @@ def finish_text_response(
+@@ -340,6 +340,9 @@ def finish_text_response(
      if _sg.continue_turn:
          final_response = None
          return _verdict("continue")
-+    if _sg.failure_message:
-+        final_response = _sg.failure_message
-+        final_msg = {"role": "assistant", "content": final_response, "finish_reason": "stop_gate_blocked"}
-+        _turn_exit_reason = "stop_gate_blocked"
++    from agent.turn_stop_gates import stop_gate_response
++    final_response, final_msg, _turn_exit_reason, show_completion = stop_gate_response(
++        _sg, final_response, final_msg, finish_reason, agent.quiet_mode)
  
      # Plugins rewrite the reply BEFORE it is appended and flushed: SQLite treats a non-blank
      # assistant row as settled, so a transform after this write would reach the user but never
-@@ -370,7 +374,8 @@ def finish_text_response(
-             exc_info=True,
-         )
+@@ -360,17 +363,9 @@ def finish_text_response(
+     append_message(messages, final_msg)
+     # Make the answer durable before leaving the loop (_DB_PERSISTED_MARKER keeps
+     # _persist_session idempotent). Failure must NOT abort the turn: finalize retries.
+-    try:
+-        agent._flush_messages_to_session_db(messages, conversation_history)
+-    except Exception:
+-        logger.warning(
+-            "final text-turn flush failed (session=%s) — reply is "
+-            "not yet durable; relying on finalize_turn retry",
+-            getattr(agent, "session_id", None) or "none",
+-            exc_info=True,
+-        )
++    from agent.turn_finalizer import flush_text_reply
++    flush_text_reply(agent, messages, conversation_history, logger)
  
 -    _turn_exit_reason = f"text_response(finish_reason={finish_reason})"
 -    if not agent.quiet_mode:
-+    if not _sg.failure_message:
-+        _turn_exit_reason = f"text_response(finish_reason={finish_reason})"
-+    if not agent.quiet_mode and not _sg.failure_message:
++    if show_completion:
          agent._safe_print(f"🎉 Conversation completed after {api_call_count} OpenAI-compatible API call(s)")
      return _verdict("break")
 diff --git a/agent/turn_finalizer.py b/agent/turn_finalizer.py
-index 9fd39ec52..7236eaa37 100644
+index 9fd39ec52..df92cebac 100644
 --- a/agent/turn_finalizer.py
 +++ b/agent/turn_finalizer.py
 @@ -22,10 +22,11 @@ from agent.message_metadata import append_message, stamp_message_timestamp
@@ -307,8 +328,26 @@ index 9fd39ec52..7236eaa37 100644
      agent._drop_trailing_empty_response_scaffolding(messages)
      _drop_verification_continuation_scaffolding(messages)
  
+@@ -809,3 +812,17 @@ def finalize_turn(
+     agent._turn_preflight_display_snapshot = None
+     agent._turn_received_provider_response = False
+     return result
++
++
++def flush_text_reply(agent, messages, conversation_history, logger):
++    try:
++        agent._flush_messages_to_session_db(messages, conversation_history)
++    except Exception:
++        logger.warning(
++            "final text-turn flush failed (session=%s) — reply is "
++            "not yet durable; relying on finalize_turn retry",
++            getattr(agent, "session_id", None) or "none",
++            exc_info=True,
++        )
++
++
 diff --git a/agent/turn_stop_gates.py b/agent/turn_stop_gates.py
-index 9580c635d..d7422c4c2 100644
+index 9580c635d..84f53a76f 100644
 --- a/agent/turn_stop_gates.py
 +++ b/agent/turn_stop_gates.py
 @@ -1,12 +1,8 @@
@@ -344,7 +383,7 @@ index 9580c635d..d7422c4c2 100644
      return None
  
  
-+def _pre_turn_stop_nudge(agent, final_response, attempt: int) -> Optional[str | Dict[str, str]]:
++def _pre_turn_stop_nudge(agent, final_response, attempt: int) -> Optional[str | dict[str, str]]:
 +    """Let plugins inspect every candidate answer, including turns without code edits."""
 +    try:
 +        from hermes_cli.lifecycle import has_hook
@@ -449,12 +488,23 @@ index 9580c635d..d7422c4c2 100644
      _verify_nudge = _verify_on_stop_nudge(agent)
      if _verify_nudge:
          agent._verification_stop_nudges = getattr(agent, "_verification_stop_nudges", 0) + 1
+@@ -175,3 +242,10 @@ def apply_stop_gates(
+         pending_verification_response=pending_verification_response,
+         pending_verification_response_previewed=pending_verification_response_previewed,
+     )
++
++
++def stop_gate_response(verdict, final_response, final_message, finish_reason, quiet):
++    if verdict.failure_message:
++        response = verdict.failure_message
++        return response, {"role": "assistant", "content": response, "finish_reason": "stop_gate_blocked"}, "stop_gate_blocked", False
++    return final_response, final_message, f"text_response(finish_reason={finish_reason})", not quiet
 diff --git a/tests/agent/test_prompt_hook_block.py b/tests/agent/test_prompt_hook_block.py
 new file mode 100644
-index 000000000..163ccc0b9
+index 000000000..b0afd21da
 --- /dev/null
 +++ b/tests/agent/test_prompt_hook_block.py
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,103 @@
 +# ABOUTME: Tests prompt hook denial at the turn boundary.
 +# ABOUTME: Ensures blocked user text never reaches the provider or saved history.
 +
@@ -522,14 +572,16 @@ index 000000000..163ccc0b9
 +
 +
 +@pytest.mark.parametrize("failure", ["raise", "timeout"])
-+def test_admission_failure_never_persists_prompt(failure, monkeypatch, caplog):
++def test_admission_failure_never_persists_prompt(failure, monkeypatch, caplog, request):
 +    from hermes_cli.plugins import PluginManager
-+    import time
++    import threading
++    released = threading.Event()
++    request.addfinalizer(released.set)
 +    manager = PluginManager()
 +    def guard(**kwargs):
 +        if failure == "raise":
 +            raise RuntimeError("expected admission failure")
-+        time.sleep(0.1)
++        released.wait(1)
 +        return {"action": "allow"}
 +    manager._hooks["pre_prompt_admission"] = [guard]
 +    monkeypatch.setattr("hermes_cli.plugins._resolve_hook_callback_timeout", lambda: 0.02)
@@ -578,10 +630,10 @@ index 749eba819..2e59de501 100644
 +
 +    assert agent._persist_calls == 0
 diff --git a/tests/agent/test_verification_continuation_budget.py b/tests/agent/test_verification_continuation_budget.py
-index 2231b2c17..d1963a7bf 100644
+index 2231b2c17..7a9f9abbb 100644
 --- a/tests/agent/test_verification_continuation_budget.py
 +++ b/tests/agent/test_verification_continuation_budget.py
-@@ -251,3 +251,247 @@ def test_streamed_interim_then_different_summary_not_marked_previewed(agent, mon
+@@ -251,3 +251,246 @@ def test_streamed_interim_then_different_summary_not_marked_previewed(agent, mon
      # CRITICAL: response_previewed must be False — the interim narration was
      # NOT the final response, so the CLI must render the summary.
      assert result["response_previewed"] is False
@@ -821,7 +873,6 @@ index 2231b2c17..d1963a7bf 100644
 +    monkeypatch.setattr("hermes_cli.lifecycle.has_hook", lambda name: True)
 +    def capture(**kwargs):
 +        observed.append(kwargs)
-+        return None
 +    monkeypatch.setattr("hermes_cli.plugins.get_pre_turn_stop_continue_message", capture)
 +    runtime = SimpleNamespace(provider=provider, requested_provider=requested,
 +                              model="local/model", _wire_reasoning_config={"effort": "xhigh"})

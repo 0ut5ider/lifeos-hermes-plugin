@@ -47,7 +47,7 @@ index 2225f4a16..0ee0a7852 100644
              threading.Thread(
                  target=copy_context().run,
 diff --git a/gateway/run_turn_runner.py b/gateway/run_turn_runner.py
-index 7e29a4cdf..bfa7d05b2 100644
+index 7e29a4cdf..f9b24125c 100644
 --- a/gateway/run_turn_runner.py
 +++ b/gateway/run_turn_runner.py
 @@ -1,3 +1,5 @@
@@ -56,7 +56,26 @@ index 7e29a4cdf..bfa7d05b2 100644
  """Per-turn callback runner (progress/status/voice/run_sync) for the gateway agent turn.
  
  ``TurnRunner`` owns the per-turn callbacks ``GatewayRunner._run_agent_inner`` binds. ``gateway.run``
-@@ -1395,7 +1397,7 @@ class TurnRunner:
+@@ -6,6 +8,7 @@ keeps intercepting them at call time.
+ """
+ 
+ from __future__ import annotations
++from gateway.run_turn_runner_clarify_delivery import _clarify_expired_notice, clarify_retirement_notice
+ 
+ import asyncio
+ import dataclasses
+@@ -61,10 +64,6 @@ def _renders_exec_approval_buttons(adapter_cls: type) -> bool:
+ 
+ # Rendered on a native clarify card whose wait ended without a click (mirrors the notice the
+ # Slack click handler shows on a dead entry).
+-def _clarify_expired_notice() -> str:
+-    return t("gateway.clarify.expired")
+-
+-
+ class _ExecApprovalDeclined(RuntimeError):
+     """The connector refused the approval card's destination.
+ 
+@@ -1395,7 +1394,7 @@ class TurnRunner:
              """Schedule the plain-text prompt when the native card cannot render; None = no such path."""
              coro = text_fallback_coro(ctx._status_adapter, **send_kwargs)
              return None if coro is None else self._schedule(coro, "Clarify text fallback failed to schedule")
@@ -65,7 +84,7 @@ index 7e29a4cdf..bfa7d05b2 100644
              clarify_id=clarify_id, session_key=session_key, question=question, choices=choices,
              multi_select=bool(multi_select),
          )
-@@ -1425,7 +1427,7 @@ class TurnRunner:
+@@ -1425,7 +1424,7 @@ class TurnRunner:
          # failure — immediate or late — retries once as plain text before giving up.
          response, answered = _clarify_send_then_wait(
              fut, clarify_id=clarify_id, session_key=session_key, clarify_mod=clarify_mod,
@@ -74,12 +93,11 @@ index 7e29a4cdf..bfa7d05b2 100644
          # Branch on the explicit flag, never on the text: a real answer can start with '[' (a
          # "[A] staging" label, "[urgent] ..." free text) and must not be mistaken for a sentinel.
          if not answered:
-@@ -1433,8 +1435,10 @@ class TurnRunner:
+@@ -1433,8 +1432,9 @@ class TurnRunner:
              # looking answerable. Adapters without a persistent card have no such method.
              retire = getattr(type(ctx._status_adapter), "retire_clarify_card", None)
              if callable(retire):
-+                notice = ('This prompt was cancelled. No answer was recorded.'
-+                          if response == clarify_mod.CANCELLED else _clarify_expired_notice())
++                notice = clarify_retirement_notice(response, clarify_mod.CANCELLED)
                  self._schedule(
 -                    retire(ctx._status_adapter, clarify_id, _clarify_expired_notice()),
 +                    retire(ctx._status_adapter, clarify_id, notice),
@@ -87,7 +105,7 @@ index 7e29a4cdf..bfa7d05b2 100644
          elif rearm:
              # Reopen typing IMMEDIATELY, not on the LLM's first post-answer token (native streaming
 diff --git a/gateway/run_turn_runner_clarify_delivery.py b/gateway/run_turn_runner_clarify_delivery.py
-index e3bd3f4f8..b7c468233 100644
+index e3bd3f4f8..c8cf722c2 100644
 --- a/gateway/run_turn_runner_clarify_delivery.py
 +++ b/gateway/run_turn_runner_clarify_delivery.py
 @@ -77,7 +77,7 @@ def _clarify_send_disposition(fut, *, session_key: str, clarify_mod) -> Optional
@@ -115,6 +133,19 @@ index e3bd3f4f8..b7c468233 100644
          return f"[user did not respond within {int(timeout / 60)}m]", False
      return response, True
  
+@@ -182,3 +182,12 @@ class _LateFailureWatch:
+     def _release(self, notice: str = UNDELIVERED) -> None:
+         self.undeliverable = notice
+         self._clarify_mod.clear_session(self._session_key)
++
++
++def _clarify_expired_notice() -> str:
++    from agent.i18n import t
++    return t("gateway.clarify.expired")
++
++
++def clarify_retirement_notice(response, cancelled):
++    return "This prompt was cancelled. No answer was recorded." if response == cancelled else _clarify_expired_notice()
 diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
 index c73d27656..833028714 100644
 --- a/gateway/slash_commands_session.py
@@ -133,10 +164,36 @@ index c73d27656..833028714 100644
          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
 diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
-index ac050556f..ba8b70f2b 100644
+index ac050556f..93af0cd80 100644
 --- a/hermes_cli/cli_commands_mixin.py
 +++ b/hermes_cli/cli_commands_mixin.py
-@@ -1009,6 +1009,8 @@ class CLICommandsMixin(CLICommandsSessionToolsMixin):
+@@ -5,6 +5,7 @@ the helpers/handlers via ``from cli import ...`` — cli.py imports this module
+ """
+ 
+ from __future__ import annotations
++from hermes_cli.cli_session_boundary import _end_current_session
+ 
+ import argparse
+ import atexit
+@@ -226,17 +227,6 @@ def _parse_cron_flags(tokens):
+ 
+ 
+ # Session-switch plumbing shared by /resume and /branch.
+-def _end_current_session(cli, reason: str) -> None:
+-    """Flush un-persisted messages, then end the current session row with ``reason``.
+-    Best-effort on both steps (the switch proceeds even if the DB write fails)."""
+-    if cli.agent:
+-        with suppress(Exception):
+-            cli.agent._flush_messages_to_session_db(
+-                cli.conversation_history, conversation_history=cli.conversation_history)
+-    with suppress(Exception):
+-        cli._session_db.end_session(cli.session_id, reason)
+-
+-
+ def _sync_agent_to_session(cli, session_id: str, *, parent_session_id: str, reason: str) -> None:
+     """Point an already-built agent at ``session_id`` after a /resume or /branch switch: reset
+     per-session state, re-anchor the DB flush index, and notify memory providers with
+@@ -1009,6 +999,8 @@ class CLICommandsMixin(CLICommandsSessionToolsMixin):
              return _cp(f"  {_t('resume.already_on')}")
          old_session_id = self.session_id
          _end_current_session(self, "resumed_other")
@@ -145,6 +202,26 @@ index ac050556f..ba8b70f2b 100644
          self.session_id, self._resumed, self._pending_title = target_id, True, None
          _sync_process_session_id(target_id)
          # One lineage SELECT, two projections: model_history is alternation-repaired for live
+diff --git a/hermes_cli/cli_session_boundary.py b/hermes_cli/cli_session_boundary.py
+new file mode 100644
+index 000000000..8777b0958
+--- /dev/null
++++ b/hermes_cli/cli_session_boundary.py
+@@ -0,0 +1,14 @@
++# ABOUTME: Flushes and closes the current session before a CLI session switch.
++# ABOUTME: Leaves the switch available when the native session database cannot complete a write.
++from contextlib import suppress
++
++def _end_current_session(cli, reason: str) -> None:
++    """Flush un-persisted messages, then end the current session row with ``reason``.
++    Best-effort on both steps (the switch proceeds even if the DB write fails)."""
++    if cli.agent:
++        with suppress(Exception):
++            cli.agent._flush_messages_to_session_db(
++                cli.conversation_history, conversation_history=cli.conversation_history)
++    with suppress(Exception):
++        cli._session_db.end_session(cli.session_id, reason)
++
 diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
 index d17d73f65..a80f7798a 100644
 --- a/hermes_cli/cli_session_mixin.py
@@ -195,35 +272,20 @@ index c470445a7..7c706dbd0 100644
          self._print_exit_summary()
          self._release_active_session()
 diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
-index 8610268cb..7a8cb8989 100644
+index 8610268cb..21dbd229a 100644
 --- a/plugins/platforms/discord/adapter.py
 +++ b/plugins/platforms/discord/adapter.py
-@@ -1,3 +1,6 @@
+@@ -1,4 +1,9 @@
 +# ABOUTME: Connects the Discord gateway and routes messages, interactions, and replies.
 +# ABOUTME: Synchronizes application commands while retaining existing command identities.
 +
  from __future__ import annotations
++from plugins.platforms.discord.adapter_commands import DiscordCommandSyncMixin
++from plugins.platforms.discord.adapter_channel_policy import DiscordChannelPolicyMixin, _guild_channel_target, standalone_channel_refusal, authorize_standalone_delivery, reraise_delivery_refusal, readable_standalone_media
  
  """
-@@ -328,6 +331,17 @@ def _unauthorized() -> str:
-     return unauthorized_action_notice(Platform.DISCORD)
- 
- 
-+def _guild_channel_target(restriction, allowed: set):
-+    """Return the selected channel, None for disabled mode, or empty for refusal."""
-+    if restriction is None or str(restriction).lower() in {'false', '0', 'no'}:
-+        return None
-+    if str(restriction).lower() not in {'true', '1', 'yes'}:
-+        return ''
-+    if len(allowed) == 1 and all(value.isascii() and value.isdecimal() for value in allowed):
-+        return next(iter(allowed))
-+    return ''
-+
-+
- async def _read_url_image_with_redirect_guard(
-     session: Any, url: str, *, timeout: Any, request_kwargs: dict[str, Any],
- ) -> tuple[int, bytes, dict[str, str]]:
-@@ -603,6 +617,7 @@ _GATE_ENV_KEYS = (
+ Discord platform adapter.
+@@ -603,6 +608,7 @@ _GATE_ENV_KEYS = (
      "DISCORD_IGNORED_CHANNELS", "DISCORD_NO_THREAD_CHANNELS", "DISCORD_FREE_RESPONSE_CHANNELS",
      "DISCORD_MISSED_MESSAGE_BACKFILL_CHANNELS", "DISCORD_ALLOW_ALL_USERS", "DISCORD_ALLOW_BOTS",
      "GATEWAY_ALLOW_ALL_USERS", "GATEWAY_ALLOWED_USERS",
@@ -231,7 +293,16 @@ index 8610268cb..7a8cb8989 100644
  )
  
  
-@@ -1721,6 +1736,8 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -1263,7 +1269,7 @@ from plugins.platforms.discord.adapter_thread_titles import DiscordThreadTitlesM
+ from plugins.platforms.discord.adapter_voice_info import DiscordVoiceInfoMixin
+ 
+ 
+-class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceInfoMixin, DiscordSlashAuthMixin,
++class DiscordAdapter(DiscordCommandSyncMixin, DiscordChannelPolicyMixin, DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceInfoMixin, DiscordSlashAuthMixin,
+                      BasePlatformAdapter):
+     """Discord bot adapter: guild/DM messages, threads, slash commands, button approvals, reactions."""
+ 
+@@ -1721,6 +1727,8 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                  return False, False
          elif self._dedup.contains(message_id):
              return False, False
@@ -240,17 +311,61 @@ index 8610268cb..7a8cb8989 100644
          if message.author == self._client.user:
              return False, False
          if message.type not in {discord.MessageType.default, discord.MessageType.reply}:
-@@ -3181,23 +3198,15 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
-             current_existing_payload = self._existing_command_to_payload(current)
-             current_payload = self._canonicalize_app_command_payload(current_existing_payload)
-             desired_payload = self._canonicalize_app_command_payload(desired)
-+            # Unset contexts inherit Discord's defaults; an explicit server value is not a change.
-+            for field in ("contexts", "integration_types"):
-+                if desired.get(field) is None:
-+                    desired_payload[field] = current_payload[field]
-             if current_payload == desired_payload:
-                 summary["unchanged"] += 1
-                 continue
+@@ -3133,75 +3141,6 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+             "options": canonical["options"],
+         }
+ 
+-    async def _safe_sync_slash_commands(self) -> dict[str, int]:
+-        """Diff existing global commands and only mutate the commands that changed."""
+-        summary = {"total": 0, "unchanged": 0, "updated": 0, "recreated": 0, "created": 0, "deleted": 0}
+-        if not self._client:
+-            return summary
+-        tree = self._client.tree
+-        app_id = getattr(self._client, "application_id", None) or getattr(getattr(self._client, "user", None), "id", None)
+-        if not app_id:
+-            raise RuntimeError("Discord application ID is unavailable for slash command sync")
+-        desired_payloads = [command.to_dict(tree) for command in tree.get_commands()]
+-        desired_by_key = {
+-            (int(payload.get("type", 1) or 1), str(payload.get("name", "") or "").lower()): payload
+-            for payload in desired_payloads
+-        }
+-        existing_commands = await tree.fetch_commands()
+-        existing_by_key = {
+-            (
+-                int(getattr(getattr(command, "type", None), "value", getattr(command, "type", 1)) or 1),
+-                str(command.name or "").lower(),
+-            ): command
+-            for command in existing_commands
+-        }
+-        http = self._client.http
+-        mutation_count = 0
+-
+-        async def mutate(call, *args):
+-            nonlocal mutation_count
+-            if mutation_count:
+-                await self._sleep_between_command_sync_mutations()
+-            result = await call(*args)
+-            mutation_count += 1
+-            return result
+-        # Delete obsolete commands FIRST: an upsert pushing the live total over 100 fails with
+-        # 30032 (breaks ALL slash commands), so an app at the cap must shrink before creating.
+-        obsolete_keys = set(existing_by_key.keys()) - set(desired_by_key.keys())
+-        for key in obsolete_keys:
+-            current = existing_by_key.pop(key)
+-            await mutate(http.delete_global_command, app_id, current.id)
+-            summary["deleted"] += 1
+-        for key, desired in desired_by_key.items():
+-            current = existing_by_key.pop(key, None)
+-            if current is None:
+-                await mutate(http.upsert_global_command, app_id, desired)
+-                summary["created"] += 1
+-                continue
+-            current_existing_payload = self._existing_command_to_payload(current)
+-            current_payload = self._canonicalize_app_command_payload(current_existing_payload)
+-            desired_payload = self._canonicalize_app_command_payload(desired)
+-            if current_payload == desired_payload:
+-                summary["unchanged"] += 1
+-                continue
 -            if self._patchable_app_command_payload(current_existing_payload) == self._patchable_app_command_payload(desired):
 -                # Upsert alone recreates the command: Discord's create endpoint
 -                # overwrites the existing same-name command ("Returns 201 if a
@@ -265,28 +380,14 @@ index 8610268cb..7a8cb8989 100644
 -                summary["recreated"] += 1
 -                continue
 -            await mutate(http.edit_global_command, app_id, current.id, desired)
-+            # The same-name/type upsert carries every setting and preserves the command ID.
-+            await mutate(http.upsert_global_command, app_id, desired)
-             summary["updated"] += 1
-         summary["total"] = len(desired_payloads)
-         return summary
-@@ -3288,6 +3297,15 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
-             kept.append(notice)
-         return kept
- 
-+    async def _require_private_delivery(self, channel):
-+        if self._guild_channel_restriction() is None:
-+            return
-+        if not self._guild_channel_allows(channel):
-+            raise PermissionError('Private Discord delivery requires the selected guild text channel')
-+        from plugins.platforms.discord.delivery import authorize_delivery
-+        await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
-+                                 token=getattr(self._client.http, 'token', ''))
-+
-     async def send(
-         self,
-         chat_id: str,
-@@ -3339,6 +3357,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+-            summary["updated"] += 1
+-        summary["total"] = len(desired_payloads)
+-        return summary
+-
+     async def _add_reaction(self, message: Any, emoji: str) -> bool:
+         """Add an emoji reaction to a Discord message."""
+         if not message or not hasattr(message, "add_reaction"):
+@@ -3339,6 +3278,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                  else:  # "first" (default) or "off"
                      chunk_reference = reference if i == 0 else None
                  try:
@@ -294,7 +395,7 @@ index 8610268cb..7a8cb8989 100644
                      msg = await channel.send(content=chunk, reference=chunk_reference)
                  except Exception as e:
                      if chunk_reference is not None and self._is_reply_reference_rejected(e):
-@@ -3347,6 +3366,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3347,6 +3287,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                              self.name, reply_to,
                          )
                          reference = None
@@ -302,7 +403,7 @@ index 8610268cb..7a8cb8989 100644
                          msg = await channel.send(content=chunk, reference=None)
                      else:
                          raise
-@@ -3506,6 +3526,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3506,6 +3447,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                  # Content shrank under the cap: clear saturation state so dedup can't mask a real edit.
                  self._last_overflow_preview.pop(_preview_key, None)
              try:
@@ -310,7 +411,7 @@ index 8610268cb..7a8cb8989 100644
                  await msg.edit(content=formatted)
                  if _saturated_preview:
                      self._last_overflow_preview[_preview_key] = formatted
-@@ -3518,6 +3539,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3518,6 +3460,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                      if self._last_overflow_preview.get(_preview_key) == truncated:
                          # Saturated-preview dedup (see pre-flight path above).
                          return SendResult(success=True, message_id=message_id)
@@ -318,7 +419,7 @@ index 8610268cb..7a8cb8989 100644
                      await msg.edit(content=truncated)
                      self._last_overflow_preview[_preview_key] = truncated
                  else:
-@@ -3558,9 +3580,11 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3558,9 +3501,11 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
          chunks = self._cap_split_chunks(self.truncate_message(formatted, self.MAX_MESSAGE_LENGTH))
          if len(chunks) <= 1:
              # Defensive: pre-flight should guarantee >1 chunk; otherwise edit normally.
@@ -330,7 +431,7 @@ index 8610268cb..7a8cb8989 100644
              await msg.edit(content=chunks[0])
          except Exception as e:
              logger.error(
-@@ -3581,6 +3605,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3581,6 +3526,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                  # Prior message without to_reference (duck-typed): build the reference from ids.
                  reference = self._message_reference_from_ids(prev_msg.id, channel)
              try:
@@ -338,7 +439,7 @@ index 8610268cb..7a8cb8989 100644
                  sent = await channel.send(content=chunk, reference=reference)
              except Exception as send_err:
                  # Drop the reply anchor and retry once: deleted anchor (10008) / system message (50035).
-@@ -3589,6 +3614,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3589,6 +3535,7 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                      self.name, send_err,
                  )
                  try:
@@ -346,7 +447,7 @@ index 8610268cb..7a8cb8989 100644
                      sent = await channel.send(content=chunk, reference=None)
                  except Exception as retry_err:
                      logger.warning(
-@@ -3597,7 +3623,8 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -3597,7 +3544,8 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
                      )
                      last_id = continuation_ids[-1] if continuation_ids else message_id
                      return SendResult(
@@ -356,35 +457,7 @@ index 8610268cb..7a8cb8989 100644
                          message_id=last_id,
                          continuation_message_ids=tuple(continuation_ids),
                          raw_response={
-@@ -4242,6 +4269,11 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
-             self.name,
-         )
- 
-+    def _evaluate_slash_authorization(self, interaction):
-+        if not self._guild_channel_allows(getattr(interaction, 'channel', None)):
-+            return False, 'The bot accepts commands only in its selected guild text channel'
-+        return super()._evaluate_slash_authorization(interaction)
-+
-     async def _check_slash_authorization(
-         self, interaction: discord.Interaction, command_text: str,
-     ) -> bool:
-@@ -5066,6 +5098,15 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
-         """This adapter's DISCORD_ALLOWED_CHANNELS gate (per-profile)."""
-         return self._gate_csv_set(self._gate_raw("allowed_channels", "DISCORD_ALLOWED_CHANNELS"))
- 
-+    def _guild_channel_restriction(self):
-+        restriction = self._gate_raw('guild_channel_only', 'DISCORD_GUILD_CHANNEL_ONLY')
-+        return _guild_channel_target(restriction, self._get_allowed_channels())
-+
-+    def _guild_channel_allows(self, channel) -> bool:
-+        selected = self._guild_channel_restriction()
-+        return (selected is None or isinstance(channel, discord.TextChannel)
-+                and channel.type == discord.ChannelType.text and str(channel.id) == selected)
-+
-     def _get_ignored_channels(self) -> set:
-         """This adapter's DISCORD_IGNORED_CHANNELS gate (per-profile)."""
-         return self._gate_csv_set(self._gate_raw("ignored_channels", "DISCORD_IGNORED_CHANNELS"))
-@@ -5417,10 +5458,13 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -5417,10 +5365,13 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
          dying in ``int()`` as a generic send failure."""
          if isinstance(channel_id, str):
              channel_id = discord_channel_id_from_link(channel_id.strip()) or channel_id
@@ -399,7 +472,7 @@ index 8610268cb..7a8cb8989 100644
  
      def _thread_parent_channel(self, channel: Any) -> Any:
          """Return the parent text channel when invoked from a thread."""
-@@ -5705,9 +5749,11 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
+@@ -5705,9 +5656,11 @@ class DiscordAdapter(DiscordMediaMixin, DiscordThreadTitlesMixin, DiscordVoiceIn
              send_kwargs, view = build(channel)
              if view is not None:
                  view.live_auth = self._component_live_auth
@@ -411,7 +484,7 @@ index 8610268cb..7a8cb8989 100644
              return SendResult(success=True, message_id=str(msg.id))
          except Exception as e:
              if fail_log:
-@@ -6413,6 +6459,11 @@ def _define_discord_view_classes() -> None:
+@@ -6413,6 +6366,11 @@ def _define_discord_view_classes() -> None:
              self.live_auth = None
              self.resolved = False
              self._message = None
@@ -423,7 +496,7 @@ index 8610268cb..7a8cb8989 100644
  
          def _check_auth(self, interaction: discord.Interaction) -> bool:
              from plugins.platforms.discord.adapter_component_auth import _component_check_auth
-@@ -6421,6 +6472,11 @@ def _define_discord_view_classes() -> None:
+@@ -6421,6 +6379,11 @@ def _define_discord_view_classes() -> None:
  
          async def _gate(self, interaction: discord.Interaction, *, resolved_msg: Optional[str], unauth_msg: str) -> bool:
              """Reject (ephemerally) an already-resolved or unauthorized click; True when it may proceed."""
@@ -435,7 +508,7 @@ index 8610268cb..7a8cb8989 100644
              if resolved_msg is not None and self.resolved:
                  await interaction.response.send_message(resolved_msg, ephemeral=True)
                  return False
-@@ -6446,6 +6502,7 @@ def _define_discord_view_classes() -> None:
+@@ -6446,6 +6409,7 @@ def _define_discord_view_classes() -> None:
                      if embed:
                          embed.color = discord.Color.greyple()
                          embed.set_footer(text=footer)
@@ -443,7 +516,7 @@ index 8610268cb..7a8cb8989 100644
                      await msg.edit(embed=embed, view=self)
                  except Exception:
                      pass  # message deleted or too old to edit
-@@ -6458,6 +6515,7 @@ def _define_discord_view_classes() -> None:
+@@ -6458,6 +6422,7 @@ def _define_discord_view_classes() -> None:
                  embed.color = color
                  embed.set_footer(text=footer)
              self._disable_all()
@@ -451,7 +524,7 @@ index 8610268cb..7a8cb8989 100644
              await interaction.response.edit_message(embed=embed, view=self)
  
          def _localize_buttons(self, **keys_by_attr: str) -> None:
-@@ -6599,6 +6657,7 @@ def _define_discord_view_classes() -> None:
+@@ -6599,6 +6564,7 @@ def _define_discord_view_classes() -> None:
                  from tools import slash_confirm as _slash_confirm_mod
                  result_text = await _slash_confirm_mod.resolve(self.session_key, self.confirm_id, choice)
                  if result_text:
@@ -459,7 +532,7 @@ index 8610268cb..7a8cb8989 100644
                      await interaction.followup.send(result_text)
                  logger.info(
                      "Discord button resolved slash-confirm for session %s "
-@@ -6683,6 +6742,7 @@ def _define_discord_view_classes() -> None:
+@@ -6683,6 +6649,7 @@ def _define_discord_view_classes() -> None:
  
          async def _edit(self, interaction: discord.Interaction, description: str, *, view=..., **embed_kw) -> None:
              """Edit the picker message in place with a config embed (``view`` defaults to self)."""
@@ -467,7 +540,7 @@ index 8610268cb..7a8cb8989 100644
              await interaction.response.edit_message(
                  embed=self._config_embed(description, **embed_kw), view=self if view is ... else view,
              )
-@@ -6784,6 +6844,7 @@ def _define_discord_view_classes() -> None:
+@@ -6784,6 +6751,7 @@ def _define_discord_view_classes() -> None:
                  result_text = await self.on_model_selected(str(interaction.channel_id), model_id, self._selected_provider)
              except Exception as exc:
                  result_text = t("platform.discord.picker.switch_error", error=str(exc))
@@ -475,7 +548,7 @@ index 8610268cb..7a8cb8989 100644
              await interaction.edit_original_response(
                  embed=self._config_embed(result_text, title=t("platform.discord.picker.switched_title"), color=discord.Color.green()),
                  view=None,
-@@ -6837,6 +6898,7 @@ def _define_discord_view_classes() -> None:
+@@ -6837,6 +6805,7 @@ def _define_discord_view_classes() -> None:
              if msg:
                  try:
                      embed = self._config_embed(t("platform.discord.picker.expired"), color=discord.Color.greyple())
@@ -483,7 +556,7 @@ index 8610268cb..7a8cb8989 100644
                      await msg.edit(embed=embed, view=self)
                  except Exception:
                      pass
-@@ -6880,6 +6942,7 @@ def _define_discord_view_classes() -> None:
+@@ -6880,6 +6849,7 @@ def _define_discord_view_classes() -> None:
              embed = discord.Embed(description=result_text, color=discord.Color.green())
              self.clear_items()
              self.stop()
@@ -491,7 +564,7 @@ index 8610268cb..7a8cb8989 100644
              await interaction.response.edit_message(embed=embed, view=self)
  
          async def on_timeout(self):
-@@ -6890,6 +6953,7 @@ def _define_discord_view_classes() -> None:
+@@ -6890,6 +6860,7 @@ def _define_discord_view_classes() -> None:
                  try:
                      embed = discord.Embed(description=t("platform.discord.picker.choice_expired"), color=discord.Color.greyple())
                      self.clear_items()
@@ -499,7 +572,7 @@ index 8610268cb..7a8cb8989 100644
                      await msg.edit(embed=embed, view=self)
                  except Exception:
                      pass
-@@ -6953,6 +7017,7 @@ def _define_discord_view_classes() -> None:
+@@ -6953,6 +6924,7 @@ def _define_discord_view_classes() -> None:
                  embed.color = color
                  embed.set_footer(text=footer)
              try:
@@ -507,7 +580,7 @@ index 8610268cb..7a8cb8989 100644
                  await interaction.response.edit_message(embed=embed, view=self)
              except Exception:
                  if log_edit_failure:
-@@ -7127,6 +7192,9 @@ async def _standalone_response_json_or_error(resp: Any, error_prefix: str):
+@@ -7127,6 +7099,9 @@ async def _standalone_response_json_or_error(resp: Any, error_prefix: str):
      return await _standalone_read_json_limited(resp, _DISCORD_STANDALONE_JSON_BODY_LIMIT_BYTES), None
  
  
@@ -517,7 +590,7 @@ index 8610268cb..7a8cb8989 100644
  async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_kw: dict, req_kw: dict) -> bool:
      """Forum detection: channel directory → process-local probe cache → memoized ``GET /channels/{id}``."""
      _channel_type = None
-@@ -7142,7 +7210,7 @@ async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_k
+@@ -7142,7 +7117,7 @@ async def _standalone_is_forum(aiohttp, chat_id: str, json_headers: dict, sess_k
          return cached
      is_forum = False
      try:
@@ -526,35 +599,24 @@ index 8610268cb..7a8cb8989 100644
          async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15), **sess_kw) as info_sess:
              async with info_sess.get(info_url, headers=json_headers, **req_kw) as info_resp:
                  if info_resp.status == 200:
-@@ -7162,6 +7230,15 @@ async def _standalone_send(
+@@ -7162,6 +7137,8 @@ async def _standalone_send(
      Forum channels (type 15) reject ``POST /messages``, so a thread post is created via
      ``POST /channels/{id}/threads`` with media as multipart attachments. Channel type: directory
      cache → process-local probe cache → memoized GET. ``force_document`` accepted but unused."""
-+    extra = getattr(pconfig, 'extra', None)
-+    extra = extra if isinstance(extra, dict) else {}
-+    restriction = (_scoped_gate_env('DISCORD_GUILD_CHANNEL_ONLY')
-+                   or extra.get('guild_channel_only'))
-+    allowed = (_scoped_gate_env('DISCORD_ALLOWED_CHANNELS')
-+               or extra.get('allowed_channels'))
-+    selected = _guild_channel_target(restriction, DiscordAdapter._gate_csv_set(allowed))
-+    if selected is not None and (str(chat_id) != selected or thread_id):
++    if standalone_channel_refusal(pconfig, chat_id, thread_id):
 +        return send_error('Discord delivery requires the selected guild text channel')
      try:
          import aiohttp
      except ImportError:
-@@ -7174,6 +7251,11 @@ async def _standalone_send(
+@@ -7174,6 +7151,7 @@ async def _standalone_send(
      if not token:
          return send_error("Discord standalone send: DISCORD_BOT_TOKEN is not set")
      try:
-+        async def check_delivery():
-+            if selected is not None:
-+                from plugins.platforms.discord.delivery import authorize_delivery
-+                await authorize_delivery(chat_id, token=token)
-+        await check_delivery()
++        await authorize_standalone_delivery(pconfig, chat_id, token)
          from gateway.platforms.base import resolve_proxy_url, proxy_kwargs_for_aiohttp
          _proxy = resolve_proxy_url(platform_env_var="DISCORD_PROXY")
          _sess_kw, _req_kw = proxy_kwargs_for_aiohttp(_proxy)
-@@ -7183,12 +7265,12 @@ async def _standalone_send(
+@@ -7183,19 +7161,14 @@ async def _standalone_send(
          last_data = None
          warnings = []
          if thread_id:
@@ -567,9 +629,17 @@ index 8610268cb..7a8cb8989 100644
 -                thread_url = f"https://discord.com/api/v10/channels/{chat_id}/threads"
 +                thread_url = f"{_DISCORD_API_BASE}/channels/{chat_id}/threads"
                  # Filter readable media first to pick JSON vs multipart before opening a session.
-                 valid_media = []
-                 for media_path, _is_voice in media_files:
-@@ -7237,9 +7319,10 @@ async def _standalone_send(
+-                valid_media = []
+-                for media_path, _is_voice in media_files:
+-                    if not os.path.exists(media_path):
+-                        warnings.append(_standalone_warn_missing_media(media_path))
+-                        continue
+-                    valid_media.append(media_path)
++                valid_media, warnings = readable_standalone_media(media_files)
+                 async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60), **_sess_kw) as session:
+                     if valid_media:
+                         # Multipart payload_json + files[N]: thread + starter + attachments in one call.
+@@ -7237,9 +7210,10 @@ async def _standalone_send(
                  if warnings:
                      result["warnings"] = warnings
                  return result
@@ -577,45 +647,56 @@ index 8610268cb..7a8cb8989 100644
 +            url = f"{_DISCORD_API_BASE}/channels/{chat_id}/messages"
          async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30), **_sess_kw) as session:
              if message.strip() or not media_files:
-+                await check_delivery()
++                await authorize_standalone_delivery(pconfig, chat_id, token)
                  async with session.post(url, headers=json_headers, json={"content": message}, **_req_kw) as resp:
                      last_data, err = await _standalone_response_json_or_error(resp, "Discord API error")
                      if err:
-@@ -7252,6 +7335,7 @@ async def _standalone_send(
+@@ -7252,6 +7226,7 @@ async def _standalone_send(
                      warnings.append(_standalone_warn_missing_media(media_path))
                      if caption_pending:
                          try:
-+                            await check_delivery()
++                            await authorize_standalone_delivery(pconfig, chat_id, token)
                              async with session.post(
                                  url, headers=json_headers, json={"content": caption}, **_req_kw,
                              ) as resp:
-@@ -7260,6 +7344,8 @@ async def _standalone_send(
+@@ -7260,8 +7235,9 @@ async def _standalone_send(
                                          resp, _DISCORD_STANDALONE_JSON_BODY_LIMIT_BYTES,
                                      )
                                      caption_pending = False
-+                        except PermissionError:
-+                            raise
-                         except Exception:
-                             logger.warning("Discord caption-fallback send failed for missing media")
+-                        except Exception:
+-                            logger.warning("Discord caption-fallback send failed for missing media")
++                        except Exception as error:
++                            reraise_delivery_refusal(error)
++                            logger.warning("Discord caption-fallback send failed for missing media", exc_info=True)
                      continue
-@@ -7274,6 +7360,7 @@ async def _standalone_send(
+                 try:
+                     form = aiohttp.FormData()
+@@ -7274,6 +7250,7 @@ async def _standalone_send(
                          caption_pending = False
                      with open(media_path, "rb") as f:  # noqa: ASYNC230 -- file handle is streamed to the upload; a local open() is non-blocking in practice
                          form.add_field("files[0]", f, filename=filename)
-+                        await check_delivery()
++                        await authorize_standalone_delivery(pconfig, chat_id, token)
                          async with session.post(url, headers=auth_headers, data=form, **_req_kw) as resp:
                              data, err = await _standalone_response_json_or_error(resp, "Discord API error")
                              if err:
-@@ -7282,6 +7369,8 @@ async def _standalone_send(
-                                 warnings.append(warning)
+@@ -7283,6 +7260,7 @@ async def _standalone_send(
                                  continue
                              last_data = data
-+                except PermissionError:
-+                    raise
                  except Exception as e:
++                    reraise_delivery_refusal(e)
                      warning = send_error(f"Failed to send media {media_path}: {e}")["error"]
                      logger.error(warning)
-@@ -7380,6 +7469,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
+                     warnings.append(warning)
+@@ -7336,7 +7314,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
+     seeded_extra = {}
+     for key, env_key in _YAML_BOOL_ENV_KEYS:
+         if key in discord_cfg:
+-            seeded_extra[key] = discord_cfg[key]  # original type: the shared-key loop seeds bools as bools
++            seeded_extra[key] = discord_cfg[key]  # original type: the shared-key loop seeds bools
+             _env_default(env_key, str(discord_cfg[key]).lower())
+     platforms_cfg = yaml_cfg.get("platforms")
+     platform_extra_cfg = {}
+@@ -7380,6 +7358,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
          seeded_extra["missed_message_backfill"] = dict(backfill_cfg)
      _gate("ignored_channels", "DISCORD_IGNORED_CHANNELS", from_platform_extra=False)
      _gate("allowed_channels", "DISCORD_ALLOWED_CHANNELS", from_platform_extra=False)
@@ -623,6 +704,166 @@ index 8610268cb..7a8cb8989 100644
      _gate("no_thread_channels", "DISCORD_NO_THREAD_CHANNELS", from_platform_extra=False)
      # history_backfill: recover mention-gated channel messages between bot turns.
      if "history_backfill" in discord_cfg:
+diff --git a/plugins/platforms/discord/adapter_channel_policy.py b/plugins/platforms/discord/adapter_channel_policy.py
+new file mode 100644
+index 000000000..8fb1cd438
+--- /dev/null
++++ b/plugins/platforms/discord/adapter_channel_policy.py
+@@ -0,0 +1,82 @@
++# ABOUTME: Constrains Discord input and private delivery to the selected guild text channel.
++# ABOUTME: Retains native slash authorization and refuses separate thread or direct-message targets.
++from __future__ import annotations
++
++def _guild_channel_target(restriction, allowed: set):
++    """Return the selected channel, None for disabled mode, or empty for refusal."""
++    if restriction is None or str(restriction).lower() in {'false', '0', 'no'}:
++        return None
++    if str(restriction).lower() not in {'true', '1', 'yes'}:
++        return ''
++    if len(allowed) == 1 and all(value.isascii() and value.isdecimal() for value in allowed):
++        return next(iter(allowed))
++    return ''
++
++
++def standalone_channel_refusal(pconfig, chat_id, thread_id):
++    from gateway.platforms._shared import platform_gate_env
++    from plugins.platforms.discord.adapter import DiscordAdapter
++    extra = getattr(pconfig, "extra", None)
++    extra = extra if isinstance(extra, dict) else {}
++    restriction = platform_gate_env("DISCORD_GUILD_CHANNEL_ONLY") or extra.get("guild_channel_only")
++    allowed = platform_gate_env("DISCORD_ALLOWED_CHANNELS") or extra.get("allowed_channels")
++    selected = _guild_channel_target(restriction, DiscordAdapter._gate_csv_set(allowed))
++    return selected is not None and (str(chat_id) != selected or bool(thread_id))
++
++class DiscordChannelPolicyMixin:
++    async def _require_private_delivery(self, channel):
++        if self._guild_channel_restriction() is None:
++            return
++        if not self._guild_channel_allows(channel):
++            raise PermissionError('Private Discord delivery requires the selected guild text channel')
++        from plugins.platforms.discord.delivery import authorize_delivery
++        await authorize_delivery(str(channel.id), guild_id=str(channel.guild.id),
++                                 token=getattr(self._client.http, 'token', ''))
++
++
++    def _evaluate_slash_authorization(self, interaction):
++        if not self._guild_channel_allows(getattr(interaction, 'channel', None)):
++            return False, 'The bot accepts commands only in its selected guild text channel'
++        return super()._evaluate_slash_authorization(interaction)
++
++
++    def _guild_channel_restriction(self):
++        restriction = self._gate_raw('guild_channel_only', 'DISCORD_GUILD_CHANNEL_ONLY')
++        return _guild_channel_target(restriction, self._get_allowed_channels())
++
++
++    def _guild_channel_allows(self, channel) -> bool:
++        from plugins.platforms.discord.adapter import discord
++        selected = self._guild_channel_restriction()
++        return (selected is None or isinstance(channel, discord.TextChannel)
++                and channel.type == discord.ChannelType.text and str(channel.id) == selected)
++
++
++
++async def authorize_standalone_delivery(pconfig, chat_id, token):
++    from gateway.platforms._shared import platform_gate_env
++    from plugins.platforms.discord.adapter import DiscordAdapter
++    extra = getattr(pconfig, "extra", None)
++    extra = extra if isinstance(extra, dict) else {}
++    restriction = platform_gate_env("DISCORD_GUILD_CHANNEL_ONLY") or extra.get("guild_channel_only")
++    allowed = platform_gate_env("DISCORD_ALLOWED_CHANNELS") or extra.get("allowed_channels")
++    if _guild_channel_target(restriction, DiscordAdapter._gate_csv_set(allowed)) is not None:
++        from plugins.platforms.discord.delivery import authorize_delivery
++        await authorize_delivery(chat_id, token=token)
++
++
++def reraise_delivery_refusal(error):
++    if isinstance(error, PermissionError):
++        raise error
++
++
++def readable_standalone_media(media_files):
++    import os
++    from plugins.platforms.discord.adapter import _standalone_warn_missing_media
++    available, warnings = [], []
++    for path, _is_voice in media_files:
++        if os.path.exists(path):
++            available.append(path)
++        else:
++            warnings.append(_standalone_warn_missing_media(path))
++    return available, warnings
+diff --git a/plugins/platforms/discord/adapter_commands.py b/plugins/platforms/discord/adapter_commands.py
+new file mode 100644
+index 000000000..0c5bb17d6
+--- /dev/null
++++ b/plugins/platforms/discord/adapter_commands.py
+@@ -0,0 +1,66 @@
++# ABOUTME: Synchronizes Discord application commands without deleting current identities.
++# ABOUTME: Removes obsolete commands before additions and sends complete settings on update.
++from __future__ import annotations
++
++class DiscordCommandSyncMixin:
++    async def _safe_sync_slash_commands(self) -> dict[str, int]:
++        """Diff existing global commands and only mutate the commands that changed."""
++        summary = {"total": 0, "unchanged": 0, "updated": 0, "recreated": 0, "created": 0, "deleted": 0}
++        if not self._client:
++            return summary
++        tree = self._client.tree
++        app_id = getattr(self._client, "application_id", None) or getattr(getattr(self._client, "user", None), "id", None)
++        if not app_id:
++            raise RuntimeError("Discord application ID is unavailable for slash command sync")
++        desired_payloads = [command.to_dict(tree) for command in tree.get_commands()]
++        desired_by_key = {
++            (int(payload.get("type", 1) or 1), str(payload.get("name", "") or "").lower()): payload
++            for payload in desired_payloads
++        }
++        existing_commands = await tree.fetch_commands()
++        existing_by_key = {
++            (
++                int(getattr(getattr(command, "type", None), "value", getattr(command, "type", 1)) or 1),
++                str(command.name or "").lower(),
++            ): command
++            for command in existing_commands
++        }
++        http = self._client.http
++        mutation_count = 0
++
++        async def mutate(call, *args):
++            nonlocal mutation_count
++            if mutation_count:
++                await self._sleep_between_command_sync_mutations()
++            result = await call(*args)
++            mutation_count += 1
++            return result
++        # Delete obsolete commands FIRST: an upsert pushing the live total over 100 fails with
++        # 30032 (breaks ALL slash commands), so an app at the cap must shrink before creating.
++        obsolete_keys = set(existing_by_key.keys()) - set(desired_by_key.keys())
++        for key in obsolete_keys:
++            current = existing_by_key.pop(key)
++            await mutate(http.delete_global_command, app_id, current.id)
++            summary["deleted"] += 1
++        for key, desired in desired_by_key.items():
++            current = existing_by_key.pop(key, None)
++            if current is None:
++                await mutate(http.upsert_global_command, app_id, desired)
++                summary["created"] += 1
++                continue
++            current_existing_payload = self._existing_command_to_payload(current)
++            current_payload = self._canonicalize_app_command_payload(current_existing_payload)
++            desired_payload = self._canonicalize_app_command_payload(desired)
++            # Unset contexts inherit Discord's defaults; an explicit server value is not a change.
++            for field in ("contexts", "integration_types"):
++                if desired.get(field) is None:
++                    desired_payload[field] = current_payload[field]
++            if current_payload == desired_payload:
++                summary["unchanged"] += 1
++                continue
++            # The same-name/type upsert carries every setting and preserves the command ID.
++            await mutate(http.upsert_global_command, app_id, desired)
++            summary["updated"] += 1
++        summary["total"] = len(desired_payloads)
++        return summary
++
 diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
 index 73e3d3de3..0a857e4fc 100644
 --- a/plugins/platforms/discord/adapter_media.py

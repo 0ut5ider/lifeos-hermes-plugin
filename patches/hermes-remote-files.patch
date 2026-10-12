@@ -13,7 +13,7 @@ index 36d7abffb..109b19e3f 100755
    fi
 diff --git a/tests/test_lifeos_batch_schema.py b/tests/test_lifeos_batch_schema.py
 new file mode 100644
-index 000000000..e7a092a61
+index 000000000..0a819c1ea
 --- /dev/null
 +++ b/tests/test_lifeos_batch_schema.py
 @@ -0,0 +1,50 @@
@@ -46,7 +46,7 @@ index 000000000..e7a092a61
 +            code = ('import json\nfrom tools.file_tools import _patch_schema_overrides\n'
 +                    'print(json.dumps(_patch_schema_overrides()))\n')
 +            result = subprocess.run([sys.executable, '-c', code], env=env, cwd=home,
-+                                    text=True, capture_output=True, timeout=20)
++                                    text=True, capture_output=True, timeout=20, check=False)
 +            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 +            self.assertEqual(result.stderr, '')
 +            return json.loads(result.stdout)
@@ -231,17 +231,24 @@ index 26220c563..3f7282c48 100644
      def _matches_size(data: bytes, size_segment: str) -> bool:
          """Whether DATA is exactly as long as the file's own ``wc -c``. Noise inside the payload
 diff --git a/tools/file_tools.py b/tools/file_tools.py
-index 237d97d87..da292ebce 100644
+index 237d97d87..b24fd9ecd 100644
 --- a/tools/file_tools.py
 +++ b/tools/file_tools.py
-@@ -1,4 +1,6 @@
+@@ -1,10 +1,13 @@
  #!/usr/bin/env python3
 +# ABOUTME: Exposes file tools with local and backend-aware write guards.
 +# ABOUTME: Refuses whole-file overwrites when a task's remote view is stale.
  """File Tools Module - LLM agent file manipulation tools.
  
  Companions: ``file_tools_paths`` (task-aware resolution), ``file_tools_write_guards``
-@@ -39,8 +41,9 @@ from tools.file_tools_read_tracking import (
+ (write-side guards), ``file_tools_read_tracking`` (per-task dedup / loop-detection /
+ staleness state).
+ """
++from tools.file_tools_remote_tracking import _remote_baseline_key, remote_read_digest, record_remote_read
+ 
+ import base64
+ import errno
+@@ -39,8 +42,9 @@ from tools.file_tools_read_tracking import (
      _check_not_found_cache, _known_full_content_sha256,
      _file_metadata, _file_version,
      _mark_full_write_baseline, _mark_verification_stale, _note_read_coverage, _patch_failure_lock,
@@ -252,46 +259,28 @@ index 237d97d87..da292ebce 100644
  
  logger = logging.getLogger(__name__)
  
-@@ -375,6 +378,12 @@ def _get_file_ops(task_id: str = "default") -> ShellFileOperations:
-     return file_ops
- 
- 
-+def _remote_baseline_key(file_ops: ShellFileOperations, resolved: str) -> tuple[str, str]:
-+    """Bind remote read knowledge to one backend session and its target path."""
-+    owner = getattr(file_ops.env, "_session_id", None) or str(id(file_ops.env))
-+    return str(owner), resolved
-+
-+
- def clear_file_ops_cache(task_id: str | None = None):
-     """Clear file-operation state for a finished task, or all tasks."""
-     with _file_ops_lock:
-@@ -678,7 +687,9 @@ def read_file_tool(path: str, offset: int = 1, limit: int = DEFAULT_READ_LIMIT,
+@@ -678,7 +682,9 @@ def read_file_tool(path: str, offset: int = 1, limit: int = DEFAULT_READ_LIMIT,
          # Same rule as skill_view: the review fork shares the parent's task_id and its
          # read-before-write guard needs a real read, which the stub path never records (#95976).
          file_ops = _get_file_ops(task_id)
 -        version_before = _file_metadata(resolved_str) if _file_ops_uses_host_paths(file_ops) else None
 +        host_paths = _file_ops_uses_host_paths(file_ops)
 +        version_before = _file_metadata(resolved_str) if host_paths else None
-+        remote_before = file_ops.file_digest(resolved_str) if not host_paths and isinstance(file_ops, ShellFileOperations) else None
++        remote_before = remote_read_digest(file_ops, resolved_str, host_paths)
          if (cached_version is not None and not is_background_review()
                  and version_before == cached_version and content_served_in_generation):
              return _dedup_stub_or_block(task_data, dedup_key, path)
-@@ -738,6 +749,14 @@ def read_file_tool(path: str, offset: int = 1, limit: int = DEFAULT_READ_LIMIT,
+@@ -738,6 +744,9 @@ def read_file_tool(path: str, offset: int = 1, limit: int = DEFAULT_READ_LIMIT,
                                          end_line=end_line, total_lines=total_lines,
                                          version_before=version_before,
                                          snapshot=getattr(result, "_snapshot", None))
-+        if remote_before is not None and remote_before[0] == "file":
-+            remote_after = file_ops.file_digest(resolved_str)
-+            if remote_after == remote_before:
-+                _record_remote_read(
-+                    task_id, _remote_baseline_key(file_ops, resolved_str), remote_before[1], start=offset,
-+                    end=end_line, total_lines=total_lines,
-+                    redacted=redacted or bool(result_dict.get("truncated_lines")),
-+                )
++        record_remote_read(file_ops, remote_before, task_id, resolved_str, start=offset,
++                           end=end_line, total_lines=total_lines,
++                           redacted=redacted or bool(result_dict.get("truncated_lines")))
          if count >= 4:
              return tool_error(
                  f"BLOCKED: You have read this exact file region {count} times in a row. "
-@@ -893,12 +912,27 @@ def write_file_tool(path: str, content: str, task_id: str = "default",
+@@ -893,12 +902,27 @@ def write_file_tool(path: str, content: str, task_id: str = "default",
              # A whole-file overwrite of content this task never saw, or that
              # changed since, is refused HERE — before the write — instead of
              # warning after the clobber (#65604). Nothing below runs.
@@ -321,7 +310,7 @@ index 237d97d87..da292ebce 100644
              result_dict = result.to_dict()
              if warnings:
                  result_dict["_warning"] = warnings[0]
-@@ -916,6 +950,13 @@ def write_file_tool(path: str, content: str, task_id: str = "default",
+@@ -916,6 +940,13 @@ def write_file_tool(path: str, content: str, task_id: str = "default",
                      # Own write = current whole-file content: consecutive
                      # same-task writes stay unblocked (patch_tool carries it).
                      _mark_full_write_baseline(_resolved, task_id, getattr(result, "_content_sha256", None))
@@ -335,7 +324,7 @@ index 237d97d87..da292ebce 100644
                  _note_edited(task_id, [path], path_to_resolved, session_id)
          return json.dumps(result_dict, ensure_ascii=False)
      except Exception as e:
-@@ -1192,10 +1233,11 @@ PATCH_SCHEMA = {
+@@ -1192,10 +1223,11 @@ PATCH_SCHEMA = {
      "name": "patch",
      # BASE = replace-only (what nearly every model family was trained on).
      # The V4A patch mode (mode + patch params, dual-mode description) is
@@ -349,7 +338,7 @@ index 237d97d87..da292ebce 100644
      # from any model regardless (replay compat + strong models that know
      # V4A anyway): mode defaults to 'replace' when omitted.
      "description": (
-@@ -1396,11 +1438,14 @@ registry.register(name="read_file", toolset="file", schema=READ_FILE_SCHEMA, han
+@@ -1396,11 +1428,14 @@ registry.register(name="read_file", toolset="file", schema=READ_FILE_SCHEMA, han
  registry.register(name="write_file", toolset="file", schema=WRITE_FILE_SCHEMA, handler=_handle_write_file, check_fn=_check_file_reqs, emoji="✍️", max_result_size_chars=100_000)
  def _patch_schema_overrides():
      """Layer the V4A patch mode onto the base replace-only schema for
@@ -444,3 +433,27 @@ index 1054a4222..f98d6abf3 100644
  def _read_mtime_drifted(filepath: str, task_id: str) -> bool:
      """True when the file's mtime changed since this task last read it. False when
      never read, fresh, or unstattable (a deleted file is the write's problem)."""
+diff --git a/tools/file_tools_remote_tracking.py b/tools/file_tools_remote_tracking.py
+new file mode 100644
+index 000000000..0d25d522d
+--- /dev/null
++++ b/tools/file_tools_remote_tracking.py
+@@ -0,0 +1,18 @@
++# ABOUTME: Records a stable full-read digest for one remote file backend.
++# ABOUTME: Refuses coverage when the remote content changes during the read.
++def _remote_baseline_key(file_ops, resolved: str) -> tuple[str, str]:
++    """Bind remote read knowledge to one backend session and its target path."""
++    owner = getattr(file_ops.env, "_session_id", None) or str(id(file_ops.env))
++    return str(owner), resolved
++
++
++def remote_read_digest(file_ops, resolved, host_paths):
++    from tools.file_operations import ShellFileOperations
++    return file_ops.file_digest(resolved) if not host_paths and isinstance(file_ops, ShellFileOperations) else None
++
++
++def record_remote_read(file_ops, before, task_id, resolved, *, start, end, total_lines, redacted):
++    from tools.file_tools_read_tracking import _record_remote_read
++    if before is not None and before[0] == "file" and file_ops.file_digest(resolved) == before:
++        _record_remote_read(task_id, _remote_baseline_key(file_ops, resolved), before[1],
++                            start=start, end=end, total_lines=total_lines, redacted=redacted)

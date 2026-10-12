@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.0-dev.1
+
+This development candidate is not a qualified production release.
+
+- Prepare Hermes v0.21.7 at commit 71d34bad1045610252eda02ee79549436896e784.
+- Use ten Hermes patch groups and twenty-five LifeOS patch groups.
+- Verify complete Discord morning windows and the active Pulse schedule.
+- Add the standalone LifeOS release manager for complete package preparation and coordinated updates.
+- Keep the accepted 0.3.1 package on the daily server during qualification.
+
+
 This file records changes to the LifeOS plugin for Hermes. Version numbers use
 `MAJOR.MINOR.PATCH`. The [VERSION](VERSION) file records the current plugin version.
 Keep it equal to the version in both plugin manifests.

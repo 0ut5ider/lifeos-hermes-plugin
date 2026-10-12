@@ -23,3 +23,13 @@ Ten of the eleven existing Hermes patches fail direct application checks against
 The port now prepares and validates the exact v0.21.7 source. Patch reconstruction passes with 117 subtests. The official native runner passes 469 tests across 33 files, with no failures or skipped SSH cases. The target uses ten Hermes patch groups and twenty-five LifeOS patch groups. The unused protected-instruction patch remains as an inactive historical file. The upstream protected-file behavior passes unattended and interactive controls.
 
 Compatibility qualification still needs the frozen dependency generation, combined integration checks, and installed development evaluation. Installation and update work remains in progress.
+
+## Candidate checkpoint
+
+The development version is 0.4.0-dev.1. The expanded official native runner passes 716 tests across 38 files. All twelve upstream checks pass. Topical native siblings retain public facade paths and the required policy behavior. The regenerated bundle contains ten groups covering 92 changed files.
+
+The standalone release manager supplies native Hermes CLI registration, release download, package validation, frozen dependency preparation, a program transaction, a worker prototype, and an authenticated dashboard prototype. Twenty-nine focused tests and eleven subtests pass. The checks cover version identity, the catalog, stage validation, program recovery, and CLI registration/status. Three focused native mount checks pass, including retained rollback, later-edit refusal, and ordinary credential-snapshot pruning.
+
+The full worker and its dashboard approval flow are not qualified. Fresh installation, actual second-release updates, dependency failure, process interruption, later data, and installed rollback remain acceptance requirements. The current complete-package builder and current native dashboard asset also remain unfinished. The first combined run has seven fixture/assertion failures; its relevant fixtures are revised, but the full combined repeat remains required.
+
+Neither live server changes. Installed development qualification has not begun. The continuation details are in RESUME.md. This checkpoint is not a release qualification or deployment receipt.

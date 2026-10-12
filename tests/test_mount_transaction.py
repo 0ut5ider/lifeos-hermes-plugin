@@ -89,6 +89,26 @@ class MountTransactionTests(unittest.TestCase):
         self.assertEqual(after['file_tools']['patch_format'], 'v4a')
         self.assertEqual(after.get('model'), before.get('model'))
 
+    def test_completed_mount_can_restore_its_exact_prior_profile(self):
+        before = (self.profile / 'config.yaml').read_bytes()
+        self.transaction().execute(self.environment, self.fixture.fixture.memory.bun,
+                                   str(self.hermes), retain_for_rollback=True)
+        result = self.transaction().restore_completed()
+        self.assertEqual(result['state'], 'rolled_back')
+        self.assertEqual((self.profile / 'config.yaml').read_bytes(), before)
+
+    def test_completed_mount_restore_preserves_a_later_owner_edit(self):
+        from lifeos_hook_bridge.mount_transaction import MountError
+        self.transaction().execute(self.environment, self.fixture.fixture.memory.bun,
+                                   str(self.hermes), retain_for_rollback=True)
+        config = self.profile / 'config.yaml'
+        config.write_bytes(config.read_bytes() + b'\n# Later owner edit\n')
+        later = config.read_bytes()
+        with self.assertRaises(MountError):
+            self.transaction().restore_completed()
+        self.assertEqual(config.read_bytes(), later)
+        self.assertEqual(self.transaction().status()['state'], 'committed')
+
     def test_mount_preserves_an_explicit_file_tool_capability(self):
         from ruamel.yaml import YAML
         yaml = YAML(typ='safe')

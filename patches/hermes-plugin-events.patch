@@ -56,10 +56,18 @@ index 415d22fa1..679e30477 100644
      message = f"deleted memory from {name}" if replacement is None else f"updated memory in {name}"
  
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
-index a652179cd..227f7fbf9 100644
+index a652179cd..928140afa 100644
 --- a/hermes_cli/plugins.py
 +++ b/hermes_cli/plugins.py
-@@ -32,7 +32,7 @@ from hermes_constants import get_hermes_home, get_process_hermes_home, hermes_ho
+@@ -9,6 +9,7 @@ and an ``__init__.py`` exposing ``register(ctx)``. Plugins register callbacks fo
+ """
+ 
+ from __future__ import annotations
++from hermes_cli.plugins_policy import has_hook, iter_hook_callbacks, get_pre_turn_stop_continue_message, required_middleware_callback
+ 
+ import asyncio
+ import contextvars
+@@ -32,7 +33,7 @@ from hermes_constants import get_hermes_home, get_process_hermes_home, hermes_ho
  from registration_lifecycle import replacement_coordinator
  from utils import env_var_enabled
  from hermes_cli.config import load_config_readonly
@@ -68,7 +76,7 @@ index a652179cd..227f7fbf9 100644
  from hermes_cli.plugin_capabilities import plugin_capability_granted
  from hermes_cli.relay_plugin_cutover import RELAY_PLUGINS_CONFIG_ENV, legacy_relay_plugin_keys
  # Sibling modules' names are re-exported here (origin) so plugins and tests keep one import path.
-@@ -108,15 +108,24 @@ _install_plugin_debug_handler()
+@@ -108,15 +109,24 @@ _install_plugin_debug_handler()
  
  VALID_HOOKS: set[str] = {
      "pre_tool_call", "post_tool_call", "transform_terminal_output", "transform_tool_result",
@@ -94,7 +102,7 @@ index a652179cd..227f7fbf9 100644
      # pre/post_auxiliary_call: once per physical provider attempt of an auxiliary LLM call
      # (agent/auxiliary_hooks.py — titling, compression, MoA, vision, approval, ...). Same payload
      # shape as pre/post_api_request plus ``aux_task``; distinct events so turn-scoped
-@@ -129,7 +138,7 @@ VALID_HOOKS: set[str] = {
+@@ -129,7 +139,7 @@ VALID_HOOKS: set[str] = {
      # "should_rotate_credential"/"should_fallback": bool, "message": str, "error_context": dict}.
      # Run-all-then-pick-first (see get_plugin_error_classification). Privacy: error_message/
      # error_body may be unredacted.
@@ -103,7 +111,7 @@ index a652179cd..227f7fbf9 100644
      "on_session_finalize", "on_session_reset",
      # on_skill_lifecycle: successful skill lifecycle facts (local skill name visible to plugins).
      "on_skill_lifecycle", "subagent_start", "subagent_stop",
-@@ -934,9 +943,22 @@ class PluginContext:
+@@ -934,9 +944,11 @@ class PluginContext:
          """Register a lifecycle hook callback (unknown names warn but are still stored)."""
          return self._track_callback("hook", hook_name, callback, self._manager._hooks, VALID_HOOKS)
  
@@ -113,22 +121,31 @@ index a652179cd..227f7fbf9 100644
 -        wrap the callback). Unknown kinds warn but are stored."""
 +        wrap the callback). Required middleware propagates failures before execution continues.
 +        Unknown kinds warn but are stored."""
-+        if type(required) is not bool:
-+            raise TypeError("required must be a boolean")
-+        if required:
-+            if (inspect.iscoroutinefunction(callback) or inspect.isasyncgenfunction(callback)
-+                    or inspect.iscoroutinefunction(getattr(callback, "__call__", None))
-+                    or inspect.isasyncgenfunction(getattr(callback, "__call__", None))):
-+                raise TypeError("Required middleware must be synchronous")
-+            original = callback
-+            @wraps(original)
-+            def callback(**kwargs):
-+                return original(**kwargs)
-+            callback._hermes_required_middleware = True
++        callback = required_middleware_callback(callback, required)
          return self._track_callback(
              "middleware", kind, callback, self._manager._middleware, VALID_MIDDLEWARE
          )
-@@ -1995,15 +2017,15 @@ def _get_pre_tool_call_directive_details(
+@@ -1909,19 +1921,6 @@ def has_middleware(kind: str) -> bool:
+     return bool(getattr(manager, "_middleware", {}).get(kind))
+ 
+ 
+-def has_hook(hook_name: str) -> bool:
+-    """True when a loaded plugin handles a hook (lazy-discovers first, like :func:`has_middleware`).
+-
+-    Lazy-discovers first — same gate-before-invoke rationale as :func:`has_middleware` (tracking #64178).
+-    """
+-    return _delivery_manager().has_hook(hook_name)
+-
+-
+-def iter_hook_callbacks(hook_name: str) -> tuple[Callable, ...]:
+-    """Return a stable snapshot of callbacks registered for a hook."""
+-    return get_plugin_manager().iter_hook_callbacks(hook_name)
+-
+-
+ def fire_pre_command_hook(
+     *, surface: str, command: str, alias_used: str, args_raw: str,
+     session_key: Optional[str] = None, platform: Optional[str] = None,
+@@ -1995,15 +1994,15 @@ def _get_pre_tool_call_directive_details(
          if not isinstance(result, dict):
              continue
          action = result.get("action")
@@ -149,42 +166,8 @@ index a652179cd..227f7fbf9 100644
          if action not in ("block", "approve"):
              continue
          message = result.get("message")
-@@ -2112,6 +2134,33 @@ def get_pre_verify_continue_message(
-     return None
- 
- 
-+def get_pre_turn_stop_continue_message(
-+    *, session_id: str = "", platform: str = "", model: str = "", reasoning_effort: str = "",
-+    provider: str = "", attempt: int = 0, final_response: str = "",
-+) -> Optional[str | Dict[str, str]]:
-+    """Ask plugins whether a candidate answer needs another agent turn."""
-+    results = invoke_hook(
-+        "pre_turn_stop", session_id=session_id, platform=platform, model=model,
-+        reasoning_effort=reasoning_effort, provider=provider, attempt=attempt, final_response=final_response,
-+    )
-+    message = None
-+    fail_at_limit = False
-+    for result in results:
-+        if not isinstance(result, dict):
-+            continue
-+        action = str(result.get("action") or result.get("decision") or "").strip().lower()
-+        feedback = result.get("message") or result.get("reason")
-+        if action == "fail":
-+            return {"action": "fail", "message": str(feedback or "Required final check failed")}
-+        if action in ("continue", "block") and isinstance(feedback, str) and feedback.strip():
-+            if message is None:
-+                message = feedback.strip()
-+            fail_at_limit = fail_at_limit or result.get("on_limit") == "fail"
-+    if message is not None and fail_at_limit:
-+        return {"message": message, "on_limit": "fail"}
-+    return message
-+
-+
- def get_plugin_error_classification(
-     *, provider: str = "", model: str = "", status_code: Optional[int] = None, error_type: str = "",
-     error_code: str = "", error_message: str = "", error_body: Optional[dict[str, Any]] = None,
 diff --git a/hermes_cli/plugins_dispatch.py b/hermes_cli/plugins_dispatch.py
-index 3ca7e6baa..4048f9ca1 100644
+index 3ca7e6baa..3c65b6c41 100644
 --- a/hermes_cli/plugins_dispatch.py
 +++ b/hermes_cli/plugins_dispatch.py
 @@ -16,6 +16,7 @@ import re
@@ -207,7 +190,7 @@ index 3ca7e6baa..4048f9ca1 100644
 +    "pre_command_approval": "deny", "pre_turn_stop": "fail",
 +    "pre_message_delivery": "block",
 +}
-+_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: Set[str] = set(_HOOK_POLICY_FAILURE_ACTIONS)
++_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: set[str] = set(_HOOK_POLICY_FAILURE_ACTIONS)
 +_REQUIRED_POLICY_HOOKS = {"pre_prompt_admission", "pre_command_approval", "pre_turn_stop", "pre_message_delivery"}
  # Documented parent-thread serialization contract — never run on a timeout worker (hooks.md).
  _HOOK_CALLER_THREAD_HOOKS: set[str] = {"subagent_stop"}
@@ -220,7 +203,7 @@ index 3ca7e6baa..4048f9ca1 100644
 +    return {"action": _HOOK_POLICY_FAILURE_ACTIONS[hook_name],
              "message": f"{hook_name} plugin callback {callback_name} raised {type(exc).__name__}: {str(exc)[:200]}"}
  
-+def _policy_timeout_directive(hook_name: str) -> Dict[str, str]:
++def _policy_timeout_directive(hook_name: str) -> dict[str, str]:
 +    message = (_PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE if hook_name == "pre_tool_call"
 +               else f"{hook_name} plugin callback timed out or is still running")
 +    return {"action": _HOOK_POLICY_FAILURE_ACTIONS[hook_name], "message": message}
@@ -253,10 +236,9 @@ index 3ca7e6baa..4048f9ca1 100644
          # unrelated adapter payloads into one monolithic compatibility contract.
          if hook_name != "gateway_platform_event":
              kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
--        results: list[Any] = []
 +        if hook_name in _REQUIRED_POLICY_HOOKS:
 +            kwargs.setdefault("policy_call_id", uuid.uuid4().hex)
-+        results: List[Any] = []
+         results: list[Any] = []
          timeout = _resolve_hook_callback_timeout()
 +        if hook_name in _REQUIRED_POLICY_HOOKS and timeout <= 0:
 +            timeout = 30.0
@@ -284,10 +266,9 @@ index 3ca7e6baa..4048f9ca1 100644
          from hermes_cli.plugins import _resolve_hook_callback_timeout
          if hook_name != "gateway_platform_event":
              kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
--        results: list[Any] = []
 +        if hook_name in _REQUIRED_POLICY_HOOKS:
 +            kwargs.setdefault("policy_call_id", uuid.uuid4().hex)
-+        results: List[Any] = []
+         results: list[Any] = []
          timeout = _resolve_hook_callback_timeout()
 +        if hook_name in _REQUIRED_POLICY_HOOKS and timeout <= 0:
 +            timeout = 30.0
@@ -337,8 +318,77 @@ index 3ca7e6baa..4048f9ca1 100644
 +                if getattr(cb, "_hermes_required_middleware", False):
 +                    raise
          return results
+diff --git a/hermes_cli/plugins_policy.py b/hermes_cli/plugins_policy.py
+new file mode 100644
+index 000000000..be892756c
+--- /dev/null
++++ b/hermes_cli/plugins_policy.py
+@@ -0,0 +1,63 @@
++# ABOUTME: Resolves scoped plugin policy callbacks and explicit final-check directives.
++# ABOUTME: Marks synchronous required middleware without changing facade lookup behavior.
++from __future__ import annotations
++import inspect
++from functools import wraps
++from typing import Callable, Optional
++
++def required_middleware_callback(callback, required):
++    if type(required) is not bool:
++        raise TypeError("required must be a boolean")
++    if not required:
++        return callback
++    call = type(callback).__call__ if callable(callback) else None
++    if any(check(value) for check in (inspect.iscoroutinefunction, inspect.isasyncgenfunction) for value in (callback, call)):
++        raise TypeError("Required middleware must be synchronous")
++    @wraps(callback)
++    def required_callback(**kwargs):
++        return callback(**kwargs)
++    required_callback._hermes_required_middleware = True
++    return required_callback
++
++def has_hook(hook_name: str) -> bool:
++    """True when a loaded plugin handles a hook (lazy-discovers first, like :func:`has_middleware`).
++
++    Lazy-discovers first — same gate-before-invoke rationale as :func:`has_middleware` (tracking #64178).
++    """
++    from hermes_cli.plugins import _delivery_manager
++    return _delivery_manager().has_hook(hook_name)
++
++
++def iter_hook_callbacks(hook_name: str) -> tuple[Callable, ...]:
++    """Return a stable snapshot of callbacks registered for a hook."""
++    from hermes_cli.plugins import get_plugin_manager
++    return get_plugin_manager().iter_hook_callbacks(hook_name)
++
++
++def get_pre_turn_stop_continue_message(
++    *, session_id: str = "", platform: str = "", model: str = "", reasoning_effort: str = "",
++    provider: str = "", attempt: int = 0, final_response: str = "",
++) -> Optional[str | dict[str, str]]:
++    """Ask plugins whether a candidate answer needs another agent turn."""
++    from hermes_cli.plugins import invoke_hook
++    results = invoke_hook(
++        "pre_turn_stop", session_id=session_id, platform=platform, model=model,
++        reasoning_effort=reasoning_effort, provider=provider, attempt=attempt, final_response=final_response,
++    )
++    message = None
++    fail_at_limit = False
++    for result in results:
++        if not isinstance(result, dict):
++            continue
++        action = str(result.get("action") or result.get("decision") or "").strip().lower()
++        feedback = result.get("message") or result.get("reason")
++        if action == "fail":
++            return {"action": "fail", "message": str(feedback or "Required final check failed")}
++        if action in ("continue", "block") and isinstance(feedback, str) and feedback.strip():
++            if message is None:
++                message = feedback.strip()
++            fail_at_limit = fail_at_limit or result.get("on_limit") == "fail"
++    if message is not None and fail_at_limit:
++        return {"message": message, "on_limit": "fail"}
++    return message
++
 diff --git a/model_tools.py b/model_tools.py
-index a4ef18942..6e0dc4173 100644
+index a4ef18942..3c9393b4a 100644
 --- a/model_tools.py
 +++ b/model_tools.py
 @@ -1,3 +1,5 @@
@@ -385,7 +435,7 @@ index a4ef18942..6e0dc4173 100644
 +            if additions:
 +                return str(transformed) + "\n\n" + "\n\n".join(additions)
 +    except Exception as _hook_err:
-+        logger.debug("augment_tool_result hook error: %s", _hook_err)
++        logger.debug("augment_tool_result hook error: %s", _hook_err, exc_info=True)
 +    return transformed
  
  
@@ -468,16 +518,59 @@ index 000000000..c2dea9efe
 +    _apply_transform_tool_result_hook("terminal", {"command": "false"}, "{\"error\":\"failed\"}", 2, _CallIds(session_id="s2"))
 +    assert seen["status"] == "error"
 +    assert seen["error_message"] == "failed"
-diff --git a/tests/hermes_cli/test_plugins.py b/tests/hermes_cli/test_plugins.py
-index 57fb3ec60..0ad488160 100644
---- a/tests/hermes_cli/test_plugins.py
-+++ b/tests/hermes_cli/test_plugins.py
-@@ -2714,3 +2714,17 @@ class TestAsyncHookOnCallerLoop:
-             results = asyncio.run(mgr.ainvoke_hook("pre_gateway_dispatch", event="e", gateway="g"))
-         assert results == [{"seen": "e"}, {"seen_async": "e"}]
-         assert "async plugin blew up" in caplog.text
+diff --git a/tests/hermes_cli/test_plugin_async_dispatch.py b/tests/hermes_cli/test_plugin_async_dispatch.py
+new file mode 100644
+index 000000000..6ddb65091
+--- /dev/null
++++ b/tests/hermes_cli/test_plugin_async_dispatch.py
+@@ -0,0 +1,39 @@
++# ABOUTME: Checks asynchronous lifecycle hook dispatch on the current event loop.
++# ABOUTME: Preserves narrow callback arguments and reports observer failures without losing siblings.
++import logging
++from hermes_cli.plugins import PluginManager
 +
++class TestAsyncHookOnCallerLoop:
++    """``ainvoke_hook`` awaits ``async def`` callbacks on the caller's own event loop.
 +
++    #109196 made async callbacks run under ``invoke_hook`` by bridging them through a helper
++    thread; the caller blocks in ``done.wait()`` until the callback finishes. For a hook fired
++    from a coroutine (``pre_gateway_dispatch`` on the gateway loop) that stalls the loop, and a
++    callback that awaits anything scheduled on that loop can never complete. The async twin keeps
++    the callback on the caller's loop.
++    """
++
++    def test_narrow_legacy_signature_still_gets_only_its_fields(self, caplog):
++        """Payload narrowing and failure isolation are shared with ``invoke_hook``: a callback
++        declaring only ``event`` must not receive the additive ``gateway`` /
++        ``telemetry_schema_version`` fields, and a raising callback is reported once and skipped
++        without losing its siblings' results."""
++        import asyncio
++
++        mgr = PluginManager()
++
++        def narrow(event):
++            return {"seen": event}
++
++        async def boom(**_kw):
++            raise RuntimeError("async plugin blew up")
++
++        async def narrow_async(event):
++            return {"seen_async": event}
++
++        mgr._hooks.setdefault("pre_gateway_dispatch", []).extend([narrow, boom, narrow_async])
++        with caplog.at_level(logging.WARNING, logger="hermes_cli.plugins"):
++            results = asyncio.run(mgr.ainvoke_hook("pre_gateway_dispatch", event="e", gateway="g"))
++        assert results == [{"seen": "e"}, {"seen_async": "e"}]
++        assert "async plugin blew up" in caplog.text
++
+diff --git a/tests/hermes_cli/test_plugin_policy_arguments.py b/tests/hermes_cli/test_plugin_policy_arguments.py
+new file mode 100644
+index 000000000..5cf93ff98
+--- /dev/null
++++ b/tests/hermes_cli/test_plugin_policy_arguments.py
+@@ -0,0 +1,15 @@
++# ABOUTME: Verifies that policy approval retains a requested tool argument replacement.
++# ABOUTME: Checks the real native directive parser through its facade.
 +def test_approval_directive_keeps_updated_tool_arguments(monkeypatch):
 +    from hermes_cli.plugins import _get_pre_tool_call_directive_details
 +    monkeypatch.setattr(
@@ -490,12 +583,54 @@ index 57fb3ec60..0ad488160 100644
 +    details = _get_pre_tool_call_directive_details("write_file", {"path": "/tmp/original.txt"})
 +    assert details.action == "approve"
 +    assert details.modified_args == {"path": "/tmp/changed.txt"}
++
+diff --git a/tests/hermes_cli/test_plugins.py b/tests/hermes_cli/test_plugins.py
+index 57fb3ec60..e8e6645a7 100644
+--- a/tests/hermes_cli/test_plugins.py
++++ b/tests/hermes_cli/test_plugins.py
+@@ -2681,36 +2681,5 @@ class TestDispatchToolWithoutCliRef:
+             registry.deregister("_test_dispatch_probe")
+ 
+ 
+-class TestAsyncHookOnCallerLoop:
+-    """``ainvoke_hook`` awaits ``async def`` callbacks on the caller's own event loop.
+-
+-    #109196 made async callbacks run under ``invoke_hook`` by bridging them through a helper
+-    thread; the caller blocks in ``done.wait()`` until the callback finishes. For a hook fired
+-    from a coroutine (``pre_gateway_dispatch`` on the gateway loop) that stalls the loop, and a
+-    callback that awaits anything scheduled on that loop can never complete. The async twin keeps
+-    the callback on the caller's loop.
+-    """
+-
+-    def test_narrow_legacy_signature_still_gets_only_its_fields(self, caplog):
+-        """Payload narrowing and failure isolation are shared with ``invoke_hook``: a callback
+-        declaring only ``event`` must not receive the additive ``gateway`` /
+-        ``telemetry_schema_version`` fields, and a raising callback is reported once and skipped
+-        without losing its siblings' results."""
+-        import asyncio
+-
+-        mgr = PluginManager()
+-
+-        def narrow(event):
+-            return {"seen": event}
+ 
+-        async def boom(**_kw):
+-            raise RuntimeError("async plugin blew up")
+ 
+-        async def narrow_async(event):
+-            return {"seen_async": event}
+-
+-        mgr._hooks.setdefault("pre_gateway_dispatch", []).extend([narrow, boom, narrow_async])
+-        with caplog.at_level(logging.WARNING, logger="hermes_cli.plugins"):
+-            results = asyncio.run(mgr.ainvoke_hook("pre_gateway_dispatch", event="e", gateway="g"))
+-        assert results == [{"seen": "e"}, {"seen_async": "e"}]
+-        assert "async plugin blew up" in caplog.text
 diff --git a/tests/hermes_cli/test_required_policy_hooks.py b/tests/hermes_cli/test_required_policy_hooks.py
 new file mode 100644
-index 000000000..45555fcba
+index 000000000..408307bae
 --- /dev/null
 +++ b/tests/hermes_cli/test_required_policy_hooks.py
-@@ -0,0 +1,76 @@
+@@ -0,0 +1,78 @@
 +# ABOUTME: Verifies required policy callbacks stop operations on failure.
 +# ABOUTME: Exercises bounded synchronous and asynchronous plugin dispatch.
 +
@@ -531,8 +666,9 @@ index 000000000..45555fcba
 +def test_timeout_and_suppression_never_admit_a_late_grant(name, action, asynchronous, monkeypatch, caplog):
 +    manager = PluginManager()
 +    completed = threading.Event()
++    released = threading.Event()
 +    def slow(**kwargs):
-+        time.sleep(0.15)
++        released.wait(1)
 +        completed.set()
 +        return {"action": "allow"}
 +    manager._hooks[name] = [slow]
@@ -544,6 +680,7 @@ index 000000000..45555fcba
 +    assert time.monotonic() - started < 0.12
 +    second = asyncio.run(dispatch()) if asynchronous else manager.invoke_hook(name)
 +    assert first[0]["action"] == second[0]["action"] == action
++    released.set()
 +    assert completed.wait(1)
 +    assert first[0]["action"] == action
 +    assert "timed out" in caplog.text
@@ -685,7 +822,7 @@ index 810fd962a..45fc7e658 100644
      assert out == "first"
  
 diff --git a/tools/memory_tool.py b/tools/memory_tool.py
-index a6e8a7225..0ae0b53bd 100644
+index a6e8a7225..63e59de13 100644
 --- a/tools/memory_tool.py
 +++ b/tools/memory_tool.py
 @@ -7,6 +7,7 @@ Single `memory` tool: add/replace/remove or a batch `operations` list."""
@@ -725,13 +862,7 @@ index a6e8a7225..0ae0b53bd 100644
      return _applied(_STORE_ACTIONS[action][0](store, target, content, old_text))
  
  
--def get_builtin_memory_config(config: Optional[dict[str, Any]] = None) -> dict[str, Any]:
--    """Normalized ``memory`` config section ({} when missing/malformed → flags default to
--    enabled). ``agent_init`` reads the same section so availability and store cannot diverge."""
--    if config is None:
--        try:
--            from hermes_cli.config import load_config_readonly
-+def _memory_section(config: Any) -> Optional[Dict[str, Any]]:
++def _memory_section(config: Any) -> Optional[dict[str, Any]]:
 +    from hermes_cli.config_read_errors import FailedConfigRead
 +    if isinstance(config, FailedConfigRead) or not isinstance(config, dict):
 +        return None
@@ -746,7 +877,12 @@ index a6e8a7225..0ae0b53bd 100644
 +    return section
 +
 +
-+def get_builtin_memory_config(config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+ def get_builtin_memory_config(config: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+-    """Normalized ``memory`` config section ({} when missing/malformed → flags default to
+-    enabled). ``agent_init`` reads the same section so availability and store cannot diverge."""
+-    if config is None:
+-        try:
+-            from hermes_cli.config import load_config_readonly
 +    """Return the memory section. Failed reads and malformed sections disable both stores.
 +    A missing section retains the native defaults for an ordinary fresh profile."""
 +    disabled = {"memory_enabled": False, "user_profile_enabled": False}

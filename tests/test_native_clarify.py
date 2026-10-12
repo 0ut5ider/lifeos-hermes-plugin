@@ -2,6 +2,7 @@
 # ABOUTME: Compares native hook state in disposable homes without connecting to Discord.
 
 from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future
 import json
 import os
 from pathlib import Path
@@ -36,6 +37,10 @@ class NativeClarifyTests(unittest.TestCase):
     def round_trip(self, outcome, count=1, single=False):
         from tools import clarify_gateway as queue
         from tools.clarify_tool import clarify_tool
+        from gateway.run_turn_runner import TurnRunner
+        from gateway.run_turn_runner_clarify_delivery import _clarify_send_then_wait
+        from gateway.platforms.base import SendResult
+        from hermes_constants import set_hermes_home_override, reset_hermes_home_override
 
         with tempfile.TemporaryDirectory(prefix="lifeos-clarify-") as directory:
             home = Path(directory)
@@ -45,10 +50,15 @@ class NativeClarifyTests(unittest.TestCase):
             bridge = HookBridge(root / "settings.json", root, lifeos_home=home / "hermes")
             bridge.environment.update(environment)
             self.addCleanup(bridge.close)
-            args = {"question": "Fixture batch title", "questions": [
+            profile = home / 'hermes/.hermes'
+            profile.mkdir()
+            (profile / 'config.yaml').write_text('agent:\n  clarify_timeout: 1\n')
+            token = set_hermes_home_override(profile)
+            self.addCleanup(reset_hermes_home_override, token)
+            args = {"questions": [
                 {"question": "Choose the fixture mode " + str(index), "choices": ["A", "B"]} for index in range(count)]}
             if single:
-                args = {"question": "Choose the fixture mode", "choices": ["A", "B"]}
+                args = {"questions": [{"question": "Choose the fixture mode", "choices": ["A", "B"]}]}
             native_input = _tool_input("AskUserQuestion", args, str(home), "")
             payload = {"tool_name": "AskUserQuestion", "tool_input": native_input,
                        "session_id": "fixture-parent", "transcript_path": str(home / "unused-transcript")}
@@ -78,16 +88,24 @@ class NativeClarifyTests(unittest.TestCase):
             entries = []
             entry_id = "fixture-question-" + outcome
 
-            def adapter(question, choices, multi_select=False):
+            def adapter(question, choices, multi_select=False, rearm=True):
                 current_id = entry_id + "-" + str(len(entries))
                 entries.append(current_id)
-                queue.register(current_id, "fixture-chat", question, choices, multi_select)
+                entry = queue.register(current_id, "fixture-chat", question, choices, multi_select)
                 pending.put(current_id)
-                return queue.wait_for_response(current_id, 0.1 if outcome == "timeout" else 5)
+                sent = Future()
+                sent.set_result(SendResult(success=True, message_id='synthetic-card'))
+                return _clarify_send_then_wait(sent, clarify_id=current_id, session_key='fixture-chat',
+                                              clarify_mod=queue, entry=entry)
+
+            runner = object.__new__(TurnRunner)
+            runner._ask_clarify_question = adapter
 
             try:
                 with ThreadPoolExecutor(max_workers=1) as worker:
-                    result = worker.submit(clarify_tool, **args, callback=adapter)
+                    import contextvars
+                    result = worker.submit(contextvars.copy_context().run, clarify_tool,
+                                           **args, callback=runner._clarify_callback_sync)
                     for index in range(count if outcome == "answer" else 1):
                         current_id = pending.get(timeout=5)
                         self.assertFalse(result.done())
@@ -98,10 +116,11 @@ class NativeClarifyTests(unittest.TestCase):
                             self.assertEqual(queue.clear_session("fixture-chat"), 1)
                     returned = result.result(timeout=6)
                 data = json.loads(returned)
-                responses = [data] if single else data["responses"]
+                responses = data["responses"]
                 self.assertEqual(len(responses), count)
-                self.assertTrue(all(row["user_response"] == ("A" if outcome == "answer" else "") for row in responses), data)
-                self.assertEqual(bool(data.get("timed_out")), outcome == "timeout")
+                self.assertTrue(all(row["user_response"] == ("A" if outcome == "answer" else None) for row in responses), data)
+                self.assertEqual(data['outcome'], {'answer':'submitted','cancel':'cancelled','timeout':'timed_out'}[outcome])
+                self.assertTrue(all(row['status'] == ('answered' if outcome == 'answer' else 'unanswered') for row in responses), data)
                 bridge.post_tool_call("clarify", args, returned, session_id="fixture-parent", tool_call_id="question-1")
                 native("PostToolUse")
                 restored = comparable(state)

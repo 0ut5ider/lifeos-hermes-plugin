@@ -150,14 +150,14 @@ index 000000000..97fa8ee97
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tools/delegate_tool.py b/tools/delegate_tool.py
-index dc3b7af14..60f010500 100644
+index dc3b7af14..421821e51 100644
 --- a/tools/delegate_tool.py
 +++ b/tools/delegate_tool.py
 @@ -200,6 +200,8 @@ def _build_child_agent(
      max_iterations: int,
      task_count: int,
      parent_agent,
-+    reasoning_config_override: Optional[Dict[str, Any]] = None,
++    reasoning_config_override: Optional[dict[str, Any]] = None,
 +    requested_model: Optional[str] = None,
      # Credential overrides from delegation config
      override_provider: Optional[str] = None,
@@ -185,7 +185,7 @@ index dc3b7af14..60f010500 100644
          run.cleanup(heartbeat=heartbeat, child_pool=child_pool, leased_cred_id=leased_cred_id, close_deferred=_child_close_deferred)
  
  
-+def _task_model_route(task: Dict[str, Any], default_model: Optional[str]) -> tuple[Optional[str], Optional[Dict[str, Any]]]:
++def _task_model_route(task: dict[str, Any], default_model: Optional[str]) -> tuple[Optional[str], Optional[dict[str, Any]]]:
 +    """Validate one model-facing child route before any child is constructed."""
 +    model = task.get("model")
 +    if model is not None and (not isinstance(model, str) or "\n" in model or "\r" in model):
@@ -202,7 +202,7 @@ index dc3b7af14..60f010500 100644
 +    return (model.strip() if model and model.strip() else default_model), reasoning
 +
 +
-+def _task_provider_route(task: Dict[str, Any], parent_agent, default_creds: Dict[str, Any]) -> Dict[str, Any]:
++def _task_provider_route(task: dict[str, Any], parent_agent, default_creds: dict[str, Any]) -> dict[str, Any]:
 +    """Resolve an explicit child's provider through Hermes's configured credential route."""
 +    provider = task.get("provider")
 +    if provider is None:

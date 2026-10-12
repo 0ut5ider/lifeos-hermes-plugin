@@ -36,7 +36,7 @@ index be7436e72..56277d115 100644
      _canonicalize_api_tool_calls(api_messages)
  
 diff --git a/hermes_cli/middleware.py b/hermes_cli/middleware.py
-index 753b6643a..0b284f2e8 100644
+index 753b6643a..8d57944a3 100644
 --- a/hermes_cli/middleware.py
 +++ b/hermes_cli/middleware.py
 @@ -7,6 +7,7 @@ wrapping the actual execution callback. Agent-loop call sites and plugins share
@@ -94,7 +94,7 @@ index 753b6643a..0b284f2e8 100644
          request=request, original_request=context.pop("original_request", request), **context)
  
  
-+def admit_llm_request(request: Dict[str, Any], **context: Any) -> None:
++def admit_llm_request(request: dict[str, Any], **context: Any) -> None:
 +    """Run model-request checks before provider dispatch. Admission results do not rewrite requests."""
 +    from hermes_cli.plugins import invoke_middleware
 +    invoke_middleware(LLM_ADMISSION_MIDDLEWARE, request=request, **context)
