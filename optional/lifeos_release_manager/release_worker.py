@@ -101,15 +101,17 @@ def recovery_bridge(job, profile):
     if active.is_dir():
         return load_bridge(active)
     request = read_private(job / 'request.json')
-    expected = validate_plan(job, request)['program_entries_sha256'] if (job / 'plan.json').is_file() else None
+    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
+    expected = plan['program_entries_sha256'] if plan is not None else None
     snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
     if snapshot.journal.is_file():
         value = snapshot._load()
         for index, entry in enumerate(value['entries']):
             retained = snapshot.snapshot / ('before-' + str(index))
-            if entry['target'] == str(active) and fingerprint(retained) == entry['before']:
+            if entry['target'] == str(active) and entry['before'] is not None and fingerprint(retained) == entry['before']:
                 return load_bridge(retained)
-        raise ReleaseRejected('The retained bridge does not match its recorded identity')
+        if plan is None or not plan['fresh']:
+            raise ReleaseRejected('The retained bridge does not match its recorded identity')
     candidate = job / 'package/lifeos_hook_bridge'
     from .release_stage import validate_package
     validate_package(job / 'package', request['certificate'])

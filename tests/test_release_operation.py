@@ -14,6 +14,14 @@ from optional.lifeos_release_manager.release_programs import publish
 
 
 class ReleaseOperationTests(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get('LIFEOS_MANAGED_FRESH_OPERATION'), 'A prepared fresh operation is required')
+    def test_prepared_fresh_operation_loads_candidate_without_a_prior_bridge(self):
+        from optional.lifeos_release_manager.release_worker import recovery_bridge
+        job = Path(os.environ['LIFEOS_MANAGED_FRESH_OPERATION'])
+        request = read_private(job / 'request.json')
+        source = recovery_bridge(job, Path(request['profile']))
+        self.assertEqual(Path(source.__file__).parent, job / 'package/lifeos_hook_bridge')
+
     def fixture(self, root):
         job = root / ('a' * 32)
         job.mkdir(mode=0o700)
