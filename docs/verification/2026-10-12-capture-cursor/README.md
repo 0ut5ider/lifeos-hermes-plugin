@@ -1,6 +1,8 @@
 # Conduit cursor correction
 
-Date: 2026-10-12. This correction completes the authorized release workflow.
+Date: 2026-10-12. This correction supports the authorized release workflow.
+
+**Current status:** Steps 1 through 5 pass. Both servers run the same 0.3.1 archive. The final daily backup, isolated restore, post-backup checks, and private Discord reply pass. Step 6 awaits the real automatic morning run. See [DEPLOYMENT-ACCEPTANCE.json](DEPLOYMENT-ACCEPTANCE.json). The sections below preserve the investigation and intermediate results.
 
 Daily installation and authenticated acceptance pass on version 0.3.0. Capture remains blocked after synthetic memory cleanup. A governed metadata diagnostic identifies 12 processed work events and six pending events. One processed event contains unsafe retained text. No pending event contains private or retired text. Two pending events still predate the retirement cutoff and require explicit review.
 
@@ -23,3 +25,7 @@ All five actual owner jobs pass after the Atlas review. The scheduled capture co
 Both servers select version 0.3.1, program commit `9af633252004a0ac8dd780d5fc12e9644f97bb0c`, and archive SHA-256 `2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24`. PR11 merges the correction. The release asset digest check passes for all eight published assets. The final daily restore controller backs up container 102 and uses disposable container 110 with its network removed and application services masked. Its private coverage manifest includes selected programs, profile, credentials, user data, and external Atlas state.
 
 The automatic observation runs at 07:15 America/Toronto on October 12. It must inspect the real 07:00 scheduler event and exactly one Cerebo morning message. It must not run a substitute morning job. The persistent observation task deletes itself after this check.
+
+The final daily restore passes all three Atlas recovery cases and verifies 41,742 artifacts by bytes, modes, ownership, and symlink targets. The restored guest has no network and masks all three application services. The controller removes container 110 after success. The source guest resumes its services and passes the complete installed gate again with zero restarts. The verified archive is `PBS-01:backup/ct/102/2026-10-12T06:22:19Z` and is protected from routine pruning. Personal source contents and credentials remain private; the repository contains only aggregate receipts.
+
+External changes select the release on both guests, record current-owner source approvals, recover the Conduit retry latch, enable the development services at boot, and isolate the development gateway HOME. Prior programs and unit definitions remain retained on each applicable guest. Program recovery must preserve later personal writes. Archive restore tests use only the disposable guest. The daily observation at 07:15 is the only pending acceptance step. The installed programs retain all 36 patches and the approved model efforts.

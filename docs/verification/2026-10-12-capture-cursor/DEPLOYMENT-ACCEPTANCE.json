@@ -8,7 +8,7 @@
   "daily_selected": true,
   "daily_installed_verified": true,
   "daily_owner_jobs_verified": true,
-  "daily_final_restore_verified": false,
+  "daily_final_restore_verified": true,
   "automatic_morning_verified": false,
   "automatic_observation_at": "2026-10-12T07:15:00-04:00",
   "scope": "Deployment qualification supplements the immutable source release certificate.",
@@ -18,5 +18,14 @@
     "proxmox_daily_restore.py": "a5ca93788bf78fb8fc414f0ba3bc4167e8d4d60210ede3a7627ed01d42fecafe"
   },
   "daily_discord_inbound_verified": true,
-  "daily_post_backup_verified": true
+  "daily_post_backup_verified": true,
+  "status": "PASS_WITH_AUTOMATIC_MORNING_PENDING",
+  "daily_final_backup_protected": true,
+  "restored_artifacts": 41742,
+  "atlas_recovery_cases": [
+    "baseline",
+    "interrupted",
+    "later-edit"
+  ],
+  "disposable_restore_removed": true
 }
