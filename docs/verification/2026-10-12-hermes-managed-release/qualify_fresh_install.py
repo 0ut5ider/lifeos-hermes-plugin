@@ -24,7 +24,7 @@ profile.mkdir(mode=0o700)
 (profile / 'config.yaml').write_text('model:\n  default: synthetic-model\n')
 (profile / 'config.yaml').chmod(0o600)
 os.environ.update(HOME=str(base), HERMES_HOME=str(profile), PYTHONDONTWRITEBYTECODE='1')
-sys.path.insert(0, str(repo))
+sys.path.insert(0, str(package))
 sys.path.insert(0, str(cache / 'upstream'))
 from optional.lifeos_release_manager.release_catalog import ReleaseCatalog
 from optional.lifeos_release_manager.cli import prepare, operation, launch, read_private
@@ -91,7 +91,34 @@ try:
     report['job'] = str(job)
     assert not (base / '.claude').exists(), 'Preparation publishes native files'
     review_operation(job, request)
-    launch(profile, result['identifier'], 'apply')
+    phase = os.environ.get('LIFEOS_QUALIFICATION_INTERRUPTION')
+    report['interruption_phase'] = phase
+    retained = None
+    if phase:
+        from optional.lifeos_release_manager.release_worker import admit_operation
+        admit_operation(job, request, 'apply')
+        actor = base / 'interrupted-worker.py'
+        actor.write_text(
+            '# ABOUTME: Executes the frozen worker and terminates at one actual publication boundary.\n'
+            '# ABOUTME: Uses the admitted synthetic operation without replacing native functions.\n'
+            'import importlib,os,sys,types\nfrom pathlib import Path\n'
+            'job=Path(sys.argv[1]);phase=sys.argv[2]\n'
+            'namespace=types.ModuleType("qualification_worker");namespace.__path__=[str(job/"worker")]\n'
+            'sys.modules[namespace.__name__]=namespace\n'
+            'worker=importlib.import_module(namespace.__name__+".release_worker")\n'
+            'worker.execute(job,"apply",checkpoint=lambda point:os._exit(73) if point==phase else None)\n')
+        interrupted = subprocess.run([request['runtime']['python'], '-B', str(actor), str(job), phase],
+            env=dict(os.environ, PYTHONPATH=''), text=True, capture_output=True, timeout=300)
+        (out / ('fresh-interruption-' + phase + '.stderr')).write_text(interrupted.stderr)
+        assert interrupted.returncode == 73, 'The frozen worker does not reach the requested interruption boundary'
+        report['actual_process_exit'] = interrupted.returncode
+        if phase != 'seed-prepared':
+            retained = Path(request['installed']).parent / '.config/LIFEOS/USER/later-synthetic-data.txt'
+            retained.write_text('Synthetic data added after worker interruption\n')
+        recovery = launch(profile, result['identifier'], 'recover')
+        report['recovery_admission'] = recovery
+    else:
+        launch(profile, result['identifier'], 'apply')
     deadline = time.monotonic() + 300
     while time.monotonic() < deadline:
         state = read_private(job / 'status.json')['state']
@@ -100,6 +127,9 @@ try:
         time.sleep(0.2)
     report['worker_state'] = read_private(job / 'status.json')
     assert state == 'applied', 'The worker does not apply the fresh integration'
+    if retained is not None:
+        assert retained.read_text() == 'Synthetic data added after worker interruption\n'
+        report['later_user_data_preserved'] = 'PASS'
     result = subprocess.run([str(base / '.local/bin/hermes'), 'lifeos-version'],
         env=dict(os.environ, PYTHONPATH=''), capture_output=True, text=True, timeout=90)
     (out / 'fresh-installed-version.stdout').write_text(result.stdout)
@@ -116,5 +146,6 @@ finally:
     thread.join()
     server.server_close()
     report['elapsed_seconds'] = time.monotonic() - start
-    (out / ('fresh-install-' + build['head'][:8] + '.json')).write_text(json.dumps(report, indent=2) + '\n')
-    (out / ('fresh-install-' + build['head'][:8] + '.done')).write_text('0\n' if report.get('status') == 'PASS' else '1\n')
+    suffix = '-' + os.environ['LIFEOS_QUALIFICATION_TAG'] if 'LIFEOS_QUALIFICATION_TAG' in os.environ else ''
+    (out / ('fresh-install-' + build['head'][:8] + suffix + '.json')).write_text(json.dumps(report, indent=2) + '\n')
+    (out / ('fresh-install-' + build['head'][:8] + suffix + '.done')).write_text('0\n' if report.get('status') == 'PASS' else '1\n')

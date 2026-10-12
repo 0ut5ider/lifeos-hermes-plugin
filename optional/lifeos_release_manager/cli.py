@@ -12,6 +12,7 @@ import stat
 import subprocess
 import sys
 from uuid import uuid4
+from threading import Thread
 
 from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, _json
 from .release_programs import publish
@@ -101,6 +102,9 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
         extract_package(downloaded['archive'], package)
         manifest = validate_package(package, downloaded['certificate'])
         source = load_bridge(package / 'lifeos_hook_bridge')
+        names = source.memory_module('fresh_store')
+        names._name(name.strip())
+        names._name(assistant.strip())
         selected = source.memory_module('lifeos_installation').selection(profile)
         runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
         request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
@@ -132,7 +136,20 @@ def status(profile, identifier=None):
         if not (job / 'request.json').exists():
             return read_private(job / 'status.json')
         job, request = operation(profile, identifier)
-        return {**read_private(job / 'status.json'), 'version': request['version'], 'commit': request['commit']}
+        value = {**read_private(job / 'status.json'), 'version': request['version'], 'commit': request['commit'],
+                 'restore_available': False, 'recover_available': False}
+        if (job / 'plan.json').exists():
+            from .release_operation import validate_plan, operation_lock, OperationBusy, worker_running
+            plan = validate_plan(job, request)
+            value['restore_available'] = value['state'] == 'applied' and not plan['fresh']
+            if value['state'] in {'applying', 'recovering', 'restoring', 'recovery_required'} or value['state'].startswith('queued-'):
+                try:
+                    with operation_lock(job):
+                        running = worker_running(job)
+                        value['recover_available'] = running is False or running is None and not value['state'].startswith('queued-')
+                except OperationBusy:
+                    pass
+        return value
     operations = []
     if state.exists():
         for path in sorted(state.iterdir()):
@@ -142,7 +159,15 @@ def status(profile, identifier=None):
 
 
 def launch(profile, identifier, action, *, authorization=None):
+    from .release_operation import operation_lock
+    job, request = operation(profile, identifier)
+    with operation_lock(job, name='launch.lock'):
+        return launch_worker(profile, identifier, action, authorization=authorization)
+
+
+def launch_worker(profile, identifier, action, *, authorization=None):
     from .release_worker import admit_operation
+    from .release_operation import record_worker
     job, request = operation(profile, identifier)
     admit_operation(job, request, action, authorization=authorization)
     command = [request['runtime']['python'], '-B', str(job / 'worker/release_worker.py'), str(job), '--action', action]
@@ -157,11 +182,26 @@ def launch(profile, identifier, action, *, authorization=None):
             write_state(job, 'ready' if action == 'apply' else 'recovery_required',
                 error='The detached release worker does not start.')
             raise ReleaseRejected('The owner service manager cannot start the release worker')
+        publish(job / 'worker-launch.json', json.dumps({'kind': 'service', 'unit': unit}).encode())
     else:
         with (job / 'worker.stdout').open('ab') as stdout, (job / 'worker.stderr').open('ab') as stderr:
             os.fchmod(stdout.fileno(), 0o600); os.fchmod(stderr.fileno(), 0o600)
-            subprocess.Popen(command, cwd=request['account_home'], env=environment,
-                stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, start_new_session=True)
+            descriptor = os.open(os.devnull, os.O_RDONLY)
+            try:
+                code = 'import os,runpy;os.chdir(' + repr(request['account_home']) + ');runpy.run_path(' + repr(command[2]) + ',run_name="__main__")'
+                arguments = [command[0], '-B', '-c', code, *command[3:]]
+                pid = os.posix_spawn(command[0], arguments, environment, setsid=True,
+                    file_actions=[(os.POSIX_SPAWN_DUP2, descriptor, 0),
+                                  (os.POSIX_SPAWN_DUP2, stdout.fileno(), 1),
+                                  (os.POSIX_SPAWN_DUP2, stderr.fileno(), 2)])
+                record_worker(job, pid)
+                Thread(target=os.waitpid, args=(pid, 0), daemon=True).start()
+            except OSError:
+                write_state(job, 'ready' if action == 'apply' else 'recovery_required',
+                    error='The detached release worker does not start.')
+                raise
+            finally:
+                os.close(descriptor)
     return {'identifier': identifier, 'state': 'queued', 'action': action}
 
 

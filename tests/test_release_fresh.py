@@ -17,12 +17,25 @@ ORIGINALS = os.environ.get('LIFEOS_MANAGED_TEMPLATE_ORIGINALS')
 
 @unittest.skipUnless(REFERENCE and ORIGINALS, 'A prepared native reference and retained template originals are required')
 class FreshReleaseTests(unittest.TestCase):
+    def test_changed_user_seed_refuses_before_user_publication(self):
+        from optional.lifeos_release_manager.release_initialization import NativeInitialization
+        with tempfile.TemporaryDirectory() as temp:
+            job, request, selected = self.fixture(Path(temp))
+            initialization = NativeInitialization(job, request, selected['installed'])
+            initialization.prepare(selected['candidate'].memory_module('fresh_store'))
+            (initialization.seed / 'user/unreviewed.txt').write_text('Synthetic changed seed')
+            with self.assertRaisesRegex(ValueError, 'prepared user'):
+                _fresh_native(job, request, selected)
+            self.assertFalse(initialization.user.exists())
+            self.assertFalse(selected['installed'].exists())
+
     def fixture(self, root):
         job = root / 'job'
         job.mkdir(mode=0o700)
         reference_home = job / 'reference-home'
         reference_home.mkdir(mode=0o700)
-        shutil.copytree(Path(REFERENCE), reference_home / '.claude', symlinks=True)
+        shutil.copytree(Path(REFERENCE), reference_home / '.claude', symlinks=True,
+                        ignore=shutil.ignore_patterns('node_modules'))
         shutil.copytree(Path(REFERENCE).parent / '.config', reference_home / '.config', symlinks=True)
         user = reference_home / '.config/LIFEOS/USER'
         for source in Path(ORIGINALS).rglob('*'):
@@ -68,3 +81,41 @@ class FreshReleaseTests(unittest.TestCase):
                 _fresh_native(job, request, selected)
             self.assertEqual((user / 'keep.txt').read_text(), 'Synthetic later data')
             self.assertFalse(selected['installed'].exists())
+
+    def test_fresh_native_resumes_after_process_exit_without_replacing_later_user_data(self):
+        with tempfile.TemporaryDirectory() as temp:
+            job, request, selected = self.fixture(Path(temp))
+            child = os.fork()
+            if child == 0:
+                def terminate(point):
+                    if point == 'user-published':
+                        os._exit(73)
+                _fresh_native(job, request, selected, checkpoint=terminate)
+                os._exit(74)
+            _, result = os.waitpid(child, 0)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 73)
+            user = selected['installed'].parent / '.config/LIFEOS/USER'
+            personal = user / 'later-synthetic-data.txt'
+            personal.write_text('Synthetic data added after interruption')
+            _fresh_native(job, request, selected)
+            self.assertEqual(personal.read_text(), 'Synthetic data added after interruption')
+            self.assertTrue(selected['installed'].is_dir())
+            self.assertEqual((selected['installed'] / 'LIFEOS/MEMORY').resolve(), user / 'MEMORY')
+
+    def test_fresh_native_recovers_publication_intents_and_rejects_later_program_edits(self):
+        for phase in ('seed-prepared', 'user-publication-intent', 'native-publication-intent', 'native-published'):
+            with self.subTest(phase=phase), tempfile.TemporaryDirectory() as temp:
+                job, request, selected = self.fixture(Path(temp))
+                child = os.fork()
+                if child == 0:
+                    _fresh_native(job, request, selected,
+                        checkpoint=lambda point: os._exit(73) if point == phase else None)
+                    os._exit(74)
+                _, result = os.waitpid(child, 0)
+                self.assertEqual(os.waitstatus_to_exitcode(result), 73)
+                _fresh_native(job, request, selected)
+                program = selected['installed'] / 'settings.json'
+                program.write_text('{"synthetic_later_edit":true}')
+                with self.assertRaisesRegex(ValueError, 'later program edit'):
+                    _fresh_native(job, request, selected)
+                self.assertEqual(program.read_text(), '{"synthetic_later_edit":true}')

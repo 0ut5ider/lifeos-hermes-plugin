@@ -8,8 +8,8 @@ import importlib
 import json
 import os
 import re
+import stat
 from pathlib import Path
-import shutil
 import shlex
 import sys
 import types
@@ -28,6 +28,7 @@ from .release_programs import ProgramTransaction, fingerprint, publish
 from .release_stage import load_bridge, sha
 from .release_operation import (action_state, operation_lock, seal_plan,
     validate_admission, validate_plan, write_admission, request_digest)
+from .release_operation import worker_running, OperationBusy
 
 
 def review_operation(job, request):
@@ -73,13 +74,15 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
     if action not in {'apply', 'recover', 'restore'}:
         raise ReleaseRejected('Choose an apply, recovery, or rollback action')
     action_state(job, action)
+    if action == 'recover' and read_private(job / 'status.json')['state'].startswith('queued-') and worker_running(job) is not False:
+        raise ReleaseRejected('The queued worker is running or its launch remains uncertain')
     if action == 'apply':
         selected, plan = _review_operation(job, request, installation_lease=installation_lease)
         if sha(Path(request['profile']) / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes after preparation')
     else:
         plan = validate_plan(job, request)
-        if plan['fresh']:
+        if plan['fresh'] and action == 'restore':
             raise ReleaseRejected('A first installation has no prior integration version to select')
         selected = {'profile': Path(request['profile']), 'installed': Path(request['installed']),
                     'current': recovery_bridge(job, Path(request['profile']))}
@@ -212,51 +215,40 @@ def _program_plan(job, request, selected):
     return directories, files, dependencies
 
 
-def _fresh_native(job, request, selected):
-    reference = Path(request['runtime']['reference'])
-    installed = selected['installed']
-    user = installed.parent / '.config/LIFEOS/USER'
-    if installed.exists() or user.exists() or installed.is_symlink() or user.is_symlink():
-        raise ReleaseRejected('A fresh destination gains existing data before installation')
+def _fresh_native(job, request, selected, *, checkpoint=lambda point: None):
+    from .release_initialization import NativeInitialization
     helpers = selected['candidate'].memory_module('fresh_store')
-    source_user = (reference / 'LIFEOS/USER').resolve(strict=True)
-    helpers._empty_personal_templates(source_user, job / 'fresh-templates')
-    principal, assistant = helpers._name(request['name']), helpers._name(request['assistant'])
-    for name in helpers.IDENTITY_FILES:
-        path = source_user / name
-        data = path.read_bytes()
-        helpers.publish(job / 'fresh-templates/identity-originals' / name, data)
-        if name == 'CONFIG/LIFEOS_CONFIG.toml':
-            rendered = helpers._config_names(data, principal, assistant)
-        elif name.startswith('PRINCIPAL/'):
-            rendered = re.sub(r'\bUser\b', lambda _: principal, data.decode()).encode()
-        else:
-            text = data.decode().replace('LifeOS Assistant', assistant).replace('LifeOS', assistant)
-            rendered = re.sub(r'\bUser\b', lambda _: principal, text).encode()
-        publish(path, rendered)
-    user.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    shutil.copytree(source_user, user)
-    shutil.copytree(reference, installed, symlinks=True)
-    link = installed / 'LIFEOS/USER'
-    if not link.is_symlink():
-        raise ReleaseRejected('The fresh native installation has no expected user-data link')
-    link.unlink()
-    link.symlink_to(user, target_is_directory=True)
-    memory = installed / 'LIFEOS/MEMORY'
-    if memory.is_symlink() or not memory.is_dir() or (user / 'MEMORY').exists():
-        raise ReleaseRejected('The fresh native memory scaffold differs from its expected layout')
-    memory.rename(user / 'MEMORY')
-    memory.symlink_to(user / 'MEMORY', target_is_directory=True)
-    settings = installed / 'settings.json'
-    publish(settings, settings.read_bytes().replace(str(reference.parent).encode(), str(installed.parent).encode()))
+    return NativeInitialization(job, request, selected['installed']).execute(helpers, checkpoint=checkpoint)
 
 
-def execute(job, action):
+def execute(job, action, *, checkpoint=lambda point: None):
     with operation_lock(job):
-        return _execute(job, action)
+        try:
+            return _execute(job, action, checkpoint=checkpoint)
+        finally:
+            revoke_recorded_authorization(job)
 
 
-def _execute(job, action):
+def revoke_recorded_authorization(job):
+    request = read_private(job / 'request.json')
+    authorization = request.get('memory_authorization')
+    if authorization is None:
+        return
+    profile = job.parent.parent
+    if request.get('profile') != str(profile):
+        raise ReleaseRejected('The grant cleanup changes its operation profile')
+    directory = profile / '.lifeos-memory-admin'
+    path = Path(authorization)
+    if path.parent != directory or re.fullmatch(r'[0-9a-f]{32}\.json', path.name) is None:
+        raise ReleaseRejected('The grant cleanup changes its private authorization path')
+    info = directory.lstat()
+    if (directory.resolve() != directory or not stat.S_ISDIR(info.st_mode)
+            or info.st_uid != os.getuid() or info.st_mode & 0o077):
+        raise ReleaseRejected('The grant cleanup requires private owner storage')
+    path.unlink(missing_ok=True)
+
+
+def _execute(job, action, *, checkpoint=lambda point: None):
     request = read_private(job / 'request.json')
     profile = Path(request['profile'])
     job, request = operation(profile, job.name)
@@ -268,18 +260,23 @@ def _execute(job, action):
     with lock(profile, wait=True) as lease, program_lock.exclusive(profile, timeout=600):
         request = read_private(job / 'request.json')
         validate_admission(job, request, action)
+        plan = validate_plan(job, request)
+        fresh_recovery = action == 'recover' and plan['fresh']
         if action == 'apply':
             selected = inspect_operation(job, request, installation_lease=lease)
+        elif fresh_recovery:
+            selected = inspect_operation(job, request, installation_lease=lease, fresh_recovery=True)
         else:
             if str(current.memory_module('lifeos_installation').selection(profile).installed) != request['installed']:
                 raise ReleaseRejected('The recovery changes its selected native installation')
             selected = {'profile': profile, 'installed': Path(request['installed']), 'current': current,
                 'baseline': current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)}
-        plan = validate_plan(job, request)
         services = None
         if plan['services']:
             services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
         administration = current.memory_administration()
+        if fresh_recovery and administration.required(selected['installed'], profile):
+            raise PermissionError('Fresh recovery preserves newly enabled memory ownership and requires governed installation repair')
         environment = service_environment(request)
         if plan['native_mount_required']:
             environment = administration.mount_environment(selected['installed'], profile,
@@ -287,7 +284,7 @@ def _execute(job, action):
             environment.update(PATH=service_environment(request)['PATH'], PYTHONPATH=request['runtime']['source'])
         programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
         mount = current.memory_module('mount_transaction').MountTransaction(selected['installed'], profile, selected['baseline'])
-        if action != 'apply':
+        if action != 'apply' and not fresh_recovery:
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             if services is not None:
                 services.quiesce()
@@ -299,29 +296,37 @@ def _execute(job, action):
             write_state(job, 'rolled_back')
             _revoke(administration, profile, request)
             return {'state': 'rolled_back'}
-        if sha(profile / 'config.yaml') != request['configuration_sha256']:
+        if not fresh_recovery and sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
-        programs.check_prepared()
-        write_state(job, 'applying')
+        if not fresh_recovery:
+            programs.check_prepared()
+        write_state(job, 'recovering' if fresh_recovery else 'applying')
         try:
+            if fresh_recovery:
+                _restore_mount(job, request, mount)
             if services is not None:
                 services.drain(signature=plan['services']['signature'])
                 services.verify_stopped()
             for entry in programs._load()['entries']:
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
-                _fresh_native(job, request, selected)
-            programs.apply()
+                _fresh_native(job, request, selected, checkpoint=checkpoint)
+            if fresh_recovery:
+                programs.resume(checkpoint=checkpoint)
+            else:
+                programs.apply(checkpoint=checkpoint)
+            checkpoint('programs-published')
             if plan['native_mount_required']:
                 mounted_module = importlib.reload(current.memory_module('mount_transaction'))
                 mount = mounted_module.MountTransaction(selected['installed'], profile, selected['baseline'])
                 drift = current.memory_module('version_drift')
                 baseline = drift.create_baseline(selected['package'] / 'lifeos/LifeOS/install', selected['installed'])
                 prior = sha(mount.journal) if mount.journal.is_file() else None
-                publish(job / 'mount-intent.json', (json.dumps({'prior_journal_sha256': prior}) + '\n').encode())
+                publish(job / 'mount-intent.json', (json.dumps({'prior_journal_sha256': prior, 'action': action}) + '\n').encode())
                 mount.execute(environment, request['runtime']['bun'], request['runtime']['hermes'],
                     baseline_data=(json.dumps(baseline) + '\n').encode(),
                     binding=administration.job_binding(job, request, action), retain_for_rollback=True)
+            checkpoint('native-mounted')
             verify_runtime(request)
             if services is not None:
                 services.resume()
@@ -332,6 +337,9 @@ def _execute(job, action):
             if services is not None:
                 services.quiesce()
             _restore_mount(job, request, mount)
+            if selected['fresh']:
+                write_state(job, 'recovery_required', error='The prepared first installation requires recovery. User data is preserved.')
+                raise
             programs.restore()
             if services is not None:
                 services.resume()
@@ -359,7 +367,10 @@ def _restore_mount(job, request, mount):
         return
     if sha(mount.journal) == read_private(intent)['prior_journal_sha256']:
         return
-    expected = {'job': str(job.absolute()), 'request_digest': request_digest(request), 'action': 'apply'}
+    action = read_private(intent).get('action', 'apply')
+    if action not in {'apply', 'recover'}:
+        raise ReleaseRejected('The native mount intent changes its admitted action')
+    expected = {'job': str(job.absolute()), 'request_digest': request_digest(request), 'action': action}
     if read_private(mount.journal).get('binding') != expected:
         raise ReleaseRejected('The native mount journal belongs to another release operation')
     candidate = load_bridge(job / 'package/lifeos_hook_bridge')
@@ -380,12 +391,22 @@ def main():
     sys.dont_write_bytecode = True
     try:
         result = execute(args.job.absolute(), args.action)
+    except OperationBusy:
+        return 1
     except (ValueError, OSError, RuntimeError, PermissionError, ImportError, KeyError) as error:
-        record_failure(args.job, error)
-        state = read_private(args.job / 'status.json')['state']
-        if state != 'rolled_back':
-            write_state(args.job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
-                error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
+        try:
+            with operation_lock(args.job):
+                request = read_private(args.job / 'request.json')
+                admitted = read_private(args.job / 'admission.json')
+                if admitted != {'format': 1, 'action': args.action, 'request_sha256': request_digest(request)}:
+                    return 1
+                record_failure(args.job, error)
+                state = read_private(args.job / 'status.json')['state']
+                if state not in {'rolled_back', 'applied', 'recovery_required'}:
+                    write_state(args.job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
+                        error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
+        except OperationBusy:
+            return 1
         return 1
     print(json.dumps(result))
     return 0

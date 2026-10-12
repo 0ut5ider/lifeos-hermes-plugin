@@ -13,7 +13,7 @@ from .release_programs import fingerprint
 from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint
 
 
-def inspect_operation(job, request, *, installation_lease=None):
+def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=False):
     profile = Path(request['profile'])
     package = job / 'package'
     validate_package(package, request['certificate'])
@@ -38,11 +38,13 @@ def inspect_operation(job, request, *, installation_lease=None):
     current = load_bridge(bridge) if bridge.is_dir() else candidate
     baseline = current.memory_module('version_drift').default_baseline_path(installed.parent)
     result = {'profile': profile, 'installed': installed, 'candidate': candidate, 'current': current,
-              'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': not installed.exists()}
+              'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': fresh_recovery or not installed.exists()}
     if result['fresh']:
-        if (installed.is_symlink() or selected.user_data.exists() or selected.user_data.is_symlink()
+        if not fresh_recovery and (installed.is_symlink() or selected.user_data.exists() or selected.user_data.is_symlink()
                 or (profile / 'lifeos-memory.json').exists()):
             raise ReleaseRejected('Fresh installation requires an empty native destination without existing personal data')
+        if fresh_recovery and (installed.exists() or selected.user_data.exists()) and not (job / 'native-initialization.json').is_file():
+            raise ReleaseRejected('Fresh recovery requires its recorded native initialization')
         from gateway.status import live_gateway_pid_for_home
         if live_gateway_pid_for_home(profile):
             raise ReleaseRejected('Stop this profile gateway before its first native installation')

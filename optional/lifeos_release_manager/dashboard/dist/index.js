@@ -58,9 +58,9 @@
           h("p", null, "Release " + (operation.version ?? "preparation") + ": " + operation.state),
           operation.state === "ready" ? h("button", {type: "button", disabled: busy,
             onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,
-          operation.state === "applied" ? h("button", {type: "button", disabled: busy,
+          operation.restore_available ? h("button", {type: "button", disabled: busy,
             onClick: function () { return action(operation.identifier, "restore"); }}, "Restore prior programs") : null,
-          operation.state === "recovery_required" ? h("button", {type: "button", disabled: busy,
+          operation.recover_available ? h("button", {type: "button", disabled: busy,
             onClick: function () { return action(operation.identifier, "recover"); }}, "Recover operation") : null);
       }),
       reviewed ? h("article", {className: "space-y-2 rounded border border-border p-4"},

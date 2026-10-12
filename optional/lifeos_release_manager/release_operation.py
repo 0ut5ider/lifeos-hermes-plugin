@@ -6,6 +6,8 @@ import hashlib
 import json
 import os
 import stat
+import subprocess
+from pathlib import Path
 
 from .cli import read_private
 from .release_catalog import ReleaseRejected
@@ -18,9 +20,13 @@ def request_digest(request):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
+class OperationBusy(RuntimeError):
+    pass
+
+
 @contextmanager
-def operation_lock(job):
-    descriptor = os.open(job / 'operation.lock', os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+def operation_lock(job, *, name='operation.lock'):
+    descriptor = os.open(job / name, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
     try:
         info = os.fstat(descriptor)
         if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
@@ -28,10 +34,44 @@ def operation_lock(job):
         try:
             fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as error:
-            raise RuntimeError('The release operation is running') from error
+            raise OperationBusy('The release operation is running') from error
         yield
     finally:
         os.close(descriptor)
+
+
+def process_stamp(pid):
+    if type(pid) is not int or pid <= 0:
+        raise ReleaseRejected('The worker process identity is invalid')
+    try:
+        process = Path('/proc') / str(pid)
+        if process.stat().st_uid != os.getuid():
+            raise ReleaseRejected('The worker belongs to another account')
+        fields = (process / 'stat').read_text().rsplit(')', 1)[1].split()
+        return None if fields[0] in {'Z', 'X'} else fields[19]
+    except FileNotFoundError:
+        return None
+
+
+def record_worker(job, pid):
+    publish(job / 'worker-launch.json', json.dumps({'kind': 'process', 'pid': pid,
+            'start_time': process_stamp(pid)}).encode())
+
+
+def worker_running(job):
+    if not (job / 'worker-launch.json').exists():
+        return None
+    value = read_private(job / 'worker-launch.json')
+    if value.get('kind') == 'process' and set(value) == {'kind', 'pid', 'start_time'}:
+        current = process_stamp(value['pid'])
+        return current is not None and current == value['start_time']
+    if value == {'kind': 'service', 'unit': 'lifeos-release-' + job.name}:
+        result = subprocess.run(['systemctl', '--user', 'show', value['unit'], '--property=ActiveState', '--value'],
+            capture_output=True, text=True, timeout=10)
+        if result.returncode:
+            raise ReleaseRejected('The worker service state is unavailable')
+        return result.stdout.strip() in {'active', 'activating', 'deactivating', 'reloading'}
+    raise ReleaseRejected('The worker receipt changes its fixed identity')
 
 
 def action_state(job, action):

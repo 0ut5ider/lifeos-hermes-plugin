@@ -42,7 +42,7 @@ def sync_directory(path):
         os.close(descriptor)
 
 
-def fingerprint(path, *, allow_links=False, excluded_root_entries=()):
+def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_links=None):
     path = Path(path).absolute()
     if path.parent.resolve() != path.parent:
         raise ProgramConflict('A program artifact changes its physical directory')
@@ -63,15 +63,18 @@ def fingerprint(path, *, allow_links=False, excluded_root_entries=()):
             directories[:] = [name for name in directories if name not in excluded_root_entries]
             files = [name for name in files if name not in excluded_root_entries]
         directories[:] = sorted(name for name in directories if name != '__pycache__')
-        for name in (*directories, *sorted(files)):
+        names = sorted((*directories, *files)) if external_links else (*directories, *sorted(files))
+        for name in names:
             child = Path(parent) / name
             if child.suffix == '.pyc':
                 continue
             child_info = child.lstat()
             if stat.S_ISLNK(child_info.st_mode) and allow_links:
                 link = os.readlink(child)
-                if (Path(link).is_absolute() or not child.resolve(strict=True).is_relative_to(path)
-                        or child_info.st_uid != os.getuid()):
+                expected = (external_links or {}).get(str(child.relative_to(path)))
+                allowed = link == str(expected) if expected is not None else (
+                    not Path(link).is_absolute() and child.resolve(strict=True).is_relative_to(path))
+                if not allowed or child_info.st_uid != os.getuid():
                     raise ProgramConflict('Dependency links must stay inside their package directory')
                 digest.update(str(child.relative_to(path)).encode() + b'\0link\0' + link.encode() + b'\0')
                 continue
