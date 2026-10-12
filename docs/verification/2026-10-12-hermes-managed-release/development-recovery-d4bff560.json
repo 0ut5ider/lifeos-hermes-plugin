@@ -1,0 +1,49 @@
+{
+  "operation": "184278822a7e45c1a45d388363d0ef1c",
+  "test_fixture_only": true,
+  "candidate_commit": "d4bff560f4d89eea5db20a3899df78cb6da29e6b",
+  "apply_status": "FAIL",
+  "cause": "Native boot migrates the live config schema from 46 to 50 after mount hashes are recorded.",
+  "recovery_state": "rolled_back",
+  "native_mount_state": "rolled_back",
+  "program_transaction_state": "restored",
+  "active_identity": {
+    "version": "0.3.1",
+    "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+    "package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24"
+  },
+  "model_selection_sha256": "a4cabe0e802a98b003882fbdc776f4b30179b7ac3795de6644f1bdb9bca89e2f",
+  "reconciliation": {
+    "operation": "184278822a7e45c1a45d388363d0ef1c",
+    "official_native_migration": "46->50",
+    "exact_migration_replay": "PASS",
+    "all_other_mount_targets": "PASS",
+    "model_and_tier_selection_unchanged": true,
+    "native_owner_grant_required": false,
+    "migrated_configuration_sha256": "5a0bc96527f727cd895e370af7541f46c26f3ac8156f4ac297bf03c88feac42a",
+    "recorded_configuration_sha256": "efa0636ffa43f4ba41518b66827f20a3976f96e5b2769f2c23e99b392ed5d8d7",
+    "native_program_source_matches_seal": true,
+    "known_generated_boot_outputs": [
+      ".hermes",
+      ".bytecode-fingerprint"
+    ]
+  },
+  "services": {
+    "hermes-dashboard.service": {
+      "MainPID": "37359",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "hermes-gateway.service": {
+      "MainPID": "37367",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "com.lifeos.pulse.service": {
+      "MainPID": "37363",
+      "ActiveState": "active",
+      "SubState": "running"
+    }
+  },
+  "daily_server_changed": false
+}

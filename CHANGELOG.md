@@ -9,6 +9,10 @@ This development candidate is not a qualified production release.
 - Verify complete Discord morning windows and the active Pulse schedule.
 - Add the standalone LifeOS release manager for complete package preparation and coordinated updates.
 - Keep the accepted 0.3.1 package on the daily server during qualification.
+- Keep the dashboard responsive during release review and admission.
+- Retain incomplete program copies before preparation retry.
+- Migrate the private native configuration before the mount records output hashes.
+- Exclude native boot outputs from the runtime source seal. Retain checks for changed and added code.
 
 
 This file records changes to the LifeOS plugin for Hermes. Version numbers use

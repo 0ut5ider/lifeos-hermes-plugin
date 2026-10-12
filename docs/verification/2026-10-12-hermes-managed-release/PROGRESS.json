@@ -57,7 +57,7 @@
     "live_ssh_fixture": true
   },
   "deployment": {
-    "192.168.8.252": "active 0.3.1 unchanged; standalone manager d4bff560 installed and enabled; complete package staged, not selected",
+    "192.168.8.252": "restored verified 0.3.1 after candidate mounting failure; dashboard, gateway, and Pulse running; manager d4bff560 remains enabled",
     "192.168.8.253": "0.3.1 unchanged"
   },
   "immutable_v031_assets_changed": false,
@@ -156,9 +156,9 @@
     "local_subtests_passed": 11
   },
   "candidate_version": "0.4.0-dev.1",
-  "next_action": "Inspect the real authenticated .252 apply result. Complete installed update and rollback, fresh recovery, and final combined qualification. Do not change .253.",
-  "installed_development_qualification": "prepared; not selected",
-  "checkpoint_commit": "0ec86713",
+  "next_action": "Build a sealed candidate with the native config migration and runtime source identity fixes. Repeat the installed update and rollback on .252. Complete fresh interruption recovery and final combined qualification. Do not change .253.",
+  "installed_development_qualification": "FAIL, recovered to accepted 0.3.1",
+  "checkpoint_commit": "cff35f8a",
   "sealed_integration": {
     "commit": "1043369a73f59819f1102ce7f11da3b09bd7f7a7",
     "tests": 595,
@@ -184,7 +184,7 @@
     "status": "PASS",
     "commit": "d4bff560f4d89eea5db20a3899df78cb6da29e6b",
     "operation": "184278822a7e45c1a45d388363d0ef1c",
-    "state": "ready",
+    "state": "rolled_back",
     "native_mount_required": true,
     "model_selection_unchanged": true,
     "owner_dashboard_authentication": "PASS",
@@ -192,8 +192,19 @@
   },
   "owner_authentication_receipt": "development-owner-authentication.json",
   "manager_regressions": {
-    "commit": "0ec86713",
-    "tests": 37,
-    "status": "PASS"
+    "commit": "cff35f8a",
+    "tests": 41,
+    "status": "PASS",
+    "native_mount_cases": 26,
+    "native_mount_status": "PASS"
+  },
+  "development_update": {
+    "candidate_commit": "d4bff560f4d89eea5db20a3899df78cb6da29e6b",
+    "status": "FAIL",
+    "measured_cause": "Official native boot migration changes the config schema from 46 to 50 after mount hashes are recorded.",
+    "recovery": "PASS",
+    "receipt": "development-recovery-d4bff560.json",
+    "model_and_tier_selection_unchanged": true,
+    "native_owner_grant_required": false
   }
 }
