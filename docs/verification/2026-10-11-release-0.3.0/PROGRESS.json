@@ -1,5 +1,5 @@
 {
-  "branch": "feature/release-0.3.0",
+  "branch": "feature/release-0.3.0-deployment",
   "current_head": "01a50a2feb482b869ccde344e860ad8af44f568c",
   "base": "194c334bcdf85d6f2b97929e0e77f97f7409ae68",
   "authorization": "Proceed with complete versioning, active .252 update, combined acceptance, whole-guest restore, release publication and .253 promotion, then automatic morning observation.",
@@ -32,15 +32,16 @@
   },
   "combined_acceptance_pid": 1250307,
   "combined_acceptance_state": "PASS",
-  "production_version": "0.2.0",
+  "production_version": "0.3.0",
   "production_changed": false,
   "remaining": [
-    "Complete the isolated whole-guest restore and cleanup",
-    "Publish source PR, tag, and release artifacts",
-    "Promote exact 0.3.0 package to .253 and run installed acceptance",
-    "Review admitted operational sources after the synthetic cleanup, then verify real owner jobs",
-    "Take and verify the activated daily guest backup",
-    "Observe the first automatic morning brief"
+    "Write and run failing native capture cursor tests",
+    "Filter selected WORK rows before admission and copy only admitted pending rows into native scratch",
+    "Run focused, neighboring, and full sealed release gates",
+    "Create and merge correction PR, publish immutable 0.3.1 release, and promote exact package to both guests",
+    "Approve safe current operational sources without admitting the refused whole work ledger",
+    "Verify actual owner jobs, capture scheduler, private Discord, and final daily backup/restore",
+    "Schedule first actual 07:00 morning observation"
   ],
   "operator": "docs/verification/2026-10-11-release-0.3.0/upgrade_guest.py",
   "operator_notes": [
@@ -105,5 +106,21 @@
   "whole_guest_recovery_passed": true,
   "disposable_restore_removed": true,
   "pr": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/10",
-  "certificate": "RELEASE-CERTIFICATE.json"
+  "certificate": "RELEASE-CERTIFICATE.json",
+  "pr10_merged": true,
+  "merge_commit": "5fa9456230242a578ce24dd46eddfae5eda90730",
+  "release_url": "https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.3.0",
+  "production_upgrade_pid": 33029,
+  "production_upgrade_started": true,
+  "production_selected": true,
+  "production_installed_verification_passed": true,
+  "capture_blocker": {
+    "processed": 12,
+    "pending": 6,
+    "processed_unsafe": 1,
+    "pending_unsafe": 0,
+    "cursor": "2026-10-11T17:40:32.556Z",
+    "cause": "Bridge validates the complete work ledger although native capture ignores entries at or before the cursor"
+  },
+  "next_release": "0.3.1"
 }
