@@ -40,6 +40,16 @@ def _review_operation(job, request, *, installation_lease=None):
     selected = inspect_operation(job, request, installation_lease=installation_lease)
     plan = {'fresh': selected['fresh'], 'native_mount_required': selected['native_changes'],
             'launchers': [str(path) for path in selected['launchers']], 'services': selected['services']}
+    expected = None
+    if (job / 'plan.json').is_file():
+        expected = validate_plan(job, request)['program_entries_sha256']
+    programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
+    if programs.journal.is_file():
+        programs.check_prepared()
+    else:
+        directories, files, dependencies = _program_plan(job, request, selected)
+        programs.prepare(directories=directories, files=files, dependencies=dependencies)
+    plan['program_entries_sha256'] = programs.entries_digest()
     seal_plan(job, request, plan)
     return selected, plan
 
@@ -90,7 +100,9 @@ def recovery_bridge(job, profile):
     active = profile / 'plugins/lifeos-hook-bridge'
     if active.is_dir():
         return load_bridge(active)
-    snapshot = ProgramTransaction(job / 'program-snapshot')
+    request = read_private(job / 'request.json')
+    expected = validate_plan(job, request)['program_entries_sha256'] if (job / 'plan.json').is_file() else None
+    snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
     if snapshot.journal.is_file():
         value = snapshot._load()
         for index, entry in enumerate(value['entries']):
@@ -98,7 +110,6 @@ def recovery_bridge(job, profile):
             if entry['target'] == str(active) and fingerprint(retained) == entry['before']:
                 return load_bridge(retained)
         raise ReleaseRejected('The retained bridge does not match its recorded identity')
-    request = read_private(job / 'request.json')
     candidate = job / 'package/lifeos_hook_bridge'
     from .release_stage import validate_package
     validate_package(job / 'package', request['certificate'])
@@ -248,12 +259,15 @@ def _execute(job, action):
     active_bridge = profile / 'plugins/lifeos-hook-bridge'
     current = recovery_bridge(job, profile)
     lock = current.memory_module('installation_lock').installation_lock
-    with lock(profile, wait=True) as lease:
+    program_lock = current.memory_module('program_lock')
+    with lock(profile, wait=True) as lease, program_lock.exclusive(profile, timeout=600):
         request = read_private(job / 'request.json')
         validate_admission(job, request, action)
         if action == 'apply':
             selected = inspect_operation(job, request, installation_lease=lease)
         else:
+            if str(current.memory_module('lifeos_installation').selection(profile).installed) != request['installed']:
+                raise ReleaseRejected('The recovery changes its selected native installation')
             selected = {'profile': profile, 'installed': Path(request['installed']), 'current': current,
                 'baseline': current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)}
         plan = validate_plan(job, request)
@@ -266,7 +280,7 @@ def _execute(job, action):
             environment = administration.mount_environment(selected['installed'], profile,
                 request.get('memory_authorization'), binding=administration.job_binding(job, request, action))
             environment.update(PATH=service_environment(request)['PATH'], PYTHONPATH=request['runtime']['source'])
-        programs = ProgramTransaction(job / 'program-snapshot')
+        programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
         mount = current.memory_module('mount_transaction').MountTransaction(selected['installed'], profile, selected['baseline'])
         if action != 'apply':
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
@@ -282,19 +296,14 @@ def _execute(job, action):
             return {'state': 'rolled_back'}
         if sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
-        directories, files, dependencies = _program_plan(job, request, selected)
-        programs.prepare(directories=directories, files=files, dependencies=dependencies)
+        programs.check_prepared()
         write_state(job, 'applying')
         try:
             if services is not None:
                 services.drain(signature=plan['services']['signature'])
                 services.verify_stopped()
-            for path in files:
-                path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-            for path in directories:
-                path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-            for path in dependencies:
-                path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            for entry in programs._load()['entries']:
+                Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
                 _fresh_native(job, request, selected)
             programs.apply()

@@ -82,9 +82,10 @@ def fingerprint(path, *, allow_links=False):
 
 
 class ProgramTransaction:
-    def __init__(self, snapshot):
+    def __init__(self, snapshot, *, expected_entries_sha256=None):
         self.snapshot = Path(snapshot).absolute()
         self.journal = self.snapshot / 'programs.json'
+        self.expected_entries_sha256 = expected_entries_sha256
 
     def _record(self, value):
         publish(self.journal, (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
@@ -95,7 +96,39 @@ class ProgramTransaction:
                 or self.journal.is_symlink() or self.journal.stat().st_uid != os.getuid()
                 or self.journal.stat().st_mode & 0o077):
             raise ProgramConflict('The program journal requires private owner storage')
-        return json.loads(self.journal.read_text())
+        from .cli import read_private
+        value = read_private(self.journal)
+        if (not isinstance(value, dict) or set(value) != {'format', 'state', 'entries'}
+                or type(value['format']) is not int or value['format'] != 1 or not isinstance(value['entries'], list)
+                or len(value['entries']) > 20000):
+            raise ProgramConflict('The program journal has an invalid structure')
+        for entry in value['entries']:
+            if (not isinstance(entry, dict) or set(entry) != {'target', 'source', 'before', 'after', 'kind', 'allow_links'}
+                    or entry['kind'] not in {'file', 'directory'} or type(entry['allow_links']) is not bool
+                    or not isinstance(entry['target'], str) or not Path(entry['target']).is_absolute()
+                    or '..' in Path(entry['target']).parts
+                    or entry['source'] is not None and (not isinstance(entry['source'], str)
+                        or not Path(entry['source']).is_absolute() or '..' in Path(entry['source']).parts)):
+                raise ProgramConflict('The program journal has invalid artifact paths or types')
+            for state in ('before', 'after'):
+                metadata = entry[state]
+                if metadata is not None and (not isinstance(metadata, dict)
+                        or set(metadata) != {'type', 'mode', 'sha256'} or metadata['type'] != entry['kind']
+                        or type(metadata['mode']) is not int or not 0 <= metadata['mode'] <= 0o777
+                        or not isinstance(metadata['sha256'], str) or len(metadata['sha256']) != 64
+                        or any(c not in '0123456789abcdef' for c in metadata['sha256'])):
+                    raise ProgramConflict('The program journal has invalid artifact identities')
+        digest = self._entries_digest(value['entries'])
+        if self.expected_entries_sha256 is not None and digest != self.expected_entries_sha256:
+            raise ProgramConflict('The reviewed program entries change before publication or recovery')
+        return value
+
+    @staticmethod
+    def _entries_digest(entries):
+        return hashlib.sha256(json.dumps(entries, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+    def entries_digest(self):
+        return self._entries_digest(self._load()['entries'])
 
     def prepare(self, *, directories, files, dependencies=None):
         dependencies = {} if dependencies is None else dependencies
@@ -137,14 +170,7 @@ class ProgramTransaction:
 
     def apply(self, *, checkpoint=lambda point: None):
         value = self._load()
-        if value['state'] != 'prepared':
-            raise ProgramConflict('The program transaction is not prepared')
-        for index, entry in enumerate(value['entries']):
-            source_state = None if entry['source'] is None else fingerprint(entry['source'], allow_links=entry['allow_links'])
-            if (source_state != entry['after']
-                    or fingerprint(self.snapshot / ('incoming-' + str(index)), allow_links=entry['allow_links']) != entry['after']
-                    or fingerprint(entry['target'], allow_links=entry['allow_links']) != entry['before']):
-                raise ProgramConflict('A program target or source changes after preparation')
+        self.check_prepared()
         value['state'] = 'applying'
         self._record(value)
         for index, entry in enumerate(value['entries']):
@@ -168,6 +194,17 @@ class ProgramTransaction:
             checkpoint('artifact-published')
         value['state'] = 'applied'
         self._record(value)
+
+    def check_prepared(self):
+        value = self._load()
+        if value['state'] != 'prepared':
+            raise ProgramConflict('The program transaction is not prepared')
+        for index, entry in enumerate(value['entries']):
+            source_state = None if entry['source'] is None else fingerprint(entry['source'], allow_links=entry['allow_links'])
+            if (source_state != entry['after']
+                    or fingerprint(self.snapshot / ('incoming-' + str(index)), allow_links=entry['allow_links']) != entry['after']
+                    or fingerprint(entry['target'], allow_links=entry['allow_links']) != entry['before']):
+                raise ProgramConflict('A program target or source changes after preparation')
 
     def restore(self):
         value = self._load()

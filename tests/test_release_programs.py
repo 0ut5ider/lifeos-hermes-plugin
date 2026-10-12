@@ -8,6 +8,25 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_reviewed_entry_digest_refuses_journal_target_substitution(self):
+        import json
+        from optional.lifeos_release_manager.release_programs import fingerprint
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            transaction, current, launcher, receipt = self.fixture(root)
+            expected = transaction.entries_digest()
+            victim = root / 'outside-planned-programs'
+            victim.write_text('Synthetic preserve')
+            value = json.loads(transaction.journal.read_bytes())
+            row = next(entry for entry in value['entries'] if entry['target'] == str(launcher))
+            row['target'] = str(victim)
+            row['before'] = fingerprint(victim)
+            transaction.journal.write_text(json.dumps(value))
+            with self.assertRaisesRegex(ProgramConflict, 'reviewed program'):
+                ProgramTransaction(transaction.snapshot, expected_entries_sha256=expected).apply()
+            self.assertEqual(victim.read_text(), 'Synthetic preserve')
+            self.assertEqual((current / 'program.py').read_text(), 'before')
+
     def fixture(self, root):
         current, incoming = root / 'bridge', root / 'incoming'
         current.mkdir(); incoming.mkdir()
