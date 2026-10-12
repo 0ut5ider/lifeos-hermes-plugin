@@ -2,6 +2,14 @@
 
 Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest is container 102 at `192.168.8.253`.
 
+## Current release and next work (October 12)
+
+Both guests run qualified release 0.3.1 at program commit `9af633252004a0ac8dd780d5fc12e9644f97bb0c`. All six release acceptance steps pass. The final daily restore verifies 41,742 artifacts and baseline, interrupted-publication, and later-edit Atlas cases. The real automatic morning run completes once, and Cerebo delivers exactly one matching brief in the October 12 observation window. See the [final release acceptance](verification/2026-10-12-capture-cursor/README.md).
+
+Adrian authorizes roadmap reconciliation, stronger automatic morning verification, complete installation and updates from Hermes, and compatibility with the latest Hermes release. Develop and evaluate the combined candidate on `.252`. Keep `.253` on the accepted package until a later qualified release. Preserve the selected model efforts and personal data. Voice, Content media processing, the Pulse core-file editor, import, and reverse migration remain deferred.
+
+The dated sections below preserve historical checkpoint states. Their earlier version numbers and open gates do not describe the current daily release. The [project todos](../TODO.md) record the remaining work.
+
 ## Daily guest installation and recovery (October 11)
 
 Adrian authorizes a separate daily VM or container. The operator provisions unprivileged Ubuntu container `lifeos-daily` at `192.168.8.253` on Proxmox `192.168.8.101`. The guest has four CPU cores, eight GiB memory, and an 80 GiB root disk. It installs certified version 0.2.0 with fresh Adrian and Cerebo data. All 200 plugin files match merged main commit `2514eea8` and the frozen program archive. The installed Hermes and native files match their release manifests. A real private FlashNext conversation passes with zero active lasting facts.
@@ -20,7 +28,7 @@ Acceptance exposes two corrections. New-store preparation removes sample persona
 
 Daily guest provisioning and coherent off-server restoration pass on October 11. Private-channel admission, inbound owner delivery, and lasting-memory activation also pass on October 11. Actual Discord save and recall pass in separate sessions. Governed cleanup returns zero search matches and zero active facts. Cerebo starts a fresh daily session, and the selected text release is ready for daily use. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
 
-The sections below retain the dated evidence and earlier open-state descriptions. The October 10 record supplies the combined development status. The October 11 section supplies the current daily deployment status.
+The sections below retain the dated evidence and earlier open-state descriptions. The October 12 section supplies the current release status.
 
 ## Initial daily-use release plan (October 7)
 
