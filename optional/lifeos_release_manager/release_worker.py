@@ -22,7 +22,7 @@ if not __package__:
     __package__ = namespace.__name__
 
 from .cli import operation, read_private, write_state
-from .release_catalog import ReleaseRejected
+from .release_catalog import ReleaseRejected, _json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, publish
 from .release_stage import load_bridge, sha, run_stage, _environment
@@ -163,7 +163,7 @@ def _program_plan(job, request, selected):
     publish(launch, ('#!/bin/sh\nexec ' + shlex.quote(request['runtime']['hermes']) + ' "$@"\n').encode(), 0o700)
     for path in selected['launchers']:
         files[path] = launch
-    commands = read_private(job / 'manifest.json')['runtime']['commands']
+    commands = _json((job / 'manifest.json').read_bytes())['runtime']['commands']
     for name in ('hermes', 'hermes-agent', 'hermes-acp'):
         if commands.get(name) != 'bin/' + name:
             raise ReleaseRejected('The prepared runtime changes a native command path')

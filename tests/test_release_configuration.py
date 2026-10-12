@@ -23,7 +23,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
             (package / 'DAILY-CANDIDATE.json').write_text('{"plugin_files":{}}')
             commands = {name: 'bin/' + name for name in ('hermes', 'hermes-agent', 'hermes-acp')}
             (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
-            (job / 'manifest.json').chmod(0o600)
+            (job / 'manifest.json').chmod(0o644)
             request = {'profile': str(profile), 'account_home': str(root), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
                        'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
                            'hermes_patch_count': 10, 'lifeos_patch_count': 25},
