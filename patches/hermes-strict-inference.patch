@@ -89,10 +89,10 @@ index 10a5b1814..ef45dce4f 100644
  
 diff --git a/agent/auxiliary_recovery.py b/agent/auxiliary_recovery.py
 new file mode 100644
-index 000000000..48186fb5b
+index 000000000..1f0ac1147
 --- /dev/null
 +++ b/agent/auxiliary_recovery.py
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,22 @@
 +# ABOUTME: Constructs the native auxiliary recovery ladder with an explicit provider fallback policy.
 +# ABOUTME: Keeps credential recovery active when a caller forbids a different provider.
 +from __future__ import annotations
@@ -115,7 +115,6 @@ index 000000000..48186fb5b
 +        final_model=req.final_model, max_tokens=retry_kwargs["max_tokens"],
 +        main_runtime=retry_kwargs["main_runtime"], route_info=route_info,
 +        allow_provider_fallback=allow_provider_fallback)
-+
 diff --git a/tests/test_lifeos_aux_no_fallback.py b/tests/test_lifeos_aux_no_fallback.py
 new file mode 100644
 index 000000000..836728ed8

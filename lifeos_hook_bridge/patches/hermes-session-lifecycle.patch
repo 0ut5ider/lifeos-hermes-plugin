@@ -204,10 +204,10 @@ index ac050556f..93af0cd80 100644
          # One lineage SELECT, two projections: model_history is alternation-repaired for live
 diff --git a/hermes_cli/cli_session_boundary.py b/hermes_cli/cli_session_boundary.py
 new file mode 100644
-index 000000000..8777b0958
+index 000000000..b46da2aef
 --- /dev/null
 +++ b/hermes_cli/cli_session_boundary.py
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,13 @@
 +# ABOUTME: Flushes and closes the current session before a CLI session switch.
 +# ABOUTME: Leaves the switch available when the native session database cannot complete a write.
 +from contextlib import suppress
@@ -221,7 +221,6 @@ index 000000000..8777b0958
 +                cli.conversation_history, conversation_history=cli.conversation_history)
 +    with suppress(Exception):
 +        cli._session_db.end_session(cli.session_id, reason)
-+
 diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
 index d17d73f65..a80f7798a 100644
 --- a/hermes_cli/cli_session_mixin.py
@@ -794,10 +793,10 @@ index 000000000..8fb1cd438
 +    return available, warnings
 diff --git a/plugins/platforms/discord/adapter_commands.py b/plugins/platforms/discord/adapter_commands.py
 new file mode 100644
-index 000000000..0c5bb17d6
+index 000000000..d18191d10
 --- /dev/null
 +++ b/plugins/platforms/discord/adapter_commands.py
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,65 @@
 +# ABOUTME: Synchronizes Discord application commands without deleting current identities.
 +# ABOUTME: Removes obsolete commands before additions and sends complete settings on update.
 +from __future__ import annotations
@@ -863,7 +862,6 @@ index 000000000..0c5bb17d6
 +            summary["updated"] += 1
 +        summary["total"] = len(desired_payloads)
 +        return summary
-+
 diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
 index 73e3d3de3..0a857e4fc 100644
 --- a/plugins/platforms/discord/adapter_media.py

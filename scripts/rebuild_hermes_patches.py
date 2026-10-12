@@ -107,6 +107,9 @@ def rebuild(source: Path, output: Path) -> None:
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
     if revision != SUPPORTED_HERMES_COMMIT:
         raise ValueError("Prepared Hermes source uses another base revision")
+    checked = subprocess.run(['git', 'diff', '--check', 'HEAD'], cwd=source, capture_output=True, text=True)
+    if checked.returncode:
+        raise ValueError('Prepared Hermes source fails whitespace validation: ' + checked.stdout.strip())
     changed = set(subprocess.check_output(["git", "diff", "--name-only", "HEAD"], cwd=source, text=True).splitlines())
     assigned = [path for paths in GROUPS.values() for path in paths]
     if len(assigned) != len(set(assigned)) or changed != set(assigned):

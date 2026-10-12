@@ -16,6 +16,21 @@ class PatchAssignmentTests(unittest.TestCase):
 
 @unittest.skipUnless((SOURCE / '.git').exists(), 'A prepared source checkout with new files marked for diff is required')
 class HermesPatchRegenerationTests(unittest.TestCase):
+    def test_whitespace_failure_refuses_before_publishing_patch_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            candidate = root / 'candidate'
+            subprocess.run(['git', 'clone', '--quiet', '--shared', str(SOURCE), str(candidate)],
+                           check=True, capture_output=True)
+            patch = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=SOURCE)
+            subprocess.run(['git', 'apply', '--index'], cwd=candidate, input=patch, check=True)
+            path = candidate / 'agent/turn_finalizer.py'
+            path.write_bytes(path.read_bytes() + b'\n')
+            output = root / 'patches'
+            with self.assertRaisesRegex(ValueError, 'whitespace'):
+                rebuild(candidate, output)
+            self.assertFalse(output.exists())
+
     @classmethod
     def setUpClass(cls):
         added = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'],
