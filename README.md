@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.3.0-dev.1` (development candidate). The daily server runs release `0.2.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Version:** `0.3.0-dev.2` (development candidate). The daily server runs release `0.2.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) supplies the current installed acceptance status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
 

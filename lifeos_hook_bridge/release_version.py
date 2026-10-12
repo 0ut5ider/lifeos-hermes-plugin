@@ -65,7 +65,7 @@ def _identity(value):
 def status(profile, plugin):
     profile,plugin=Path(profile),Path(plugin)
     version=_declared(plugin)
-    active={'version':version,'verification':'unrecorded'}
+    active={'version':version,'verification':'unrecorded','verification_scope':'plugin_sources'}
     record=_receipt(profile/'integration-release.json')
     if record is not None:
         files=record.get('plugin_files')
