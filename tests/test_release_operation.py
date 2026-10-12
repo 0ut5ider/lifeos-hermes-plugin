@@ -15,6 +15,66 @@ from optional.lifeos_release_manager.release_programs import publish
 
 
 class ReleaseOperationTests(unittest.TestCase):
+    def test_worker_failure_keeps_the_lock_until_state_publication(self):
+        import inspect
+        import select
+        import sys
+        from optional.lifeos_release_manager import release_worker as worker
+        from optional.lifeos_release_manager.release_operation import OperationBusy
+        with tempfile.TemporaryDirectory() as temp:
+            profile, job, request = self.recovery_fixture(Path(temp))
+            write_admission(job, request, 'recover')
+            write_state(job, 'queued-recover')
+            target_function = worker.execute
+            lines, start = inspect.getsourcelines(target_function)
+            target = start + next(index for index, line in enumerate(lines)
+                                  if line.strip() == 'record_failure(job, error)')
+            reader, writer = os.pipe()
+            resume_reader, resume_writer = os.pipe()
+            child = os.fork()
+            if child == 0:
+                os.close(reader)
+                os.close(resume_writer)
+                def trace(frame, event, arg):
+                    if frame.f_code is target_function.__code__ and event == 'line' and frame.f_lineno == target:
+                        sys.settrace(None)
+                        os.write(writer, b'1')
+                        os.read(resume_reader, 1)
+                    return trace
+                sys.argv = ['release_worker.py', str(job), '--action', 'recover']
+                sys.settrace(trace)
+                os._exit(worker.main())
+            os.close(writer)
+            os.close(resume_reader)
+            try:
+                self.assertTrue(select.select([reader], [], [], 20)[0], 'The worker does not reach failure publication')
+                self.assertEqual(os.read(reader, 1), b'1')
+                with self.assertRaises(OperationBusy):
+                    worker.admit_operation(job, read_private(job / 'request.json'), 'recover')
+            finally:
+                os.write(resume_writer, b'1')
+                _, result = os.waitpid(child, 0)
+                os.close(reader)
+                os.close(resume_writer)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 1)
+            self.assertEqual(read_private(job / 'status.json')['state'], 'rejected')
+            self.assertTrue((job / 'worker-failure.json').is_file())
+
+    def test_restore_admission_checks_the_recorded_profile(self):
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        from optional.lifeos_release_manager.release_worker import admit_operation
+        with tempfile.TemporaryDirectory() as temp:
+            profile, job, request = self.recovery_fixture(Path(temp))
+            programs = ProgramTransaction(job / 'program-snapshot')
+            programs.prepare(directories={}, files={})
+            programs.apply()
+            seal_plan(job, request, {'fresh': False, 'native_mount_required': False,
+                'services': None, 'program_entries_sha256': programs.entries_digest()})
+            write_state(job, 'applied')
+            admit_operation(job, request, 'restore')
+            self.assertEqual(read_private(job / 'status.json')['state'], 'queued-restore')
+            validate_admission(job, read_private(job / 'request.json'), 'restore')
+
     def recovery_fixture(self, root):
         profile = root / '.hermes'
         profile.mkdir(mode=0o700)

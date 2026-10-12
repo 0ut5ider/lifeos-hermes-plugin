@@ -21,6 +21,8 @@ This development candidate is not a qualified production release.
 - Recover queued operations after a coordinator exits before launch recording. Preserve a successor grant when a stale worker refuses admission.
 - Build the program plan with the qualified candidate before reporting ready. Refuse incomplete plans before service interruption.
 - Hide expired native rollback and check current and retained programs before stopping services.
+- Check retained native recovery copies before rollback admission and service interruption.
+- Keep worker failure reporting and grant cleanup inside the execution lock.
 
 
 This file records changes to the LifeOS plugin for Hermes. Version numbers use

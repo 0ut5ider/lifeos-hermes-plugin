@@ -29,7 +29,7 @@ sys.path.insert(0, str(cache / 'upstream'))
 from optional.lifeos_release_manager.release_catalog import ReleaseCatalog
 from optional.lifeos_release_manager.cli import prepare, operation, launch, read_private
 from optional.lifeos_release_manager.release_stage import sha
-from optional.lifeos_release_manager.release_worker import review_operation
+from optional.lifeos_release_manager.release_operation import validate_plan
 
 certificate = {**build, 'format': 1, 'status': 'QUALIFIED', 'program_commit': build['head'],
     'hermes_dashboard_sha256': frontend['sha256'], 'test_fixture_only': True}
@@ -90,7 +90,9 @@ try:
     job, request = operation(profile, result['identifier'])
     report['job'] = str(job)
     assert not (base / '.claude').exists(), 'Preparation publishes native files'
-    review_operation(job, request)
+    plan = validate_plan(job, request)
+    assert result['state'] == 'ready' and plan['fresh'], 'Preparation does not seal the candidate plan before readiness'
+    report['candidate_plan_prepared_before_ready'] = 'PASS'
     phase = os.environ.get('LIFEOS_QUALIFICATION_INTERRUPTION')
     report['interruption_phase'] = phase
     retained = None

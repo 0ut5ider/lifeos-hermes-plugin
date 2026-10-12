@@ -99,7 +99,7 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
     if action == 'restore':
         mount_module = selected['current'].memory_module('mount_transaction')
         baseline = selected['current'].memory_module('version_drift').default_baseline_path(selected['installed'].parent)
-        check_restore(job, request, plan, mount_module.MountTransaction(selected['installed'], profile, baseline))
+        check_restore(job, request, plan, mount_module.MountTransaction(selected['installed'], selected['profile'], baseline))
     if authorization is not None:
         request = {**request, 'memory_authorization': str(authorization)}
     publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
@@ -252,6 +252,13 @@ def execute(job, action, *, checkpoint=lambda point: None):
         validate_admission(job, request, action)
         try:
             return _execute(job, action, checkpoint=checkpoint)
+        except (ValueError, OSError, RuntimeError, PermissionError, ImportError, KeyError) as error:
+            record_failure(job, error)
+            state = read_private(job / 'status.json')['state']
+            if state not in {'rolled_back', 'applied', 'recovery_required'}:
+                write_state(job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
+                    error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
+            raise
         finally:
             revoke_recorded_authorization(job)
 
@@ -312,7 +319,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
         programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
         mount = current.memory_module('mount_transaction').MountTransaction(selected['installed'], profile, selected['baseline'])
         if action != 'apply' and not fresh_recovery:
-            _restore_mount_manifest(job, request, mount.journal)
+            check_mount_recovery(job, request, mount)
             if action == 'restore':
                 check_restore(job, request, plan, mount)
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
@@ -416,6 +423,10 @@ def _restore_mount_manifest(job, request, journal, *, required=False):
 def _retained_mount(manifest, profile):
     if manifest['state'] != 'committed' or manifest.get('retain_for_rollback') is not True:
         raise ReleaseRejected('The release no longer has its retained native mount')
+    _check_mount_copies(manifest, profile)
+
+
+def _check_mount_copies(manifest, profile):
     snapshot = Path(manifest['snapshot'])
     if (snapshot.parent != profile / '.lifeos-mount' or snapshot.resolve() != snapshot
             or re.fullmatch(r'[0-9a-f]{32}', snapshot.name) is None):
@@ -423,6 +434,26 @@ def _retained_mount(manifest, profile):
     info = snapshot.stat()
     if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
         raise ReleaseRejected('The retained native mount requires its private snapshot')
+    for index, entry in enumerate(manifest['entries']):
+        if type(entry['copy']) is not int or entry['copy'] != index:
+            raise ReleaseRejected('The mount recovery copy changes its recorded path')
+        if entry['before'] is None:
+            continue
+        copy = snapshot / 'previous' / str(index)
+        try:
+            info = copy.lstat()
+        except FileNotFoundError as error:
+            raise ReleaseRejected('The mount recovery copy is missing') from error
+        if (not stat.S_ISREG(info.st_mode) or info.st_size > 4 * 1024 * 1024
+                or info.st_uid != os.getuid() or info.st_mode & 0o077
+                or fingerprint(copy)['sha256'] != entry['before']['digest']):
+            raise ReleaseRejected('The mount recovery copy changed')
+
+
+def check_mount_recovery(job, request, mount):
+    manifest = _restore_mount_manifest(job, request, mount.journal)
+    if manifest is not None and manifest['state'] != 'rolled_back':
+        _check_mount_copies(manifest, Path(request['profile']))
 
 
 def restore_available(job, request, plan):
@@ -490,19 +521,6 @@ def main():
             if preparing_job is not None:
                 with operation_lock(preparing_job):
                     record_failure(preparing_job, error)
-            return 1
-        try:
-            with operation_lock(args.job):
-                request = read_private(args.job / 'request.json')
-                admitted = read_private(args.job / 'admission.json')
-                if admitted != {'format': 1, 'action': args.action, 'request_sha256': request_digest(request)}:
-                    return 1
-                record_failure(args.job, error)
-                state = read_private(args.job / 'status.json')['state']
-                if state not in {'rolled_back', 'applied', 'recovery_required'}:
-                    write_state(args.job, 'recovery_required' if state in {'applying', 'recovering', 'restoring'} else 'rejected',
-                        error='The release worker refuses the current artifacts or authority. Review the private operation before recovery.')
-        except OperationBusy:
             return 1
         return 1
     print(json.dumps(result))

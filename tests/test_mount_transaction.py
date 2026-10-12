@@ -14,6 +14,60 @@ from test_memory_admin_install import HOST
 
 
 class MountTransactionTests(unittest.TestCase):
+    def test_retained_copy_loss_refuses_release_restore_before_mutation(self):
+        from optional.lifeos_release_manager.cli import write_state
+        from optional.lifeos_release_manager.release_operation import request_digest, seal_plan
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction, publish
+        from optional.lifeos_release_manager import release_worker
+        job = self.profile / '.lifeos-releases' / ('a' * 32)
+        job.mkdir(parents=True, mode=0o700)
+        request = {'identifier': job.name, 'profile': str(self.profile), 'installed': str(self.root),
+                   'version': '0.4.0-dev.1', 'commit': 'b' * 40, 'package_sha256': 'c' * 64}
+        publish(job / 'request.json', json.dumps(request).encode())
+        write_state(job, 'ready')
+        programs = ProgramTransaction(job / 'program-snapshot')
+        source = job / 'candidate-config.yaml'
+        publish(source, (self.profile / 'config.yaml').read_bytes())
+        programs.prepare(directories={}, files={self.profile / 'config.yaml': source})
+        programs.apply()
+        plan = {'fresh': False, 'native_mount_required': True, 'services': None,
+                'program_entries_sha256': programs.entries_digest()}
+        seal_plan(job, request, plan)
+        publish(self.profile / 'integration-release.json', json.dumps(request).encode())
+        binding = {'job': str(job), 'request_digest': request_digest(request), 'action': 'apply'}
+        publish(job / 'mount-intent.json', b'{"prior_journal_sha256":null,"action":"apply"}')
+        grant = self.fixture.issue(binding=binding)
+        self.addCleanup(self.fixture.admin().revoke, self.fixture.configuration, grant)
+        environment = self.fixture.admin().mount_environment(self.root, self.profile, grant, binding=binding)
+        from lifeos_hook_bridge.memory_service import MemoryService
+        config, scope = self.fixture.admin().validate(self.fixture.configuration, grant)
+        MemoryService(self.fixture.configuration)._prompt(config, scope, 'prompt_preview',
+                                                        {'home': str(self.profile), 'keepOutputFormat': False})
+        transaction = self.transaction()
+        transaction.execute(environment, self.fixture.fixture.memory.bun, str(self.hermes),
+                            binding=binding, retain_for_rollback=True)
+        write_state(job, 'applied')
+        release_worker.check_restore(job, request, plan, transaction)
+        manifest = json.loads(transaction.journal.read_bytes())
+        entry = next(entry for entry in manifest['entries'] if entry['before'] is not None)
+        previous = Path(manifest['snapshot']) / 'previous' / str(entry['copy'])
+        original = previous.read_bytes()
+        for damaged in (None, b'Synthetic damaged retained copy'):
+            with self.subTest(damaged=damaged):
+                if damaged is None:
+                    previous.unlink()
+                else:
+                    publish(previous, damaged)
+                self.assertFalse(release_worker.restore_available(job, request, plan))
+                before = transaction.journal.read_bytes(), (self.profile / 'config.yaml').read_bytes()
+                with self.assertRaisesRegex(ValueError, 'recovery copy'):
+                    release_worker.check_restore(job, request, plan, transaction)
+                with self.assertRaisesRegex(ValueError, 'recovery copy'):
+                    release_worker.check_mount_recovery(job, request, transaction)
+                self.assertEqual(before, (transaction.journal.read_bytes(), (self.profile / 'config.yaml').read_bytes()))
+        publish(previous, original)
+        release_worker.check_restore(job, request, plan, transaction)
+
     def test_later_native_mount_expires_release_restore_before_service_work(self):
         from optional.lifeos_release_manager.cli import status, write_state
         from optional.lifeos_release_manager.release_operation import request_digest, seal_plan
