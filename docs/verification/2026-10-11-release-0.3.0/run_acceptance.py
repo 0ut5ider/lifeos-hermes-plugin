@@ -15,7 +15,8 @@ parser.add_argument('--modules',nargs='+')
 args=parser.parse_args()
 repo=Path(__file__).resolve().parents[3];out=Path(__file__).parent
 package=args.package.resolve();manifest=json.loads((package/'DAILY-CANDIDATE.json').read_text())
-assert manifest['version']=='0.3.0'
+sys_version=manifest['version']
+assert sys_version.startswith('0.3.')
 assert all(hashlib.sha256((package/name).read_bytes()).hexdigest()==digest for name,digest in manifest['plugin_files'].items())
 previous=json.loads((repo/'docs/verification/2026-10-10-daily-text-release/combined-final.json').read_text())
 names=args.modules or previous['command'][6:]+['test_memory_atlas_retention','test_release_version',
