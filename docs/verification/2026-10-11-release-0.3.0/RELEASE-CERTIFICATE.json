@@ -1,0 +1,62 @@
+{
+  "format": 1,
+  "status": "QUALIFIED",
+  "version": "0.3.0",
+  "program_commit": "01a50a2feb482b869ccde344e860ad8af44f568c",
+  "archive_sha256": "41c249d372093048dc31c4640efcd6f4770c29b30cba4461cd784b987110cdfa",
+  "archive_bytes": 341572807,
+  "hermes_dashboard_sha256": "078d6da534408339fefcb3893431835ccfc7ce9483cc85a46ebf6b917e8cb2ee",
+  "hermes_base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "hermes_patch_count": 11,
+  "lifeos_patch_count": 25,
+  "plugin_files": 202,
+  "operator_sha256": {
+    "upgrade_guest.py": "0fbcbc97b4943a0b0801121d456f67abf0819b9ac7bac24bdb0590a8066194c4",
+    "review_launch_sources.py": "e350f3f77d0e36d72e4e5706534c0d4ad0ccec466302ad264bf1649ad34de499",
+    "verify_selected.py": "be971e006fa60fa7941803485b4ddd6fce20a36ccad9a4a9bb247e357ab65e9e",
+    "verify_owner_jobs.py": "76e8ab39b24a39eee5d6e4ecdac2e27e7ebc374a932134cce824230b2e3de8dd",
+    "observe_morning.py": "6c39c15cbbf07d3b617507050ea03a2ca04b231b208e68c52624a9dddb2f3de6"
+  },
+  "morning_operator_sha256": "426b2c2b4f5aa319b5ff956858fc5d99707e1c17e8439e1980472cdecfda7089",
+  "integration_tests": 541,
+  "native_controls": 96,
+  "installed_development_verified": true,
+  "development_program_rollback_verified": true,
+  "development_boot_verified": true,
+  "whole_guest_history_recovery": {
+    "status": "PASS",
+    "archive": "PBS-01:backup/ct/101/2026-10-12T03:40:04Z",
+    "source_guest": 101,
+    "restored_guest": 110,
+    "network_disconnected": true,
+    "application_services_masked": true,
+    "cases": [
+      {
+        "case": "baseline",
+        "status": "PASS",
+        "restored_files": 16,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "interrupted",
+        "status": "PASS",
+        "restored_files": 20,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "later-edit",
+        "status": "PASS",
+        "restored_files": 20,
+        "later_edit_refused": true,
+        "archive_and_live_group_verified": true
+      }
+    ],
+    "production_guest_changed": false
+  },
+  "daily_promotion_verified": false,
+  "automatic_morning_observed": false,
+  "build_manifest_note": "DAILY-CANDIDATE.json records immutable build-time state. This certificate records release qualification."
+}

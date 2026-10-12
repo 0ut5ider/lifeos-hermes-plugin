@@ -36,7 +36,7 @@ def classification(relative):
     if relative in PERSONAL_SOURCES['ledger']: return 'life_text'
     if relative in PERSONAL_SOURCES['doctor'] or re.fullmatch(r'hooks/[^/]+\.hook\.(?:ts|sh)', relative): return 'life_text'
     if relative in PERFORMANCE_SOURCES or relative in MENUBAR_SOURCES | PROFILE_SOURCES: return 'life_text'
-    if re.fullmatch(r'LIFEOS/USER/CONDUIT/(?:config\.json|(?:events|daily|insights)/[^/]+\.(?:json|jsonl))', relative): return 'life_text'
+    if re.fullmatch(r'LIFEOS/USER/CONDUIT/(?:(?:config|state)\.json|(?:events|daily|insights)/[^/]+\.(?:json|jsonl))', relative): return 'life_text'
     if (relative in FINANCE_SOURCES or relative in TELOS
             or re.fullmatch(r'LIFEOS/USER/HEALTH/[^/]+\.md', relative) and Path(relative).name != 'README.md'
             or relative == BUSINESS + '/README.md'

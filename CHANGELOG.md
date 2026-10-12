@@ -6,6 +6,12 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+## 0.3.0 (2026-10-12)
+
+- Report active and staged integration versions through `hermes lifeos-version`. Verify installed plugin hashes before reporting an exact release.
+- Accept matching development and release-candidate version declarations. Record exact commit and package identities in private deployment receipts.
+
+- Allow explicit owner review of Conduit cursor state after a forget operation. Preserve current-source signatures and private or retired text refusal.
 - Archive Atlas history during governed synchronization while preserving observation references, collector timestamps, and cumulative run counts.
 - Read verified archive rows through `hermes lifeos-atlas-history` with current owner admission and retired-text refusal.
 - Recover archive files and the live graph as one publication group. Use smaller retained windows when planned output exceeds capacity.

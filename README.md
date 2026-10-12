@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Version:** `0.2.0` (daily Discord text release, deployed October 11). See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Version:** `0.3.0` (release candidate). The daily server runs release `0.2.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) supplies the current installed acceptance status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
 
@@ -293,6 +293,16 @@ the validation results and known limits. Use patch increments for fixes and
 documentation, and minor increments for features. During `0.x` development,
 breaking changes also require a minor increment and explicit migration notes.
 Reserve `1.0.0` for a defined, stable compatibility contract.
+
+Development packages use `NEXT-dev.N`; acceptance candidates can use `NEXT-rc.N`.
+Increment the counter for each installed candidate. Final release packages use
+`MAJOR.MINOR.PATCH`. Test the exact final package before daily deployment.
+`hermes lifeos-version` reports the active version, commit, package hash, source
+verification, and staged candidate. A missing receipt reports an unrecorded build;
+changed or extra plugin files report a modified build. Private installation
+receipts are `integration-release.json` and `integration-candidate.json` in the
+selected Hermes profile. Record upstream pins and operators in the release
+certificate. Preserve these receipts in whole-guest backups.
 
 Version `0.1.0` records the experimental baseline after PR #1 merged. Install
 from a reviewed full commit ID as shown above. Server deployment follows the

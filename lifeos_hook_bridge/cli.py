@@ -144,7 +144,23 @@ def run_atlas_history(args: argparse.Namespace) -> int:
     return 0 if result.get('ok') else 1
 
 
+def run_version(args: argparse.Namespace) -> int:
+    from hermes_constants import get_hermes_home
+    from .release_version import status
+    try:
+        result=status(get_hermes_home(),Path(__file__).parent)
+    except (ValueError,OSError):
+        print(json.dumps({'error':'Release status is unavailable. Check the version declarations and release receipt.'}))
+        return 1
+    print(json.dumps(result))
+    return 0
+
+
 def register_commands(ctx) -> None:
+    ctx.register_cli_command(
+        'lifeos-version', help='Report the selected integration version, build identity, and staged candidate.',
+        setup_fn=lambda parser:None, handler_fn=run_version,
+    )
     ctx.register_cli_command(
         "lifeos-infer", help="Run a LifeOS child call with the selected Hermes provider.",
         setup_fn=claude_direct.configure_arguments, handler_fn=claude_direct.main,

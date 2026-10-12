@@ -1,0 +1,109 @@
+{
+  "branch": "feature/release-0.3.0",
+  "current_head": "01a50a2feb482b869ccde344e860ad8af44f568c",
+  "base": "194c334bcdf85d6f2b97929e0e77f97f7409ae68",
+  "authorization": "Proceed with complete versioning, active .252 update, combined acceptance, whole-guest restore, release publication and .253 promotion, then automatic morning observation.",
+  "active_development": {
+    "version": "0.3.0",
+    "verification": "verified",
+    "verification_scope": "plugin_sources",
+    "commit": "01a50a2feb482b869ccde344e860ad8af44f568c",
+    "package_sha256": "41c249d372093048dc31c4640efcd6f4770c29b30cba4461cd784b987110cdfa",
+    "recorded_version": "0.3.0",
+    "modified_files": []
+  },
+  "final_package": {
+    "status": "PASS",
+    "version": "0.3.0",
+    "head": "01a50a2feb482b869ccde344e860ad8af44f568c",
+    "package": "/home/outsider/.cache/lifeos-release-20261011/0.3.0-01a50a2f",
+    "archive": "/home/outsider/.cache/lifeos-release-20261011/0.3.0-01a50a2f.tgz",
+    "archive_bytes": 341572807,
+    "archive_sha256": "41c249d372093048dc31c4640efcd6f4770c29b30cba4461cd784b987110cdfa",
+    "plugin_file_count": 202,
+    "hermes_base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+    "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+    "hermes_patch_count": 11,
+    "lifeos_patch_count": 25,
+    "elapsed_seconds": 15.798,
+    "native_manifests_verified": true,
+    "live_selection_changed": false,
+    "combined_release_verified": false
+  },
+  "combined_acceptance_pid": 1250307,
+  "combined_acceptance_state": "PASS",
+  "production_version": "0.2.0",
+  "production_changed": false,
+  "remaining": [
+    "Complete the isolated whole-guest restore and cleanup",
+    "Publish source PR, tag, and release artifacts",
+    "Promote exact 0.3.0 package to .253 and run installed acceptance",
+    "Review admitted operational sources after the synthetic cleanup, then verify real owner jobs",
+    "Take and verify the activated daily guest backup",
+    "Observe the first automatic morning brief"
+  ],
+  "operator": "docs/verification/2026-10-11-release-0.3.0/upgrade_guest.py",
+  "operator_notes": [
+    "Borrow the installation lease for ProfileServices",
+    "Candidate receipt is removed only when it matches the selected commit and archive",
+    "Final package includes corrected morning operator",
+    "Status verification scope is plugin_sources; release certificate must bind complete native and dashboard artifacts"
+  ],
+  "github_identity": "0ut5ider; use gh auth token through subprocess environment without printing it",
+  "memory_tools": "Cortex integrity_error; do not bypass shared memory tools",
+  "morning_observation": "First scheduled 07:00 America/Toronto run still in the future at last check; user asks confirmation, not a manual substitute",
+  "native_controls_passed": 96,
+  "pbs_controller_pid": 708249,
+  "pbs_controller_path": "/root/proxmox_history_restore_030.py",
+  "pbs_evidence": "/root/lifeos-release-0.3.0/history-restore",
+  "disposable_restore_id": 110,
+  "history_fixtures_prepared": true,
+  "history_fixtures_cases": [
+    "baseline",
+    "interrupted",
+    "later-edit"
+  ],
+  "final_candidate_staged_on_development": true,
+  "first_acceptance": {
+    "total": 529,
+    "passed": 520,
+    "errors": 9,
+    "cause": "Optional sharing test source omitted from package",
+    "evidence": "combined-final.stderr"
+  },
+  "cursor_correction": {
+    "focused_and_neighbors": 32,
+    "passed": true
+  },
+  "pbs_restore_controller_pid": 724996,
+  "backup_completed": true,
+  "source_services_resumed": true,
+  "development_rollback_verified": true,
+  "development_second_boot_verified": true,
+  "combined_release": {
+    "status": "PASS",
+    "head": "01a50a2feb482b869ccde344e860ad8af44f568c",
+    "version": "0.3.0",
+    "distinct_integration_cases": 541,
+    "runs": [
+      {
+        "cases": 529,
+        "receipt": "combined-cursor-final.json"
+      },
+      {
+        "cases": 12,
+        "receipt": "source-review-final.json"
+      }
+    ],
+    "native_controls": 96,
+    "native_equivalence_receipt": "native-equivalence.json",
+    "source_hashes_unchanged": true,
+    "native_capture_after_review": "capture-after-review-retry.stdout",
+    "scope": "Sealed package, native subprocesses, authenticated HTTP fixtures, and simulated Discord transport; installed and whole-guest checks are separate"
+  },
+  "browser_tab": "tab_a_6cbd26ac-befc-4d03-95f7-0b4474990134",
+  "whole_guest_recovery_passed": true,
+  "disposable_restore_removed": true,
+  "pr": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/10",
+  "certificate": "RELEASE-CERTIFICATE.json"
+}
