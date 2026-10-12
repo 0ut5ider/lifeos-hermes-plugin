@@ -153,7 +153,7 @@
     "local_subtests_passed": 11
   },
   "candidate_version": "0.4.0-dev.1",
-  "next_action": "Push the branch, create and register the authorized PR, then review and fix findings until resolved.",
+  "next_action": "Resolve PR14 review findings and repeat review. Candidate acceptance must be repeated where product fixes change verified behavior.",
   "installed_development_qualification": "PASS",
   "checkpoint_commit": "3a07230930e5a6c386b644438277188559b751f6",
   "sealed_integration": {
@@ -396,5 +396,25 @@
     "prior_configuration_exact": true,
     "services_running": true
   },
-  "production_qualified": false
+  "production_qualified": false,
+  "synthetic_account_cleanup": {
+    "status": "PASS",
+    "account": "lifeos-release-verify",
+    "uid": 1009,
+    "account_removed": true,
+    "home_removed": true,
+    "linger_disabled": true,
+    "main_account_changed": false,
+    "initial_removal_exit_code": 8,
+    "retry_without_uid_processes": true,
+    "warnings": [
+      "userdel: lifeos-release-verify mail spool (/var/mail/lifeos-release-verify) not found"
+    ]
+  },
+  "review": {
+    "pr": 14,
+    "url": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/14",
+    "round": 1,
+    "status": "in_progress"
+  }
 }

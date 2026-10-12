@@ -144,9 +144,9 @@ def status(profile, identifier=None):
             value['restore_available'] = value['state'] == 'applied' and not plan['fresh']
             if value['state'] in {'applying', 'recovering', 'restoring', 'recovery_required'} or value['state'].startswith('queued-'):
                 try:
-                    with operation_lock(job):
+                    with operation_lock(job, name='launch.lock'), operation_lock(job):
                         running = worker_running(job)
-                        value['recover_available'] = running is False or running is None and not value['state'].startswith('queued-')
+                        value['recover_available'] = running is not True
                 except OperationBusy:
                     pass
         return value

@@ -27,16 +27,16 @@ The normal operation 48d18c56bd5042cbbfd0e0fb8ea8e959 applies through the real o
 
 The daily guest .253 remains unchanged at accepted 0.3.1.
 
-The current-manager managed-memory operation 78e90736675d492f8b748d4c486f78e3 passes and is rolled_back. Its actual authenticated owner workflow refuses missing grants, applies and restores programs, revokes each grant, and recalls the synthetic fact after each operation. The journal includes all three public commands. The safe receipt is managed-update-3a072309.json. Cleanup of the temporary account lifeos-release-verify, UID1009, is running. Wait for the cleanup command to complete before recording account removal. Do not recreate or replay the completed test by default. Earlier prior-manager receipts remain historical evidence.
+The current-manager managed-memory operation 78e90736675d492f8b748d4c486f78e3 passes and is rolled_back. Its actual authenticated owner workflow refuses missing grants, applies and restores programs, revokes each grant, and recalls the synthetic fact after each operation. The journal includes all three public commands. The safe receipt is managed-update-3a072309.json. The temporary account lifeos-release-verify, UID1009, is removed. Its home is removed and linger is disabled. Read synthetic-account-cleanup.json. Do not recreate or replay the completed test by default. Earlier prior-manager receipts remain historical evidence.
 
 The owned browser tab is tab_e_6cbd26ac-befc-4d03-95f7-0b4474990134, profile default, at http://192.168.8.252:9119/lifeos-releases?profile=default. Call preview_status first. The actual owner session persists. Use normal dashboard authentication if it expires. Do not fabricate a session or grant.
 
 ## Remaining work
 
-1. Finish the synthetic account cleanup and export its safe receipt.
-2. Commit the final evidence and documentation, push the branch, and create the authorized PR.
-3. Register the PR with link_pull_request immediately.
-4. Delegate an independent code review. Require the full report and raw data under docs/agents/2026-10-12-prNN-managed-release-review/.
-5. Verify findings, fix them, and repeat targeted review when necessary. Push PR corrections. Do not merge without authorization.
+1. PR14 is open and linked: https://github.com/0ut5ider/lifeos-hermes-plugin/pull/14.
+2. The native review agent is /root/pr14_managed_release_review_1. Its reports and probes are under docs/agents/2026-10-12-pr14-managed-release-review-1/.
+3. Confirmed review findings include unrecorded queued launch recovery, older-manager target omission, and obsolete restore after a later native mount.
+4. The primary adds queue regressions and admission validation before grant cleanup. Re-run affected qualification after all product fixes.
+5. Verify all findings, fix them, and repeat targeted review when necessary. Push PR corrections. Do not merge without authorization.
 
 The shared memory MCP returns integrity_error. Do not read its records through files, SSH, or hidden transcripts. Continue from repository evidence and the safe observer receipts. Private verbose dependency traces contain HTTP cookies and must not be published.

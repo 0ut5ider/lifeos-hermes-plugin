@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 
@@ -14,6 +15,80 @@ from optional.lifeos_release_manager.release_programs import publish
 
 
 class ReleaseOperationTests(unittest.TestCase):
+    def recovery_fixture(self, root):
+        profile = root / '.hermes'
+        profile.mkdir(mode=0o700)
+        folder = profile / '.lifeos-releases'
+        folder.mkdir(mode=0o700)
+        job, request = self.fixture(folder)
+        request.update(profile=str(profile), installed=str(root / '.claude'), commit='b' * 40,
+                       runtime={'source': str(root / 'native-source')})
+        shutil.copytree(Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge',
+            profile / 'plugins/lifeos-hook-bridge', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+        seal_plan(job, request, {'fresh': False, 'native_mount_required': False, 'services': None})
+        return profile, job, request
+
+    def test_coordinator_exit_before_launch_receipt_permits_recovery(self):
+        from optional.lifeos_release_manager.cli import status
+        from optional.lifeos_release_manager.release_worker import _admit_operation
+        with tempfile.TemporaryDirectory() as temp:
+            profile, job, request = self.recovery_fixture(Path(temp))
+            child = os.fork()
+            if child == 0:
+                with operation_lock(job, name='launch.lock'), operation_lock(job):
+                    write_admission(job, request, 'apply')
+                    write_state(job, 'queued-apply')
+                    os._exit(73)
+            _, result = os.waitpid(child, 0)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 73)
+            self.assertTrue(status(profile, job.name)['recover_available'])
+            with operation_lock(job, name='launch.lock'), operation_lock(job):
+                _admit_operation(job, request, 'recover')
+            validate_admission(job, read_private(job / 'request.json'), 'recover')
+
+    def test_live_coordinator_keeps_unrecorded_launch_unavailable(self):
+        from optional.lifeos_release_manager.cli import status
+        with tempfile.TemporaryDirectory() as temp:
+            profile, job, request = self.recovery_fixture(Path(temp))
+            write_admission(job, request, 'apply')
+            write_state(job, 'queued-apply')
+            with operation_lock(job, name='launch.lock'):
+                self.assertFalse(status(profile, job.name)['recover_available'])
+
+    def test_late_apply_worker_preserves_the_recovery_grant(self):
+        from optional.lifeos_release_manager.release_worker import execute
+        with tempfile.TemporaryDirectory() as temp:
+            profile, job, request = self.recovery_fixture(Path(temp))
+            directory = profile / '.lifeos-memory-admin'
+            directory.mkdir(mode=0o700)
+            grant = directory / ('b' * 32 + '.json')
+            publish(grant, b'Synthetic recovery grant')
+            request['memory_authorization'] = str(grant)
+            publish(job / 'request.json', json.dumps(request).encode())
+            write_admission(job, request, 'recover')
+            write_state(job, 'queued-recover')
+            with self.assertRaisesRegex(ValueError, 'admitted request'):
+                execute(job, 'apply')
+            self.assertTrue(grant.exists(), 'A stale worker revokes the successor grant')
+            self.assertEqual(grant.read_bytes(), b'Synthetic recovery grant')
+            validate_admission(job, read_private(job / 'request.json'), 'recover')
+
+    def test_admitted_worker_revokes_its_grant_on_artifact_refusal(self):
+        from optional.lifeos_release_manager.release_worker import execute
+        with tempfile.TemporaryDirectory() as temp:
+            profile, job, request = self.recovery_fixture(Path(temp))
+            directory = profile / '.lifeos-memory-admin'
+            directory.mkdir(mode=0o700)
+            grant = directory / ('b' * 32 + '.json')
+            publish(grant, b'Synthetic admitted grant')
+            request['memory_authorization'] = str(grant)
+            publish(job / 'request.json', json.dumps(request).encode())
+            write_admission(job, request, 'apply')
+            write_state(job, 'queued-apply')
+            with self.assertRaises(KeyError):
+                execute(job, 'apply')
+            self.assertFalse(grant.exists())
+
     def test_grant_cleanup_is_bounded_to_the_recorded_private_profile(self):
         from optional.lifeos_release_manager.release_worker import revoke_recorded_authorization
         with tempfile.TemporaryDirectory() as temp:

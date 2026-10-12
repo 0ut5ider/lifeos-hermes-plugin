@@ -74,8 +74,8 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
     if action not in {'apply', 'recover', 'restore'}:
         raise ReleaseRejected('Choose an apply, recovery, or rollback action')
     action_state(job, action)
-    if action == 'recover' and read_private(job / 'status.json')['state'].startswith('queued-') and worker_running(job) is not False:
-        raise ReleaseRejected('The queued worker is running or its launch remains uncertain')
+    if action == 'recover' and read_private(job / 'status.json')['state'].startswith('queued-') and worker_running(job) is True:
+        raise ReleaseRejected('The queued worker is running')
     if action == 'apply':
         selected, plan = _review_operation(job, request, installation_lease=installation_lease)
         if sha(Path(request['profile']) / 'config.yaml') != request['configuration_sha256']:
@@ -240,6 +240,8 @@ def _fresh_native(job, request, selected, *, checkpoint=lambda point: None):
 
 def execute(job, action, *, checkpoint=lambda point: None):
     with operation_lock(job):
+        request = read_private(job / 'request.json')
+        validate_admission(job, request, action)
         try:
             return _execute(job, action, checkpoint=checkpoint)
         finally:
