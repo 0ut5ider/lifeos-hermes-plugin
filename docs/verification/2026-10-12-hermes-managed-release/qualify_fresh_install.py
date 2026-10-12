@@ -73,15 +73,15 @@ try:
     installed = subprocess.run([sys.executable, '-B', '-m', 'hermes_cli.main', 'plugins', 'install',
         'file://' + str(repo) + '#optional/lifeos_release_manager', '--ref', build['head']], env=environment, input='y\n',
         text=True, capture_output=True, timeout=300)
-    (out / 'fresh-stock-plugin-install.stdout').write_text(installed.stdout)
-    (out / 'fresh-stock-plugin-install.stderr').write_text(installed.stderr)
+    (out / ('fresh-stock-plugin-install-' + os.environ.get('LIFEOS_QUALIFICATION_TAG', 'repeat') + '.stdout')).write_text(installed.stdout)
+    (out / ('fresh-stock-plugin-install-' + os.environ.get('LIFEOS_QUALIFICATION_TAG', 'repeat') + '.stderr')).write_text(installed.stderr)
     assert installed.returncode == 0, 'The native plugin installer refuses the manager. Read the fixture log.'
     report['stock_plugin_install'] = 'PASS'
     enabled = subprocess.run([sys.executable, '-B', '-m', 'hermes_cli.main', 'plugins', 'enable', 'lifeos-release-manager'], env=environment, text=True, capture_output=True, timeout=90)
     assert enabled.returncode == 0, 'The native manager does not enable'
     status = subprocess.run([sys.executable, '-B', '-m', 'hermes_cli.main', 'lifeos-release', 'status'], env=environment, text=True, capture_output=True, timeout=90)
-    (out / 'fresh-stock-manager-status.stdout').write_text(status.stdout)
-    (out / 'fresh-stock-manager-status.stderr').write_text(status.stderr)
+    (out / ('fresh-stock-manager-status-' + os.environ.get('LIFEOS_QUALIFICATION_TAG', 'repeat') + '.stdout')).write_text(status.stdout)
+    (out / ('fresh-stock-manager-status-' + os.environ.get('LIFEOS_QUALIFICATION_TAG', 'repeat') + '.stderr')).write_text(status.stderr)
     assert status.returncode == 0, 'Stock Hermes does not discover the installed management command'
     report['stock_command_discovery'] = 'PASS'
     result = prepare(profile, build['version'], name='SyntheticAdrian', assistant='SyntheticCerebo',
@@ -132,8 +132,8 @@ try:
         report['later_user_data_preserved'] = 'PASS'
     result = subprocess.run([str(base / '.local/bin/hermes'), 'lifeos-version'],
         env=dict(os.environ, PYTHONPATH=''), capture_output=True, text=True, timeout=90)
-    (out / 'fresh-installed-version.stdout').write_text(result.stdout)
-    (out / 'fresh-installed-version.stderr').write_text(result.stderr)
+    (out / ('fresh-installed-version-' + os.environ.get('LIFEOS_QUALIFICATION_TAG', 'repeat') + '.stdout')).write_text(result.stdout)
+    (out / ('fresh-installed-version-' + os.environ.get('LIFEOS_QUALIFICATION_TAG', 'repeat') + '.stderr')).write_text(result.stderr)
     assert result.returncode == 0, 'The installed Hermes command does not load'
     assert build['head'] in result.stdout and 'verified' in result.stdout
     report['installed_identity'] = 'PASS'

@@ -4,6 +4,10 @@ import argparse
 from contextlib import redirect_stdout
 import io
 import json
+import os
+import subprocess
+import sys
+import time
 from pathlib import Path
 import tempfile
 import unittest
@@ -68,3 +72,25 @@ class ReleaseManagerCommandTests(unittest.TestCase):
                 self.assertEqual(json.loads(output.getvalue())['status'], 'rejected')
             finally:
                 reset_hermes_home_override(token)
+
+    def test_detached_worker_uses_a_new_session_and_reaps(self):
+        from optional.lifeos_release_manager.cli import spawn_worker
+        from optional.lifeos_release_manager.release_operation import record_worker, worker_running
+        with tempfile.TemporaryDirectory() as temp:
+            job = Path(temp)
+            result = job / 'result.json'
+            code = ('import json,os,time;from pathlib import Path;'
+                    'Path("result.json").write_text(json.dumps({"pid":os.getpid(),"session":os.getsid(0)}));'
+                    'time.sleep(0.3)')
+            pid = spawn_worker(job, [sys.executable, '-B', '-c', code], dict(os.environ), job)
+            record_worker(job, pid)
+            deadline = time.monotonic() + 10
+            while not result.exists() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            values = json.loads(result.read_bytes())
+            self.assertEqual(values, {'pid': pid, 'session': pid})
+            self.assertNotEqual(values['session'], os.getsid(0))
+            while worker_running(job) and time.monotonic() < deadline:
+                time.sleep(0.01)
+            self.assertFalse(worker_running(job))
+            self.assertEqual((job / 'worker.stderr').read_bytes(), b'')

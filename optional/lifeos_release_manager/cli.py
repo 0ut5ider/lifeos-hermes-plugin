@@ -184,25 +184,23 @@ def launch_worker(profile, identifier, action, *, authorization=None):
             raise ReleaseRejected('The owner service manager cannot start the release worker')
         publish(job / 'worker-launch.json', json.dumps({'kind': 'service', 'unit': unit}).encode())
     else:
-        with (job / 'worker.stdout').open('ab') as stdout, (job / 'worker.stderr').open('ab') as stderr:
-            os.fchmod(stdout.fileno(), 0o600); os.fchmod(stderr.fileno(), 0o600)
-            descriptor = os.open(os.devnull, os.O_RDONLY)
-            try:
-                code = 'import os,runpy;os.chdir(' + repr(request['account_home']) + ');runpy.run_path(' + repr(command[2]) + ',run_name="__main__")'
-                arguments = [command[0], '-B', '-c', code, *command[3:]]
-                pid = os.posix_spawn(command[0], arguments, environment, setsid=True,
-                    file_actions=[(os.POSIX_SPAWN_DUP2, descriptor, 0),
-                                  (os.POSIX_SPAWN_DUP2, stdout.fileno(), 1),
-                                  (os.POSIX_SPAWN_DUP2, stderr.fileno(), 2)])
-                record_worker(job, pid)
-                Thread(target=os.waitpid, args=(pid, 0), daemon=True).start()
-            except OSError:
-                write_state(job, 'ready' if action == 'apply' else 'recovery_required',
-                    error='The detached release worker does not start.')
-                raise
-            finally:
-                os.close(descriptor)
+        try:
+            pid = spawn_worker(job, command, environment, request['account_home'])
+        except OSError:
+            write_state(job, 'ready' if action == 'apply' else 'recovery_required',
+                error='The detached release worker does not start.')
+            raise
+        record_worker(job, pid)
     return {'identifier': identifier, 'state': 'queued', 'action': action}
+
+
+def spawn_worker(job, command, environment, cwd):
+    with (job / 'worker.stdout').open('ab') as stdout, (job / 'worker.stderr').open('ab') as stderr:
+        os.fchmod(stdout.fileno(), 0o600); os.fchmod(stderr.fileno(), 0o600)
+        process = subprocess.Popen(command, cwd=cwd, env=environment, stdin=subprocess.DEVNULL,
+            stdout=stdout, stderr=stderr, start_new_session=True)
+    Thread(target=process.wait, daemon=True).start()
+    return process.pid
 
 
 def run(args):
