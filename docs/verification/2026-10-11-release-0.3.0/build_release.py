@@ -22,7 +22,7 @@ package=cache/(version+'-'+head[:8])
 archive=Path(str(package)+'.tgz')
 assert not package.exists() and not archive.exists()
 package.mkdir(mode=0o700)
-selected=['lifeos_hook_bridge','scripts','tests','docs/deployment/daily-text','VERSION','CHANGELOG.md','README.md',
+selected=['lifeos_hook_bridge','optional','scripts','tests','docs/deployment/daily-text','VERSION','CHANGELOG.md','README.md',
     'docs/verification/2026-10-11-daily-guest/deliver_morning.py']
 committed=subprocess.check_output(['git','archive',head,'--',*selected],cwd=repo)
 with tarfile.open(fileobj=io.BytesIO(committed)) as source:source.extractall(package,filter='data')
