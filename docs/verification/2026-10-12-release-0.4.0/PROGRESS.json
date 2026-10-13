@@ -24,8 +24,7 @@
   "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
   "archive_bytes": 119131156,
   "running": [
-    "Full corrected integration with uniform UTC",
-    "Normal corrected development update"
+    "Off-server whole-guest backup and disconnected restore"
   ],
   "fresh_acceptance": {
     "status": "PASS",
@@ -105,5 +104,24 @@
     "receipt": "development-bunfixed-interruption-recovery.json",
     "restored": "Exact accepted 0.3.1 and all three services"
   },
-  "normal_operation": "5a659e7f11e1437b8e33d65f3e064426"
+  "normal_operation": "5a659e7f11e1437b8e33d65f3e064426",
+  "integration_utc": {
+    "status": "PASS",
+    "tests": 625,
+    "elapsed_seconds": 744.485,
+    "receipt": "integration-sealed-a87e7ae9.json"
+  },
+  "normal_update": {
+    "status": "PASS",
+    "receipt": "development-bunfixed-update.json",
+    "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "model_mapping_preserved": true
+  },
+  "automatic_boot": {
+    "status": "PASS",
+    "receipt": "development-bunfixed-boot.json",
+    "manual_service_start": false,
+    "bun_version": "1.4.3",
+    "all_services_enabled_and_running": true
+  }
 }

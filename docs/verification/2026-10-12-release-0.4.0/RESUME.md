@@ -25,25 +25,25 @@ The first corrected full run passes 624/625; its one failure is a proven mixed-t
 Direct capture uses UTC while governed capture inherited Toronto. Both correct events exist in different day files.
 The probe reproduces the failure with mixed zones and passes with uniform UTC.
 The runner now supplies TZ=UTC, matching the official Hermes runner. Product sources and archive stay unchanged.
-The full repeat is detached, PID 3734684. Check integration-sealed-a87e7ae9.done before any replay.
+The UTC full repeat passes all 625 checks in 744.485 seconds. No replay is needed.
 The failing receipt remains under integration-sealed-a87e7ae9-mixed-timezone.*.
 The original 4644f90c package is superseded because of Bun 1.3.14 extraction failures. Never publish it.
 
 Current development state:
-- .252 active programs are accepted 0.3.1 after verified interruption recovery.
-- The current normal operation is 5a659e7f11e1437b8e33d65f3e064426, ready and unselected.
+- .252 now runs the exact corrected 0.4.0 after the verified normal update and guest reboot.
+- The current normal operation is 5a659e7f11e1437b8e33d65f3e064426, applied.
 - The interrupted corrected operation is 14215619fd654d9bab0028abe59b62af, rolled_back.
 - The staging folder is /home/lifeos-hermes/releases/qualification-20261012-bunfixed.
-- Normal owner review is pending in browser variable bunfixedNormalReview.
+- Normal review and apply both return HTTP 200. All aliases and services verify. All services start automatically after reboot with zero restarts.
 - Browser tab: tab_f_6cbd26ac-befc-4d03-95f7-0b4474990134, authenticated owner on .252:9119.
 - Call preview_status after a handoff. Use async fetch and bounded polling for long review/admission.
 - The main .252 memory ownership is disabled. Do not call its authenticated review a native memory grant.
 - .253 remains untouched on exact accepted 0.3.1.
 
 Next actions:
-1. Wait for normal review HTTP 200, then POST the normal operation apply route through the authenticated browser.
-2. Observe exact 0.4.0 identity, model hash, public aliases, and all services with observe_development.py.
-3. Verify boot and run coherent off-server whole-guest recovery before rollback.
+1. The whole-guest controller is detached on .101 now. Check its process.done and private controller log before any replay.
+2. Its Python environment is the normal operation python-environment/bin/python. Its operation is 5a659e7f11e1437b8e33d65f3e064426.
+3. Complete its verification and cleanup before normal rollback.
 4. The three synthetic Atlas cases already exist in deployment/history-recovery-0.4.0.
 5. The .101 controller is /root/proxmox_history_restore_040.py. It requires LIFEOS_STABLE_PYTHON from the normal runtime and LIFEOS_STABLE_OPERATION.
 6. It backs up only source guest 101 to PBS-01, restores unused guest 110, disconnects networking, masks all application services, verifies three Atlas cases and exact selected program targets, then removes the disposable guest.
