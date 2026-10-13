@@ -32,17 +32,20 @@ class ReleaseStageTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), certificate['archive_sha256'])
 
     def test_authenticated_archive_is_required_before_candidate_execution(self):
-        for change in ('missing', 'changed', 'symlink'):
+        for change in ('missing', 'changed', 'symlink', 'fifo'):
             with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
                 package, certificate, marker, archive = self.package(Path(temp))
                 if change == 'missing':
                     archive.unlink()
                 elif change == 'changed':
                     archive.write_bytes(b'changed')
-                else:
+                elif change == 'symlink':
                     retained = archive.with_suffix('.retained')
                     archive.rename(retained)
                     archive.symlink_to(retained)
+                else:
+                    archive.unlink()
+                    os.mkfifo(archive)
                 with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
                     validate_package(package, certificate)
                 self.assertFalse(marker.exists())
@@ -52,6 +55,34 @@ class ReleaseStageTests(unittest.TestCase):
             package, certificate, marker, _ = self.package(Path(temp))
             self.assertEqual(validate_package(package, certificate)['head'], certificate['program_commit'])
             self.assertTrue(marker.exists())
+
+    def test_extracted_manifest_requires_bounded_regular_owner_storage(self):
+        for change in ('symlink', 'oversized', 'fifo'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                package, certificate, marker, _ = self.package(root)
+                manifest = package / 'DAILY-CANDIDATE.json'
+                if change == 'symlink':
+                    outside = root / 'outside-manifest'
+                    manifest.rename(outside)
+                    manifest.symlink_to(outside)
+                elif change == 'oversized':
+                    manifest.write_bytes(b' ' * (512 * 1024 + 1))
+                else:
+                    manifest.unlink()
+                    os.mkfifo(manifest)
+                with self.assertRaisesRegex(ReleaseRejected, 'bounded regular owner manifest'):
+                    validate_package(package, certificate)
+                self.assertFalse(marker.exists())
+
+    def test_native_source_manifests_match_the_authenticated_program_map(self):
+        for name in ('hermes/hermes-source-manifest.json', 'lifeos/lifeos-source-manifest.json'):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp:
+                package, certificate, marker, _ = self.package(Path(temp))
+                (package / name).write_text('{"tree_sha256":"changed"}')
+                with self.assertRaisesRegex(ReleaseRejected, 'native source manifest'):
+                    validate_package(package, certificate)
+                self.assertFalse(marker.exists())
 
     def test_authenticated_archive_requires_one_bounded_regular_manifest(self):
         for change in ('missing', 'duplicate', 'oversized', 'link'):
@@ -90,7 +121,9 @@ class ReleaseStageTests(unittest.TestCase):
         files = {'lifeos_hook_bridge/install_source.py': source,
             'optional/lifeos_release_manager/manager.py': '# Synthetic manager\n',
             'python-runtime/pyproject.toml': '# Synthetic closure\n',
-            'python-runtime/uv.lock': '# Synthetic lock\n'}
+            'python-runtime/uv.lock': '# Synthetic lock\n',
+            'hermes/hermes-source-manifest.json': '{}',
+            'lifeos/lifeos-source-manifest.json': '{}'}
         for name, content in files.items():
             path = package / name
             path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -98,6 +131,7 @@ class ReleaseStageTests(unittest.TestCase):
         manifest = {'head': 'a' * 40, 'version': '0.4.2-rc.1',
             'plugin_files': {name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.startswith('lifeos_hook_bridge/')},
             'manager_files': {'manager.py': hashlib.sha256(files['optional/lifeos_release_manager/manager.py'].encode()).hexdigest()},
+            'prepared_manifest_files': {name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.endswith('-source-manifest.json')},
             'python_runtime_files': {Path(name).name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.startswith('python-runtime/')}}
         (package / 'DAILY-CANDIDATE.json').write_text(json.dumps(manifest))
         download = root / 'download'
