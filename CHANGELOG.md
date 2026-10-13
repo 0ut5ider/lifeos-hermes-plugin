@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.2 (release candidate)
+
+- Add Install LifeOS, Update LifeOS, and Update plugin controls for complete qualified packages.
+- Prepare dashboard requests in detached processes. Keep owner review before installation.
+- Bind service operations to the configured and running Hermes profile.
+- Share one preparation lease between command-line and dashboard requests.
+- Recognize the exact bundled Hermes launcher and preserve effective systemd environment paths.
+- Create private stage metadata without changing the caller's umask.
+- Keep Hermes v0.21.7, the pinned LifeOS revision, and all native dependency locks fixed.
+
 ## 0.4.2-rc.3 (2026-10-13 test prerelease)
 
 - Create private runtime metadata in stage subprocesses. Preserve the caller's umask.

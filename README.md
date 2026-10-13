@@ -1,5 +1,7 @@
 # LifeOS plugin for Hermes
 
+**Candidate under qualification:** `0.4.2`. The [stable release gates](docs/verification/2026-10-13-release-0.4.2/README.md) track clean installation, memory ownership, updates, development operation, and whole-guest restoration. Daily `.253` stays on `0.3.1` during qualification.
+
 **Qualified release:** `0.4.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
 The exact package passes 631 integration tests and 716 native tests across 38 files.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
