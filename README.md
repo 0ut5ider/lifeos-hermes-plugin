@@ -17,7 +17,7 @@ Data-only profile backups record release workspaces as runtime exclusions. Full 
 **Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
 **Development deployed version:** `0.4.1`, program commit `96f4f8fb`. The actual default public update passes on `.252`.
 All three services and public command aliases pass. The selected model mapping stays fixed.
-**Installation test guest:** `.249` runs `0.4.2-rc.2`. The [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) pass installation, both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
+**Installation test guest:** `.249` runs `0.4.2-rc.3`. The [final default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) passes fresh LifeOS installation and a post-installation Hermes web chat. The earlier [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) cover both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
@@ -272,7 +272,7 @@ The complete package includes the supported Hermes runtime, LifeOS programs, bri
 The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public exact-version installation passes against the published archive and certificate.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
-The 0.4.2-rc.1 and 0.4.2-rc.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
+The 0.4.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
 They qualify the synthetic installation and complete-package update workflow. They do not qualify deployment to the daily server.
 Select an exact test version during these checks. An empty version still selects stable 0.4.1.
 
@@ -283,9 +283,10 @@ https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_man
 ```
 
 The page installs from the default branch. It has no revision field, and a GitHub tree URL does not select a branch or commit.
-The new controls reach that default-branch installation after PR18 merges. Before the merge, the native command below can select an exact commit.
-The first test release uses commit `914ad24b0eea7f0022e75edc815f5be08566d0f9`.
-The version-only update test uses commit `6a0a241a0b1227d440938aa7156d8d59b87e5740`.
+The default GitHub URL replay retrieves the merged manager from `main` without a selected ref.
+The test baseline already contains a manager, so its replacement uses **Force reinstall**. The LifeOS store is absent before installation.
+The release page installs the explicit test version `0.4.2-rc.3`, at program commit `10459df6c2b27bda8911dfd96a25b92bee769c93`.
+The [verification record](docs/verification/2026-10-13-pr18-final-review-replay/README.md) includes the exact public archive, service recovery, preserved settings, and post-installation chat.
 
 Pin the release manager to the full 40-character commit shown in the selected release notes. Hermes does not accept a tag for `--ref`:
 

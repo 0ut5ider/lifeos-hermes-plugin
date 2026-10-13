@@ -1,0 +1,80 @@
+{
+  "operation": {
+    "identifier": "9a48c820b659418db29f4e177e7ed9e9",
+    "state": "applied"
+  },
+  "memory_ownership_configuration_present": false,
+  "native_present": true,
+  "test_fixture_only": false,
+  "production_qualified": false,
+  "active_release": {
+    "version": "0.4.2-rc.3",
+    "commit": "10459df6c2b27bda8911dfd96a25b92bee769c93",
+    "package_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474"
+  },
+  "program_state": "applied",
+  "program_targets": 11,
+  "model_configuration_preserved": true,
+  "prior_tier_settings_preserved": true,
+  "services": {
+    "hermes-gateway.service": {
+      "MainPID": "0",
+      "ExecMainStartTimestamp": "",
+      "ExecMainStatus": "0",
+      "ControlGroup": "",
+      "WorkingDirectory": "/home/lifeos-hermes/.hermes",
+      "Id": "hermes-gateway.service",
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "UnitFileState": "disabled"
+    },
+    "hermes-dashboard.service": {
+      "MainPID": "1931",
+      "ExecMainStartTimestamp": "Tue 2026-10-13 20:47:50 UTC",
+      "ExecMainStatus": "0",
+      "ControlGroup": "/user.slice/user-1008.slice/user@1008.service/app.slice/hermes-dashboard.service",
+      "WorkingDirectory": "/home/lifeos-hermes",
+      "Id": "hermes-dashboard.service",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "MainPID": "0",
+      "ExecMainStartTimestamp": "",
+      "ExecMainStatus": "0",
+      "ControlGroup": "",
+      "WorkingDirectory": "/home/lifeos-hermes/.claude/LIFEOS/PULSE",
+      "Id": "com.lifeos.pulse.service",
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "UnitFileState": "disabled"
+    },
+    "lifeos-release-9a48c820b659418db29f4e177e7ed9e9.service": {
+      "MainPID": "0",
+      "ExecMainStartTimestamp": "",
+      "ExecMainStatus": "0",
+      "ControlGroup": "",
+      "WorkingDirectory": "",
+      "Id": "lifeos-release-9a48c820b659418db29f4e177e7ed9e9.service",
+      "LoadState": "not-found",
+      "ActiveState": "inactive",
+      "UnitFileState": ""
+    }
+  },
+  "first_service_journal": {
+    "installed": "/home/lifeos-hermes/.claude",
+    "installed_physical": "/home/lifeos-hermes/.claude",
+    "profile": "/home/lifeos-hermes/.hermes",
+    "services": {
+      "dashboard": {
+        "active": true,
+        "control_group": "/user.slice/user-1008.slice/user@1008.service/app.slice/hermes-dashboard.service",
+        "definition": "a001867d87e19e879bd65e45a06f73d4b8f21cf3db86dc99ede5352945989060",
+        "unit": "hermes-dashboard.service"
+      }
+    },
+    "state": "active",
+    "version": 1
+  }
+}

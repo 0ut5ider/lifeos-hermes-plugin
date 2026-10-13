@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "status": "PASS",
+  "qualification_scope": "synthetic-managed-dashboard-installation-and-complete-package-update",
+  "version": "0.4.2-rc.3",
+  "program_commit": "10459df6c2b27bda8911dfd96a25b92bee769c93",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "release_certificate_sha256": "47ae90c073c83115fc963bf49e42fd13c409b3a25f2c56bf860fb9e396159bed",
+  "production_qualified": false,
+  "test_fixture_only": false,
+  "default_github_bootstrap": {
+    "source": "https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager",
+    "revision": "ad3379f90018fc69a81cb8db022a8e5ea8e5a950",
+    "selected_ref": null,
+    "manager_files_matched": 19,
+    "force_reinstall": true,
+    "baseline_manager_already_installed": true
+  },
+  "public_installation": {
+    "operation": "9a48c820b659418db29f4e177e7ed9e9",
+    "state": "applied",
+    "program_targets": 11,
+    "native_store_absent_before": true,
+    "personal_data_imported": false,
+    "user_actions": [
+      "Install LifeOS",
+      "Review release",
+      "Install this release"
+    ],
+    "explicit_version": "0.4.2-rc.3",
+    "active_source_verification": "verified",
+    "verification_scope": "plugin_sources",
+    "modified_files": [],
+    "model_configuration_preserved": true,
+    "prior_tier_settings_preserved": true,
+    "dashboard_active_after": true,
+    "inactive_gateway_and_pulse_units_loaded": true,
+    "duplicate_ui_controls_disabled": true,
+    "duplicate_backend_request_claimed": false
+  },
+  "post_installation_web_chat": {
+    "status": "PASS",
+    "assistant_reply": "PR18-PUBLIC-REPLAY-CHAT-PASS",
+    "separate_assistant_reply_verified": true,
+    "tool_calls_observed": false
+  },
+  "private_qualification": {
+    "test_fixture_only": true,
+    "fresh_interruption_phase": "programs-published",
+    "recovery_operation": "4e3386b97a64469a87db22ed8c448849",
+    "recovery_state": "applied",
+    "installed_update_operation": "7f013d4698de40448e8823879daa2787",
+    "installed_update_state": "applied",
+    "later_synthetic_data_and_mode_preserved": true,
+    "model_configuration_preserved": true,
+    "prior_tier_settings_preserved": true
+  },
+  "integration_tests": 674,
+  "integration_tests_skipped": 0,
+  "integration_test_program_commit": "10459df6c2b27bda8911dfd96a25b92bee769c93",
+  "archive_files_verified_before_and_after": 21085,
+  "native_tests_reused": 716,
+  "native_test_program_commit": "914ad24b0eea7f0022e75edc815f5be08566d0f9",
+  "native_and_python_runtime_files_byte_identical": 20269,
+  "new_native_tests_claimed": false,
+  "memory_ownership_activation_verified": false,
+  "whole_guest_recovery_verified": false,
+  "daily_deployment_verified": false,
+  "development_deployment_changed": false,
+  "daily_deployment_changed": false,
+  "existing_servers": {
+    "192.168.8.252": {
+      "version": "0.4.1",
+      "commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+      "package_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e"
+    },
+    "192.168.8.253": {
+      "version": "0.3.1",
+      "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+      "package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24"
+    }
+  },
+  "receipt_sha256": {
+    "public-default-url-manager-files.json": "ce20570d9433a27bf4958e312cf671613647bf60a571fd0c708b39bbfceee009",
+    "public-installation-preparation.json": "52daf7e45ac8695566c494ca1c39ea615442e9a00f7add806938620b7cd92e8c",
+    "public-installation.json": "9cd906fc1e4bf1048f0b6d970ac23b52bca2b7816c41bbcf11677caf4d41be8f",
+    "public-active-version.json": "447569f439b710d3d3692e2b9952711e61d5d5ba34390e61330e71566b9016f7",
+    "public-chat-view.json": "c4167f0a4199a1962fdcd2710a6d10b03bc33b62bc1d87ac355251e7d9a74995",
+    "public-disabled-controls.json": "cc3e2100ff63f9433e97346daed3d2b30e8537ebc7ec87b9a036dc4af259829e",
+    "public-preparing-view.json": "f802dbcb94178e4c97d5c2b9d9e2bc26910f5f9391d2209a80235254d65e5c86",
+    "public-stock-baseline-restore.json": "ec305b123dfe7b486a0a6b6c46da4deeee3fe42d3d2c4f69ba84d9eaefd42967",
+    "private-stage-fresh-recovery.json": "847418a3a7c4d1fd4550713d44430d55d31a4ec9eb19eb5fe07a45eec9931732",
+    "private-stage-installed-update.json": "10e15f656aa03f1439606a44af0679bad552f6ad07b1e17d74aa61ed376effd5",
+    "private-stage-recovery-admission.json": "a014e98c591c4849838572040eb704e3b11ea6a88ceaa8dcfbc03aec66e08567",
+    "private-stage-interruption-observation.json": "a536fcf42d5f1e4a335d53e143b3fabd3038866d5110fb3b4520b914bef698a3",
+    "integration-archive-bound-10459df6.json": "419152978f5193bb370a5b97976537185a8a1f32eda6d2d53fa2943eaf086f0f",
+    "integration-archive-bound-10459df6.stderr": "cd87da9177e0f89f77c832aabdd1fe7a35df9f2cbcdc93cb844d9c2a8089d934",
+    "private-stage-native-equality.json": "aa0c1231563883926aa928c38c56e150a84bc1d55e112702cfd4e9957fb98e97",
+    "existing-guests-final-health.json": "6ff8aa8ab50b96573780bf5b385219a40ff3d20a5cd6f612df494fcfdc35161d",
+    "release-assets-before-final-verification.json": "24ab092fb3a5e934b22a51ceb58e23442248dda30c1a60ca721d7721745bc477"
+  }
+}
