@@ -2,7 +2,7 @@
 
 Adrian authorizes merging PR14, qualification, and publication of the complete production release.
 PR14 is merged at be215380dcbda35c92e6f28b23b4a1d7bc15004e.
-The release branch is feature/release-0-4-0. No release PR or public 0.4.0 asset exists yet.
+The release branch is feature/release-0-4-0. PR15 is open at https://github.com/0ut5ider/lifeos-hermes-plugin/pull/15. No public 0.4.0 asset exists yet.
 
 The current exact program commit is a87e7ae94894dabc3651454d1334cb23c4fae27e.
 The archive SHA-256 is 82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da (119,131,156 bytes).
@@ -58,3 +58,11 @@ GitHub writes use account 0ut5ider. Capture its gh auth token inside a subproces
 Do not force push, skip hooks, import/reset personal data, fabricate memory grants, or manually run/send the morning job.
 The shared memory tool returns integrity_error. Use repository evidence and do not bypass memory tools.
 The primary owns Git mutations, pushes, merges, and publication.
+
+PR15 review finds one P2 certificate receipt binding issue. The primary reproduces it.
+The generator now checks integration commit, fresh preparation identity, native archive/source/runtime identity.
+Thirteen isolated regression cases reject incomplete or mismatched evidence and accept the synthetic baseline only.
+The official native repeat is deferred until the real SSH fixture .252 returns after backup.
+The prior native receipt remains historical under native-sealed-a87e7ae9-unbound.*.
+Native runner now extracts the immutable archive, validates source, checks original files after tests, and records exact identity.
+Do not certify until the new bound native receipt passes. No product archive changes.
