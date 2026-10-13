@@ -115,3 +115,16 @@ Primary observer PASS exact041/96/SHA462, all3servicesrunning, all3publicaliases
 Development reboot is next. Before boot ID7e446f72-dafd-4eca-815d-11c464f99a67.
 Runtime Python is in candidate-96f4f8fb/normal-runtime-python.json. Normaloperation87561ff313e348508c3c7e1331b838be.
 Do not manually start services after reboot. Use verify_boot.py with actualbeforeID to verify automaticstart/NRestarts0.
+
+Guest101reboot PASS, bootID73f5c221-0648-4ac3-b11e-55294c0d2e13. All3apps enabled/running/NRestarts0, Bun1.4.3, exact041identity.
+Current boot gateway/dashboard journal metadata contains13records, zero bridge-load failures. Raw messages are not exported.
+All3syntheticAtlascases prepared, live store unmodified, personal data unused.
+Actual whole-guest controller is detached on101host with supervisorPID2214817.
+Hostscript /root/proxmox_history_restore_041_96f4f8fb.py; supervisor /root/lifeos-release-0.4.1/supervise_whole_restore.py.
+Hostoutput /root/lifeos-release-0.4.1/history-restore; independent completion marker /root/lifeos-release-0.4.1/history-restore.done.
+Source writers drainPASS32.190s. Actualvzdump task is UPID:pve-tr1950x:0021CE8F:043E71D1:6ACDC56A:vzdump:101:root@pam:.
+Use candidate-96f4f8fb/observe_whole_restore.py for safe numeric progress. The controller resumes source apps immediately afterbackup, then restores110offline and masked.
+Do not start another backup, do not run normal rollback before source services resume and whole recovery verification completes.
+After actual wholePASS and owned110 cleanup, export verification.json and stable-program-coverage.json into whole-guest-recovery.json and whole-guest-program-coverage.json.
+Then owner normal restore for875, observer exact03, strict actual certificate, finalPR16evidence/merge, immutable041release, public exact-version fresh install, defaultpublic252update.
+No daily promotion is authorized by this checkpoint. Daily253remains03.
