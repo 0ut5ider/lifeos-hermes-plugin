@@ -209,6 +209,34 @@ class ReleaseOperationTests(unittest.TestCase):
         source = recovery_bridge(job, Path(request['profile']))
         self.assertEqual(Path(source.__file__).parent, job / 'package/lifeos_hook_bridge')
 
+    @unittest.skipUnless(os.environ.get('LIFEOS_QUALIFICATION_BUILD'), 'A sealed current package is required')
+    def test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication(self):
+        import shutil
+        from optional.lifeos_release_manager.release_worker import recovery_bridge
+        from optional.lifeos_release_manager.release_stage import load_bridge
+        from optional.lifeos_release_manager.release_services import fresh_services
+        from optional.lifeos_release_manager.release_catalog import extract_package
+        build = json.loads(Path(os.environ['LIFEOS_QUALIFICATION_BUILD']).read_bytes())
+        with tempfile.TemporaryDirectory(dir=Path(build['package']).parent) as temp:
+            root = Path(temp)
+            profile = root / '.hermes'
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            extract_package(build['archive'], job / 'package')
+            active = profile / 'plugins/lifeos-hook-bridge'
+            shutil.copytree(job / 'package/lifeos_hook_bridge', active, copy_function=os.link)
+            certificate = {**build, 'format': 1, 'status': 'QUALIFIED', 'program_commit': build['head'], 'test_fixture_only': True}
+            request = {'identifier': job.name, 'profile': str(profile), 'certificate': certificate}
+            publish(job / 'request.json', json.dumps(request).encode())
+            write_state(job, 'ready')
+            seal_plan(job, request, {'fresh': True})
+            candidate = load_bridge(job / 'package/lifeos_hook_bridge')
+            selected = recovery_bridge(job, profile)
+            with selected.memory_module('installation_lock').installation_lock(profile) as lease:
+                controller = fresh_services(candidate, profile, root / '.claude', installation_lease=lease)
+                self.assertEqual(controller.status()['state'], 'none')
+            self.assertIs(selected.memory_module('installation_lock'), candidate.memory_module('installation_lock'))
+
     def fixture(self, root):
         job = root / ('a' * 32)
         job.mkdir(mode=0o700)

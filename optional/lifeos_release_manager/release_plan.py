@@ -40,6 +40,7 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
     result = {'profile': profile, 'installed': installed, 'candidate': candidate, 'current': current,
               'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': fresh_recovery or not installed.exists()}
     if result['fresh']:
+        result['current'] = candidate
         if not fresh_recovery and (installed.is_symlink() or selected.user_data.exists() or selected.user_data.is_symlink()
                 or (profile / 'lifeos-memory.json').exists()):
             raise ReleaseRejected('Fresh installation requires an empty native destination without existing personal data')

@@ -108,11 +108,15 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
 
 
 def recovery_bridge(job, profile):
+    request = read_private(job / 'request.json')
+    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
+    if plan is not None and plan['fresh']:
+        from .release_stage import validate_package
+        validate_package(job / 'package', request['certificate'])
+        return load_bridge(job / 'package/lifeos_hook_bridge')
     active = profile / 'plugins/lifeos-hook-bridge'
     if active.is_dir():
         return load_bridge(active)
-    request = read_private(job / 'request.json')
-    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
     expected = plan['program_entries_sha256'] if plan is not None else None
     snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
     if snapshot.journal.is_file():
@@ -338,7 +342,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
         if plan['services']:
             if plan['fresh']:
                 from .release_services import fresh_services
-                services = fresh_services(selected['candidate'], profile, selected['installed'], installation_lease=lease)
+                services = fresh_services(current, profile, selected['installed'], installation_lease=lease)
             else:
                 services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
         administration = current.memory_administration()
