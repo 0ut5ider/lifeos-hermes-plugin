@@ -13,7 +13,8 @@
     "PR16 review clear; primary repeats stock CLI and archive probes",
     "Official Hermes runner: 716 tests across 38 files",
     "Fresh installation and actual interrupted recovery with later data preservation",
-    "Complete frozen integration: 626 tests"
+    "Complete frozen integration: 626 tests",
+    "Actual installed interruption exit73 and public CLI recovery to exact0.3.1, all3services and model mapping preserved"
   ],
   "remaining": [
     "Normal installed update, automatic reboot verification, exact whole-guest recovery and rollback",
@@ -52,7 +53,7 @@
     "receipt": "fresh-install-223cbfc1-041.json"
   },
   "running": [
-    "Actual installed public CLI recovery of the interrupted development update"
+    "Normal candidate owner review"
   ],
   "integration_gate": {
     "status": "PASS",
@@ -67,6 +68,8 @@
     "operation": "aeeff7ce70ae4f8997706c8d74fcef14",
     "receipt": "development-bunfixed-interruption-exit.json",
     "recovery_admitted": true,
-    "recovery_complete": false
+    "recovery_complete": true,
+    "status": "PASS",
+    "recovery_receipt": "development-bunfixed-interruption-recovery.json"
   }
 }

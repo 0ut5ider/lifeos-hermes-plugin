@@ -49,3 +49,5 @@ Owner review for aee is pending in window.review041Interrupted on tab_h. Do not 
 Certificate/test helpers in this folder bind 223, 626 checks and fresh-install-223cbfc1-041.json; do not generate certificate until all actual gates pass.
 
 Actual interrupted worker exits73 at programs-published. Program state applied, operation applying. Dashboard refuses connection because writers were drained. Installed public hermes lifeos-release recover aeeff7ce70ae4f8997706c8d74fcef14 admits queued-recover with exit0. Actual systemd worker PID9096 runs and reads program bytes. Do not duplicate admission or report recovery complete before actual rolled_back receipt. Normal prepared operation a5b53c9c0805459ab5b893cb6756e47b remains ready.
+
+Installed public CLI recovery completes rolled_back/program restored. Primary observer PASS exact03/9af/SHA2a, all3services active/running, modelA4 unchanged. Dashboard online. Normal operationa5 owner review requested via actual browser window.review041Normal; poll result before applying.
