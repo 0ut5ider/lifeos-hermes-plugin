@@ -131,7 +131,7 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.assertFalse((self.profile / '.lifeos-releases').exists())
 
     @unittest.skipUnless(os.environ.get('LIFEOS_MANAGED_FRESH_OPERATION'), 'An actual prepared fresh operation is required')
-    def test_native_review_keeps_the_dashboard_responsive(self):
+    def test_historical_fresh_review_refuses_without_blocking_the_dashboard(self):
         import fcntl
         job = Path(os.environ['LIFEOS_MANAGED_FRESH_OPERATION'])
         request = json.loads((job / 'request.json').read_bytes())
@@ -165,4 +165,6 @@ class ReleaseDashboardTests(unittest.TestCase):
         finally:
             thread.join(timeout=130)
             self.assertFalse(thread.is_alive())
-        self.assertEqual(results[0][0], 200)
+        self.assertEqual(results[0][0], 409)
+        self.assertIn('first installation', results[0][1]['detail'])
+        self.assertFalse(Path(request['installed']).exists())

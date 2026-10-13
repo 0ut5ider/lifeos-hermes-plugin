@@ -30,6 +30,21 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual(result.stdout + result.stderr, '')
 
+    def test_unsupported_service_paths_refuse_before_generating_files(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            generated = root / 'generated'
+            generated.mkdir(mode=0o700)
+            for key in ('account_home', 'profile', 'installed'):
+                for character in (' ', '$', '\\', '"', "'", '\n', ';', '}'):
+                    with self.subTest(key=key, character=character):
+                        request = {'account_home': str(root), 'profile': str(root / '.hermes'), 'installed': str(root / '.claude')}
+                        request[key] += character + 'unsupported'
+                        with self.assertRaisesRegex(ValueError, 'service paths'):
+                            service_files(request, generated)
+                        self.assertEqual(list(generated.iterdir()), [])
+
     def test_flow_configuration_prepares_native_mount_without_changing_values(self):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)

@@ -23,6 +23,7 @@ from .cli import job_directory, prepare, profile_directory, read_private, status
 from .release_catalog import ReleaseRejected, VERSION
 from .release_operation import OperationBusy, process_stamp
 from .release_programs import publish
+from .release_services import FirstInstallationUnavailable
 
 
 def selection(value):
@@ -92,6 +93,9 @@ def main():
         value = selection(read_private(job / 'preparation.json'))
         prepare(profile, value['version'], name=value['name'], assistant=value['assistant'],
                 intent=value['intent'], job=job)
+    except FirstInstallationUnavailable as error:
+        write_state(job, 'preparation_failed', error=str(error))
+        raise
     except BaseException:
         write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
         raise

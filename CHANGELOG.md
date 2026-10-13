@@ -12,6 +12,8 @@
 - Detect interrupted preparation before the worker identity is published. Preserve active launch leases.
 - Drain the managed stock dashboard during first installation through a separate worker service.
 - Include missing inactive gateway and Pulse definitions in the reviewed program transaction.
+- Validate generated units with the actual systemd parser. Refuse unsupported physical service paths before generation.
+- Refuse historical first-install workers without the service interface. Keep the dashboard responsive during refusal.
 - Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
 
 ## 0.4.1 (2026-10-13)

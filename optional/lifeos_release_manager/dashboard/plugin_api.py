@@ -19,6 +19,7 @@ commands = importlib.import_module(namespace_name + '.cli')
 preparation = importlib.import_module(namespace_name + '.release_preparation')
 worker = importlib.import_module(namespace_name + '.release_worker')
 stage = importlib.import_module(namespace_name + '.release_stage')
+services = importlib.import_module(namespace_name + '.release_services')
 
 
 def profile():
@@ -105,6 +106,8 @@ def review_release(identifier):
                 'native_mount_required': plan['native_mount_required'],
                 'restart_required': plan['services'] is not None,
                 'state': commands.read_private(job / 'status.json')['state']}
+    except services.FirstInstallationUnavailable as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     except (ValueError, OSError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='The prepared release changes or has unfinished recovery') from error
 

@@ -1,12 +1,23 @@
 # ABOUTME: Stages fixed inactive user services for the first complete integration installation.
 # ABOUTME: Binds the stock dashboard writer to its owner service before publishing programs.
 from pathlib import Path
+import inspect
 import os
 import re
 import shlex
 
 from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint, publish
+
+
+class FirstInstallationUnavailable(ReleaseRejected):
+    def __init__(self):
+        super().__init__('This release does not support managed dashboard first installation. Choose a qualified release with first-install service support.')
+
+
+def require_fresh_services(current):
+    if 'first_installation' not in inspect.signature(current.memory_module('profile_services').ProfileServices).parameters:
+        raise FirstInstallationUnavailable()
 
 
 def _quoted(value, *, command=False):
@@ -17,8 +28,16 @@ def _quoted(value, *, command=False):
     return '"' + (value.replace('$', '$$') if command else value) + '"'
 
 
+def _service_paths(home, profile, installed):
+    for path in (home, profile, installed):
+        if (not path.is_absolute() or path.resolve() != path
+                or any(character.isspace() or ord(character) < 32 or character in '\\"\'$;}' for character in str(path))):
+            raise ReleaseRejected('Managed service paths require physical names without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces')
+
+
 def service_files(request, generated):
     home, profile, installed = (Path(request[key]) for key in ('account_home', 'profile', 'installed'))
+    _service_paths(home, profile, installed)
     definitions = {
         'hermes-gateway.service': (profile, [home / '.local/bin/hermes', 'gateway', 'run', '--external-supervisor']),
         'hermes-dashboard.service': (installed.parent, [home / '.local/bin/hermes', 'dashboard', '--isolated', '--no-open']),
@@ -50,11 +69,13 @@ def service_files(request, generated):
 
 
 def fresh_services(current, profile, installed, *, installation_lease=None):
+    require_fresh_services(current)
     return current.memory_module('profile_services').ProfileServices(profile, installed,
         installation_lease=installation_lease, first_installation=True)
 
 
 def fresh_preview(current, profile, installed, *, installation_lease=None):
+    _service_paths(Path.home(), profile, installed)
     services = fresh_services(current, profile, installed, installation_lease=installation_lease)
     preview = services.preview()
     values, _ = services._inspect('dashboard')

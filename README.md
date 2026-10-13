@@ -306,6 +306,10 @@ Rollback requires the current release identity and retained native mount. A late
 Status hides an expired rollback. Admission checks current and retained programs before it stops services.
 Installation keeps the model and tier mapping and does not activate lasting memory automatically.
 The Linux first-installation path requires an owner user service for the Hermes dashboard.
+First installation also requires a qualified package with the first-install service interface.
+Historical packages without that interface refuse before native publication. Existing installation updates keep their three-service interface.
+During the isolated prerelease tests, select the exact test release version. Release 0.4.1 remains the latest stable package.
+The home, profile, and native installation paths must be physical paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces.
 That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
 The installer drains that dashboard and runs its worker in a separate user service.
 The reviewed installation creates missing gateway and Pulse definitions but leaves them disabled and inactive.

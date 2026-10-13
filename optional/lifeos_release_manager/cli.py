@@ -116,6 +116,9 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
         names._name(name.strip())
         names._name(assistant.strip())
         selected = source.memory_module('lifeos_installation').selection(profile)
+        if not selected.installed.exists():
+            from .release_services import require_fresh_services
+            require_fresh_services(source)
         if intent == 'install' and (selected.installed.exists() or selected.installed.is_symlink()):
             raise ReleaseRejected('Use an update for the existing LifeOS installation')
         if intent in {'update', 'plugin'} and not selected.installed.is_dir():
