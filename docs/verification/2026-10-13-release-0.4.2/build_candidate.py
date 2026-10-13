@@ -6,8 +6,9 @@ from pathlib import Path
 import shutil
 import subprocess
 
-out = Path(__file__).resolve().parent
-repo = out.parents[2]
+out = Path(os.environ.get('LIFEOS_QUALIFICATION_OUTPUT', str(Path(__file__).resolve().parent)))
+out.mkdir(mode=0o700, parents=True, exist_ok=True)
+repo = Path(__file__).resolve().parents[3]
 cache = Path('/home/outsider/.cache/lifeos-hermes-managed-20261012')
 scratch = Path('/tmp/lifeos-release-0.4.2-20261013')
 retained = Path('/home/outsider/.cache/lifeos-release-0.4.2-20261013')

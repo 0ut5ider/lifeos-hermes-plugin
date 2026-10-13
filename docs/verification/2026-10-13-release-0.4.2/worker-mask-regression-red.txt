@@ -1,0 +1,6 @@
+The actual pre-fix regression fails against private file permissions.
+Command: PYTHONPATH=.:tests python -B -W error::ResourceWarning -m unittest -v test_release_operation.ReleaseOperationTests.test_worker_children_create_private_state_from_shared_service_mask
+Exit code: 1
+AssertionError: 436 != 384
+Observed file mode: 0664
+Required file mode: 0600

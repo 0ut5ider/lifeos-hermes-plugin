@@ -8,6 +8,7 @@
 - Share one preparation lease between command-line and dashboard requests.
 - Recognize the exact bundled Hermes launcher and preserve effective systemd environment paths.
 - Create private stage metadata without changing the caller's umask.
+- Use a private worker mask for native profile files and backup artifacts.
 - Keep Hermes v0.21.7, the pinned LifeOS revision, and all native dependency locks fixed.
 
 ## 0.4.2-rc.3 (2026-10-13 test prerelease)

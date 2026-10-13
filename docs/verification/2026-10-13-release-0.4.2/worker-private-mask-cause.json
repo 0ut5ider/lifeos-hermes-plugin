@@ -1,0 +1,23 @@
+{
+  "status": "CONFIRMED",
+  "stock_dashboard_service_umask": "0077",
+  "actual_transient_worker_umask": "0002",
+  "new_native_mount_file_modes": {
+    "mount-plan.json": "0664",
+    ".env": "0664"
+  },
+  "native_mount_created_at_utc": "2026-10-13 23:03:16",
+  "ownership_backup_result": "REFUSED_SHARED_WRITE_PERMISSIONS",
+  "ownership_recovery": "cancelled",
+  "owner_services_restored": true,
+  "original_candidate_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+  "original_archive_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5",
+  "product_fix": "Set the private mask at the detached worker entrypoint before any action.",
+  "regression_red_file_mode": "0664",
+  "regression_expected_file_mode": "0600",
+  "regression_expected_directory_mode": "0700",
+  "focused_tests": 45,
+  "focused_status": "PASS",
+  "focused_skips": 0,
+  "daily_server_changed": false
+}

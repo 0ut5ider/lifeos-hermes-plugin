@@ -1,12 +1,12 @@
 {
   "version": "0.4.2",
-  "status": "FROZEN_CANDIDATE_QUALIFICATION",
+  "status": "REBUILD_AFTER_NATIVE_WORKER_MASK_FAILURE",
   "daily_server_changed": false,
   "production_qualified": false,
   "steps": [
     {
       "number": 1,
-      "status": "PASS",
+      "status": "REBUILD_REQUIRED",
       "name": "Freeze and build final package"
     },
     {
@@ -90,5 +90,33 @@
     "receipt": "stock-native-github-manager-install.json",
     "force_reinstall": false,
     "explicit_branch_or_commit_selected": false
+  },
+  "installed_controls": {
+    "update": "PASS",
+    "program_rollback": "PASS",
+    "actual_worker_exit_73": "PASS",
+    "installed_interruption_recovery": "PASS",
+    "later_synthetic_edit_preserved": "PASS",
+    "public_update_buttons_and_conversation": "PENDING_PUBLICATION"
+  },
+  "clean_full_preparation": {
+    "status": "PASS",
+    "receipt": "fresh-final-preparation.json",
+    "operation": "f7dd8b48bbf2483aad7a453b31ada199",
+    "first_service_working_directory_attempt": "RETAINED_FAIL",
+    "second_service_mask_attempt": "RETAINED_FAIL"
+  },
+  "next_candidate_required": true,
+  "original_candidate_superseded": {
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "archive_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5",
+    "reason": "The detached native worker inherits a shared-write mask. Fresh ownership backup refuses the created files.",
+    "published": false,
+    "source_and_receipts_retained": true
+  },
+  "fresh_ownership_activation": {
+    "status": "FAIL",
+    "recovered_service_state": "cancelled",
+    "cause_receipt": "worker-private-mask-cause.json"
   }
 }

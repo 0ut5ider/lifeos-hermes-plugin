@@ -275,6 +275,10 @@ The qualified 0.4.1 certificate binds the complete package and frozen dependency
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
 The 0.4.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
+
+Managed first installation requires the owner dashboard service to use the account home as its working directory.
+Set `UMask=0077` in that service before installing the manager through the native GitHub form.
+The complete release worker also uses a private mask for native profile files and backup artifacts.
 They qualify the synthetic installation and complete-package update workflow. They do not qualify deployment to the daily server.
 Select an exact test version during these checks. An empty version still selects stable 0.4.1.
 

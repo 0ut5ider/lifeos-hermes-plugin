@@ -566,6 +566,7 @@ def _restore_mount(job, request, mount):
 
 
 def main():
+    os.umask(0o077)
     parser = argparse.ArgumentParser()
     parser.add_argument('job', type=Path)
     parser.add_argument('--action', choices=('prepare', 'apply', 'recover', 'restore'), default='apply')

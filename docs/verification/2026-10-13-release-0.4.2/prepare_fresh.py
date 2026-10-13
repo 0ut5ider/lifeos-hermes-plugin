@@ -78,6 +78,6 @@ except BaseException as error:
 finally:
     server.shutdown(); thread.join(); server.server_close()
     report['elapsed_seconds'] = time.monotonic()-start
-    path = root / 'development-preparation.json'
+    path = root / 'fresh-preparation.json'
     path.write_text(json.dumps(report, indent=2)+'\n'); path.chmod(0o600)
-    (root / 'development-preparation.done').write_text('0\n' if report.get('status') == 'PASS' else '1\n')
+    (root / 'fresh-preparation.done').write_text('0\n' if report.get('status') == 'PASS' else '1\n')

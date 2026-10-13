@@ -15,6 +15,37 @@ from optional.lifeos_release_manager.release_programs import publish
 
 
 class ReleaseOperationTests(unittest.TestCase):
+    def test_worker_children_create_private_state_from_shared_service_mask(self):
+        import stat
+        import subprocess
+        import sys
+        from optional.lifeos_release_manager import release_worker as worker
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, job, request = self.recovery_fixture(root)
+            write_admission(job, request, 'recover')
+            write_state(job, 'queued-recover')
+            child = os.fork()
+            if child == 0:
+                os.umask(0o002)
+                def trace(frame, event, arg):
+                    if frame.f_code is worker.execute.__code__ and event == 'call':
+                        sys.settrace(None)
+                        code = ('from pathlib import Path;import sys;'
+                                'root=Path(sys.argv[1]);'
+                                '(root/"native-state").mkdir();'
+                                '(root/"native-state"/"result.json").write_text("{}")')
+                        subprocess.run([sys.executable, '-B', '-c', code, str(root)],
+                            capture_output=True, check=True)
+                    return trace
+                sys.argv = ['release_worker.py', str(job), '--action', 'recover']
+                sys.settrace(trace)
+                os._exit(worker.main())
+            _, result = os.waitpid(child, 0)
+            self.assertEqual(os.waitstatus_to_exitcode(result), 1)
+            self.assertEqual(stat.S_IMODE((root / 'native-state/result.json').stat().st_mode), 0o600)
+            self.assertEqual(stat.S_IMODE((root / 'native-state').stat().st_mode), 0o700)
+
     def test_worker_failure_keeps_the_lock_until_state_publication(self):
         import inspect
         import select
