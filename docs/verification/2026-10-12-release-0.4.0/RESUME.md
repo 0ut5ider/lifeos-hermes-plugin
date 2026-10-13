@@ -74,3 +74,18 @@ The local fixed Bun tool is being prepared through the public release_tools API 
 Pass its directory first in PATH for every repeated full integration/native/fresh test.
 Use a new .252 staging folder qualification-20261012-bunfixed for the new archive.
 Do not publish any existing private qualification certificate.
+
+The corrected program commit is now a87e7ae94894dabc3651454d1334cb23c4fae27e.
+Its exact archive SHA-256 is 82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da (119,131,156 bytes).
+The 16 focused dependency/version checks pass with Bun 1.4.3.
+Three detached local qualification drivers are running; their PIDs and logs are in bunfixed-qualification-jobs.json.
+The official native runner uses a copy at cache/native-copy-a87e7ae9, not the sealed source.
+The full integration runner uses the sealed package and fixed Bun first in PATH.
+The fresh worker driver uses tag bunfixed and actual directory-retained interruption.
+The corrected .252 preparation is detached in qualification-20261012-bunfixed.
+Its script is prepare_development_bunfixed.py.
+All exact corrected package, compiled dashboard, private fixture certificate, and source files are staged there.
+The normal and interrupted .252 checks still remain for this corrected package.
+The whole-guest controller and coverage verifier now bind the corrected source folder and exact a87e7ae9 commit.
+Re-upload the controller to .101 before its use.
+The daily server remains on 0.3.1 and no 0.4.0 public asset exists.

@@ -3,13 +3,13 @@
 import hashlib,json,os,sys
 from pathlib import Path
 os.environ['PYTHONDONTWRITEBYTECODE']='1'
-root=Path('/home/lifeos-hermes/releases/qualification-20261012-stable/source')
+root=Path('/home/lifeos-hermes/releases/qualification-20261012-bunfixed/source')
 sys.path.insert(0,str(root))
 from optional.lifeos_release_manager.release_programs import fingerprint
 profile=Path.home()/'.hermes';job=profile/'.lifeos-releases'/sys.argv[1]
 request=json.loads((job/'request.json').read_bytes())
 assert json.loads((job/'status.json').read_bytes())['state']=='applied'
-assert request['version']=='0.4.0' and request['commit']=='4644f90c10d301a943f9ca2a47c9725b136ac5d4'
+assert request['version']=='0.4.0' and request['commit']=='a87e7ae94894dabc3651454d1334cb23c4fae27e'
 programs=json.loads((job/'program-snapshot/programs.json').read_bytes());assert programs['state']=='applied'
 mount=json.loads((profile/'.lifeos-mount/operation.json').read_bytes());assert mount['state']=='committed'
 overrides={row['target']:{'type':'file','mode':row['after']['mode'],'sha256':row['after']['digest']} for row in mount['entries']}

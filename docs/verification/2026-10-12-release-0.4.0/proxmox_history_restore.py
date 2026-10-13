@@ -19,7 +19,7 @@ else:
     assert not out.exists();out.mkdir(parents=True,mode=0o700)
     operations=[]
 python=os.environ['LIFEOS_STABLE_PYTHON']
-package='/home/lifeos-hermes/releases/qualification-20261012-stable/source'
+package='/home/lifeos-hermes/releases/qualification-20261012-bunfixed/source'
 vmid=110
 def run(args,label,*,input=None):
     started=time.monotonic()
@@ -74,9 +74,9 @@ try:
     assert 'net0:' not in config and 'onboot: 0' in config
     run(['pct','exec',str(vmid),'--','ip','-brief','address'],'network')
     report=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B',
-        '/home/lifeos-hermes/releases/qualification-20261012-stable/history_guest_recovery.py','verify',package],'verify-history'))
+        '/home/lifeos-hermes/releases/qualification-20261012-bunfixed/history_guest_recovery.py','verify',package],'verify-history'))
     assert report['status']=='PASS' and len(report['cases'])==3
-    coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-20261012-stable/verify_stable_restored.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
+    coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-20261012-bunfixed/verify_stable_restored.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
     assert coverage['status']=='PASS'
     (out/'stable-program-coverage.json').write_text(json.dumps(coverage,indent=2)+'\n')
     (out/'verification.json').write_text(json.dumps({'status':'PASS','archive':archive,'source_guest':101,'restored_guest':vmid,

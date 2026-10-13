@@ -1,5 +1,5 @@
 {
-  "status": "REBUILD_REQUIRED",
+  "status": "QUALIFYING_CORRECTED_ARCHIVE",
   "version": "0.4.0",
   "merged_pr": 14,
   "merged_commit": "be215380dcbda35c92e6f28b23b4a1d7bc15004e",
@@ -20,17 +20,15 @@
     "Verify disconnected whole-guest recovery",
     "Publish complete qualified assets"
   ],
-  "program_commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
-  "archive_sha256": "a8e79e394b18b189ed9be3d41e112e7b803b65f565d9c0fb8c7d4ab67e5437e1",
-  "archive_bytes": 119132852,
-  "running": [],
-  "native_controls": {
-    "tests": 716,
-    "files": 38,
-    "source_checks": 12,
-    "reused_by_exact_program_identity": true,
-    "receipt": "stable-component-identity.json"
-  },
+  "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+  "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+  "archive_bytes": 119131156,
+  "running": [
+    "Corrected sealed integration suite",
+    "Official native runner with Bun 1.4.3",
+    "Corrected stock fresh recovery",
+    "Corrected development preparation"
+  ],
   "fresh_acceptance": {
     "status": "PASS",
     "receipt": "fresh-install-4644f90c-stable.json",
@@ -61,5 +59,18 @@
     "receipt": "bun-comparison-verified.json",
     "upstream_fixed_commit_included": true,
     "frozen_native_locks_changed": false
+  },
+  "historical_native_controls": {
+    "tests": 716,
+    "files": 38,
+    "source_checks": 12,
+    "reused_by_exact_program_identity": true,
+    "receipt": "stable-component-identity.json"
+  },
+  "native_controls": {
+    "status": "RUNNING",
+    "runtime": "Bun 1.4.3",
+    "official_runner": true,
+    "receipt": "native-sealed-a87e7ae9.json"
   }
 }
