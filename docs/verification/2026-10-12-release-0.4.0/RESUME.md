@@ -66,3 +66,11 @@ The official native repeat is deferred until the real SSH fixture .252 returns a
 The prior native receipt remains historical under native-sealed-a87e7ae9-unbound.*.
 Native runner now extracts the immutable archive, validates source, checks original files after tests, and records exact identity.
 Do not certify until the new bound native receipt passes. No product archive changes.
+
+Current gate update: the backup passes in 2326.115 seconds. Source services resume successfully.
+The restored guest 110 is still being created by the actual Proxmox restore task. Do not start another restore.
+The identity-bound native repeat passes all 716 tests across 38 files in 71.471 seconds.
+The original files are unchanged; archive, source manifest, tree, Bun version and binary hashes are recorded.
+Both focused review rounds are clear. The primary repeats the actual historical-receipt refusal, thirteen-case old-generator failure, and reviewed file hash checks.
+The post-backup development observer passes exact 0.4.0 identity, model mapping, commands and all services.
+Still pending: disconnected restore verification/cleanup, normal owner rollback, public certification and publication, then public path verification.
