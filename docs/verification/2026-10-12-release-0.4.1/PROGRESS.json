@@ -1,5 +1,5 @@
 {
-  "status": "FIXED_VERIFYING",
+  "status": "QUALIFYING_SEALED_CANDIDATE",
   "version": "0.4.1",
   "production_qualified": false,
   "daily_server_changed": false,
@@ -8,7 +8,12 @@
   "fix": "Store the plugin choice in args.release_version while keeping --version.",
   "completed": [
     "Native public failure reproduced",
-    "Real parser regression fails before fix and all seven command tests pass after fix"
+    "Real parser regression fails before fix and all seven command tests pass after fix",
+    "Candidate sealed and built",
+    "PR16 review clear; primary repeats stock CLI and archive probes",
+    "Official Hermes runner: 716 tests across 38 files",
+    "Fresh installation and actual interrupted recovery with later data preservation",
+    "Complete frozen integration: 626 tests"
   ],
   "remaining": [
     "Focused review and actual stock CLI exact selection",
@@ -21,5 +26,40 @@
     "skipped": 0,
     "receipt": "focused.stderr",
     "earlier_invocation_errors_preserved": true
-  }
+  },
+  "program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+  "archive_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5",
+  "archive_bytes": 119131524,
+  "review": {
+    "status": "CLEAR",
+    "report": "docs/agents/2026-10-12-pr16-version-argument-review/pr16-version-argument-review.md",
+    "primary_probes_repeated": true
+  },
+  "native_gate": {
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
+    "elapsed_seconds": 90.368,
+    "receipt": "native-sealed-223cbfc1.json",
+    "official_runner": true,
+    "archive_identity_bound": true
+  },
+  "fresh_gate": {
+    "status": "PASS",
+    "actual_process_exit": 73,
+    "later_synthetic_data_preserved": true,
+    "elapsed_seconds": 276.601,
+    "receipt": "fresh-install-223cbfc1-041.json"
+  },
+  "running": [
+    "Authenticated owner review of interrupted candidate",
+    "Second candidate preparation for normal acceptance"
+  ],
+  "integration_gate": {
+    "status": "PASS",
+    "tests": 626,
+    "elapsed_seconds": 793.1115276360069,
+    "receipt": "integration-sealed-223cbfc1.json"
+  },
+  "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14"
 }

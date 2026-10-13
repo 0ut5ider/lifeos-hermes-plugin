@@ -1,0 +1,25 @@
+Repository: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Reviewed candidate: 223cbfc1681f0b4d3a7bad668d40822a9267137e
+Reviewed base: de2172241a545b901188deab21461dac4c136700
+
+git rev-parse HEAD origin/main
+git branch --show-current
+git status --short --untracked-files=no
+git diff --stat origin/main...HEAD
+git diff origin/main...HEAD -- VERSION lifeos_hook_bridge optional tests/test_release_manager_cli.py CHANGELOG.md README.md
+
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr16-version-argument-review/run_focused.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr16-version-argument-review/probe_stock_cli.py
+
+run_focused.py records its full unittest command and environment/source choice. It copies the prepared Hermes source into a temporary workspace, uses the existing fresh native source and required managed operation fixture read-only, and writes focused raw output.
+probe_stock_cli.py records each actual native command. It copies stock upstream source into a temporary workspace, installs the new manager through public GitHub commit 223cbfc1, enables it, checks status, exercises both invalid exact release flag forms, verifies the global Hermes version flag, and inspects the real native parser namespaces for default/separated/equals valid selection. Every probe uses a synthetic profile. No release package preparation reaches a valid-version download.
+
+The metadata check verifies all five declarations, unchanged patch/lock/Bun metadata, exact archive hash and size, and archived declaration/CLI equality with reviewed files. Its raw result is metadata-results.json.
+
+Read-only public sources:
+https://github.com/0ut5ider/lifeos-hermes-plugin/pull/16
+https://github.com/NousResearch/hermes-agent/releases/latest
+The official latest URL redirects to https://github.com/NousResearch/hermes-agent/releases/tag/v0.21.7 and identifies commit 71d34ba.
+
+Replay of the retained metadata check:
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr16-version-argument-review/verify_metadata.py
