@@ -20,8 +20,9 @@ class ConfigInventoryTests(unittest.TestCase):
         self.bridge = object.__new__(HookBridge)
         self.bridge.settings_path = self.user / 'settings.json'
         self.bridge.project_dirs = (self.project,)
-        self.addCleanup(patch.stopall)
-        patch('lifeos_hook_bridge.bridge.POLICY_DIRECTORY', self.policy).start()
+        policy = patch('lifeos_hook_bridge.bridge.POLICY_DIRECTORY', self.policy)
+        policy.start()
+        self.addCleanup(policy.stop)
 
     def file(self, relative, content='data'):
         path = self.root / relative
