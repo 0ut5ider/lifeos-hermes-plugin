@@ -2,7 +2,7 @@
 # ABOUTME: Exports numeric progress and release metadata without backup contents or task narration.
 import subprocess,json,sys
 attempt=sys.argv[1] if len(sys.argv)>1 else 'initial'
-directory={'initial':'history-restore','retry1':'history-restore-retry1'}[attempt]
+directory={'initial':'history-restore','retry1':'history-restore-retry1','retry2':'history-restore-retry2'}[attempt]
 code=r'''from pathlib import Path
 import subprocess,json,re,datetime
 folder=Path('/root/lifeos-release-0.4.1');out=folder/DIRECTORY;value={'time':datetime.datetime.now(datetime.timezone.utc).isoformat()}

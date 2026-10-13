@@ -44,7 +44,8 @@
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "whole_guest_restore_task": "UPID:pve-tr1950x:002317B6:04469B7E:6ACDDA4F:vzrestore:110:root@pam:"
+    "whole_guest_retry2_supervisor": 2373839,
+    "restore_task": "UPID:pve-tr1950x:002438F0:044DE82C:6ACDECFF:vzrestore:110:root@pam:"
   },
   "integration_gate": {
     "status": "PASS",
@@ -175,7 +176,7 @@
     "restarts": 0
   },
   "whole_guest_gate": {
-    "status": "RESTORE_RUNNING",
+    "status": "RESTORE_RETRY2_RUNNING",
     "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
     "operation": "87561ff313e348508c3c7e1331b838be",
     "host_directory": "/root/lifeos-release-0.4.1/history-restore",
@@ -183,11 +184,16 @@
     "first_failure_receipt": "candidate-96f4f8fb/whole-backup-failure-metadata.json",
     "measured_interruption": "PBS container stops5.921seconds before backup failure and restarts afterward",
     "correlation_receipt": "candidate-96f4f8fb/pbs-restart-correlation.json",
-    "retry_directory": "/root/lifeos-release-0.4.1/history-restore-retry1",
+    "retry_directory": "/root/lifeos-release-0.4.1/history-restore-retry2",
     "backup_archive": "PBS-01:backup/ct/101/2026-10-13T06:25:09Z",
     "backup_seconds": 2951.643565791077,
     "source_services_resumed": true,
     "source_observer_receipt": "candidate-96f4f8fb/development-after-backup-retry1.json",
-    "source_network_repaired": true
+    "source_network_repaired": true,
+    "first_restore_exit": 255,
+    "first_restore_failure": "Disk quota exceeded (os error122)",
+    "quota_receipt": "candidate-96f4f8fb/restore-quota-measurement.json",
+    "restore_rootfs_gib": 300,
+    "backup_reused": true
   }
 }

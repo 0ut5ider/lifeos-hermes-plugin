@@ -1,0 +1,30 @@
+{
+  "status": "MEASURED_QUOTA_FAILURE_AND_RETRY",
+  "archive": "PBS-01:backup/ct/101/2026-10-13T06:25:09Z",
+  "error": "Disk quota exceeded (os error122)",
+  "failed_restore_seconds": 4436.914435838931,
+  "source": {
+    "refquota_gib": 150,
+    "referenced_gib": 140,
+    "logicalreferenced_gib": 255,
+    "compression": "zstd-3",
+    "compressratio": 2.15
+  },
+  "restore_pool": {
+    "compression": "lz4",
+    "available_gib": 695
+  },
+  "retry_target": {
+    "guest": 110,
+    "refquota_gib": 300,
+    "compression": "lz4",
+    "available_gib": 299
+  },
+  "prior_failed_guest_cleanup": {
+    "configuration_absent": true,
+    "storage_volumes_absent": true
+  },
+  "source_and_daily_guests_resized": false,
+  "successful_backup_reused": true,
+  "product_code_changed": false
+}

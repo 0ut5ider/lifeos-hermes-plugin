@@ -158,3 +158,21 @@ Finaleth0only.252/24; SSHworks. Primary sourceobserverPASS exact041/all3services
 Actualrestore task UPID:pve-tr1950x:002317B6:04469B7E:6ACDDA4F:vzrestore:110:root@pam: starts07:14:23UTC; latest13percent.
 Do not admit normalrollback yet. Wait retry1 process.done0 +verification and programcoverage +guarded110cleanup.
 Sourceonline anddataunchanged; .253dailyuntouched. Externalnetworkconfigchange is outsideGit and must be reportedwithundo.
+
+
+## Actual restore capacity failure and second restore
+
+Retry1 restore fails255 after4436.914s atlast90percent with Diskquotaexceeded122 onnext-swc.linux-x64-gnu.node.
+PBS remainsrunning since06:10:31, so this is a distinct capacity failure. Failedguest110 config andvolume auto-cleaned byProxmox.
+SourceZFS datasetzstd-3, 140Greferenced,255Glogicalreferenced inside150Gquota. Restorepooldefaultlz4; sourcecompressionproperty is not restored automatically.
+New disposabletarget110 has300Gquota, inheritedlz4,299Gavailable confirmed. Parentpool695Gavailable. Source anddaily quotas unchanged.
+Successful protected041backup remainsPBS-01:backup/ct/101/2026-10-13T06:25:09Z. No sourcebackup repetition.
+Secondrestore controller /root/proxmox_history_restore_041_96f4f8fb_retry2.py --resume-backup.
+SupervisorPID2373839; actualtask UPID:pve-tr1950x:002438F0:044DE82C:6ACDECFF:vzrestore:110:root@pam:.
+Newoutput /root/lifeos-release-0.4.1/history-restore-retry2; independentmarker /root/lifeos-release-0.4.1/history-restore-retry2.done.
+Savedactualbackup metadata/operations copied fromretry1; failedrestore remainsin its originalfolder/evidence.
+Use observe_whole_restore.py retry2. Do not start anotherrestore orrollback until actualcompletion.
+An unrelated regularguest101backup starts08:00UTC in snapshotmode. Source remainsrunning/reachable; no cancellation orconfiguration change.
+Export finalverification.json/programcoverage.json onlyfromretry2 afterprocess.done0 and guarded110cleanup.
+Then normalownerrestore875 ->verifyexact03 ->certificate ->PR16merge/publication ->actualpublic041installation/default252update.
+Daily253remains03 anduntouched. No product changes for infrastructure failures.
