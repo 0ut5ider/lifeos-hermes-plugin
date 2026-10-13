@@ -103,6 +103,65 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertEqual((job / 'generated/config.yaml').read_bytes(), before)
             self.assertEqual(yaml.load((profile / 'config.yaml').read_bytes())['_config_version'], 46)
 
+    def test_unchanged_native_update_preserves_baseline_time_and_prepared_bytes(self):
+        from types import SimpleNamespace
+        from lifeos_hook_bridge import update_plan, version_drift
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            job, profile, package, installed = root / 'job', root / '.hermes', root / 'package', root / '.claude'
+            native = package / 'lifeos/LifeOS/install'
+            for path in (job, profile, native, installed):
+                path.mkdir(parents=True, mode=0o700)
+            subprocess.run(['git', 'init', '-q', str(native)], check=True)
+            for tree in (native, installed):
+                (tree / 'LIFEOS').mkdir()
+                (tree / 'hooks').mkdir()
+                (tree / 'LIFEOS/VERSION').write_text('7.40.4\n')
+                (tree / 'hooks/Test.hook.ts').write_text('synthetic native hook\n')
+            subprocess.run(['git', '-C', str(native), 'add', 'LIFEOS/VERSION', 'hooks'], check=True)
+            subprocess.run(['git', '-C', str(native), '-c', 'user.name=Test',
+                            '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'fixture'], check=True)
+            baseline = version_drift.create_baseline(native, installed)
+            baseline['created_at'] = 1
+            baseline_path = root / 'baseline.json'
+            version_drift.save_baseline(baseline, baseline_path)
+            (profile / 'config.yaml').write_text('_config_version: 46\nmodel:\n  default: synthetic-model\n')
+            (package / 'DAILY-CANDIDATE.json').write_text('{"plugin_files":{}}')
+            for name in ('lifeos_hook_bridge', 'optional/lifeos_release_manager'):
+                path = package / name
+                path.mkdir(parents=True)
+                (path / '__init__.py').write_text('# synthetic reviewed program\n')
+            tools = job / 'tools'
+            tools.mkdir()
+            (tools / 'bun').write_text('#!/bin/sh\nexit 0\n')
+            (tools / 'bun').chmod(0o700)
+            commands = {name: 'bin/' + name for name in ('hermes', 'hermes-agent', 'hermes-acp')}
+            (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
+            request = {'profile': str(profile), 'account_home': str(root), 'installed': str(installed),
+                'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]),
+                            'hermes': str(job / 'bin/hermes'), 'bun': str(tools / 'bun'), 'reference': str(native)},
+                'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
+                                'hermes_patch_count': 10, 'lifeos_patch_count': 25},
+                'version': '0.4.2-rc.2', 'commit': 'a' * 40, 'package_sha256': 'b' * 64}
+            modules = {'version_drift': version_drift, 'update_plan': update_plan}
+            selected = {'profile': profile, 'installed': installed, 'package': package,
+                'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes'],
+                'current': SimpleNamespace(memory_module=modules.__getitem__), 'fresh': False,
+                'native_changes': False, 'baseline': baseline_path}
+            directories, files, dependencies = _program_plan(job, request, selected)
+            prepared = (job / 'generated/baseline.json').read_bytes()
+            self.assertEqual(json.loads(prepared)['created_at'], baseline['created_at'])
+            transaction = ProgramTransaction(job / 'program-snapshot')
+            transaction.prepare(directories=directories, files=files, dependencies=dependencies)
+            self.assertEqual(_program_plan(job, request, selected), (directories, files, dependencies))
+            self.assertEqual((job / 'generated/baseline.json').read_bytes(), prepared)
+            transaction.check_prepared()
+            self.assertEqual(version_drift.load_baseline(baseline_path, installed), baseline)
+            (installed / 'hooks/Test.hook.ts').write_text('later native edit\n')
+            with self.assertRaisesRegex(update_plan.UpdateConflict, 'changed since baseline'):
+                _program_plan(job, request, selected)
+
     def test_fresh_service_files_are_reviewed_without_starting_or_enabling_them(self):
         from optional.lifeos_release_manager.release_services import service_files
         from optional.lifeos_release_manager.release_programs import ProgramTransaction

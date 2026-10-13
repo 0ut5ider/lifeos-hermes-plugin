@@ -1,10 +1,5 @@
 # Changelog
 
-## 0.4.2-rc.2 (unpublished version-only test candidate)
-
-- Change the complete integration version to verify a numerical update through Hermes and both dashboard update controls.
-- Keep the program behavior from the 0.4.2-rc.1 candidate.
-
 ## 0.4.2-rc.1 (unpublished test candidate)
 
 - Add Install LifeOS, Update LifeOS, and Update plugin controls to the LifeOS releases page.
@@ -19,6 +14,10 @@
 - Include missing inactive gateway and Pulse definitions in the reviewed program transaction.
 - Validate generated units with the actual systemd parser. Refuse unsupported physical service paths before generation.
 - Refuse historical first-install workers without the service interface. Keep the dashboard responsive during refusal.
+- Bind extracted and native source manifests to the certificate-bound archive. Verify retained workers before admission.
+- Preserve unchanged service files during program publication and keep one fresh-recovery lease namespace.
+- Preserve the existing native baseline time during updates with unchanged native programs.
+- Drain the native test log queue before removing its temporary home.
 - Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
 
 ## 0.4.1 (2026-10-13)

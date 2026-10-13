@@ -243,7 +243,9 @@ def _program_plan(job, request, selected):
         if selected['native_changes']:
             files[selected['baseline']] = selected['baseline']
         else:
-            publish(generated / 'baseline.json', (json.dumps(drift.create_baseline(native, installed), indent=2) + '\n').encode())
+            baseline = drift.create_baseline(native, installed)
+            baseline['created_at'] = previous['created_at']
+            publish(generated / 'baseline.json', (json.dumps(baseline, indent=2) + '\n').encode())
             files[selected['baseline']] = generated / 'baseline.json'
     manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
     certificate = request['certificate']
