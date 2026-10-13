@@ -123,5 +123,13 @@
     "manual_service_start": false,
     "bun_version": "1.4.3",
     "all_services_enabled_and_running": true
+  },
+  "whole_guest_controller": {
+    "host": "192.168.8.101",
+    "script": "/root/proxmox_history_restore_040.py",
+    "evidence": "/root/lifeos-release-0.4.0/history-restore",
+    "source_guest": 101,
+    "disposable_guest": 110,
+    "state": "Source writers drained; backup running"
   }
 }
