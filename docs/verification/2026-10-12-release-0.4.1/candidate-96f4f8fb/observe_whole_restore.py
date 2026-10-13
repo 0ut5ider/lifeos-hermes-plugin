@@ -1,10 +1,12 @@
 # ABOUTME: Reports safe backup and restore task progress from the authorized Proxmox controller.
 # ABOUTME: Exports numeric progress and release metadata without backup contents or task narration.
-import subprocess,json
+import subprocess,json,sys
+attempt=sys.argv[1] if len(sys.argv)>1 else 'initial'
+directory={'initial':'history-restore','retry1':'history-restore-retry1'}[attempt]
 code=r'''from pathlib import Path
 import subprocess,json,re,datetime
-folder=Path('/root/lifeos-release-0.4.1');out=folder/'history-restore';value={'time':datetime.datetime.now(datetime.timezone.utc).isoformat()}
-for name in ['history-restore.done']:
+folder=Path('/root/lifeos-release-0.4.1');out=folder/DIRECTORY;value={'time':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+for name in [DIRECTORY+'.done']:
  p=folder/name
  if p.exists():value[name]=p.read_text().strip()
 for name in ['process.done']:
@@ -29,6 +31,6 @@ if r.returncode==0:
    if metrics:task['last_numeric_progress']=metrics[-2:]
   value['active_tasks'].append(task)
 print(json.dumps(value))
-'''
+'''.replace('DIRECTORY',repr(directory))
 r=subprocess.run(['ssh','root@192.168.8.101','python3','-B','-'],input=code,text=True,capture_output=True,check=True,timeout=60)
 print(json.dumps(json.loads(r.stdout),indent=2))

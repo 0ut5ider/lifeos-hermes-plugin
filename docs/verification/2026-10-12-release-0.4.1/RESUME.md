@@ -128,3 +128,19 @@ Do not start another backup, do not run normal rollback before source services r
 After actual wholePASS and owned110 cleanup, export verification.json and stable-program-coverage.json into whole-guest-recovery.json and whole-guest-program-coverage.json.
 Then owner normal restore for875, observer exact03, strict actual certificate, finalPR16evidence/merge, immutable041release, public exact-version fresh install, defaultpublic252update.
 No daily promotion is authorized by this checkpoint. Daily253remains03.
+
+
+## Whole-backup retry checkpoint
+
+First041backup fails255 after1494.830s with pipelinedrequest brokenpipe/catalogchannelclosed. No restoreguest is created.
+Controller source-service recovery succeeds. Primary observer verifies exact041/all3services/modelsA4 after failure.
+Measured external interruption: PBS container atroot192.168.8.24 stops06:10:02.079UTC, backup fails06:10:08UTC, PBS starts06:10:31.836UTC.
+Endpoint24 is Unraid Pluto-NAS-02, Docker containerproxmox-backup-server. SSHkeyworks. It has no systemctl.
+Why PBS stops is not established. Currentstate running, lastExit0/noOOMflag, storageactive with ample free space. No NASconfiguration changes.
+Preserve all first-failure files in /root/lifeos-release-0.4.1/history-restore.
+Retry1 controller /root/proxmox_history_restore_041_96f4f8fb_retry1.py; supervisorPID2253832.
+Retry1 output /root/lifeos-release-0.4.1/history-restore-retry1; independent marker /root/lifeos-release-0.4.1/history-restore-retry1.done.
+Use observe_whole_restore.py retry1, not the initial failed observerdefault.
+Same actual package, operation875, preserved three synthetic fixtures, new backup timestamp. No product changes or fixture resets.
+Source services resume after retrybackup and before longrestore. Do not admit normalrollback until actualwholePASS and cleanup.
+Actual host recovery receipts will be in retry1/verification.json and retry1/stable-program-coverage.json.
