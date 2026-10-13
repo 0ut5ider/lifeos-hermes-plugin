@@ -74,7 +74,7 @@ try:
     assert 'net0:' not in config and 'onboot: 0' in config
     run(['pct','exec',str(vmid),'--','ip','-brief','address'],'network')
     report=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B',
-        '/home/lifeos-hermes/releases/history_guest_recovery.py','verify',package],'verify-history'))
+        '/home/lifeos-hermes/releases/qualification-20261012-stable/history_guest_recovery.py','verify',package],'verify-history'))
     assert report['status']=='PASS' and len(report['cases'])==3
     coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-20261012-stable/verify_stable_restored.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
     assert coverage['status']=='PASS'

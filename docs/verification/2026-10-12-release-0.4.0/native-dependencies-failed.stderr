@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/.hermes/.lifeos-releases/16e36a5f9d0f413f82d7833bd2fa7b2f/package/lifeos_hook_bridge/install_source.py", line 331, in install_lifeos
+    raise IncompatibleLifeOS(memory_module("native_output").failure_message(f"LifeOS {name}", result))
+lifeos_release_install.IncompatibleLifeOS: LifeOS DeployCore exited with code 1:       ],
+      "blockers": [],
+      "failures": [
+        "bun install --cwd /home/lifeos-hermes/.hermes/.lifeos-releases/16e36a5f9d0f413f82d7833bd2fa7b2f/reference-home/.claude/LIFEOS/PULSE/Observability exited 1: error: Fail extracting tarball for \"next\"\nerror: Fail extracting tarball from next"
+      ]
+    }
+  ]
+}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+    source.install_lifeos(Path(sys.argv[2]),Path(sys.argv[3])/".claude",Path(sys.argv[3])/"failed",sys.argv[4],source.SUPPORTED_LIFEOS_COMMIT,Path(sys.argv[1])/"patches",source.LIFEOS_PATCHES)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/.lifeos-releases/16e36a5f9d0f413f82d7833bd2fa7b2f/package/lifeos_hook_bridge/install_source.py", line 350, in install_lifeos
+    raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
+lifeos_release_install.IncompatibleLifeOS: LifeOS DeployCore exited with code 1:       ],
+      "blockers": [],
+      "failures": [
+        "bun install --cwd /home/lifeos-hermes/.hermes/.lifeos-releases/16e36a5f9d0f413f82d7833bd2fa7b2f/reference-home/.claude/LIFEOS/PULSE/Observability exited 1: error: Fail extracting tarball for \"next\"\nerror: Fail extracting tarball from next"
+      ]
+    }
+  ]
+}. Partial files were kept at /home/lifeos-hermes/.hermes/.lifeos-releases/16e36a5f9d0f413f82d7833bd2fa7b2f/reference-home/failed

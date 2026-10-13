@@ -24,7 +24,7 @@
   "archive_bytes": 119132852,
   "running": [
     "Sealed integration suite",
-    "Development frozen worker interruption"
+    "Normal development preparation retry"
   ],
   "native_controls": {
     "tests": 716,
@@ -40,5 +40,16 @@
     "phase": "directory-retained",
     "later_synthetic_data_preserved": true
   },
-  "interruption_operation": "0c49ceb4d5c2450283012d039aa0b84b"
+  "interruption_operation": "0c49ceb4d5c2450283012d039aa0b84b",
+  "interrupted_update": {
+    "status": "PASS",
+    "receipt": "development-interruption-recovery.json",
+    "restored": "Exact accepted 0.3.1, preserved configuration and routing, all three services running"
+  },
+  "dependency_preparation_failure": {
+    "operation": "16e36a5f9d0f413f82d7833bd2fa7b2f",
+    "safe_refusal": true,
+    "receipt": "dependency-stage-investigation.json",
+    "retry": "Running with unchanged archive and new private operation"
+  }
 }

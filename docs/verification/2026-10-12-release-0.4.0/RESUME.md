@@ -47,3 +47,14 @@ Publish new assets under v0.4.0 without overwriting any existing release asset.
 Keep v0.3.1 assets immutable and compare their inventory with `v031-assets-before.json`.
 Use the 0ut5ider GitHub account through a private subprocess token environment.
 The daily `.253` remains on accepted 0.3.1 during qualification.
+
+Interrupted update recovery now passes. Exact 0.3.1, model hash, configuration, aliases, and all three services verify.
+The first normal preparation fails safely at native-dependencies because Bun reports Next.js tarball extraction failure.
+The failed operation is `16e36a5f9d0f413f82d7833bd2fa7b2f`.
+Its safe failure receipt and stage stderr are retained here.
+The guest has 43 GiB free and 88,584,368 free inodes.
+Both successful and failed reference caches contain Next.js 15.5.27 with 7,278 files.
+The lower-level extraction cause is unconfirmed. Do not label it a confirmed network failure.
+A new unchanged preparation is detached on .252. Check `prepare-normal-retry.stderr` and `development-preparation.done`.
+The new three-case synthetic Atlas fixtures are prepared successfully in `deployment/history-recovery-0.4.0`.
+The controller now uses the stable-folder history verifier and does not overwrite the historical verifier.
