@@ -1,8 +1,10 @@
 # ABOUTME: Characterizes configuration source roles and exact file-change signatures.
 # ABOUTME: Uses real skill trees, dependency files, symlinks, and atomic replacement.
+import json
 import os
 from pathlib import Path
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -79,6 +81,51 @@ class ConfigInventoryTests(unittest.TestCase):
         self.assertEqual(after, self.signature(skill))
         skill.unlink()
         self.assertNotIn(skill, self.bridge._config_files())
+
+    def test_nested_project_settings_keep_final_skills_role(self):
+        settings = self.file('user/.claude/settings.json', '{}')
+        nested = self.user / 'skills/research-project'
+        nested_settings = self.file('user/.claude/skills/research-project/.claude/settings.json', '{}')
+        nested_local = self.file('user/.claude/skills/research-project/.claude/settings.local.json', '{}')
+        self.bridge.project_dirs = (self.user.parent, nested, self.project)
+        sources = self.bridge._config_sources()
+        self.assertEqual(sources[nested_settings], 'skills')
+        self.assertEqual(sources[nested_local], 'skills')
+        self.assertEqual(self.bridge._config_files(), {
+            path: self.signature(path) for path in (settings, nested_settings, nested_local)})
+
+    def test_nested_skill_settings_change_reaches_all_active_sessions(self):
+        nested = self.user / 'skills/research-project'
+        changed = self.file('user/.claude/skills/research-project/.claude/settings.json', '{}')
+        self.file('project/.claude/settings.json', '{}')
+        marker = self.root / 'events.jsonl'
+        actor = self.file('record.py',
+            'import json, sys\n'
+            'from pathlib import Path\n'
+            'with Path(sys.argv[1]).open("a") as stream:\n'
+            '    stream.write(json.dumps(json.load(sys.stdin)) + "\\n")\n')
+        self.file('user/.claude/settings.json', json.dumps({'hooks': {'ConfigChange': [{
+            'matcher': 'skills', 'hooks': [{'type': 'command',
+                'command': f'{sys.executable} {actor} {marker}'}]}]}}))
+        previous = Path.cwd()
+        self.addCleanup(os.chdir, previous)
+        os.chdir(self.user.parent)
+        bridge = HookBridge(self.user / 'settings.json', self.user, lifeos_home=self.user.parent)
+        def stop_watcher():
+            bridge.watcher_stop.set()
+            if bridge.watcher is not None:
+                bridge.watcher.join(timeout=5)
+        self.addCleanup(stop_watcher)
+        bridge._remember_project(str(nested), 'nested-session')
+        bridge._remember_project(str(self.project), 'other-session')
+        bridge.started_sessions.update({'nested-session', 'other-session'})
+        bridge.config_files = bridge._config_files()
+        changed.write_text('{"changed":true}')
+        bridge.poll_config_changes(force=True)
+        rows = [json.loads(line) for line in marker.read_text().splitlines()] if marker.exists() else []
+        self.assertEqual({row['session_id'] for row in rows}, {'nested-session', 'other-session'})
+        self.assertEqual(len(rows), 2)
+        self.assertTrue(all(row['source'] == 'skills' and row['file_path'] == str(changed) for row in rows))
 
 
 if __name__ == '__main__':

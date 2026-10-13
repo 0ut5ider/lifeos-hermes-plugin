@@ -944,23 +944,25 @@ class HookBridge:
 
         yield selected(self.settings_path, "user_settings")
         yield selected(POLICY_DIRECTORY / "managed-settings.json", "policy_settings")
-        skill_roots = set()
+        skill_entries = {}
+        def cached_skills(root):
+            if root not in skill_entries:
+                skill_entries[root] = tuple(self._skill_config_entries(root))
+            return skill_entries[root]
+
         for project_dir in self.project_dirs:
             project_settings = project_dir / ".claude"
             yield selected(project_settings / "settings.json", "project_settings")
             yield selected(project_settings / "settings.local.json", "local_settings")
             skills = project_settings / "skills"
-            if skills not in skill_roots:
-                yield from self._skill_config_entries(skills)
-                skill_roots.add(skills)
+            yield from cached_skills(skills)
         dropins = POLICY_DIRECTORY / "managed-settings.d"
         if dropins.is_dir():
             for path in dropins.glob("*.json"):
                 if path.is_file():
                     yield selected(path, "policy_settings")
         user_skills = self.settings_path.parent / "skills"
-        if user_skills not in skill_roots:
-            yield from self._skill_config_entries(user_skills)
+        yield from cached_skills(user_skills)
 
     def _config_sources(self) -> dict[Path, str]:
         return {path: source for path, source, _ in self._config_entries()}
