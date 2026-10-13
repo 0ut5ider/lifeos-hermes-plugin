@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "version": "1.3.14",
+      "case": 1,
+      "exit_code": 1,
+      "seconds": 13.466,
+      "native_locks_changed": false,
+      "only_catalog_runtime_version_changed": false
+    },
+    {
+      "version": "1.4.3",
+      "case": 1,
+      "exit_code": 0,
+      "seconds": 15.843,
+      "native_locks_changed": false,
+      "only_catalog_runtime_version_changed": true
+    },
+    {
+      "version": "1.3.14",
+      "case": 2,
+      "exit_code": 0,
+      "seconds": 18.469,
+      "native_locks_changed": false,
+      "only_catalog_runtime_version_changed": false
+    },
+    {
+      "version": "1.4.3",
+      "case": 2,
+      "exit_code": 0,
+      "seconds": 16.26,
+      "native_locks_changed": false,
+      "only_catalog_runtime_version_changed": true
+    },
+    {
+      "version": "1.4.3",
+      "case": 3,
+      "exit_code": 0,
+      "seconds": 16.537,
+      "native_locks_changed": false,
+      "only_catalog_runtime_version_changed": true
+    }
+  ],
+  "measured_lock_checks": [
+    {
+      "version": "1.3.14",
+      "case": 1,
+      "lock_files_checked": 12,
+      "changed_locks": []
+    },
+    {
+      "version": "1.4.3",
+      "case": 1,
+      "lock_files_checked": 12,
+      "changed_locks": []
+    },
+    {
+      "version": "1.3.14",
+      "case": 2,
+      "lock_files_checked": 12,
+      "changed_locks": []
+    },
+    {
+      "version": "1.4.3",
+      "case": 2,
+      "lock_files_checked": 12,
+      "changed_locks": []
+    },
+    {
+      "version": "1.4.3",
+      "case": 3,
+      "lock_files_checked": 12,
+      "changed_locks": []
+    }
+  ],
+  "active_profile_changed": false
+}

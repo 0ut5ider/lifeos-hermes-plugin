@@ -1,5 +1,5 @@
 {
-  "status": "QUALIFYING",
+  "status": "REBUILD_REQUIRED",
   "version": "0.4.0",
   "merged_pr": 14,
   "merged_commit": "be215380dcbda35c92e6f28b23b4a1d7bc15004e",
@@ -14,18 +14,16 @@
     "Authenticated development owner review"
   ],
   "remaining": [
-    "Build exact stable archive",
-    "Verify stable archive controls",
-    "Verify development installation and recovery",
+    "Build stable package with fixed Bun pin",
+    "Repeat exact frozen integration and native runtime checks",
+    "Verify development normal update and rollback",
+    "Verify disconnected whole-guest recovery",
     "Publish complete qualified assets"
   ],
   "program_commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
   "archive_sha256": "a8e79e394b18b189ed9be3d41e112e7b803b65f565d9c0fb8c7d4ab67e5437e1",
   "archive_bytes": 119132852,
-  "running": [
-    "Sealed integration suite",
-    "Normal development preparation retry"
-  ],
+  "running": [],
   "native_controls": {
     "tests": 716,
     "files": 38,
@@ -51,5 +49,17 @@
     "safe_refusal": true,
     "receipt": "dependency-stage-investigation.json",
     "retry": "Running with unchanged archive and new private operation"
+  },
+  "superseded_stable_package": {
+    "commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
+    "sha256": "a8e79e394b18b189ed9be3d41e112e7b803b65f565d9c0fb8c7d4ab67e5437e1",
+    "integration_tests": 625,
+    "reason": "Bun 1.3.14 fails native dependency extraction during cold preparation."
+  },
+  "bun_pin": {
+    "version": "1.4.3",
+    "receipt": "bun-comparison-verified.json",
+    "upstream_fixed_commit_included": true,
+    "frozen_native_locks_changed": false
   }
 }

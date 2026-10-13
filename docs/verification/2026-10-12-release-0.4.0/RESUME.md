@@ -58,3 +58,19 @@ The lower-level extraction cause is unconfirmed. Do not label it a confirmed net
 A new unchanged preparation is detached on .252. Check `prepare-normal-retry.stderr` and `development-preparation.done`.
 The new three-case synthetic Atlas fixtures are prepared successfully in `deployment/history-recovery-0.4.0`.
 The controller now uses the stable-folder history verifier and does not overwrite the historical verifier.
+
+The unchanged normal preparation retry also fails safely. Its operation is `67d6e3a05d24436cae2a4dd41c32028c`.
+The entire original sealed suite passes 625 checks in 979.5 seconds.
+The original stable archive is now superseded because of native cold-extraction failures.
+The Bun comparison finishes: 1.3.14 fails one of two new cold cases, while 1.4.3 passes all three.
+The independent verifier confirms all twelve frozen dependency locks in all five cases remain exact.
+The original and failed Next cache payload maps match exactly.
+The official 1.4.3 asset digest is `1fc2edac843102909e3a1be1d8d9802cc6071cf074e67e88231f4ffe0f8b397b`.
+Its release contains the upstream later extraction fix commit 469a7b4; the compare has zero commits behind.
+Only two product metadata files change: dependency_locks/catalog.json and release-tools.json.
+They now pin Bun 1.4.3. Every dependency lock remains unchanged.
+The new pin requires a new committed stable archive and repeated qualification.
+The local fixed Bun tool is being prepared through the public release_tools API in cache/fixed-bun-tools.
+Pass its directory first in PATH for every repeated full integration/native/fresh test.
+Use a new .252 staging folder qualification-20261012-bunfixed for the new archive.
+Do not publish any existing private qualification certificate.
