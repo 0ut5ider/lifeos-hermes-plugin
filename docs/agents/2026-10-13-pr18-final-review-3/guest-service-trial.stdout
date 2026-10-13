@@ -1,0 +1,29 @@
+{
+  "scope": "Actual Hermes process, user unit, procfs, control group and drain/resume; no complete installer/browser claim.",
+  "fixed_main_service_preview_pass": true,
+  "before": {
+    "pid": "4038",
+    "config": "389c1827240e0142b7f1371e6e2c94f83d83de3e54428916e46f2bce72096190",
+    "release": "0ebdccd5e537c812ef5766ab25603bdea8e597f4efc35caea8ad47793051dbca"
+  },
+  "foreign_refusal": {
+    "error": "The active dashboard process belongs to another profile or command",
+    "same_definition": true,
+    "pid_before": "5018",
+    "pid_after": "5018",
+    "journal_absent": true
+  },
+  "matching_restart": {
+    "drain": "stopped",
+    "resume": "active",
+    "pid_before": "5030",
+    "pid_after": "5052",
+    "same_definition": true
+  },
+  "after": {
+    "pid": "4038",
+    "config": "389c1827240e0142b7f1371e6e2c94f83d83de3e54428916e46f2bce72096190",
+    "release": "0ebdccd5e537c812ef5766ab25603bdea8e597f4efc35caea8ad47793051dbca"
+  },
+  "main_unchanged": true
+}

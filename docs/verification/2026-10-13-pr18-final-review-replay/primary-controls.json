@@ -1,0 +1,60 @@
+[
+  {
+    "command": [
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+      "-B",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_release_catalog",
+      "test_release_programs",
+      "test_release_stage",
+      "test_release_manager_cli",
+      "test_release_operation",
+      "test_release_configuration",
+      "test_release_native_config",
+      "test_release_dashboard",
+      "test_release_preparation",
+      "test_release_services",
+      "test_profile_services"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+    },
+    "exit_code": 0,
+    "stdout": "primary-focused-tests.stdout"
+  },
+  {
+    "command": [
+      "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+      "-B",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_release_operation.ReleaseOperationTests.test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication",
+      "test_qualification_artifacts"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": ".:tests:docs/verification/2026-10-13-release-ui-install:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream",
+      "LIFEOS_QUALIFICATION_BUILD": "docs/agents/2026-10-13-pr18-final-review-1/sealed-review-bg1aw0o2/build.json"
+    },
+    "exit_code": 0,
+    "stdout": "primary-artifact-tests.stdout"
+  },
+  {
+    "command": [
+      "node",
+      "--test",
+      "tests/test_release_ui.cjs"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "stdout": "primary-ui-tests.stdout"
+  }
+]

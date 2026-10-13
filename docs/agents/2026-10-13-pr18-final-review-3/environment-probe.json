@@ -1,0 +1,13 @@
+{
+  "accepted": true,
+  "binding": {
+    "profile": "/tmp/pr18-effective-environment-pbbo8mei/literal%%name/.hermes",
+    "command": "dashboard"
+  },
+  "profile": "/tmp/pr18-effective-environment-pbbo8mei/literal%%name/.hermes",
+  "effective_environment": "HERMES_HOME=/tmp/pr18-effective-environment-pbbo8mei/literal%%name/.hermes",
+  "main_pid": "0",
+  "supported_service_path": true,
+  "unit_definition": "[Unit]\nDescription=PR18 isolated inactive environment probe\n[Service]\nEnvironment=\"HERMES_HOME=/tmp/pr18-effective-environment-pbbo8mei/literal%%%%name/.hermes\"\nExecStart=\"/tmp/pr18-effective-environment-pbbo8mei/literal%%%%name/.local/bin/hermes\" dashboard --isolated --no-open\n",
+  "limit": "Real inactive temporary unit and effective environment; no service process starts."
+}

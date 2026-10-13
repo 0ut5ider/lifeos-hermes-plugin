@@ -1,0 +1,115 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "commands": [
+    {
+      "purpose": "Complete working tree review",
+      "command": [
+        "git",
+        "diff",
+        "958d122a491ddead7c19a5f215494f0422c4b5d6",
+        "--",
+        ":!docs/agents",
+        ":!docs/verification"
+      ],
+      "stdout": "complete-product-diff.patch",
+      "exit_code": 0
+    },
+    {
+      "purpose": "Working corrections snapshot",
+      "command": [
+        "git",
+        "diff"
+      ],
+      "stdout": "working-diff.patch",
+      "exit_code": 0
+    },
+    {
+      "purpose": "Selected release and real service controls",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_release_catalog",
+        "test_release_programs",
+        "test_release_stage",
+        "test_release_manager_cli",
+        "test_release_operation",
+        "test_release_configuration",
+        "test_release_native_config",
+        "test_release_dashboard",
+        "test_release_preparation",
+        "test_release_services",
+        "test_profile_services"
+      ],
+      "stdout": "focused-tests.stdout",
+      "stderr": "focused-tests.stderr",
+      "exit_code": 0,
+      "tests": 108,
+      "executed": 105,
+      "skips": 3,
+      "seconds": 29.466
+    },
+    {
+      "purpose": "Actual effective environment reproduction",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "docs/agents/2026-10-13-pr18-final-review-2/environment_probe.py"
+      ],
+      "stdout": "environment-probe.stdout",
+      "stderr": "environment-probe.stderr",
+      "exit_code": 0
+    },
+    {
+      "purpose": "Retained fixture artifact and lease controls",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:docs/verification/2026-10-13-release-ui-install:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream",
+        "LIFEOS_QUALIFICATION_BUILD": "docs/agents/2026-10-13-pr18-final-review-1/sealed-review-bg1aw0o2/build.json"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_release_operation.ReleaseOperationTests.test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication",
+        "test_qualification_artifacts"
+      ],
+      "stdout": "artifact-tests.stdout",
+      "stderr": "artifact-tests.stderr",
+      "exit_code": 0,
+      "tests": 7,
+      "skips": 0,
+      "seconds": 45.453
+    },
+    {
+      "purpose": "UI components",
+      "command": [
+        "node",
+        "--test",
+        "tests/test_release_ui.cjs"
+      ],
+      "stdout": "ui-tests.stdout",
+      "stderr": "ui-tests.stderr",
+      "exit_code": 0,
+      "tests": 3
+    }
+  ]
+}

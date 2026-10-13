@@ -1,0 +1,21 @@
+{
+  "actual_argv": [
+    "/home/lifeos-hermes/.hermes/.lifeos-releases/73697ad3e0ef44e89d48842fb714a77c/dependency-profile/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-P",
+    "-c",
+    "import os, site, sys; sys.argv[0]='hermes'; site.addsitedir(os.environ['HERMES_SITE']); from hermes_cli.main import main; sys.exit(main())",
+    "dashboard",
+    "--isolated",
+    "--no-open",
+    "--host",
+    "0.0.0.0",
+    "--port",
+    "9119"
+  ],
+  "native_command_result": null,
+  "actual_profile": "/home/lifeos-hermes/.hermes",
+  "uid": 1008,
+  "caller_uid": 1008,
+  "result": "The new dashboard guard rejects this supported active bundled launcher.",
+  "limit": "Native command parsing independently reproduced locally from the primary safe actual-guest argv receipt. No guest accessed or process stopped."
+}

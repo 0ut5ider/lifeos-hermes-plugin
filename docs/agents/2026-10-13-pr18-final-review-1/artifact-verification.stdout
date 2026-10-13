@@ -1,0 +1,112 @@
+{
+  "acceptance_hash_matches": {
+    "public-installation.json": true,
+    "public-installation-preparation.json": true,
+    "public-lifeos-update.json": true,
+    "public-lifeos-update-preparation.json": true,
+    "public-numeric-rollback.json": true,
+    "public-plugin-update.json": true,
+    "public-plugin-update-preparation.json": true,
+    "public-plugin-update-version.json": true,
+    "public-final-dashboard.json": true,
+    "conversational-public-preparation.json": true,
+    "conversational-public-preparation.txt": true,
+    "conversational-public-update.json": true,
+    "conversational-public-post-update.txt": true,
+    "conversational-public-version.json": true,
+    "conversational-public-data-preservation.json": true,
+    "integration-archive-bound-914ad24b.json": true,
+    "native-sealed-914ad24b.json": true,
+    "corrected-numeric-update-version-delta.json": true,
+    "baseline-preserved-fresh-recovery.json": true,
+    "existing-guests-final-health.json": true,
+    "public-prerelease-assets-verified.json": true
+  },
+  "production_qualified": false,
+  "default_branch_web_bootstrap": {
+    "status": "PENDING_PR18_MERGE",
+    "stock_public_manager_041_web_install_verified": true,
+    "candidate_web_form_install_from_public_branch_checkout_verified": true
+  },
+  "archives": {
+    "0.4.2-rc.1": {
+      "sha256": "5fe78efb7dc45ee4cf6e49766c7e72c8f64e0d0113fd3643290e75adc6d8ebdb",
+      "bytes": 119154830,
+      "certificate_sha256": "912f6cca51df145b2863bb807dfd7b4b63a678d78d880deb93f5655caa12a336",
+      "receipt_hash_matches": {
+        "integration-archive-bound-914ad24b.json": true,
+        "integration-archive-bound-914ad24b.stderr": true,
+        "native-sealed-914ad24b.json": true,
+        "native-sealed-914ad24b.stdout": true,
+        "native-sealed-914ad24b.stderr": true,
+        "baseline-preserved-fresh-interruption.json": true,
+        "baseline-preserved-fresh-recovery.json": true,
+        "baseline-preserved-recovery-admission.json": true,
+        "baseline-preserved-private-update.json": true
+      },
+      "public_user_action_acceptance": "PENDING"
+    },
+    "0.4.2-rc.2": {
+      "sha256": "6fd4a6af3e1fa37f0b57b8db86daf4b72974d0f0993b4d12cba583c84575cbe6",
+      "bytes": 119160420,
+      "certificate_sha256": "886e98dc6c2e2b39d8a49ba4bfd11f69dc22940051e97481c9bcbe86c1f4492d",
+      "receipt_hash_matches": {
+        "integration-archive-bound-914ad24b.json": true,
+        "integration-archive-bound-914ad24b.stderr": true,
+        "native-sealed-914ad24b.json": true,
+        "native-sealed-914ad24b.stdout": true,
+        "native-sealed-914ad24b.stderr": true,
+        "baseline-preserved-fresh-interruption.json": true,
+        "baseline-preserved-fresh-recovery.json": true,
+        "baseline-preserved-recovery-admission.json": true,
+        "baseline-preserved-private-update.json": true,
+        "corrected-numeric-update-version-delta.json": true,
+        "corrected-numeric-private-update.json": true
+      },
+      "public_user_action_acceptance": "PENDING"
+    }
+  },
+  "version_derivative": {
+    "exact_version_transformations": true,
+    "native_and_dependency_programs_identical": true
+  },
+  "first_archive_regular_files": 21085,
+  "first_archive_file_map_sha256": "e9b783492b6c8cd9f64f0c7181370bc3827ff11bff07ade98ae4dae7b34fdd7b",
+  "recorded_integration_summary": [
+    "----------------------------------------------------------------------",
+    "Ran 661 tests in 1100.183s",
+    "",
+    "OK"
+  ],
+  "recorded_native_summary": [
+    "     16.02s  tests/agent/test_terminal_approval_batch.py",
+    "     15.42s  tests/tools/test_code_kernel.py",
+    "     10.93s  tests/test_lifeos_batch_schema.py",
+    "     10.54s  tests/hermes_cli/test_required_middleware.py",
+    "      9.99s  tests/agent/test_turn_context.py",
+    "      9.20s  tests/tools/test_plugin_command_approval.py"
+  ],
+  "fresh_extraction": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-13-pr18-final-review-1/sealed-review-bg1aw0o2/package",
+  "fresh_package_validate_version": "0.4.2-rc.1",
+  "fresh_package_matches_before": {
+    "generated_bytecode_files": 0,
+    "generated_metadata_files": []
+  },
+  "artifact_test_command": [
+    "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+    "-B",
+    "-W",
+    "error::ResourceWarning",
+    "-m",
+    "unittest",
+    "-v",
+    "test_release_operation.ReleaseOperationTests.test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication",
+    "test_qualification_artifacts"
+  ],
+  "artifact_test_exit_code": 0,
+  "artifact_test_seconds": 46.20765128603671,
+  "fresh_package_matches_after": {
+    "generated_bytecode_files": 0,
+    "generated_metadata_files": []
+  }
+}

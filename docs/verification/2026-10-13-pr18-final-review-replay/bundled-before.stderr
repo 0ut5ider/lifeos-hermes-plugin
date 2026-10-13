@@ -1,0 +1,25 @@
+test_official_bundled_dashboard_retains_profile_checks (test_release_services.ReleaseServiceTests.test_official_bundled_dashboard_retains_profile_checks) ... 
+  test_official_bundled_dashboard_retains_profile_checks (test_release_services.ReleaseServiceTests.test_official_bundled_dashboard_retains_profile_checks) (foreign=False) ... ERROR
+
+======================================================================
+ERROR: test_official_bundled_dashboard_retains_profile_checks (test_release_services.ReleaseServiceTests.test_official_bundled_dashboard_retains_profile_checks) (foreign=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_services.py", line 88, in test_official_bundled_dashboard_retains_profile_checks
+    self.assertIn('signature', fresh_preview(current, profile, installed))
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_services.py", line 135, in fresh_preview
+    preview = services.preview()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_services.py", line 64, in preview
+    return {'signature': self._inspect('dashboard')[1]}
+                         ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_services.py", line 78, in _inspect
+    binding = dashboard_binding(module, profile, values)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_services.py", line 102, in dashboard_binding
+    raise ReleaseRejected('The active dashboard process belongs to another profile or command')
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The active dashboard process belongs to another profile or command
+
+----------------------------------------------------------------------
+Ran 1 test in 0.180s
+
+FAILED (errors=1)
