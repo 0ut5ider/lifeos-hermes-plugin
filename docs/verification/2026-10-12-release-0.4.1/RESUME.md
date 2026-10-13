@@ -109,3 +109,9 @@ Only guest101 may be backed up for this test. Restore unused110 disconnected, ma
 Source app services resume immediately after source backup. Keep old040 and031 archives protected.
 The controller is candidate-96f4f8fb/proxmox_history_restore.py. Copy it to a new host script name before launch.
 No041whole backup has started. No041certificate or publication exists. Daily253 stays03 and untouched.
+
+Normal owner review200 and apply200queued complete. Actual worker finishes applied/programsapplied.
+Primary observer PASS exact041/96/SHA462, all3servicesrunning, all3publicaliasesnewhashes, modelA4unchanged.
+Development reboot is next. Before boot ID7e446f72-dafd-4eca-815d-11c464f99a67.
+Runtime Python is in candidate-96f4f8fb/normal-runtime-python.json. Normaloperation87561ff313e348508c3c7e1331b838be.
+Do not manually start services after reboot. Use verify_boot.py with actualbeforeID to verify automaticstart/NRestarts0.

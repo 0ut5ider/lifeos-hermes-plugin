@@ -44,7 +44,7 @@
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "normal_owner_apply": "87561ff313e348508c3c7e1331b838be"
+    "development_reboot": "guest101"
   },
   "integration_gate": {
     "status": "PASS",
@@ -76,10 +76,12 @@
     "review": "CLEAR"
   },
   "normal_installed_gate": {
-    "status": "OWNER_APPLY_REQUESTED",
+    "status": "PASS",
     "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
     "operation": "87561ff313e348508c3c7e1331b838be",
-    "owner_review_http": 200
+    "owner_review_http": 200,
+    "owner_apply_http": 200,
+    "receipt": "candidate-96f4f8fb/development-bunfixed-update.json"
   },
   "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af",
   "diagnostic_repeat": {
@@ -161,6 +163,7 @@
     "Official Hermes runner: 716 tests across 38 files on corrected sealed archive",
     "Corrected sealed fresh installation and actual interrupted recovery with later data preservation",
     "Complete corrected sealed integration: 631 tests, no skips",
-    "Corrected installed interruption exit73 and public CLI recovery: exact03, all3services, all3aliases and model mapping"
+    "Corrected installed interruption exit73 and public CLI recovery: exact03, all3services, all3aliases and model mapping",
+    "Actual corrected normal installed update: exact041/96/SHA462, all3services, aliases and model mapping"
   ]
 }
