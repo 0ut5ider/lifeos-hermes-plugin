@@ -1,111 +1,60 @@
-# Resume LifeOS 0.4.0 qualification
+# Resume LifeOS 0.4.0 release qualification
 
-The authorized task is to merge PR14, qualify the complete stable release, and publish it.
-PR14 is merged at `be215380dcbda35c92e6f28b23b4a1d7bc15004e`.
-The branch is `feature/release-0-4-0`.
-The stable program commit is `4644f90c10d301a943f9ca2a47c9725b136ac5d4`.
-The stable archive SHA-256 is `a8e79e394b18b189ed9be3d41e112e7b803b65f565d9c0fb8c7d4ab67e5437e1`.
-The immutable package is `/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-4644f90c`.
-Use `PYTHONDONTWRITEBYTECODE=1` and Python `-B` for every sealed source.
+Adrian authorizes merging PR14, qualification, and publication of the complete production release.
+PR14 is merged at be215380dcbda35c92e6f28b23b4a1d7bc15004e.
+The release branch is feature/release-0-4-0. No release PR or public 0.4.0 asset exists yet.
 
-The detached sealed integration driver writes `integration-sealed-4644f90c.*` here.
-Check its `.done` marker and output before starting another run.
-The stable fresh installation passes actual exit 73 at directory-retained and preserves later synthetic data.
-The native source, closure, and daily configuration match the reviewed candidate.
-The exact program identity proof supports reuse of 716 native checks across 38 files and 12 source checks.
-It does not claim a new native run.
+The current exact program commit is a87e7ae94894dabc3651454d1334cb23c4fae27e.
+The archive SHA-256 is 82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da (119,131,156 bytes).
+The immutable package is cache/lifeos-hermes-managed-20261012/packages/0.4.0-a87e7ae9.
+Every sealed-source Python command requires PYTHONDONTWRITEBYTECODE=1 and -B.
+The package pins Hermes v0.21.7 at 71d34bad, LifeOS at 5e2f2e8c, and Bun 1.4.3.
+The patch count remains 10 Hermes plus 25 LifeOS groups.
+The only product change after PR14 is the corrected Bun pin in two metadata files, plus stable version declarations.
+All twelve native dependency locks remain exact. The Bun comparison verifies five isolated installations and no live-profile change.
 
-The development qualification folder is `/home/lifeos-hermes/releases/qualification-20261012-stable` on `.252`.
-The interrupted update operation is `0c49ceb4d5c2450283012d039aa0b84b`.
-The authenticated browser review returns HTTP 200.
-The actual systemd worker uses the frozen implementation and exits 73 at programs-published.
-Inspect its safe status, program journal state, and `USER_UNIT` journal exit metadata.
-Start only the dashboard after the worker exits, then use its normal authenticated recover route.
-Verify exact 0.3.1 restoration with `observe_development.py OPERATION --state rolled_back`.
-After recovery, archive the preparation receipt and prepare a new normal operation with `prepare_development.py`.
+Completed corrected gates:
+- Sixteen focused native-dependency and version checks pass.
+- The official Hermes runner passes 716 tests across 38 files. It uses a source copy and the new Bun.
+- Stock plugin installation, CLI discovery, fresh integration, actual exit 73 at directory-retained, recovery, and later synthetic data preservation pass.
+- Corrected .252 preparation and authenticated owner review pass.
+- Actual .252 worker exit 73 at programs-published and authenticated recovery pass.
+- Recovery verifies exact accepted 0.3.1, configuration, model hash, all aliases, and all three services.
 
-The current owner browser tab is `tab_f_6cbd26ac-befc-4d03-95f7-0b4474990134`.
-Call preview_status before browser work after a handoff.
-Use asynchronous fetch variables for review and admission, then bounded polling.
-The main development profile has memory ownership disabled.
-Do not describe its authenticated review as a native memory grant.
-The separate prior activated-memory proof remains unchanged by the stable version declarations.
+The first corrected full run passes 624/625; its one failure is a proven mixed-timezone fixture setup.
+Direct capture uses UTC while governed capture inherited Toronto. Both correct events exist in different day files.
+The probe reproduces the failure with mixed zones and passes with uniform UTC.
+The runner now supplies TZ=UTC, matching the official Hermes runner. Product sources and archive stay unchanged.
+The full repeat is detached, PID 3734684. Check integration-sealed-a87e7ae9.done before any replay.
+The failing receipt remains under integration-sealed-a87e7ae9-mixed-timezone.*.
+The original 4644f90c package is superseded because of Bun 1.3.14 extraction failures. Never publish it.
 
-After the normal update passes, verify boot and prepare new synthetic Atlas restore fixtures.
-The copied whole-guest controller is `/root/proxmox_history_restore_040.py` on `.101`.
-It requires `LIFEOS_STABLE_PYTHON` from the normal operation runtime and `LIFEOS_STABLE_OPERATION`.
-It backs up source guest 101 to PBS-01 and restores only unused guest 110.
-It removes networking and masks application services before boot.
-It verifies three synthetic Atlas cases and the exact selected program targets.
-It removes the disposable guest only after its identity and disconnected state match.
-Its evidence is `/root/lifeos-release-0.4.0/history-restore`.
-After the backup and restore pass, verify rollback through the authenticated restore route.
+Current development state:
+- .252 active programs are accepted 0.3.1 after verified interruption recovery.
+- The current normal operation is 5a659e7f11e1437b8e33d65f3e064426, ready and unselected.
+- The interrupted corrected operation is 14215619fd654d9bab0028abe59b62af, rolled_back.
+- The staging folder is /home/lifeos-hermes/releases/qualification-20261012-bunfixed.
+- Normal owner review is pending in browser variable bunfixedNormalReview.
+- Browser tab: tab_f_6cbd26ac-befc-4d03-95f7-0b4474990134, authenticated owner on .252:9119.
+- Call preview_status after a handoff. Use async fetch and bounded polling for long review/admission.
+- The main .252 memory ownership is disabled. Do not call its authenticated review a native memory grant.
+- .253 remains untouched on exact accepted 0.3.1.
 
-Do not publish the private qualification certificate.
-Generate the public certificate only after the stable qualification gates pass.
-Publish new assets under v0.4.0 without overwriting any existing release asset.
-Keep v0.3.1 assets immutable and compare their inventory with `v031-assets-before.json`.
-Use the 0ut5ider GitHub account through a private subprocess token environment.
-The daily `.253` remains on accepted 0.3.1 during qualification.
+Next actions:
+1. Wait for normal review HTTP 200, then POST the normal operation apply route through the authenticated browser.
+2. Observe exact 0.4.0 identity, model hash, public aliases, and all services with observe_development.py.
+3. Verify boot and run coherent off-server whole-guest recovery before rollback.
+4. The three synthetic Atlas cases already exist in deployment/history-recovery-0.4.0.
+5. The .101 controller is /root/proxmox_history_restore_040.py. It requires LIFEOS_STABLE_PYTHON from the normal runtime and LIFEOS_STABLE_OPERATION.
+6. It backs up only source guest 101 to PBS-01, restores unused guest 110, disconnects networking, masks all application services, verifies three Atlas cases and exact selected program targets, then removes the disposable guest.
+7. Its output is /root/lifeos-release-0.4.0/history-restore. Export safe verification receipts, not secrets or raw private content.
+8. Verify normal rollback through authenticated restore admission and observe exact 0.3.1.
+9. After all gates pass, generate the public certificate. Private fixture certificates must never become release assets.
+10. Push the release branch, create and link its PR, and obtain the authorized focused code review. Verify agent reports on disk and rerun their claimed probes.
+11. Merge and publish new immutable v0.4.0 assets. Preserve every v0.3.1 asset and compare its inventory to v031-assets-before.json.
+12. Verify the public GitHub catalog and complete package preparation path. Update release documentation with actual results.
 
-Interrupted update recovery now passes. Exact 0.3.1, model hash, configuration, aliases, and all three services verify.
-The first normal preparation fails safely at native-dependencies because Bun reports Next.js tarball extraction failure.
-The failed operation is `16e36a5f9d0f413f82d7833bd2fa7b2f`.
-Its safe failure receipt and stage stderr are retained here.
-The guest has 43 GiB free and 88,584,368 free inodes.
-Both successful and failed reference caches contain Next.js 15.5.27 with 7,278 files.
-The lower-level extraction cause is unconfirmed. Do not label it a confirmed network failure.
-A new unchanged preparation is detached on .252. Check `prepare-normal-retry.stderr` and `development-preparation.done`.
-The new three-case synthetic Atlas fixtures are prepared successfully in `deployment/history-recovery-0.4.0`.
-The controller now uses the stable-folder history verifier and does not overwrite the historical verifier.
-
-The unchanged normal preparation retry also fails safely. Its operation is `67d6e3a05d24436cae2a4dd41c32028c`.
-The entire original sealed suite passes 625 checks in 979.5 seconds.
-The original stable archive is now superseded because of native cold-extraction failures.
-The Bun comparison finishes: 1.3.14 fails one of two new cold cases, while 1.4.3 passes all three.
-The independent verifier confirms all twelve frozen dependency locks in all five cases remain exact.
-The original and failed Next cache payload maps match exactly.
-The official 1.4.3 asset digest is `1fc2edac843102909e3a1be1d8d9802cc6071cf074e67e88231f4ffe0f8b397b`.
-Its release contains the upstream later extraction fix commit 469a7b4; the compare has zero commits behind.
-Only two product metadata files change: dependency_locks/catalog.json and release-tools.json.
-They now pin Bun 1.4.3. Every dependency lock remains unchanged.
-The new pin requires a new committed stable archive and repeated qualification.
-The local fixed Bun tool is being prepared through the public release_tools API in cache/fixed-bun-tools.
-Pass its directory first in PATH for every repeated full integration/native/fresh test.
-Use a new .252 staging folder qualification-20261012-bunfixed for the new archive.
-Do not publish any existing private qualification certificate.
-
-The corrected program commit is now a87e7ae94894dabc3651454d1334cb23c4fae27e.
-Its exact archive SHA-256 is 82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da (119,131,156 bytes).
-The 16 focused dependency/version checks pass with Bun 1.4.3.
-Three detached local qualification drivers are running; their PIDs and logs are in bunfixed-qualification-jobs.json.
-The official native runner uses a copy at cache/native-copy-a87e7ae9, not the sealed source.
-The full integration runner uses the sealed package and fixed Bun first in PATH.
-The fresh worker driver uses tag bunfixed and actual directory-retained interruption.
-The corrected .252 preparation is detached in qualification-20261012-bunfixed.
-Its script is prepare_development_bunfixed.py.
-All exact corrected package, compiled dashboard, private fixture certificate, and source files are staged there.
-The normal and interrupted .252 checks still remain for this corrected package.
-The whole-guest controller and coverage verifier now bind the corrected source folder and exact a87e7ae9 commit.
-Re-upload the controller to .101 before its use.
-The daily server remains on 0.3.1 and no 0.4.0 public asset exists.
-
-Corrected native qualification passes all 716 tests across 38 files through the official runner.
-Corrected fresh stock installation/recovery passes and preserves later synthetic data.
-The corrected development preparation is ready: 14215619fd654d9bab0028abe59b62af.
-Its authenticated browser review returns HTTP 200.
-The existing-installation interruption actor is being admitted through start_interrupted_worker_bunfixed.py.
-Poll its actual status and USER_UNIT exit metadata before starting the dashboard or recovery.
-The primary exec session 57904 is the synchronous SSH admission command, not the detached worker itself.
-The source and public command snapshots bind the corrected exact archive.
-
-Corrected existing-installation interruption/recovery now passes. Exact 0.3.1, configuration, model routing, aliases, and all services verify.
-The first corrected full integration run finishes with 624 passes and one Conduit fixture assertion failure.
-The actual probe proves a mixed-timezone test setup: direct UTC events go to day 13 and governed Toronto events to day 12.
-Both expected synthetic events exist and pending capture is correct.
-Uniform UTC passes the same assertion without program changes.
-The integration runner now sets TZ=UTC, matching the official native runner.
-The failing run is preserved as integration-sealed-a87e7ae9-mixed-timezone.*.
-A complete repeated 625-check run is detached with PID 3734684; check integration-sealed-a87e7ae9.done.
-The corrected normal .252 preparation is detached and running in the bunfixed staging folder.
-Do not confuse it with the interrupted preparation, now archived there as interruption-preparation.json.
+GitHub writes use account 0ut5ider. Capture its gh auth token inside a subprocess environment without printing it.
+Do not force push, skip hooks, import/reset personal data, fabricate memory grants, or manually run/send the morning job.
+The shared memory tool returns integrity_error. Use repository evidence and do not bypass memory tools.
+The primary owns Git mutations, pushes, merges, and publication.
