@@ -223,6 +223,8 @@ class ProgramTransaction:
         self._record(value)
         for index, entry in enumerate(value['entries']):
             target, incoming = Path(entry['target']), self.snapshot / ('incoming-' + str(index))
+            if entry['kind'] == 'file' and entry['before'] == entry['after']:
+                continue
             if entry['kind'] == 'directory':
                 if entry['before'] is not None:
                     os.replace(target, self.snapshot / ('before-' + str(index)))

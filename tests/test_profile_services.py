@@ -47,6 +47,24 @@ def service_manager_fixture():
 
 
 class ProfileServicesTests(unittest.TestCase):
+    def test_fresh_drain_resumes_after_unchanged_definition_publication(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        definition = self.home / 'units' / self.units['dashboard']
+        definition.write_text(definition.read_text() + '[Install]\nWantedBy=default.target\n')
+        self.command('systemctl', '--user', '--quiet', 'enable', '--runtime', self.units['dashboard'])
+        self.command('systemctl', '--user', 'daemon-reload')
+        self.addCleanup(self.command, 'systemctl', '--user', 'daemon-reload')
+        barrier = ProfileServices(self.profile, self.installed,
+            units={'dashboard': self.units['dashboard']}, first_installation=True)
+        barrier.drain(signature=barrier.preview()['signature'])
+        transaction = ProgramTransaction(self.home / 'program-snapshot')
+        transaction.prepare(directories={}, files={definition: definition})
+        transaction.apply()
+        barrier.quiesce()
+        barrier.resume()
+        self.assertEqual(barrier.status()['state'], 'active')
+
     def setUp(self):
         self.enterContext(service_manager_fixture())
         if hasattr(self, 'fixture_home'):
