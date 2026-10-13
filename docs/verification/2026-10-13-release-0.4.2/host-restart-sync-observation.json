@@ -1,0 +1,115 @@
+{
+  "operations": [
+    {
+      "label": "graceful-vm-shutdown",
+      "command": [
+        "qm",
+        "shutdown",
+        "801",
+        "--timeout",
+        "180"
+      ],
+      "exit_code": 0,
+      "stdout": "QEMU Guest Agent is not running - VM 801 qga command 'guest-ping' failed - got timeout\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 7.975942218094133
+    },
+    {
+      "label": "verify-vm-stopped",
+      "command": [
+        "qm",
+        "status",
+        "801"
+      ],
+      "exit_code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 0.8911383700324222
+    },
+    {
+      "label": "graceful-ct-100",
+      "command": [
+        "pct",
+        "shutdown",
+        "100",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 4.017335438984446
+    },
+    {
+      "label": "verify-ct-100-stopped",
+      "command": [
+        "pct",
+        "status",
+        "100"
+      ],
+      "exit_code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 0.8474832110805437
+    },
+    {
+      "label": "graceful-ct-101",
+      "command": [
+        "pct",
+        "shutdown",
+        "101",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 2.5054364448878914
+    },
+    {
+      "label": "verify-ct-101-stopped",
+      "command": [
+        "pct",
+        "status",
+        "101"
+      ],
+      "exit_code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 0.8295005440013483
+    },
+    {
+      "label": "graceful-ct-102",
+      "command": [
+        "pct",
+        "shutdown",
+        "102",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 2.602147980942391
+    },
+    {
+      "label": "verify-ct-102-stopped",
+      "command": [
+        "pct",
+        "status",
+        "102"
+      ],
+      "exit_code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+      "elapsed_seconds": 0.833021922968328
+    }
+  ],
+  "original_boot_id": "ba2fa654-889b-421f-a872-3f34262e5a68",
+  "current_boot_id": "ba2fa654-889b-421f-a872-3f34262e5a68",
+  "pool_status": "pool 'rpool' is healthy\n",
+  "pool_status_exit": 0,
+  "zpool_sync_completed": true,
+  "normal_host_sync": "BLOCKED",
+  "forced_reset_authorization": "PENDING"
+}

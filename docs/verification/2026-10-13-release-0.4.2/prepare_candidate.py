@@ -68,7 +68,8 @@ try:
     plan = importlib.import_module(namespace.__name__ + '.release_operation').validate_plan(job, request)
     assert result['state'] == 'ready'
     report['candidate_plan_prepared_before_ready'] = 'PASS'
-    report.update(preparation=result, program_targets=len(plan['programs']['targets']) if isinstance(plan.get('programs'),dict) and 'targets' in plan['programs'] else None)
+    snapshot = cli.read_private(job / 'program-snapshot/programs.json')
+    report.update(preparation=result, prepared_program_groups=len(snapshot['entries']))
     assert model_selection() == report['model_selection_sha256'], 'Preparation changes the model or tier mapping'
     report['status'] = 'PASS'
 except BaseException as error:

@@ -1,0 +1,22 @@
+{
+  "status": "CREATED",
+  "storage": {
+    "content": "rootdir",
+    "digest": "d771c177ea2d260055d93b8100cae41411d7220a",
+    "nodes": "pve-tr1950x",
+    "path": "/var/lib/vz/lifeos-042-tests",
+    "storage": "lifeos-042-tests",
+    "type": "dir"
+  },
+  "existing_storage_names": [
+    "truenas-iscsi",
+    "truenas-iso",
+    "truenas-nvme",
+    "local",
+    "PBS-01",
+    "local-zfs"
+  ],
+  "existing_storage_entries_changed": false,
+  "purpose": "Disposable 0.4.2 qualification guests",
+  "undo": "Remove all task guest volumes, then pvesm remove lifeos-042-tests"
+}

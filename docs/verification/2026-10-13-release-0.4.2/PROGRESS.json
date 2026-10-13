@@ -53,17 +53,21 @@
     "provisioning": "CLEANUP_WAIT"
   },
   "integration_gate": {
-    "status": "REPEATING_AFTER_FIXTURE_STORAGE_CORRECTION",
+    "status": "PASS",
     "first_attempt_tests": 674,
     "first_attempt_errors": 1,
     "product_source_changed": false,
-    "reason": "The fixture requires a same-filesystem hard link to its verified archive."
+    "reason": "The fixture requires a same-filesystem hard link to its verified archive.",
+    "tests": 674,
+    "receipt": "integration-archive-bound-742a0c33.json",
+    "archive_source_unchanged": true
   },
   "host_restart": {
     "user_approved_controlled": true,
     "original_guests_stopped_gracefully": true,
     "zfs_pool_sync_passed": true,
     "normal_host_sync": "BLOCKED",
-    "forced_restart_approval": "PENDING"
+    "forced_restart_approval": "APPROVED",
+    "application_drain_recovery": "PASS"
   }
 }
