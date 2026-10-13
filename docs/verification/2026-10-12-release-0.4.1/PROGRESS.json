@@ -23,21 +23,28 @@
   "archive_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e",
   "archive_bytes": 119136987,
   "review": {
-    "status": "CORRECTION_REVIEW_PENDING",
-    "scope": "Configuration inventory source roles and SDK loading"
+    "status": "CLEAR",
+    "report": "docs/agents/2026-10-13-pr16-config-inventory-review/pr16-config-inventory-review.md",
+    "primary_probes_repeated": true,
+    "product_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
   },
   "native_gate": {
-    "status": "NOT_RUN",
-    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
+    "elapsed_seconds": 118.77804347203346,
+    "receipt": "candidate-96f4f8fb/native-sealed-96f4f8fb.json",
+    "archive_identity_bound": true
   },
   "fresh_gate": {
-    "status": "NOT_RUN",
-    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
+    "status": "PASS",
+    "actual_process_exit": 73,
+    "later_synthetic_data_preserved": true,
+    "elapsed_seconds": 285.60277056798805,
+    "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "integration": 4189390,
-    "native": 4189391,
-    "fresh": 4189392
+    "integration": 4189390
   },
   "integration_gate": {
     "status": "NOT_RUN",
@@ -142,6 +149,9 @@
   },
   "completed": [
     "Configuration inventory fix and source-copy SDK experiment",
-    "Exact corrected committed candidate sealed"
+    "Exact corrected committed candidate sealed",
+    "Configuration inventory focused review clear and primary probes repeated",
+    "Official Hermes runner: 716 tests across 38 files on corrected sealed archive",
+    "Corrected sealed fresh installation and actual interrupted recovery with later data preservation"
   ]
 }
