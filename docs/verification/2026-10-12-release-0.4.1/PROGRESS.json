@@ -1,5 +1,5 @@
 {
-  "status": "PUBLISHED_PUBLIC_ACCEPTANCE_RUNNING",
+  "status": "PUBLIC_RELEASE_ACCEPTANCE_COMPLETE",
   "version": "0.4.1",
   "production_qualified": true,
   "daily_server_changed": false,
@@ -7,8 +7,7 @@
   "reason": "Actual installed SDK registration exceeded its 10-second deadline while scanning skill metadata.",
   "fix": "Cache scandir file metadata once per root and replay entries in source order.",
   "remaining": [
-    "Default public development update and installed verification",
-    "Publication acceptance asset and documentation PR"
+    "Documentation PR review and merge"
   ],
   "focused_controls": {
     "status": "PASS",
@@ -41,9 +40,7 @@
     "elapsed_seconds": 285.60277056798805,
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
-  "running": {
-    "development_public_preparation_pid": 10542
-  },
+  "running": {},
   "integration_gate": {
     "status": "PASS",
     "tests": 631,
@@ -169,7 +166,10 @@
     "Normal authenticated rollback restores exact03, all3services, aliases and model mapping",
     "Strict exact-archive qualification certificate passes all completed gates",
     "PR16 merged at6c13407f",
-    "Immutable0.4.1assets published aslateststable; prior031and040assets unchanged"
+    "Immutable0.4.1assets published aslateststable; prior031and040assets unchanged",
+    "Actual public exact-version fresh install passes",
+    "Default public development update passes after native manager bootstrap",
+    "Safe public acceptance asset publishes without changing initial assets"
   ],
   "boot_gate": {
     "status": "PASS",
@@ -239,5 +239,25 @@
     "measured_missing_public_aliases": 3,
     "manager_bootstrap": "PASS",
     "bootstrap_receipt": "candidate-96f4f8fb/manager-bootstrap.json"
+  },
+  "public_development_preparation_after_bootstrap": {
+    "status": "PASS",
+    "operation": "803df4a32f1546b6a8db6d34c90b0ef2",
+    "program_targets": 143,
+    "receipt": "candidate-96f4f8fb/development-public-preparation-after-bootstrap.json",
+    "owner_review_http": 200,
+    "owner_apply_http": 200
+  },
+  "public_development_update": {
+    "status": "PASS",
+    "operation": "803df4a32f1546b6a8db6d34c90b0ef2",
+    "receipt": "candidate-96f4f8fb/development-public-update.json",
+    "services": 3,
+    "public_aliases": 3,
+    "model_mapping_preserved": true
+  },
+  "public_acceptance_asset": {
+    "status": "PASS",
+    "receipt": "candidate-96f4f8fb/public-acceptance-asset-publication.json"
   }
 }

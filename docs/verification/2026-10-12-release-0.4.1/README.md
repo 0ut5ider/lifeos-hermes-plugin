@@ -68,3 +68,12 @@ The initial public output check incorrectly requires empty standard error for na
 The measured output contains expected runtime preparation progress. The corrected check verifies those exact messages.
 The browser evaluate call times out after 15 seconds while owner review continues on the server.
 The completed browser result records HTTP 200. No duplicate review is submitted.
+
+The new default preparation reports ready with all 143 program targets, including the three public aliases.
+The published manager and worker now bind the same candidate plan.
+
+The final default public development update passes at operation `803df4a32f1546b6a8db6d34c90b0ef2`.
+The independent observer verifies exact 0.4.1, all three running services, all three public aliases, and the unchanged model mapping.
+The new `public-installation-verification.json` asset records safe public acceptance metadata.
+The initial archive, dashboard bundle, and release certificate remain unchanged.
+The daily server stays on exact 0.3.1. This release does not claim daily promotion or a new automatic morning observation.

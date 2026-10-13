@@ -10,12 +10,13 @@ The complete release manager in `optional/lifeos_release_manager` supports fresh
 Actual development checks pass, including automatic reboot, off-server whole-guest recovery, three Atlas cases, all 143 program targets, and authenticated normal rollback.
 The focused reviews are clear. Thirty-eight certificate controls and actual historical-receipt refusal pass.
 The [patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) identifies the exact archive and certificate.
-Published 0.3.1 and 0.4.0 assets remain immutable. Public installation verification follows stable publication.
+Published 0.3.1 and 0.4.0 assets remain immutable. Public exact-version installation passes against the published archive and certificate.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
 **Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
-Normal qualification rollback restores that same exact release on development `.252` before the public update check.
+**Development deployed version:** `0.4.1`, program commit `96f4f8fb`. The actual default public update passes on `.252`.
+All three services and public command aliases pass. The selected model mapping stays fixed.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
@@ -267,7 +268,7 @@ The `host`, `user`, `port`, and `root` must match the active Hermes SSH backend.
 
 The standalone manager in `optional/lifeos_release_manager` adds the `lifeos-release` command and a registered Hermes skill.
 The complete package includes the supported Hermes runtime, LifeOS programs, bridge, manager, dependencies, dashboard, and public commands.
-The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public installation verification follows stable publication.
+The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public exact-version installation passes against the published archive and certificate.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
 Pin the release manager to the full 40-character commit shown in the selected release notes. Hermes does not accept a tag for `--ref`:
