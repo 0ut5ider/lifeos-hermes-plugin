@@ -65,3 +65,24 @@ Diagnostic starter initial launchPID13084 fails before admission: rootcopied pri
 Corrected diagnostic admission completes with empty stderr. Actual systemd workerPID13336 active/running unitlifeos-release-c78b6c52e0724e44b6ed46bdf38f93af. Operationapplying/programsprepared; verifier output not yetreached. Check job/runtime-diagnostics/receipt.json and raw0.stdout/0.stderr whenpresent. Exportsafe receipt onlyuntil rawoutputinspected forsecretfree configuration error; no broad env/credential/memory reads.
 
 Diagnosticc78 repeat fails service-launcher lifeos-version exit2: unknowncommand, suggests lifeos-release. Configcheckpasses exit0/5.348s; versioncall17.781s/stderr123bytes. It automaticallyrolls back/programsrestored. Safe exported instrumented-runtime-verification-refusal.json. Candidatebridge directSDKregistrationpasses4.193s withall7commands; restored03profile realparserbuildpasses5.204s/noLifeOSerrors. Initial directprobe cleanup calls nonexistent unload_all afterrecording result; correctSDKmethod unload(), noeffects beyondregistration. NoOOMevents. Actualmountedprofile errorstillunknown; needcapture before rollback. Newdiagnose_parser_registration.py recordsactualSDKerrors, commands, discoveryDebug, 8sstackdump. Updated runtimecapture runsit onnonzeroreturn, preservesoriginalresult evenprobeerror. Bothhelpers uploadedbefore nextlaunch. New root-supervised preparationPID14934 runs; previous stageddevpreprep/done stillc78 until new completion, checknewidentifier. Oldnormal a5 andc78 rolledback, daily03unchanged. No new product fix or certificate/publication claim.
+
+
+## Current checkpoint, supersedes earlier execution instructions
+
+Measured cause: actual packaged base-Python SDK load exceeds the native 10-second deadline.
+The 8-second stack is in HookBridge._config_files Path.stat. Exact metadata inventory contains 150,058 files.
+The correction uses cached scandir metadata with all five signature fields and all source roles retained.
+Review reproduces one role-precedence regression. Two regression tests fail before correction and pass after correction.
+All five inventory tests and nine existing configuration-change tests pass.
+The corrected source-copy SDK experiment passes in 7.068 seconds, all seven commands, default deadline enabled.
+This experiment is not sealed installed acceptance.
+Current product commit: 96f4f8fbef21f53ee704eb16f34698bc35b5dc77.
+Clean isolated build source: cache/build-source-96f4f8fb; detached build PID 4187711.
+New candidate evidence: candidate-96f4f8fb. The earlier candidate-0ee59dcf build has a known role bug and is unqualified.
+The private 223 preparation ca163b3527834302950dd1d112f678f1 is ready, unapplied, and superseded. Do not launch it.
+Development .252 remains restored 0.3.1. Daily .253 remains untouched 0.3.1.
+Full new package qualification remains required. Prior 223 test receipts are historical evidence only.
+Actual Proxmox inventory is CT101 development, CT102 daily, CT100 existing probe, VM801 existing user VM.
+Leave CT100 and VM801 untouched. No 0.4.1 whole-guest backup or disposable110 restore has started.
+The first cached-replay SDK harness invocation fails before execution because PATH lacks runuser.
+The corrected invocation uses /usr/sbin/runuser and passes. It does not select active programs.

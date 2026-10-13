@@ -41,11 +41,19 @@ def observe(request, **options):
         (folder / 'receipt.json').write_text(json.dumps(receipts, indent=2) + '\n')
         if result.returncode != 0:
             try:
+                site = job / 'python-environment/lib/python3.14/site-packages'
+                interpreter = job / 'dependency-profile/tools/python-3.14.7+20260901-linux-x64/bin/python3'
+                environment = dict(keywords.get('env', os.environ))
+                environment.pop('PYTHONHOME', None)
+                environment.update(PYTHONPATH=request['runtime']['source'] + ':' + str(site),
+                    HERMES_SITE=str(site), PYTHONPYCACHEPREFIX=str(Path.home() / '.cache/hermes-pycache'))
+                bootstrap = ('import site,sys,runpy;site.addsitedir(sys.argv[1]);'
+                    'sys.argv=sys.argv[2:];runpy.run_path(sys.argv[0],run_name="__main__")')
                 with (folder / 'parser-probe.stdout').open('w') as stdout, (folder / 'parser-probe.stderr').open('w') as stderr:
-                    probe = original([request['runtime']['python'], '-B',
+                    probe = original([str(interpreter), '-P', '-c', bootstrap, str(site),
                         str(Path(__file__).with_name('diagnose_parser_registration.py')),
                         request['runtime']['source'], str(folder)],
-                        env=keywords.get('env'), cwd=keywords.get('cwd'),
+                        env=environment, cwd=keywords.get('cwd'),
                         stdout=stdout, stderr=stderr, timeout=45)
                 (folder / 'parser-probe.exit').write_text(str(probe.returncode) + '\n')
             except Exception as error:

@@ -25,6 +25,7 @@ with (folder / 'parser-registration-stack.txt').open('w') as output:
 from hermes_cli.plugins import get_plugin_manager
 manager = get_plugin_manager()
 value = {'elapsed_seconds': time.monotonic() - started,
+    'interpreter': sys.executable, 'prefix': sys.prefix, 'no_user_site': sys.flags.no_user_site,
     'plugins': {name: {'error': plugin.error, 'version': plugin.manifest.version}
         for name, plugin in manager._plugins.items() if 'lifeos' in name},
     'registered_commands': sorted(name for name in manager._cli_commands if name.startswith('lifeos')),

@@ -1,23 +1,14 @@
 {
-  "status": "QUALIFYING_SEALED_CANDIDATE",
+  "status": "QUALIFYING_CORRECTED_SEALED_CANDIDATE",
   "version": "0.4.1",
   "production_qualified": false,
   "daily_server_changed": false,
   "published_040_assets_unchanged": true,
-  "reason": "The plugin exact version argument shares the global Hermes version field.",
-  "fix": "Store the plugin choice in args.release_version while keeping --version.",
-  "completed": [
-    "Native public failure reproduced",
-    "Real parser regression fails before fix and all seven command tests pass after fix",
-    "Candidate sealed and built",
-    "PR16 review clear; primary repeats stock CLI and archive probes",
-    "Official Hermes runner: 716 tests across 38 files",
-    "Fresh installation and actual interrupted recovery with later data preservation",
-    "Complete frozen integration: 626 tests",
-    "Actual installed interruption exit73 and public CLI recovery to exact0.3.1, all3services and model mapping preserved"
-  ],
+  "reason": "Actual installed SDK registration exceeded its 10-second deadline while scanning skill metadata.",
+  "fix": "Cache scandir file metadata once per root and replay entries in source order.",
   "remaining": [
-    "Normal installed update, automatic reboot verification, exact whole-guest recovery and rollback",
+    "Corrected sealed integration, official native runner, fresh installation and interruption recovery",
+    "Installed development interruption/recovery, normal update, reboot, exact whole-guest restore and rollback",
     "Strict certificate, PR16 merge, immutable publication",
     "Actual public exact-version installation and default development update"
   ],
@@ -28,49 +19,34 @@
     "receipt": "focused.stderr",
     "earlier_invocation_errors_preserved": true
   },
-  "program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
-  "archive_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5",
-  "archive_bytes": 119131524,
+  "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+  "archive_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e",
+  "archive_bytes": 119136987,
   "review": {
-    "status": "CLEAR",
-    "report": "docs/agents/2026-10-12-pr16-version-argument-review/pr16-version-argument-review.md",
-    "primary_probes_repeated": true
+    "status": "CORRECTION_REVIEW_PENDING",
+    "scope": "Configuration inventory source roles and SDK loading"
   },
   "native_gate": {
-    "status": "PASS",
-    "tests": 716,
-    "files": 38,
-    "elapsed_seconds": 90.368,
-    "receipt": "native-sealed-223cbfc1.json",
-    "official_runner": true,
-    "archive_identity_bound": true
+    "status": "NOT_RUN",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
   },
   "fresh_gate": {
-    "status": "PASS",
-    "actual_process_exit": 73,
-    "later_synthetic_data_preserved": true,
-    "elapsed_seconds": 276.601,
-    "receipt": "fresh-install-223cbfc1-041.json"
+    "status": "NOT_RUN",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
   },
-  "running": [
-    "Second diagnostic preparation to capture mounted-profile SDK parser errors before rollback"
-  ],
+  "running": {
+    "integration": 4189390,
+    "native": 4189391,
+    "fresh": 4189392
+  },
   "integration_gate": {
-    "status": "PASS",
-    "tests": 626,
-    "elapsed_seconds": 793.1115276360069,
-    "receipt": "integration-sealed-223cbfc1.json"
+    "status": "NOT_RUN",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
   },
   "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14",
   "interruption_gate": {
-    "actual_systemd_exit": 73,
-    "checkpoint": "programs-published",
-    "operation": "aeeff7ce70ae4f8997706c8d74fcef14",
-    "receipt": "development-bunfixed-interruption-exit.json",
-    "recovery_admitted": true,
-    "recovery_complete": true,
-    "status": "PASS",
-    "recovery_receipt": "development-bunfixed-interruption-recovery.json"
+    "status": "NOT_RUN",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
   },
   "qualification_evidence_fix": {
     "status": "REGRESSION_PASS",
@@ -88,7 +64,7 @@
     "operation": "a5b53c9c0805459ab5b893cb6756e47b",
     "receipt": "normal-update-runtime-refusal.json",
     "failure_stage": "verify_runtime configuration check",
-    "cause_established": false,
+    "cause_established": true,
     "rollback_complete": true
   },
   "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af",
@@ -100,6 +76,72 @@
     "service_launcher_version_exit": 2,
     "candidate_registration_error": null,
     "restored_profile_commands_present": true,
-    "cause_established": false
-  }
+    "cause_established": true
+  },
+  "historical_candidate": {
+    "program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "archive_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5",
+    "archive_bytes": 119131524,
+    "native_gate": {
+      "status": "PASS",
+      "tests": 716,
+      "files": 38,
+      "elapsed_seconds": 90.368,
+      "receipt": "native-sealed-223cbfc1.json",
+      "official_runner": true,
+      "archive_identity_bound": true
+    },
+    "fresh_gate": {
+      "status": "PASS",
+      "actual_process_exit": 73,
+      "later_synthetic_data_preserved": true,
+      "elapsed_seconds": 276.601,
+      "receipt": "fresh-install-223cbfc1-041.json"
+    },
+    "integration_gate": {
+      "status": "PASS",
+      "tests": 626,
+      "elapsed_seconds": 793.1115276360069,
+      "receipt": "integration-sealed-223cbfc1.json"
+    },
+    "interruption_gate": {
+      "actual_systemd_exit": 73,
+      "checkpoint": "programs-published",
+      "operation": "aeeff7ce70ae4f8997706c8d74fcef14",
+      "receipt": "development-bunfixed-interruption-exit.json",
+      "recovery_admitted": true,
+      "recovery_complete": true,
+      "status": "PASS",
+      "recovery_receipt": "development-bunfixed-interruption-recovery.json"
+    },
+    "completed": [
+      "Native public failure reproduced",
+      "Real parser regression fails before fix and all seven command tests pass after fix",
+      "Candidate sealed and built",
+      "PR16 review clear; primary repeats stock CLI and archive probes",
+      "Official Hermes runner: 716 tests across 38 files",
+      "Fresh installation and actual interrupted recovery with later data preservation",
+      "Complete frozen integration: 626 tests",
+      "Actual installed interruption exit73 and public CLI recovery to exact0.3.1, all3services and model mapping preserved"
+    ]
+  },
+  "configuration_inventory": {
+    "old_sdk_seconds": 10.037685242947191,
+    "old_sdk_error": "load timed out after 10s (import + register() never returned)",
+    "corrected_source_copy_sdk_seconds": 7.068040531943552,
+    "default_deadline_seconds": 10,
+    "commands": 7,
+    "sealed_acceptance": false,
+    "baseline_receipt": "config-inventory-baseline.json",
+    "corrected_receipt": "config-inventory-sdk-replay.json",
+    "role_regression_before_failures": 2,
+    "corrected_inventory_tests": 5,
+    "existing_config_change_tests": 9,
+    "private_223_preparation_ca163b3527834302950dd1d112f678f1": "READY_UNAPPLIED_SUPERSEDED",
+    "unqualified_0ee_candidate": "candidate-0ee59dcf"
+  },
+  "completed": [
+    "Configuration inventory fix and source-copy SDK experiment",
+    "Exact corrected committed candidate sealed"
+  ]
 }
