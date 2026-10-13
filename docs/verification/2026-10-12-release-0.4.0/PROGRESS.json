@@ -117,7 +117,10 @@
     "evidence": "/root/lifeos-release-0.4.0/history-restore",
     "source_guest": 101,
     "disposable_guest": 110,
-    "state": "Backup passes; source services resume; actual disconnected restore runs"
+    "state": "Replacement disposable restore running; successful backup reused",
+    "restore_timeout_seconds": 7200,
+    "prior_attempt": "Intentionally cancelled before the original one-hour ceiling; partial guest and volume removed by Proxmox",
+    "prior_attempt_receipt": "restore-ceiling-adjustment.json"
   },
   "release_pr": 15,
   "historical_fresh_acceptance": {

@@ -23,7 +23,7 @@ package='/home/lifeos-hermes/releases/qualification-20261012-bunfixed/source'
 vmid=110
 def run(args,label,*,input=None):
     started=time.monotonic()
-    r=subprocess.run(args,input=input,capture_output=True,text=True,timeout=3600,
+    r=subprocess.run(args,input=input,capture_output=True,text=True,timeout=7200 if args[:2]==['pct','restore'] else 3600,
         umask=0o022 if args[0]=='vzdump' or args[:2]==['pct','restore'] else -1)
     (out/(label+'.stdout')).write_text(r.stdout);(out/(label+'.stderr')).write_text(r.stderr)
     operations.append({'label':label,'command':args,'exit_code':r.returncode,'elapsed_seconds':time.monotonic()-started})

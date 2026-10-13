@@ -74,3 +74,10 @@ The original files are unchanged; archive, source manifest, tree, Bun version an
 Both focused review rounds are clear. The primary repeats the actual historical-receipt refusal, thirteen-case old-generator failure, and reviewed file hash checks.
 The post-backup development observer passes exact 0.4.0 identity, model mapping, commands and all services.
 Still pending: disconnected restore verification/cleanup, normal owner rollback, public certification and publication, then public path verification.
+
+Restore ceiling adjustment: source backup has 203.815 GiB logical data. Original restore intentionally cancels at 1006.659 seconds.
+Native Proxmox cancellation removes guest 110 configuration and its partial volume. Source backup and .252 remain accepted.
+Original attempt stays private under /root/lifeos-release-0.4.0/history-restore-initial-ceiling.
+The resumed controller reuses archives.stdout via --resume-backup. Only pct restore timeout becomes 7200 seconds; all other commands keep 3600.
+Controller PID1965942 log=/root/lifeos-040-whole-guest-controller-resume.log; main evidence folder unchanged.
+A narrow independent review checks this one-line operational change. Final passing restore/verification still required.
