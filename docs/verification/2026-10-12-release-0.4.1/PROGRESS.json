@@ -44,16 +44,24 @@
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "integration": 4189390
+    "installed_interruption": "c44afd5fd33042fabe7df95faed5182c"
   },
   "integration_gate": {
-    "status": "NOT_RUN",
-    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
+    "status": "PASS",
+    "tests": 631,
+    "elapsed_seconds": 793.9418054970447,
+    "receipt": "candidate-96f4f8fb/integration-sealed-96f4f8fb.json"
   },
   "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14",
   "interruption_gate": {
-    "status": "NOT_RUN",
-    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
+    "status": "RECOVERY_RUNNING",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+    "operation": "c44afd5fd33042fabe7df95faed5182c",
+    "authenticated_owner_review_http": 200,
+    "actual_systemd_exit": 73,
+    "checkpoint": "programs-published",
+    "recovery_admitted": true,
+    "recovery_complete": false
   },
   "qualification_evidence_fix": {
     "status": "REGRESSION_PASS",
@@ -152,6 +160,7 @@
     "Exact corrected committed candidate sealed",
     "Configuration inventory focused review clear and primary probes repeated",
     "Official Hermes runner: 716 tests across 38 files on corrected sealed archive",
-    "Corrected sealed fresh installation and actual interrupted recovery with later data preservation"
+    "Corrected sealed fresh installation and actual interrupted recovery with later data preservation",
+    "Complete corrected sealed integration: 631 tests, no skips"
   ]
 }
