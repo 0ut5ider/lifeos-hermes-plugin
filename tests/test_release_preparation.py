@@ -14,6 +14,19 @@ from optional.lifeos_release_manager.release_programs import publish
 
 
 class ReleasePreparationTests(unittest.TestCase):
+    def test_live_synchronous_preparation_records_its_process_before_download(self):
+        from optional.lifeos_release_manager.cli import prepare
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            class StopAtDownload:
+                def download(self, directory, version):
+                    self.result = status(profile)['operations'][0]
+                    raise ValueError('Synthetic download boundary')
+            catalog = StopAtDownload()
+            with self.assertRaisesRegex(ValueError, 'Synthetic download boundary'):
+                prepare(profile, catalog=catalog)
+            self.assertEqual(catalog.result['state'], 'preparing')
+            self.assertEqual(status(profile)['operations'][0]['state'], 'preparation_failed')
     def test_invalid_selections_do_not_create_profile_files(self):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)
@@ -81,6 +94,22 @@ class ReleasePreparationTests(unittest.TestCase):
             write_state(job, 'preparing')
             self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
             self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'preparing')
+
+    def test_empty_preparation_directory_does_not_hide_other_operations(self):
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            job.parent.chmod(0o700)
+            other = job.with_name('b' * 32)
+            other.mkdir(mode=0o700)
+            write_state(other, 'preparation_failed')
+            self.assertEqual([value['state'] for value in status(profile)['operations']],
+                             ['preparation_interrupted', 'preparation_failed'])
+            from optional.lifeos_release_manager.release_operation import process_stamp
+            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
+                'start_time': process_stamp(os.getpid())}).encode())
+            self.assertEqual(status(profile, job.name)['state'], 'preparing')
 
     def test_held_launch_lease_preserves_preparing_without_worker_identity(self):
         with tempfile.TemporaryDirectory() as temp:

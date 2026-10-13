@@ -3,6 +3,7 @@
 from pathlib import Path
 import os
 import re
+import shlex
 
 from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint, publish
@@ -59,30 +60,39 @@ def fresh_preview(current, profile, installed, *, installation_lease=None):
     values, _ = services._inspect('dashboard')
     match = re.search(r'\bpath=([^ ;}]+)', values['ExecStart'])
     launcher = Path(match.group(1)) if match is not None else None
-    if launcher != Path.home() / '.local/bin/hermes' or fingerprint(launcher) is None or not launcher.is_file():
+    if (launcher != Path.home() / '.local/bin/hermes' or fingerprint(launcher) is None or not launcher.is_file()
+            or values['FragmentPath'] != str(Path.home() / '.config/systemd/user/hermes-dashboard.service')
+            or values['DropInPaths']):
         raise ReleaseRejected('Start the owner dashboard service with the account Hermes launcher before installation')
     check_dashboard_writers(profile, values['ControlGroup'])
     module = current.memory_module('profile_services')
     for role in ('gateway', 'pulse'):
         text = module._run('show', module.UNITS[role],
-            '--property=LoadState,ActiveState,WorkingDirectory,FragmentPath,DropInPaths,KillMode,NeedDaemonReload,RootDirectory,RootImage', '--no-pager')
+            '--property=LoadState,ActiveState,WorkingDirectory,FragmentPath,DropInPaths,KillMode,NeedDaemonReload,RootDirectory,RootImage,ExecStart', '--no-pager')
         properties = dict(line.split('=', 1) for line in text.splitlines() if '=' in line)
         if properties.get('LoadState') == 'not-found':
             continue
         expected = profile if role == 'gateway' else installed / 'LIFEOS/PULSE'
         target = Path.home() / '.config/systemd/user' / module.UNITS[role]
+        executable = Path.home() / '.local/bin' / ('hermes' if role == 'gateway' else 'bun')
+        match = re.search(r'\bpath=([^ ;}]+)', properties.get('ExecStart', ''))
+        arguments = ('gateway run --external-supervisor' if role == 'gateway'
+                     else '--no-install ' + str(installed / 'LIFEOS/PULSE/pulse.ts'))
         if (properties.get('LoadState') != 'loaded' or properties.get('ActiveState') != 'inactive'
                 or Path(properties.get('WorkingDirectory', '')).resolve() != expected
                 or properties.get('FragmentPath') != str(target) or properties.get('DropInPaths')
                 or properties.get('NeedDaemonReload') != 'no' or properties.get('RootDirectory') or properties.get('RootImage')
-                or properties.get('KillMode') not in {'mixed', 'control-group'}):
+                or properties.get('KillMode') not in {'mixed', 'control-group'}
+                or match is None or match.group(1) != str(executable)
+                or 'argv[]=' + str(executable) + ' ' + arguments + ' ;' not in properties['ExecStart']):
             raise ReleaseRejected('Fresh installation preserves an existing service from another deployment')
     return preview
 
 
 def check_dashboard_writers(profile, group=''):
     # Procfs inspection fails closed. A foreground backend cannot be drained by an inactive unit.
-    from hermes_cli.dashboard_procs import _dashboard_subcommand_index, _hermes_home_for_pid
+    from hermes_cli.dashboard_procs import _hermes_home_for_pid
+    from hermes_cli.update_cmd_windows import _hermes_holder_subcommand
     for process in Path('/proc').iterdir():
         if not process.name.isdecimal():
             continue
@@ -90,7 +100,7 @@ def check_dashboard_writers(profile, group=''):
             if process.stat().st_uid != os.getuid():
                 continue
             arguments = [value.decode() for value in (process / 'cmdline').read_bytes().split(b'\0') if value]
-            if _dashboard_subcommand_index(arguments) is None:
+            if _hermes_holder_subcommand(shlex.join(arguments)) not in {'dashboard', 'serve'}:
                 continue
             owner = _hermes_home_for_pid(int(process.name))
             if owner is None:
@@ -108,3 +118,5 @@ def verify_installed_services(current, profile, installed, *, installation_lease
     module = current.memory_module('profile_services')
     module._run('daemon-reload')
     module.ProfileServices(profile, installed, installation_lease=installation_lease).preview()
+
+

@@ -379,17 +379,20 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
         try:
-            if fresh_recovery:
-                _restore_mount(job, request, mount)
             if services is not None:
                 if fresh_recovery:
-                    services.quiesce()
+                    if services.status()['state'] == 'none':
+                        services.drain(signature=plan['services']['signature'])
+                    else:
+                        services.quiesce()
                 else:
                     services.drain(signature=plan['services']['signature'])
                 services.verify_stopped()
                 if selected['fresh']:
                     from .release_services import check_dashboard_writers
                     check_dashboard_writers(profile)
+            if fresh_recovery:
+                _restore_mount(job, request, mount)
             for entry in programs._load()['entries']:
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:

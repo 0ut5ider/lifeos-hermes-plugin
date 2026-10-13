@@ -98,6 +98,9 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
     if job is None:
         job = state / uuid4().hex
         job.mkdir(mode=0o700)
+        from .release_operation import process_stamp
+        publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
+            'start_time': process_stamp(os.getpid())}).encode())
         write_state(job, 'preparing')
     else:
         job = job_directory(profile, Path(job).name)
@@ -188,6 +191,8 @@ def status(profile, identifier=None):
     if identifier is not None:
         job = job_directory(profile, identifier)
         if not (job / 'request.json').exists():
+            if not (job / 'status.json').exists() and not (job / 'status.json').is_symlink() and not (job / 'plan.json').exists():
+                return preparation_status(job, {'identifier': job.name, 'state': 'preparing'})
             return preparation_status(job, read_private(job / 'status.json'))
         job, request = operation(profile, identifier)
         value = {**preparation_status(job, read_private(job / 'status.json')), 'version': request['version'], 'commit': request['commit'],
