@@ -1,0 +1,25 @@
+{
+  "status": "FIXED_VERIFYING",
+  "version": "0.4.1",
+  "production_qualified": false,
+  "daily_server_changed": false,
+  "published_040_assets_unchanged": true,
+  "reason": "The plugin exact version argument shares the global Hermes version field.",
+  "fix": "Store the plugin choice in args.release_version while keeping --version.",
+  "completed": [
+    "Native public failure reproduced",
+    "Real parser regression fails before fix and all seven command tests pass after fix"
+  ],
+  "remaining": [
+    "Focused review and actual stock CLI exact selection",
+    "Immutable candidate build and full qualification",
+    "Corrected stable publication and public workflow verification"
+  ],
+  "focused_controls": {
+    "status": "PASS",
+    "tests": 26,
+    "skipped": 0,
+    "receipt": "focused.stderr",
+    "earlier_invocation_errors_preserved": true
+  }
+}

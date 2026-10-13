@@ -1,5 +1,10 @@
 # LifeOS plugin for Hermes
 
+**Patch candidate:** `0.4.1` corrects the release command argument collision with the Hermes global version flag.
+The [patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) tracks its review and release gates.
+Published 0.4.0 uses the default latest preparation path; its explicit version flag requires the patch.
+The published assets remain immutable and the daily guest stays on 0.3.1.
+
 **Qualified release:** `0.4.0`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
 The exact package passes 625 integration checks and 716 native tests across 38 files.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups.
@@ -268,10 +273,10 @@ The complete package includes the supported Hermes runtime, LifeOS programs, bri
 The qualified 0.4.0 certificate binds the complete package and frozen dependency closure. Public installation verification follows stable publication.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
-Use the qualified stable tag after publication:
+Pin the release manager to the full 40-character commit shown in the selected release notes. Hermes does not accept a tag for `--ref`:
 
 ```bash
-hermes plugins install 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager' --ref v0.4.0
+hermes plugins install 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager' --ref FULL_RELEASE_COMMIT
 hermes plugins enable lifeos-release-manager
 hermes lifeos-release status
 hermes lifeos-release prepare --name Adrian --assistant Cerebo

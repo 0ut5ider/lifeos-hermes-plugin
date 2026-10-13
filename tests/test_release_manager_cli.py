@@ -17,6 +17,15 @@ from optional.lifeos_release_manager.cli import configure, run, status, write_st
 
 
 class ReleaseManagerCommandTests(unittest.TestCase):
+    def test_exact_release_version_does_not_enable_hermes_global_version(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--version', action='store_true')
+        commands = parser.add_subparsers(dest='command')
+        configure(commands.add_parser('lifeos-release'))
+        args = parser.parse_args(['lifeos-release', 'prepare', '--version', '0.4.0'])
+        self.assertFalse(args.version)
+        self.assertEqual(args.release_version, '0.4.0')
+
     def test_preparation_uses_the_qualified_candidate_worker(self):
         from optional.lifeos_release_manager import cli
         from optional.lifeos_release_manager.release_stage import sha
@@ -68,7 +77,7 @@ class ReleaseManagerCommandTests(unittest.TestCase):
         parser = argparse.ArgumentParser()
         commands['lifeos-release']['setup_fn'](parser)
         self.assertEqual(parser.parse_args(['status']).action, 'status')
-        self.assertEqual(parser.parse_args(['prepare', '--version', '0.4.0']).version, '0.4.0')
+        self.assertEqual(parser.parse_args(['prepare', '--version', '0.4.0']).release_version, '0.4.0')
         self.assertTrue(skills['lifeos-release'].is_file())
 
     def test_status_reports_no_operations_and_does_not_create_release_state(self):

@@ -107,3 +107,18 @@ Normal bodyless owner rollback passes HTTP 200, completes, and verifies exact 0.
 Public RELEASE-CERTIFICATE.json is generated, SHA-256 d57f24578a05467afd57df96b3bc9c2110a6b0b88777bac429544dd9f3b75a0d. Do not replace it.
 Next: finalize PR15 and merge, publish immutable v0.4.0 assets, then actual public stock installation and default stable update on .252.
 Daily .253 remains unchanged. No product code changes occur after sealed program commit a87e7ae9.
+
+PR15 merges at de2172241a545b901188deab21461dac4c136700. v0.4.0 tags that merge; product files match sealed commit a87e7ae9.
+The same draft release 411207062 is published after all three asset hashes/sizes pass. Draft tag lookup returns 404; authenticated release list locates it. No replacement or duplicate release occurs.
+Public release https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.4.0 is latest stable. All 14 historical 0.3.1 assets remain exact.
+Detached public stock installation PID 3971525 writes public-install-verification.json/.done and public-run.stdout/stderr.
+Detached .252 public default preparation PID 4375 writes staging/public-preparation.json/.done. Helper prepare_public_update.py uses installed public CLI and validates real published certificate.
+After both pass, actual owner review/apply public .252 operation, export observer, publish new public-installation-verification.json asset, and document in a documentation branch/PR.
+
+Public verification exposes two actual issues. The tag ref is rejected because stock Hermes requires a full forty-character commit SHA. Driver/README/release notes now use the exact tag commit.
+Explicit --version is a product parser collision: cli.configure stores its value in args.version, which native main checks for the global version command before plugin dispatch. Equals form also fails.
+The fix stores args.release_version and keeps the external flag. Seven CLI tests and the full twenty-six focused controls pass with all required real fixtures and no skips.
+Five version declarations now select 0.4.1. Current branch is feature/release-0-4-1. Published 0.4.0/0.3.1 assets remain immutable.
+Development public operation 0234c583cc26473d9ff2a00b883ca368 is ready and actual owner review passes HTTP 200. Do not apply it; wait for corrected package qualification. Development remains exact 0.3.1.
+Published 0.4.0 latest-only stock check runs detached PID 3981148. Its completion is in public-install-verification.json/.done. Prior two failures remain under public-tag-ref-failure-* and public-version-destination-failure-*.
+Next: commit and build the corrected complete 0.4.1, open PR16, send focused reviewer, complete all release qualification and public exact-version/default update checks.
