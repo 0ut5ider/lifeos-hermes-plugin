@@ -16,12 +16,12 @@
     },
     {
       "number": 3,
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "name": "Installed update recovery and rollback"
     },
     {
       "number": 4,
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "name": "Development operation and reboot"
     },
     {
@@ -46,11 +46,14 @@
     "fresh_execution": true
   },
   "infrastructure": {
-    "stock_reset": "BLOCKED_ZFS_UNMOUNT",
+    "stock_reset": "FAILED_ATTEMPT_RETAINED",
     "source_guest": 106,
     "duplicate_rollback_submitted": false,
-    "fresh_guest": 107,
-    "provisioning": "CLEANUP_WAIT"
+    "fresh_guest": 108,
+    "provisioning": "PASS",
+    "fresh_guest_ip": "192.168.8.202",
+    "kernel_wait_recovered": true,
+    "failed_guest_107_cleanup": "PASS"
   },
   "integration_gate": {
     "status": "PASS",
@@ -68,6 +71,24 @@
     "zfs_pool_sync_passed": true,
     "normal_host_sync": "BLOCKED",
     "forced_restart_approval": "APPROVED",
-    "application_drain_recovery": "PASS"
+    "application_drain_recovery": "PASS",
+    "status": "PASS",
+    "receipt": "forced-host-restart-return.json",
+    "original_release_health_252": "PASS",
+    "original_release_health_253": "PASS",
+    "original_run_states_restored": true
+  },
+  "development_update": {
+    "status": "PASS",
+    "receipt": "development-final-update.json",
+    "operation": "02050dbb7a3e4fdea68396d3a2f18c00",
+    "saved_synthetic_fact_preserved": true,
+    "selected_model_and_tiers_preserved": true
+  },
+  "clean_web_manager_install": {
+    "status": "PASS",
+    "receipt": "stock-native-github-manager-install.json",
+    "force_reinstall": false,
+    "explicit_branch_or_commit_selected": false
   }
 }

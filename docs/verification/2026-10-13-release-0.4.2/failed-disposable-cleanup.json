@@ -1,0 +1,117 @@
+{
+  "status": "PASS",
+  "failed_disposable_guest_107_removed": true,
+  "stale_disposable_106_lock_cleared": true,
+  "guest_106_remains_stopped": true,
+  "existing_guests_modified": false,
+  "operations": [
+    {
+      "command": [
+        "pct",
+        "status",
+        "107"
+      ],
+      "exit_code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "107"
+      ],
+      "exit_code": 0,
+      "stdout": "lock: create\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pvesm",
+        "list",
+        "local-zfs",
+        "--vmid",
+        "107"
+      ],
+      "exit_code": 0,
+      "stdout": "Volid                       Format  Type              Size VMID\nlocal-zfs:subvol-107-disk-0 subvol  rootdir   128849018880 107\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "unlock",
+        "107"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "destroy",
+        "107",
+        "--purge",
+        "1",
+        "--destroy-unreferenced-disks",
+        "1"
+      ],
+      "exit_code": 0,
+      "stdout": "purging CT 107 from related configurations..\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pvesm",
+        "list",
+        "local-zfs",
+        "--vmid",
+        "107"
+      ],
+      "exit_code": 0,
+      "stdout": "Volid Format  Type      Size VMID\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "106"
+      ],
+      "exit_code": 0,
+      "stdout": "arch: amd64\ncores: 4\ndescription: Stock Hermes with final manager and validated ready worker; no native LifeOS%0A\nfeatures: nesting=1\nhostname: lifeos-ui-test-public\nlock: rollback\nmemory: 8192\nnet0: name=eth0,bridge=vmbr0,firewall=1,gw=192.168.8.1,hwaddr=BC:24:11:5F:8D:78,ip=192.168.8.249/24,ip6=manual,type=veth\nonboot: 0\nostype: ubuntu\nparent: stock-ui-manager-qualified-baseline\nrootfs: local-zfs:subvol-106-disk-0,size=120G\nswap: 0\ntags: lifeos-test\nunprivileged: 1\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "unlock",
+        "106"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "106"
+      ],
+      "exit_code": 0,
+      "stdout": "arch: amd64\ncores: 4\ndescription: Stock Hermes with final manager and validated ready worker; no native LifeOS%0A\nfeatures: nesting=1\nhostname: lifeos-ui-test-public\nmemory: 8192\nnet0: name=eth0,bridge=vmbr0,firewall=1,gw=192.168.8.1,hwaddr=BC:24:11:5F:8D:78,ip=192.168.8.249/24,ip6=manual,type=veth\nonboot: 0\nostype: ubuntu\nparent: stock-ui-manager-qualified-baseline\nrootfs: local-zfs:subvol-106-disk-0,size=120G\nswap: 0\ntags: lifeos-test\nunprivileged: 1\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "status",
+        "106"
+      ],
+      "exit_code": 0,
+      "stdout": "status: stopped\n",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    }
+  ]
+}

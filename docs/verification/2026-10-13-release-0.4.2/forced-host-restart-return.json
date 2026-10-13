@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "boot_id": "24c0e9c5-184d-493e-9907-326416ac0d47",
+  "boot_id_changed": true,
+  "pool_healthy": true,
+  "old_blocked_tasks_cleared": true,
+  "storage_allocation_lock_cleared": true,
+  "observations": [
+    {
+      "command": [
+        "zpool",
+        "status",
+        "-x",
+        "rpool"
+      ],
+      "metadata": "pool 'rpool' is healthy",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ps",
+        "-eo",
+        "pid,ppid,stat,wchan:32,args"
+      ],
+      "metadata": {
+        "old_blocked_tasks_present": false
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "lslocks",
+        "-J"
+      ],
+      "metadata": [],
+      "stderr": ""
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/cluster/resources",
+        "--type",
+        "vm",
+        "--output-format",
+        "json"
+      ],
+      "metadata": [
+        {
+          "vmid": 100,
+          "name": "lifeos-install-probe",
+          "status": "stopped",
+          "type": "lxc"
+        },
+        {
+          "vmid": 101,
+          "name": "lifeos-dev",
+          "status": "running",
+          "type": "lxc"
+        },
+        {
+          "vmid": 102,
+          "name": "lifeos-daily",
+          "status": "running",
+          "type": "lxc"
+        },
+        {
+          "vmid": 106,
+          "name": "lifeos-ui-test-public",
+          "status": "stopped",
+          "type": "lxc"
+        },
+        {
+          "vmid": 107,
+          "name": "CT107",
+          "status": "stopped",
+          "type": "lxc"
+        },
+        {
+          "vmid": 108,
+          "name": "lifeos-042-stock-test",
+          "status": "stopped",
+          "type": "lxc"
+        },
+        {
+          "vmid": 801,
+          "name": "processing",
+          "status": "running",
+          "type": "qemu"
+        }
+      ],
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "services": {
+    "hermes-gateway.service": {
+      "MainPID": "279",
+      "LoadState": "loaded",
+      "ActiveState": "active"
+    },
+    "hermes-dashboard.service": {
+      "MainPID": "276",
+      "LoadState": "loaded",
+      "ActiveState": "active"
+    },
+    "com.lifeos.pulse.service": {
+      "MainPID": "275",
+      "LoadState": "loaded",
+      "ActiveState": "active"
+    }
+  },
+  "service_recovery": {
+    "state": "active",
+    "services_started": [
+      "dashboard",
+      "pulse",
+      "gateway"
+    ],
+    "owner_turn_verified": false
+  },
+  "active_release": {
+    "version": "0.3.1",
+    "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+    "package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24",
+    "verification": "verified"
+  },
+  "status": "PASS",
+  "exact_original_release_preserved": true
+}
