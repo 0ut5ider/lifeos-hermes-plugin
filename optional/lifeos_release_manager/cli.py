@@ -85,7 +85,7 @@ def write_state(job, state, *, error=None):
     publish(job / 'status.json', (json.dumps(value) + '\n').encode())
 
 
-def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=None):
+def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=None, job=None, intent=None):
     profile = profile_directory(profile)
     for value in (name, assistant):
         if not isinstance(value, str) or not value.strip() or len(value) > 100 or any(ord(c) < 32 for c in value):
@@ -94,9 +94,14 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
     state.mkdir(mode=0o700, exist_ok=True)
     if state.resolve() != state or state.stat().st_uid != os.getuid() or state.stat().st_mode & 0o077:
         raise ReleaseRejected('Release staging requires private profile storage')
-    job = state / uuid4().hex
-    job.mkdir(mode=0o700)
-    write_state(job, 'preparing')
+    if job is None:
+        job = state / uuid4().hex
+        job.mkdir(mode=0o700)
+        write_state(job, 'preparing')
+    else:
+        job = job_directory(profile, Path(job).name)
+        if read_private(job / 'status.json')['state'] != 'preparing' or (job / 'request.json').exists():
+            raise ReleaseRejected('The preparation already starts or completes')
     try:
         downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
         package = job / 'package'
@@ -107,6 +112,10 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
         names._name(name.strip())
         names._name(assistant.strip())
         selected = source.memory_module('lifeos_installation').selection(profile)
+        if intent == 'install' and (selected.installed.exists() or selected.installed.is_symlink()):
+            raise ReleaseRejected('Use an update for the existing LifeOS installation')
+        if intent in {'update', 'plugin'} and not selected.installed.is_dir():
+            raise ReleaseRejected('Install LifeOS before requesting an update')
         runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
         request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
             'account_home': str(Path.home()), 'installed': str(selected.installed),
@@ -141,15 +150,28 @@ def prepare_plan(job, request, files):
                '--action', 'prepare'], job, 'candidate-review', environment=environment)
 
 
+def preparation_status(job, value):
+    if value['state'] == 'preparing' and (job / 'preparation-worker.json').exists():
+        from .release_operation import process_stamp
+        worker = read_private(job / 'preparation-worker.json')
+        if set(worker) != {'pid', 'start_time'}:
+            raise ReleaseRejected('The preparation worker identity changes')
+        stamp = process_stamp(worker['pid'])
+        if stamp is None or stamp != worker['start_time']:
+            return {**value, 'state': 'preparation_interrupted',
+                    'error': 'Preparation stops before a ready plan. Prepare another release. Active programs stay in place.'}
+    return value
+
+
 def status(profile, identifier=None):
     profile = profile_directory(profile)
     state = profile / '.lifeos-releases'
     if identifier is not None:
         job = job_directory(profile, identifier)
         if not (job / 'request.json').exists():
-            return read_private(job / 'status.json')
+            return preparation_status(job, read_private(job / 'status.json'))
         job, request = operation(profile, identifier)
-        value = {**read_private(job / 'status.json'), 'version': request['version'], 'commit': request['commit'],
+        value = {**preparation_status(job, read_private(job / 'status.json')), 'version': request['version'], 'commit': request['commit'],
                  'restore_available': False, 'recover_available': False}
         if (job / 'plan.json').exists():
             from .release_operation import validate_plan, operation_lock, OperationBusy, worker_running

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.2-rc.1 (unpublished test candidate)
+
+- Add Install LifeOS, Update LifeOS, and Update plugin controls to the LifeOS releases page.
+- Prepare the complete qualified integration for both update actions. Keep owner review and installation approval separate.
+- Run page-requested preparation in a detached process with a private profile lock.
+- Refuse duplicate preparation and report interrupted preparation without selecting active programs.
+- Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
+
 ## 0.4.1 (2026-10-13)
 
 - Keep the plugin release choice in a separate argument field from the Hermes global version flag.

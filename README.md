@@ -294,6 +294,13 @@ After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the res
 
 For an update, run `hermes lifeos-release prepare` and review the returned operation.
 The registered skill follows this process when the user asks Hermes to install or update LifeOS.
+The LifeOS releases page also provides **Install LifeOS**, **Update LifeOS**, and **Update plugin** buttons.
+The installation button accepts the user and assistant names for a fresh store.
+Both update buttons prepare the complete qualified package, including Hermes, LifeOS, the bridge, and the release manager.
+Leave the release version empty for the latest stable package. Enter an exact version to select a test prerelease.
+Preparation runs in a detached process. The page polls its status, and the user can leave the page during preparation.
+The owner must still review the prepared operation and select **Install this release** before active programs change.
+Duplicate preparations are refused while a preparation runs. Interrupted preparation leaves active programs in place.
 Recovery and rollback use the prepared operation and retained program journal. They preserve current user data and refuse later program changes.
 Rollback requires the current release identity and retained native mount. A later native remount or release can expire that operation's rollback.
 Status hides an expired rollback. Admission checks current and retained programs before it stops services.
