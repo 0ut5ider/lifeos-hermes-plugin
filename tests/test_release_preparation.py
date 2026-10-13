@@ -4,6 +4,8 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import inspect
+import sys
 import tempfile
 import unittest
 
@@ -14,6 +16,79 @@ from optional.lifeos_release_manager.release_programs import publish
 
 
 class ReleasePreparationTests(unittest.TestCase):
+    def test_synchronous_preparation_holds_the_same_lease_as_the_dashboard(self):
+        from optional.lifeos_release_manager.cli import prepare
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            test = self
+            lines, start = inspect.getsourcelines(release_preparation.queue)
+            boundary = start + next(i for i, line in enumerate(lines) if 'process = subprocess.Popen(' in line)
+            def trace(frame, event, argument):
+                if frame.f_code is release_preparation.queue.__code__ and event == 'line' and frame.f_lineno == boundary:
+                    raise AssertionError('Overlapping preparation reaches child launch')
+                return trace
+            class StopAtDownload:
+                def download(self, directory, version):
+                    previous = sys.gettrace()
+                    sys.settrace(trace)
+                    try:
+                        with test.assertRaises(OperationBusy):
+                            release_preparation.queue(profile, {'intent': 'install'})
+                    finally:
+                        sys.settrace(previous)
+                    test.assertEqual(len([p for p in directory.parent.parent.iterdir() if p.is_dir()]), 1)
+                    raise ValueError('Synthetic download boundary')
+            with self.assertRaisesRegex(ValueError, 'Synthetic download boundary'):
+                prepare(profile, catalog=StopAtDownload())
+
+    def test_synchronous_preparation_refuses_a_held_lease_before_download(self):
+        from optional.lifeos_release_manager.cli import prepare
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            state = profile / '.lifeos-releases'
+            state.mkdir(mode=0o700)
+            class NoDownload:
+                def download(self, directory, version):
+                    raise AssertionError('A duplicate synchronous preparation reaches download')
+            with (state / 'preparation.lock').open('wb') as lock:
+                os.fchmod(lock.fileno(), 0o600)
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                with self.assertRaises(OperationBusy):
+                    prepare(profile, catalog=NoDownload())
+            self.assertEqual([p.name for p in state.iterdir()], ['preparation.lock'])
+
+    def test_synchronous_preparation_refuses_pending_installation_or_recovery(self):
+        from optional.lifeos_release_manager.cli import prepare
+        for phase in ('queued-apply', 'applying', 'recovering', 'restoring', 'recovery_required'):
+            with self.subTest(phase=phase), tempfile.TemporaryDirectory() as temp:
+                profile = Path(temp)
+                job = profile / '.lifeos-releases' / ('a' * 32)
+                job.mkdir(parents=True, mode=0o700)
+                job.parent.chmod(0o700)
+                write_state(job, phase)
+                class NoDownload:
+                    def download(self, directory, version):
+                        raise AssertionError('Preparation reaches download during a pending operation')
+                with self.assertRaises(OperationBusy):
+                    prepare(profile, catalog=NoDownload())
+                self.assertEqual([p.name for p in job.parent.iterdir() if p.is_dir()], [job.name])
+
+    def test_synchronous_preparation_can_retry_after_an_expired_preparation(self):
+        from optional.lifeos_release_manager.cli import prepare
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            job.parent.chmod(0o700)
+            write_state(job, 'preparing')
+            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
+            class StopAtDownload:
+                def download(self, directory, version):
+                    raise ValueError('Synthetic retry reaches download')
+            with self.assertRaisesRegex(ValueError, 'Synthetic retry reaches download'):
+                prepare(profile, catalog=StopAtDownload())
+            self.assertEqual(len([p for p in job.parent.iterdir() if p.is_dir()]), 2)
+
     def test_live_synchronous_preparation_records_its_process_before_download(self):
         from optional.lifeos_release_manager.cli import prepare
         with tempfile.TemporaryDirectory() as temp:

@@ -70,8 +70,71 @@ def service_files(request, generated):
 
 def fresh_services(current, profile, installed, *, installation_lease=None):
     require_fresh_services(current)
-    return current.memory_module('profile_services').ProfileServices(profile, installed,
+    profile = Path(profile).absolute()
+    module = current.memory_module('profile_services')
+    class DashboardServices(module.ProfileServices):
+        def _inspect(self, role):
+            values, definition = super()._inspect(role)
+            binding = dashboard_binding(module, profile, values)
+            return values, module._digest({'definition': definition, 'dashboard': binding})
+    return DashboardServices(profile, installed,
         installation_lease=installation_lease, first_installation=True)
+
+
+def dashboard_command(arguments):
+    from hermes_cli.update_cmd_windows import _hermes_holder_subcommand
+    # The pinned Hermes bundle enters main in this process; other inline source keeps trailing arguments as data.
+    bundled = "import os, site, sys; sys.argv[0]='hermes'; site.addsitedir(os.environ['HERMES_SITE']); from hermes_cli.main import main; sys.exit(main())"
+    if len(arguments) >= 5 and arguments[1:4] == ['-P', '-c', bundled]:
+        arguments = ['hermes', *arguments[4:]]
+    return _hermes_holder_subcommand(shlex.join(arguments))
+
+
+def dashboard_binding(module, profile, values):
+    from hermes_cli.dashboard_procs import _hermes_home_for_pid, _profile_flag_value
+    from hermes_cli.profiles import get_active_profile, normalize_profile_name, profile_root_for_env_home
+    from .release_operation import process_stamp
+    pid = int(values['MainPID'])
+    if pid:
+        try:
+            stamp = process_stamp(pid)
+            process = Path('/proc') / str(pid)
+            arguments = [value.decode() for value in (process / 'cmdline').read_bytes().split(b'\0') if value]
+            owner = _hermes_home_for_pid(pid)
+            valid_process = (process.stat().st_uid == os.getuid()
+                and stamp is not None and process_stamp(pid) == stamp
+                and dashboard_command(arguments) in {'dashboard', 'serve'})
+        except (OSError, UnicodeError, ValueError) as error:
+            raise ReleaseRejected('The dashboard process profile identity is unavailable') from error
+        if not valid_process or owner is None or Path(owner).resolve() != profile:
+            raise ReleaseRejected('The active dashboard process belongs to another profile or command')
+    configured = re.search(r'\bargv\[\]=(.*?) ;', values['ExecStart'])
+    try:
+        arguments = shlex.split(configured.group(1)) if configured is not None else []
+        properties = dict(line.split('=', 1) for line in module._run('show', module.UNITS['dashboard'],
+            '--property=Environment,EnvironmentFiles', '--no-pager').splitlines() if '=' in line)
+        environment = dict(value.split('=', 1) for value in shlex.split(properties['Environment']))
+    except (KeyError, ValueError) as error:
+        raise ReleaseRejected('The dashboard service profile binding is unavailable') from error
+    command = dashboard_command(arguments)
+    declared = environment.get('HERMES_HOME', '')
+    if (command not in {'dashboard', 'serve'} or not set(properties) <= {'Environment', 'EnvironmentFiles'}
+            or properties.get('EnvironmentFiles') or not declared or Path(declared) != profile
+            or Path(declared).resolve() != profile):
+        raise ReleaseRejected('The dashboard service requires an explicit selected profile and dashboard command')
+    explicit = _profile_flag_value(arguments)
+    if explicit is not None:
+        root = profile_root_for_env_home(declared, profile)
+        name = normalize_profile_name(explicit)
+        selected = root if name == 'default' else root / 'profiles' / name
+        if selected != profile:
+            raise ReleaseRejected('The dashboard command selects another profile')
+    elif (profile.parent.name != 'profiles' and environment.get('HERMES_UPDATE_POST_SWAP') != '1'
+            and not any(environment.get(key) for key in ('HERMES_SUPERVISED_CHILD', 'HERMES_S6_SUPERVISED_CHILD',
+                'HERMES_GATEWAY_EXTERNAL_SUPERVISOR'))):
+        if normalize_profile_name(get_active_profile(profile)) != 'default':
+            raise ReleaseRejected('The dashboard service selects another active profile')
+    return {'profile': str(profile), 'command': command}
 
 
 def fresh_preview(current, profile, installed, *, installation_lease=None):
@@ -113,7 +176,6 @@ def fresh_preview(current, profile, installed, *, installation_lease=None):
 def check_dashboard_writers(profile, group=''):
     # Procfs inspection fails closed. A foreground backend cannot be drained by an inactive unit.
     from hermes_cli.dashboard_procs import _hermes_home_for_pid
-    from hermes_cli.update_cmd_windows import _hermes_holder_subcommand
     for process in Path('/proc').iterdir():
         if not process.name.isdecimal():
             continue
@@ -121,7 +183,7 @@ def check_dashboard_writers(profile, group=''):
             if process.stat().st_uid != os.getuid():
                 continue
             arguments = [value.decode() for value in (process / 'cmdline').read_bytes().split(b'\0') if value]
-            if _hermes_holder_subcommand(shlex.join(arguments)) not in {'dashboard', 'serve'}:
+            if dashboard_command(arguments) not in {'dashboard', 'serve'}:
                 continue
             owner = _hermes_home_for_pid(int(process.name))
             if owner is None:

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.2-rc.3 (2026-10-13 test prerelease)
+
+- Verify the configured and running dashboard profile before service drain and after restart.
+- Recognize the exact pinned Hermes bundled launcher. Refuse unrelated inline programs.
+- Preserve literal percent signs in the effective systemd environment. Refuse declared environment files.
+- Use one preparation lease for command-line and dashboard requests. Refuse pending installation and recovery.
+- Preserve all existing release assets. Keep production deployment outside this test qualification.
+
 ## 0.4.2-rc.2 (2026-10-13 test prerelease)
 
 - Change the complete integration version to verify a numerical update through Hermes and both dashboard update controls.

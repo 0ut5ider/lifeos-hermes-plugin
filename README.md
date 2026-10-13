@@ -330,6 +330,8 @@ Historical packages without that interface refuse before native publication. Exi
 During the isolated prerelease tests, select the exact test release version. Release 0.4.1 remains the latest stable package.
 The home, profile, and native installation paths must be physical paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces.
 That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
+The service must declare the selected physical profile in `HERMES_HOME` without an environment file.
+The installer checks the configured dashboard command and the running process profile before drain and after restart.
 The installer drains that dashboard and runs its worker in a separate user service.
 The reviewed installation creates missing gateway and Pulse definitions but leaves them disabled and inactive.
 It preserves existing service definitions. A foreground dashboard or a foreign service binding refuses preparation.

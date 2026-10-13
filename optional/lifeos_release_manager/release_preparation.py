@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import fcntl
+from contextlib import contextmanager
 import json
 import os
 from pathlib import Path
@@ -42,8 +43,8 @@ def selection(value):
             **{key: name.strip() for key, name in names.items()}}
 
 
-def queue(profile, value):
-    value = selection(value)
+@contextmanager
+def preparation_admission(profile):
     profile = profile_directory(profile)
     state = profile / '.lifeos-releases'
     state.mkdir(mode=0o700, exist_ok=True)
@@ -61,8 +62,25 @@ def queue(profile, value):
             raise OperationBusy('A release preparation is already running') from error
         for operation in status(profile)['operations']:
             phase = operation['state']
+            if phase == 'preparing':
+                worker_file = state / operation['identifier'] / 'preparation-worker.json'
+                if worker_file.exists():
+                    worker = read_private(worker_file)
+                    stamp = process_stamp(worker['pid'])
+                    if stamp is not None and stamp == worker['start_time']:
+                        raise OperationBusy('A release preparation is already running')
             if phase.startswith('queued-') or phase in {'applying', 'recovering', 'restoring', 'recovery_required'}:
                 raise OperationBusy('Finish the release operation or recovery before another preparation')
+        yield descriptor
+    finally:
+        os.close(descriptor)
+
+
+def queue(profile, value):
+    value = selection(value)
+    profile = profile_directory(profile)
+    state = profile / '.lifeos-releases'
+    with preparation_admission(profile) as descriptor:
         job = state / uuid4().hex
         job.mkdir(mode=0o700)
         write_state(job, 'preparing')
@@ -82,8 +100,6 @@ def queue(profile, value):
         publish(job / 'preparation-worker.json', json.dumps({'pid': process.pid,
                 'start_time': process_stamp(process.pid)}).encode())
         return {'identifier': job.name, 'state': 'preparing', 'active_unchanged': True}
-    finally:
-        os.close(descriptor)
 
 
 def main():

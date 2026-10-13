@@ -91,6 +91,14 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
     for value in (name, assistant):
         if not isinstance(value, str) or not value.strip() or len(value) > 100 or any(ord(c) < 32 for c in value):
             raise ReleaseRejected('Fresh installation names require bounded text')
+    if job is None:
+        from .release_preparation import preparation_admission
+        with preparation_admission(profile):
+            return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, intent=intent)
+    return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, job=job, intent=intent)
+
+
+def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, intent=None):
     state = profile / '.lifeos-releases'
     state.mkdir(mode=0o700, exist_ok=True)
     if state.resolve() != state or state.stat().st_uid != os.getuid() or state.stat().st_mode & 0o077:
