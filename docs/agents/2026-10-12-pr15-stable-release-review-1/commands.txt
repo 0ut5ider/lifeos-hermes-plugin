@@ -1,0 +1,25 @@
+Repository: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Base: be215380dcbda35c92e6f28b23b4a1d7bc15004e
+Head: 8e804cc8e1b8727e0517ccdfa91b261c5d91f062
+
+git rev-parse HEAD origin/main
+git branch --show-current
+git status --short --untracked-files=no
+git diff --name-status origin/main...HEAD
+git diff origin/main...HEAD -- VERSION CHANGELOG.md README.md lifeos_hook_bridge optional
+git diff origin/main...HEAD -- lifeos_hook_bridge/dependency_locks
+git diff --quiet origin/main...HEAD -- lifeos_hook_bridge/patches
+git diff --quiet origin/main...HEAD -- scripts/build_managed_release.py optional/lifeos_release_manager/release_stage.py optional/lifeos_release_manager/release_catalog.py optional/lifeos_release_manager/release_worker.py
+
+Focused tests run from the repository:
+review_home=$(mktemp -d /tmp/lifeos-pr15-review-home.XXXXXX)
+env HOME="$review_home" TZ=UTC PYTHONDONTWRITEBYTECODE=1 PATH=/home/outsider/.cache/lifeos-hermes-managed-20261012/fixed-bun-tools:$PATH PYTHONPATH=/home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/ported LIFEOS_FRESH_SOURCE=/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-a87e7ae9/lifeos LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-hermes-managed-20261012/ported /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B -W error::ResourceWarning -m unittest -v test_release_version test_native_dependencies
+
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr15-stable-release-review-1/probe_certificate_binding.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr15-stable-release-review-1/verify_asset_identity.py
+
+sha256sum /home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-a87e7ae9.tgz /home/outsider/.cache/lifeos-hermes-managed-20261012/fixed-bun-tools/bun-linux-x64-baseline.zip
+
+Public read-only source:
+https://github.com/0ut5ider/lifeos-hermes-plugin/pull/15
+The public page names the same reviewed head, exact program identity, and unfinished backup/restore and rollback gates.

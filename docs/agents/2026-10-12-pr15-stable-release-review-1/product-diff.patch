@@ -1,0 +1,126 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index bf25b28a..e7b90059 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,9 +1,10 @@
+ # Changelog
+ 
+-## 0.4.0-dev.1
++## 0.4.0 (2026-10-12)
+ 
+-This development candidate is not a qualified production release.
++Release qualification is recorded in the published release certificate.
+ 
++- Pin Bun 1.4.3 with the upstream streaming-extraction fixes. Preserve all twelve native dependency locks.
+ - Prepare Hermes v0.21.7 at commit 71d34bad1045610252eda02ee79549436896e784.
+ - Use ten Hermes patch groups and twenty-five LifeOS patch groups.
+ - Verify complete Discord morning windows and the active Pulse schedule.
+diff --git a/README.md b/README.md
+index f2f9726b..aba61f9b 100644
+--- a/README.md
++++ b/README.md
+@@ -1,14 +1,14 @@
+ # LifeOS plugin for Hermes
+ 
+-**Development candidate:** `0.4.0-dev.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
++**Release candidate:** `0.4.0`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+ The native port passes 716 selected tests and all twelve upstream source checks. The candidate applies ten Hermes patch groups and twenty-five LifeOS patch groups.
+ 
+ The complete release manager in `optional/lifeos_release_manager` passes development acceptance for fresh installation, update, interruption recovery, and rollback.
+-Three independent PR review rounds resolve eight findings. The final frozen candidate passes 625 integration checks and actual development update, recovery, and rollback. Publication of a qualified complete release remains required before daily deployment.
++Three independent PR review rounds resolve eight findings. The final frozen candidate passes 625 integration checks and actual development update, recovery, and rollback. Bun 1.4.3 replaces the extraction-failing 1.3.14 pin during stable qualification. All twelve native dependency locks stay fixed. The stable archive must pass qualification before publication and daily deployment.
+ The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records its current state.
+ Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
+ 
+-**Deployed version:** `0.3.1`. Both development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
++**Deployed version:** `0.3.1`. At the start of 0.4.0 qualification, development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+ 
+ The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
+ 
+diff --git a/VERSION b/VERSION
+index f8c7c454..1d0ba9ea 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-0.4.0-dev.1
++0.4.0
+diff --git a/lifeos_hook_bridge/dashboard/manifest.json b/lifeos_hook_bridge/dashboard/manifest.json
+index 07a458e7..54202b54 100644
+--- a/lifeos_hook_bridge/dashboard/manifest.json
++++ b/lifeos_hook_bridge/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS Bridge",
+   "description": "Configure LifeOS models and Stop hooks",
+   "icon": "Settings",
+-  "version": "0.4.0-dev.1",
++  "version": "0.4.0",
+   "tab": {
+     "path": "/lifeos-bridge",
+     "position": "after:plugins"
+diff --git a/lifeos_hook_bridge/dependency_locks/catalog.json b/lifeos_hook_bridge/dependency_locks/catalog.json
+index 73a7a321..3a076733 100644
+--- a/lifeos_hook_bridge/dependency_locks/catalog.json
++++ b/lifeos_hook_bridge/dependency_locks/catalog.json
+@@ -1,5 +1,5 @@
+ {
+-  "bun_version": "1.3.14",
++  "bun_version": "1.4.3",
+   "lifeos_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+   "packages": {
+     ".": {
+diff --git a/lifeos_hook_bridge/plugin.yaml b/lifeos_hook_bridge/plugin.yaml
+index a785e498..5d217303 100644
+--- a/lifeos_hook_bridge/plugin.yaml
++++ b/lifeos_hook_bridge/plugin.yaml
+@@ -1,6 +1,6 @@
+ name: lifeos-hook-bridge
+ kind: standalone
+-version: 0.4.0-dev.1
++version: 0.4.0
+ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+ author: 0ut5ider
+ python_dependencies:
+diff --git a/optional/lifeos_release_manager/dashboard/manifest.json b/optional/lifeos_release_manager/dashboard/manifest.json
+index defa80bd..a84ff62d 100644
+--- a/optional/lifeos_release_manager/dashboard/manifest.json
++++ b/optional/lifeos_release_manager/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS releases",
+   "description": "Install and update complete qualified integration releases",
+   "icon": "Package",
+-  "version": "0.4.0-dev.1",
++  "version": "0.4.0",
+   "tab": {
+     "path": "/lifeos-releases",
+     "position": "after:plugins"
+diff --git a/optional/lifeos_release_manager/plugin.yaml b/optional/lifeos_release_manager/plugin.yaml
+index 514ad641..bfc889e9 100644
+--- a/optional/lifeos_release_manager/plugin.yaml
++++ b/optional/lifeos_release_manager/plugin.yaml
+@@ -1,5 +1,5 @@
+ name: lifeos-release-manager
+ kind: standalone
+-version: 0.4.0-dev.1
++version: 0.4.0
+ description: Installs and updates qualified LifeOS integration releases from Hermes.
+ author: 0ut5ider
+diff --git a/optional/lifeos_release_manager/release-tools.json b/optional/lifeos_release_manager/release-tools.json
+index 0ab0e32e..cbcd8bc2 100644
+--- a/optional/lifeos_release_manager/release-tools.json
++++ b/optional/lifeos_release_manager/release-tools.json
+@@ -1,11 +1,11 @@
+ {
+   "format": 1,
+   "linux-x86_64": {
+-    "version": "1.3.14",
++    "version": "1.4.3",
+     "name": "bun-linux-x64-baseline.zip",
+-    "size": 35595658,
+-    "sha256": "a063908ae08b7852ca10939bbdc6ceed3ddabce8fb9402dce83d65d73b36e6c7",
+-    "url": "https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-linux-x64-baseline.zip",
++    "size": 42015103,
++    "sha256": "1fc2edac843102909e3a1be1d8d9802cc6071cf074e67e88231f4ffe0f8b397b",
++    "url": "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64-baseline.zip",
+     "member": "bun-linux-x64-baseline/bun"
+   }
+ }

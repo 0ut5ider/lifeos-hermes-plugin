@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-12-pr15-stable-release-review-1/verify_asset_identity.py", line 16, in <module>
+    manifest=validate_package(package,cert)
+  File "/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-a87e7ae9/optional/lifeos_release_manager/release_stage.py", line 91, in validate_package
+    hermes = bridge.validate_supported_hermes(package / 'hermes')
+  File "/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-a87e7ae9/lifeos_hook_bridge/install_source.py", line 259, in validate_supported_hermes
+    return validate_hermes_candidate(candidate, SUPPORTED_HERMES_COMMIT,
+                                     Path(__file__).parent / "patches", HERMES_PATCHES)
+  File "/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.0-a87e7ae9/lifeos_hook_bridge/install_source.py", line 212, in validate_hermes_candidate
+    raise IncompatibleLifeOS("Hermes candidate files changed after preparation")
+lifeos_release_source_f6f582e6d31a5a30.install_source.IncompatibleLifeOS: Hermes candidate files changed after preparation

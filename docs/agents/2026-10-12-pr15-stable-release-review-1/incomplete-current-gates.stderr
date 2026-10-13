@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/tmp/pr15-certificate-sfia5u2v/certify_release.py", line 23, in <module>
+    update=load('development-bunfixed-update.json');rollback=load('development-bunfixed-rollback.json')
+                                                             ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/pr15-certificate-sfia5u2v/certify_release.py", line 6, in <lambda>
+    load=lambda name:json.loads((out/name).read_bytes())
+                                ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/.cache/lifeos-hermes-managed-20261012/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-hermes-managed-20261012/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pr15-certificate-sfia5u2v/development-bunfixed-rollback.json'

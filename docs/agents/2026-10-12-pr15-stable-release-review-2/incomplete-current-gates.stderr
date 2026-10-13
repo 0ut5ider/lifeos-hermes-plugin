@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/pr15-certificate-i5f35f6e/certify_release.py", line 21, in <module>
+    assert native['package_commit']==head and native['archive_sha256']==build['archive_sha256']
+           ~~~~~~^^^^^^^^^^^^^^^^^^
+KeyError: 'package_commit'
