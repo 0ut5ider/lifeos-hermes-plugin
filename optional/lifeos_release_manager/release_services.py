@@ -38,7 +38,7 @@ def service_files(request, generated):
         publish(source, ('# ABOUTME: Defines a reviewed integration service without enabling it.\n'
             '# ABOUTME: Selects fixed account launchers and the installed profile.\n'
             '[Unit]\nDescription=LifeOS integration ' + name + '\n[Service]\nType=simple\n'
-            'WorkingDirectory=' + _quoted(working) + '\n'
+            'WorkingDirectory=' + str(working).replace('%', '%%') + '\n'
             'Environment=' + _quoted('HERMES_HOME=' + str(profile)) + '\n'
             'Environment=' + _quoted('PATH=' + str(home / '.local/bin') + ':/usr/local/bin:/usr/bin:/bin') + '\n'
             'Environment=PYTHONDONTWRITEBYTECODE=1\nUMask=0077\n'

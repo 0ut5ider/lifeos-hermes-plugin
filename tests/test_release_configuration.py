@@ -13,6 +13,23 @@ from optional.lifeos_release_manager.release_worker import _yaml_configuration, 
 
 
 class ReleaseConfigurationTests(unittest.TestCase):
+    def test_generated_service_definitions_pass_the_actual_systemd_parser(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
+            for path in (profile, generated, installed / 'LIFEOS/PULSE', root / '.local/bin'):
+                path.mkdir(parents=True, mode=0o700)
+            for name in ('hermes', 'bun'):
+                program = root / '.local/bin' / name
+                program.write_text('#!/bin/sh\nexit 0\n')
+                program.chmod(0o700)
+            files = service_files({'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}, generated)
+            result = subprocess.run(['systemd-analyze', '--user', 'verify', *map(str, files.values())],
+                capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(result.stdout + result.stderr, '')
+
     def test_flow_configuration_prepares_native_mount_without_changing_values(self):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)
@@ -89,8 +106,8 @@ class ReleaseConfigurationTests(unittest.TestCase):
             gateway, pulse = units / 'hermes-gateway.service', units / 'com.lifeos.pulse.service'
             self.assertFalse(gateway.exists())
             self.assertFalse(pulse.exists())
-            self.assertIn('WorkingDirectory="' + str(profile) + '"', files[gateway].read_text())
-            self.assertIn('WorkingDirectory="' + str(root / '.claude/LIFEOS/PULSE') + '"', files[pulse].read_text())
+            self.assertIn('WorkingDirectory=' + str(profile) + '\n', files[gateway].read_text())
+            self.assertIn('WorkingDirectory=' + str(root / '.claude/LIFEOS/PULSE') + '\n', files[pulse].read_text())
             transaction = ProgramTransaction(root / 'snapshot')
             transaction.prepare(directories={}, files=files)
             self.assertEqual(len(transaction._load()['entries']), 3)

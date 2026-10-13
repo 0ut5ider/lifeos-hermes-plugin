@@ -313,6 +313,9 @@ It preserves existing service definitions. A foreground dashboard or a foreign s
 Fresh installation uses a separate dashboard service journal. Later updates verify and drain all three services.
 An abrupt worker termination can require recovery from the command line when the dashboard is stopped.
 Use the retained operation's qualified `bin/hermes lifeos-release recover IDENTIFIER` command in that case.
+If interruption removes the installed manager directory, that public command cannot load.
+Recovery then requires an operator to use the retained qualified worker and reviewed journal.
+Do not replace the missing directory or erase the operation to make the page return.
 Recovery preserves user data and refuses later program or service-definition edits.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records the tested paths and publication limits.
 
