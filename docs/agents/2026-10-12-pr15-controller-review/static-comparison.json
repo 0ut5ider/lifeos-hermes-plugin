@@ -1,0 +1,13 @@
+{
+  "only_change": "pct restore timeout extends from 3600 to 7200 seconds; all other subprocess commands retain 3600",
+  "full_controller_matches_exact_single_replacement": true,
+  "reviewed_controller_sha256": "49d42a69e772926b7560f23e53ced05de809146a5bc1f50a78347322987858fb",
+  "baseline_commit": "2db18c6ed8d7aa711ea807a67cd211cddd22f393",
+  "reviewed_commit": "2ee4ee7c75b43eecea65f9b5437899dd58248bfd",
+  "measured_projection_only": {
+    "logical_GiB_reported_by_primary": 203.815,
+    "restored_GiB_reported_by_primary": 49.22,
+    "observation_seconds_reported_by_primary": 915,
+    "linear_projected_seconds": 3788.9216781796017
+  }
+}

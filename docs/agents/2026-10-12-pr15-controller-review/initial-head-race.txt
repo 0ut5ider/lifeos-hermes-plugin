@@ -1,0 +1,5 @@
+Initial command compares the controller with git show HEAD and asserts that old timeout=3600 occurs once.
+The primary commits the timeout change during inspection, moving HEAD from 2db18c6e to 2ee4ee7c.
+The old-expression assertion raises AssertionError because moving HEAD now contains the new expression.
+The final comparison pins baseline commit 2db18c6ed8d7aa711ea807a67cd211cddd22f393 explicitly.
+It passes and proves the full inspected file equals that baseline with the single intended replacement.
