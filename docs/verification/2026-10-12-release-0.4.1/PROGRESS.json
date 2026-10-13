@@ -53,7 +53,8 @@
     "receipt": "fresh-install-223cbfc1-041.json"
   },
   "running": [
-    "Normal candidate owner review"
+    "Authenticated normal candidate apply preflight",
+    "Focused qualification driver review"
   ],
   "integration_gate": {
     "status": "PASS",
@@ -71,5 +72,12 @@
     "recovery_complete": true,
     "status": "PASS",
     "recovery_receipt": "development-bunfixed-interruption-recovery.json"
+  },
+  "qualification_evidence_fix": {
+    "status": "REGRESSION_PASS",
+    "cause": "The checker does not bind whole-guest recovery to release identity and matching program coverage.",
+    "before_exit": 1,
+    "after_exit": 0,
+    "sealed_product_changed": false
   }
 }

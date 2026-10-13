@@ -25,7 +25,7 @@ cases=[('baseline',None,None),('stale-integration','integration','package_commit
 ('wrong-coverage-count','coverage','program_targets'),('missing-interruption-exit',None,None),('wrong-exit-operation','exit','operation'),
 ('wrong-exit-commit','exit','program_commit'),('wrong-exit-code','exit','actual_systemd_exit'),
 ('wrong-exit-checkpoint','exit','checkpoint'),('wrong-exit-status','exit','status_state'),
-('wrong-exit-transaction','exit','program_transaction_state'),('incomplete-gates',None,None)]
+('wrong-exit-transaction','exit','program_transaction_state'),('incomplete-gates',None,None),('wrong-whole-version','whole','version'),('wrong-whole-commit','whole','program_commit'),('wrong-whole-digest','whole','archive_sha256'),('wrong-whole-operation','whole','operation'),('wrong-whole-backup','whole','archive'),('wrong-coverage-backup','coverage','backup_archive'),('wrong-coverage-operation','coverage','operation'),('wrong-whole-source','whole','source_guest'),('wrong-coverage-guest','coverage','restored_guest')]
 results=[]
 for name,receipt,key in cases:
     with tempfile.TemporaryDirectory(prefix='release-certificate-binding-') as directory:
@@ -50,16 +50,16 @@ for name,receipt,key in cases:
             rollback['operation']=json.loads((source/'development-bunfixed-update.json').read_bytes())['operation']
             (root/'development-bunfixed-rollback.json').write_text(json.dumps(rollback))
             (root/'whole-guest-recovery.json').write_text(json.dumps({'status':'PASS','network_disconnected':True,
-                'application_services_masked':True,'cases':[{'case':c,'status':'PASS'} for c in ('baseline','interrupted','later-edit')],
+                'application_services_masked':True,'version':build['version'],'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'operation':update['operation'],'archive':'synthetic-backup','source_guest':101,'restored_guest':110,'cases':[{'case':c,'status':'PASS'} for c in ('baseline','interrupted','later-edit')],
                 'synthetic_probe_only':True}))
             (root/'whole-guest-program-coverage.json').write_text(json.dumps({'status':'PASS',
-                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'program_targets':143,'synthetic_probe_only':True}))
+                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'program_targets':143,'version':build['version'],'operation':update['operation'],'backup_archive':'synthetic-backup','source_guest':101,'restored_guest':110,'synthetic_probe_only':True}))
         if name=='missing-interruption-exit':(root/'development-bunfixed-interruption-exit.json').unlink()
         if receipt:
             file={'integration':'integration-sealed-'+identity+'.json','native':'native-sealed-'+identity+'.json',
                 'fresh':'fresh-install-'+identity+'-041.json','rollback':'development-bunfixed-rollback.json','interrupted':'development-bunfixed-interruption-recovery.json',
                 'interrupted-preparation':'development-preparation-interruption.json','boot':'development-bunfixed-boot.json',
-                'coverage':'whole-guest-program-coverage.json','exit':'development-bunfixed-interruption-exit.json'}[receipt]
+                'whole':'whole-guest-recovery.json','coverage':'whole-guest-program-coverage.json','exit':'development-bunfixed-interruption-exit.json'}[receipt]
             path=root/file;value=json.loads(path.read_bytes())
             target=value['preparation'] if receipt in {'fresh','interrupted-preparation'} else (value['active_identity'] if receipt=='boot' and key!='operation' else value)
             target[key]=0 if key=='actual_systemd_exit' else 142 if key=='program_targets' else False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)

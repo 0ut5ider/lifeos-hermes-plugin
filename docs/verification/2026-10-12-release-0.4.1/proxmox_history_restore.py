@@ -75,11 +75,15 @@ try:
     run(['pct','exec',str(vmid),'--','ip','-brief','address'],'network')
     report=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B',
         '/home/lifeos-hermes/releases/qualification-20261012-041/history_guest_recovery.py','verify',package],'verify-history'))
-    assert report['status']=='PASS' and len(report['cases'])==3
+    assert report['status']=='PASS' and report['version']=='0.4.1' and len(report['cases'])==3
     coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-20261012-041/verify_stable_restored.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
-    assert coverage['status']=='PASS'
+    assert coverage['status']=='PASS' and coverage['version']==report['version']
+    assert coverage['operation']==os.environ['LIFEOS_STABLE_OPERATION']
+    coverage.update(backup_archive=archive,source_guest=101,restored_guest=vmid)
     (out/'stable-program-coverage.json').write_text(json.dumps(coverage,indent=2)+'\n')
     (out/'verification.json').write_text(json.dumps({'status':'PASS','archive':archive,'source_guest':101,'restored_guest':vmid,
+        'version':coverage['version'],'program_commit':coverage['program_commit'],'archive_sha256':coverage['archive_sha256'],
+        'operation':coverage['operation'],
         'network_disconnected':True,'application_services_masked':True,'cases':report['cases'],
         'production_guest_changed':False},indent=2)+'\n')
     run(['pct','shutdown',str(vmid),'--timeout','90'],'shutdown-restore')

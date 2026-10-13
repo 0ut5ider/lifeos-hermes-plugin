@@ -24,4 +24,4 @@ for row in mount['entries']:
  path=Path(row['target']);assert hashlib.sha256(path.read_bytes()).hexdigest()==row['after']['digest']
 receipt=json.loads((profile/'integration-release.json').read_bytes())
 assert all(receipt[key]==request[key] for key in ('version','commit','package_sha256'))
-print(json.dumps({'status':'PASS','version':request['version'],'program_commit':request['commit'],'archive_sha256':request['package_sha256'],'program_targets':count,'native_mount_targets':len(mount['entries']),'network_disconnected':True,'application_services_masked':True},indent=2))
+print(json.dumps({'status':'PASS','operation':job.name,'version':request['version'],'program_commit':request['commit'],'archive_sha256':request['package_sha256'],'program_targets':count,'native_mount_targets':len(mount['entries']),'network_disconnected':True,'application_services_masked':True},indent=2))

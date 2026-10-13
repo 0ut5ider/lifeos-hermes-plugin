@@ -1,0 +1,30 @@
+[
+  {
+    "case": "synthetic-complete-baseline",
+    "exit_code": 0,
+    "certificate_written": true,
+    "synthetic_pending_receipts": true,
+    "output_version": "0.4.1",
+    "output_program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "output_archive_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5",
+    "whole_backup_archive": "synthetic-041-backup",
+    "coverage_backup_archive": "synthetic-041-backup"
+  },
+  {
+    "case": "actual-historical-040-whole-receipt",
+    "exit_code": 0,
+    "certificate_written": true,
+    "synthetic_pending_receipts": true,
+    "output_version": "0.4.1",
+    "output_program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "output_archive_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5",
+    "whole_backup_archive": "PBS-01:backup/ct/101/2026-10-13T00:43:38Z",
+    "coverage_backup_archive": "synthetic-041-backup"
+  },
+  {
+    "case": "missing-whole-receipt",
+    "exit_code": 1,
+    "certificate_written": false,
+    "synthetic_pending_receipts": true
+  }
+]

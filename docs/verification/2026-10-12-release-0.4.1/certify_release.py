@@ -47,6 +47,13 @@ assert rollback['active_identity']==interrupted['active_identity']=={'version':'
 whole=load('whole-guest-recovery.json');coverage=load('whole-guest-program-coverage.json')
 assert whole['status']==coverage['status']=='PASS' and len(whole['cases'])==3
 assert whole['network_disconnected'] and whole['application_services_masked']
+assert {row['case'] for row in whole['cases']}=={'baseline','interrupted','later-edit'}
+assert all(row['status']=='PASS' for row in whole['cases'])
+for receipt in (whole,coverage):
+ assert receipt['version']==build['version'] and receipt['program_commit']==head
+ assert receipt['archive_sha256']==build['archive_sha256'] and receipt['operation']==update['operation']
+ assert receipt['source_guest']==101 and receipt['restored_guest']==110
+assert whole['archive']==coverage['backup_archive'] and whole['archive']
 assert coverage['program_commit']==head and coverage['archive_sha256']==build['archive_sha256']
 assert coverage['program_targets']==143
 boot=load('development-bunfixed-boot.json');assert boot['status']=='PASS' and boot['bun_version']=='1.4.3' and boot['manual_service_start_after_reboot'] is False
