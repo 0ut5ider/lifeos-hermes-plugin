@@ -1,0 +1,21 @@
+test_stage_subprocess_creates_private_files_with_a_permissive_caller (test_release_stage.ReleaseStageTests.test_stage_subprocess_creates_private_files_with_a_permissive_caller) ... FAIL
+
+======================================================================
+FAIL: test_stage_subprocess_creates_private_files_with_a_permissive_caller (test_release_stage.ReleaseStageTests.test_stage_subprocess_creates_private_files_with_a_permissive_caller)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_stage.py", line 34, in test_stage_subprocess_creates_private_files_with_a_permissive_caller
+    self.assertEqual(json.loads(result.stdout), {'directory': 0o700, 'file': 0o600, 'caller': 0o002})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'directory': 509, 'file': 436, 'caller': 2} != {'directory': 448, 'file': 384, 'caller': 2}
+- {'caller': 2, 'directory': 509, 'file': 436}
+?                            ^^^           --
+
++ {'caller': 2, 'directory': 448, 'file': 384}
+?                            ^^^          ++
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.093s
+
+FAILED (failures=1)
