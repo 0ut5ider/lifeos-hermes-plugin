@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "commands": {
+    "public-stock-plugin-install": {
+      "classification": "native_runtime_progress",
+      "lines": [
+        "Preparing the isolated Hermes runtime\u2026",
+        "  \u2192 Installing Python dependencies\u2026",
+        "  \u2713 Installing Python dependencies"
+      ]
+    },
+    "public-stock-plugin-enable": {
+      "classification": "native_runtime_progress",
+      "lines": [
+        "  \u2192 Installing Python dependencies\u2026",
+        "  \u2713 Installing Python dependencies"
+      ]
+    },
+    "public-stock-manager-status": {
+      "classification": "empty",
+      "lines": []
+    },
+    "public-release-prepare": {
+      "classification": "empty",
+      "lines": []
+    },
+    "public-release-start": {
+      "classification": "empty",
+      "lines": []
+    },
+    "public-installed-version": {
+      "classification": "empty",
+      "lines": []
+    }
+  },
+  "initial_empty_stderr_assertion": "FAIL: Native installation emits expected runtime preparation progress."
+}

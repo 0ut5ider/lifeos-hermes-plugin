@@ -1,0 +1,17 @@
+{
+  "operation": "ec9c2ff59e4a479689839c98b58bb94f",
+  "status": "REJECTED_BEFORE_PUBLICATION",
+  "exception": "ProgramConflict",
+  "program_state": "prepared",
+  "reviewed_program_entries": 140,
+  "required_program_entries": 143,
+  "omitted_aliases": [
+    "hermes",
+    "hermes-agent",
+    "hermes-acp"
+  ],
+  "cause": "Rollback restores a development-era manager. Its reviewed plan omits the public aliases required by the published worker.",
+  "repair": "Install the public manager at the exact release tag commit through the native Hermes plugin command. Restart the dashboard and prepare a new operation.",
+  "public_assets_changed": false,
+  "daily_server_changed": false
+}

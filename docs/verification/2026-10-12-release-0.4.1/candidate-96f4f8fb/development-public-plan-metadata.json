@@ -1,0 +1,40 @@
+{
+  "ec9c2ff59e4a479689839c98b58bb94f": {
+    "operation_state": "rejected",
+    "program_state": "prepared",
+    "program_targets": 140,
+    "public_aliases": [],
+    "program_journal_sha256": "f0e43932603d00993df18959c73578b1836ee1395bc90cb8ca8d0d70816b0288",
+    "failure": {
+      "exception": "ProgramConflict",
+      "frames": [
+        {
+          "file": "release_worker.py",
+          "line": 254,
+          "function": "execute"
+        },
+        {
+          "file": "release_worker.py",
+          "line": 347,
+          "function": "_execute"
+        },
+        {
+          "file": "release_programs.py",
+          "line": 157,
+          "function": "check_plan"
+        }
+      ]
+    }
+  },
+  "803df4a32f1546b6a8db6d34c90b0ef2": {
+    "operation_state": "applied",
+    "program_state": "applied",
+    "program_targets": 143,
+    "public_aliases": [
+      "hermes",
+      "hermes-acp",
+      "hermes-agent"
+    ],
+    "program_journal_sha256": "6f0b1b8013bbbf2370c2b372352b6b2afdd98854bf1563ce9a7284a098745c40"
+  }
+}

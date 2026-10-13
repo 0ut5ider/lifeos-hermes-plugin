@@ -1,0 +1,98 @@
+{
+  "format": 1,
+  "status": "PASS",
+  "generated_at": "2026-10-13T10:33:51.979778+00:00",
+  "version": "0.4.1",
+  "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+  "tag_commit": "6c13407f33e5d7c2a982c1618b1a26dd0511f855",
+  "archive_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e",
+  "certificate_sha256": "4f6bea28370d899e2ec13a003d4fe90e57c1cfdeddf511f01e636676603c0ddc",
+  "fresh_install": {
+    "status": "PASS",
+    "version_selection": "explicit",
+    "stock_public_plugin_install": "PASS",
+    "published_certificate_identity": "PASS",
+    "public_worker_install": "PASS",
+    "elapsed_seconds": 173.49305315403035
+  },
+  "fresh_installed_identity": {
+    "version": "0.4.1",
+    "commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+    "package_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e",
+    "verification": "verified"
+  },
+  "development_update": {
+    "operation": "803df4a32f1546b6a8db6d34c90b0ef2",
+    "status": "PASS",
+    "public_release": true,
+    "operation_state": "applied",
+    "program_transaction_state": "applied",
+    "active_identity": {
+      "version": "0.4.1",
+      "commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+      "package_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e"
+    },
+    "model_selection_sha256": "a4cabe0e802a98b003882fbdc776f4b30179b7ac3795de6644f1bdb9bca89e2f",
+    "public_commands_sha256": {
+      "hermes": "9baa5149491cf6c21872c5c2290ba87e250cd1dd3739836ea1be307ee6d77263",
+      "hermes-agent": "2d0b65c765691abfb2b17b642af88cf0a920942e02293d2fc6210c786cf570cc",
+      "hermes-acp": "478bdf1283f539c43318c3488d7cd611c273c7e72cc791945db4a6ef046d604a"
+    },
+    "services": {
+      "hermes-gateway.service": {
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "hermes-dashboard.service": {
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "com.lifeos.pulse.service": {
+        "ActiveState": "active",
+        "SubState": "running"
+      }
+    },
+    "daily_server_changed": false
+  },
+  "development_manager_bootstrap": {
+    "tag_commit": "6c13407f33e5d7c2a982c1618b1a26dd0511f855",
+    "status": "PASS",
+    "install_exit": 0,
+    "worker_sha256": "0978104e4504643a012e50924a3d0c1d90fc0694f854cca6cd698a8027f5c727",
+    "dashboard_restart_exit": 0
+  },
+  "daily_checkpoint": {
+    "status": "PASS",
+    "identity": {
+      "version": "0.3.1",
+      "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+      "package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24",
+      "verification": "verified"
+    },
+    "services": {
+      "hermes-gateway.service": {
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "hermes-dashboard.service": {
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "com.lifeos.pulse.service": {
+        "ActiveState": "active",
+        "SubState": "running"
+      }
+    },
+    "read_only": true
+  },
+  "daily_promotion_verified": false,
+  "automatic_morning_observed_for_041": false,
+  "receipts_sha256": {
+    "public-install-verification.json": "735cd83be2f273c02d5ae0e1b47928bb5e9ccfb1094e11d64a72e21b155480e8",
+    "development-public-update.json": "8c00f1254c6abe0c830846b9ba7bea09ef0bd43eb95f2fc39289ebd5dab0d100",
+    "manager-bootstrap.json": "4c207ef25db36243183bc49dfc385cc407f1672485a08013ae9046686eaeb899",
+    "development-public-preparation-after-bootstrap.json": "6eea31e6762ee48b288617041c1e664aaaca08bf373a1816ecd5c0713a6d04f5",
+    "owner-public-actions-after-bootstrap.json": "9c5f942cc28913a64b1ba1ff6c1fdc48cfd50b5a57dc463f13e917de7cbcac80",
+    "daily-unchanged-observer.json": "72819978d1af3cf3b1e14bdc0a12c2612db6a33408398f9930e84d57d347264e"
+  }
+}

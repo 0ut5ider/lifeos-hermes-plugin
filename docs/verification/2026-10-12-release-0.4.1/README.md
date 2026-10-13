@@ -1,5 +1,8 @@
 # LifeOS 0.4.1 qualification
 
+The exact release passes qualification and public installation acceptance. Development runs 0.4.1; daily remains on 0.3.1.
+The following paragraphs retain the measured investigation and release checkpoints.
+
 The patch candidate corrects an actual public bootstrap failure.
 Stock Hermes v0.21.7 checks `args.version` before it dispatches plugin commands.
 The release manager also stores its exact release choice in that field.
@@ -44,3 +47,37 @@ To undo this network change, restore the original `net0` value from `development
 
 Normal authenticated rollback restores exact 0.3.1, all three services, all three public aliases, and the selected model mapping.
 The strict release certificate qualifies the complete 0.4.1 package. Public installation verification follows publication.
+
+PR16 merges at `6c13407f33e5d7c2a982c1618b1a26dd0511f855`.
+Release `v0.4.1` publishes the exact qualified assets as the latest stable release.
+The 0.3.1 and 0.4.0 asset identities remain unchanged.
+The GitHub tag endpoint returns 404 for the draft release. The authenticated release list supplies the draft verification record.
+Public installation and development update acceptance follow this publication.
+
+The public fresh installation passes explicit `--version 0.4.1` in 173.493 seconds.
+It uses the actual public GitHub plugin, archive, and qualified certificate.
+A read-only daily observer verifies exact 0.3.1 and all three running services.
+
+The first default development operation is refused before it changes active programs.
+The stable GitHub release is already published when this refusal occurs.
+Qualification rollback restores a development-era standalone manager.
+That manager reviews 140 targets and omits all three public Hermes aliases.
+The published worker requires 143 targets and refuses that reviewed plan.
+The evidence preserves the refusal and the exact installed manager source differences.
+The native Hermes plugin command installs the manager at the public release tag commit.
+The dashboard restarts and loads the selected manager before a new public operation.
+This repair changes no release asset and imports or resets no personal data.
+
+The initial public output check incorrectly requires empty standard error for native plugin installation.
+The measured output contains expected runtime preparation progress. The corrected check verifies those exact messages.
+The browser evaluate call times out after 15 seconds while owner review continues on the server.
+The completed browser result records HTTP 200. No duplicate review is submitted.
+
+The new default preparation reports ready with all 143 program targets, including the three public aliases.
+The published manager and worker now bind the same candidate plan.
+
+The final default public development update passes at operation `803df4a32f1546b6a8db6d34c90b0ef2`.
+The independent observer verifies exact 0.4.1, all three running services, all three public aliases, and the unchanged model mapping.
+The new `public-installation-verification.json` asset records safe public acceptance metadata.
+The initial archive, dashboard bundle, and release certificate remain unchanged.
+The daily server stays on exact 0.3.1. This release does not claim daily promotion or a new automatic morning observation.

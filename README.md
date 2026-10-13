@@ -10,12 +10,13 @@ The complete release manager in `optional/lifeos_release_manager` supports fresh
 Actual development checks pass, including automatic reboot, off-server whole-guest recovery, three Atlas cases, all 143 program targets, and authenticated normal rollback.
 The focused reviews are clear. Thirty-eight certificate controls and actual historical-receipt refusal pass.
 The [patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) identifies the exact archive and certificate.
-Published 0.3.1 and 0.4.0 assets remain immutable. Public installation verification follows stable publication.
+Published 0.3.1 and 0.4.0 assets remain immutable. Public exact-version installation passes against the published archive and certificate.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
 **Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
-Normal qualification rollback restores that same exact release on development `.252` before the public update check.
+**Development deployed version:** `0.4.1`, program commit `96f4f8fb`. The actual default public update passes on `.252`.
+All three services and public command aliases pass. The selected model mapping stays fixed.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
@@ -267,7 +268,7 @@ The `host`, `user`, `port`, and `root` must match the active Hermes SSH backend.
 
 The standalone manager in `optional/lifeos_release_manager` adds the `lifeos-release` command and a registered Hermes skill.
 The complete package includes the supported Hermes runtime, LifeOS programs, bridge, manager, dependencies, dashboard, and public commands.
-The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public installation verification follows stable publication.
+The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public exact-version installation passes against the published archive and certificate.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
 Pin the release manager to the full 40-character commit shown in the selected release notes. Hermes does not accept a tag for `--ref`:
@@ -278,6 +279,12 @@ hermes plugins enable lifeos-release-manager
 hermes lifeos-release status
 hermes lifeos-release prepare --name Adrian --assistant Cerebo
 ```
+
+An existing development-era standalone manager can create an incomplete plan for a published worker.
+Install the manager from the selected release before the first complete published update.
+Use `--force --enable` with the native install command when that development manager already exists.
+Restart the Hermes dashboard after replacement so it loads the selected manager.
+The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f855`.
 
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
 The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
@@ -312,7 +319,7 @@ hermes plugins install 0ut5ider/lifeos-hermes-plugin/lifeos_hook_bridge --ref <f
 hermes plugins enable lifeos-hook-bridge
 ```
 
-The install source is the `lifeos_hook_bridge/` directory, which contains only runtime files. An earlier runtime snapshot passed the Hermes scan. The [October 3 installation assessment](notes/2026-10-03-hermes-managed-install-update.md) finds that the current scanner blocks native installation with critical findings in the SSH enrollment code. Before October 5, the commands above could not complete under that scanner. The [optional sharing component unit](docs/verification/2026-10-05-optional-sharing-component/README.md) moves SSH enrollment into `optional/lifeos-memory-sharing/`; the scan of the runtime directory is now clean and the installer allows it. See the [component guide](optional/lifeos-memory-sharing/README.md) to add SSH sharing. The [capability validation unit](docs/verification/2026-10-05-capability-validation/README.md) corrects the separate validator defect and declares the two middleware kinds; the runtime scan is clean. Complete installation and updates from Hermes are a [deferred task](TODO.md). The plugin reads native hook registrations from `~/.claude/settings.json`; set `LIFEOS_HOOK_SETTINGS` in the Hermes process environment if the file is elsewhere. Restart the Hermes gateway after enabling the plugin. Restart the Hermes dashboard after installing the plugin so it can mount the LifeOS settings API.
+The install source is the `lifeos_hook_bridge/` directory, which contains only runtime files. An earlier runtime snapshot passed the Hermes scan. The [October 3 installation assessment](notes/2026-10-03-hermes-managed-install-update.md) finds that the current scanner blocks native installation with critical findings in the SSH enrollment code. Before October 5, the commands above could not complete under that scanner. The [optional sharing component unit](docs/verification/2026-10-05-optional-sharing-component/README.md) moves SSH enrollment into `optional/lifeos-memory-sharing/`; the scan of the runtime directory is now clean and the installer allows it. See the [component guide](optional/lifeos-memory-sharing/README.md) to add SSH sharing. The [capability validation unit](docs/verification/2026-10-05-capability-validation/README.md) corrects the separate validator defect and declares the two middleware kinds; the runtime scan is clean. Complete installation and updates from Hermes pass public acceptance. See the [complete-release guide](#install-and-update-complete-releases-from-hermes). The plugin reads native hook registrations from `~/.claude/settings.json`; set `LIFEOS_HOOK_SETTINGS` in the Hermes process environment if the file is elsewhere. Restart the Hermes gateway after enabling the plugin. Restart the Hermes dashboard after installing the plugin so it can mount the LifeOS settings API.
 
 The Git installer was verified against pinned public commits in the separate clean-install account on `.212`. The plugin enabled, a native LifeOS prompt hook returned context, and the clean account completed a private LAN model call. The [release gate record](notes/2026-09-29-release-gate.md) gives the earlier installation, update, and rollback results. The current [Step 1 gate](docs/parity/step1-acceptance.md) passes all 152 approved scenarios, including actual Discord delivery. These selected checks do not establish equivalence for every possible Claude Code event or handler branch.
 
