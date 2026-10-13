@@ -89,3 +89,12 @@ The normal and interrupted .252 checks still remain for this corrected package.
 The whole-guest controller and coverage verifier now bind the corrected source folder and exact a87e7ae9 commit.
 Re-upload the controller to .101 before its use.
 The daily server remains on 0.3.1 and no 0.4.0 public asset exists.
+
+Corrected native qualification passes all 716 tests across 38 files through the official runner.
+Corrected fresh stock installation/recovery passes and preserves later synthetic data.
+The corrected development preparation is ready: 14215619fd654d9bab0028abe59b62af.
+Its authenticated browser review returns HTTP 200.
+The existing-installation interruption actor is being admitted through start_interrupted_worker_bunfixed.py.
+Poll its actual status and USER_UNIT exit metadata before starting the dashboard or recovery.
+The primary exec session 57904 is the synchronous SSH admission command, not the detached worker itself.
+The source and public command snapshots bind the corrected exact archive.

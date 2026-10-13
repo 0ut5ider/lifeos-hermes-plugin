@@ -68,9 +68,24 @@
     "receipt": "stable-component-identity.json"
   },
   "native_controls": {
-    "status": "RUNNING",
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
     "runtime": "Bun 1.4.3",
     "official_runner": true,
-    "receipt": "native-sealed-a87e7ae9.json"
+    "receipt": "native-sealed-a87e7ae9.json",
+    "source_copy_used": true
+  },
+  "fresh_bunfixed_acceptance": {
+    "status": "PASS",
+    "receipt": "fresh-install-a87e7ae9-bunfixed.json",
+    "actual_worker_exit": 73,
+    "phase": "directory-retained",
+    "later_synthetic_data_preserved": true
+  },
+  "corrected_development_preparation": {
+    "status": "PASS",
+    "operation": "14215619fd654d9bab0028abe59b62af",
+    "receipt": "development-preparation-bunfixed-interruption.json"
   }
 }
