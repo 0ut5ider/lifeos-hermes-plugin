@@ -1,17 +1,17 @@
 {
   "version": "0.4.2",
-  "status": "REBUILD_AFTER_NATIVE_WORKER_MASK_FAILURE",
+  "status": "CORRECTED_CANDIDATE_QUALIFICATION",
   "daily_server_changed": false,
   "production_qualified": false,
   "steps": [
     {
       "number": 1,
-      "status": "REBUILD_REQUIRED",
+      "status": "PASS",
       "name": "Freeze and build final package"
     },
     {
       "number": 2,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "name": "Clean web installation and synthetic ownership"
     },
     {
@@ -35,14 +35,14 @@
       "name": "Stable publication and public latest acceptance"
     }
   ],
-  "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
-  "archive_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5",
-  "archive_bytes": 119144101,
+  "program_commit": "87205092832c550a09fce6e1cb3ca944fdb69a8c",
+  "archive_sha256": "76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4",
+  "archive_bytes": 119149672,
   "native_gate": {
     "status": "PASS",
     "tests": 716,
     "files": 38,
-    "receipt": "native-sealed-742a0c33.json",
+    "receipt": "candidate-87205092/native-sealed-87205092.json",
     "fresh_execution": true
   },
   "infrastructure": {
@@ -53,17 +53,20 @@
     "provisioning": "PASS",
     "fresh_guest_ip": "192.168.8.202",
     "kernel_wait_recovered": true,
-    "failed_guest_107_cleanup": "PASS"
+    "failed_guest_107_cleanup": "PASS",
+    "corrected_fresh_guest": 109,
+    "corrected_fresh_guest_ip": "192.168.8.248",
+    "corrected_provisioning": "PASS",
+    "corrected_stock_runtime": "INSTALLING"
   },
   "integration_gate": {
     "status": "PASS",
-    "first_attempt_tests": 674,
-    "first_attempt_errors": 1,
-    "product_source_changed": false,
-    "reason": "The fixture requires a same-filesystem hard link to its verified archive.",
-    "tests": 674,
-    "receipt": "integration-archive-bound-742a0c33.json",
-    "archive_source_unchanged": true
+    "expected_tests": 675,
+    "receipt_directory": "candidate-87205092",
+    "original_candidate_674_test_pass_retained": true,
+    "tests": 675,
+    "receipt": "candidate-87205092/integration-archive-bound-87205092.json",
+    "fresh_execution": true
   },
   "host_restart": {
     "user_approved_controlled": true,
@@ -83,13 +86,19 @@
     "receipt": "development-final-update.json",
     "operation": "02050dbb7a3e4fdea68396d3a2f18c00",
     "saved_synthetic_fact_preserved": true,
-    "selected_model_and_tiers_preserved": true
+    "selected_model_and_tiers_preserved": true,
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
   },
   "clean_web_manager_install": {
     "status": "PASS",
     "receipt": "stock-native-github-manager-install.json",
     "force_reinstall": false,
-    "explicit_branch_or_commit_selected": false
+    "explicit_branch_or_commit_selected": false,
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
   },
   "installed_controls": {
     "update": "PASS",
@@ -97,16 +106,22 @@
     "actual_worker_exit_73": "PASS",
     "installed_interruption_recovery": "PASS",
     "later_synthetic_edit_preserved": "PASS",
-    "public_update_buttons_and_conversation": "PENDING_PUBLICATION"
+    "public_update_buttons_and_conversation": "PENDING_PUBLICATION",
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
   },
   "clean_full_preparation": {
     "status": "PASS",
     "receipt": "fresh-final-preparation.json",
     "operation": "f7dd8b48bbf2483aad7a453b31ada199",
     "first_service_working_directory_attempt": "RETAINED_FAIL",
-    "second_service_mask_attempt": "RETAINED_FAIL"
+    "second_service_mask_attempt": "RETAINED_FAIL",
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
   },
-  "next_candidate_required": true,
+  "next_candidate_required": false,
   "original_candidate_superseded": {
     "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
     "archive_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5",
@@ -118,5 +133,24 @@
     "status": "FAIL",
     "recovered_service_state": "cancelled",
     "cause_receipt": "worker-private-mask-cause.json"
+  },
+  "current_build_receipt": "candidate-87205092/stable-build.json",
+  "corrected_candidate_controls": {
+    "clean_web_installation": "PASS",
+    "ownership_activation": "PASS",
+    "development_update": "PASS",
+    "rollback_and_interruption": "PENDING",
+    "reboot": "PENDING",
+    "whole_guest_restore": "PENDING",
+    "stable_publication": "PENDING",
+    "program_rollback": "PASS",
+    "clean_full_installation": "PASS",
+    "owner_turn": "PASS",
+    "receipts": {
+      "development_update": "candidate-87205092/development-update.json",
+      "program_rollback": "candidate-87205092/development-rollback.json",
+      "ownership_activation": "candidate-87205092/fresh-ownership-activation.json"
+    },
+    "installed_interruption_recovery": "PASS"
   }
 }
