@@ -44,7 +44,7 @@
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "development_reboot": "guest101"
+    "whole_guest_recovery": "launch_pending"
   },
   "integration_gate": {
     "status": "PASS",
@@ -164,6 +164,14 @@
     "Corrected sealed fresh installation and actual interrupted recovery with later data preservation",
     "Complete corrected sealed integration: 631 tests, no skips",
     "Corrected installed interruption exit73 and public CLI recovery: exact03, all3services, all3aliases and model mapping",
-    "Actual corrected normal installed update: exact041/96/SHA462, all3services, aliases and model mapping"
-  ]
+    "Actual corrected normal installed update: exact041/96/SHA462, all3services, aliases and model mapping",
+    "Actual corrected guest reboot: exact041, all3services enabled/automatic, no restarts, Bun1.4.3",
+    "Three synthetic Atlas whole-guest recovery fixtures prepared without personal data"
+  ],
+  "boot_gate": {
+    "status": "PASS",
+    "receipt": "candidate-96f4f8fb/development-bunfixed-boot.json",
+    "automatic_start": true,
+    "restarts": 0
+  }
 }
