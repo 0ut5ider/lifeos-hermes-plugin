@@ -1,0 +1,17 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Python: /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python
+Every Python command: PYTHONDONTWRITEBYTECODE=1 and -B
+PYTHONPATH: /home/outsider/Projects/Hermes_agent/LifeOS_plugin:/home/outsider/.cache/lifeos-hermes-managed-20261012/packages/0.4.1-223cbfc1/hermes
+ConfigChange PATH prefix: /home/outsider/.cache/lifeos-hermes-managed-20261012/fixed-bun-tools
+
+python -B -m unittest discover -s tests -p test_config_inventory.py -v
+python -B -m unittest discover -s tests -p test_bridge.py -k config_change -v
+python -B docs/agents/2026-10-13-pr16-config-inventory-review/run_before_characterizations.py
+python -B docs/agents/2026-10-13-pr16-config-inventory-review/probe_role_precedence.py
+python -B -W error::ResourceWarning docs/agents/2026-10-13-pr16-config-inventory-review/probe_inventory_edges.py
+python -B docs/agents/2026-10-13-pr16-config-inventory-review/probe_role_precedence_closure.py
+python -B -W error::ResourceWarning docs/agents/2026-10-13-pr16-config-inventory-review/probe_inventory_edges_closure.py
+
+Each stem retains stdout, stderr, exit status. JSON files retain machine-readable probe results.
+Read-only Git inspection: git log; git diff a5e4fbed 432774a5 -- lifeos_hook_bridge/bridge.py tests/test_config_inventory.py CHANGELOG.md; git diff a5e4fbed 96f4f8fb -- those same paths; git rev-parse HEAD; git diff -- those same paths.
+File inspection: coding-rules SKILL.md; scoped product code/tests/CHANGELOG; verification diagnostic receipts; retained probe code and results. Final source hashes and equality to closure snapshots are in final-reviewed-identity.json.

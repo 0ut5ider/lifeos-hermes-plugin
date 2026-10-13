@@ -1,0 +1,138 @@
+{
+  "status": "PASS",
+  "exact_stable_roles_and_signatures": true,
+  "effective_uid": 1000,
+  "case": "symlink root, file and directory links, broken/cyclic links, hidden/dependency files, missing project settings, directory and FIFO settings, unreadable skill child, repeated project roots",
+  "results": {
+    "before": {
+      "sources": {
+        "user/.claude/settings.json": "user_settings",
+        "policy/managed-settings.json": "policy_settings",
+        "project/.claude/settings.json": "project_settings",
+        "project/.claude/settings.local.json": "local_settings",
+        "user/.claude/skills/file-link": "skills",
+        "user/.claude/skills/.hidden": "skills",
+        "user/.claude/skills/SKILL.md": "skills",
+        "user/.claude/skills/node_modules/example/index.js": "skills"
+      },
+      "files": {
+        "user/.claude/settings.json": [
+          1791867603520688335,
+          0,
+          1791867603520688335,
+          48,
+          11470915
+        ],
+        "policy/managed-settings.json": [
+          1791867603520688335,
+          40,
+          1791867603520688335,
+          48,
+          11470914
+        ],
+        "project/.claude/settings.local.json": [
+          1791867603520688335,
+          0,
+          1791867603520688335,
+          48,
+          11470916
+        ],
+        "user/.claude/skills/file-link": [
+          1791867603521684167,
+          9,
+          1791867603521684167,
+          48,
+          11470927
+        ],
+        "user/.claude/skills/.hidden": [
+          1791867603521525243,
+          9,
+          1791867603521525243,
+          48,
+          11470920
+        ],
+        "user/.claude/skills/SKILL.md": [
+          1791867603521462303,
+          9,
+          1791867603521462303,
+          48,
+          11470919
+        ],
+        "user/.claude/skills/node_modules/example/index.js": [
+          1791867603521599755,
+          9,
+          1791867603521599755,
+          48,
+          11470923
+        ]
+      },
+      "fd_before": 4,
+      "fd_after_100_complete_scans": 4
+    },
+    "after": {
+      "sources": {
+        "user/.claude/settings.json": "user_settings",
+        "policy/managed-settings.json": "policy_settings",
+        "project/.claude/settings.json": "project_settings",
+        "project/.claude/settings.local.json": "local_settings",
+        "user/.claude/skills/file-link": "skills",
+        "user/.claude/skills/.hidden": "skills",
+        "user/.claude/skills/SKILL.md": "skills",
+        "user/.claude/skills/node_modules/example/index.js": "skills"
+      },
+      "files": {
+        "user/.claude/settings.json": [
+          1791867603520688335,
+          0,
+          1791867603520688335,
+          48,
+          11470915
+        ],
+        "policy/managed-settings.json": [
+          1791867603520688335,
+          40,
+          1791867603520688335,
+          48,
+          11470914
+        ],
+        "project/.claude/settings.local.json": [
+          1791867603520688335,
+          0,
+          1791867603520688335,
+          48,
+          11470916
+        ],
+        "user/.claude/skills/file-link": [
+          1791867603521684167,
+          9,
+          1791867603521684167,
+          48,
+          11470927
+        ],
+        "user/.claude/skills/.hidden": [
+          1791867603521525243,
+          9,
+          1791867603521525243,
+          48,
+          11470920
+        ],
+        "user/.claude/skills/SKILL.md": [
+          1791867603521462303,
+          9,
+          1791867603521462303,
+          48,
+          11470919
+        ],
+        "user/.claude/skills/node_modules/example/index.js": [
+          1791867603521599755,
+          9,
+          1791867603521599755,
+          48,
+          11470923
+        ]
+      },
+      "fd_before": 4,
+      "fd_after_100_complete_scans": 4
+    }
+  }
+}
