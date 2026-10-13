@@ -1,5 +1,8 @@
 # LifeOS 0.4.1 qualification
 
+The exact release passes qualification and public installation acceptance. Development runs 0.4.1; daily remains on 0.3.1.
+The following paragraphs retain the measured investigation and release checkpoints.
+
 The patch candidate corrects an actual public bootstrap failure.
 Stock Hermes v0.21.7 checks `args.version` before it dispatches plugin commands.
 The release manager also stores its exact release choice in that field.
@@ -55,7 +58,8 @@ The public fresh installation passes explicit `--version 0.4.1` in 173.493 secon
 It uses the actual public GitHub plugin, archive, and qualified certificate.
 A read-only daily observer verifies exact 0.3.1 and all three running services.
 
-The first default development operation is refused before publication.
+The first default development operation is refused before it changes active programs.
+The stable GitHub release is already published when this refusal occurs.
 Qualification rollback restores a development-era standalone manager.
 That manager reviews 140 targets and omits all three public Hermes aliases.
 The published worker requires 143 targets and refuses that reviewed plan.
