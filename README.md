@@ -279,6 +279,12 @@ hermes lifeos-release status
 hermes lifeos-release prepare --name Adrian --assistant Cerebo
 ```
 
+An existing development-era standalone manager can create an incomplete plan for a published worker.
+Install the manager from the selected release before the first complete published update.
+Use `--force --enable` with the native install command when that development manager already exists.
+Restart the Hermes dashboard after replacement so it loads the selected manager.
+The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f855`.
+
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
 The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
 The owner reviews the operation in the authenticated Hermes dashboard and selects the installation action.

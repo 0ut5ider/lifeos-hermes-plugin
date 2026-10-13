@@ -1,5 +1,5 @@
 {
-  "status": "QUALIFIED_AWAITING_PUBLICATION",
+  "status": "PUBLISHED_PUBLIC_ACCEPTANCE_RUNNING",
   "version": "0.4.1",
   "production_qualified": true,
   "daily_server_changed": false,
@@ -7,8 +7,8 @@
   "reason": "Actual installed SDK registration exceeded its 10-second deadline while scanning skill metadata.",
   "fix": "Cache scandir file metadata once per root and replay entries in source order.",
   "remaining": [
-    "PR16 merge and immutable publication",
-    "Actual public exact-version installation and default development update"
+    "Default public development update and installed verification",
+    "Publication acceptance asset and documentation PR"
   ],
   "focused_controls": {
     "status": "PASS",
@@ -41,7 +41,9 @@
     "elapsed_seconds": 285.60277056798805,
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
-  "running": {},
+  "running": {
+    "development_public_preparation_pid": 10542
+  },
   "integration_gate": {
     "status": "PASS",
     "tests": 631,
@@ -165,7 +167,9 @@
     "Three synthetic Atlas whole-guest recovery fixtures prepared without personal data",
     "Exact whole-guest recovery: three Atlas cases, 143 program targets, offline guest removed",
     "Normal authenticated rollback restores exact03, all3services, aliases and model mapping",
-    "Strict exact-archive qualification certificate passes all completed gates"
+    "Strict exact-archive qualification certificate passes all completed gates",
+    "PR16 merged at6c13407f",
+    "Immutable0.4.1assets published aslateststable; prior031and040assets unchanged"
   ],
   "boot_gate": {
     "status": "PASS",
@@ -209,5 +213,31 @@
     "status": "QUALIFIED",
     "sha256": "4f6bea28370d899e2ec13a003d4fe90e57c1cfdeddf511f01e636676603c0ddc",
     "receipt": "candidate-96f4f8fb/RELEASE-CERTIFICATE.json"
+  },
+  "publication": {
+    "tag": "v0.4.1",
+    "tag_commit": "6c13407f33e5d7c2a982c1618b1a26dd0511f855",
+    "release_id": 411528882,
+    "receipt": "candidate-96f4f8fb/publication.json",
+    "prior_assets_unchanged": true
+  },
+  "public_fresh_gate": {
+    "status": "PASS",
+    "selection": "explicit",
+    "receipt": "candidate-96f4f8fb/public-install-verification.json",
+    "elapsed_seconds": 173.49305315403035
+  },
+  "public_development_preparation": {
+    "status": "PASS",
+    "selection": "latest_stable",
+    "operation": "ec9c2ff59e4a479689839c98b58bb94f",
+    "receipt": "candidate-96f4f8fb/development-public-preparation.json"
+  },
+  "public_development_initial_refusal": {
+    "status": "REJECTED_BEFORE_PUBLICATION",
+    "receipt": "candidate-96f4f8fb/development-public-manager-plan-refusal.json",
+    "measured_missing_public_aliases": 3,
+    "manager_bootstrap": "PASS",
+    "bootstrap_receipt": "candidate-96f4f8fb/manager-bootstrap.json"
   }
 }
