@@ -3,7 +3,7 @@ new file mode 100644
 index 000000000..97fa8ee97
 --- /dev/null
 +++ b/tests/test_lifeos_delegate_tier_route.py
-@@ -0,0 +1,145 @@
+@@ -0,0 +1,147 @@
 +# ABOUTME: Checks that a delegated child receives its own model and reasoning effort.
 +# ABOUTME: Rejects malformed routes before constructing any child.
 +
@@ -85,6 +85,7 @@ index 000000000..97fa8ee97
 +
 +    def test_real_child_keeps_selected_model_and_effort(self):
 +        from run_agent import AIAgent
++        from hermes_logging import flush_log_queue
 +        with TemporaryDirectory(prefix="delegate-tier-home-") as directory:
 +            Path(directory, "config.yaml").write_text("model:\n  default: default-local\n")
 +            with patch.dict("os.environ", {"HERMES_HOME": directory}):
@@ -105,6 +106,7 @@ index 000000000..97fa8ee97
 +                finally:
 +                    child.close()
 +                    parent.close()
++                    flush_log_queue()
 +
 +    def test_per_task_provider_uses_its_credential_bundle(self):
 +        creds = {"model": "default-local", "provider": "custom", "base_url": "http://127.0.0.1:8123/v1",
