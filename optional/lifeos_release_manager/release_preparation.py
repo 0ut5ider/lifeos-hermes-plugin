@@ -19,7 +19,7 @@ if not __package__:
     sys.modules[namespace.__name__] = namespace
     __package__ = namespace.__name__
 
-from .cli import job_directory, prepare, profile_directory, read_private, write_state
+from .cli import job_directory, prepare, profile_directory, read_private, status, write_state
 from .release_catalog import ReleaseRejected, VERSION
 from .release_operation import OperationBusy, process_stamp
 from .release_programs import publish
@@ -58,6 +58,10 @@ def queue(profile, value):
             fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as error:
             raise OperationBusy('A release preparation is already running') from error
+        for operation in status(profile)['operations']:
+            phase = operation['state']
+            if phase.startswith('queued-') or phase in {'applying', 'recovering', 'restoring', 'recovery_required'}:
+                raise OperationBusy('Finish the release operation or recovery before another preparation')
         job = state / uuid4().hex
         job.mkdir(mode=0o700)
         write_state(job, 'preparing')

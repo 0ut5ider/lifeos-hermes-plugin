@@ -7,6 +7,8 @@
 - Run page-requested preparation in a detached process with a private profile lock.
 - Refuse duplicate preparation and report interrupted preparation without selecting active programs.
 - Prevent isolated stock Python from writing bytecode into qualified source trees during dashboard review.
+- Prepare valid block YAML for native mounting while preserving configuration values.
+- Block further preparation during installation or required recovery. Display each operation identifier.
 - Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
 
 ## 0.4.1 (2026-10-13)

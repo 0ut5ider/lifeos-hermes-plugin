@@ -135,6 +135,17 @@ def _yaml_configuration(profile, native):
     data = yaml.load((profile / 'config.yaml').read_bytes())
     if not isinstance(data, dict):
         raise ReleaseRejected('The selected profile configuration is not a mapping')
+    # Native Mount.ts edits block headers. Preserve values and comments while preparing those headers.
+    pending, seen = [data], set()
+    while pending:
+        value = pending.pop()
+        if not isinstance(value, (dict, list)) or id(value) in seen:
+            continue
+        seen.add(id(value))
+        formatting = getattr(value, 'fa', None)
+        if formatting is not None:
+            formatting.set_block_style()
+        pending.extend(value.values() if isinstance(value, dict) else value)
     plugins = data.setdefault('plugins', {})
     enabled = plugins.setdefault('enabled', [])
     disabled = plugins.setdefault('disabled', [])

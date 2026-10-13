@@ -49,6 +49,17 @@ class ReleasePreparationTests(unittest.TestCase):
                 release_preparation.queue(profile, {'intent': 'install'})
             self.assertEqual(outside.read_text(), 'Preserve this file')
 
+    def test_required_recovery_refuses_preparation_before_creating_another_operation(self):
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            job.parent.chmod(0o700)
+            write_state(job, 'recovery_required')
+            with self.assertRaises(OperationBusy):
+                release_preparation.queue(profile, {'intent': 'update'})
+            self.assertEqual([p.name for p in job.parent.iterdir() if p.is_dir()], [job.name])
+
     def test_status_identifies_an_interrupted_preparation_without_changing_programs(self):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)

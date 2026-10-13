@@ -13,6 +13,25 @@ from optional.lifeos_release_manager.release_worker import _yaml_configuration, 
 
 
 class ReleaseConfigurationTests(unittest.TestCase):
+    def test_flow_configuration_prepares_native_mount_without_changing_values(self):
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            original = {'model': {'default': 'synthetic', 'provider': 'custom'},
+                'approvals': {'mode': 'manual', 'deny': ['keep']},
+                'skills': {'external_dirs': ['/synthetic/retain']},
+                'plugins': {'enabled': ['retained'], 'entries': {
+                    'lifeos-hook-bridge': {'settings': {'fable_effort': 'xhigh'}}}}}
+            (profile / 'config.yaml').write_text(json.dumps(original))
+            prepared = _yaml_configuration(profile, profile / 'native').decode()
+            # Native Mount.ts edits root sections by their block headers.
+            for key in ('model', 'approvals', 'skills', 'plugins'):
+                self.assertRegex(prepared, '(?m)^' + key + ':\\s*$')
+            actual = YAML(typ='safe').load(prepared)
+            for key in ('model', 'approvals', 'skills'):
+                self.assertEqual(actual[key], original[key])
+            self.assertEqual(actual['plugins']['entries']['lifeos-hook-bridge']['settings']['fable_effort'], 'xhigh')
+            self.assertEqual(json.loads((profile / 'config.yaml').read_text()), original)
+
     def test_program_plan_rebuilds_private_outputs_after_incomplete_preparation(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

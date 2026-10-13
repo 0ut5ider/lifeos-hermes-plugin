@@ -95,7 +95,10 @@
         [["Install LifeOS", "install", installed !== false], ["Update LifeOS", "update", installed !== true],
           ["Update plugin", "plugin", installed !== true]].map(function (entry) {
           return h("button", {key: entry[1], type: "button",
-            disabled: busy || entry[2] || operations.some(function (operation) { return operation.state === "preparing"; }),
+            disabled: busy || entry[2] || operations.some(function (operation) {
+              return ["preparing", "applying", "recovering", "restoring", "recovery_required"].includes(operation.state)
+                || operation.state.startsWith("queued-");
+            }),
             onClick: function () { return prepare(entry[1]); },
             className: "rounded border border-border px-4 py-2 disabled:opacity-50"}, entry[0]);
         })),
@@ -106,6 +109,8 @@
       operations.map(function (operation) {
         return h("article", {key: operation.identifier, className: "space-y-2 rounded border border-border p-4"},
           h("p", null, "Release " + (operation.version ?? "preparation") + ": " + operation.state),
+          h("p", {className: "break-all text-sm"}, "Operation: " + operation.identifier),
+          operation.error ? h("p", {role: "status"}, operation.error) : null,
           operation.state === "ready" ? h("button", {type: "button", disabled: busy,
             onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,
           operation.restore_available ? h("button", {type: "button", disabled: busy,
@@ -117,6 +122,7 @@
         h("h2", {className: "text-lg font-semibold"}, "Install release " + reviewed.version),
         h("p", null, reviewed.restart_required ? "Hermes services will restart during this update." : "The prepared integration will become available to this profile."),
         h("p", null, "Program commit: " + reviewed.commit),
+        h("p", {className: "break-all text-sm"}, "Package SHA-256: " + reviewed.package_sha256),
         h("button", {type: "button", disabled: busy, onClick: function () {
           return action(reviewed.identifier, "apply");
         }, className: "rounded bg-primary px-4 py-2 text-primary-foreground"}, "Install this release")) : null,
