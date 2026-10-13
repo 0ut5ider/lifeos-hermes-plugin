@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "observed_at": "2026-10-13T17:47:23.645837+00:00",
+  "scope": "synthetic-managed-dashboard-installation-and-complete-package-update",
+  "production_qualified": false,
+  "public_user_actions_verified": true,
+  "latest_stable_unchanged": "0.4.1",
+  "cases": {
+    "Install LifeOS": {
+      "operation": "11b441b02af149c688de595f77fb34b2",
+      "state": "applied",
+      "active_release": {
+        "version": "0.4.2-rc.1",
+        "commit": "914ad24b0eea7f0022e75edc815f5be08566d0f9",
+        "package_sha256": "5fe78efb7dc45ee4cf6e49766c7e72c8f64e0d0113fd3643290e75adc6d8ebdb"
+      },
+      "model_configuration_preserved": true,
+      "prior_tier_settings_preserved": true
+    },
+    "Update LifeOS": {
+      "operation": "ebf18d56027345b8b88957a0b02a9b2e",
+      "state": "applied",
+      "active_release": {
+        "version": "0.4.2-rc.2",
+        "commit": "6a0a241a0b1227d440938aa7156d8d59b87e5740",
+        "package_sha256": "6fd4a6af3e1fa37f0b57b8db86daf4b72974d0f0993b4d12cba583c84575cbe6"
+      },
+      "model_configuration_preserved": true,
+      "prior_tier_settings_preserved": true
+    },
+    "Rollback": {
+      "operation": "ebf18d56027345b8b88957a0b02a9b2e",
+      "state": "rolled_back",
+      "active_release": {
+        "version": "0.4.2-rc.1",
+        "commit": "914ad24b0eea7f0022e75edc815f5be08566d0f9",
+        "package_sha256": "5fe78efb7dc45ee4cf6e49766c7e72c8f64e0d0113fd3643290e75adc6d8ebdb"
+      },
+      "model_configuration_preserved": true,
+      "prior_tier_settings_preserved": true
+    },
+    "Update plugin": {
+      "operation": "73697ad3e0ef44e89d48842fb714a77c",
+      "state": "applied",
+      "active_release": {
+        "version": "0.4.2-rc.2",
+        "commit": "6a0a241a0b1227d440938aa7156d8d59b87e5740",
+        "package_sha256": "6fd4a6af3e1fa37f0b57b8db86daf4b72974d0f0993b4d12cba583c84575cbe6"
+      },
+      "model_configuration_preserved": true,
+      "prior_tier_settings_preserved": true
+    },
+    "Hermes conversation": {
+      "operation": "6eba0eecdf94443084259206ac28b59c",
+      "state": "applied",
+      "active_release": {
+        "version": "0.4.2-rc.2",
+        "commit": "6a0a241a0b1227d440938aa7156d8d59b87e5740",
+        "package_sha256": "6fd4a6af3e1fa37f0b57b8db86daf4b72974d0f0993b4d12cba583c84575cbe6"
+      },
+      "model_configuration_preserved": true,
+      "prior_tier_settings_preserved": true
+    }
+  },
+  "qualification": {
+    "native_tests": 716,
+    "archive_bound_integration_tests": 661,
+    "archived_regular_files": 21085,
+    "version_only_derivative_verified": true,
+    "actual_fresh_interruption_and_recovery_verified": true
+  },
+  "default_branch_web_bootstrap": {
+    "status": "PENDING_PR18_MERGE",
+    "stock_public_manager_041_web_install_verified": true,
+    "candidate_web_form_install_from_public_branch_checkout_verified": true
+  },
+  "limits": [
+    "No daily deployment qualification",
+    "No automatic memory ownership activation",
+    "No personal-data import",
+    "No voice or Discord setup on the synthetic test guests",
+    "Post-merge replay of the new manager from the default GitHub URL remains required"
+  ],
+  "evidence_sha256": {
+    "public-installation.json": "abdb10c1d95f849e3d505b64012f2714dbb07f9b976631028b8f269e972a3798",
+    "public-installation-preparation.json": "a246e37ba28422f193fcc750a75e1e7902010c9baddf65e8b37d28d3e5cf99ff",
+    "public-lifeos-update.json": "813da7daabb67411f4e42e971a45fd4c56eda91d86eba3882ad7885685869aa2",
+    "public-lifeos-update-preparation.json": "03a36de4f9eb00a726a9d503d3880caa240662cb9017e77518973255c8975610",
+    "public-numeric-rollback.json": "e659b1eaac9a706fc526ef01b2355115560f47f8beb3d919facaed25cc69288b",
+    "public-plugin-update.json": "d74c73bd15044f998b1e665b62821d749d0e381955f39c59eb040681386db0f9",
+    "public-plugin-update-preparation.json": "be3b907f249d54ed0b0375d7fe774f2fc2b46438c0be580410922fa973660b38",
+    "public-plugin-update-version.json": "080d41877f5adb54751b1e1580805c252a0fd229aac0d8d8a7aa9eacff4d5e7f",
+    "public-final-dashboard.json": "45d611c26e3b65b1b21f445feb5161e245cfac39c60312dbba1333a601e5cc06",
+    "conversational-public-preparation.json": "a0771de03cd6ea9aa4e60c18684b68ac93b84a62b7668157f880bf825dd01988",
+    "conversational-public-preparation.txt": "8e8e7fa435f56a79e781410ef3be10f79b747c729f5e5b382a41aeacacb0d1d5",
+    "conversational-public-update.json": "8ddfb88604efa5294a69301a76b89d2b4fa7eb1118d57499df4f6451c0625612",
+    "conversational-public-post-update.txt": "ae431a9b300b7dcad101b214b4e5340217fd7ddff8313ae33fad284b22b90c36",
+    "conversational-public-version.json": "080d41877f5adb54751b1e1580805c252a0fd229aac0d8d8a7aa9eacff4d5e7f",
+    "conversational-public-data-preservation.json": "cfaaec7bd980c18572da2fa6450de05aeac3f1f8d5a2f48fed31977af217e659",
+    "integration-archive-bound-914ad24b.json": "33e1f82cd368a20b395912832c0819491d364c19d27a3f173f5cd1cb16a73723",
+    "native-sealed-914ad24b.json": "504499c4ee832fca189fa907f0b614687ce3c081d7f9bdabf7d97530848158c5",
+    "corrected-numeric-update-version-delta.json": "7de40be65e1a0157e9627cfcfa2181f1a418369d67fbe78c1c907d8f2e5f76df",
+    "baseline-preserved-fresh-recovery.json": "753dd8f634b2804e3099969d7a828e3f7aa64962f78788d24f8610d8f05aa839",
+    "existing-guests-final-health.json": "0bcb5f730f5f3bc3285ef716b56061434c101f52eb974d379bcb7ca6ac394a7d",
+    "public-prerelease-assets-verified.json": "1250529a53b449067de1cbb925ad36394c4eaa29bdffc51734e8a6379fbd64b2"
+  }
+}

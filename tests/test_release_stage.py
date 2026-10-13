@@ -1,8 +1,14 @@
 # ABOUTME: Verifies complete package identities before staging dependencies or native programs.
 # ABOUTME: Uses regular synthetic package files to exercise refusal before candidate code runs.
 import hashlib
+import io
 import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tarfile
 import tempfile
 import unittest
 
@@ -11,6 +17,153 @@ from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
 class ReleaseStageTests(unittest.TestCase):
+    def test_authenticated_archive_refuses_coordinated_program_and_manifest_changes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            package, certificate, marker, archive = self.package(root)
+            program = package / 'lifeos_hook_bridge/install_source.py'
+            program.write_text(program.read_text() + '\nchanged = True\n')
+            manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
+            manifest['plugin_files']['lifeos_hook_bridge/install_source.py'] = hashlib.sha256(program.read_bytes()).hexdigest()
+            (package / 'DAILY-CANDIDATE.json').write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
+                validate_package(package, certificate)
+            self.assertFalse(marker.exists())
+            self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), certificate['archive_sha256'])
+
+    def test_authenticated_archive_is_required_before_candidate_execution(self):
+        for change in ('missing', 'changed', 'symlink', 'fifo'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
+                package, certificate, marker, archive = self.package(Path(temp))
+                if change == 'missing':
+                    archive.unlink()
+                elif change == 'changed':
+                    archive.write_bytes(b'changed')
+                elif change == 'symlink':
+                    retained = archive.with_suffix('.retained')
+                    archive.rename(retained)
+                    archive.symlink_to(retained)
+                else:
+                    archive.unlink()
+                    os.mkfifo(archive)
+                with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
+                    validate_package(package, certificate)
+                self.assertFalse(marker.exists())
+
+    def test_authenticated_archive_accepts_its_exact_extracted_program_map(self):
+        with tempfile.TemporaryDirectory() as temp:
+            package, certificate, marker, _ = self.package(Path(temp))
+            self.assertEqual(validate_package(package, certificate)['head'], certificate['program_commit'])
+            self.assertTrue(marker.exists())
+
+    def test_extracted_manifest_requires_bounded_regular_owner_storage(self):
+        for change in ('symlink', 'oversized', 'fifo'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                package, certificate, marker, _ = self.package(root)
+                manifest = package / 'DAILY-CANDIDATE.json'
+                if change == 'symlink':
+                    outside = root / 'outside-manifest'
+                    manifest.rename(outside)
+                    manifest.symlink_to(outside)
+                elif change == 'oversized':
+                    manifest.write_bytes(b' ' * (512 * 1024 + 1))
+                else:
+                    manifest.unlink()
+                    os.mkfifo(manifest)
+                with self.assertRaisesRegex(ReleaseRejected, 'bounded regular owner manifest'):
+                    validate_package(package, certificate)
+                self.assertFalse(marker.exists())
+
+    def test_native_source_manifests_match_the_authenticated_program_map(self):
+        for name in ('hermes/hermes-source-manifest.json', 'lifeos/lifeos-source-manifest.json'):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp:
+                package, certificate, marker, _ = self.package(Path(temp))
+                (package / name).write_text('{"tree_sha256":"changed"}')
+                with self.assertRaisesRegex(ReleaseRejected, 'native source manifest'):
+                    validate_package(package, certificate)
+                self.assertFalse(marker.exists())
+
+    def test_authenticated_archive_requires_one_bounded_regular_manifest(self):
+        for change in ('missing', 'duplicate', 'oversized', 'link'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
+                package, certificate, marker, archive = self.package(Path(temp))
+                with tarfile.open(archive, 'w:gz') as target:
+                    count = 0 if change == 'missing' else 2 if change == 'duplicate' else 1
+                    for _ in range(count):
+                        content = ((package / 'DAILY-CANDIDATE.json').read_bytes()
+                            if change != 'oversized' else b' ' * (512 * 1024 + 1))
+                        member = tarfile.TarInfo('DAILY-CANDIDATE.json')
+                        if change == 'link':
+                            member.type = tarfile.SYMTYPE
+                            member.linkname = 'synthetic-link'
+                        else:
+                            member.size = len(content)
+                        target.addfile(member, io.BytesIO(content))
+                certificate.update(archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
+                    archive_bytes=archive.stat().st_size)
+                with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
+                    validate_package(package, certificate)
+                self.assertFalse(marker.exists())
+
+    def package(self, root):
+        package = root / 'package'
+        package.mkdir(mode=0o700)
+        marker = root / 'candidate-executed'
+        source = ('from pathlib import Path\nfrom types import SimpleNamespace\n'
+            f'Path({str(marker)!r}).write_text("synthetic import marker")\n'
+            'def memory_module(name):\n'
+            '    return SimpleNamespace(versions=lambda package: "0.4.2-rc.1")\n'
+            'def validate_supported_hermes(path):\n'
+            '    return {"base_commit": "hermes", "patches": []}\n'
+            'def validate_prepared_lifeos(path):\n'
+            '    return {"upstream_commit": "lifeos", "patches": []}\n')
+        files = {'lifeos_hook_bridge/install_source.py': source,
+            'optional/lifeos_release_manager/manager.py': '# Synthetic manager\n',
+            'python-runtime/pyproject.toml': '# Synthetic closure\n',
+            'python-runtime/uv.lock': '# Synthetic lock\n',
+            'hermes/hermes-source-manifest.json': '{}',
+            'lifeos/lifeos-source-manifest.json': '{}'}
+        for name, content in files.items():
+            path = package / name
+            path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            path.write_text(content)
+        manifest = {'head': 'a' * 40, 'version': '0.4.2-rc.1',
+            'plugin_files': {name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.startswith('lifeos_hook_bridge/')},
+            'manager_files': {'manager.py': hashlib.sha256(files['optional/lifeos_release_manager/manager.py'].encode()).hexdigest()},
+            'prepared_manifest_files': {name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.endswith('-source-manifest.json')},
+            'python_runtime_files': {Path(name).name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.startswith('python-runtime/')}}
+        (package / 'DAILY-CANDIDATE.json').write_text(json.dumps(manifest))
+        download = root / 'download'
+        download.mkdir(mode=0o700)
+        archive = download / '0.4.2-rc.1-aaaaaaaa.tgz'
+        with tarfile.open(archive, 'w:gz') as target:
+            for path in sorted(package.iterdir()):
+                target.add(path, arcname=path.name)
+        certificate = {'format': 1, 'status': 'QUALIFIED', 'program_commit': manifest['head'],
+            'version': manifest['version'], 'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+            'archive_bytes': archive.stat().st_size, 'hermes_base': 'hermes', 'lifeos_base': 'lifeos',
+            'hermes_patch_count': 0, 'lifeos_patch_count': 0}
+        return package, certificate, marker, archive
+
+    def test_isolated_stock_python_does_not_write_bytecode_into_the_reviewed_bridge(self):
+        with tempfile.TemporaryDirectory() as temp:
+            bridge = Path(temp) / 'bridge'
+            shutil.copytree(Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge', bridge,
+                            ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+            code = ('import sys\nfrom pathlib import Path\n'
+                    'sys.path.insert(0,sys.argv[1])\n'
+                    'from optional.lifeos_release_manager.release_stage import load_bridge\n'
+                    'assert sys.flags.ignore_environment\n'
+                    'source=load_bridge(Path(sys.argv[2]))\n'
+                    'source.memory_module("release_version")\n')
+            result = subprocess.run([sys.executable, '-I', '-c', code,
+                str(Path(__file__).resolve().parents[1]), str(bridge)],
+                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stderr, '')
+            self.assertEqual(list(bridge.rglob('*.pyc')), [])
+
     def test_runtime_source_seal_accepts_boot_outputs_and_refuses_program_changes(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

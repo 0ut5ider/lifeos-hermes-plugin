@@ -108,11 +108,15 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
 
 
 def recovery_bridge(job, profile):
+    request = read_private(job / 'request.json')
+    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
+    if plan is not None and plan['fresh']:
+        from .release_stage import validate_package
+        validate_package(job / 'package', request['certificate'])
+        return load_bridge(job / 'package/lifeos_hook_bridge')
     active = profile / 'plugins/lifeos-hook-bridge'
     if active.is_dir():
         return load_bridge(active)
-    request = read_private(job / 'request.json')
-    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
     expected = plan['program_entries_sha256'] if plan is not None else None
     snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
     if snapshot.journal.is_file():
@@ -135,6 +139,17 @@ def _yaml_configuration(profile, native):
     data = yaml.load((profile / 'config.yaml').read_bytes())
     if not isinstance(data, dict):
         raise ReleaseRejected('The selected profile configuration is not a mapping')
+    # Native Mount.ts edits block headers. Preserve values and comments while preparing those headers.
+    pending, seen = [data], set()
+    while pending:
+        value = pending.pop()
+        if not isinstance(value, (dict, list)) or id(value) in seen:
+            continue
+        seen.add(id(value))
+        formatting = getattr(value, 'fa', None)
+        if formatting is not None:
+            formatting.set_block_style()
+        pending.extend(value.values() if isinstance(value, dict) else value)
     plugins = data.setdefault('plugins', {})
     enabled = plugins.setdefault('enabled', [])
     disabled = plugins.setdefault('disabled', [])
@@ -193,6 +208,9 @@ def _program_plan(job, request, selected):
             source=Path(request['runtime']['source'])))
     files[profile / 'config.yaml'] = generated / 'config.yaml'
     current = selected['current']
+    if selected['fresh']:
+        from .release_services import service_files
+        files.update(service_files(request, generated))
     if not selected['fresh']:
         drift = current.memory_module('version_drift')
         previous = drift.load_baseline(selected['baseline'], installed)
@@ -225,7 +243,9 @@ def _program_plan(job, request, selected):
         if selected['native_changes']:
             files[selected['baseline']] = selected['baseline']
         else:
-            publish(generated / 'baseline.json', (json.dumps(drift.create_baseline(native, installed), indent=2) + '\n').encode())
+            baseline = drift.create_baseline(native, installed)
+            baseline['created_at'] = previous['created_at']
+            publish(generated / 'baseline.json', (json.dumps(baseline, indent=2) + '\n').encode())
             files[selected['baseline']] = generated / 'baseline.json'
     manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
     certificate = request['certificate']
@@ -244,6 +264,19 @@ def _fresh_native(job, request, selected, *, checkpoint=lambda point: None):
     from .release_initialization import NativeInitialization
     helpers = selected['candidate'].memory_module('fresh_store')
     return NativeInitialization(job, request, selected['installed']).execute(helpers, checkpoint=checkpoint)
+
+
+def _return_fresh_dashboard(job, request, selected, programs, services, lease):
+    initialization = job / 'native-initialization.json'
+    if initialization.is_file() and read_private(initialization)['state'] == 'complete':
+        # Finish only the admitted program phase. Native mounting remains an explicit recovery action.
+        programs.resume()
+        verify_runtime(request)
+        from .release_services import verify_installed_services
+        verify_installed_services(selected['candidate'], selected['profile'], selected['installed'], installation_lease=lease)
+    else:
+        programs.check_prepared()
+    services.resume()
 
 
 def execute(job, action, *, checkpoint=lambda point: None):
@@ -309,7 +342,11 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                 'baseline': current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)}
         services = None
         if plan['services']:
-            services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
+            if plan['fresh']:
+                from .release_services import fresh_services
+                services = fresh_services(current, profile, selected['installed'], installation_lease=lease)
+            else:
+                services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
         administration = current.memory_administration()
         if fresh_recovery and administration.required(selected['installed'], profile):
             raise PermissionError('Fresh recovery preserves newly enabled memory ownership and requires governed installation repair')
@@ -348,11 +385,20 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
         try:
+            if services is not None:
+                if fresh_recovery:
+                    if services.status()['state'] == 'none':
+                        services.drain(signature=plan['services']['signature'])
+                    else:
+                        services.quiesce()
+                else:
+                    services.drain(signature=plan['services']['signature'])
+                services.verify_stopped()
+                if selected['fresh']:
+                    from .release_services import check_dashboard_writers
+                    check_dashboard_writers(profile)
             if fresh_recovery:
                 _restore_mount(job, request, mount)
-            if services is not None:
-                services.drain(signature=plan['services']['signature'])
-                services.verify_stopped()
             for entry in programs._load()['entries']:
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
@@ -374,6 +420,9 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                     binding=administration.job_binding(job, request, action), retain_for_rollback=True)
             checkpoint('native-mounted')
             verify_runtime(request)
+            if selected['fresh']:
+                from .release_services import verify_installed_services
+                verify_installed_services(selected['candidate'], profile, selected['installed'], installation_lease=lease)
             if services is not None:
                 services.resume()
             write_state(job, 'applied')
@@ -385,6 +434,8 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             _restore_mount(job, request, mount)
             if selected['fresh']:
                 write_state(job, 'recovery_required', error='The prepared first installation requires recovery. User data is preserved.')
+                if services is not None:
+                    _return_fresh_dashboard(job, request, selected, programs, services, lease)
                 raise
             programs.restore()
             if services is not None:

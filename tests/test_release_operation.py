@@ -209,6 +209,61 @@ class ReleaseOperationTests(unittest.TestCase):
         source = recovery_bridge(job, Path(request['profile']))
         self.assertEqual(Path(source.__file__).parent, job / 'package/lifeos_hook_bridge')
 
+    @unittest.skipUnless(os.environ.get('LIFEOS_QUALIFICATION_BUILD'), 'A sealed current package is required')
+    def test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication(self):
+        import shutil
+        from optional.lifeos_release_manager.release_worker import recovery_bridge
+        from optional.lifeos_release_manager.release_stage import load_bridge
+        from optional.lifeos_release_manager.release_services import fresh_services
+        from optional.lifeos_release_manager.release_catalog import extract_package
+        build = json.loads(Path(os.environ['LIFEOS_QUALIFICATION_BUILD']).read_bytes())
+        with tempfile.TemporaryDirectory(dir=Path(build['package']).parent) as temp:
+            root = Path(temp)
+            profile = root / '.hermes'
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            extract_package(build['archive'], job / 'package')
+            (job / 'download').mkdir(mode=0o700)
+            os.link(build['archive'], job / 'download' / Path(build['archive']).name)
+            active = profile / 'plugins/lifeos-hook-bridge'
+            shutil.copytree(job / 'package/lifeos_hook_bridge', active)
+            certificate = {**build, 'format': 1, 'status': 'QUALIFIED', 'program_commit': build['head'], 'test_fixture_only': True}
+            request = {'identifier': job.name, 'profile': str(profile), 'certificate': certificate}
+            publish(job / 'request.json', json.dumps(request).encode())
+            write_state(job, 'ready')
+            seal_plan(job, request, {'fresh': True})
+            candidate = load_bridge(job / 'package/lifeos_hook_bridge')
+            selected = recovery_bridge(job, profile)
+            with selected.memory_module('installation_lock').installation_lock(profile) as lease:
+                controller = fresh_services(candidate, profile, root / '.claude', installation_lease=lease)
+                self.assertEqual(controller.status()['state'], 'none')
+            self.assertIs(selected.memory_module('installation_lock'), candidate.memory_module('installation_lock'))
+            (active / 'install_source.py').write_text('raise RuntimeError("Changed active bridge executes")\n')
+            runtime = {key: str(job / path) for key, path in {
+                'python': 'python-environment/bin/python', 'bun': 'tools/bun', 'hermes': 'bin/hermes',
+                'source': 'hermes', 'reference': 'reference-home/.claude'}.items()}
+            (job / 'hermes').mkdir(mode=0o700)
+            publish(job / 'manifest.json', b'{}')
+            from optional.lifeos_release_manager.release_stage import sha, runtime_source_fingerprint
+            from optional.lifeos_release_manager.release_plan import inspect_operation
+            request.update(version=build['version'], commit=build['head'], installed=str(root / '.claude'),
+                account_home=str(root), runtime=runtime, package_sha256=build['archive_sha256'],
+                runtime_metadata_sha256=sha(job / 'manifest.json'),
+                python_lock_sha256=sha(job / 'package/python-runtime/uv.lock'),
+                runtime_fingerprint=runtime_source_fingerprint(job / 'hermes'))
+            seal_plan(job, request, {'fresh': True, 'services': None})
+            prior_home = os.environ.get('HOME')
+            os.environ['HOME'] = str(root)
+            try:
+                inspected = inspect_operation(job, request, fresh_recovery=True)
+            finally:
+                if prior_home is None:
+                    os.environ.pop('HOME', None)
+                else:
+                    os.environ['HOME'] = prior_home
+            self.assertIs(inspected['current'], candidate)
+            self.assertFalse((root / '.claude').exists())
+
     def fixture(self, root):
         job = root / ('a' * 32)
         job.mkdir(mode=0o700)

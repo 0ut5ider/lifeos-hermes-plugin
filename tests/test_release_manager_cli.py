@@ -5,6 +5,7 @@ from contextlib import redirect_stdout
 import io
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -17,6 +18,28 @@ from optional.lifeos_release_manager.cli import configure, run, status, write_st
 
 
 class ReleaseManagerCommandTests(unittest.TestCase):
+    def test_changed_retained_worker_refuses_before_admission_or_launch(self):
+        from test_release_stage import ReleaseStageTests
+        from optional.lifeos_release_manager.cli import launch
+        from optional.lifeos_release_manager.release_programs import publish
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        for action in ('apply', 'recover', 'restore'):
+            with self.subTest(action=action), tempfile.TemporaryDirectory() as temp:
+                profile = Path(temp)
+                job = profile / '.lifeos-releases' / ('a' * 32)
+                job.mkdir(parents=True, mode=0o700)
+                package, certificate, marker, _ = ReleaseStageTests().package(job)
+                shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker')
+                (job / 'worker/manager.py').write_text('Changed retained worker')
+                request = {'profile': str(profile), 'identifier': job.name, 'certificate': certificate}
+                publish(job / 'request.json', json.dumps(request).encode())
+                write_state(job, 'ready')
+                with self.assertRaisesRegex(ReleaseRejected, 'release program differs'):
+                    launch(profile, job.name, action)
+                self.assertEqual(json.loads((job / 'status.json').read_bytes())['state'], 'ready')
+                self.assertFalse((job / 'admission.json').exists())
+                self.assertFalse((job / 'worker-launch.json').exists())
+
     def test_exact_release_version_does_not_enable_hermes_global_version(self):
         parser = argparse.ArgumentParser()
         parser.add_argument('--version', action='store_true')
@@ -61,6 +84,10 @@ class ReleaseManagerCommandTests(unittest.TestCase):
             job = profile / '.lifeos-releases' / ('a' * 32)
             job.mkdir(parents=True, mode=0o700)
             write_state(job, 'preparing')
+            from optional.lifeos_release_manager.release_operation import process_stamp
+            from optional.lifeos_release_manager.release_programs import publish
+            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
+                'start_time': process_stamp(os.getpid())}).encode())
             self.assertEqual(status(profile)['operations'], [{'identifier': job.name, 'state': 'preparing'}])
             write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
             self.assertEqual(status(profile, job.name)['state'], 'preparation_failed')

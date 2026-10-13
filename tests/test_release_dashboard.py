@@ -105,8 +105,33 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.assertEqual(self.request(self.owner, path=path, method='POST', body=b'{"account":"owner"}', origin=self.origin)[0], 400)
         self.assertFalse((self.profile / '.lifeos-releases').exists())
 
+    def test_preparation_requires_owner_and_refuses_unrecognized_inputs(self):
+        path = '/prepare'
+        body = b'{"intent":"install","name":"Synthetic","assistant":"Test"}'
+        self.assertEqual(self.request(path=path, method='POST', body=body)[0], 401)
+        self.assertEqual(self.request(self.other, path=path, method='POST', body=body)[0], 403)
+        self.assertEqual(self.request(self.owner, path=path, method='POST', body=body,
+                                      origin='https://other.invalid')[0], 403)
+        for payload in ({'intent': 'shell', 'command': 'touch unexpected'},
+                        {'intent': []},
+                        {'intent': 'install', 'version': True},
+                        {'intent': 'update', 'profile': '/other/profile'},
+                        {'intent': 'update', 'version': 'main'},
+                        {'intent': 'install', 'name': '', 'assistant': 'Test'}):
+            with self.subTest(payload=payload):
+                self.assertEqual(self.request(self.owner, path=path, method='POST',
+                    body=json.dumps(payload).encode(), origin=self.origin)[0], 400)
+        self.assertFalse((self.profile / '.lifeos-releases').exists())
+
+    def test_preparation_rejects_large_and_malformed_requests(self):
+        for body in (b'{', b'[]', b'null', b'x' * 4097):
+            with self.subTest(body=body[:20]):
+                self.assertEqual(self.request(self.owner, path='/prepare', method='POST',
+                    body=body, origin=self.origin)[0], 400)
+        self.assertFalse((self.profile / '.lifeos-releases').exists())
+
     @unittest.skipUnless(os.environ.get('LIFEOS_MANAGED_FRESH_OPERATION'), 'An actual prepared fresh operation is required')
-    def test_native_review_keeps_the_dashboard_responsive(self):
+    def test_historical_fresh_review_refuses_without_blocking_the_dashboard(self):
         import fcntl
         job = Path(os.environ['LIFEOS_MANAGED_FRESH_OPERATION'])
         request = json.loads((job / 'request.json').read_bytes())
@@ -140,4 +165,6 @@ class ReleaseDashboardTests(unittest.TestCase):
         finally:
             thread.join(timeout=130)
             self.assertFalse(thread.is_alive())
-        self.assertEqual(results[0][0], 200)
+        self.assertEqual(results[0][0], 409)
+        self.assertIn('first installation', results[0][1]['detail'])
+        self.assertFalse(Path(request['installed']).exists())

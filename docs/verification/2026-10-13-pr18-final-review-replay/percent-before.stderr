@@ -1,0 +1,17 @@
+test_effective_systemd_environment_preserves_literal_percent_path (test_release_services.ReleaseServiceTests.test_effective_systemd_environment_preserves_literal_percent_path) ... ERROR
+
+======================================================================
+ERROR: test_effective_systemd_environment_preserves_literal_percent_path (test_release_services.ReleaseServiceTests.test_effective_systemd_environment_preserves_literal_percent_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_services.py", line 104, in test_effective_systemd_environment_preserves_literal_percent_path
+    self.assertEqual(dashboard_binding(module, profile, values)['profile'], str(profile))
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_services.py", line 116, in dashboard_binding
+    raise ReleaseRejected('The dashboard service requires an explicit selected profile and dashboard command')
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The dashboard service requires an explicit selected profile and dashboard command
+
+----------------------------------------------------------------------
+Ran 1 test in 0.614s
+
+FAILED (errors=1)

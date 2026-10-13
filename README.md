@@ -17,6 +17,7 @@ Data-only profile backups record release workspaces as runtime exclusions. Full 
 **Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
 **Development deployed version:** `0.4.1`, program commit `96f4f8fb`. The actual default public update passes on `.252`.
 All three services and public command aliases pass. The selected model mapping stays fixed.
+**Installation test guest:** `.249` runs `0.4.2-rc.2`. The [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) pass installation, both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
@@ -271,6 +272,21 @@ The complete package includes the supported Hermes runtime, LifeOS programs, bri
 The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public exact-version installation passes against the published archive and certificate.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
+The 0.4.2-rc.1 and 0.4.2-rc.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
+They qualify the synthetic installation and complete-package update workflow. They do not qualify deployment to the daily server.
+Select an exact test version during these checks. An empty version still selects stable 0.4.1.
+
+The native Hermes Plugins page accepts this repository URL:
+
+```text
+https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager
+```
+
+The page installs from the default branch. It has no revision field, and a GitHub tree URL does not select a branch or commit.
+The new controls reach that default-branch installation after PR18 merges. Before the merge, the native command below can select an exact commit.
+The first test release uses commit `914ad24b0eea7f0022e75edc815f5be08566d0f9`.
+The version-only update test uses commit `6a0a241a0b1227d440938aa7156d8d59b87e5740`.
+
 Pin the release manager to the full 40-character commit shown in the selected release notes. Hermes does not accept a tag for `--ref`:
 
 ```bash
@@ -288,16 +304,44 @@ The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f85
 
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
 The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
+The manager compares the extracted release manifest with the certificate-bound archive before it imports candidate source.
+Both native source manifests must match their hashes in that authenticated release manifest.
+The launcher checks the retained worker files before it admits an installation, recovery, or rollback action.
 The owner reviews the operation in the authenticated Hermes dashboard and selects the installation action.
 A native mount under managed memory requires the owner's grant for that operation.
 After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the result and `hermes lifeos-version` verifies the installed identity.
 
 For an update, run `hermes lifeos-release prepare` and review the returned operation.
 The registered skill follows this process when the user asks Hermes to install or update LifeOS.
+The LifeOS releases page also provides **Install LifeOS**, **Update LifeOS**, and **Update plugin** buttons.
+The installation button accepts the user and assistant names for a fresh store.
+Both update buttons prepare the complete qualified package, including Hermes, LifeOS, the bridge, and the release manager.
+Leave the release version empty for the latest stable package. Enter an exact version to select a test prerelease.
+Preparation runs in a detached process. The page polls its status, and the user can leave the page during preparation.
+The owner must still review the prepared operation and select **Install this release** before active programs change.
+Duplicate preparations are refused while a preparation runs. Interrupted preparation leaves active programs in place.
 Recovery and rollback use the prepared operation and retained program journal. They preserve current user data and refuse later program changes.
 Rollback requires the current release identity and retained native mount. A later native remount or release can expire that operation's rollback.
 Status hides an expired rollback. Admission checks current and retained programs before it stops services.
 Installation keeps the model and tier mapping and does not activate lasting memory automatically.
+The Linux first-installation path requires an owner user service for the Hermes dashboard.
+First installation also requires a qualified package with the first-install service interface.
+Historical packages without that interface refuse before native publication. Existing installation updates keep their three-service interface.
+During the isolated prerelease tests, select the exact test release version. Release 0.4.1 remains the latest stable package.
+The home, profile, and native installation paths must be physical paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces.
+That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
+The service must declare the selected physical profile in `HERMES_HOME` without an environment file.
+The installer checks the configured dashboard command and the running process profile before drain and after restart.
+The installer drains that dashboard and runs its worker in a separate user service.
+The reviewed installation creates missing gateway and Pulse definitions but leaves them disabled and inactive.
+It preserves existing service definitions. A foreground dashboard or a foreign service binding refuses preparation.
+Fresh installation uses a separate dashboard service journal. Later updates verify and drain all three services.
+An abrupt worker termination can require recovery from the command line when the dashboard is stopped.
+Use the retained operation's qualified `bin/hermes lifeos-release recover IDENTIFIER` command in that case.
+If interruption removes the installed manager directory, that public command cannot load.
+Recovery then requires an operator to use the retained qualified worker and reviewed journal.
+Do not replace the missing directory or erase the operation to make the page return.
+Recovery preserves user data and refuses later program or service-definition edits.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records the tested paths and publication limits.
 
 ## Install the plugin

@@ -8,6 +8,25 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_apply_preserves_the_inode_of_an_unchanged_file(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            unchanged, target, source = root / 'unchanged', root / 'target', root / 'source'
+            unchanged.write_text('Admitted unchanged definition')
+            target.write_text('Prior program')
+            source.write_text('Candidate program')
+            before = unchanged.stat()
+            transaction = ProgramTransaction(root / 'snapshot')
+            transaction.prepare(directories={}, files={unchanged: unchanged, target: source})
+            transaction.apply()
+            self.assertEqual(unchanged.stat().st_ino, before.st_ino)
+            self.assertEqual(unchanged.stat().st_mtime_ns, before.st_mtime_ns)
+            self.assertEqual(target.read_text(), 'Candidate program')
+            transaction.check_applied()
+            transaction.restore()
+            self.assertEqual(unchanged.stat().st_ino, before.st_ino)
+            self.assertEqual(target.read_text(), 'Prior program')
+
     def test_recovery_refuses_missing_prior_copy_before_journal_or_target_changes(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

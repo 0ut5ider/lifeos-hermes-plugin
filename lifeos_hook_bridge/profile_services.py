@@ -62,23 +62,26 @@ def _definition_file(path):
 
 
 class ProfileServices:
-    def __init__(self, profile, installed, *, units=None, installation_lease=None):
+    def __init__(self, profile, installed, *, units=None, installation_lease=None, first_installation=False):
         self.profile, self.installed = Path(profile).absolute(), Path(installed).absolute()
         self.installation_lease = installation_lease
         try:
-            self.physical_root = self.installed.resolve(strict=True)
+            self.physical_root = self.installed.resolve(strict=not first_installation)
         except (OSError, RuntimeError) as error:
             raise MemoryUnavailable('The installed profile service root is unavailable') from error
-        if not self.physical_root.is_dir():
+        if not first_installation and not self.physical_root.is_dir():
             raise MemoryUnavailable('The installed profile services require a program directory')
         if units is not None and not isinstance(units, dict):
             raise MemoryUnavailable('Profile services require a fixed role-to-service mapping')
-        self.units = dict(UNITS if units is None else units)
-        if (set(self.units) != set(UNITS)
+        required = {'dashboard'} if first_installation else set(UNITS)
+        self.units = dict({role: UNITS[role] for role in required} if units is None else units)
+        if (set(self.units) != required
                 or any(not isinstance(unit, str) or re.fullmatch('[a-zA-Z0-9_.-]+\\.service', unit) is None
-                       for unit in self.units.values()) or len(set(self.units.values())) != len(UNITS)):
-            raise MemoryUnavailable('Profile services require three distinct fixed service bindings')
-        self.state = self.profile / '.lifeos-services'
+                       for unit in self.units.values()) or len(set(self.units.values())) != len(required)):
+            raise MemoryUnavailable('Profile services require distinct fixed service bindings')
+        self.stop_order = tuple(role for role in STOP_ORDER if role in required)
+        self.start_order = tuple(role for role in START_ORDER if role in required)
+        self.state = self.profile / ('.lifeos-installation-services' if first_installation else '.lifeos-services')
         self.journal = self.state / 'operation.json'
         self.directories = {'gateway': self.profile, 'dashboard': self.installed.parent.resolve(),
             'pulse': self.physical_root / 'LIFEOS/PULSE'}
@@ -114,7 +117,7 @@ class ProfileServices:
                 or document['profile'] != str(self.profile) or document['installed'] != str(self.installed)
                 or document['installed_physical'] != str(self.physical_root)
                 or not isinstance(document['state'], str) or document['state'] not in STATES
-                or not isinstance(document['services'], dict) or set(document['services']) != set(UNITS)):
+                or not isinstance(document['services'], dict) or set(document['services']) != set(self.units)):
             raise MemoryUnavailable('The profile service journal belongs to another profile or has invalid metadata')
         for role, item in document['services'].items():
             if (not isinstance(item, dict) or set(item) != {'unit', 'definition', 'active', 'control_group'}
@@ -203,16 +206,16 @@ class ProfileServices:
         self._empty(document, role)
 
     def _drain(self, document):
-        for role in STOP_ORDER:
+        for role in self.stop_order:
             self._drain_unit(document, role)
-        for role in STOP_ORDER:
+        for role in self.stop_order:
             self._empty(document, role)
         document['state'] = 'stopped'
         self._publish(document)
 
     def _admission(self):
         services = {}
-        for role in STOP_ORDER:
+        for role in self.stop_order:
             values, definition = self._inspect(role)
             if values['ActiveState'] not in {'active', 'inactive'}:
                 raise MemoryUnavailable('Profile services require a stable active or inactive state before draining')
@@ -247,26 +250,26 @@ class ProfileServices:
                 raise MemoryUnavailable('The reviewed profile service state changes before draining')
             self._publish(document)
             self._drain(document)
-            return {'state': 'stopped', 'services_stopped': list(STOP_ORDER), 'owner_turn_verified': False}
+            return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
 
     def quiesce(self):
         with self._lock():
             document = self._load()
             if document is None:
                 raise MemoryUnavailable('The selected profile services have no recovery state')
-            for role in STOP_ORDER:
+            for role in self.stop_order:
                 self._check_definition(document, role)
             document['state'] = 'stopping'
             self._publish(document)
             self._drain(document)
-            return {'state': 'stopped', 'services_stopped': list(STOP_ORDER), 'owner_turn_verified': False}
+            return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
 
     def verify_stopped(self):
         with self._lock():
             document = self._load()
             if document is None or document['state'] != 'stopped':
                 raise MemoryUnavailable('The selected profile services have no completed drain')
-            for role in STOP_ORDER:
+            for role in self.stop_order:
                 self._empty(document, role)
             return {'state': 'stopped', 'owner_turn_verified': False}
 
@@ -277,17 +280,17 @@ class ProfileServices:
                 raise MemoryUnavailable('The selected profile services have no recovery state')
             if document['state'] == 'stopping':
                 self._drain(document)
-            for role in START_ORDER:
+            for role in self.start_order:
                 self._check_definition(document, role)
             document['state'] = 'starting'
             self._publish(document)
             started = []
-            for role in START_ORDER:
+            for role in self.start_order:
                 self._check_definition(document, role)
                 if document['services'][role]['active']:
                     _run('start', self.units[role])
                     started.append(role)
-            for role in START_ORDER:
+            for role in self.start_order:
                 values = self._check_definition(document, role)
                 if document['services'][role]['active']:
                     if values['ActiveState'] != 'active' or int(values['MainPID']) == 0:

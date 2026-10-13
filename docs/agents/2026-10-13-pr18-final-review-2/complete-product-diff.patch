@@ -1,0 +1,2397 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6fdbc8b8..4913acf9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,30 @@
+ # Changelog
+ 
++## 0.4.2-rc.2 (2026-10-13 test prerelease)
++
++- Change the complete integration version to verify a numerical update through Hermes and both dashboard update controls.
++- Keep the program behavior from the corrected 0.4.2-rc.1 candidate.
++
++## 0.4.2-rc.1 (2026-10-13 test prerelease)
++
++- Add Install LifeOS, Update LifeOS, and Update plugin controls to the LifeOS releases page.
++- Prepare the complete qualified integration for both update actions. Keep owner review and installation approval separate.
++- Run page-requested preparation in a detached process with a private profile lock.
++- Refuse duplicate preparation and report interrupted preparation without selecting active programs.
++- Prevent isolated stock Python from writing bytecode into qualified source trees during dashboard review.
++- Prepare valid block YAML for native mounting while preserving configuration values.
++- Block further preparation during installation or required recovery. Display each operation identifier.
++- Detect interrupted preparation before the worker identity is published. Preserve active launch leases.
++- Drain the managed stock dashboard during first installation through a separate worker service.
++- Include missing inactive gateway and Pulse definitions in the reviewed program transaction.
++- Validate generated units with the actual systemd parser. Refuse unsupported physical service paths before generation.
++- Refuse historical first-install workers without the service interface. Keep the dashboard responsive during refusal.
++- Bind extracted and native source manifests to the certificate-bound archive. Verify retained workers before admission.
++- Preserve unchanged service files during program publication and keep one fresh-recovery lease namespace.
++- Preserve the existing native baseline time during updates with unchanged native programs.
++- Drain the native test log queue before removing its temporary home.
++- Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
++
+ ## 0.4.1 (2026-10-13)
+ 
+ - Keep the plugin release choice in a separate argument field from the Hermes global version flag.
+diff --git a/README.md b/README.md
+index e496bcbd..84a15618 100644
+--- a/README.md
++++ b/README.md
+@@ -17,6 +17,7 @@ Data-only profile backups record release workspaces as runtime exclusions. Full
+ **Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
+ **Development deployed version:** `0.4.1`, program commit `96f4f8fb`. The actual default public update passes on `.252`.
+ All three services and public command aliases pass. The selected model mapping stays fixed.
++**Installation test guest:** `.249` runs `0.4.2-rc.2`. The [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) pass installation, both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
+ See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+ 
+ The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
+@@ -271,6 +272,21 @@ The complete package includes the supported Hermes runtime, LifeOS programs, bri
+ The qualified 0.4.1 certificate binds the complete package and frozen dependency closure. Public exact-version installation passes against the published archive and certificate.
+ The existing 0.3.1 assets remain historical release and rollback inputs.
+ 
++The 0.4.2-rc.1 and 0.4.2-rc.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
++They qualify the synthetic installation and complete-package update workflow. They do not qualify deployment to the daily server.
++Select an exact test version during these checks. An empty version still selects stable 0.4.1.
++
++The native Hermes Plugins page accepts this repository URL:
++
++```text
++https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager
++```
++
++The page installs from the default branch. It has no revision field, and a GitHub tree URL does not select a branch or commit.
++The new controls reach that default-branch installation after PR18 merges. Before the merge, the native command below can select an exact commit.
++The first test release uses commit `914ad24b0eea7f0022e75edc815f5be08566d0f9`.
++The version-only update test uses commit `6a0a241a0b1227d440938aa7156d8d59b87e5740`.
++
+ Pin the release manager to the full 40-character commit shown in the selected release notes. Hermes does not accept a tag for `--ref`:
+ 
+ ```bash
+@@ -288,16 +304,44 @@ The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f85
+ 
+ Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
+ The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
++The manager compares the extracted release manifest with the certificate-bound archive before it imports candidate source.
++Both native source manifests must match their hashes in that authenticated release manifest.
++The launcher checks the retained worker files before it admits an installation, recovery, or rollback action.
+ The owner reviews the operation in the authenticated Hermes dashboard and selects the installation action.
+ A native mount under managed memory requires the owner's grant for that operation.
+ After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the result and `hermes lifeos-version` verifies the installed identity.
+ 
+ For an update, run `hermes lifeos-release prepare` and review the returned operation.
+ The registered skill follows this process when the user asks Hermes to install or update LifeOS.
++The LifeOS releases page also provides **Install LifeOS**, **Update LifeOS**, and **Update plugin** buttons.
++The installation button accepts the user and assistant names for a fresh store.
++Both update buttons prepare the complete qualified package, including Hermes, LifeOS, the bridge, and the release manager.
++Leave the release version empty for the latest stable package. Enter an exact version to select a test prerelease.
++Preparation runs in a detached process. The page polls its status, and the user can leave the page during preparation.
++The owner must still review the prepared operation and select **Install this release** before active programs change.
++Duplicate preparations are refused while a preparation runs. Interrupted preparation leaves active programs in place.
+ Recovery and rollback use the prepared operation and retained program journal. They preserve current user data and refuse later program changes.
+ Rollback requires the current release identity and retained native mount. A later native remount or release can expire that operation's rollback.
+ Status hides an expired rollback. Admission checks current and retained programs before it stops services.
+ Installation keeps the model and tier mapping and does not activate lasting memory automatically.
++The Linux first-installation path requires an owner user service for the Hermes dashboard.
++First installation also requires a qualified package with the first-install service interface.
++Historical packages without that interface refuse before native publication. Existing installation updates keep their three-service interface.
++During the isolated prerelease tests, select the exact test release version. Release 0.4.1 remains the latest stable package.
++The home, profile, and native installation paths must be physical paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces.
++That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
++The service must declare the selected physical profile in `HERMES_HOME` without an environment file.
++The installer checks the configured dashboard command and the running process profile before drain and after restart.
++The installer drains that dashboard and runs its worker in a separate user service.
++The reviewed installation creates missing gateway and Pulse definitions but leaves them disabled and inactive.
++It preserves existing service definitions. A foreground dashboard or a foreign service binding refuses preparation.
++Fresh installation uses a separate dashboard service journal. Later updates verify and drain all three services.
++An abrupt worker termination can require recovery from the command line when the dashboard is stopped.
++Use the retained operation's qualified `bin/hermes lifeos-release recover IDENTIFIER` command in that case.
++If interruption removes the installed manager directory, that public command cannot load.
++Recovery then requires an operator to use the retained qualified worker and reviewed journal.
++Do not replace the missing directory or erase the operation to make the page return.
++Recovery preserves user data and refuses later program or service-definition edits.
+ The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records the tested paths and publication limits.
+ 
+ ## Install the plugin
+diff --git a/TODO.md b/TODO.md
+index 12d6eac2..13958db7 100644
+--- a/TODO.md
++++ b/TODO.md
+@@ -4,6 +4,7 @@
+ - [x] Qualify the candidate Hermes v0.21.7 port with ten Hermes patches and twenty-five LifeOS patches. Upstream behavior replaces the inactive protected-instruction patch. The accepted 0.3.1 pins retain all 36 patches. See the [candidate verification](docs/verification/2026-10-12-hermes-managed-release/README.md).
+ - [x] Implement complete LifeOS installation and updates from Hermes. Fresh recovery, installed update, installed recovery, rollback, and activated-memory checks pass. See the [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md).
+ - [x] Complete the independent product PR review, publish qualified 0.4.1, and verify the public complete package on development `.252`. Exact-version fresh installation and default development update pass. The [public acceptance record](docs/verification/2026-10-12-release-0.4.1/README.md) retains the initial manager refusal and corrected bootstrap.
++- [ ] After PR18 merges, replay installation of the new release manager from the default GitHub URL through the native Hermes web form. The [0.4.2 test prerelease checks](docs/verification/2026-10-13-release-ui-install/README.md) pass public installation, both complete-package update buttons, numeric rollback, and Hermes chat. The unmerged manager uses a checkout of the public feature branch for the web-form test.
+ - [ ] Promote a qualified complete release to daily `.253` after its daily deployment acceptance. The daily guest stays on accepted 0.3.1 until that gate completes.
+ - [ ] Complete Discord voice input and spoken replies after the first daily-use text release.
+ - [ ] Add native Content audio and video processing with the later voice release. Verify extraction, transcription, runner control, and actual media outputs before enabling the runner.
+diff --git a/VERSION b/VERSION
+index 267577d4..24db844b 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-0.4.1
++0.4.2-rc.2
+diff --git a/lifeos_hook_bridge/dashboard/manifest.json b/lifeos_hook_bridge/dashboard/manifest.json
+index a87b98f5..34a6fc79 100644
+--- a/lifeos_hook_bridge/dashboard/manifest.json
++++ b/lifeos_hook_bridge/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS Bridge",
+   "description": "Configure LifeOS models and Stop hooks",
+   "icon": "Settings",
+-  "version": "0.4.1",
++  "version": "0.4.2-rc.2",
+   "tab": {
+     "path": "/lifeos-bridge",
+     "position": "after:plugins"
+diff --git a/lifeos_hook_bridge/patches/hermes-child-routing.patch b/lifeos_hook_bridge/patches/hermes-child-routing.patch
+index ae7dc8b9..3b431afb 100644
+--- a/lifeos_hook_bridge/patches/hermes-child-routing.patch
++++ b/lifeos_hook_bridge/patches/hermes-child-routing.patch
+@@ -3,7 +3,7 @@ new file mode 100644
+ index 000000000..97fa8ee97
+ --- /dev/null
+ +++ b/tests/test_lifeos_delegate_tier_route.py
+-@@ -0,0 +1,145 @@
++@@ -0,0 +1,147 @@
+ +# ABOUTME: Checks that a delegated child receives its own model and reasoning effort.
+ +# ABOUTME: Rejects malformed routes before constructing any child.
+ +
+@@ -85,6 +85,7 @@ index 000000000..97fa8ee97
+ +
+ +    def test_real_child_keeps_selected_model_and_effort(self):
+ +        from run_agent import AIAgent
+++        from hermes_logging import flush_log_queue
+ +        with TemporaryDirectory(prefix="delegate-tier-home-") as directory:
+ +            Path(directory, "config.yaml").write_text("model:\n  default: default-local\n")
+ +            with patch.dict("os.environ", {"HERMES_HOME": directory}):
+@@ -105,6 +106,7 @@ index 000000000..97fa8ee97
+ +                finally:
+ +                    child.close()
+ +                    parent.close()
+++                    flush_log_queue()
+ +
+ +    def test_per_task_provider_uses_its_credential_bundle(self):
+ +        creds = {"model": "default-local", "provider": "custom", "base_url": "http://127.0.0.1:8123/v1",
+diff --git a/lifeos_hook_bridge/plugin.yaml b/lifeos_hook_bridge/plugin.yaml
+index 3a5245e7..f5899835 100644
+--- a/lifeos_hook_bridge/plugin.yaml
++++ b/lifeos_hook_bridge/plugin.yaml
+@@ -1,6 +1,6 @@
+ name: lifeos-hook-bridge
+ kind: standalone
+-version: 0.4.1
++version: 0.4.2-rc.2
+ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+ author: 0ut5ider
+ python_dependencies:
+diff --git a/lifeos_hook_bridge/profile_services.py b/lifeos_hook_bridge/profile_services.py
+index 28268409..96bc6eb7 100644
+--- a/lifeos_hook_bridge/profile_services.py
++++ b/lifeos_hook_bridge/profile_services.py
+@@ -62,23 +62,26 @@ def _definition_file(path):
+ 
+ 
+ class ProfileServices:
+-    def __init__(self, profile, installed, *, units=None, installation_lease=None):
++    def __init__(self, profile, installed, *, units=None, installation_lease=None, first_installation=False):
+         self.profile, self.installed = Path(profile).absolute(), Path(installed).absolute()
+         self.installation_lease = installation_lease
+         try:
+-            self.physical_root = self.installed.resolve(strict=True)
++            self.physical_root = self.installed.resolve(strict=not first_installation)
+         except (OSError, RuntimeError) as error:
+             raise MemoryUnavailable('The installed profile service root is unavailable') from error
+-        if not self.physical_root.is_dir():
++        if not first_installation and not self.physical_root.is_dir():
+             raise MemoryUnavailable('The installed profile services require a program directory')
+         if units is not None and not isinstance(units, dict):
+             raise MemoryUnavailable('Profile services require a fixed role-to-service mapping')
+-        self.units = dict(UNITS if units is None else units)
+-        if (set(self.units) != set(UNITS)
++        required = {'dashboard'} if first_installation else set(UNITS)
++        self.units = dict({role: UNITS[role] for role in required} if units is None else units)
++        if (set(self.units) != required
+                 or any(not isinstance(unit, str) or re.fullmatch('[a-zA-Z0-9_.-]+\\.service', unit) is None
+-                       for unit in self.units.values()) or len(set(self.units.values())) != len(UNITS)):
+-            raise MemoryUnavailable('Profile services require three distinct fixed service bindings')
+-        self.state = self.profile / '.lifeos-services'
++                       for unit in self.units.values()) or len(set(self.units.values())) != len(required)):
++            raise MemoryUnavailable('Profile services require distinct fixed service bindings')
++        self.stop_order = tuple(role for role in STOP_ORDER if role in required)
++        self.start_order = tuple(role for role in START_ORDER if role in required)
++        self.state = self.profile / ('.lifeos-installation-services' if first_installation else '.lifeos-services')
+         self.journal = self.state / 'operation.json'
+         self.directories = {'gateway': self.profile, 'dashboard': self.installed.parent.resolve(),
+             'pulse': self.physical_root / 'LIFEOS/PULSE'}
+@@ -114,7 +117,7 @@ class ProfileServices:
+                 or document['profile'] != str(self.profile) or document['installed'] != str(self.installed)
+                 or document['installed_physical'] != str(self.physical_root)
+                 or not isinstance(document['state'], str) or document['state'] not in STATES
+-                or not isinstance(document['services'], dict) or set(document['services']) != set(UNITS)):
++                or not isinstance(document['services'], dict) or set(document['services']) != set(self.units)):
+             raise MemoryUnavailable('The profile service journal belongs to another profile or has invalid metadata')
+         for role, item in document['services'].items():
+             if (not isinstance(item, dict) or set(item) != {'unit', 'definition', 'active', 'control_group'}
+@@ -203,16 +206,16 @@ class ProfileServices:
+         self._empty(document, role)
+ 
+     def _drain(self, document):
+-        for role in STOP_ORDER:
++        for role in self.stop_order:
+             self._drain_unit(document, role)
+-        for role in STOP_ORDER:
++        for role in self.stop_order:
+             self._empty(document, role)
+         document['state'] = 'stopped'
+         self._publish(document)
+ 
+     def _admission(self):
+         services = {}
+-        for role in STOP_ORDER:
++        for role in self.stop_order:
+             values, definition = self._inspect(role)
+             if values['ActiveState'] not in {'active', 'inactive'}:
+                 raise MemoryUnavailable('Profile services require a stable active or inactive state before draining')
+@@ -247,26 +250,26 @@ class ProfileServices:
+                 raise MemoryUnavailable('The reviewed profile service state changes before draining')
+             self._publish(document)
+             self._drain(document)
+-            return {'state': 'stopped', 'services_stopped': list(STOP_ORDER), 'owner_turn_verified': False}
++            return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
+ 
+     def quiesce(self):
+         with self._lock():
+             document = self._load()
+             if document is None:
+                 raise MemoryUnavailable('The selected profile services have no recovery state')
+-            for role in STOP_ORDER:
++            for role in self.stop_order:
+                 self._check_definition(document, role)
+             document['state'] = 'stopping'
+             self._publish(document)
+             self._drain(document)
+-            return {'state': 'stopped', 'services_stopped': list(STOP_ORDER), 'owner_turn_verified': False}
++            return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
+ 
+     def verify_stopped(self):
+         with self._lock():
+             document = self._load()
+             if document is None or document['state'] != 'stopped':
+                 raise MemoryUnavailable('The selected profile services have no completed drain')
+-            for role in STOP_ORDER:
++            for role in self.stop_order:
+                 self._empty(document, role)
+             return {'state': 'stopped', 'owner_turn_verified': False}
+ 
+@@ -277,17 +280,17 @@ class ProfileServices:
+                 raise MemoryUnavailable('The selected profile services have no recovery state')
+             if document['state'] == 'stopping':
+                 self._drain(document)
+-            for role in START_ORDER:
++            for role in self.start_order:
+                 self._check_definition(document, role)
+             document['state'] = 'starting'
+             self._publish(document)
+             started = []
+-            for role in START_ORDER:
++            for role in self.start_order:
+                 self._check_definition(document, role)
+                 if document['services'][role]['active']:
+                     _run('start', self.units[role])
+                     started.append(role)
+-            for role in START_ORDER:
++            for role in self.start_order:
+                 values = self._check_definition(document, role)
+                 if document['services'][role]['active']:
+                     if values['ActiveState'] != 'active' or int(values['MainPID']) == 0:
+diff --git a/notes/2026-10-13-native-log-cleanup.md b/notes/2026-10-13-native-log-cleanup.md
+new file mode 100644
+index 00000000..306c841c
+--- /dev/null
++++ b/notes/2026-10-13-native-log-cleanup.md
+@@ -0,0 +1,11 @@
++# Native child test log cleanup
++
++2026-10-13, isolated managed release qualification.
++
++The native child route assertions pass, but temporary directory cleanup sometimes fails with `Directory not empty` for its `logs` directory.
++
++The actual Hermes QueueListener processes queued agent-close log records after AIAgent.close returns. An audit hook and a controlled writer pause reproduce the original failure through the official native test runner. The main thread removes agent.log and reaches logs directory removal. The listener thread then reopens agent.log before that removal completes.
++
++The test drains the existing Hermes log queue after it closes both agents and before TemporaryDirectory removes the home. This change affects the test fixture only. It does not change delegation behavior or disable asynchronous logging.
++
++The initial uncontrolled trace passes with no pending records at cleanup. The controlled trace fails the same cleanup path with one failed and seven passed tests. After the explicit drain, the controlled trace passes all eight tests. Both controls use actual agent constructors, the actual queued file handler, and the official native runner. The instrumentation changes only thread scheduling and records filesystem events. Raw traces and output are in docs/verification/2026-10-13-release-ui-install/native-logging-race.* and native-logging-race-fixed.*.
+diff --git a/notes/2026-10-13-stock-dashboard-bytecode.md b/notes/2026-10-13-stock-dashboard-bytecode.md
+new file mode 100644
+index 00000000..6ab26ab5
+--- /dev/null
++++ b/notes/2026-10-13-stock-dashboard-bytecode.md
+@@ -0,0 +1,9 @@
++# Stock dashboard review changes the candidate it reviews
++
++2026-10-13, LifeOS release UI acceptance on stock Hermes v0.21.7.
++
++The native web form installs manager 0.4.1 successfully. A real Hermes conversation loads its release skill and prepares public 0.4.1 in 86.3 seconds. The owner reviews the ready operation. The next installation click refuses before admission because the qualified bridge contains four unrecorded Python bytecode files. The active programs stay unchanged.
++
++The dashboard process uses Python with `-I`. Its environment contains `PYTHONDONTWRITEBYTECODE=1`, but isolated Python ignores that variable. The first review imports the candidate and writes bytecode. The second validation correctly refuses those additional files. Previous command-line acceptance uses `-B`; the complete managed runtime also disables bytecode. Those paths do not reproduce the stock dashboard condition.
++
++A regression starts actual isolated Python with the environment variable set. It imports the bridge and its release-version module. Before the fix, the test finds two bytecode files. The source loader now sets `sys.dont_write_bytecode` before importing qualified code. The test must find no additional files. The original rejected operation remains retained. Acceptance requires another clean preparation, owner review, and installation. Removing the unexpected files from the original operation would hide the cause and is not a repair test.
+diff --git a/notes/2026-10-13-stock-service-lifecycle.md b/notes/2026-10-13-stock-service-lifecycle.md
+new file mode 100644
+index 00000000..237c1ae8
+--- /dev/null
++++ b/notes/2026-10-13-stock-service-lifecycle.md
+@@ -0,0 +1,17 @@
++# Stock installation requires a service lifecycle
++
++The first PR18 review finds an abandoned launch window. Preparation writes its durable state before publishing the worker identity. A crash in that window leaves `preparing` indefinitely and disables all three page actions. The correction checks the actual inherited preparation lease before reporting interruption. Both missing-worker and dead-worker states stay active while the lease is held. They become retryable when the lease is free.
++
++The review also finds a pre-existing installation-to-update gap. Stock container 103 has a loaded active Hermes dashboard service, but its gateway and Pulse services are not found. Fresh installation skips services, while every later update requires all three. Creating those units manually between actions would hide the broken user workflow.
++
++A second source review rejects the initial unit-files-only correction. The stock Hermes dashboard runs agents itself. It must stop around publication, and a child with a new process session still belongs to its systemd control group. The installer therefore uses a separate worker service and a fixed first-install dashboard journal. Its service controller keeps the existing three-role defaults for updates. The reviewed transaction preserves existing definitions and adds missing inactive definitions. The gateway and Pulse remain disabled and inactive.
++
++The bounded Linux path requires a managed dashboard and its fixed account launcher. Procfs checks reject a matching foreground backend. An abrupt worker exit can leave the dashboard stopped and require the retained qualified command for recovery. Caught failures return only a verified dashboard runtime. They do not activate memory or replace user data. This limit needs actual guest verification before qualification.
++
++The focused first-install service test initially fails because the controller has no first-install mode. The corrected real user-manager test drains only the synthetic dashboard before the native root exists and resumes it after publication. All 14 actual service controls pass. The selected 46 release controls and three UI contracts also pass. Full qualification and guest installation remain unfinished at this checkpoint.
++
++The private guest trial reaches program publication with a separate worker group and a stopped dashboard. The two generated service definitions then report `LoadState=bad-setting`. The actual service parser identifies the cause: quoted WorkingDirectory values retain the quote as their first character and fail the absolute-path check. A regression using the real systemd parser reproduces the same error for all three generated definitions. The correction leaves that path field unquoted and retains argument quoting for ExecStart and Environment. The preceding string-only control did not establish parser acceptance.
++
++The db48eb5b sealed integration run completes 648 tests with one error. The old responsiveness fixture contains a ready 0.4.0-dev.1 first-install worker. Its service controller has no first_installation parameter. Direct review reproduces TypeError and preserves the empty native destination and ready status. The manager now checks that qualified interface before first-install preparation or review. The actual HTTP regression expects the explicit historical refusal and still checks that a concurrent authenticated health request completes. Successful review responsiveness requires separate current guest evidence.
++
++The first-install recovery audit finds another concrete cause before publication. After bridge publication, recovery_bridge selects the installed import namespace, but the first-install service controller uses the package namespace. Those imports create distinct installation-lease classes. An actual borrowed-lock probe reports that the controller requires an issued owner lease. Fresh operations now select the validated package namespace consistently. A sealed-archive regression passes with the actual filesystem lock after an installed bridge copy is present. The first probe copied a spent test workspace and source validation refused it; the corrected probe extracts the unchanged sealed archive instead.
+diff --git a/notes/2026-10-13-unchanged-native-baseline.md b/notes/2026-10-13-unchanged-native-baseline.md
+new file mode 100644
+index 00000000..008d0898
+--- /dev/null
++++ b/notes/2026-10-13-unchanged-native-baseline.md
+@@ -0,0 +1,9 @@
++# 2026-10-13: A version-only update changes its own reviewed timestamp
++
++The real private browser update from 0.4.2-rc.1 at 307753c5 to the version-only b8895702 candidate refuses before publication. The release worker reports ProgramConflict. The active release and later synthetic user file stay intact.
++
++Fingerprint comparison finds one changed source: generated/baseline.json. Its prepared created_at is 1791908692, and the worker-generated value is 1791908799. Every other baseline field, including all native file hashes, is identical. The worker reruns _program_plan before applying the prepared transaction. With native_changes false, that rerun creates a fresh timestamp. Earlier actual update trials change native programs and do not exercise this path.
++
++The correction preserves the prior baseline creation time when native programs are unchanged. It still recomputes native file hashes and checks the installed tree against its baseline. The regression uses real Git, YAML configuration checking, native baseline and update planning, and ProgramTransaction. It fails before the correction and passes after it. A later native file edit still refuses. All 49 selected configuration, program, baseline, and update-plan controls pass.
++
++Neither test candidate is published. Both must be rebuilt around the corrected worker before the public installation and numerical update trials.
+diff --git a/notes/2026-10-13-unchanged-service-publication.md b/notes/2026-10-13-unchanged-service-publication.md
+new file mode 100644
+index 00000000..75803add
+--- /dev/null
++++ b/notes/2026-10-13-unchanged-service-publication.md
+@@ -0,0 +1,11 @@
++# 2026-10-13: Unchanged publication can invalidate service recovery
++
++The sealed `e5a6ccf1` candidate passes 658 integration tests and 716 native Hermes tests. Its real guest recovery still fails after termination at `programs-published`. The dashboard stays stopped, its definition bytes match the admitted bytes, and systemd reports `NeedDaemonReload=yes`.
++
++A real user-service control separates two causes. Adding an inactive unit leaves the existing unit's flag at `no`. Atomically publishing the same definition bytes changes the inode and changes the flag to `yes`. The program transaction rewrites every reviewed file, including the unchanged stock dashboard definition.
++
++The first service fixture did not reproduce the failure. Its inactive linked unit can be reloaded after systemd releases it. Enabling the synthetic unit under `default.target` retains the loaded unit and reproduces the guest's recovery refusal. The test uses real processes, a real program transaction, and the actual user service manager.
++
++The correction skips publication of a file when its admitted before and after fingerprints are equal. Preparation still checks source, staged copy, and target. The journal retains the entry. Changed files still publish, and recovery still refuses changed service definitions. No service check accepts stale manager properties.
++
++The failed guest and safe observer receipt remain diagnostic evidence. The candidate remains unpublished. A new sealed candidate must repeat the guest interruption and preserve the later synthetic user file before qualification.
+diff --git a/optional/lifeos_release_manager/cli.py b/optional/lifeos_release_manager/cli.py
+index 7116177a..dcd2f1b1 100644
+--- a/optional/lifeos_release_manager/cli.py
++++ b/optional/lifeos_release_manager/cli.py
+@@ -3,6 +3,7 @@
+ from __future__ import annotations
+ 
+ import argparse
++import fcntl
+ import json
+ import os
+ from pathlib import Path
+@@ -85,18 +86,34 @@ def write_state(job, state, *, error=None):
+     publish(job / 'status.json', (json.dumps(value) + '\n').encode())
+ 
+ 
+-def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=None):
++def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=None, job=None, intent=None):
+     profile = profile_directory(profile)
+     for value in (name, assistant):
+         if not isinstance(value, str) or not value.strip() or len(value) > 100 or any(ord(c) < 32 for c in value):
+             raise ReleaseRejected('Fresh installation names require bounded text')
++    if job is None:
++        from .release_preparation import preparation_admission
++        with preparation_admission(profile):
++            return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, intent=intent)
++    return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, job=job, intent=intent)
++
++
++def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, intent=None):
+     state = profile / '.lifeos-releases'
+     state.mkdir(mode=0o700, exist_ok=True)
+     if state.resolve() != state or state.stat().st_uid != os.getuid() or state.stat().st_mode & 0o077:
+         raise ReleaseRejected('Release staging requires private profile storage')
+-    job = state / uuid4().hex
+-    job.mkdir(mode=0o700)
+-    write_state(job, 'preparing')
++    if job is None:
++        job = state / uuid4().hex
++        job.mkdir(mode=0o700)
++        from .release_operation import process_stamp
++        publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
++            'start_time': process_stamp(os.getpid())}).encode())
++        write_state(job, 'preparing')
++    else:
++        job = job_directory(profile, Path(job).name)
++        if read_private(job / 'status.json')['state'] != 'preparing' or (job / 'request.json').exists():
++            raise ReleaseRejected('The preparation already starts or completes')
+     try:
+         downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+         package = job / 'package'
+@@ -107,6 +124,13 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
+         names._name(name.strip())
+         names._name(assistant.strip())
+         selected = source.memory_module('lifeos_installation').selection(profile)
++        if not selected.installed.exists():
++            from .release_services import require_fresh_services
++            require_fresh_services(source)
++        if intent == 'install' and (selected.installed.exists() or selected.installed.is_symlink()):
++            raise ReleaseRejected('Use an update for the existing LifeOS installation')
++        if intent in {'update', 'plugin'} and not selected.installed.is_dir():
++            raise ReleaseRejected('Install LifeOS before requesting an update')
+         runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
+         request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
+             'account_home': str(Path.home()), 'installed': str(selected.installed),
+@@ -141,15 +165,48 @@ def prepare_plan(job, request, files):
+                '--action', 'prepare'], job, 'candidate-review', environment=environment)
+ 
+ 
++def preparation_status(job, value):
++    if value['state'] == 'preparing':
++        from .release_operation import process_stamp
++        if (job / 'preparation-worker.json').exists():
++            worker = read_private(job / 'preparation-worker.json')
++            if set(worker) != {'pid', 'start_time'}:
++                raise ReleaseRejected('The preparation worker identity changes')
++            stamp = process_stamp(worker['pid'])
++            if stamp is not None and stamp == worker['start_time']:
++                return value
++        # The parent holds this lease before spawning; the detached child inherits it.
++        try:
++            descriptor = os.open(job.parent / 'preparation.lock', os.O_RDWR | os.O_NOFOLLOW)
++        except FileNotFoundError:
++            descriptor = None
++        if descriptor is not None:
++            try:
++                info = os.fstat(descriptor)
++                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
++                    raise ReleaseRejected('Preparation requires a private owner lock')
++                try:
++                    fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
++                except BlockingIOError:
++                    return value
++            finally:
++                os.close(descriptor)
++        return {**value, 'state': 'preparation_interrupted',
++                'error': 'Preparation stops before a ready plan. Prepare another release. Active programs stay in place.'}
++    return value
++
++
+ def status(profile, identifier=None):
+     profile = profile_directory(profile)
+     state = profile / '.lifeos-releases'
+     if identifier is not None:
+         job = job_directory(profile, identifier)
+         if not (job / 'request.json').exists():
+-            return read_private(job / 'status.json')
++            if not (job / 'status.json').exists() and not (job / 'status.json').is_symlink() and not (job / 'plan.json').exists():
++                return preparation_status(job, {'identifier': job.name, 'state': 'preparing'})
++            return preparation_status(job, read_private(job / 'status.json'))
+         job, request = operation(profile, identifier)
+-        value = {**read_private(job / 'status.json'), 'version': request['version'], 'commit': request['commit'],
++        value = {**preparation_status(job, read_private(job / 'status.json')), 'version': request['version'], 'commit': request['commit'],
+                  'restore_available': False, 'recover_available': False}
+         if (job / 'plan.json').exists():
+             from .release_operation import validate_plan, operation_lock, OperationBusy, worker_running
+@@ -184,6 +241,8 @@ def launch_worker(profile, identifier, action, *, authorization=None):
+     from .release_worker import admit_operation
+     from .release_operation import record_worker
+     job, request = operation(profile, identifier)
++    manifest = validate_package(job / 'package', request['certificate'])
++    validate_files(job / 'worker', manifest['manager_files'], forbid_bytecode=True)
+     admit_operation(job, request, action, authorization=authorization)
+     command = [request['runtime']['python'], '-B', str(job / 'worker/release_worker.py'), str(job), '--action', action]
+     environment = {'HOME': request['account_home'], 'HERMES_HOME': request['profile'],
+diff --git a/optional/lifeos_release_manager/dashboard/dist/index.js b/optional/lifeos_release_manager/dashboard/dist/index.js
+index 7123a5bb..f97af94d 100644
+--- a/optional/lifeos_release_manager/dashboard/dist/index.js
++++ b/optional/lifeos_release_manager/dashboard/dist/index.js
+@@ -11,6 +11,10 @@
+     const [reviewed, setReviewed] = SDK.hooks.useState(null);
+     const [message, setMessage] = SDK.hooks.useState("");
+     const [busy, setBusy] = SDK.hooks.useState(false);
++    const [installed, setInstalled] = SDK.hooks.useState(null);
++    const [version, setVersion] = SDK.hooks.useState("");
++    const [name, setName] = SDK.hooks.useState("User");
++    const [assistant, setAssistant] = SDK.hooks.useState("Hermes");
+ 
+     async function refresh() {
+       const result = await SDK.fetchJSON(endpoint);
+@@ -19,14 +23,43 @@
+ 
+     SDK.hooks.useEffect(function () {
+       let active = true;
+-      SDK.fetchJSON(endpoint).then(function (result) {
+-        if (active) setOperations(result.operations);
+-      }).catch(function () {
+-        if (active) setMessage("Release status needs an authenticated installation owner.");
+-      });
+-      return function () { active = false; };
++      function poll() {
++        return Promise.all([SDK.fetchJSON(endpoint), SDK.fetchJSON("/api/plugins/lifeos-release-manager/installation")]).then(function (results) {
++          if (active) {
++            setOperations(results[0].operations);
++            setInstalled(results[1].installed);
++          }
++        }).catch(function () {
++          if (active) setMessage("Release status needs an authenticated installation owner.");
++        });
++      }
++      poll();
++      const timer = setInterval(poll, 5000);
++      return function () { active = false; clearInterval(timer); };
+     }, []);
+ 
++    async function prepare(intent) {
++      setBusy(true);
++      setReviewed(null);
++      try {
++        const selection = {intent: intent};
++        if (version.trim()) selection.version = version.trim();
++        if (intent === "install") {
++          selection.name = name;
++          selection.assistant = assistant;
++        }
++        await SDK.fetchJSON("/api/plugins/lifeos-release-manager/prepare", {
++          method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(selection)
++        });
++        setMessage("Preparation started. You can leave this page. Review the prepared release before installation.");
++        await refresh();
++      } catch (error) {
++        setMessage(error.message);
++      } finally {
++        setBusy(false);
++      }
++    }
++
+     async function action(identifier, name) {
+       setBusy(true);
+       try {
+@@ -48,7 +81,27 @@
+ 
+     return h("section", {className: "space-y-4 p-6"},
+       h("h1", {className: "text-2xl font-semibold"}, "LifeOS releases"),
+-      h("p", null, "Ask Hermes to prepare a LifeOS integration release. Review the prepared release here before installation."),
++      h("p", null, "Prepare a release with these controls or ask Hermes in chat. Review the prepared release before installation."),
++      h("p", null, "All update actions prepare the complete tested package: Hermes, LifeOS, the bridge, and the release manager. Your personal data and model settings stay in place."),
++      h("label", {className: "block"}, "Release version (leave blank for latest stable)",
++        h("input", {type: "text", value: version, disabled: busy, placeholder: "Latest stable",
++          className: "block rounded border border-border bg-background p-2", onChange: function (event) { setVersion(event.target.value); }})),
++      installed === false ? h("div", {className: "space-y-2"},
++        h("label", {className: "block"}, "Your name", h("input", {type: "text", value: name, disabled: busy,
++          className: "block rounded border border-border bg-background p-2", onChange: function (event) { setName(event.target.value); }})),
++        h("label", {className: "block"}, "Assistant name", h("input", {type: "text", value: assistant, disabled: busy,
++          className: "block rounded border border-border bg-background p-2", onChange: function (event) { setAssistant(event.target.value); }}))) : null,
++      h("div", {className: "flex flex-wrap gap-2"},
++        [["Install LifeOS", "install", installed !== false], ["Update LifeOS", "update", installed !== true],
++          ["Update plugin", "plugin", installed !== true]].map(function (entry) {
++          return h("button", {key: entry[1], type: "button",
++            disabled: busy || entry[2] || operations.some(function (operation) {
++              return ["preparing", "applying", "recovering", "restoring", "recovery_required"].includes(operation.state)
++                || operation.state.startsWith("queued-");
++            }),
++            onClick: function () { return prepare(entry[1]); },
++            className: "rounded border border-border px-4 py-2 disabled:opacity-50"}, entry[0]);
++        })),
+       h("button", {type: "button", disabled: busy, onClick: async function () {
+         try { await refresh(); setMessage(""); }
+         catch (error) { setMessage(error.message); }
+@@ -56,6 +109,8 @@
+       operations.map(function (operation) {
+         return h("article", {key: operation.identifier, className: "space-y-2 rounded border border-border p-4"},
+           h("p", null, "Release " + (operation.version ?? "preparation") + ": " + operation.state),
++          h("p", {className: "break-all text-sm"}, "Operation: " + operation.identifier),
++          operation.error ? h("p", {role: "status"}, operation.error) : null,
+           operation.state === "ready" ? h("button", {type: "button", disabled: busy,
+             onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,
+           operation.restore_available ? h("button", {type: "button", disabled: busy,
+@@ -67,6 +122,7 @@
+         h("h2", {className: "text-lg font-semibold"}, "Install release " + reviewed.version),
+         h("p", null, reviewed.restart_required ? "Hermes services will restart during this update." : "The prepared integration will become available to this profile."),
+         h("p", null, "Program commit: " + reviewed.commit),
++        h("p", {className: "break-all text-sm"}, "Package SHA-256: " + reviewed.package_sha256),
+         h("button", {type: "button", disabled: busy, onClick: function () {
+           return action(reviewed.identifier, "apply");
+         }, className: "rounded bg-primary px-4 py-2 text-primary-foreground"}, "Install this release")) : null,
+diff --git a/optional/lifeos_release_manager/dashboard/manifest.json b/optional/lifeos_release_manager/dashboard/manifest.json
+index 34d8c3ee..63701483 100644
+--- a/optional/lifeos_release_manager/dashboard/manifest.json
++++ b/optional/lifeos_release_manager/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS releases",
+   "description": "Install and update complete qualified integration releases",
+   "icon": "Package",
+-  "version": "0.4.1",
++  "version": "0.4.2-rc.2",
+   "tab": {
+     "path": "/lifeos-releases",
+     "position": "after:plugins"
+diff --git a/optional/lifeos_release_manager/dashboard/plugin_api.py b/optional/lifeos_release_manager/dashboard/plugin_api.py
+index bd7f1451..4a810f60 100644
+--- a/optional/lifeos_release_manager/dashboard/plugin_api.py
++++ b/optional/lifeos_release_manager/dashboard/plugin_api.py
+@@ -16,8 +16,10 @@ if namespace_name not in sys.modules:
+     namespace.__path__ = [str(directory)]
+     sys.modules[namespace_name] = namespace
+ commands = importlib.import_module(namespace_name + '.cli')
++preparation = importlib.import_module(namespace_name + '.release_preparation')
+ worker = importlib.import_module(namespace_name + '.release_worker')
+ stage = importlib.import_module(namespace_name + '.release_stage')
++services = importlib.import_module(namespace_name + '.release_services')
+ 
+ 
+ def profile():
+@@ -57,6 +59,29 @@ def owner(request: Request):
+ router = APIRouter(dependencies=[Depends(owner)])
+ 
+ 
++@router.get('/installation')
++def installation():
++    selected = commands.profile_directory(profile())
++    existing = any(path.exists() or path.is_symlink() for path in (
++        selected / 'integration-release.json', selected / 'lifeos-installation.json', Path.home() / '.claude'))
++    return {'installed': existing}
++
++
++@router.post('/prepare', status_code=202)
++async def prepare(request: Request):
++    body = await request.body()
++    if request.query_params or len(body) > 4096:
++        raise HTTPException(status_code=400, detail='Use a bounded release selection')
++    try:
++        value = preparation.selection(commands._json(body))
++    except ValueError as error:
++        raise HTTPException(status_code=400, detail=str(error)) from error
++    try:
++        return await run_in_threadpool(preparation.queue, profile(), value)
++    except (ValueError, OSError, RuntimeError) as error:
++        raise HTTPException(status_code=409, detail='Preparation is unavailable or already running under this profile') from error
++
++
+ @router.get('/operations')
+ def operations():
+     try:
+@@ -81,6 +106,8 @@ def review_release(identifier):
+                 'native_mount_required': plan['native_mount_required'],
+                 'restart_required': plan['services'] is not None,
+                 'state': commands.read_private(job / 'status.json')['state']}
++    except services.FirstInstallationUnavailable as error:
++        raise HTTPException(status_code=409, detail=str(error)) from error
+     except (ValueError, OSError, RuntimeError) as error:
+         raise HTTPException(status_code=409, detail='The prepared release changes or has unfinished recovery') from error
+ 
+diff --git a/optional/lifeos_release_manager/plugin.yaml b/optional/lifeos_release_manager/plugin.yaml
+index fe62fd41..7e21fb76 100644
+--- a/optional/lifeos_release_manager/plugin.yaml
++++ b/optional/lifeos_release_manager/plugin.yaml
+@@ -1,5 +1,5 @@
+ name: lifeos-release-manager
+ kind: standalone
+-version: 0.4.1
++version: 0.4.2-rc.2
+ description: Installs and updates qualified LifeOS integration releases from Hermes.
+ author: 0ut5ider
+diff --git a/optional/lifeos_release_manager/release_plan.py b/optional/lifeos_release_manager/release_plan.py
+index 6e48516b..b1e187b9 100644
+--- a/optional/lifeos_release_manager/release_plan.py
++++ b/optional/lifeos_release_manager/release_plan.py
+@@ -35,10 +35,11 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
+         if request['runtime'].get(key) != str(expected):
+             raise ReleaseRejected('The prepared runtime changes its fixed job paths')
+     bridge = profile / 'plugins/lifeos-hook-bridge'
+-    current = load_bridge(bridge) if bridge.is_dir() else candidate
++    fresh = fresh_recovery or not installed.exists()
++    current = candidate if fresh else load_bridge(bridge) if bridge.is_dir() else candidate
+     baseline = current.memory_module('version_drift').default_baseline_path(installed.parent)
+     result = {'profile': profile, 'installed': installed, 'candidate': candidate, 'current': current,
+-              'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': fresh_recovery or not installed.exists()}
++              'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': fresh}
+     if result['fresh']:
+         if not fresh_recovery and (installed.is_symlink() or selected.user_data.exists() or selected.user_data.is_symlink()
+                 or (profile / 'lifeos-memory.json').exists()):
+@@ -48,7 +49,13 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
+         from gateway.status import live_gateway_pid_for_home
+         if live_gateway_pid_for_home(profile):
+             raise ReleaseRejected('Stop this profile gateway before its first native installation')
+-        result.update(native_changes=True, services=None, launchers=[Path.home() / '.local/bin/hermes'])
++        if fresh_recovery:
++            from .cli import read_private
++            preview = read_private(job / 'plan.json')['services']
++        else:
++            from .release_services import fresh_preview
++            preview = fresh_preview(candidate, profile, installed, installation_lease=installation_lease)
++        result.update(native_changes=True, services=preview, launchers=[Path.home() / '.local/bin/hermes'])
+         return result
+     if not bridge.is_dir() or bridge.is_symlink():
+         raise ReleaseRejected('The existing native installation requires its installed bridge')
+diff --git a/optional/lifeos_release_manager/release_preparation.py b/optional/lifeos_release_manager/release_preparation.py
+new file mode 100644
+index 00000000..87956ad4
+--- /dev/null
++++ b/optional/lifeos_release_manager/release_preparation.py
+@@ -0,0 +1,122 @@
++# ABOUTME: Starts owner-requested release preparation in a detached process with a private profile lock.
++# ABOUTME: Validates bounded UI selections and retains preparation status without selecting active programs.
++from __future__ import annotations
++
++import fcntl
++from contextlib import contextmanager
++import json
++import os
++from pathlib import Path
++import stat
++import subprocess
++import sys
++from threading import Thread
++import types
++from uuid import uuid4
++
++if not __package__:
++    namespace = types.ModuleType('lifeos_release_preparation')
++    namespace.__path__ = [str(Path(__file__).resolve().parent)]
++    sys.modules[namespace.__name__] = namespace
++    __package__ = namespace.__name__
++
++from .cli import job_directory, prepare, profile_directory, read_private, status, write_state
++from .release_catalog import ReleaseRejected, VERSION
++from .release_operation import OperationBusy, process_stamp
++from .release_programs import publish
++from .release_services import FirstInstallationUnavailable
++
++
++def selection(value):
++    if not isinstance(value, dict) or set(value) - {'intent', 'version', 'name', 'assistant'}:
++        raise ReleaseRejected('Choose the installation or update action and optional release version')
++    if not isinstance(value.get('intent'), str) or value['intent'] not in {'install', 'update', 'plugin'}:
++        raise ReleaseRejected('Choose Install LifeOS, Update LifeOS, or Update plugin')
++    version = value.get('version')
++    if version is not None and (not isinstance(version, str) or VERSION.fullmatch(version) is None):
++        raise ReleaseRejected('Choose an exact integration version or the latest stable release')
++    names = {key: value.get(key, default) for key, default in (('name', 'User'), ('assistant', 'Hermes'))}
++    for name in names.values():
++        if not isinstance(name, str) or not name.strip() or len(name) > 100 or any(ord(c) < 32 for c in name):
++            raise ReleaseRejected('Fresh installation names require bounded text')
++    return {'intent': value['intent'], 'version': version,
++            **{key: name.strip() for key, name in names.items()}}
++
++
++@contextmanager
++def preparation_admission(profile):
++    profile = profile_directory(profile)
++    state = profile / '.lifeos-releases'
++    state.mkdir(mode=0o700, exist_ok=True)
++    info = state.lstat()
++    if state.resolve() != state or not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
++        raise ReleaseRejected('Release staging requires private owner storage')
++    descriptor = os.open(state / 'preparation.lock', os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
++    try:
++        info = os.fstat(descriptor)
++        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
++            raise ReleaseRejected('Preparation requires a private owner lock')
++        try:
++            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
++        except BlockingIOError as error:
++            raise OperationBusy('A release preparation is already running') from error
++        for operation in status(profile)['operations']:
++            phase = operation['state']
++            if phase == 'preparing':
++                worker_file = state / operation['identifier'] / 'preparation-worker.json'
++                if worker_file.exists():
++                    worker = read_private(worker_file)
++                    stamp = process_stamp(worker['pid'])
++                    if stamp is not None and stamp == worker['start_time']:
++                        raise OperationBusy('A release preparation is already running')
++            if phase.startswith('queued-') or phase in {'applying', 'recovering', 'restoring', 'recovery_required'}:
++                raise OperationBusy('Finish the release operation or recovery before another preparation')
++        yield descriptor
++    finally:
++        os.close(descriptor)
++
++
++def queue(profile, value):
++    value = selection(value)
++    profile = profile_directory(profile)
++    state = profile / '.lifeos-releases'
++    with preparation_admission(profile) as descriptor:
++        job = state / uuid4().hex
++        job.mkdir(mode=0o700)
++        write_state(job, 'preparing')
++        publish(job / 'preparation.json', (json.dumps(value) + '\n').encode())
++        environment = dict(os.environ, HERMES_HOME=str(profile), PYTHONDONTWRITEBYTECODE='1')
++        with (job / 'preparation.stdout').open('ab') as stdout, (job / 'preparation.stderr').open('ab') as stderr:
++            os.fchmod(stdout.fileno(), 0o600)
++            os.fchmod(stderr.fileno(), 0o600)
++            try:
++                process = subprocess.Popen([sys.executable, '-B', str(Path(__file__).resolve()), str(profile), job.name],
++                    env=environment, cwd=Path.home(), stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
++                    start_new_session=True, pass_fds=(descriptor,))
++            except OSError:
++                write_state(job, 'preparation_failed', error='The preparation process does not start.')
++                raise
++        Thread(target=process.wait, daemon=True).start()
++        publish(job / 'preparation-worker.json', json.dumps({'pid': process.pid,
++                'start_time': process_stamp(process.pid)}).encode())
++        return {'identifier': job.name, 'state': 'preparing', 'active_unchanged': True}
++
++
++def main():
++    profile = profile_directory(sys.argv[1])
++    job = job_directory(profile, sys.argv[2])
++    try:
++        value = selection(read_private(job / 'preparation.json'))
++        prepare(profile, value['version'], name=value['name'], assistant=value['assistant'],
++                intent=value['intent'], job=job)
++    except FirstInstallationUnavailable as error:
++        write_state(job, 'preparation_failed', error=str(error))
++        raise
++    except BaseException:
++        write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
++        raise
++
++
++if __name__ == '__main__':
++    os.umask(0o077)
++    main()
+diff --git a/optional/lifeos_release_manager/release_programs.py b/optional/lifeos_release_manager/release_programs.py
+index 3b8d2d89..825db330 100644
+--- a/optional/lifeos_release_manager/release_programs.py
++++ b/optional/lifeos_release_manager/release_programs.py
+@@ -223,6 +223,8 @@ class ProgramTransaction:
+         self._record(value)
+         for index, entry in enumerate(value['entries']):
+             target, incoming = Path(entry['target']), self.snapshot / ('incoming-' + str(index))
++            if entry['kind'] == 'file' and entry['before'] == entry['after']:
++                continue
+             if entry['kind'] == 'directory':
+                 if entry['before'] is not None:
+                     os.replace(target, self.snapshot / ('before-' + str(index)))
+diff --git a/optional/lifeos_release_manager/release_services.py b/optional/lifeos_release_manager/release_services.py
+new file mode 100644
+index 00000000..9c3a7acb
+--- /dev/null
++++ b/optional/lifeos_release_manager/release_services.py
+@@ -0,0 +1,196 @@
++# ABOUTME: Stages fixed inactive user services for the first complete integration installation.
++# ABOUTME: Binds the stock dashboard writer to its owner service before publishing programs.
++from pathlib import Path
++import inspect
++import os
++import re
++import shlex
++
++from .release_catalog import ReleaseRejected
++from .release_programs import fingerprint, publish
++
++
++class FirstInstallationUnavailable(ReleaseRejected):
++    def __init__(self):
++        super().__init__('This release does not support managed dashboard first installation. Choose a qualified release with first-install service support.')
++
++
++def require_fresh_services(current):
++    if 'first_installation' not in inspect.signature(current.memory_module('profile_services').ProfileServices).parameters:
++        raise FirstInstallationUnavailable()
++
++
++def _quoted(value, *, command=False):
++    value = str(value)
++    if any(ord(character) < 32 for character in value):
++        raise ReleaseRejected('Service paths require bounded physical account names')
++    value = value.replace('\\', '\\\\').replace('"', '\\"').replace('%', '%%')
++    return '"' + (value.replace('$', '$$') if command else value) + '"'
++
++
++def _service_paths(home, profile, installed):
++    for path in (home, profile, installed):
++        if (not path.is_absolute() or path.resolve() != path
++                or any(character.isspace() or ord(character) < 32 or character in '\\"\'$;}' for character in str(path))):
++            raise ReleaseRejected('Managed service paths require physical names without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces')
++
++
++def service_files(request, generated):
++    home, profile, installed = (Path(request[key]) for key in ('account_home', 'profile', 'installed'))
++    _service_paths(home, profile, installed)
++    definitions = {
++        'hermes-gateway.service': (profile, [home / '.local/bin/hermes', 'gateway', 'run', '--external-supervisor']),
++        'hermes-dashboard.service': (installed.parent, [home / '.local/bin/hermes', 'dashboard', '--isolated', '--no-open']),
++        'com.lifeos.pulse.service': (installed / 'LIFEOS/PULSE',
++            [home / '.local/bin/bun', '--no-install', installed / 'LIFEOS/PULSE/pulse.ts']),
++    }
++    files = {}
++    for name, (working, command) in definitions.items():
++        target = home / '.config/systemd/user' / name
++        existing = fingerprint(target)
++        if existing is not None:
++            if existing['type'] != 'file':
++                raise ReleaseRejected('Existing integration services require regular owner definitions')
++            files[target] = target
++            continue
++        source = generated / name
++        publish(source, ('# ABOUTME: Defines a reviewed integration service without enabling it.\n'
++            '# ABOUTME: Selects fixed account launchers and the installed profile.\n'
++            '[Unit]\nDescription=LifeOS integration ' + name + '\n[Service]\nType=simple\n'
++            'WorkingDirectory=' + str(working).replace('%', '%%') + '\n'
++            'Environment=' + _quoted('HERMES_HOME=' + str(profile)) + '\n'
++            'Environment=' + _quoted('PATH=' + str(home / '.local/bin') + ':/usr/local/bin:/usr/bin:/bin') + '\n'
++            'Environment=PYTHONDONTWRITEBYTECODE=1\nUMask=0077\n'
++            'ExecStart=' + ' '.join(_quoted(value, command=True) for value in command) + '\n'
++            'KillMode=control-group\nTimeoutStopSec=45s\nRestart=on-failure\n'
++            '[Install]\nWantedBy=default.target\n').encode())
++        files[target] = source
++    return files
++
++
++def fresh_services(current, profile, installed, *, installation_lease=None):
++    require_fresh_services(current)
++    profile = Path(profile).absolute()
++    module = current.memory_module('profile_services')
++    class DashboardServices(module.ProfileServices):
++        def _inspect(self, role):
++            values, definition = super()._inspect(role)
++            binding = dashboard_binding(module, profile, values)
++            return values, module._digest({'definition': definition, 'dashboard': binding})
++    return DashboardServices(profile, installed,
++        installation_lease=installation_lease, first_installation=True)
++
++
++def dashboard_binding(module, profile, values):
++    from hermes_cli.dashboard_procs import _hermes_home_for_pid, _profile_flag_value
++    from hermes_cli.update_cmd_windows import _hermes_holder_subcommand
++    from hermes_cli.profiles import get_active_profile, normalize_profile_name, profile_root_for_env_home
++    from .release_operation import process_stamp
++    pid = int(values['MainPID'])
++    if pid:
++        try:
++            stamp = process_stamp(pid)
++            process = Path('/proc') / str(pid)
++            arguments = [value.decode() for value in (process / 'cmdline').read_bytes().split(b'\0') if value]
++            owner = _hermes_home_for_pid(pid)
++            valid_process = (process.stat().st_uid == os.getuid()
++                and stamp is not None and process_stamp(pid) == stamp
++                and _hermes_holder_subcommand(shlex.join(arguments)) in {'dashboard', 'serve'})
++        except (OSError, UnicodeError, ValueError) as error:
++            raise ReleaseRejected('The dashboard process profile identity is unavailable') from error
++        if not valid_process or owner is None or Path(owner).resolve() != profile:
++            raise ReleaseRejected('The active dashboard process belongs to another profile or command')
++    configured = re.search(r'\bargv\[\]=(.*?) ;', values['ExecStart'])
++    try:
++        arguments = shlex.split(configured.group(1)) if configured is not None else []
++        properties = dict(line.split('=', 1) for line in module._run('show', module.UNITS['dashboard'],
++            '--property=Environment,EnvironmentFiles', '--no-pager').splitlines() if '=' in line)
++        environment = dict(value.split('=', 1) for value in shlex.split(properties['Environment']))
++    except (KeyError, ValueError) as error:
++        raise ReleaseRejected('The dashboard service profile binding is unavailable') from error
++    command = _hermes_holder_subcommand(shlex.join(arguments))
++    declared = environment.get('HERMES_HOME', '').replace('%%', '%')
++    if (command not in {'dashboard', 'serve'} or set(properties) != {'Environment', 'EnvironmentFiles'}
++            or properties['EnvironmentFiles'] or not declared or Path(declared) != profile
++            or Path(declared).resolve() != profile):
++        raise ReleaseRejected('The dashboard service requires an explicit selected profile and dashboard command')
++    explicit = _profile_flag_value(arguments)
++    if explicit is not None:
++        root = profile_root_for_env_home(declared, profile)
++        name = normalize_profile_name(explicit)
++        selected = root if name == 'default' else root / 'profiles' / name
++        if selected != profile:
++            raise ReleaseRejected('The dashboard command selects another profile')
++    elif (profile.parent.name != 'profiles' and environment.get('HERMES_UPDATE_POST_SWAP') != '1'
++            and not any(environment.get(key) for key in ('HERMES_SUPERVISED_CHILD', 'HERMES_S6_SUPERVISED_CHILD',
++                'HERMES_GATEWAY_EXTERNAL_SUPERVISOR'))):
++        if normalize_profile_name(get_active_profile(profile)) != 'default':
++            raise ReleaseRejected('The dashboard service selects another active profile')
++    return {'profile': str(profile), 'command': command}
++
++
++def fresh_preview(current, profile, installed, *, installation_lease=None):
++    _service_paths(Path.home(), profile, installed)
++    services = fresh_services(current, profile, installed, installation_lease=installation_lease)
++    preview = services.preview()
++    values, _ = services._inspect('dashboard')
++    match = re.search(r'\bpath=([^ ;}]+)', values['ExecStart'])
++    launcher = Path(match.group(1)) if match is not None else None
++    if (launcher != Path.home() / '.local/bin/hermes' or fingerprint(launcher) is None or not launcher.is_file()
++            or values['FragmentPath'] != str(Path.home() / '.config/systemd/user/hermes-dashboard.service')
++            or values['DropInPaths']):
++        raise ReleaseRejected('Start the owner dashboard service with the account Hermes launcher before installation')
++    check_dashboard_writers(profile, values['ControlGroup'])
++    module = current.memory_module('profile_services')
++    for role in ('gateway', 'pulse'):
++        text = module._run('show', module.UNITS[role],
++            '--property=LoadState,ActiveState,WorkingDirectory,FragmentPath,DropInPaths,KillMode,NeedDaemonReload,RootDirectory,RootImage,ExecStart', '--no-pager')
++        properties = dict(line.split('=', 1) for line in text.splitlines() if '=' in line)
++        if properties.get('LoadState') == 'not-found':
++            continue
++        expected = profile if role == 'gateway' else installed / 'LIFEOS/PULSE'
++        target = Path.home() / '.config/systemd/user' / module.UNITS[role]
++        executable = Path.home() / '.local/bin' / ('hermes' if role == 'gateway' else 'bun')
++        match = re.search(r'\bpath=([^ ;}]+)', properties.get('ExecStart', ''))
++        arguments = ('gateway run --external-supervisor' if role == 'gateway'
++                     else '--no-install ' + str(installed / 'LIFEOS/PULSE/pulse.ts'))
++        if (properties.get('LoadState') != 'loaded' or properties.get('ActiveState') != 'inactive'
++                or Path(properties.get('WorkingDirectory', '')).resolve() != expected
++                or properties.get('FragmentPath') != str(target) or properties.get('DropInPaths')
++                or properties.get('NeedDaemonReload') != 'no' or properties.get('RootDirectory') or properties.get('RootImage')
++                or properties.get('KillMode') not in {'mixed', 'control-group'}
++                or match is None or match.group(1) != str(executable)
++                or 'argv[]=' + str(executable) + ' ' + arguments + ' ;' not in properties['ExecStart']):
++            raise ReleaseRejected('Fresh installation preserves an existing service from another deployment')
++    return preview
++
++
++def check_dashboard_writers(profile, group=''):
++    # Procfs inspection fails closed. A foreground backend cannot be drained by an inactive unit.
++    from hermes_cli.dashboard_procs import _hermes_home_for_pid
++    from hermes_cli.update_cmd_windows import _hermes_holder_subcommand
++    for process in Path('/proc').iterdir():
++        if not process.name.isdecimal():
++            continue
++        try:
++            if process.stat().st_uid != os.getuid():
++                continue
++            arguments = [value.decode() for value in (process / 'cmdline').read_bytes().split(b'\0') if value]
++            if _hermes_holder_subcommand(shlex.join(arguments)) not in {'dashboard', 'serve'}:
++                continue
++            owner = _hermes_home_for_pid(int(process.name))
++            if owner is None:
++                raise ReleaseRejected('The running dashboard profile identity is unavailable')
++            if Path(owner).resolve() != profile:
++                continue
++            groups = (process / 'cgroup').read_text().splitlines()
++            if not group or '0::' + group not in groups:
++                raise ReleaseRejected('Run this profile dashboard through its owner user service before installation')
++        except FileNotFoundError:
++            continue
++
++
++def verify_installed_services(current, profile, installed, *, installation_lease=None):
++    module = current.memory_module('profile_services')
++    module._run('daemon-reload')
++    module.ProfileServices(profile, installed, installation_lease=installation_lease).preview()
+diff --git a/optional/lifeos_release_manager/release_stage.py b/optional/lifeos_release_manager/release_stage.py
+index 9cf3b016..f0c4daf4 100644
+--- a/optional/lifeos_release_manager/release_stage.py
++++ b/optional/lifeos_release_manager/release_stage.py
+@@ -8,11 +8,14 @@ import json
+ import os
+ from pathlib import Path, PurePosixPath
+ import shutil
++import stat
+ import subprocess
+ import sys
++import tarfile
+ import types
+ 
+-from .release_catalog import ReleaseRejected, _directory, extract_package, _json
++from .release_catalog import (ReleaseRejected, _directory, extract_package, _json,
++    COMMIT, DIGEST, VERSION, MAX_ARCHIVE_BYTES, MAX_EXTRACTED_BYTES, MAX_MEMBERS)
+ from .release_programs import publish, fingerprint
+ from .release_tools import prepare_bun
+ 
+@@ -56,6 +59,8 @@ def validate_files(root, files, *, forbid_bytecode=False):
+ 
+ 
+ def load_bridge(directory):
++    # Isolated Python ignores environment bytecode settings. Keep qualified source trees unchanged during imports.
++    sys.dont_write_bytecode = True
+     directory = Path(directory).absolute()
+     name = 'lifeos_release_source_' + hashlib.sha256(str(directory).encode()).hexdigest()[:16]
+     if name not in sys.modules:
+@@ -65,9 +70,64 @@ def load_bridge(directory):
+     return importlib.import_module(name + '.install_source')
+ 
+ 
++def archived_manifest(package, certificate):
++    version, commit, digest, size = (certificate.get(key)
++        for key in ('version', 'program_commit', 'archive_sha256', 'archive_bytes'))
++    if (not isinstance(version, str) or VERSION.fullmatch(version) is None
++            or not isinstance(commit, str) or COMMIT.fullmatch(commit) is None
++            or not isinstance(digest, str) or DIGEST.fullmatch(digest) is None
++            or type(size) is not int or not 0 < size <= MAX_ARCHIVE_BYTES):
++        raise ReleaseRejected('The package requires an authenticated archive identity')
++    archive = package.parent / 'download' / (version + '-' + commit[:8] + '.tgz')
++    if archive.resolve() != archive:
++        raise ReleaseRejected('The package requires a regular authenticated archive')
++    try:
++        descriptor = os.open(archive, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++        with os.fdopen(descriptor, 'rb') as content:
++            info = os.fstat(content.fileno())
++            if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_size != size
++                    or hashlib.file_digest(content, 'sha256').hexdigest() != digest):
++                raise ReleaseRejected('The package differs from its authenticated archive identity')
++            content.seek(0)
++            manifest, total = None, 0
++            with tarfile.open(fileobj=content, mode='r|gz') as source:
++                for number, member in enumerate(source, 1):
++                    total += member.size
++                    if number > MAX_MEMBERS or member.size < 0 or total > MAX_EXTRACTED_BYTES:
++                        raise ReleaseRejected('The authenticated archive exceeds its package limits')
++                    if member.name == 'DAILY-CANDIDATE.json':
++                        if manifest is not None or not member.isfile() or not 0 < member.size <= 512 * 1024:
++                            raise ReleaseRejected('The authenticated archive requires one bounded program manifest')
++                        with source.extractfile(member) as program_manifest:
++                            manifest = program_manifest.read(512 * 1024 + 1)
++            if manifest is None:
++                raise ReleaseRejected('The authenticated archive has no program manifest')
++            return manifest
++    except (OSError, tarfile.TarError) as error:
++        raise ReleaseRejected('The package authenticated archive is unavailable') from error
++
++
++def read_manifest(path):
++    if path.resolve() != path:
++        raise ReleaseRejected('The package requires a bounded regular owner manifest')
++    try:
++        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++        with os.fdopen(descriptor, 'rb') as content:
++            info = os.fstat(content.fileno())
++            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or not 0 < info.st_size <= 512 * 1024:
++                raise ReleaseRejected('The package requires a bounded regular owner manifest')
++            manifest_bytes = content.read(512 * 1024 + 1)
++            if len(manifest_bytes) > 512 * 1024:
++                raise ReleaseRejected('The package requires a bounded regular owner manifest')
++    except OSError as error:
++        raise ReleaseRejected('The package requires a bounded regular owner manifest') from error
++    return manifest_bytes
++
++
+ def validate_package(package, certificate):
+     package = _directory(package)
+-    manifest = _json((package / 'DAILY-CANDIDATE.json').read_bytes())
++    manifest_bytes = read_manifest(package / 'DAILY-CANDIDATE.json')
++    manifest = _json(manifest_bytes)
+     if (not isinstance(manifest, dict) or not isinstance(certificate, dict)
+             or certificate.get('format') != 1 or certificate.get('status') != 'QUALIFIED'
+             or manifest.get('head') != certificate.get('program_commit')
+@@ -75,6 +135,16 @@ def validate_package(package, certificate):
+         raise ReleaseRejected('The package does not match its qualified release certificate')
+     if not isinstance(manifest.get('python_runtime_files'), dict):
+         raise ReleaseRejected('The release has no qualified frozen dependency closure')
++    if manifest_bytes != archived_manifest(package, certificate):
++        raise ReleaseRejected('The extracted program manifest differs from its authenticated archive')
++    source_manifests = manifest.get('prepared_manifest_files')
++    if (not isinstance(source_manifests, dict) or set(source_manifests)
++            != {'hermes/hermes-source-manifest.json', 'lifeos/lifeos-source-manifest.json'}):
++        raise ReleaseRejected('The package has no authenticated native source manifest map')
++    for name, digest in source_manifests.items():
++        if (not isinstance(digest, str) or DIGEST.fullmatch(digest) is None
++                or hashlib.sha256(read_manifest(package / name)).hexdigest() != digest):
++            raise ReleaseRejected('A native source manifest differs from its authenticated program map')
+     validate_files(package / 'python-runtime', manifest['python_runtime_files'], forbid_bytecode=True)
+     if not {'pyproject.toml', 'uv.lock'} <= set(manifest['python_runtime_files']):
+         raise ReleaseRejected('The release lacks a frozen dependency closure')
+diff --git a/optional/lifeos_release_manager/release_worker.py b/optional/lifeos_release_manager/release_worker.py
+index 0ec00165..f4e2e0e1 100644
+--- a/optional/lifeos_release_manager/release_worker.py
++++ b/optional/lifeos_release_manager/release_worker.py
+@@ -108,11 +108,15 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
+ 
+ 
+ def recovery_bridge(job, profile):
++    request = read_private(job / 'request.json')
++    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
++    if plan is not None and plan['fresh']:
++        from .release_stage import validate_package
++        validate_package(job / 'package', request['certificate'])
++        return load_bridge(job / 'package/lifeos_hook_bridge')
+     active = profile / 'plugins/lifeos-hook-bridge'
+     if active.is_dir():
+         return load_bridge(active)
+-    request = read_private(job / 'request.json')
+-    plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
+     expected = plan['program_entries_sha256'] if plan is not None else None
+     snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
+     if snapshot.journal.is_file():
+@@ -135,6 +139,17 @@ def _yaml_configuration(profile, native):
+     data = yaml.load((profile / 'config.yaml').read_bytes())
+     if not isinstance(data, dict):
+         raise ReleaseRejected('The selected profile configuration is not a mapping')
++    # Native Mount.ts edits block headers. Preserve values and comments while preparing those headers.
++    pending, seen = [data], set()
++    while pending:
++        value = pending.pop()
++        if not isinstance(value, (dict, list)) or id(value) in seen:
++            continue
++        seen.add(id(value))
++        formatting = getattr(value, 'fa', None)
++        if formatting is not None:
++            formatting.set_block_style()
++        pending.extend(value.values() if isinstance(value, dict) else value)
+     plugins = data.setdefault('plugins', {})
+     enabled = plugins.setdefault('enabled', [])
+     disabled = plugins.setdefault('disabled', [])
+@@ -193,6 +208,9 @@ def _program_plan(job, request, selected):
+             source=Path(request['runtime']['source'])))
+     files[profile / 'config.yaml'] = generated / 'config.yaml'
+     current = selected['current']
++    if selected['fresh']:
++        from .release_services import service_files
++        files.update(service_files(request, generated))
+     if not selected['fresh']:
+         drift = current.memory_module('version_drift')
+         previous = drift.load_baseline(selected['baseline'], installed)
+@@ -225,7 +243,9 @@ def _program_plan(job, request, selected):
+         if selected['native_changes']:
+             files[selected['baseline']] = selected['baseline']
+         else:
+-            publish(generated / 'baseline.json', (json.dumps(drift.create_baseline(native, installed), indent=2) + '\n').encode())
++            baseline = drift.create_baseline(native, installed)
++            baseline['created_at'] = previous['created_at']
++            publish(generated / 'baseline.json', (json.dumps(baseline, indent=2) + '\n').encode())
+             files[selected['baseline']] = generated / 'baseline.json'
+     manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
+     certificate = request['certificate']
+@@ -246,6 +266,19 @@ def _fresh_native(job, request, selected, *, checkpoint=lambda point: None):
+     return NativeInitialization(job, request, selected['installed']).execute(helpers, checkpoint=checkpoint)
+ 
+ 
++def _return_fresh_dashboard(job, request, selected, programs, services, lease):
++    initialization = job / 'native-initialization.json'
++    if initialization.is_file() and read_private(initialization)['state'] == 'complete':
++        # Finish only the admitted program phase. Native mounting remains an explicit recovery action.
++        programs.resume()
++        verify_runtime(request)
++        from .release_services import verify_installed_services
++        verify_installed_services(selected['candidate'], selected['profile'], selected['installed'], installation_lease=lease)
++    else:
++        programs.check_prepared()
++    services.resume()
++
++
+ def execute(job, action, *, checkpoint=lambda point: None):
+     with operation_lock(job):
+         request = read_private(job / 'request.json')
+@@ -309,7 +342,11 @@ def _execute(job, action, *, checkpoint=lambda point: None):
+                 'baseline': current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)}
+         services = None
+         if plan['services']:
+-            services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
++            if plan['fresh']:
++                from .release_services import fresh_services
++                services = fresh_services(current, profile, selected['installed'], installation_lease=lease)
++            else:
++                services = current.memory_module('profile_services').ProfileServices(profile, selected['installed'], installation_lease=lease)
+         administration = current.memory_administration()
+         if fresh_recovery and administration.required(selected['installed'], profile):
+             raise PermissionError('Fresh recovery preserves newly enabled memory ownership and requires governed installation repair')
+@@ -348,11 +385,20 @@ def _execute(job, action, *, checkpoint=lambda point: None):
+             programs.check_prepared()
+         write_state(job, 'recovering' if fresh_recovery else 'applying')
+         try:
+-            if fresh_recovery:
+-                _restore_mount(job, request, mount)
+             if services is not None:
+-                services.drain(signature=plan['services']['signature'])
++                if fresh_recovery:
++                    if services.status()['state'] == 'none':
++                        services.drain(signature=plan['services']['signature'])
++                    else:
++                        services.quiesce()
++                else:
++                    services.drain(signature=plan['services']['signature'])
+                 services.verify_stopped()
++                if selected['fresh']:
++                    from .release_services import check_dashboard_writers
++                    check_dashboard_writers(profile)
++            if fresh_recovery:
++                _restore_mount(job, request, mount)
+             for entry in programs._load()['entries']:
+                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+             if selected['fresh']:
+@@ -374,6 +420,9 @@ def _execute(job, action, *, checkpoint=lambda point: None):
+                     binding=administration.job_binding(job, request, action), retain_for_rollback=True)
+             checkpoint('native-mounted')
+             verify_runtime(request)
++            if selected['fresh']:
++                from .release_services import verify_installed_services
++                verify_installed_services(selected['candidate'], profile, selected['installed'], installation_lease=lease)
+             if services is not None:
+                 services.resume()
+             write_state(job, 'applied')
+@@ -385,6 +434,8 @@ def _execute(job, action, *, checkpoint=lambda point: None):
+             _restore_mount(job, request, mount)
+             if selected['fresh']:
+                 write_state(job, 'recovery_required', error='The prepared first installation requires recovery. User data is preserved.')
++                if services is not None:
++                    _return_fresh_dashboard(job, request, selected, programs, services, lease)
+                 raise
+             programs.restore()
+             if services is not None:
+diff --git a/patches/hermes-child-routing.patch b/patches/hermes-child-routing.patch
+index ae7dc8b9..3b431afb 100644
+--- a/patches/hermes-child-routing.patch
++++ b/patches/hermes-child-routing.patch
+@@ -3,7 +3,7 @@ new file mode 100644
+ index 000000000..97fa8ee97
+ --- /dev/null
+ +++ b/tests/test_lifeos_delegate_tier_route.py
+-@@ -0,0 +1,145 @@
++@@ -0,0 +1,147 @@
+ +# ABOUTME: Checks that a delegated child receives its own model and reasoning effort.
+ +# ABOUTME: Rejects malformed routes before constructing any child.
+ +
+@@ -85,6 +85,7 @@ index 000000000..97fa8ee97
+ +
+ +    def test_real_child_keeps_selected_model_and_effort(self):
+ +        from run_agent import AIAgent
+++        from hermes_logging import flush_log_queue
+ +        with TemporaryDirectory(prefix="delegate-tier-home-") as directory:
+ +            Path(directory, "config.yaml").write_text("model:\n  default: default-local\n")
+ +            with patch.dict("os.environ", {"HERMES_HOME": directory}):
+@@ -105,6 +106,7 @@ index 000000000..97fa8ee97
+ +                finally:
+ +                    child.close()
+ +                    parent.close()
+++                    flush_log_queue()
+ +
+ +    def test_per_task_provider_uses_its_credential_bundle(self):
+ +        creds = {"model": "default-local", "provider": "custom", "base_url": "http://127.0.0.1:8123/v1",
+diff --git a/tests/test_profile_services.py b/tests/test_profile_services.py
+index 013b4d45..08174b0d 100644
+--- a/tests/test_profile_services.py
++++ b/tests/test_profile_services.py
+@@ -47,6 +47,24 @@ def service_manager_fixture():
+ 
+ 
+ class ProfileServicesTests(unittest.TestCase):
++    def test_fresh_drain_resumes_after_unchanged_definition_publication(self):
++        from lifeos_hook_bridge.profile_services import ProfileServices
++        from optional.lifeos_release_manager.release_programs import ProgramTransaction
++        definition = self.home / 'units' / self.units['dashboard']
++        definition.write_text(definition.read_text() + '[Install]\nWantedBy=default.target\n')
++        self.command('systemctl', '--user', '--quiet', 'enable', '--runtime', self.units['dashboard'])
++        self.command('systemctl', '--user', 'daemon-reload')
++        self.addCleanup(self.command, 'systemctl', '--user', 'daemon-reload')
++        barrier = ProfileServices(self.profile, self.installed,
++            units={'dashboard': self.units['dashboard']}, first_installation=True)
++        barrier.drain(signature=barrier.preview()['signature'])
++        transaction = ProgramTransaction(self.home / 'program-snapshot')
++        transaction.prepare(directories={}, files={definition: definition})
++        transaction.apply()
++        barrier.quiesce()
++        barrier.resume()
++        self.assertEqual(barrier.status()['state'], 'active')
++
+     def setUp(self):
+         self.enterContext(service_manager_fixture())
+         if hasattr(self, 'fixture_home'):
+@@ -139,6 +157,26 @@ class ProfileServicesTests(unittest.TestCase):
+         self.record('lifecycle', {'before': before, 'drain': result, 'stopped': stopped, 'resume': restarted,
+             'after': after, 'journal': json.loads(self.barrier().journal.read_text())})
+ 
++    def test_first_installation_drains_dashboard_before_native_root_exists(self):
++        from lifeos_hook_bridge.profile_services import ProfileServices
++        absent = self.home / 'native-not-installed'
++        before = {role: self.properties(role) for role in self.units}
++        barrier = ProfileServices(self.profile, absent,
++            units={'dashboard': self.units['dashboard']}, first_installation=True)
++        preview = barrier.preview()
++        self.assertEqual(barrier.drain(signature=preview['signature'])['services_stopped'], ['dashboard'])
++        barrier.verify_stopped()
++        self.assertEqual(self.properties('dashboard')['MainPID'], '0')
++        for role in ('gateway', 'pulse'):
++            self.assertEqual(self.properties(role)['MainPID'], before[role]['MainPID'])
++        absent.mkdir()
++        restarted = ProfileServices(self.profile, absent,
++            units={'dashboard': self.units['dashboard']}, first_installation=True)
++        self.assertEqual(restarted.resume()['services_started'], ['dashboard'])
++        self.assertNotEqual(self.properties('dashboard')['MainPID'], before['dashboard']['MainPID'])
++        self.assertEqual(restarted.journal.parent.name, '.lifeos-installation-services')
++        self.assertFalse(self.barrier().journal.exists())
++
+     def test_unit_from_another_profile_refuses_before_any_writer_stops(self):
+         before = {role: self.properties(role) for role in self.units}
+         other = self.home / 'different-profile'
+diff --git a/tests/test_release_configuration.py b/tests/test_release_configuration.py
+index f0035cd1..a8479cb7 100644
+--- a/tests/test_release_configuration.py
++++ b/tests/test_release_configuration.py
+@@ -13,6 +13,57 @@ from optional.lifeos_release_manager.release_worker import _yaml_configuration,
+ 
+ 
+ class ReleaseConfigurationTests(unittest.TestCase):
++    def test_generated_service_definitions_pass_the_actual_systemd_parser(self):
++        from optional.lifeos_release_manager.release_services import service_files
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
++            for path in (profile, generated, installed / 'LIFEOS/PULSE', root / '.local/bin'):
++                path.mkdir(parents=True, mode=0o700)
++            for name in ('hermes', 'bun'):
++                program = root / '.local/bin' / name
++                program.write_text('#!/bin/sh\nexit 0\n')
++                program.chmod(0o700)
++            files = service_files({'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}, generated)
++            result = subprocess.run(['systemd-analyze', '--user', 'verify', *map(str, files.values())],
++                capture_output=True, text=True, timeout=30)
++            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
++            self.assertEqual(result.stdout + result.stderr, '')
++
++    def test_unsupported_service_paths_refuse_before_generating_files(self):
++        from optional.lifeos_release_manager.release_services import service_files
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            generated = root / 'generated'
++            generated.mkdir(mode=0o700)
++            for key in ('account_home', 'profile', 'installed'):
++                for character in (' ', '$', '\\', '"', "'", '\n', ';', '}'):
++                    with self.subTest(key=key, character=character):
++                        request = {'account_home': str(root), 'profile': str(root / '.hermes'), 'installed': str(root / '.claude')}
++                        request[key] += character + 'unsupported'
++                        with self.assertRaisesRegex(ValueError, 'service paths'):
++                            service_files(request, generated)
++                        self.assertEqual(list(generated.iterdir()), [])
++
++    def test_flow_configuration_prepares_native_mount_without_changing_values(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            original = {'model': {'default': 'synthetic', 'provider': 'custom'},
++                'approvals': {'mode': 'manual', 'deny': ['keep']},
++                'skills': {'external_dirs': ['/synthetic/retain']},
++                'plugins': {'enabled': ['retained'], 'entries': {
++                    'lifeos-hook-bridge': {'settings': {'fable_effort': 'xhigh'}}}}}
++            (profile / 'config.yaml').write_text(json.dumps(original))
++            prepared = _yaml_configuration(profile, profile / 'native').decode()
++            # Native Mount.ts edits root sections by their block headers.
++            for key in ('model', 'approvals', 'skills', 'plugins'):
++                self.assertRegex(prepared, '(?m)^' + key + ':\\s*$')
++            actual = YAML(typ='safe').load(prepared)
++            for key in ('model', 'approvals', 'skills'):
++                self.assertEqual(actual[key], original[key])
++            self.assertEqual(actual['plugins']['entries']['lifeos-hook-bridge']['settings']['fable_effort'], 'xhigh')
++            self.assertEqual(json.loads((profile / 'config.yaml').read_text()), original)
++
+     def test_program_plan_rebuilds_private_outputs_after_incomplete_preparation(self):
+         with tempfile.TemporaryDirectory() as temp:
+             root = Path(temp)
+@@ -24,7 +75,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
+             commands = {name: 'bin/' + name for name in ('hermes', 'hermes-agent', 'hermes-acp')}
+             (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
+             (job / 'manifest.json').chmod(0o644)
+-            request = {'profile': str(profile), 'account_home': str(root), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
++            request = {'profile': str(profile), 'account_home': str(root), 'installed': str(root / '.claude'), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
+                        'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
+                            'hermes_patch_count': 10, 'lifeos_patch_count': 25},
+                        'version': '0.4.0-dev.1', 'commit': 'a' * 40, 'package_sha256': 'b' * 64}
+@@ -52,6 +103,96 @@ class ReleaseConfigurationTests(unittest.TestCase):
+             self.assertEqual((job / 'generated/config.yaml').read_bytes(), before)
+             self.assertEqual(yaml.load((profile / 'config.yaml').read_bytes())['_config_version'], 46)
+ 
++    def test_unchanged_native_update_preserves_baseline_time_and_prepared_bytes(self):
++        from types import SimpleNamespace
++        from lifeos_hook_bridge import update_plan, version_drift
++        from optional.lifeos_release_manager.release_programs import ProgramTransaction
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            job, profile, package, installed = root / 'job', root / '.hermes', root / 'package', root / '.claude'
++            native = package / 'lifeos/LifeOS/install'
++            for path in (job, profile, native, installed):
++                path.mkdir(parents=True, mode=0o700)
++            subprocess.run(['git', 'init', '-q', str(native)], check=True)
++            for tree in (native, installed):
++                (tree / 'LIFEOS').mkdir()
++                (tree / 'hooks').mkdir()
++                (tree / 'LIFEOS/VERSION').write_text('7.40.4\n')
++                (tree / 'hooks/Test.hook.ts').write_text('synthetic native hook\n')
++            subprocess.run(['git', '-C', str(native), 'add', 'LIFEOS/VERSION', 'hooks'], check=True)
++            subprocess.run(['git', '-C', str(native), '-c', 'user.name=Test',
++                            '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'fixture'], check=True)
++            baseline = version_drift.create_baseline(native, installed)
++            baseline['created_at'] = 1
++            baseline_path = root / 'baseline.json'
++            version_drift.save_baseline(baseline, baseline_path)
++            (profile / 'config.yaml').write_text('_config_version: 46\nmodel:\n  default: synthetic-model\n')
++            (package / 'DAILY-CANDIDATE.json').write_text('{"plugin_files":{}}')
++            for name in ('lifeos_hook_bridge', 'optional/lifeos_release_manager'):
++                path = package / name
++                path.mkdir(parents=True)
++                (path / '__init__.py').write_text('# synthetic reviewed program\n')
++            tools = job / 'tools'
++            tools.mkdir()
++            (tools / 'bun').write_text('#!/bin/sh\nexit 0\n')
++            (tools / 'bun').chmod(0o700)
++            commands = {name: 'bin/' + name for name in ('hermes', 'hermes-agent', 'hermes-acp')}
++            (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
++            request = {'profile': str(profile), 'account_home': str(root), 'installed': str(installed),
++                'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]),
++                            'hermes': str(job / 'bin/hermes'), 'bun': str(tools / 'bun'), 'reference': str(native)},
++                'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
++                                'hermes_patch_count': 10, 'lifeos_patch_count': 25},
++                'version': '0.4.2-rc.2', 'commit': 'a' * 40, 'package_sha256': 'b' * 64}
++            modules = {'version_drift': version_drift, 'update_plan': update_plan}
++            selected = {'profile': profile, 'installed': installed, 'package': package,
++                'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes'],
++                'current': SimpleNamespace(memory_module=modules.__getitem__), 'fresh': False,
++                'native_changes': False, 'baseline': baseline_path}
++            directories, files, dependencies = _program_plan(job, request, selected)
++            prepared = (job / 'generated/baseline.json').read_bytes()
++            self.assertEqual(json.loads(prepared)['created_at'], baseline['created_at'])
++            transaction = ProgramTransaction(job / 'program-snapshot')
++            transaction.prepare(directories=directories, files=files, dependencies=dependencies)
++            self.assertEqual(_program_plan(job, request, selected), (directories, files, dependencies))
++            self.assertEqual((job / 'generated/baseline.json').read_bytes(), prepared)
++            transaction.check_prepared()
++            self.assertEqual(version_drift.load_baseline(baseline_path, installed), baseline)
++            (installed / 'hooks/Test.hook.ts').write_text('later native edit\n')
++            with self.assertRaisesRegex(update_plan.UpdateConflict, 'changed since baseline'):
++                _program_plan(job, request, selected)
++
++    def test_fresh_service_files_are_reviewed_without_starting_or_enabling_them(self):
++        from optional.lifeos_release_manager.release_services import service_files
++        from optional.lifeos_release_manager.release_programs import ProgramTransaction
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            profile, generated = root / '.hermes', root / 'generated'
++            profile.mkdir(mode=0o700)
++            generated.mkdir(mode=0o700)
++            units = root / '.config/systemd/user'
++            units.mkdir(parents=True)
++            dashboard = units / 'hermes-dashboard.service'
++            original = '# Synthetic existing dashboard\n[Service]\nWorkingDirectory=' + str(root) + '\n'
++            dashboard.write_text(original)
++            files = service_files({'account_home': str(root), 'profile': str(profile), 'installed': str(root / '.claude')}, generated)
++            self.assertEqual(files[dashboard], dashboard)
++            gateway, pulse = units / 'hermes-gateway.service', units / 'com.lifeos.pulse.service'
++            self.assertFalse(gateway.exists())
++            self.assertFalse(pulse.exists())
++            self.assertIn('WorkingDirectory=' + str(profile) + '\n', files[gateway].read_text())
++            self.assertIn('WorkingDirectory=' + str(root / '.claude/LIFEOS/PULSE') + '\n', files[pulse].read_text())
++            transaction = ProgramTransaction(root / 'snapshot')
++            transaction.prepare(directories={}, files=files)
++            self.assertEqual(len(transaction._load()['entries']), 3)
++            transaction.apply()
++            self.assertEqual(dashboard.read_text(), original)
++            self.assertTrue(gateway.is_file() and pulse.is_file())
++            self.assertFalse((units / 'default.target.wants').exists())
++            transaction.restore()
++            self.assertFalse(gateway.exists() or pulse.exists())
++            self.assertEqual(dashboard.read_text(), original)
++
+     def test_required_enablement_preserves_other_plugins_and_model_tiers(self):
+         with tempfile.TemporaryDirectory() as temp:
+             profile = Path(temp)
+diff --git a/tests/test_release_dashboard.py b/tests/test_release_dashboard.py
+index 07b29e85..2d23c011 100644
+--- a/tests/test_release_dashboard.py
++++ b/tests/test_release_dashboard.py
+@@ -105,8 +105,33 @@ class ReleaseDashboardTests(unittest.TestCase):
+         self.assertEqual(self.request(self.owner, path=path, method='POST', body=b'{"account":"owner"}', origin=self.origin)[0], 400)
+         self.assertFalse((self.profile / '.lifeos-releases').exists())
+ 
++    def test_preparation_requires_owner_and_refuses_unrecognized_inputs(self):
++        path = '/prepare'
++        body = b'{"intent":"install","name":"Synthetic","assistant":"Test"}'
++        self.assertEqual(self.request(path=path, method='POST', body=body)[0], 401)
++        self.assertEqual(self.request(self.other, path=path, method='POST', body=body)[0], 403)
++        self.assertEqual(self.request(self.owner, path=path, method='POST', body=body,
++                                      origin='https://other.invalid')[0], 403)
++        for payload in ({'intent': 'shell', 'command': 'touch unexpected'},
++                        {'intent': []},
++                        {'intent': 'install', 'version': True},
++                        {'intent': 'update', 'profile': '/other/profile'},
++                        {'intent': 'update', 'version': 'main'},
++                        {'intent': 'install', 'name': '', 'assistant': 'Test'}):
++            with self.subTest(payload=payload):
++                self.assertEqual(self.request(self.owner, path=path, method='POST',
++                    body=json.dumps(payload).encode(), origin=self.origin)[0], 400)
++        self.assertFalse((self.profile / '.lifeos-releases').exists())
++
++    def test_preparation_rejects_large_and_malformed_requests(self):
++        for body in (b'{', b'[]', b'null', b'x' * 4097):
++            with self.subTest(body=body[:20]):
++                self.assertEqual(self.request(self.owner, path='/prepare', method='POST',
++                    body=body, origin=self.origin)[0], 400)
++        self.assertFalse((self.profile / '.lifeos-releases').exists())
++
+     @unittest.skipUnless(os.environ.get('LIFEOS_MANAGED_FRESH_OPERATION'), 'An actual prepared fresh operation is required')
+-    def test_native_review_keeps_the_dashboard_responsive(self):
++    def test_historical_fresh_review_refuses_without_blocking_the_dashboard(self):
+         import fcntl
+         job = Path(os.environ['LIFEOS_MANAGED_FRESH_OPERATION'])
+         request = json.loads((job / 'request.json').read_bytes())
+@@ -140,4 +165,6 @@ class ReleaseDashboardTests(unittest.TestCase):
+         finally:
+             thread.join(timeout=130)
+             self.assertFalse(thread.is_alive())
+-        self.assertEqual(results[0][0], 200)
++        self.assertEqual(results[0][0], 409)
++        self.assertIn('first installation', results[0][1]['detail'])
++        self.assertFalse(Path(request['installed']).exists())
+diff --git a/tests/test_release_manager_cli.py b/tests/test_release_manager_cli.py
+index 6a9dbd37..c52fa4d7 100644
+--- a/tests/test_release_manager_cli.py
++++ b/tests/test_release_manager_cli.py
+@@ -5,6 +5,7 @@ from contextlib import redirect_stdout
+ import io
+ import json
+ import os
++import shutil
+ import subprocess
+ import sys
+ import time
+@@ -17,6 +18,28 @@ from optional.lifeos_release_manager.cli import configure, run, status, write_st
+ 
+ 
+ class ReleaseManagerCommandTests(unittest.TestCase):
++    def test_changed_retained_worker_refuses_before_admission_or_launch(self):
++        from test_release_stage import ReleaseStageTests
++        from optional.lifeos_release_manager.cli import launch
++        from optional.lifeos_release_manager.release_programs import publish
++        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++        for action in ('apply', 'recover', 'restore'):
++            with self.subTest(action=action), tempfile.TemporaryDirectory() as temp:
++                profile = Path(temp)
++                job = profile / '.lifeos-releases' / ('a' * 32)
++                job.mkdir(parents=True, mode=0o700)
++                package, certificate, marker, _ = ReleaseStageTests().package(job)
++                shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker')
++                (job / 'worker/manager.py').write_text('Changed retained worker')
++                request = {'profile': str(profile), 'identifier': job.name, 'certificate': certificate}
++                publish(job / 'request.json', json.dumps(request).encode())
++                write_state(job, 'ready')
++                with self.assertRaisesRegex(ReleaseRejected, 'release program differs'):
++                    launch(profile, job.name, action)
++                self.assertEqual(json.loads((job / 'status.json').read_bytes())['state'], 'ready')
++                self.assertFalse((job / 'admission.json').exists())
++                self.assertFalse((job / 'worker-launch.json').exists())
++
+     def test_exact_release_version_does_not_enable_hermes_global_version(self):
+         parser = argparse.ArgumentParser()
+         parser.add_argument('--version', action='store_true')
+@@ -61,6 +84,10 @@ class ReleaseManagerCommandTests(unittest.TestCase):
+             job = profile / '.lifeos-releases' / ('a' * 32)
+             job.mkdir(parents=True, mode=0o700)
+             write_state(job, 'preparing')
++            from optional.lifeos_release_manager.release_operation import process_stamp
++            from optional.lifeos_release_manager.release_programs import publish
++            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
++                'start_time': process_stamp(os.getpid())}).encode())
+             self.assertEqual(status(profile)['operations'], [{'identifier': job.name, 'state': 'preparing'}])
+             write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
+             self.assertEqual(status(profile, job.name)['state'], 'preparation_failed')
+diff --git a/tests/test_release_operation.py b/tests/test_release_operation.py
+index b707d9ea..b98d87a8 100644
+--- a/tests/test_release_operation.py
++++ b/tests/test_release_operation.py
+@@ -209,6 +209,61 @@ class ReleaseOperationTests(unittest.TestCase):
+         source = recovery_bridge(job, Path(request['profile']))
+         self.assertEqual(Path(source.__file__).parent, job / 'package/lifeos_hook_bridge')
+ 
++    @unittest.skipUnless(os.environ.get('LIFEOS_QUALIFICATION_BUILD'), 'A sealed current package is required')
++    def test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication(self):
++        import shutil
++        from optional.lifeos_release_manager.release_worker import recovery_bridge
++        from optional.lifeos_release_manager.release_stage import load_bridge
++        from optional.lifeos_release_manager.release_services import fresh_services
++        from optional.lifeos_release_manager.release_catalog import extract_package
++        build = json.loads(Path(os.environ['LIFEOS_QUALIFICATION_BUILD']).read_bytes())
++        with tempfile.TemporaryDirectory(dir=Path(build['package']).parent) as temp:
++            root = Path(temp)
++            profile = root / '.hermes'
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            extract_package(build['archive'], job / 'package')
++            (job / 'download').mkdir(mode=0o700)
++            os.link(build['archive'], job / 'download' / Path(build['archive']).name)
++            active = profile / 'plugins/lifeos-hook-bridge'
++            shutil.copytree(job / 'package/lifeos_hook_bridge', active)
++            certificate = {**build, 'format': 1, 'status': 'QUALIFIED', 'program_commit': build['head'], 'test_fixture_only': True}
++            request = {'identifier': job.name, 'profile': str(profile), 'certificate': certificate}
++            publish(job / 'request.json', json.dumps(request).encode())
++            write_state(job, 'ready')
++            seal_plan(job, request, {'fresh': True})
++            candidate = load_bridge(job / 'package/lifeos_hook_bridge')
++            selected = recovery_bridge(job, profile)
++            with selected.memory_module('installation_lock').installation_lock(profile) as lease:
++                controller = fresh_services(candidate, profile, root / '.claude', installation_lease=lease)
++                self.assertEqual(controller.status()['state'], 'none')
++            self.assertIs(selected.memory_module('installation_lock'), candidate.memory_module('installation_lock'))
++            (active / 'install_source.py').write_text('raise RuntimeError("Changed active bridge executes")\n')
++            runtime = {key: str(job / path) for key, path in {
++                'python': 'python-environment/bin/python', 'bun': 'tools/bun', 'hermes': 'bin/hermes',
++                'source': 'hermes', 'reference': 'reference-home/.claude'}.items()}
++            (job / 'hermes').mkdir(mode=0o700)
++            publish(job / 'manifest.json', b'{}')
++            from optional.lifeos_release_manager.release_stage import sha, runtime_source_fingerprint
++            from optional.lifeos_release_manager.release_plan import inspect_operation
++            request.update(version=build['version'], commit=build['head'], installed=str(root / '.claude'),
++                account_home=str(root), runtime=runtime, package_sha256=build['archive_sha256'],
++                runtime_metadata_sha256=sha(job / 'manifest.json'),
++                python_lock_sha256=sha(job / 'package/python-runtime/uv.lock'),
++                runtime_fingerprint=runtime_source_fingerprint(job / 'hermes'))
++            seal_plan(job, request, {'fresh': True, 'services': None})
++            prior_home = os.environ.get('HOME')
++            os.environ['HOME'] = str(root)
++            try:
++                inspected = inspect_operation(job, request, fresh_recovery=True)
++            finally:
++                if prior_home is None:
++                    os.environ.pop('HOME', None)
++                else:
++                    os.environ['HOME'] = prior_home
++            self.assertIs(inspected['current'], candidate)
++            self.assertFalse((root / '.claude').exists())
++
+     def fixture(self, root):
+         job = root / ('a' * 32)
+         job.mkdir(mode=0o700)
+diff --git a/tests/test_release_preparation.py b/tests/test_release_preparation.py
+new file mode 100644
+index 00000000..272e6a6a
+--- /dev/null
++++ b/tests/test_release_preparation.py
+@@ -0,0 +1,213 @@
++# ABOUTME: Exercises bounded preparation selections and actual private file locking.
++# ABOUTME: Checks duplicate preparation and interrupted worker reporting without downloading a release.
++import fcntl
++import json
++import os
++from pathlib import Path
++import inspect
++import sys
++import tempfile
++import unittest
++
++from optional.lifeos_release_manager import release_preparation
++from optional.lifeos_release_manager.cli import status, write_state
++from optional.lifeos_release_manager.release_operation import OperationBusy
++from optional.lifeos_release_manager.release_programs import publish
++
++
++class ReleasePreparationTests(unittest.TestCase):
++    def test_synchronous_preparation_holds_the_same_lease_as_the_dashboard(self):
++        from optional.lifeos_release_manager.cli import prepare
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            test = self
++            lines, start = inspect.getsourcelines(release_preparation.queue)
++            boundary = start + next(i for i, line in enumerate(lines) if 'process = subprocess.Popen(' in line)
++            def trace(frame, event, argument):
++                if frame.f_code is release_preparation.queue.__code__ and event == 'line' and frame.f_lineno == boundary:
++                    raise AssertionError('Overlapping preparation reaches child launch')
++                return trace
++            class StopAtDownload:
++                def download(self, directory, version):
++                    previous = sys.gettrace()
++                    sys.settrace(trace)
++                    try:
++                        with test.assertRaises(OperationBusy):
++                            release_preparation.queue(profile, {'intent': 'install'})
++                    finally:
++                        sys.settrace(previous)
++                    test.assertEqual(len([p for p in directory.parent.parent.iterdir() if p.is_dir()]), 1)
++                    raise ValueError('Synthetic download boundary')
++            with self.assertRaisesRegex(ValueError, 'Synthetic download boundary'):
++                prepare(profile, catalog=StopAtDownload())
++
++    def test_synchronous_preparation_refuses_a_held_lease_before_download(self):
++        from optional.lifeos_release_manager.cli import prepare
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            state = profile / '.lifeos-releases'
++            state.mkdir(mode=0o700)
++            class NoDownload:
++                def download(self, directory, version):
++                    raise AssertionError('A duplicate synchronous preparation reaches download')
++            with (state / 'preparation.lock').open('wb') as lock:
++                os.fchmod(lock.fileno(), 0o600)
++                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
++                with self.assertRaises(OperationBusy):
++                    prepare(profile, catalog=NoDownload())
++            self.assertEqual([p.name for p in state.iterdir()], ['preparation.lock'])
++
++    def test_synchronous_preparation_refuses_pending_installation_or_recovery(self):
++        from optional.lifeos_release_manager.cli import prepare
++        for phase in ('queued-apply', 'applying', 'recovering', 'restoring', 'recovery_required'):
++            with self.subTest(phase=phase), tempfile.TemporaryDirectory() as temp:
++                profile = Path(temp)
++                job = profile / '.lifeos-releases' / ('a' * 32)
++                job.mkdir(parents=True, mode=0o700)
++                job.parent.chmod(0o700)
++                write_state(job, phase)
++                class NoDownload:
++                    def download(self, directory, version):
++                        raise AssertionError('Preparation reaches download during a pending operation')
++                with self.assertRaises(OperationBusy):
++                    prepare(profile, catalog=NoDownload())
++                self.assertEqual([p.name for p in job.parent.iterdir() if p.is_dir()], [job.name])
++
++    def test_synchronous_preparation_can_retry_after_an_expired_preparation(self):
++        from optional.lifeos_release_manager.cli import prepare
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            job.parent.chmod(0o700)
++            write_state(job, 'preparing')
++            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
++            class StopAtDownload:
++                def download(self, directory, version):
++                    raise ValueError('Synthetic retry reaches download')
++            with self.assertRaisesRegex(ValueError, 'Synthetic retry reaches download'):
++                prepare(profile, catalog=StopAtDownload())
++            self.assertEqual(len([p for p in job.parent.iterdir() if p.is_dir()]), 2)
++
++    def test_live_synchronous_preparation_records_its_process_before_download(self):
++        from optional.lifeos_release_manager.cli import prepare
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            class StopAtDownload:
++                def download(self, directory, version):
++                    self.result = status(profile)['operations'][0]
++                    raise ValueError('Synthetic download boundary')
++            catalog = StopAtDownload()
++            with self.assertRaisesRegex(ValueError, 'Synthetic download boundary'):
++                prepare(profile, catalog=catalog)
++            self.assertEqual(catalog.result['state'], 'preparing')
++            self.assertEqual(status(profile)['operations'][0]['state'], 'preparation_failed')
++    def test_invalid_selections_do_not_create_profile_files(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            for value in (None, [], {'intent': []}, {'intent': 'update', 'version': True},
++                          {'intent': 'update', 'version': 'main'}, {'intent': 'shell'},
++                          {'intent': 'install', 'name': '\n'}, {'intent': 'install', 'assistant': 'x' * 101},
++                          {'intent': 'plugin', 'profile': '/different'}):
++                with self.subTest(value=value), self.assertRaises(ValueError):
++                    release_preparation.queue(profile, value)
++            self.assertEqual(list(profile.iterdir()), [])
++
++    def test_running_preparation_refuses_duplicate_before_creating_an_operation(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            state = profile / '.lifeos-releases'
++            state.mkdir(mode=0o700)
++            with (state / 'preparation.lock').open('wb') as lock:
++                os.fchmod(lock.fileno(), 0o600)
++                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
++                with self.assertRaises(OperationBusy):
++                    release_preparation.queue(profile, {'intent': 'install'})
++                self.assertEqual([path.name for path in state.iterdir()], ['preparation.lock'])
++
++    def test_preparation_lock_rejects_symlinks(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            state = profile / '.lifeos-releases'
++            state.mkdir(mode=0o700)
++            outside = profile / 'outside'
++            outside.write_text('Preserve this file')
++            (state / 'preparation.lock').symlink_to(outside)
++            with self.assertRaises(OSError):
++                release_preparation.queue(profile, {'intent': 'install'})
++            self.assertEqual(outside.read_text(), 'Preserve this file')
++
++    def test_required_recovery_refuses_preparation_before_creating_another_operation(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            job.parent.chmod(0o700)
++            write_state(job, 'recovery_required')
++            with self.assertRaises(OperationBusy):
++                release_preparation.queue(profile, {'intent': 'update'})
++            self.assertEqual([p.name for p in job.parent.iterdir() if p.is_dir()], [job.name])
++
++    def test_status_identifies_an_interrupted_preparation_without_changing_programs(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            write_state(job, 'preparing')
++            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
++            result = status(profile, job.name)
++            self.assertEqual(result['state'], 'preparation_interrupted')
++            self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'preparing')
++            self.assertFalse((job / 'request.json').exists())
++
++    def test_status_identifies_interruption_before_worker_publication(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            job.parent.chmod(0o700)
++            write_state(job, 'preparing')
++            self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
++            self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'preparing')
++
++    def test_empty_preparation_directory_does_not_hide_other_operations(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            job.parent.chmod(0o700)
++            other = job.with_name('b' * 32)
++            other.mkdir(mode=0o700)
++            write_state(other, 'preparation_failed')
++            self.assertEqual([value['state'] for value in status(profile)['operations']],
++                             ['preparation_interrupted', 'preparation_failed'])
++            from optional.lifeos_release_manager.release_operation import process_stamp
++            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
++                'start_time': process_stamp(os.getpid())}).encode())
++            self.assertEqual(status(profile, job.name)['state'], 'preparing')
++
++    def test_held_launch_lease_preserves_preparing_without_worker_identity(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            job.parent.chmod(0o700)
++            write_state(job, 'preparing')
++            with (job.parent / 'preparation.lock').open('wb') as lock:
++                os.fchmod(lock.fileno(), 0o600)
++                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
++                self.assertEqual(status(profile, job.name)['state'], 'preparing')
++                publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
++                self.assertEqual(status(profile, job.name)['state'], 'preparing')
++            self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
++
++    def test_status_identifies_interruption_after_the_request_is_published(self):
++        with tempfile.TemporaryDirectory() as temp:
++            profile = Path(temp)
++            job = profile / '.lifeos-releases' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            write_state(job, 'preparing')
++            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
++            publish(job / 'request.json', json.dumps({'profile': str(profile), 'identifier': job.name,
++                'version': '0.4.2-rc.1', 'commit': 'b' * 40}).encode())
++            self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
+diff --git a/tests/test_release_programs.py b/tests/test_release_programs.py
+index 1cc6127a..8d02608e 100644
+--- a/tests/test_release_programs.py
++++ b/tests/test_release_programs.py
+@@ -8,6 +8,25 @@ from optional.lifeos_release_manager.release_programs import ProgramTransaction,
+ 
+ 
+ class ProgramTransactionTests(unittest.TestCase):
++    def test_apply_preserves_the_inode_of_an_unchanged_file(self):
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            unchanged, target, source = root / 'unchanged', root / 'target', root / 'source'
++            unchanged.write_text('Admitted unchanged definition')
++            target.write_text('Prior program')
++            source.write_text('Candidate program')
++            before = unchanged.stat()
++            transaction = ProgramTransaction(root / 'snapshot')
++            transaction.prepare(directories={}, files={unchanged: unchanged, target: source})
++            transaction.apply()
++            self.assertEqual(unchanged.stat().st_ino, before.st_ino)
++            self.assertEqual(unchanged.stat().st_mtime_ns, before.st_mtime_ns)
++            self.assertEqual(target.read_text(), 'Candidate program')
++            transaction.check_applied()
++            transaction.restore()
++            self.assertEqual(unchanged.stat().st_ino, before.st_ino)
++            self.assertEqual(target.read_text(), 'Prior program')
++
+     def test_recovery_refuses_missing_prior_copy_before_journal_or_target_changes(self):
+         with tempfile.TemporaryDirectory() as temp:
+             root = Path(temp)
+diff --git a/tests/test_release_services.py b/tests/test_release_services.py
+new file mode 100644
+index 00000000..5cace0f0
+--- /dev/null
++++ b/tests/test_release_services.py
+@@ -0,0 +1,124 @@
++# ABOUTME: Verifies first-install process discovery against actual synthetic owner processes.
++# ABOUTME: Distinguishes Hermes dashboards from unrelated commands with the same argument text.
++import os
++from contextlib import contextmanager
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import time
++import unittest
++from types import SimpleNamespace
++from unittest.mock import patch
++
++from optional.lifeos_release_manager.release_services import check_dashboard_writers, fresh_preview, fresh_services
++from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++
++
++class ReleaseServiceTests(unittest.TestCase):
++    @contextmanager
++    def dashboard_boundary(self, *, foreign=False, inactive=False, command='dashboard'):
++        from lifeos_hook_bridge.profile_services import _digest
++        with tempfile.TemporaryDirectory() as temp:
++            home = Path(temp)
++            profile = home / '.hermes'
++            other = home / 'foreign-profile'
++            profile.mkdir(mode=0o700)
++            other.mkdir(mode=0o700)
++            launcher = home / '.local/bin/hermes'
++            launcher.parent.mkdir(parents=True)
++            ready = home / 'ready'
++            launcher.write_text('from pathlib import Path\nimport time\n'
++                'Path(' + repr(str(ready)) + ').touch()\ntime.sleep(30)\n')
++            launcher.chmod(0o700)
++            owner = other if foreign else profile
++            process = None
++            try:
++                if not inactive:
++                    process = subprocess.Popen([sys.executable, '-B', str(launcher), 'dashboard'],
++                        env={'HOME': str(home), 'HERMES_HOME': str(owner), 'PATH': os.defpath},
++                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
++                    deadline = time.monotonic() + 5
++                    while not ready.exists() and time.monotonic() < deadline:
++                        time.sleep(0.01)
++                    self.assertTrue(ready.exists())
++                group = '' if process is None else Path('/proc/' + str(process.pid) + '/cgroup').read_text().split('0::', 1)[1].strip()
++                values = {'ExecStart': '{ path=' + str(launcher) + ' ; argv[]=' + str(launcher) + ' ' + command + ' --isolated --no-open ; }',
++                    'FragmentPath': str(home / '.config/systemd/user/hermes-dashboard.service'),
++                    'DropInPaths': '', 'ControlGroup': group, 'MainPID': '0' if process is None else str(process.pid)}
++                environment = {'HERMES_HOME': str(owner)}
++                class ServiceBoundary:
++                    def __init__(self, *args, first_installation=False, **kwargs):
++                        assert first_installation
++                    def preview(self):
++                        return {'signature': self._inspect('dashboard')[1]}
++                    def _inspect(self, role):
++                        return values, 'component-definition'
++                def inspect_unit(*args):
++                    if '--property=Environment,EnvironmentFiles' in args:
++                        return 'Environment=' + ' '.join(key + '=' + value for key, value in environment.items()) + '\nEnvironmentFiles=\n'
++                    return 'LoadState=not-found\n'
++                module = SimpleNamespace(ProfileServices=ServiceBoundary, _digest=_digest, _run=inspect_unit,
++                    UNITS={'dashboard': 'hermes-dashboard.service', 'gateway': 'hermes-gateway.service', 'pulse': 'com.lifeos.pulse.service'})
++                current = SimpleNamespace(memory_module=lambda name: module)
++                with patch.dict(os.environ, {'HOME': str(home)}):
++                    yield current, profile, home / '.claude', values, environment
++            finally:
++                if process is not None:
++                    process.terminate()
++                    process.wait(timeout=5)
++
++    def test_active_dashboard_from_another_profile_refuses_before_admission(self):
++        with self.dashboard_boundary(foreign=True) as (current, profile, installed, values, environment):
++            with self.assertRaisesRegex(ReleaseRejected, 'profile'):
++                fresh_preview(current, profile, installed)
++
++    def test_inactive_dashboard_from_another_profile_refuses_before_admission(self):
++        with self.dashboard_boundary(foreign=True, inactive=True) as (current, profile, installed, values, environment):
++            with self.assertRaisesRegex(ReleaseRejected, 'profile'):
++                fresh_preview(current, profile, installed)
++
++    def test_dashboard_configuration_requires_a_dashboard_invocation(self):
++        with self.dashboard_boundary(command='gateway run') as (current, profile, installed, values, environment):
++            with self.assertRaisesRegex(ReleaseRejected, 'dashboard'):
++                fresh_preview(current, profile, installed)
++
++    def test_matching_active_and_inactive_dashboard_bindings_remain_available(self):
++        for inactive in (False, True):
++            with self.subTest(inactive=inactive), self.dashboard_boundary(inactive=inactive) as (current, profile, installed, values, environment):
++                self.assertIn('signature', fresh_preview(current, profile, installed))
++
++    def test_first_service_barrier_rechecks_profile_binding_after_preview(self):
++        with self.dashboard_boundary(inactive=True) as (current, profile, installed, values, environment):
++            services = fresh_services(current, profile, installed)
++            services.preview()
++            environment['HERMES_HOME'] = str(profile.parent / 'foreign-profile')
++            with self.assertRaisesRegex(ReleaseRejected, 'profile'):
++                services._inspect('dashboard')
++
++    def test_foreground_detection_uses_the_actual_hermes_command(self):
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            profile = root / '.hermes'
++            profile.mkdir(mode=0o700)
++            for name, expected in (('unrelated.py', False), ('hermes', True)):
++                with self.subTest(name=name):
++                    ready = root / (name + '.ready')
++                    script = root / name
++                    script.write_text('from pathlib import Path\nimport time\n'
++                        'Path(' + repr(str(ready)) + ').touch()\ntime.sleep(30)\n')
++                    process = subprocess.Popen([sys.executable, '-B', str(script), 'dashboard'],
++                        env=dict(os.environ, HERMES_HOME=str(profile)), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
++                    try:
++                        deadline = time.monotonic() + 5
++                        while not ready.exists() and time.monotonic() < deadline:
++                            time.sleep(0.01)
++                        self.assertTrue(ready.exists())
++                        if expected:
++                            with self.assertRaisesRegex(ReleaseRejected, 'owner user service'):
++                                check_dashboard_writers(profile)
++                        else:
++                            check_dashboard_writers(profile)
++                    finally:
++                        process.terminate()
++                        process.wait(timeout=5)
+diff --git a/tests/test_release_stage.py b/tests/test_release_stage.py
+index e1e507ca..58ee04fb 100644
+--- a/tests/test_release_stage.py
++++ b/tests/test_release_stage.py
+@@ -1,8 +1,14 @@
+ # ABOUTME: Verifies complete package identities before staging dependencies or native programs.
+ # ABOUTME: Uses regular synthetic package files to exercise refusal before candidate code runs.
+ import hashlib
++import io
+ import json
++import os
+ from pathlib import Path
++import shutil
++import subprocess
++import sys
++import tarfile
+ import tempfile
+ import unittest
+ 
+@@ -11,6 +17,153 @@ from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+ 
+ 
+ class ReleaseStageTests(unittest.TestCase):
++    def test_authenticated_archive_refuses_coordinated_program_and_manifest_changes(self):
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            package, certificate, marker, archive = self.package(root)
++            program = package / 'lifeos_hook_bridge/install_source.py'
++            program.write_text(program.read_text() + '\nchanged = True\n')
++            manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
++            manifest['plugin_files']['lifeos_hook_bridge/install_source.py'] = hashlib.sha256(program.read_bytes()).hexdigest()
++            (package / 'DAILY-CANDIDATE.json').write_text(json.dumps(manifest))
++            with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
++                validate_package(package, certificate)
++            self.assertFalse(marker.exists())
++            self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), certificate['archive_sha256'])
++
++    def test_authenticated_archive_is_required_before_candidate_execution(self):
++        for change in ('missing', 'changed', 'symlink', 'fifo'):
++            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
++                package, certificate, marker, archive = self.package(Path(temp))
++                if change == 'missing':
++                    archive.unlink()
++                elif change == 'changed':
++                    archive.write_bytes(b'changed')
++                elif change == 'symlink':
++                    retained = archive.with_suffix('.retained')
++                    archive.rename(retained)
++                    archive.symlink_to(retained)
++                else:
++                    archive.unlink()
++                    os.mkfifo(archive)
++                with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
++                    validate_package(package, certificate)
++                self.assertFalse(marker.exists())
++
++    def test_authenticated_archive_accepts_its_exact_extracted_program_map(self):
++        with tempfile.TemporaryDirectory() as temp:
++            package, certificate, marker, _ = self.package(Path(temp))
++            self.assertEqual(validate_package(package, certificate)['head'], certificate['program_commit'])
++            self.assertTrue(marker.exists())
++
++    def test_extracted_manifest_requires_bounded_regular_owner_storage(self):
++        for change in ('symlink', 'oversized', 'fifo'):
++            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
++                root = Path(temp)
++                package, certificate, marker, _ = self.package(root)
++                manifest = package / 'DAILY-CANDIDATE.json'
++                if change == 'symlink':
++                    outside = root / 'outside-manifest'
++                    manifest.rename(outside)
++                    manifest.symlink_to(outside)
++                elif change == 'oversized':
++                    manifest.write_bytes(b' ' * (512 * 1024 + 1))
++                else:
++                    manifest.unlink()
++                    os.mkfifo(manifest)
++                with self.assertRaisesRegex(ReleaseRejected, 'bounded regular owner manifest'):
++                    validate_package(package, certificate)
++                self.assertFalse(marker.exists())
++
++    def test_native_source_manifests_match_the_authenticated_program_map(self):
++        for name in ('hermes/hermes-source-manifest.json', 'lifeos/lifeos-source-manifest.json'):
++            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp:
++                package, certificate, marker, _ = self.package(Path(temp))
++                (package / name).write_text('{"tree_sha256":"changed"}')
++                with self.assertRaisesRegex(ReleaseRejected, 'native source manifest'):
++                    validate_package(package, certificate)
++                self.assertFalse(marker.exists())
++
++    def test_authenticated_archive_requires_one_bounded_regular_manifest(self):
++        for change in ('missing', 'duplicate', 'oversized', 'link'):
++            with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:
++                package, certificate, marker, archive = self.package(Path(temp))
++                with tarfile.open(archive, 'w:gz') as target:
++                    count = 0 if change == 'missing' else 2 if change == 'duplicate' else 1
++                    for _ in range(count):
++                        content = ((package / 'DAILY-CANDIDATE.json').read_bytes()
++                            if change != 'oversized' else b' ' * (512 * 1024 + 1))
++                        member = tarfile.TarInfo('DAILY-CANDIDATE.json')
++                        if change == 'link':
++                            member.type = tarfile.SYMTYPE
++                            member.linkname = 'synthetic-link'
++                        else:
++                            member.size = len(content)
++                        target.addfile(member, io.BytesIO(content))
++                certificate.update(archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
++                    archive_bytes=archive.stat().st_size)
++                with self.assertRaisesRegex(ReleaseRejected, 'authenticated archive'):
++                    validate_package(package, certificate)
++                self.assertFalse(marker.exists())
++
++    def package(self, root):
++        package = root / 'package'
++        package.mkdir(mode=0o700)
++        marker = root / 'candidate-executed'
++        source = ('from pathlib import Path\nfrom types import SimpleNamespace\n'
++            f'Path({str(marker)!r}).write_text("synthetic import marker")\n'
++            'def memory_module(name):\n'
++            '    return SimpleNamespace(versions=lambda package: "0.4.2-rc.1")\n'
++            'def validate_supported_hermes(path):\n'
++            '    return {"base_commit": "hermes", "patches": []}\n'
++            'def validate_prepared_lifeos(path):\n'
++            '    return {"upstream_commit": "lifeos", "patches": []}\n')
++        files = {'lifeos_hook_bridge/install_source.py': source,
++            'optional/lifeos_release_manager/manager.py': '# Synthetic manager\n',
++            'python-runtime/pyproject.toml': '# Synthetic closure\n',
++            'python-runtime/uv.lock': '# Synthetic lock\n',
++            'hermes/hermes-source-manifest.json': '{}',
++            'lifeos/lifeos-source-manifest.json': '{}'}
++        for name, content in files.items():
++            path = package / name
++            path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
++            path.write_text(content)
++        manifest = {'head': 'a' * 40, 'version': '0.4.2-rc.1',
++            'plugin_files': {name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.startswith('lifeos_hook_bridge/')},
++            'manager_files': {'manager.py': hashlib.sha256(files['optional/lifeos_release_manager/manager.py'].encode()).hexdigest()},
++            'prepared_manifest_files': {name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.endswith('-source-manifest.json')},
++            'python_runtime_files': {Path(name).name: hashlib.sha256(content.encode()).hexdigest() for name, content in files.items() if name.startswith('python-runtime/')}}
++        (package / 'DAILY-CANDIDATE.json').write_text(json.dumps(manifest))
++        download = root / 'download'
++        download.mkdir(mode=0o700)
++        archive = download / '0.4.2-rc.1-aaaaaaaa.tgz'
++        with tarfile.open(archive, 'w:gz') as target:
++            for path in sorted(package.iterdir()):
++                target.add(path, arcname=path.name)
++        certificate = {'format': 1, 'status': 'QUALIFIED', 'program_commit': manifest['head'],
++            'version': manifest['version'], 'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
++            'archive_bytes': archive.stat().st_size, 'hermes_base': 'hermes', 'lifeos_base': 'lifeos',
++            'hermes_patch_count': 0, 'lifeos_patch_count': 0}
++        return package, certificate, marker, archive
++
++    def test_isolated_stock_python_does_not_write_bytecode_into_the_reviewed_bridge(self):
++        with tempfile.TemporaryDirectory() as temp:
++            bridge = Path(temp) / 'bridge'
++            shutil.copytree(Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge', bridge,
++                            ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
++            code = ('import sys\nfrom pathlib import Path\n'
++                    'sys.path.insert(0,sys.argv[1])\n'
++                    'from optional.lifeos_release_manager.release_stage import load_bridge\n'
++                    'assert sys.flags.ignore_environment\n'
++                    'source=load_bridge(Path(sys.argv[2]))\n'
++                    'source.memory_module("release_version")\n')
++            result = subprocess.run([sys.executable, '-I', '-c', code,
++                str(Path(__file__).resolve().parents[1]), str(bridge)],
++                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), capture_output=True, text=True, timeout=30)
++            self.assertEqual(result.returncode, 0, result.stderr)
++            self.assertEqual(result.stderr, '')
++            self.assertEqual(list(bridge.rglob('*.pyc')), [])
++
+     def test_runtime_source_seal_accepts_boot_outputs_and_refuses_program_changes(self):
+         with tempfile.TemporaryDirectory() as temp:
+             root = Path(temp)
+diff --git a/tests/test_release_ui.cjs b/tests/test_release_ui.cjs
+new file mode 100644
+index 00000000..3a07cfe2
+--- /dev/null
++++ b/tests/test_release_ui.cjs
+@@ -0,0 +1,88 @@
++// ABOUTME: Checks release page controls against the Hermes SDK rendering and request contract.
++// ABOUTME: Verifies preparation actions and review remain separate from program installation.
++const assert = require('node:assert/strict');
++const fs = require('node:fs');
++const path = require('node:path');
++const test = require('node:test');
++const vm = require('node:vm');
++
++function nodes(tree) {
++  if (Array.isArray(tree)) return tree.flatMap(nodes);
++  if (!tree || typeof tree !== 'object') return [];
++  return [tree, ...(tree.children || []).flatMap(nodes)];
++}
++
++async function page(installed, operations = []) {
++  const states = [];
++  let index = 0;
++  let component;
++  const calls = [];
++  const effects = [];
++  const sdk = {
++    React: {createElement: (type, props, ...children) => ({type, props, children})},
++    hooks: {
++      useState: (initial) => {
++        const key = index++;
++        if (!(key in states)) states[key] = initial;
++        return [states[key], (value) => {states[key] = value;}];
++      },
++      useEffect: (effect) => {effects.push(effect);},
++    },
++    fetchJSON: async (url, options) => {
++      calls.push({url, options});
++      if (url.endsWith('/installation')) return {installed};
++      if (url.endsWith('/prepare')) return {identifier: 'a'.repeat(32), state: 'preparing'};
++      return {operations};
++    },
++  };
++  const source = fs.readFileSync(path.join(__dirname, '../optional/lifeos_release_manager/dashboard/dist/index.js'), 'utf8');
++  vm.runInNewContext(source, {window: {__HERMES_PLUGIN_SDK__: sdk,
++    __HERMES_PLUGINS__: {register: (name, entry) => {component = entry;}}},
++    setInterval: () => 1, clearInterval: () => {}});
++  function render() {index = 0; return component();}
++  render();
++  const cleanup = effects[0]();
++  await new Promise((resolve) => setImmediate(resolve));
++  return {calls, render, cleanup};
++}
++
++test('fresh page offers Install LifeOS and queues preparation without applying programs', async () => {
++  const ui = await page(false);
++  const tree = ui.render();
++  const button = nodes(tree).find((node) => node.type === 'button' && node.children.includes('Install LifeOS'));
++  assert.ok(button);
++  assert.equal(button.props.disabled, false);
++  await button.props.onClick();
++  const call = ui.calls.find((item) => item.url.endsWith('/prepare'));
++  assert.equal(call.options.method, 'POST');
++  assert.equal(JSON.parse(call.options.body).intent, 'install');
++  assert.equal(ui.calls.some((item) => item.url.endsWith('/apply')), false);
++  ui.cleanup();
++});
++
++test('installed page offers both update actions for the complete integration', async () => {
++  for (const [label, intent] of [['Update LifeOS', 'update'], ['Update plugin', 'plugin']]) {
++    const ui = await page(true);
++    const tree = ui.render();
++    const button = nodes(tree).find((node) => node.type === 'button' && node.children.includes(label));
++    assert.ok(button);
++    assert.equal(button.props.disabled, false);
++    await button.props.onClick();
++    const call = ui.calls.find((item) => item.url.endsWith('/prepare'));
++    assert.equal(JSON.parse(call.options.body).intent, intent);
++    assert.equal(ui.calls.some((item) => item.url.endsWith('/apply')), false);
++    ui.cleanup();
++  }
++});
++
++test('recovery blocks preparation and each operation has a visible identifier', async () => {
++  const identifier = 'b'.repeat(32);
++  const ui = await page(true, [{identifier, version: '0.4.1', state: 'recovery_required'}]);
++  const tree = ui.render();
++  for (const label of ['Update LifeOS', 'Update plugin']) {
++    const button = nodes(tree).find((node) => node.type === 'button' && node.children.includes(label));
++    assert.equal(button.props.disabled, true);
++  }
++  assert.ok(nodes(tree).some((node) => node.children.includes('Operation: ' + identifier)));
++  ui.cleanup();
++});

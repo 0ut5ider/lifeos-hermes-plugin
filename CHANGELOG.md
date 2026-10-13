@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.4.2-rc.3 (2026-10-13 test prerelease)
+
+- Verify the configured and running dashboard profile before service drain and after restart.
+- Recognize the exact pinned Hermes bundled launcher. Refuse unrelated inline programs.
+- Preserve literal percent signs in the effective systemd environment. Refuse declared environment files.
+- Use one preparation lease for command-line and dashboard requests. Refuse pending installation and recovery.
+- Preserve all existing release assets. Keep production deployment outside this test qualification.
+
+## 0.4.2-rc.2 (2026-10-13 test prerelease)
+
+- Change the complete integration version to verify a numerical update through Hermes and both dashboard update controls.
+- Keep the program behavior from the corrected 0.4.2-rc.1 candidate.
+
+## 0.4.2-rc.1 (2026-10-13 test prerelease)
+
+- Add Install LifeOS, Update LifeOS, and Update plugin controls to the LifeOS releases page.
+- Prepare the complete qualified integration for both update actions. Keep owner review and installation approval separate.
+- Run page-requested preparation in a detached process with a private profile lock.
+- Refuse duplicate preparation and report interrupted preparation without selecting active programs.
+- Prevent isolated stock Python from writing bytecode into qualified source trees during dashboard review.
+- Prepare valid block YAML for native mounting while preserving configuration values.
+- Block further preparation during installation or required recovery. Display each operation identifier.
+- Detect interrupted preparation before the worker identity is published. Preserve active launch leases.
+- Drain the managed stock dashboard during first installation through a separate worker service.
+- Include missing inactive gateway and Pulse definitions in the reviewed program transaction.
+- Validate generated units with the actual systemd parser. Refuse unsupported physical service paths before generation.
+- Refuse historical first-install workers without the service interface. Keep the dashboard responsive during refusal.
+- Bind extracted and native source manifests to the certificate-bound archive. Verify retained workers before admission.
+- Preserve unchanged service files during program publication and keep one fresh-recovery lease namespace.
+- Preserve the existing native baseline time during updates with unchanged native programs.
+- Drain the native test log queue before removing its temporary home.
+- Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
+
 ## 0.4.1 (2026-10-13)
 
 - Keep the plugin release choice in a separate argument field from the Hermes global version flag.

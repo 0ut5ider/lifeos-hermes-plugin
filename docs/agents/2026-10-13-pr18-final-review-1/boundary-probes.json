@@ -1,0 +1,33 @@
+{
+  "synchronous_preparation_overlap": {
+    "before": [
+      {
+        "identifier": "d88094dfcc86455f975fdda0ed2f89e6",
+        "state": "preparing"
+      }
+    ],
+    "queue_reaches_child_launch": true,
+    "after": [
+      {
+        "identifier": "8e41d577681945e0840150c14437aaa7",
+        "state": "preparation_interrupted",
+        "error": "Preparation stops before a ready plan. Prepare another release. Active programs stay in place."
+      },
+      {
+        "identifier": "d88094dfcc86455f975fdda0ed2f89e6",
+        "state": "preparing"
+      }
+    ],
+    "created_jobs": 2,
+    "limit": "Actual functions and private files; trace stops before the second Popen, so no release download or active publication occurs."
+  },
+  "foreign_dashboard": {
+    "running_dashboard_pid": 1938732,
+    "requested_profile": "/tmp/pr18-foreign-dashboard-ita4j0fy/requested-profile",
+    "actual_dashboard_profile": "/tmp/pr18-foreign-dashboard-ita4j0fy/foreign-profile",
+    "accepted_preview": {
+      "signature": "synthetic-reviewed-dashboard-signature"
+    },
+    "limit": "Real Hermes-shaped process and native procfs identity; systemd inspection boundary is a synthetic fixed-unit response. No service is stopped or changed."
+  }
+}

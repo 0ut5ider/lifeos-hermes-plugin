@@ -8,11 +8,14 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import shutil
+import stat
 import subprocess
 import sys
+import tarfile
 import types
 
-from .release_catalog import ReleaseRejected, _directory, extract_package, _json
+from .release_catalog import (ReleaseRejected, _directory, extract_package, _json,
+    COMMIT, DIGEST, VERSION, MAX_ARCHIVE_BYTES, MAX_EXTRACTED_BYTES, MAX_MEMBERS)
 from .release_programs import publish, fingerprint
 from .release_tools import prepare_bun
 
@@ -56,6 +59,8 @@ def validate_files(root, files, *, forbid_bytecode=False):
 
 
 def load_bridge(directory):
+    # Isolated Python ignores environment bytecode settings. Keep qualified source trees unchanged during imports.
+    sys.dont_write_bytecode = True
     directory = Path(directory).absolute()
     name = 'lifeos_release_source_' + hashlib.sha256(str(directory).encode()).hexdigest()[:16]
     if name not in sys.modules:
@@ -65,9 +70,64 @@ def load_bridge(directory):
     return importlib.import_module(name + '.install_source')
 
 
+def archived_manifest(package, certificate):
+    version, commit, digest, size = (certificate.get(key)
+        for key in ('version', 'program_commit', 'archive_sha256', 'archive_bytes'))
+    if (not isinstance(version, str) or VERSION.fullmatch(version) is None
+            or not isinstance(commit, str) or COMMIT.fullmatch(commit) is None
+            or not isinstance(digest, str) or DIGEST.fullmatch(digest) is None
+            or type(size) is not int or not 0 < size <= MAX_ARCHIVE_BYTES):
+        raise ReleaseRejected('The package requires an authenticated archive identity')
+    archive = package.parent / 'download' / (version + '-' + commit[:8] + '.tgz')
+    if archive.resolve() != archive:
+        raise ReleaseRejected('The package requires a regular authenticated archive')
+    try:
+        descriptor = os.open(archive, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, 'rb') as content:
+            info = os.fstat(content.fileno())
+            if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_size != size
+                    or hashlib.file_digest(content, 'sha256').hexdigest() != digest):
+                raise ReleaseRejected('The package differs from its authenticated archive identity')
+            content.seek(0)
+            manifest, total = None, 0
+            with tarfile.open(fileobj=content, mode='r|gz') as source:
+                for number, member in enumerate(source, 1):
+                    total += member.size
+                    if number > MAX_MEMBERS or member.size < 0 or total > MAX_EXTRACTED_BYTES:
+                        raise ReleaseRejected('The authenticated archive exceeds its package limits')
+                    if member.name == 'DAILY-CANDIDATE.json':
+                        if manifest is not None or not member.isfile() or not 0 < member.size <= 512 * 1024:
+                            raise ReleaseRejected('The authenticated archive requires one bounded program manifest')
+                        with source.extractfile(member) as program_manifest:
+                            manifest = program_manifest.read(512 * 1024 + 1)
+            if manifest is None:
+                raise ReleaseRejected('The authenticated archive has no program manifest')
+            return manifest
+    except (OSError, tarfile.TarError) as error:
+        raise ReleaseRejected('The package authenticated archive is unavailable') from error
+
+
+def read_manifest(path):
+    if path.resolve() != path:
+        raise ReleaseRejected('The package requires a bounded regular owner manifest')
+    try:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, 'rb') as content:
+            info = os.fstat(content.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or not 0 < info.st_size <= 512 * 1024:
+                raise ReleaseRejected('The package requires a bounded regular owner manifest')
+            manifest_bytes = content.read(512 * 1024 + 1)
+            if len(manifest_bytes) > 512 * 1024:
+                raise ReleaseRejected('The package requires a bounded regular owner manifest')
+    except OSError as error:
+        raise ReleaseRejected('The package requires a bounded regular owner manifest') from error
+    return manifest_bytes
+
+
 def validate_package(package, certificate):
     package = _directory(package)
-    manifest = _json((package / 'DAILY-CANDIDATE.json').read_bytes())
+    manifest_bytes = read_manifest(package / 'DAILY-CANDIDATE.json')
+    manifest = _json(manifest_bytes)
     if (not isinstance(manifest, dict) or not isinstance(certificate, dict)
             or certificate.get('format') != 1 or certificate.get('status') != 'QUALIFIED'
             or manifest.get('head') != certificate.get('program_commit')
@@ -75,6 +135,16 @@ def validate_package(package, certificate):
         raise ReleaseRejected('The package does not match its qualified release certificate')
     if not isinstance(manifest.get('python_runtime_files'), dict):
         raise ReleaseRejected('The release has no qualified frozen dependency closure')
+    if manifest_bytes != archived_manifest(package, certificate):
+        raise ReleaseRejected('The extracted program manifest differs from its authenticated archive')
+    source_manifests = manifest.get('prepared_manifest_files')
+    if (not isinstance(source_manifests, dict) or set(source_manifests)
+            != {'hermes/hermes-source-manifest.json', 'lifeos/lifeos-source-manifest.json'}):
+        raise ReleaseRejected('The package has no authenticated native source manifest map')
+    for name, digest in source_manifests.items():
+        if (not isinstance(digest, str) or DIGEST.fullmatch(digest) is None
+                or hashlib.sha256(read_manifest(package / name)).hexdigest() != digest):
+            raise ReleaseRejected('A native source manifest differs from its authenticated program map')
     validate_files(package / 'python-runtime', manifest['python_runtime_files'], forbid_bytecode=True)
     if not {'pyproject.toml', 'uv.lock'} <= set(manifest['python_runtime_files']):
         raise ReleaseRejected('The release lacks a frozen dependency closure')

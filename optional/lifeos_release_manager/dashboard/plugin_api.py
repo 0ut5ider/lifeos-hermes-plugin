@@ -16,8 +16,10 @@ if namespace_name not in sys.modules:
     namespace.__path__ = [str(directory)]
     sys.modules[namespace_name] = namespace
 commands = importlib.import_module(namespace_name + '.cli')
+preparation = importlib.import_module(namespace_name + '.release_preparation')
 worker = importlib.import_module(namespace_name + '.release_worker')
 stage = importlib.import_module(namespace_name + '.release_stage')
+services = importlib.import_module(namespace_name + '.release_services')
 
 
 def profile():
@@ -57,6 +59,29 @@ def owner(request: Request):
 router = APIRouter(dependencies=[Depends(owner)])
 
 
+@router.get('/installation')
+def installation():
+    selected = commands.profile_directory(profile())
+    existing = any(path.exists() or path.is_symlink() for path in (
+        selected / 'integration-release.json', selected / 'lifeos-installation.json', Path.home() / '.claude'))
+    return {'installed': existing}
+
+
+@router.post('/prepare', status_code=202)
+async def prepare(request: Request):
+    body = await request.body()
+    if request.query_params or len(body) > 4096:
+        raise HTTPException(status_code=400, detail='Use a bounded release selection')
+    try:
+        value = preparation.selection(commands._json(body))
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    try:
+        return await run_in_threadpool(preparation.queue, profile(), value)
+    except (ValueError, OSError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail='Preparation is unavailable or already running under this profile') from error
+
+
 @router.get('/operations')
 def operations():
     try:
@@ -81,6 +106,8 @@ def review_release(identifier):
                 'native_mount_required': plan['native_mount_required'],
                 'restart_required': plan['services'] is not None,
                 'state': commands.read_private(job / 'status.json')['state']}
+    except services.FirstInstallationUnavailable as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     except (ValueError, OSError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='The prepared release changes or has unfinished recovery') from error
 

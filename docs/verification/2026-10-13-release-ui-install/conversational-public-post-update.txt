@@ -1,0 +1,35 @@
+ │  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠈⣡⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                                                                 │
+ │  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀      ▸ Available Skills (109) in 11 categories                  │
+ │  flashnext-w4a16-fp8ple · Nous                                                                  │
+ │  Research                            ▸ System Prompt — 53,018 chars                             │
+ │  /home/lifeos-hermes                 25 tools · 109 skills · /help for commands                 │
+ │  Session: 833f5889                                                                              │
+ │                                                                                                 │
+ ╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ❯ PUBLIC-UPDATE-CHAT-VERIFY. Load the lifeos-release skill. Run hermes lifeos-release status 
+   6eba0eecdf94443084259206ac28b59c and hermes lifeos-version. Report the actual final state, active  
+    version, commit, and package SHA-256. The owner has applied the prepared update through the 
+   authenticated dashboard. Do not prepare another operation or read credentials or memory records.    
+                                                                                                       
+ └─ ▾ Tool calls (3)                                                                                   
+   ├─ ● Skill View("lifeos-release-manager:lifeos-release") (7.8s)  
+   ├─ ● Terminal("hermes lifeos-release status 6eba0eecdf94443084259206ac28b59c") (51.2s)             
+   └─ ● Terminal("hermes lifeos-version") (49.7s)                                         
+ ├─ ▸ Thinking  ~117 tokens                                                                           
+ └─ Σ ~155 total                                                                                      
+                                                                                                      
+ ┊  LIFEOS PUBLIC UPDATE — VERIFIED APPLIED                                                            
+                                                                                                       
+    Operation 6eba0eecdf94443084259206ac28b59c reports final state applied, with restore_available:
+    true and recover_available: false.                                                                 
+                                                                                                       
+    Active version: 0.4.2-rc.2, verification verified (scope: plugin_sources).                         
+    Commit: 6a0a241a0b1227d440938aa7156d8d59b87e5740                                                   
+    Package SHA-256: 6fd4a6af3e1fa37f0b57b8db86daf4b72974d0f0993b4d12cba583c84575cbe6                  
+                                                                                                       
+    The status and version commands agree on version and commit; hermes lifeos-version independently   
+    confirms the active install matches the applied operation, with no modified files and nothing      
+    staged. Your dashboard install landed cleanly, no recovery needed.                                 
+    🗣️  Update complete: 0.4.2-rc.2 is live and verified against its package hash.
+ ─ ready │ flashnext w4a16 fp8ple │ 24.7k/131.1k │ 2m 49s        ─  Verify lifeos-release final state
+ ❯  

@@ -1,0 +1,4 @@
+{
+  "effective_properties": "Environment=HERMES_HOME=/tmp/target\nEnvironmentFiles=/tmp/task-only-nonexistent-environment (ignore_errors=yes)\n",
+  "definition": "[Service]\nEnvironment=HERMES_HOME=/tmp/target\nEnvironmentFile=-/tmp/task-only-nonexistent-environment\nExecStart=/usr/bin/true\n"
+}

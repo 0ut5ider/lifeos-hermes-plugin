@@ -35,10 +35,11 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
         if request['runtime'].get(key) != str(expected):
             raise ReleaseRejected('The prepared runtime changes its fixed job paths')
     bridge = profile / 'plugins/lifeos-hook-bridge'
-    current = load_bridge(bridge) if bridge.is_dir() else candidate
+    fresh = fresh_recovery or not installed.exists()
+    current = candidate if fresh else load_bridge(bridge) if bridge.is_dir() else candidate
     baseline = current.memory_module('version_drift').default_baseline_path(installed.parent)
     result = {'profile': profile, 'installed': installed, 'candidate': candidate, 'current': current,
-              'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': fresh_recovery or not installed.exists()}
+              'bridge': bridge, 'baseline': baseline, 'package': package, 'fresh': fresh}
     if result['fresh']:
         if not fresh_recovery and (installed.is_symlink() or selected.user_data.exists() or selected.user_data.is_symlink()
                 or (profile / 'lifeos-memory.json').exists()):
@@ -48,7 +49,13 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
         from gateway.status import live_gateway_pid_for_home
         if live_gateway_pid_for_home(profile):
             raise ReleaseRejected('Stop this profile gateway before its first native installation')
-        result.update(native_changes=True, services=None, launchers=[Path.home() / '.local/bin/hermes'])
+        if fresh_recovery:
+            from .cli import read_private
+            preview = read_private(job / 'plan.json')['services']
+        else:
+            from .release_services import fresh_preview
+            preview = fresh_preview(candidate, profile, installed, installation_lease=installation_lease)
+        result.update(native_changes=True, services=preview, launchers=[Path.home() / '.local/bin/hermes'])
         return result
     if not bridge.is_dir() or bridge.is_symlink():
         raise ReleaseRejected('The existing native installation requires its installed bridge')

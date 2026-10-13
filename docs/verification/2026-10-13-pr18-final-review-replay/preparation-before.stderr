@@ -1,0 +1,121 @@
+test_empty_preparation_directory_does_not_hide_other_operations (test_release_preparation.ReleasePreparationTests.test_empty_preparation_directory_does_not_hide_other_operations) ... ok
+test_held_launch_lease_preserves_preparing_without_worker_identity (test_release_preparation.ReleasePreparationTests.test_held_launch_lease_preserves_preparing_without_worker_identity) ... ok
+test_invalid_selections_do_not_create_profile_files (test_release_preparation.ReleasePreparationTests.test_invalid_selections_do_not_create_profile_files) ... ok
+test_live_synchronous_preparation_records_its_process_before_download (test_release_preparation.ReleasePreparationTests.test_live_synchronous_preparation_records_its_process_before_download) ... ok
+test_preparation_lock_rejects_symlinks (test_release_preparation.ReleasePreparationTests.test_preparation_lock_rejects_symlinks) ... ok
+test_required_recovery_refuses_preparation_before_creating_another_operation (test_release_preparation.ReleasePreparationTests.test_required_recovery_refuses_preparation_before_creating_another_operation) ... ok
+test_running_preparation_refuses_duplicate_before_creating_an_operation (test_release_preparation.ReleasePreparationTests.test_running_preparation_refuses_duplicate_before_creating_an_operation) ... ok
+test_status_identifies_an_interrupted_preparation_without_changing_programs (test_release_preparation.ReleasePreparationTests.test_status_identifies_an_interrupted_preparation_without_changing_programs) ... ok
+test_status_identifies_interruption_after_the_request_is_published (test_release_preparation.ReleasePreparationTests.test_status_identifies_interruption_after_the_request_is_published) ... ok
+test_status_identifies_interruption_before_worker_publication (test_release_preparation.ReleasePreparationTests.test_status_identifies_interruption_before_worker_publication) ... ok
+test_synchronous_preparation_can_retry_after_an_expired_preparation (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_can_retry_after_an_expired_preparation) ... ok
+test_synchronous_preparation_holds_the_same_lease_as_the_dashboard (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_holds_the_same_lease_as_the_dashboard) ... FAIL
+test_synchronous_preparation_refuses_a_held_lease_before_download (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_a_held_lease_before_download) ... FAIL
+test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) ... 
+  test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='queued-apply') ... FAIL
+  test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='applying') ... FAIL
+  test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='recovering') ... FAIL
+  test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='restoring') ... FAIL
+  test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='recovery_required') ... FAIL
+
+======================================================================
+FAIL: test_synchronous_preparation_holds_the_same_lease_as_the_dashboard (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_holds_the_same_lease_as_the_dashboard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 42, in test_synchronous_preparation_holds_the_same_lease_as_the_dashboard
+    prepare(profile, catalog=StopAtDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 36, in download
+    release_preparation.queue(profile, {'intent': 'install'})
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_preparation.py", line 75, in queue
+    process = subprocess.Popen([sys.executable, '-B', str(Path(__file__).resolve()), str(profile), job.name],
+              ^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 28, in trace
+    raise AssertionError('Overlapping preparation reaches child launch')
+AssertionError: Overlapping preparation reaches child launch
+
+======================================================================
+FAIL: test_synchronous_preparation_refuses_a_held_lease_before_download (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_a_held_lease_before_download)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 57, in test_synchronous_preparation_refuses_a_held_lease_before_download
+    prepare(profile, catalog=NoDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 52, in download
+    raise AssertionError('A duplicate synchronous preparation reaches download')
+AssertionError: A duplicate synchronous preparation reaches download
+
+======================================================================
+FAIL: test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='queued-apply')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 73, in test_synchronous_preparation_refuses_pending_installation_or_recovery
+    prepare(profile, catalog=NoDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 71, in download
+    raise AssertionError('Preparation reaches download during a pending operation')
+AssertionError: Preparation reaches download during a pending operation
+
+======================================================================
+FAIL: test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='applying')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 73, in test_synchronous_preparation_refuses_pending_installation_or_recovery
+    prepare(profile, catalog=NoDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 71, in download
+    raise AssertionError('Preparation reaches download during a pending operation')
+AssertionError: Preparation reaches download during a pending operation
+
+======================================================================
+FAIL: test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='recovering')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 73, in test_synchronous_preparation_refuses_pending_installation_or_recovery
+    prepare(profile, catalog=NoDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 71, in download
+    raise AssertionError('Preparation reaches download during a pending operation')
+AssertionError: Preparation reaches download during a pending operation
+
+======================================================================
+FAIL: test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='restoring')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 73, in test_synchronous_preparation_refuses_pending_installation_or_recovery
+    prepare(profile, catalog=NoDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 71, in download
+    raise AssertionError('Preparation reaches download during a pending operation')
+AssertionError: Preparation reaches download during a pending operation
+
+======================================================================
+FAIL: test_synchronous_preparation_refuses_pending_installation_or_recovery (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_refuses_pending_installation_or_recovery) (phase='recovery_required')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 73, in test_synchronous_preparation_refuses_pending_installation_or_recovery
+    prepare(profile, catalog=NoDownload())
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/cli.py", line 110, in prepare
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_preparation.py", line 71, in download
+    raise AssertionError('Preparation reaches download during a pending operation')
+AssertionError: Preparation reaches download during a pending operation
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.021s
+
+FAILED (failures=7)

@@ -1,0 +1,110 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "commands": [
+    {
+      "purpose": "PR metadata",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "18",
+        "--json",
+        "baseRefName,baseRefOid,headRefName,headRefOid,title,url"
+      ],
+      "exit_code": 0
+    },
+    {
+      "purpose": "Complete product diff",
+      "command": [
+        "git",
+        "diff",
+        "958d122a491ddead7c19a5f215494f0422c4b5d6...3463a95bb42d6068ef5b8218aed4d7bb1ec9c246",
+        "--",
+        ":!docs/agents",
+        ":!docs/verification"
+      ],
+      "stdout": "product-diff.patch",
+      "exit_code": 0
+    },
+    {
+      "purpose": "Selected release and real service controls",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_release_catalog",
+        "test_release_programs",
+        "test_release_stage",
+        "test_release_manager_cli",
+        "test_release_operation",
+        "test_release_configuration",
+        "test_release_native_config",
+        "test_release_dashboard",
+        "test_release_preparation",
+        "test_release_services",
+        "test_profile_services"
+      ],
+      "stdout": "focused-tests.stdout",
+      "stderr": "focused-tests.stderr",
+      "exit_code": 0,
+      "tests": 99,
+      "skips": 3,
+      "seconds": 30.081
+    },
+    {
+      "purpose": "Boundary reproduction",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "docs/agents/2026-10-13-pr18-final-review-1/boundary_probes.py"
+      ],
+      "stdout": "boundary-probes.stdout",
+      "stderr": "boundary-probes.stderr",
+      "exit_code": 0
+    },
+    {
+      "purpose": "UI components",
+      "command": [
+        "node",
+        "--test",
+        "tests/test_release_ui.cjs"
+      ],
+      "stdout": "ui-tests.stdout",
+      "stderr": "ui-tests.stderr",
+      "exit_code": 0,
+      "tests": 3
+    },
+    {
+      "purpose": "Archive and evidence verification plus seven isolated controls",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "docs/agents/2026-10-13-pr18-final-review-1/verify_artifacts.py"
+      ],
+      "stdout": "artifact-verification.stdout",
+      "stderr": "artifact-verification.stderr",
+      "exit_code": 0,
+      "test_result": "7 tests pass, 0 skips"
+    }
+  ]
+}
