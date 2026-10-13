@@ -1,0 +1,10 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+git rev-parse HEAD origin/main
+git status --short --untracked-files=no
+git diff 2a9c4a76 -- docs/verification/2026-10-12-release-0.4.0/proxmox_history_restore.py
+nl -ba docs/verification/2026-10-12-release-0.4.0/proxmox_history_restore.py
+git log -3 --format='%H %s' -- docs/verification/2026-10-12-release-0.4.0/proxmox_history_restore.py
+git diff 2db18c6ed8d7aa711ea807a67cd211cddd22f393 -- docs/verification/2026-10-12-release-0.4.0/proxmox_history_restore.py
+
+Static Python comparison runs with PYTHONDONTWRITEBYTECODE=1 and the native test interpreter's -B option. It reads git show 2db18c6e:path, reads the inspected working file, and asserts whole-file equality after replacing exactly one occurrence of timeout=3600 with timeout=7200 if args[:2]==['pct','restore'] else 3600. It records the final file digest and reported-throughput arithmetic. It does not import or execute the controller.

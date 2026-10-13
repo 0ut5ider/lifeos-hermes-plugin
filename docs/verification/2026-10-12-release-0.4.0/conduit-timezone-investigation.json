@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "governed_timezone": "America/Toronto",
+      "direct_fixture_timezone": "UTC",
+      "status": "FAIL",
+      "failure": "'synthetic-hermes-work' != 'synthetic-pending-cursor-work'\n- synthetic-hermes-work\n+ synthetic-pending-cursor-work\n",
+      "events_in_fixture_order": [
+        {
+          "file": "2026-10-12.jsonl",
+          "ts": "2026-10-13T00:29:15.945Z",
+          "last_slug": "synthetic-pending-cursor-work"
+        },
+        {
+          "file": "2026-10-13.jsonl",
+          "ts": "2026-10-13T00:29:15.468Z",
+          "last_slug": "synthetic-hermes-work"
+        }
+      ]
+    },
+    {
+      "governed_timezone": "UTC",
+      "direct_fixture_timezone": "UTC",
+      "status": "PASS",
+      "failure": null,
+      "events_in_fixture_order": [
+        {
+          "file": "2026-10-13.jsonl",
+          "ts": "2026-10-13T00:29:16.443Z",
+          "last_slug": "synthetic-hermes-work"
+        },
+        {
+          "file": "2026-10-13.jsonl",
+          "ts": "2026-10-13T00:29:16.910Z",
+          "last_slug": "synthetic-pending-cursor-work"
+        }
+      ]
+    }
+  ],
+  "real_native_processes": true,
+  "product_sources_changed": false
+}

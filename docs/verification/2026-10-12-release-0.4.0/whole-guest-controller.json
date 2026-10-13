@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "process_exit": 0,
+  "disposable_guest_removed": true,
+  "initial_restore_intentionally_cancelled": true,
+  "operations": [
+    {
+      "label": "inventory",
+      "exit_code": 0,
+      "elapsed_seconds": 1.0896126360166818
+    },
+    {
+      "label": "drain-source",
+      "exit_code": 0,
+      "elapsed_seconds": 31.908238779986277
+    },
+    {
+      "label": "backup-source",
+      "exit_code": 0,
+      "elapsed_seconds": 2326.1151262270287
+    },
+    {
+      "label": "archives",
+      "exit_code": 0,
+      "elapsed_seconds": 1.5739594660699368
+    },
+    {
+      "label": "resume-source",
+      "exit_code": 0,
+      "elapsed_seconds": 1.227411241037771
+    },
+    {
+      "label": "restore",
+      "exit_code": 255,
+      "elapsed_seconds": 1006.6588717870181
+    },
+    {
+      "label": "inventory",
+      "exit_code": 0,
+      "elapsed_seconds": 1.0460815710248426
+    },
+    {
+      "label": "restore",
+      "exit_code": 0,
+      "elapsed_seconds": 3831.0840408620425
+    },
+    {
+      "label": "disconnect",
+      "exit_code": 0,
+      "elapsed_seconds": 1.0389467179775238
+    },
+    {
+      "label": "mount",
+      "exit_code": 0,
+      "elapsed_seconds": 0.902153393952176
+    },
+    {
+      "label": "unmount",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8731835730141029
+    },
+    {
+      "label": "boot-isolated",
+      "exit_code": 0,
+      "elapsed_seconds": 2.0347463159123436
+    },
+    {
+      "label": "restored-config",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8901499930070713
+    },
+    {
+      "label": "network",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8913571420125663
+    },
+    {
+      "label": "verify-history",
+      "exit_code": 0,
+      "elapsed_seconds": 1.6039824340259656
+    },
+    {
+      "label": "verify-stable-programs",
+      "exit_code": 0,
+      "elapsed_seconds": 38.54167518799659
+    },
+    {
+      "label": "shutdown-restore",
+      "exit_code": 0,
+      "elapsed_seconds": 2.6049275449477136
+    },
+    {
+      "label": "cleanup-config",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8424211930250749
+    },
+    {
+      "label": "destroy-disposable",
+      "exit_code": 0,
+      "elapsed_seconds": 1.8475883189821616
+    }
+  ]
+}

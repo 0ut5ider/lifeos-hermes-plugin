@@ -1,0 +1,43 @@
+[
+  {
+    "case": "incomplete-current-gates",
+    "exit_code": 1,
+    "certificate_written": false,
+    "input_integration_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "input_fresh_archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+    "synthetic_future_gates": false,
+    "synthetic_native_identity": false
+  },
+  {
+    "case": "synthetic-future-gates-baseline",
+    "exit_code": 0,
+    "certificate_written": true,
+    "input_integration_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "input_fresh_archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+    "synthetic_future_gates": true,
+    "synthetic_native_identity": true,
+    "output_status": "QUALIFIED",
+    "output_program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "output_archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+    "receipt_digest_count": 12,
+    "receipt_digests_verified": true
+  },
+  {
+    "case": "stale-integration-receipt",
+    "exit_code": 1,
+    "certificate_written": false,
+    "input_integration_commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
+    "input_fresh_archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+    "synthetic_future_gates": true,
+    "synthetic_native_identity": true
+  },
+  {
+    "case": "wrong-fresh-archive-digest",
+    "exit_code": 1,
+    "certificate_written": false,
+    "input_integration_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "input_fresh_archive_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "synthetic_future_gates": true,
+    "synthetic_native_identity": true
+  }
+]

@@ -1,0 +1,64 @@
+▶ not activated — using HERMES_PYTHON: /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 38 test files (~622 tests) under ['tests/agent/test_prompt_hook_block.py', 'tests/agent/test_terminal_approval_batch.py', 'tests/agent/test_tool_result_context_hook.py', 'tests/agent/test_turn_context.py', 'tests/agent/test_verification_continuation_budget.py', 'tests/gateway/test_clarify_cancellation_outcome.py', 'tests/gateway/test_clarify_delivery_fallback.py', 'tests/gateway/test_discord_command_identity.py', 'tests/gateway/test_discord_connect.py', 'tests/gateway/test_discord_guild_channel_only.py', 'tests/gateway/test_discord_sync_limit.py', 'tests/gateway/test_resume_command.py', 'tests/gateway/test_stop_clarify_waiters.py', 'tests/hermes_cli/test_approval_transport.py', 'tests/hermes_cli/test_cli_resume_command.py', 'tests/hermes_cli/test_plugins.py', 'tests/hermes_cli/test_required_middleware.py', 'tests/hermes_cli/test_required_policy_hooks.py', 'tests/hermes_cli/test_session_boundary_hooks.py', 'tests/hermes_cli/test_stop_policy_dispatch.py', 'tests/plugins/test_transform_tool_result_hook.py', 'tests/test_lifeos_aux_no_fallback.py', 'tests/test_lifeos_batch_schema.py', 'tests/test_lifeos_delegate_tier_route.py', 'tests/test_lifeos_execute_code_session.py', 'tests/tools/test_approval_plugin_hooks.py', 'tests/tools/test_code_execution.py', 'tests/tools/test_code_execution_file_rpc.py', 'tests/tools/test_code_kernel.py', 'tests/tools/test_code_kernel_remote.py', 'tests/tools/test_plugin_command_approval.py', 'tests/tools/test_remote_file_staleness.py', 'tests/tools/test_protected_instruction_cli_channel.py', 'tests/hermes_cli/test_plugin_policy_arguments.py', 'tests/hermes_cli/test_plugins_middleware_chain.py', 'tests/agent/test_auxiliary_client.py', 'tests/agent/test_auxiliary_fallback_multihop.py', 'tests/hermes_cli/test_plugin_async_dispatch.py']; running with -j 4
+[  0.5% |     3/~622 | ✓3 | ✗0] ✓ tests/agent/test_auxiliary_fallback_multihop.py (3✓, 2.9s)
+[  1.0% |     6/~622 | ✓8 | ✗0] ✓ tests/agent/test_prompt_hook_block.py (5✓, 3.6s)
+[  1.3% |     8/~622 | ✓10 | ✗ 0] ✓ tests/agent/test_tool_result_context_hook.py (2✓, 2.2s)
+[  4.7% |    29/~622 | ✓37 | ✗ 0] ✓ tests/agent/test_turn_context.py (27✓, 7.6s)
+[  5.5% |    34/~622 | ✓45 | ✗ 0] ✓ tests/agent/test_terminal_approval_batch.py (8✓, 12.1s)
+[  6.6% |    41/~622 | ✓52 | ✗ 0] ✓ tests/gateway/test_clarify_cancellation_outcome.py (7✓, 4.1s)
+[  7.4% |    46/~622 | ✓57 | ✗ 0] ✓ tests/gateway/test_discord_command_identity.py (5✓, 1.0s)
+[  8.5% |    53/~622 | ✓64 | ✗ 0] ✓ tests/gateway/test_clarify_delivery_fallback.py (7✓, 6.3s)
+[ 11.9% |    74/~622 | ✓88 | ✗ 0] ✓ tests/agent/test_verification_continuation_budget.py (24✓, 14.1s)
+[ 13.3% |    83/~622 | ✓97 | ✗ 0] ✓ tests/gateway/test_discord_guild_channel_only.py (9✓, 1.1s)
+[ 15.8% |    98/~622 | ✓114 | ✗  0] ✓ tests/gateway/test_discord_connect.py (17✓, 3.5s)
+[ 15.9% |    99/~622 | ✓115 | ✗  0] ✓ tests/gateway/test_discord_sync_limit.py (1✓, 0.9s)
+[ 16.6% |   103/~622 | ✓119 | ✗  0] ✓ tests/gateway/test_stop_clarify_waiters.py (4✓, 3.9s)
+[ 19.8% |   123/~622 | ✓142 | ✗  0] ✓ tests/hermes_cli/test_approval_transport.py (23✓, 3.9s)
+[ 52.7% |   328/~622 | ✓382 | ✗  0] ✓ tests/agent/test_auxiliary_client.py (240✓, 24.3s)
+[ 52.9% |   329/~622 | ✓383 | ✗  0] ✓ tests/hermes_cli/test_plugin_async_dispatch.py (1✓, 0.8s)
+[ 53.1% |   330/~622 | ✓384 | ✗  0] ✓ tests/hermes_cli/test_plugin_policy_arguments.py (1✓, 0.9s)
+[ 53.4% |   332/~622 | ✓388 | ✗  0] ✓ tests/hermes_cli/test_plugins_middleware_chain.py (4✓, 2.0s)
+[ 55.1% |   343/~622 | ✓399 | ✗  0] ✓ tests/hermes_cli/test_cli_resume_command.py (11✓, 5.6s)
+[ 55.8% |   347/~622 | ✓417 | ✗  0] ✓ tests/hermes_cli/test_required_policy_hooks.py (18✓, 1.2s)
+[ 60.3% |   375/~622 | ✓445 | ✗  0] ✓ tests/gateway/test_resume_command.py (28✓, 13.7s)
+[ 62.1% |   386/~622 | ✓461 | ✗  0] ✓ tests/hermes_cli/test_required_middleware.py (16✓, 6.2s)
+[ 63.2% |   393/~622 | ✓468 | ✗  0] ✓ tests/hermes_cli/test_session_boundary_hooks.py (7✓, 3.1s)
+[ 63.3% |   394/~622 | ✓469 | ✗  0] ✓ tests/hermes_cli/test_stop_policy_dispatch.py (1✓, 0.9s)
+[ 77.0% |   479/~622 | ✓555 | ✗  0] ✓ tests/hermes_cli/test_plugins.py (86✓, 10.9s)
+[ 77.8% |   484/~622 | ✓560 | ✗  0] ✓ tests/plugins/test_transform_tool_result_hook.py (5✓, 2.7s)
+[ 78.5% |   488/~622 | ✓564 | ✗  0] ✓ tests/test_lifeos_execute_code_session.py (4✓, 1.7s)
+[ 79.7% |   496/~622 | ✓572 | ✗  0] ✓ tests/test_lifeos_delegate_tier_route.py (8✓, 2.7s)
+[ 79.9% |   497/~622 | ✓573 | ✗  0] ✓ tests/test_lifeos_aux_no_fallback.py (1✓, 5.5s)
+[ 81.7% |   508/~622 | ✓597 | ✗  0] ✓ tests/tools/test_approval_plugin_hooks.py (24✓, 2.6s)
+[ 82.3% |   512/~622 | ✓601 | ✗  0] ✓ tests/test_lifeos_batch_schema.py (4✓, 7.4s)
+[ 82.5% |   513/~622 | ✓602 | ✗  0] ✓ tests/tools/test_code_execution_file_rpc.py (1✓, 3.9s)
+[ 87.9% |   547/~622 | ✓636 | ✗  0] ✓ tests/tools/test_code_execution.py (34✓, 5.4s)
+[ 90.4% |   562/~622 | ✓651 | ✗  0] ✓ tests/tools/test_code_kernel_remote.py (15✓, 3.9s)
+[ 90.7% |   564/~622 | ✓656 | ✗  0] ✓ tests/tools/test_protected_instruction_cli_channel.py (5✓, 1.6s)
+[ 95.2% |   592/~622 | ✓686 | ✗  0] ✓ tests/tools/test_plugin_command_approval.py (30✓, 6.6s)
+[ 95.5% |   594/~622 | ✓688 | ✗  0] ✓ tests/tools/test_remote_file_staleness.py (2✓, 5.5s)
+[100.0% |   622/~622 | ✓716 | ✗  0] ✓ tests/tools/test_code_kernel.py (28✓, 11.7s)
+
+=== Summary: 38 files, 716 tests passed, 0 failed (100% complete) in 52.2s (4 workers) ===
+  Durations cached to test_durations.json (38 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   38
+  Total subprocess CPU-wall: 198.0s  (runner wall: 52.2s, parallelism: 4x)
+  P50: 3.89s  P90: 12.14s  P95: 14.12s  P99: 24.34s  Max: 24.34s
+  <1s: 4 files (11%)  <2s: 9 files (24%)
+  Top 10 slowest:
+     24.34s  tests/agent/test_auxiliary_client.py
+     14.12s  tests/agent/test_verification_continuation_budget.py
+     13.67s  tests/gateway/test_resume_command.py
+     12.14s  tests/agent/test_terminal_approval_batch.py
+     11.67s  tests/tools/test_code_kernel.py
+     10.90s  tests/hermes_cli/test_plugins.py
+      7.56s  tests/agent/test_turn_context.py
+      7.35s  tests/test_lifeos_batch_schema.py
+      6.61s  tests/tools/test_plugin_command_approval.py
+      6.34s  tests/gateway/test_clarify_delivery_fallback.py

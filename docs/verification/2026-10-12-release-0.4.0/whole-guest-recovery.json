@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "archive": "PBS-01:backup/ct/101/2026-10-13T00:43:38Z",
+  "source_guest": 101,
+  "restored_guest": 110,
+  "network_disconnected": true,
+  "application_services_masked": true,
+  "cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 16,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 20,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 20,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "production_guest_changed": false
+}

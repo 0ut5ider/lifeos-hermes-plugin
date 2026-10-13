@@ -1,0 +1,99 @@
+     1	# ABOUTME: Backs up archived Atlas fixtures and verifies their actual off-server restore.
+     2	# ABOUTME: Keeps the disposable restore guest disconnected with application services masked.
+     3	import argparse
+     4	import json
+     5	import os
+     6	from pathlib import Path
+     7	import subprocess
+     8	import time
+     9	
+    10	os.umask(0o077)
+    11	out=Path('/root/lifeos-release-0.4.0/history-restore')
+    12	parser=argparse.ArgumentParser()
+    13	parser.add_argument('--resume-backup',action='store_true')
+    14	args=parser.parse_args()
+    15	if args.resume_backup:
+    16	    assert (out/'archives.stdout').is_file()
+    17	    operations=json.loads((out/'operations.json').read_text())
+    18	else:
+    19	    assert not out.exists();out.mkdir(parents=True,mode=0o700)
+    20	    operations=[]
+    21	python=os.environ['LIFEOS_STABLE_PYTHON']
+    22	package='/home/lifeos-hermes/releases/qualification-20261012-bunfixed/source'
+    23	vmid=110
+    24	def run(args,label,*,input=None):
+    25	    started=time.monotonic()
+    26	    r=subprocess.run(args,input=input,capture_output=True,text=True,timeout=7200 if args[:2]==['pct','restore'] else 3600,
+    27	        umask=0o022 if args[0]=='vzdump' or args[:2]==['pct','restore'] else -1)
+    28	    (out/(label+'.stdout')).write_text(r.stdout);(out/(label+'.stderr')).write_text(r.stderr)
+    29	    operations.append({'label':label,'command':args,'exit_code':r.returncode,'elapsed_seconds':time.monotonic()-started})
+    30	    (out/'operations.json').write_text(json.dumps(operations,indent=2)+'\n')
+    31	    if r.returncode:raise RuntimeError(label+' fails: '+r.stderr[-1000:])
+    32	    print(json.dumps(operations[-1]),flush=True)
+    33	    return r.stdout
+    34	def source(code,label):
+    35	    return run(['pct','exec','101','--','runuser','-u','lifeos-hermes','--',python,'-B','-'],label,input=code)
+    36	services_code="""import os,sys,json
+    37	from pathlib import Path
+    38	profile=Path('/home/lifeos-hermes/.hermes')
+    39	root=Path(json.loads((profile/'lifeos-memory.json').read_text())['root'])
+    40	sys.path[:0]=[PACKAGE,PACKAGE+'/hermes']
+    41	os.environ.update(HERMES_HOME=str(profile),XDG_RUNTIME_DIR='/run/user/1008',DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/1008/bus')
+    42	from lifeos_hook_bridge.profile_services import ProfileServices
+    43	s=ProfileServices(profile,root)
+    44	ACTION
+    45	""".replace('PACKAGE',repr(package))
+    46	result=1
+    47	drained=False
+    48	created=False
+    49	try:
+    50	    guests=json.loads(run(['pvesh','get','/cluster/resources','--type','vm','--output-format','json'],'inventory'))
+    51	    assert all(row['vmid']!=vmid for row in guests),'The disposable guest identifier is already used'
+    52	    if args.resume_backup:
+    53	        archives=json.loads((out/'archives.stdout').read_text())
+    54	        archive=max(archives,key=lambda row:row['ctime'])['volid']
+    55	    else:
+    56	        source(services_code.replace('ACTION',"s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Source writers drained')"),'drain-source')
+    57	        drained=True
+    58	        run(['vzdump','101','--storage','PBS-01','--mode','stop','--notes-template','LifeOS 0.4.0 managed release recovery'],'backup-source')
+    59	        archives=json.loads(run(['pvesh','get','/nodes/pve-tr1950x/storage/PBS-01/content','--content','backup','--vmid','101','--output-format','json'],'archives'))
+    60	        archive=max(archives,key=lambda row:row['ctime'])['volid']
+    61	        source(services_code.replace('ACTION',"s.resume();print('Source writers resumed')"),'resume-source')
+    62	        drained=False
+    63	    run(['pct','restore',str(vmid),archive,'--storage','local-zfs','--unprivileged','1','--onboot','0','--hostname','lifeos-040-recovery'],'restore')
+    64	    created=True
+    65	    run(['pct','set',str(vmid),'--delete','net0','--onboot','0','--tags','disposable;lifeos-040-recovery'],'disconnect')
+    66	    run(['pct','mount',str(vmid)],'mount')
+    67	    rootfs=Path('/var/lib/lxc')/str(vmid)/'rootfs'
+    68	    units=rootfs/'home/lifeos-hermes/.config/systemd/user'
+    69	    for name in ('hermes-dashboard.service','hermes-gateway.service','com.lifeos.pulse.service'):
+    70	        p=units/name;p.rename(units/(name+'.before-restore'));p.symlink_to('/dev/null')
+    71	    run(['pct','unmount',str(vmid)],'unmount')
+    72	    run(['pct','start',str(vmid)],'boot-isolated')
+    73	    config=run(['pct','config',str(vmid)],'restored-config')
+    74	    assert 'net0:' not in config and 'onboot: 0' in config
+    75	    run(['pct','exec',str(vmid),'--','ip','-brief','address'],'network')
+    76	    report=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B',
+    77	        '/home/lifeos-hermes/releases/qualification-20261012-bunfixed/history_guest_recovery.py','verify',package],'verify-history'))
+    78	    assert report['status']=='PASS' and len(report['cases'])==3
+    79	    coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-20261012-bunfixed/verify_stable_restored.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
+    80	    assert coverage['status']=='PASS'
+    81	    (out/'stable-program-coverage.json').write_text(json.dumps(coverage,indent=2)+'\n')
+    82	    (out/'verification.json').write_text(json.dumps({'status':'PASS','archive':archive,'source_guest':101,'restored_guest':vmid,
+    83	        'network_disconnected':True,'application_services_masked':True,'cases':report['cases'],
+    84	        'production_guest_changed':False},indent=2)+'\n')
+    85	    run(['pct','shutdown',str(vmid),'--timeout','90'],'shutdown-restore')
+    86	    result=0
+    87	finally:
+    88	    if drained:
+    89	        source(services_code.replace('ACTION',"s.resume();print('Source writers resumed after failure')"),'recover-source-services')
+    90	    try:
+    91	        if created and result==0:
+    92	            config=run(['pct','config',str(vmid)],'cleanup-config')
+    93	            assert 'hostname: lifeos-040-recovery' in config and 'net0:' not in config
+    94	            run(['pct','destroy',str(vmid),'--purge','1'],'destroy-disposable')
+    95	    except BaseException:
+    96	        result=1
+    97	        raise
+    98	    finally:
+    99	        (out/'process.done').write_text(str(result)+'\n')

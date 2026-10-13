@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/pr15-certificate-sw_7aif6/certify_release.py", line 32, in <module>
+    assert {key:fresh['preparation'][key] for key in ('version','commit','package_sha256')}=={'version':build['version'],'commit':head,'package_sha256':build['archive_sha256']}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

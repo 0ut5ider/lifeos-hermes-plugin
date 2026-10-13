@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.4.0-dev.1
+## 0.4.0 (2026-10-12)
 
-This development candidate is not a qualified production release.
+Release qualification is recorded in the published release certificate.
 
+- Pin Bun 1.4.3 with the upstream streaming-extraction fixes. Preserve all twelve native dependency locks.
 - Prepare Hermes v0.21.7 at commit 71d34bad1045610252eda02ee79549436896e784.
 - Use ten Hermes patch groups and twenty-five LifeOS patch groups.
 - Verify complete Discord morning windows and the active Pulse schedule.

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "operation": "5a659e7f11e1437b8e33d65f3e064426",
+  "active_identity": {
+    "version": "0.4.0",
+    "commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "package_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da"
+  },
+  "before_boot_id": "49cbdf40-1fe6-44f7-8773-c6f59b33ec19",
+  "boot_id": "7e446f72-dafd-4eca-815d-11c464f99a67",
+  "units": {
+    "hermes-gateway.service": {
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    },
+    "hermes-dashboard.service": {
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    }
+  },
+  "bun_version": "1.4.3",
+  "manual_service_start_after_reboot": false,
+  "daily_server_changed": false
+}

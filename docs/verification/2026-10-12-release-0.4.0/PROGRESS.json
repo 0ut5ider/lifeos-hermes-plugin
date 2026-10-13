@@ -1,0 +1,205 @@
+{
+  "status": "QUALIFIED_AWAITING_PUBLICATION",
+  "version": "0.4.0",
+  "merged_pr": 14,
+  "merged_commit": "be215380dcbda35c92e6f28b23b4a1d7bc15004e",
+  "production_qualified": true,
+  "daily_server_changed": false,
+  "completed": [
+    "PR14 merged",
+    "Stable declarations and exact archive built",
+    "Sixteen focused checks and independent archive validation",
+    "Frozen integration: 625 checks passed",
+    "Fresh stock plugin installation and real interrupted recovery",
+    "Authenticated development update and real interruption recovery",
+    "Development automatic reboot verification",
+    "PR15 review and certificate binding regression correction",
+    "Whole-guest off-server restore, three Atlas cases, 143 program targets, and disposable cleanup",
+    "Authenticated normal development rollback to exact accepted 0.3.1",
+    "Public release certificate generated from all completed gates"
+  ],
+  "remaining": [
+    "PR15 merge and immutable stable publication",
+    "Public stock installation and public development update verification"
+  ],
+  "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+  "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+  "archive_bytes": 119131156,
+  "running": [],
+  "dependency_preparation_failure": {
+    "operation": "16e36a5f9d0f413f82d7833bd2fa7b2f",
+    "safe_refusal": true,
+    "receipt": "dependency-stage-investigation.json",
+    "retry": "Second unchanged archive operation also refuses. Corrected Bun 1.4.3 archive replaces both attempts."
+  },
+  "superseded_stable_package": {
+    "commit": "4644f90c10d301a943f9ca2a47c9725b136ac5d4",
+    "sha256": "a8e79e394b18b189ed9be3d41e112e7b803b65f565d9c0fb8c7d4ab67e5437e1",
+    "integration_tests": 625,
+    "reason": "Bun 1.3.14 fails native dependency extraction during cold preparation."
+  },
+  "bun_pin": {
+    "version": "1.4.3",
+    "receipt": "bun-comparison-verified.json",
+    "upstream_fixed_commit_included": true,
+    "frozen_native_locks_changed": false
+  },
+  "historical_native_controls": {
+    "tests": 716,
+    "files": 38,
+    "source_checks": 12,
+    "reused_by_exact_program_identity": false,
+    "receipt": "stable-component-identity.json"
+  },
+  "native_controls": {
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
+    "runtime": "Bun 1.4.3",
+    "official_runner": true,
+    "receipt": "native-sealed-a87e7ae9.json",
+    "source_copy_used": true
+  },
+  "fresh_bunfixed_acceptance": {
+    "status": "PASS",
+    "receipt": "fresh-install-a87e7ae9-bunfixed.json",
+    "actual_worker_exit": 73,
+    "phase": "directory-retained",
+    "later_synthetic_data_preserved": true
+  },
+  "corrected_development_preparation": {
+    "status": "PASS",
+    "operation": "14215619fd654d9bab0028abe59b62af",
+    "receipt": "development-preparation-bunfixed-interruption.json"
+  },
+  "first_corrected_integration": {
+    "tests": 625,
+    "passed": 624,
+    "failures": 1,
+    "receipt": "integration-sealed-a87e7ae9-mixed-timezone.json",
+    "cause": "Direct fixture uses UTC; governed fixture inherits Toronto. Day filenames reverse the fixture event order after midnight UTC."
+  },
+  "timezone_fix": {
+    "scope": "Qualification runner only",
+    "TZ": "UTC",
+    "measured_probe": "conduit-timezone-investigation.json",
+    "archive_changed": false
+  },
+  "corrected_interrupted_update": {
+    "status": "PASS",
+    "operation": "14215619fd654d9bab0028abe59b62af",
+    "receipt": "development-bunfixed-interruption-recovery.json",
+    "restored": "Exact accepted 0.3.1 and all three services"
+  },
+  "normal_operation": "5a659e7f11e1437b8e33d65f3e064426",
+  "integration_utc": {
+    "status": "PASS",
+    "tests": 625,
+    "elapsed_seconds": 744.485,
+    "receipt": "integration-sealed-a87e7ae9.json"
+  },
+  "normal_update": {
+    "status": "PASS",
+    "receipt": "development-bunfixed-update.json",
+    "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "model_mapping_preserved": true
+  },
+  "automatic_boot": {
+    "status": "PASS",
+    "receipt": "development-bunfixed-boot.json",
+    "manual_service_start": false,
+    "bun_version": "1.4.3",
+    "all_services_enabled_and_running": true,
+    "identity_bound": true,
+    "fresh_reboot_procedure": "development-bound-reboot.json",
+    "post_reboot_service_observer": "development-bound-post-reboot.json"
+  },
+  "whole_guest_controller": {
+    "host": "192.168.8.101",
+    "script": "/root/proxmox_history_restore_040.py",
+    "evidence": "/root/lifeos-release-0.4.0/history-restore",
+    "source_guest": 101,
+    "disposable_guest": 110,
+    "state": "PASS; disconnected verification completes and disposable guest 110 is removed",
+    "restore_timeout_seconds": 7200,
+    "prior_attempt": "Intentionally cancelled before the original one-hour ceiling; partial guest and volume removed by Proxmox",
+    "prior_attempt_receipt": "restore-ceiling-adjustment.json"
+  },
+  "release_pr": 15,
+  "historical_fresh_acceptance": {
+    "status": "PASS",
+    "receipt": "fresh-install-4644f90c-stable.json",
+    "worker_exit": 73,
+    "phase": "directory-retained",
+    "later_synthetic_data_preserved": true
+  },
+  "historical_interruption_operation": "0c49ceb4d5c2450283012d039aa0b84b",
+  "historical_interrupted_update": {
+    "status": "PASS",
+    "receipt": "development-interruption-recovery.json",
+    "restored": "Exact accepted 0.3.1, preserved configuration and routing, all three services running"
+  },
+  "native_receipt_binding": {
+    "status": "PASS",
+    "prior_receipt": "native-sealed-a87e7ae9-unbound.json",
+    "required_receipt": "native-sealed-a87e7ae9.json",
+    "regression_cases": 14,
+    "regression_result": "PASS",
+    "product_archive_changed": false,
+    "receipt": "native-sealed-a87e7ae9.json",
+    "tests": 716,
+    "files": 38,
+    "elapsed_seconds": 71.471
+  },
+  "focused_review": {
+    "status": "CLEAR",
+    "rounds": 2,
+    "prior_findings": 1,
+    "open_findings": 0,
+    "program_archive_changed": false,
+    "receipt": "docs/agents/2026-10-12-pr15-stable-release-review-2/pr15-stable-release-review-2.md",
+    "controller_review": "CLEAR",
+    "controller_review_receipt": "docs/agents/2026-10-12-pr15-controller-review/pr15-controller-review.md",
+    "final_receipt": "docs/agents/2026-10-12-pr15-exit-proof-review/pr15-exit-proof-review.md"
+  },
+  "rollback_receipt_binding": {
+    "status": "PASS",
+    "review": "CLEAR",
+    "before_receipt": "rollback-binding-before.stdout",
+    "after_receipt": "rollback-binding-after.stdout",
+    "rule": "Normal rollback operation equals verified update operation",
+    "archive_changed": false
+  },
+  "complete_receipt_binding": {
+    "status": "PASS",
+    "regression_cases": 29,
+    "before_receipt": "exit-binding-before.stdout",
+    "after_receipt": "exit-binding-after.stdout",
+    "actual_historical_receipt_probe": "primary-interruption-proof-after.stdout",
+    "required_interruption_exit_receipt": "development-bunfixed-interruption-exit.json",
+    "review": "CLEAR",
+    "program_archive_changed": false
+  },
+  "whole_guest_recovery": {
+    "status": "PASS",
+    "receipt": "whole-guest-recovery.json",
+    "cases": 3,
+    "program_coverage_receipt": "whole-guest-program-coverage.json",
+    "program_targets": 143,
+    "controller_receipt": "whole-guest-controller.json",
+    "disposable_guest_removed": true
+  },
+  "normal_rollback": {
+    "status": "PASS",
+    "operation": "5a659e7f11e1437b8e33d65f3e064426",
+    "receipt": "development-bunfixed-rollback.json",
+    "configuration_and_model_preserved": true,
+    "all_three_services_running": true
+  },
+  "certificate": {
+    "file": "RELEASE-CERTIFICATE.json",
+    "sha256": "d57f24578a05467afd57df96b3bc9c2110a6b0b88777bac429544dd9f3b75a0d",
+    "production_qualified": true,
+    "daily_promotion_verified": false
+  }
+}

@@ -1,0 +1,12 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+git rev-parse HEAD origin/main
+git status --short --untracked-files=no
+git diff 8e804cc8...HEAD -- docs/verification/2026-10-12-release-0.4.0/certify_release.py docs/verification/2026-10-12-release-0.4.0/run_sealed_native.py
+git show 8e804cc8:docs/verification/2026-10-12-release-0.4.0/certify_release.py
+
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-stable-release-review-2/original-certify-release.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr15-stable-release-review-2/probe_certificate_binding.py
+
+All generated probe certificates stay in isolated temporary evidence directories. The thirteen-case regression supplies explicitly labeled synthetic native/future gates, not acceptance evidence.

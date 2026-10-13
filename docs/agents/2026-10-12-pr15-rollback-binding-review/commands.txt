@@ -1,0 +1,14 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+git rev-parse HEAD origin/main
+git status --short --untracked-files=no
+git diff c2789db9 -- docs/verification/2026-10-12-release-0.4.0/certify_release.py docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+git show c2789db9:docs/verification/2026-10-12-release-0.4.0/certify_release.py
+sha256sum docs/verification/2026-10-12-release-0.4.0/certify_release.py docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+
+The after generator and exact fixture are copied into this report directory before testing to preserve reviewed bytes.
+
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-rollback-binding-review/after-certify-release.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-rollback-binding-review/before-certify-release.py
+
+These independent test processes use the same current fourteen-case fixture and different generator snapshots. All baseline and future-gate additions are explicitly synthetic, remain in temporary directories, and do not become actual qualification receipts.
