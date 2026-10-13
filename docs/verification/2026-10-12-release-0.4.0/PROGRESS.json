@@ -24,10 +24,8 @@
   "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
   "archive_bytes": 119131156,
   "running": [
-    "Corrected sealed integration suite",
-    "Official native runner with Bun 1.4.3",
-    "Corrected stock fresh recovery",
-    "Corrected development preparation"
+    "Full corrected integration with uniform UTC",
+    "Normal corrected development preparation"
   ],
   "fresh_acceptance": {
     "status": "PASS",
@@ -87,5 +85,24 @@
     "status": "PASS",
     "operation": "14215619fd654d9bab0028abe59b62af",
     "receipt": "development-preparation-bunfixed-interruption.json"
+  },
+  "first_corrected_integration": {
+    "tests": 625,
+    "passed": 624,
+    "failures": 1,
+    "receipt": "integration-sealed-a87e7ae9-mixed-timezone.json",
+    "cause": "Direct fixture uses UTC; governed fixture inherits Toronto. Day filenames reverse the fixture event order after midnight UTC."
+  },
+  "timezone_fix": {
+    "scope": "Qualification runner only",
+    "TZ": "UTC",
+    "measured_probe": "conduit-timezone-investigation.json",
+    "archive_changed": false
+  },
+  "corrected_interrupted_update": {
+    "status": "PASS",
+    "operation": "14215619fd654d9bab0028abe59b62af",
+    "receipt": "development-bunfixed-interruption-recovery.json",
+    "restored": "Exact accepted 0.3.1 and all three services"
   }
 }

@@ -98,3 +98,14 @@ The existing-installation interruption actor is being admitted through start_int
 Poll its actual status and USER_UNIT exit metadata before starting the dashboard or recovery.
 The primary exec session 57904 is the synchronous SSH admission command, not the detached worker itself.
 The source and public command snapshots bind the corrected exact archive.
+
+Corrected existing-installation interruption/recovery now passes. Exact 0.3.1, configuration, model routing, aliases, and all services verify.
+The first corrected full integration run finishes with 624 passes and one Conduit fixture assertion failure.
+The actual probe proves a mixed-timezone test setup: direct UTC events go to day 13 and governed Toronto events to day 12.
+Both expected synthetic events exist and pending capture is correct.
+Uniform UTC passes the same assertion without program changes.
+The integration runner now sets TZ=UTC, matching the official native runner.
+The failing run is preserved as integration-sealed-a87e7ae9-mixed-timezone.*.
+A complete repeated 625-check run is detached with PID 3734684; check integration-sealed-a87e7ae9.done.
+The corrected normal .252 preparation is detached and running in the bunfixed staging folder.
+Do not confuse it with the interrupted preparation, now archived there as interruption-preparation.json.

@@ -17,7 +17,7 @@ names = previous['command'][6:] + ['test_morning_observation', 'test_latest_herm
 python = str(cache / 'native-test-environment/bin/python')
 native = Path('/home/outsider/.cache/lifeos-atlas-20261010/native-limits-refresh/LifeOS/install')
 fixture = cache / 'fresh-qualification-5ad7570f-repeat/.hermes/.lifeos-releases/cbc25b64b2db479384788eeb5827a6be'
-env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(package)+':'+str(package/'tests')+':'+str(package/'hermes'),
+env = dict(os.environ, TZ='UTC', PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(package)+':'+str(package/'tests')+':'+str(package/'hermes'),
     LIFEOS_HERMES_SOURCE=str(package/'hermes'), LIFEOS_MEMORY_SOURCE=str(native),
     LIFEOS_TASK_HOOK_PATH=str(native/'hooks/TaskGovernance.hook.ts'), LIFEOS_FRESH_SOURCE=str(package/'lifeos'),
     LIFEOS_TAB_STATE_SOURCE=str(native), LIFEOS_LATEST_HERMES_SOURCE=str(cache/'upstream'),
