@@ -1,0 +1,71 @@
+# ABOUTME: Checks qualification receipt binding and incomplete-gate refusal using isolated certificate fixtures.
+# ABOUTME: Labels invented future gates and native identity as test data without creating release evidence.
+import hashlib, json, os, shutil, subprocess, sys, tarfile, tempfile
+from pathlib import Path
+source=Path('/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-12-release-0.4.0')
+build=json.loads((source/'stable-bunfixed-build.json').read_bytes())
+identity=build['head'][:8]
+generator=Path(sys.argv[1]) if len(sys.argv)>1 else source/'certify_release.py'
+with tarfile.open(build['archive']) as archive:
+    manifest_bytes=archive.extractfile('hermes/hermes-source-manifest.json').read()
+manifest=json.loads(manifest_bytes)
+selected=['stable-bunfixed-build.json','frontend-build.json',
+'integration-sealed-'+identity+'.json','integration-sealed-'+identity+'.stderr',
+'native-sealed-'+identity+'.json','native-sealed-'+identity+'.stdout','native-sealed-'+identity+'.stderr',
+'fresh-install-'+identity+'-bunfixed.json','development-bunfixed-update.json',
+'development-bunfixed-interruption-recovery.json','development-bunfixed-boot.json','development-preparation-bunfixed-interruption.json']
+cases=[('baseline',None,None),('missing-interruption-proof',None,None),('historical-interruption-proof',None,None)]
+results=[]
+for name,receipt,key in cases:
+    with tempfile.TemporaryDirectory(prefix='release-certificate-binding-') as directory:
+        root=Path(directory)
+        shutil.copy2(generator,root/'certify_release.py')
+        for file in selected:shutil.copy2(source/file,root/file)
+        # All following added metadata is explicitly synthetic test data, never qualification evidence.
+        path=root/('native-sealed-'+identity+'.json')
+        native=json.loads(path.read_bytes())
+        native.update(package_commit=build['head'],archive_sha256=build['archive_sha256'],
+            source_manifest_sha256=hashlib.sha256(manifest_bytes).hexdigest(),source_tree_sha256=manifest['tree_sha256'],
+            archived_source_files_unchanged=True,bun_version='1.4.3',
+            bun_binary_sha256='7ce7d6b654eddeec20afddf2396317fba6dc19ab52788a27e894e1806bf8f24b',synthetic_probe_only=True)
+        path.write_text(json.dumps(native))
+        update=json.loads((source/'development-bunfixed-update.json').read_bytes())
+        path=root/'development-bunfixed-boot.json';boot=json.loads(path.read_bytes())
+        boot.update(operation=update['operation'],active_identity=update['active_identity'],synthetic_probe_only=True)
+        path.write_text(json.dumps(boot))
+        if name!='incomplete-gates':
+            rollback=json.loads((source/'development-bunfixed-interruption-recovery.json').read_bytes())
+            rollback['synthetic_probe_only']=True
+            rollback['operation']=json.loads((source/'development-bunfixed-update.json').read_bytes())['operation']
+            (root/'development-bunfixed-rollback.json').write_text(json.dumps(rollback))
+            (root/'whole-guest-recovery.json').write_text(json.dumps({'status':'PASS','network_disconnected':True,
+                'application_services_masked':True,'cases':[{'case':c,'status':'PASS'} for c in ('baseline','interrupted','later-edit')],
+                'synthetic_probe_only':True,'interruption_proof_present':(root/'development-bunfixed-interruption-exit.json').exists(), 'interruption_proof_operation':json.loads((root/'development-bunfixed-interruption-exit.json').read_bytes())['operation'] if (root/'development-bunfixed-interruption-exit.json').exists() else None}))
+            (root/'whole-guest-program-coverage.json').write_text(json.dumps({'status':'PASS',
+                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'program_targets':143,'synthetic_probe_only':True,'interruption_proof_present':(root/'development-bunfixed-interruption-exit.json').exists(), 'interruption_proof_operation':json.loads((root/'development-bunfixed-interruption-exit.json').read_bytes())['operation'] if (root/'development-bunfixed-interruption-exit.json').exists() else None}))
+        if name=='baseline':
+            shutil.copy2(source/'development-bunfixed-interruption-exit.json',root/'development-bunfixed-interruption-exit.json')
+        elif name=='historical-interruption-proof':
+            shutil.copy2(source/'development-interruption-exit.json',root/'development-bunfixed-interruption-exit.json')
+        if receipt:
+            file={'integration':'integration-sealed-'+identity+'.json','native':'native-sealed-'+identity+'.json',
+                'fresh':'fresh-install-'+identity+'-bunfixed.json','rollback':'development-bunfixed-rollback.json','interrupted':'development-bunfixed-interruption-recovery.json',
+                'interrupted-preparation':'development-preparation-bunfixed-interruption.json','boot':'development-bunfixed-boot.json',
+                'coverage':'whole-guest-program-coverage.json'}[receipt]
+            path=root/file;value=json.loads(path.read_bytes())
+            target=value['preparation'] if receipt in {'fresh','interrupted-preparation'} else (value['active_identity'] if receipt=='boot' and key!='operation' else value)
+            target[key]=142 if key=='program_targets' else False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)
+            path.write_text(json.dumps(value))
+        process=subprocess.run([sys.executable,'-B',str(root/'certify_release.py')],
+            env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),capture_output=True,text=True)
+        accepted=process.returncode==0 and (root/'RELEASE-CERTIFICATE.json').exists()
+        if accepted:
+            certificate=json.loads((root/'RELEASE-CERTIFICATE.json').read_bytes())
+            digests=certificate['qualification_receipt_sha256']
+            assert len(digests)==14
+            assert all(hashlib.sha256((root/name).read_bytes()).hexdigest()==digest for name,digest in digests.items())
+            assert digests['development-bunfixed-interruption-exit.json']==hashlib.sha256((root/'development-bunfixed-interruption-exit.json').read_bytes()).hexdigest()
+        results.append({'case':name,'accepted':accepted,'expected_acceptance':name=='baseline',
+            'exit_code':process.returncode,'synthetic_probe_only':True,'interruption_proof_present':(root/'development-bunfixed-interruption-exit.json').exists(), 'interruption_proof_operation':json.loads((root/'development-bunfixed-interruption-exit.json').read_bytes())['operation'] if (root/'development-bunfixed-interruption-exit.json').exists() else None})
+print(json.dumps(results,indent=2))
+assert all(row['accepted']==row['expected_acceptance'] for row in results), 'Certificate accepts mismatched qualification evidence'

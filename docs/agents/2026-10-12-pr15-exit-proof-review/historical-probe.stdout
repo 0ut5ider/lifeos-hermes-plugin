@@ -1,0 +1,29 @@
+[
+  {
+    "case": "baseline",
+    "accepted": true,
+    "expected_acceptance": true,
+    "exit_code": 0,
+    "synthetic_probe_only": true,
+    "interruption_proof_present": true,
+    "interruption_proof_operation": "14215619fd654d9bab0028abe59b62af"
+  },
+  {
+    "case": "missing-interruption-proof",
+    "accepted": false,
+    "expected_acceptance": false,
+    "exit_code": 1,
+    "synthetic_probe_only": true,
+    "interruption_proof_present": false,
+    "interruption_proof_operation": null
+  },
+  {
+    "case": "historical-interruption-proof",
+    "accepted": false,
+    "expected_acceptance": false,
+    "exit_code": 1,
+    "synthetic_probe_only": true,
+    "interruption_proof_present": true,
+    "interruption_proof_operation": "0c49ceb4d5c2450283012d039aa0b84b"
+  }
+]

@@ -1,0 +1,15 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+git rev-parse HEAD origin/main
+git status --short --untracked-files=no
+git diff -- docs/verification/2026-10-12-release-0.4.0/certify_release.py docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+
+The after snapshot copies the reviewed current generator. The before snapshot copies the exact generator from the complete-binding review before the exit-proof correction. This keeps all earlier producer relationship fixes in both snapshots.
+
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-exit-proof-review/after-certify-release.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-exit-proof-review/before-certify-release.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr15-exit-proof-review/probe_interruption_proof.py docs/agents/2026-10-12-pr15-exit-proof-review/after-certify-release.py
+
+diff -u docs/agents/2026-10-12-pr15-exit-proof-review/before-certify-release.py docs/agents/2026-10-12-pr15-exit-proof-review/after-certify-release.py
+
+The same twenty-nine-case fixture runs against both snapshots. The original three-case actual-current/missing/actual-historical receipt probe runs against the corrected snapshot, with additional checks that all fourteen certificate receipt hashes match fixture bytes. Every baseline/future/native addition remains explicitly synthetic. Probe certificates stay only in temporary directories and are removed by the fixture.

@@ -93,3 +93,6 @@ The final focused review runs under docs/agents/2026-10-12-pr15-exit-proof-revie
 The primary repeats the real .252 reboot and collects operation, active identity and changed boot IDs. All services start automatically with zero restarts.
 The read-only post-reboot observer also passes. The dashboard tab is tab_g_6cbd26ac-befc-4d03-95f7-0b4474990134 after browser reopen.
 The actual whole-guest restore is still running. Do not certify or roll back until it completes its verification and cleanup.
+
+Final interruption prerequisite review is clear. All twenty-nine cases and actual historical proof refusal pass independently.
+The primary reruns the reviewed three-case probe, including all fourteen certificate receipt hashes, and confirms exact reviewed file bytes.
