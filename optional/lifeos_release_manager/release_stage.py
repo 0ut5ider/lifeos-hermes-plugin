@@ -56,6 +56,8 @@ def validate_files(root, files, *, forbid_bytecode=False):
 
 
 def load_bridge(directory):
+    # Isolated Python ignores environment bytecode settings. Keep qualified source trees unchanged during imports.
+    sys.dont_write_bytecode = True
     directory = Path(directory).absolute()
     name = 'lifeos_release_source_' + hashlib.sha256(str(directory).encode()).hexdigest()[:16]
     if name not in sys.modules:

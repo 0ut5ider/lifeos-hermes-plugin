@@ -2,7 +2,11 @@
 # ABOUTME: Uses regular synthetic package files to exercise refusal before candidate code runs.
 import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -11,6 +15,24 @@ from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
 class ReleaseStageTests(unittest.TestCase):
+    def test_isolated_stock_python_does_not_write_bytecode_into_the_reviewed_bridge(self):
+        with tempfile.TemporaryDirectory() as temp:
+            bridge = Path(temp) / 'bridge'
+            shutil.copytree(Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge', bridge,
+                            ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+            code = ('import sys\nfrom pathlib import Path\n'
+                    'sys.path.insert(0,sys.argv[1])\n'
+                    'from optional.lifeos_release_manager.release_stage import load_bridge\n'
+                    'assert sys.flags.ignore_environment\n'
+                    'source=load_bridge(Path(sys.argv[2]))\n'
+                    'source.memory_module("release_version")\n')
+            result = subprocess.run([sys.executable, '-I', '-c', code,
+                str(Path(__file__).resolve().parents[1]), str(bridge)],
+                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stderr, '')
+            self.assertEqual(list(bridge.rglob('*.pyc')), [])
+
     def test_runtime_source_seal_accepts_boot_outputs_and_refuses_program_changes(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
