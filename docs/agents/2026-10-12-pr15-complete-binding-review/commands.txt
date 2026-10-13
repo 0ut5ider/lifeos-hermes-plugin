@@ -1,0 +1,13 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+git rev-parse HEAD origin/main
+git status --short --untracked-files=no
+git diff b2e3444d -- docs/verification/2026-10-12-release-0.4.0/certify_release.py docs/verification/2026-10-12-release-0.4.0/verify_boot.py docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+git show b2e3444d:docs/verification/2026-10-12-release-0.4.0/certify_release.py
+sha256sum docs/verification/2026-10-12-release-0.4.0/certify_release.py docs/verification/2026-10-12-release-0.4.0/verify_boot.py docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-complete-binding-review/after-certify-release.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py docs/agents/2026-10-12-pr15-complete-binding-review/before-certify-release.py
+PYTHONDONTWRITEBYTECODE=1 /home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python -B docs/agents/2026-10-12-pr15-complete-binding-review/probe_interruption_proof.py docs/agents/2026-10-12-pr15-complete-binding-review/after-certify-release.py
+
+The before and after snapshots use the same twenty-two-case fixture. The additional interruption proof probe derives from the inspected fixture and selects three cases. It copies the actual current exit receipt for its baseline, omits the exit receipt for one negative case, and copies the actual historical exit receipt under the corrected filename for its other negative case. Every case retains explicitly synthetic future qualification gates. All certificates are written only inside temporary directories. No original receipt or source changes.

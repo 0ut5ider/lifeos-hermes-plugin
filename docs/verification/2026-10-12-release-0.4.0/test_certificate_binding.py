@@ -13,13 +13,19 @@ selected=['stable-bunfixed-build.json','frontend-build.json',
 'integration-sealed-'+identity+'.json','integration-sealed-'+identity+'.stderr',
 'native-sealed-'+identity+'.json','native-sealed-'+identity+'.stdout','native-sealed-'+identity+'.stderr',
 'fresh-install-'+identity+'-bunfixed.json','development-bunfixed-update.json',
-'development-bunfixed-interruption-recovery.json','development-bunfixed-boot.json']
+'development-bunfixed-interruption-recovery.json','development-bunfixed-boot.json','development-preparation-bunfixed-interruption.json','development-bunfixed-interruption-exit.json']
 cases=[('baseline',None,None),('stale-integration','integration','package_commit'),
 ('wrong-fresh-digest','fresh','package_sha256'),('wrong-fresh-commit','fresh','commit'),
 ('wrong-fresh-version','fresh','version'),('wrong-native-commit','native','package_commit'),
 ('wrong-native-archive','native','archive_sha256'),('wrong-native-manifest','native','source_manifest_sha256'),
 ('wrong-native-tree','native','source_tree_sha256'),('wrong-native-runtime','native','bun_version'),
-('wrong-native-binary','native','bun_binary_sha256'),('changed-native-source','native','archived_source_files_unchanged'),('wrong-rollback-operation','rollback','operation'),('incomplete-gates',None,None)]
+('wrong-native-binary','native','bun_binary_sha256'),('changed-native-source','native','archived_source_files_unchanged'),('wrong-rollback-operation','rollback','operation'),('wrong-interrupted-operation','interrupted','operation'),('wrong-interrupted-commit','interrupted-preparation','commit'),
+('wrong-interrupted-archive','interrupted-preparation','package_sha256'),('wrong-interrupted-version','interrupted-preparation','version'),
+('wrong-boot-operation','boot','operation'),('wrong-boot-commit','boot','commit'),('wrong-boot-archive','boot','package_sha256'),
+('wrong-coverage-count','coverage','program_targets'),('missing-interruption-exit',None,None),('wrong-exit-operation','exit','operation'),
+('wrong-exit-commit','exit','program_commit'),('wrong-exit-code','exit','actual_systemd_exit'),
+('wrong-exit-checkpoint','exit','checkpoint'),('wrong-exit-status','exit','status_state'),
+('wrong-exit-transaction','exit','program_transaction_state'),('incomplete-gates',None,None)]
 results=[]
 for name,receipt,key in cases:
     with tempfile.TemporaryDirectory(prefix='release-certificate-binding-') as directory:
@@ -34,6 +40,10 @@ for name,receipt,key in cases:
             archived_source_files_unchanged=True,bun_version='1.4.3',
             bun_binary_sha256='7ce7d6b654eddeec20afddf2396317fba6dc19ab52788a27e894e1806bf8f24b',synthetic_probe_only=True)
         path.write_text(json.dumps(native))
+        update=json.loads((source/'development-bunfixed-update.json').read_bytes())
+        path=root/'development-bunfixed-boot.json';boot=json.loads(path.read_bytes())
+        boot.update(operation=update['operation'],active_identity=update['active_identity'],synthetic_probe_only=True)
+        path.write_text(json.dumps(boot))
         if name!='incomplete-gates':
             rollback=json.loads((source/'development-bunfixed-interruption-recovery.json').read_bytes())
             rollback['synthetic_probe_only']=True
@@ -43,13 +53,16 @@ for name,receipt,key in cases:
                 'application_services_masked':True,'cases':[{'case':c,'status':'PASS'} for c in ('baseline','interrupted','later-edit')],
                 'synthetic_probe_only':True}))
             (root/'whole-guest-program-coverage.json').write_text(json.dumps({'status':'PASS',
-                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'synthetic_probe_only':True}))
+                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'program_targets':143,'synthetic_probe_only':True}))
+        if name=='missing-interruption-exit':(root/'development-bunfixed-interruption-exit.json').unlink()
         if receipt:
             file={'integration':'integration-sealed-'+identity+'.json','native':'native-sealed-'+identity+'.json',
-                'fresh':'fresh-install-'+identity+'-bunfixed.json','rollback':'development-bunfixed-rollback.json'}[receipt]
+                'fresh':'fresh-install-'+identity+'-bunfixed.json','rollback':'development-bunfixed-rollback.json','interrupted':'development-bunfixed-interruption-recovery.json',
+                'interrupted-preparation':'development-preparation-bunfixed-interruption.json','boot':'development-bunfixed-boot.json',
+                'coverage':'whole-guest-program-coverage.json','exit':'development-bunfixed-interruption-exit.json'}[receipt]
             path=root/file;value=json.loads(path.read_bytes())
-            target=value['preparation'] if receipt=='fresh' else value
-            target[key]=False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)
+            target=value['preparation'] if receipt in {'fresh','interrupted-preparation'} else (value['active_identity'] if receipt=='boot' and key!='operation' else value)
+            target[key]=0 if key=='actual_systemd_exit' else 142 if key=='program_targets' else False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)
             path.write_text(json.dumps(value))
         process=subprocess.run([sys.executable,'-B',str(root/'certify_release.py')],
             env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),capture_output=True,text=True)

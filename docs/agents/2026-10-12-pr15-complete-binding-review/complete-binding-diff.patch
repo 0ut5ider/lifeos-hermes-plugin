@@ -1,0 +1,114 @@
+diff --git a/docs/verification/2026-10-12-release-0.4.0/certify_release.py b/docs/verification/2026-10-12-release-0.4.0/certify_release.py
+index 98476984..6fc3fa00 100644
+--- a/docs/verification/2026-10-12-release-0.4.0/certify_release.py
++++ b/docs/verification/2026-10-12-release-0.4.0/certify_release.py
+@@ -35,13 +35,18 @@ update=load('development-bunfixed-update.json');rollback=load('development-bunfi
+ interrupted=load('development-bunfixed-interruption-recovery.json')
+ assert update['status']==rollback['status']==interrupted['status']=='PASS'
+ assert update['operation']==rollback['operation']
++interrupted_preparation=load('development-preparation-bunfixed-interruption.json')['preparation']
++assert interrupted_preparation['identifier']==interrupted['operation']
++assert {key:interrupted_preparation[key] for key in ('version','commit','package_sha256')}=={'version':build['version'],'commit':head,'package_sha256':build['archive_sha256']}
+ assert update['active_identity']=={'version':'0.4.0','commit':head,'package_sha256':build['archive_sha256']}
+ assert rollback['active_identity']==interrupted['active_identity']=={'version':'0.3.1','commit':'9af633252004a0ac8dd780d5fc12e9644f97bb0c','package_sha256':'2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24'}
+ whole=load('whole-guest-recovery.json');coverage=load('whole-guest-program-coverage.json')
+ assert whole['status']==coverage['status']=='PASS' and len(whole['cases'])==3
+ assert whole['network_disconnected'] and whole['application_services_masked']
+ assert coverage['program_commit']==head and coverage['archive_sha256']==build['archive_sha256']
++assert coverage['program_targets']==143
+ boot=load('development-bunfixed-boot.json');assert boot['status']=='PASS' and boot['bun_version']=='1.4.3' and boot['manual_service_start_after_reboot'] is False
++assert boot['operation']==update['operation'] and boot['active_identity']==update['active_identity']
+ front=load('frontend-build.json');assert sha(front['archive'])==front['sha256']
+ certificate={'format':1,'status':'QUALIFIED','production_qualified':True,'version':build['version'],
+  'program_commit':head,'archive_sha256':build['archive_sha256'],'archive_bytes':build['archive_bytes'],
+@@ -57,6 +62,7 @@ certificate={'format':1,'status':'QUALIFIED','production_qualified':True,'versio
+  'native-sealed-'+identity+'.json','native-sealed-'+identity+'.stdout','native-sealed-'+identity+'.stderr',
+  'fresh-install-'+identity+'-bunfixed.json','development-bunfixed-update.json',
+  'development-bunfixed-rollback.json','development-bunfixed-interruption-recovery.json',
++ 'development-preparation-bunfixed-interruption.json',
+  'whole-guest-recovery.json','whole-guest-program-coverage.json','development-bunfixed-boot.json')},
+  'daily_promotion_verified':False,'automatic_morning_observed':False,
+  'build_manifest_note':'The immutable candidate manifest records build-time state. This certificate records completed release qualification.'}
+diff --git a/docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py b/docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+index 09244ae1..304cc858 100644
+--- a/docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
++++ b/docs/verification/2026-10-12-release-0.4.0/test_certificate_binding.py
+@@ -13,13 +13,16 @@ selected=['stable-bunfixed-build.json','frontend-build.json',
+ 'integration-sealed-'+identity+'.json','integration-sealed-'+identity+'.stderr',
+ 'native-sealed-'+identity+'.json','native-sealed-'+identity+'.stdout','native-sealed-'+identity+'.stderr',
+ 'fresh-install-'+identity+'-bunfixed.json','development-bunfixed-update.json',
+-'development-bunfixed-interruption-recovery.json','development-bunfixed-boot.json']
++'development-bunfixed-interruption-recovery.json','development-bunfixed-boot.json','development-preparation-bunfixed-interruption.json']
+ cases=[('baseline',None,None),('stale-integration','integration','package_commit'),
+ ('wrong-fresh-digest','fresh','package_sha256'),('wrong-fresh-commit','fresh','commit'),
+ ('wrong-fresh-version','fresh','version'),('wrong-native-commit','native','package_commit'),
+ ('wrong-native-archive','native','archive_sha256'),('wrong-native-manifest','native','source_manifest_sha256'),
+ ('wrong-native-tree','native','source_tree_sha256'),('wrong-native-runtime','native','bun_version'),
+-('wrong-native-binary','native','bun_binary_sha256'),('changed-native-source','native','archived_source_files_unchanged'),('wrong-rollback-operation','rollback','operation'),('incomplete-gates',None,None)]
++('wrong-native-binary','native','bun_binary_sha256'),('changed-native-source','native','archived_source_files_unchanged'),('wrong-rollback-operation','rollback','operation'),('wrong-interrupted-operation','interrupted','operation'),('wrong-interrupted-commit','interrupted-preparation','commit'),
++('wrong-interrupted-archive','interrupted-preparation','package_sha256'),('wrong-interrupted-version','interrupted-preparation','version'),
++('wrong-boot-operation','boot','operation'),('wrong-boot-commit','boot','commit'),('wrong-boot-archive','boot','package_sha256'),
++('wrong-coverage-count','coverage','program_targets'),('incomplete-gates',None,None)]
+ results=[]
+ for name,receipt,key in cases:
+     with tempfile.TemporaryDirectory(prefix='release-certificate-binding-') as directory:
+@@ -34,6 +37,10 @@ for name,receipt,key in cases:
+             archived_source_files_unchanged=True,bun_version='1.4.3',
+             bun_binary_sha256='7ce7d6b654eddeec20afddf2396317fba6dc19ab52788a27e894e1806bf8f24b',synthetic_probe_only=True)
+         path.write_text(json.dumps(native))
++        update=json.loads((source/'development-bunfixed-update.json').read_bytes())
++        path=root/'development-bunfixed-boot.json';boot=json.loads(path.read_bytes())
++        boot.update(operation=update['operation'],active_identity=update['active_identity'],synthetic_probe_only=True)
++        path.write_text(json.dumps(boot))
+         if name!='incomplete-gates':
+             rollback=json.loads((source/'development-bunfixed-interruption-recovery.json').read_bytes())
+             rollback['synthetic_probe_only']=True
+@@ -43,13 +50,15 @@ for name,receipt,key in cases:
+                 'application_services_masked':True,'cases':[{'case':c,'status':'PASS'} for c in ('baseline','interrupted','later-edit')],
+                 'synthetic_probe_only':True}))
+             (root/'whole-guest-program-coverage.json').write_text(json.dumps({'status':'PASS',
+-                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'synthetic_probe_only':True}))
++                'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'program_targets':143,'synthetic_probe_only':True}))
+         if receipt:
+             file={'integration':'integration-sealed-'+identity+'.json','native':'native-sealed-'+identity+'.json',
+-                'fresh':'fresh-install-'+identity+'-bunfixed.json','rollback':'development-bunfixed-rollback.json'}[receipt]
++                'fresh':'fresh-install-'+identity+'-bunfixed.json','rollback':'development-bunfixed-rollback.json','interrupted':'development-bunfixed-interruption-recovery.json',
++                'interrupted-preparation':'development-preparation-bunfixed-interruption.json','boot':'development-bunfixed-boot.json',
++                'coverage':'whole-guest-program-coverage.json'}[receipt]
+             path=root/file;value=json.loads(path.read_bytes())
+-            target=value['preparation'] if receipt=='fresh' else value
+-            target[key]=False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)
++            target=value['preparation'] if receipt in {'fresh','interrupted-preparation'} else (value['active_identity'] if receipt=='boot' and key!='operation' else value)
++            target[key]=142 if key=='program_targets' else False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)
+             path.write_text(json.dumps(value))
+         process=subprocess.run([sys.executable,'-B',str(root/'certify_release.py')],
+             env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),capture_output=True,text=True)
+diff --git a/docs/verification/2026-10-12-release-0.4.0/verify_boot.py b/docs/verification/2026-10-12-release-0.4.0/verify_boot.py
+index 0f7e474d..6371f359 100644
+--- a/docs/verification/2026-10-12-release-0.4.0/verify_boot.py
++++ b/docs/verification/2026-10-12-release-0.4.0/verify_boot.py
+@@ -1,8 +1,17 @@
+ # ABOUTME: Verifies automatic user-service startup and the selected Bun runtime after a development guest reboot.
+ # ABOUTME: Reports safe unit metadata without starting services or exporting account configuration.
+-import json,os,subprocess
++import json,os,subprocess,sys
+ from pathlib import Path
+ home=Path.home();environment=dict(os.environ,XDG_RUNTIME_DIR='/run/user/'+str(os.getuid()),DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/'+str(os.getuid())+'/bus',PYTHONDONTWRITEBYTECODE='1')
++profile=home/'.hermes';job=profile/'.lifeos-releases'/sys.argv[1]
++request=json.loads((job/'request.json').read_bytes())
++assert json.loads((job/'status.json').read_bytes())['state']=='applied'
++version=subprocess.run([str(home/'.local/bin/hermes'),'lifeos-version'],env=environment,capture_output=True,text=True,check=True,timeout=90)
++active=json.loads(version.stdout)['active'];assert active['verification']=='verified'
++identity={key:active[key] for key in ('version','commit','package_sha256')}
++assert identity=={key:request[key] for key in identity}
++assert identity['version']=='0.4.0' and identity['commit']=='a87e7ae94894dabc3651454d1334cb23c4fae27e'
++boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip();assert boot_id!=sys.argv[2]
+ units={}
+ for name in ('hermes-gateway.service','hermes-dashboard.service','com.lifeos.pulse.service'):
+  result=subprocess.run(['systemctl','--user','show',name,'-p','ActiveState','-p','SubState','-p','UnitFileState','-p','NRestarts'],env=environment,capture_output=True,text=True,check=True,timeout=30)
+@@ -10,4 +19,4 @@ for name in ('hermes-gateway.service','hermes-dashboard.service','com.lifeos.pul
+  assert data['NRestarts']=='0',name
+  units[name]=data
+ bun=subprocess.run([str(home/'.local/bin/bun'),'--version'],capture_output=True,text=True,check=True,timeout=10);assert bun.stdout.strip()=='1.4.3' and not bun.stderr
+-print(json.dumps({'status':'PASS','units':units,'bun_version':bun.stdout.strip(),'manual_service_start_after_reboot':False,'daily_server_changed':False},indent=2))
++print(json.dumps({'status':'PASS','operation':sys.argv[1],'active_identity':identity,'before_boot_id':sys.argv[2],'boot_id':boot_id,'units':units,'bun_version':bun.stdout.strip(),'manual_service_start_after_reboot':False,'daily_server_changed':False},indent=2))

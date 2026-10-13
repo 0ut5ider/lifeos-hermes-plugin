@@ -35,13 +35,22 @@ update=load('development-bunfixed-update.json');rollback=load('development-bunfi
 interrupted=load('development-bunfixed-interruption-recovery.json')
 assert update['status']==rollback['status']==interrupted['status']=='PASS'
 assert update['operation']==rollback['operation']
+interrupted_preparation=load('development-preparation-bunfixed-interruption.json')['preparation']
+assert interrupted_preparation['identifier']==interrupted['operation']
+assert {key:interrupted_preparation[key] for key in ('version','commit','package_sha256')}=={'version':build['version'],'commit':head,'package_sha256':build['archive_sha256']}
+interruption_exit=load('development-bunfixed-interruption-exit.json')
+assert interruption_exit['operation']==interrupted['operation'] and interruption_exit['program_commit']==head
+assert interruption_exit['actual_systemd_exit']==73 and interruption_exit['checkpoint']=='programs-published'
+assert interruption_exit['status_state']=='applying' and interruption_exit['program_transaction_state']=='applied'
 assert update['active_identity']=={'version':'0.4.0','commit':head,'package_sha256':build['archive_sha256']}
 assert rollback['active_identity']==interrupted['active_identity']=={'version':'0.3.1','commit':'9af633252004a0ac8dd780d5fc12e9644f97bb0c','package_sha256':'2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24'}
 whole=load('whole-guest-recovery.json');coverage=load('whole-guest-program-coverage.json')
 assert whole['status']==coverage['status']=='PASS' and len(whole['cases'])==3
 assert whole['network_disconnected'] and whole['application_services_masked']
 assert coverage['program_commit']==head and coverage['archive_sha256']==build['archive_sha256']
+assert coverage['program_targets']==143
 boot=load('development-bunfixed-boot.json');assert boot['status']=='PASS' and boot['bun_version']=='1.4.3' and boot['manual_service_start_after_reboot'] is False
+assert boot['operation']==update['operation'] and boot['active_identity']==update['active_identity']
 front=load('frontend-build.json');assert sha(front['archive'])==front['sha256']
 certificate={'format':1,'status':'QUALIFIED','production_qualified':True,'version':build['version'],
  'program_commit':head,'archive_sha256':build['archive_sha256'],'archive_bytes':build['archive_bytes'],
@@ -57,6 +66,8 @@ certificate={'format':1,'status':'QUALIFIED','production_qualified':True,'versio
  'native-sealed-'+identity+'.json','native-sealed-'+identity+'.stdout','native-sealed-'+identity+'.stderr',
  'fresh-install-'+identity+'-bunfixed.json','development-bunfixed-update.json',
  'development-bunfixed-rollback.json','development-bunfixed-interruption-recovery.json',
+ 'development-preparation-bunfixed-interruption.json',
+ 'development-bunfixed-interruption-exit.json',
  'whole-guest-recovery.json','whole-guest-program-coverage.json','development-bunfixed-boot.json')},
  'daily_promotion_verified':False,'automatic_morning_observed':False,
  'build_manifest_note':'The immutable candidate manifest records build-time state. This certificate records completed release qualification.'}

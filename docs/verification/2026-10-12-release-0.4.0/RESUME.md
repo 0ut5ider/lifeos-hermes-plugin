@@ -85,3 +85,11 @@ A narrow independent review checks this one-line operational change. Final passi
 Additional measured receipt correction: update.operation must equal rollback.operation.
 A fourteen-case fixture probe reproduces acceptance of an unrelated rollback before the one-line fix, and all cases pass after it.
 A focused review runs under docs/agents/2026-10-12-pr15-rollback-binding-review. The immutable program package remains unchanged.
+
+Current receipt closure: twenty-nine certificate fixture cases pass. Before the latest fix, seven interrupted-worker proof cases are accepted incorrectly.
+The generator now requires the actual exit 73 at programs-published, matching operation and exact commit, with applying/applied journal states.
+The primary also repeats the reviewer actual current/missing/actual historical proof probe, which now passes.
+The final focused review runs under docs/agents/2026-10-12-pr15-exit-proof-review.
+The primary repeats the real .252 reboot and collects operation, active identity and changed boot IDs. All services start automatically with zero restarts.
+The read-only post-reboot observer also passes. The dashboard tab is tab_g_6cbd26ac-befc-4d03-95f7-0b4474990134 after browser reopen.
+The actual whole-guest restore is still running. Do not certify or roll back until it completes its verification and cleanup.
