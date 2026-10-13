@@ -44,7 +44,7 @@
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "installed_interruption": "c44afd5fd33042fabe7df95faed5182c"
+    "normal_preparation_supervisor": 20333
   },
   "integration_gate": {
     "status": "PASS",
@@ -54,14 +54,15 @@
   },
   "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14",
   "interruption_gate": {
-    "status": "RECOVERY_RUNNING",
+    "status": "PASS",
     "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
     "operation": "c44afd5fd33042fabe7df95faed5182c",
     "authenticated_owner_review_http": 200,
     "actual_systemd_exit": 73,
     "checkpoint": "programs-published",
     "recovery_admitted": true,
-    "recovery_complete": false
+    "recovery_complete": true,
+    "recovery_receipt": "candidate-96f4f8fb/development-bunfixed-interruption-recovery.json"
   },
   "qualification_evidence_fix": {
     "status": "REGRESSION_PASS",
@@ -75,12 +76,8 @@
     "review": "CLEAR"
   },
   "normal_installed_gate": {
-    "status": "FAILED_AND_ROLLED_BACK",
-    "operation": "a5b53c9c0805459ab5b893cb6756e47b",
-    "receipt": "normal-update-runtime-refusal.json",
-    "failure_stage": "verify_runtime configuration check",
-    "cause_established": true,
-    "rollback_complete": true
+    "status": "PREPARING",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
   },
   "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af",
   "diagnostic_repeat": {
@@ -161,6 +158,7 @@
     "Configuration inventory focused review clear and primary probes repeated",
     "Official Hermes runner: 716 tests across 38 files on corrected sealed archive",
     "Corrected sealed fresh installation and actual interrupted recovery with later data preservation",
-    "Complete corrected sealed integration: 631 tests, no skips"
+    "Complete corrected sealed integration: 631 tests, no skips",
+    "Corrected installed interruption exit73 and public CLI recovery: exact03, all3services, all3aliases and model mapping"
   ]
 }

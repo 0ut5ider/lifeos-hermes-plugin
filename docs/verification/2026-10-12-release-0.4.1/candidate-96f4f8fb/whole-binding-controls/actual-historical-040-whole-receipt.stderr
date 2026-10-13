@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/pr16-whole-binding-f1_7enw4/certify_release.py", line 53, in <module>
+    assert receipt['version']==build['version'] and receipt['program_commit']==head
+           ~~~~~~~^^^^^^^^^^^
+KeyError: 'version'
