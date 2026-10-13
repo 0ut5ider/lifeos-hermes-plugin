@@ -53,8 +53,7 @@
     "receipt": "fresh-install-223cbfc1-041.json"
   },
   "running": [
-    "Authenticated normal candidate apply preflight",
-    "Focused qualification driver review"
+    "Instrumented repeat preparation after actual runtime verification refusal"
   ],
   "integration_gate": {
     "status": "PASS",
@@ -83,5 +82,13 @@
     "primary_matrix_exit": 0,
     "primary_matrix_elapsed_seconds": 59.910444400971755,
     "review": "CLEAR"
+  },
+  "normal_installed_gate": {
+    "status": "FAILED_AND_ROLLED_BACK",
+    "operation": "a5b53c9c0805459ab5b893cb6756e47b",
+    "receipt": "normal-update-runtime-refusal.json",
+    "failure_stage": "verify_runtime configuration check",
+    "cause_established": false,
+    "rollback_complete": true
   }
 }
