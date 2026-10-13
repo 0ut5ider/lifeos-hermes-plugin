@@ -1,17 +1,17 @@
 {
   "version": "0.4.2",
-  "status": "CANDIDATE_PREPARATION",
+  "status": "FROZEN_CANDIDATE_QUALIFICATION",
   "daily_server_changed": false,
   "production_qualified": false,
   "steps": [
     {
       "number": 1,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "name": "Freeze and build final package"
     },
     {
       "number": 2,
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "name": "Clean web installation and synthetic ownership"
     },
     {
@@ -34,5 +34,36 @@
       "status": "PENDING",
       "name": "Stable publication and public latest acceptance"
     }
-  ]
+  ],
+  "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+  "archive_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5",
+  "archive_bytes": 119144101,
+  "native_gate": {
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
+    "receipt": "native-sealed-742a0c33.json",
+    "fresh_execution": true
+  },
+  "infrastructure": {
+    "stock_reset": "BLOCKED_ZFS_UNMOUNT",
+    "source_guest": 106,
+    "duplicate_rollback_submitted": false,
+    "fresh_guest": 107,
+    "provisioning": "CLEANUP_WAIT"
+  },
+  "integration_gate": {
+    "status": "REPEATING_AFTER_FIXTURE_STORAGE_CORRECTION",
+    "first_attempt_tests": 674,
+    "first_attempt_errors": 1,
+    "product_source_changed": false,
+    "reason": "The fixture requires a same-filesystem hard link to its verified archive."
+  },
+  "host_restart": {
+    "user_approved_controlled": true,
+    "original_guests_stopped_gracefully": true,
+    "zfs_pool_sync_passed": true,
+    "normal_host_sync": "BLOCKED",
+    "forced_restart_approval": "PENDING"
+  }
 }

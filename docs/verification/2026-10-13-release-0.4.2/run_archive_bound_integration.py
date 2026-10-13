@@ -4,6 +4,7 @@ import json
 import hashlib
 import tempfile
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import time
@@ -21,7 +22,10 @@ package = workspace / 'package'
 extract_package(archive, package)
 package_matches(package, expected)
 bound_build = workspace / 'build.json'
-bound_build.write_text(json.dumps(dict(build, package=str(package))))
+test_archive = workspace / archive.name
+shutil.copy2(archive, test_archive)
+assert hashlib.sha256(test_archive.read_bytes()).hexdigest() == build['archive_sha256']
+bound_build.write_text(json.dumps(dict(build, package=str(package), archive=str(test_archive))))
 identity = build['head'][:8]
 previous = json.loads((Path('/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-11-release-0.3.0/combined-031-final.json')).read_bytes())
 names = previous['command'][6:] + ['test_morning_observation', 'test_latest_hermes', 'test_release_catalog',

@@ -1,0 +1,126 @@
+{
+  "user_approved": true,
+  "observations": [
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/cluster/resources",
+        "--type",
+        "vm",
+        "--output-format",
+        "json"
+      ],
+      "metadata": [
+        {
+          "vmid": 100,
+          "name": "lifeos-install-probe",
+          "status": "running",
+          "type": "lxc",
+          "node": "pve-tr1950x"
+        },
+        {
+          "vmid": 101,
+          "name": "lifeos-dev",
+          "status": "running",
+          "type": "lxc",
+          "node": "pve-tr1950x"
+        },
+        {
+          "vmid": 102,
+          "name": "lifeos-daily",
+          "status": "running",
+          "type": "lxc",
+          "node": "pve-tr1950x"
+        },
+        {
+          "vmid": 106,
+          "name": "lifeos-ui-test-public",
+          "status": "stopped",
+          "type": "lxc",
+          "node": "pve-tr1950x"
+        },
+        {
+          "vmid": 107,
+          "name": "CT107",
+          "status": "stopped",
+          "type": "lxc",
+          "node": "pve-tr1950x"
+        },
+        {
+          "vmid": 801,
+          "name": "processing",
+          "status": "running",
+          "type": "qemu",
+          "node": "pve-tr1950x"
+        }
+      ],
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "qm",
+        "config",
+        "801"
+      ],
+      "metadata": {
+        "boot": "order=scsi0;ide2;net0",
+        "cores": "28",
+        "memory": "102400",
+        "name": "processing",
+        "net0": "virtio=BC:24:11:5A:8A:46,bridge=vmbr0,firewall=1",
+        "onboot": "1",
+        "scsi0": "local-zfs:vm-801-disk-1,iothread=1,size=200G"
+      },
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "100"
+      ],
+      "metadata": {
+        "cores": "2",
+        "hostname": "lifeos-install-probe",
+        "memory": "4096",
+        "net0": "name=eth0,bridge=vmbr0,firewall=1,hwaddr=BC:24:11:05:98:74,ip=dhcp,ip6=manual,type=veth",
+        "onboot": "0",
+        "rootfs": "local-zfs:subvol-100-disk-0,size=24G"
+      },
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "101"
+      ],
+      "metadata": {
+        "cores": "8",
+        "hostname": "lifeos-dev",
+        "memory": "16384",
+        "net0": "name=eth0,bridge=vmbr0,firewall=1,gw=192.168.8.1,hwaddr=BC:24:11:DB:53:50,ip=192.168.8.252/24,ip6=manual,type=veth",
+        "onboot": "1",
+        "rootfs": "local-zfs:subvol-101-disk-0,size=150G"
+      },
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "102"
+      ],
+      "metadata": {
+        "cores": "4",
+        "hostname": "lifeos-daily",
+        "memory": "8192",
+        "net0": "name=eth0,bridge=vmbr0,firewall=1,gw=192.168.8.1,hwaddr=BC:24:11:F9:39:51,ip=192.168.8.253/24,ip6=manual,type=veth",
+        "onboot": "1",
+        "rootfs": "local-zfs:subvol-102-disk-0,size=80G"
+      },
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    }
+  ]
+}
