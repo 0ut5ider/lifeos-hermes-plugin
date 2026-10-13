@@ -86,3 +86,26 @@ Actual Proxmox inventory is CT101 development, CT102 daily, CT100 existing probe
 Leave CT100 and VM801 untouched. No 0.4.1 whole-guest backup or disposable110 restore has started.
 The first cached-replay SDK harness invocation fails before execution because PATH lacks runuser.
 The corrected invocation uses /usr/sbin/runuser and passes. It does not select active programs.
+
+
+## Installed qualification checkpoint
+
+Corrected product 96f4f8fb is sealed as archive SHA-256 462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e, 119136987 bytes.
+Candidate evidence and helpers are in candidate-96f4f8fb, not the parent 223 folder.
+All 631 integration tests pass, no skips. All 716 official native tests across38 files pass; source bytes unchanged.
+Fresh actual exit73 directory-retained recovery passes285.603s and preserves later synthetic data.
+Focused review is clear; primary repeats role/hook and filesystem/descriptor probes.
+Installed interruption operation c44afd5fd33042fabe7df95faed5182c exits73 at programs-published, confirmed by systemd journal.
+Installed public CLI recovery completes rolled_back/programrestored. Primary observer verifies exact03/9af/SHA2a, all3services running, all3aliases restored, modelA4 unchanged.
+Second preparation completes PASS248.738s, operation87561ff313e348508c3c7e1331b838be.
+Owner normal review requested once in window.review041CorrectedNormal. Poll before apply; do not duplicate.
+Current browser tab is tab_i_6cbd26ac-befc-4d03-95f7-0b4474990134, authenticated release-owner.
+POST review/apply/recover/restore must have no query parameters and no body. The first query-parameter review returns400 before effects; corrected review passes200.
+Thirty-eight exact new-candidate certificate controls pass57.390s. Actual historical040 and missing whole receipts are refused.
+Normal installed apply, reboot, whole PBS recovery, normal rollback, certificate/publication/public install remain pending.
+Development staging is /home/lifeos-hermes/releases/qualification-20261013-041-96f4f8fb.
+The native0716 SSH suite is done, so whole backup can start after actual normal update and reboot pass.
+Only guest101 may be backed up for this test. Restore unused110 disconnected, mask3apps before boot, verify3Atlas cases and143targets, remove only owned110.
+Source app services resume immediately after source backup. Keep old040 and031 archives protected.
+The controller is candidate-96f4f8fb/proxmox_history_restore.py. Copy it to a new host script name before launch.
+No041whole backup has started. No041certificate or publication exists. Daily253 stays03 and untouched.

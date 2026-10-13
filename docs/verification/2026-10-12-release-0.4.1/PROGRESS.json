@@ -44,7 +44,7 @@
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
   "running": {
-    "normal_preparation_supervisor": 20333
+    "normal_owner_apply": "87561ff313e348508c3c7e1331b838be"
   },
   "integration_gate": {
     "status": "PASS",
@@ -76,8 +76,10 @@
     "review": "CLEAR"
   },
   "normal_installed_gate": {
-    "status": "PREPARING",
-    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
+    "status": "OWNER_APPLY_REQUESTED",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+    "operation": "87561ff313e348508c3c7e1331b838be",
+    "owner_review_http": 200
   },
   "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af",
   "diagnostic_repeat": {
