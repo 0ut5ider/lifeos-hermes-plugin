@@ -19,7 +19,7 @@ cases=[('baseline',None,None),('stale-integration','integration','package_commit
 ('wrong-fresh-version','fresh','version'),('wrong-native-commit','native','package_commit'),
 ('wrong-native-archive','native','archive_sha256'),('wrong-native-manifest','native','source_manifest_sha256'),
 ('wrong-native-tree','native','source_tree_sha256'),('wrong-native-runtime','native','bun_version'),
-('wrong-native-binary','native','bun_binary_sha256'),('changed-native-source','native','archived_source_files_unchanged'),('incomplete-gates',None,None)]
+('wrong-native-binary','native','bun_binary_sha256'),('changed-native-source','native','archived_source_files_unchanged'),('wrong-rollback-operation','rollback','operation'),('incomplete-gates',None,None)]
 results=[]
 for name,receipt,key in cases:
     with tempfile.TemporaryDirectory(prefix='release-certificate-binding-') as directory:
@@ -37,6 +37,7 @@ for name,receipt,key in cases:
         if name!='incomplete-gates':
             rollback=json.loads((source/'development-bunfixed-interruption-recovery.json').read_bytes())
             rollback['synthetic_probe_only']=True
+            rollback['operation']=json.loads((source/'development-bunfixed-update.json').read_bytes())['operation']
             (root/'development-bunfixed-rollback.json').write_text(json.dumps(rollback))
             (root/'whole-guest-recovery.json').write_text(json.dumps({'status':'PASS','network_disconnected':True,
                 'application_services_masked':True,'cases':[{'case':c,'status':'PASS'} for c in ('baseline','interrupted','later-edit')],
@@ -45,7 +46,7 @@ for name,receipt,key in cases:
                 'program_commit':build['head'],'archive_sha256':build['archive_sha256'],'synthetic_probe_only':True}))
         if receipt:
             file={'integration':'integration-sealed-'+identity+'.json','native':'native-sealed-'+identity+'.json',
-                'fresh':'fresh-install-'+identity+'-bunfixed.json'}[receipt]
+                'fresh':'fresh-install-'+identity+'-bunfixed.json','rollback':'development-bunfixed-rollback.json'}[receipt]
             path=root/file;value=json.loads(path.read_bytes())
             target=value['preparation'] if receipt=='fresh' else value
             target[key]=False if key=='archived_source_files_unchanged' else ('0'*40 if 'commit' in key else '0'*64)

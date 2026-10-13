@@ -34,6 +34,7 @@ assert fresh['later_user_data_preserved']=='PASS' and fresh['installed_identity'
 update=load('development-bunfixed-update.json');rollback=load('development-bunfixed-rollback.json')
 interrupted=load('development-bunfixed-interruption-recovery.json')
 assert update['status']==rollback['status']==interrupted['status']=='PASS'
+assert update['operation']==rollback['operation']
 assert update['active_identity']=={'version':'0.4.0','commit':head,'package_sha256':build['archive_sha256']}
 assert rollback['active_identity']==interrupted['active_identity']=={'version':'0.3.1','commit':'9af633252004a0ac8dd780d5fc12e9644f97bb0c','package_sha256':'2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24'}
 whole=load('whole-guest-recovery.json');coverage=load('whole-guest-program-coverage.json')

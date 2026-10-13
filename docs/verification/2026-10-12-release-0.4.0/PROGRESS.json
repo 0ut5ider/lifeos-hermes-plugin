@@ -140,7 +140,7 @@
     "status": "PASS",
     "prior_receipt": "native-sealed-a87e7ae9-unbound.json",
     "required_receipt": "native-sealed-a87e7ae9.json",
-    "regression_cases": 13,
+    "regression_cases": 14,
     "regression_result": "PASS",
     "product_archive_changed": false,
     "receipt": "native-sealed-a87e7ae9.json",
@@ -157,5 +157,13 @@
     "receipt": "docs/agents/2026-10-12-pr15-stable-release-review-2/pr15-stable-release-review-2.md",
     "controller_review": "CLEAR",
     "controller_review_receipt": "docs/agents/2026-10-12-pr15-controller-review/pr15-controller-review.md"
+  },
+  "rollback_receipt_binding": {
+    "status": "PASS",
+    "review": "RUNNING",
+    "before_receipt": "rollback-binding-before.stdout",
+    "after_receipt": "rollback-binding-after.stdout",
+    "rule": "Normal rollback operation equals verified update operation",
+    "archive_changed": false
   }
 }

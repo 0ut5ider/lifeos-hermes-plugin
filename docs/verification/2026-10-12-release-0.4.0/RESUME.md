@@ -81,3 +81,7 @@ Original attempt stays private under /root/lifeos-release-0.4.0/history-restore-
 The resumed controller reuses archives.stdout via --resume-backup. Only pct restore timeout becomes 7200 seconds; all other commands keep 3600.
 Controller PID1965942 log=/root/lifeos-040-whole-guest-controller-resume.log; main evidence folder unchanged.
 A narrow independent review checks this one-line operational change. Final passing restore/verification still required.
+
+Additional measured receipt correction: update.operation must equal rollback.operation.
+A fourteen-case fixture probe reproduces acceptance of an unrelated rollback before the one-line fix, and all cases pass after it.
+A focused review runs under docs/agents/2026-10-12-pr15-rollback-binding-review. The immutable program package remains unchanged.
