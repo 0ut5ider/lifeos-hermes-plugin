@@ -1,0 +1,16 @@
+{
+  "status": "CAUSE_CONFIRMED",
+  "guest_id": 104,
+  "operation": "c724f77b9ae745ddae47c7a74db2cfce",
+  "package_commit": "db48eb5beb92b8cec91a37e4e10e3ee186e24e77",
+  "package_sha256": "570a055fff92ac7359fbd95ac545d59fc020445e10dae2adb782df4414095953",
+  "unit_load_state": "bad-setting",
+  "systemd_analyze_exit_code": 1,
+  "exact_errors": [
+    "hermes-gateway.service:7: WorkingDirectory= path is not absolute: \"/home/lifeos-hermes/.hermes\"",
+    "com.lifeos.pulse.service:7: WorkingDirectory= path is not absolute: \"/home/lifeos-hermes/.claude/LIFEOS/PULSE\""
+  ],
+  "correction": "Keep WorkingDirectory as an unquoted scalar. Retain ExecStart and Environment argument quoting.",
+  "actual_parser_regression": "PASS",
+  "published": false
+}

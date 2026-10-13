@@ -1,0 +1,35 @@
+ ❯ PUBLIC-UPDATE-CHAT-1. Use the registered lifeos-release skill to prepare the complete qualified 
+   integration version 0.4.2-rc.2. Run the skill instructions and hermes lifeos-release prepare       
+   --version 0.4.2-rc.2. Do not install or apply it. Wait until preparation finishes, then return  
+   the actual operation ID, state, version, program commit, and package SHA-256. Leave the owner to    
+   review and apply it in the dashboard. Preserve the current model and tier mapping. Do not read      
+   credentials or memory records.                                                                      
+                                                                                                       
+ └─ ▾ Tool calls (4)                                                                                   
+   ├─ ● Skill View("lifeos-release-manager:lifeos-release") (7.7s)  
+   ├─ ● Terminal("hermes lifeos-release status") (45.9s)                                              
+   ├─ ● Terminal("hermes lifeos-release prepare --version 0.4.2-rc.2") (152.1s)
+   └─ ● Terminal("hermes lifeos-release status 6eba0eecdf94443084259206ac28b59c") (44.9s)             
+ ├─ ▸ Thinking  ~113 tokens                                                                           
+ └─ Σ ~168 total                                                                                      
+                                                                                                       
+ ┊  LifeOS release 0.4.2-rc.2 prepared — ready for owner review, nothing installed.                    
+                                                                                                       
+    Preparation finished with these actual values, confirmed by a follow-up status check:
+                                                                                                       
+    • Operation ID: 6eba0eecdf94443084259206ac28b59c                                                   
+    • State: ready (preparation complete; no programs selected)                                        
+    • Version: 0.4.2-rc.2                                                                              
+    • Program commit: 6a0a241a0b1227d440938aa7156d8d59b87e5740                                         
+    • Package SHA-256: 6fd4a6af3e1fa37f0b57b8db86daf4b72974d0f0993b4d12cba583c84575cbe6                
+                                                                                                       
+    The active integration is unchanged — still the applied 0.4.2-rc.1 (commit 914ad24b…) — reported   
+    as active_unchanged: true. I left the model and tier mapping exactly as they were, read no         
+    credentials or memory records, and made no edits to any operation request, plan, or certificate.
+    To apply it, open the LifeOS releases tab in the authenticated Hermes dashboard, review
+    operation 6eba0eec…, and select "Install this release"; the CLI alternative is hermes
+    lifeos-release start 6eba0eecdf94443084259206ac28b59c if no managed native memory is in play.
+    🗣️  The release is staged and waiting on you — review it in the dashboard whenever you're ready
+    to apply.
+ ─ ready │ flashnext w4a16 fp8ple │ 25.6k/131.1k │ 5m 40s        ─  Prepare lifeos release 0.4.2-rc.2
+ ❯  

@@ -1,0 +1,11 @@
+{
+  "status": "CAUSE_CONFIRMED",
+  "input_archive_commit": "8e020023b4d761b94495504109cc951a09ab98ab",
+  "scenario": "Fresh recovery after the bridge directory is published",
+  "exception_before_fix": "RuntimeError: The installation operation requires an issued owner lease",
+  "cause": "Installed and package imports create distinct installation-lease classes. Fresh recovery selected the installed issuer and package controller.",
+  "correction": "Retain the validated qualified candidate namespace for fresh operations through review, admission, execution, and recovery.",
+  "uses_actual_flock": true,
+  "uses_fresh_sealed_archive": true,
+  "production_selection_changed": false
+}
