@@ -1,0 +1,18 @@
+{
+  "guest": 101,
+  "before_net0": "name=eth0,bridge=vmbr0,firewall=1,hwaddr=BC:24:11:DB:53:50,ip=dhcp,ip6=manual,type=veth",
+  "after_net0": "name=eth0,bridge=vmbr0,firewall=1,hwaddr=BC:24:11:DB:53:50,ip=192.168.8.252/24,ip6=manual,type=veth,gw=192.168.8.1",
+  "exit_code": 0,
+  "address_probe": {
+    "echo_replies": 0,
+    "arp_neighbor_state": "FAILED"
+  },
+  "reason": "DHCP changes the development address to247 after the stop-mode backup restart",
+  "other_guests_changed": false,
+  "persistent_dhcp": false,
+  "networkd_reconfigured": true,
+  "live_ipv4_addresses": [
+    "192.168.8.252/24"
+  ],
+  "ssh_reachable": true
+}

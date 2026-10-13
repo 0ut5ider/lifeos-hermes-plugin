@@ -1,0 +1,69 @@
+{
+  "before": {
+    "nested_settings_role": "skills",
+    "nested_local_role": "skills",
+    "path_count": 4,
+    "paths": [
+      "other-project/.claude/settings.json",
+      "user/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.local.json"
+    ],
+    "nested_signatures": {
+      "settings.json": [
+        1791867609567320479,
+        2,
+        1791867609567320479,
+        48,
+        11470943
+      ],
+      "settings.local.json": [
+        1791867609567354453,
+        2,
+        1791867609567354453,
+        48,
+        11470944
+      ]
+    },
+    "actual_hook_events": [
+      {
+        "session_id": "nested-session",
+        "source": "skills",
+        "file_path": "/tmp/pr16-role-hook-6w3fxliv/user/.claude/skills/research-project/.claude/settings.json"
+      },
+      {
+        "session_id": "other-session",
+        "source": "skills",
+        "file_path": "/tmp/pr16-role-hook-6w3fxliv/user/.claude/skills/research-project/.claude/settings.json"
+      }
+    ]
+  },
+  "after": {
+    "nested_settings_role": "project_settings",
+    "nested_local_role": "local_settings",
+    "path_count": 4,
+    "paths": [
+      "other-project/.claude/settings.json",
+      "user/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.local.json"
+    ],
+    "nested_signatures": {
+      "settings.json": [
+        1791867609567320479,
+        2,
+        1791867609567320479,
+        48,
+        11470943
+      ],
+      "settings.local.json": [
+        1791867609567354453,
+        2,
+        1791867609567354453,
+        48,
+        11470944
+      ]
+    },
+    "actual_hook_events": []
+  }
+}

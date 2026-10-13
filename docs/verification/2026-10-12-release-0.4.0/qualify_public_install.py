@@ -5,6 +5,8 @@ from pathlib import Path
 out=Path(__file__).resolve().parent
 cache=Path('/home/outsider/.cache/lifeos-hermes-managed-20261012')
 build=json.loads((out/'stable-bunfixed-build.json').read_bytes())
+publication=json.loads((out/'publication.json').read_bytes())
+assert publication['tag']=='v'+build['version'] and publication['program_commit']==build['head']
 base=Path(tempfile.mkdtemp(prefix='public-040-',dir=cache))
 profile=base/'.hermes';profile.mkdir(mode=0o700)
 (base/'.local/bin').mkdir(parents=True,mode=0o700)
@@ -15,7 +17,8 @@ environment=dict(os.environ,HOME=str(base),HERMES_HOME=str(profile),TZ='UTC',
 python=cache/'native-test-environment/bin/python'
 command=[str(python),'-B','-m','hermes_cli.main']
 report={'version':build['version'],'program_commit':build['head'],'archive_sha256':build['archive_sha256'],
-    'synthetic_profile':True,'live_servers_changed':False,'profile':str(profile)}
+    'synthetic_profile':True,'live_servers_changed':False,'profile':str(profile),
+    'version_selection':'latest_stable' if '--latest' in sys.argv[1:] else 'explicit'}
 started=time.monotonic()
 def run(arguments,label,*,installed=False,input=None,timeout=600):
     process=subprocess.run(([str(base/'.local/bin/hermes')] if installed else command)+arguments,
@@ -27,11 +30,12 @@ def run(arguments,label,*,installed=False,input=None,timeout=600):
     return process.stdout
 try:
     run(['plugins','install','https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager',
-        '--ref','v'+build['version']],'stock-plugin-install',input='y\n')
+        '--ref',publication['tag_commit']],'stock-plugin-install',input='y\n')
     run(['plugins','enable','lifeos-release-manager'],'stock-plugin-enable')
     assert json.loads(run(['lifeos-release','status'],'stock-manager-status'))=={'operations':[]}
     report['stock_public_plugin_install']='PASS'
-    prepared=json.loads(run(['lifeos-release','prepare','--version',build['version'],
+    version_arguments=[] if '--latest' in sys.argv[1:] else ['--version',build['version']]
+    prepared=json.loads(run(['lifeos-release','prepare',*version_arguments,
         '--name','SyntheticAdrian','--assistant','SyntheticCerebo'],'release-prepare',timeout=1800))
     assert prepared['state']=='ready' and prepared['active_unchanged'] is True
     assert prepared['commit']==build['head'] and prepared['package_sha256']==build['archive_sha256']

@@ -1,0 +1,47 @@
+{
+  "time": "2026-10-13T05:47:55.561832+00:00",
+  "operations": [
+    {
+      "label": "inventory",
+      "command": [
+        "pvesh",
+        "get",
+        "/cluster/resources",
+        "--type",
+        "vm",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.231359803932719
+    },
+    {
+      "label": "drain-source",
+      "command": [
+        "pct",
+        "exec",
+        "101",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/87561ff313e348508c3c7e1331b838be/python-environment/bin/python",
+        "-B",
+        "-"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 32.189679836970754
+    }
+  ],
+  "active_task_query_exit": 0,
+  "active_tasks": [
+    {
+      "type": "vzdump",
+      "id": "101",
+      "upid": "UPID:pve-tr1950x:0021CE8F:043E71D1:6ACDC56A:vzdump:101:root@pam:",
+      "starttime": 1791870314,
+      "log_query_exit": 0
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "archive": "PBS-01:backup/ct/101/2026-10-13T06:25:09Z",
+  "source_guest": 101,
+  "restored_guest": 110,
+  "version": "0.4.1",
+  "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+  "archive_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e",
+  "operation": "87561ff313e348508c3c7e1331b838be",
+  "network_disconnected": true,
+  "application_services_masked": true,
+  "cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 51,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "production_guest_changed": false
+}

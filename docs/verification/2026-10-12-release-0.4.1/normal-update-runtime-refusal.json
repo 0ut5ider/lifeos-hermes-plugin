@@ -1,0 +1,34 @@
+{
+  "operation": "a5b53c9c0805459ab5b893cb6756e47b",
+  "status": {
+    "identifier": "a5b53c9c0805459ab5b893cb6756e47b",
+    "state": "rolled_back"
+  },
+  "program_state": "restored",
+  "worker_failure": {
+    "exception": "ReleaseRejected",
+    "frames": [
+      {
+        "file": "/home/lifeos-hermes/.hermes/.lifeos-releases/a5b53c9c0805459ab5b893cb6756e47b/worker/release_worker.py",
+        "line": 254,
+        "function": "execute"
+      },
+      {
+        "file": "/home/lifeos-hermes/.hermes/.lifeos-releases/a5b53c9c0805459ab5b893cb6756e47b/worker/release_worker.py",
+        "line": 376,
+        "function": "_execute"
+      },
+      {
+        "file": "/home/lifeos-hermes/.hermes/.lifeos-releases/a5b53c9c0805459ab5b893cb6756e47b/worker/release_plan.py",
+        "line": 120,
+        "function": "verify_runtime"
+      }
+    ]
+  },
+  "candidate_identity": {
+    "version": "0.4.1",
+    "commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "package_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5"
+  },
+  "runtime_check_output_retained": false
+}

@@ -1,0 +1,58 @@
+{
+  "inventory": {
+    "program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "file_contents_read": false,
+    "production_code_changed": false,
+    "cases": [
+      {
+        "case": "account-home",
+        "baseline_seconds": 7.396836380008608,
+        "prototype_seconds": 4.4016177270095795,
+        "baseline_files": 150058,
+        "prototype_files": 150058,
+        "exact_inventory_and_signatures": true,
+        "project_skill_files": 75028,
+        "selected_user_skill_files": 75028
+      },
+      {
+        "case": "native-home",
+        "baseline_seconds": 5.450813750969246,
+        "prototype_seconds": 5.121490841032937,
+        "baseline_files": 75029,
+        "prototype_files": 75029,
+        "exact_inventory_and_signatures": true,
+        "project_skill_files": 75028,
+        "selected_user_skill_files": 75028
+      }
+    ]
+  },
+  "base": {
+    "plugin": "lifeos-hook-bridge",
+    "version": "0.4.1",
+    "elapsed_seconds": 10.037685242947191,
+    "error": "load timed out after 10s (import + register() never returned)",
+    "commands": [],
+    "candidate_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "registration_only": true,
+    "installation_selected": false
+  },
+  "venv_home": {
+    "plugin": "lifeos-hook-bridge",
+    "version": "0.4.1",
+    "elapsed_seconds": 8.076500933035277,
+    "error": null,
+    "commands": [
+      "lifeos-atlas-history",
+      "lifeos-backup",
+      "lifeos-infer",
+      "lifeos-job",
+      "lifeos-observe-morning",
+      "lifeos-probe",
+      "lifeos-version"
+    ],
+    "candidate_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "registration_only": true,
+    "installation_selected": false
+  },
+  "registration_stack": "Timeout (0:00:08)!\nThread 0x00007d78e520f6c0 [plugin-load:lif] (most recent call first):\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py\", line 654 in stat\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/package/lifeos_hook_bridge/bridge.py\", line 1191 in _config_files\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/package/lifeos_hook_bridge/bridge.py\", line 705 in __init__\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/package/lifeos_hook_bridge/__init__.py\", line 55 in register\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/hermes/hermes_cli/plugins_loader.py\", line 515 in _import_and_register\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/hermes/hermes_cli/plugins_loader.py\", line 132 in _worker\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py\", line 1024 in run\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py\", line 1082 in _bootstrap_inner\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py\", line 1044 in _bootstrap\n\nThread 0x00007d78e6e34740 [python3] (most recent call first):\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/dependency-profile/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/threading.py\", line 1133 in join\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/hermes/hermes_cli/plugins_loader.py\", line 142 in run_with_load_deadline\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/hermes/hermes_cli/plugins_loader.py\", line 519 in _load_plugin_scoped\n  File \"/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/hermes/hermes_cli/plugins_loader.py\", line 456 in _load_plugin\n  File \"/home/lifeos-hermes/releases/qualification-20261012-041/diagnose_candidate_registration.py\", line 22 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 98 in _run_module_code\n  File \"<frozen runpy>\", line 294 in run_path\n  File \"<string>\", line 1 in <module>\n"
+}

@@ -1,0 +1,84 @@
+{
+  "operation": "c78b6c52e0724e44b6ed46bdf38f93af",
+  "status": {
+    "identifier": "c78b6c52e0724e44b6ed46bdf38f93af",
+    "state": "rolled_back"
+  },
+  "program_state": "restored",
+  "verification": [
+    {
+      "arguments": [
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/c78b6c52e0724e44b6ed46bdf38f93af/bin/hermes",
+        "config",
+        "check"
+      ],
+      "cwd": "/home/lifeos-hermes",
+      "exit_code": 0,
+      "elapsed_seconds": 5.347879711072892,
+      "stdout_bytes": 10111,
+      "stderr_bytes": 0,
+      "restored": false
+    },
+    {
+      "arguments": [
+        "/home/lifeos-hermes/workspace/hermes-agent/.hermes/bin/hermes",
+        "lifeos-version"
+      ],
+      "cwd": "/home/lifeos-hermes",
+      "exit_code": 2,
+      "elapsed_seconds": 17.781350507983007,
+      "stdout_bytes": 0,
+      "stderr_bytes": 123,
+      "restored": false
+    }
+  ],
+  "launcher_error": "hermes: 'lifeos-version' is not a `hermes` command.\nDid you mean: lifeos-release?\nRun `hermes --help` to see all commands.\n",
+  "candidate_loading": {
+    "plugin": "lifeos-hook-bridge",
+    "version": "0.4.1",
+    "elapsed_seconds": 4.192528359009884,
+    "error": null,
+    "commands": [
+      "lifeos-atlas-history",
+      "lifeos-backup",
+      "lifeos-infer",
+      "lifeos-job",
+      "lifeos-observe-morning",
+      "lifeos-probe",
+      "lifeos-version"
+    ],
+    "candidate_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "registration_only": true
+  },
+  "restored_parser": {
+    "elapsed_seconds": 5.2037344629643485,
+    "plugins": {
+      "lifeos": {
+        "error": null,
+        "version": "1.0.0",
+        "path": "/home/lifeos-hermes/.hermes/plugins/lifeos"
+      },
+      "lifeos-hook-bridge": {
+        "error": null,
+        "version": "0.3.1",
+        "path": "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge"
+      },
+      "lifeos-release-manager": {
+        "error": null,
+        "version": "0.4.0-dev.1",
+        "path": "/home/lifeos-hermes/.hermes/plugins/lifeos-release-manager"
+      }
+    },
+    "commands": [
+      "lifeos-atlas-history",
+      "lifeos-backup",
+      "lifeos-infer",
+      "lifeos-job",
+      "lifeos-probe",
+      "lifeos-release",
+      "lifeos-version"
+    ]
+  },
+  "memory_events_oom": 0,
+  "memory_events_oom_kill": 0
+}

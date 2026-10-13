@@ -1,0 +1,109 @@
+[
+  {
+    "case": "public-commit-install",
+    "command": [
+      "plugins",
+      "install",
+      "https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager",
+      "--ref",
+      "223cbfc1681f0b4d3a7bad668d40822a9267137e"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 14.466470671992283
+  },
+  {
+    "case": "plugin-enable",
+    "command": [
+      "plugins",
+      "enable",
+      "lifeos-release-manager"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 8.415884100017138
+  },
+  {
+    "case": "plugin-status",
+    "command": [
+      "lifeos-release",
+      "status"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.4169889820041135
+  },
+  {
+    "case": "separated-invalid-exact",
+    "command": [
+      "lifeos-release",
+      "prepare",
+      "--version",
+      "not-a-version"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 3.455183018988464
+  },
+  {
+    "case": "equals-invalid-exact",
+    "command": [
+      "lifeos-release",
+      "prepare",
+      "--version=not-a-version"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 3.7086376539664343
+  },
+  {
+    "case": "hermes-global-version",
+    "command": [
+      "--version"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.1687259540194646
+  },
+  {
+    "case": "default-selection-namespace",
+    "arguments": [
+      "lifeos-release",
+      "prepare"
+    ],
+    "exit_code": 0,
+    "namespace": {
+      "global_version": false,
+      "release_version": null,
+      "action": "prepare"
+    }
+  },
+  {
+    "case": "separated-exact-namespace",
+    "arguments": [
+      "lifeos-release",
+      "prepare",
+      "--version",
+      "0.4.0"
+    ],
+    "exit_code": 0,
+    "namespace": {
+      "global_version": false,
+      "release_version": "0.4.0",
+      "action": "prepare"
+    }
+  },
+  {
+    "case": "equals-exact-namespace",
+    "arguments": [
+      "lifeos-release",
+      "prepare",
+      "--version=0.4.0"
+    ],
+    "exit_code": 0,
+    "namespace": {
+      "global_version": false,
+      "release_version": "0.4.0",
+      "action": "prepare"
+    }
+  },
+  {
+    "case": "active-installation-preserved",
+    "native_installation_absent": true,
+    "operations_safely_refused": true
+  }
+]

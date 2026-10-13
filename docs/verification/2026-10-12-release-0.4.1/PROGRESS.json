@@ -1,0 +1,213 @@
+{
+  "status": "QUALIFIED_AWAITING_PUBLICATION",
+  "version": "0.4.1",
+  "production_qualified": true,
+  "daily_server_changed": false,
+  "published_040_assets_unchanged": true,
+  "reason": "Actual installed SDK registration exceeded its 10-second deadline while scanning skill metadata.",
+  "fix": "Cache scandir file metadata once per root and replay entries in source order.",
+  "remaining": [
+    "PR16 merge and immutable publication",
+    "Actual public exact-version installation and default development update"
+  ],
+  "focused_controls": {
+    "status": "PASS",
+    "tests": 26,
+    "skipped": 0,
+    "receipt": "focused.stderr",
+    "earlier_invocation_errors_preserved": true
+  },
+  "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+  "archive_sha256": "462297fa0c20166ca77d0bf37fcef556b50832ff7bf46327d9777368ea80670e",
+  "archive_bytes": 119136987,
+  "review": {
+    "status": "CLEAR",
+    "report": "docs/agents/2026-10-13-pr16-config-inventory-review/pr16-config-inventory-review.md",
+    "primary_probes_repeated": true,
+    "product_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77"
+  },
+  "native_gate": {
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
+    "elapsed_seconds": 118.77804347203346,
+    "receipt": "candidate-96f4f8fb/native-sealed-96f4f8fb.json",
+    "archive_identity_bound": true
+  },
+  "fresh_gate": {
+    "status": "PASS",
+    "actual_process_exit": 73,
+    "later_synthetic_data_preserved": true,
+    "elapsed_seconds": 285.60277056798805,
+    "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
+  },
+  "running": {},
+  "integration_gate": {
+    "status": "PASS",
+    "tests": 631,
+    "elapsed_seconds": 793.9418054970447,
+    "receipt": "candidate-96f4f8fb/integration-sealed-96f4f8fb.json"
+  },
+  "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14",
+  "interruption_gate": {
+    "status": "PASS",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+    "operation": "c44afd5fd33042fabe7df95faed5182c",
+    "authenticated_owner_review_http": 200,
+    "actual_systemd_exit": 73,
+    "checkpoint": "programs-published",
+    "recovery_admitted": true,
+    "recovery_complete": true,
+    "recovery_receipt": "candidate-96f4f8fb/development-bunfixed-interruption-recovery.json"
+  },
+  "qualification_evidence_fix": {
+    "status": "REGRESSION_PASS",
+    "cause": "The checker does not bind whole-guest recovery to release identity and matching program coverage.",
+    "before_exit": 1,
+    "after_exit": 0,
+    "sealed_product_changed": false,
+    "primary_matrix_tests": 38,
+    "primary_matrix_exit": 0,
+    "primary_matrix_elapsed_seconds": 59.910444400971755,
+    "review": "CLEAR"
+  },
+  "normal_installed_gate": {
+    "status": "PASS",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+    "operation": "87561ff313e348508c3c7e1331b838be",
+    "owner_review_http": 200,
+    "owner_apply_http": 200,
+    "receipt": "candidate-96f4f8fb/development-bunfixed-update.json"
+  },
+  "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af",
+  "diagnostic_repeat": {
+    "status": "REFUSED_AND_ROLLED_BACK",
+    "operation": "c78b6c52e0724e44b6ed46bdf38f93af",
+    "receipt": "instrumented-runtime-verification-refusal.json",
+    "config_check_exit": 0,
+    "service_launcher_version_exit": 2,
+    "candidate_registration_error": null,
+    "restored_profile_commands_present": true,
+    "cause_established": true
+  },
+  "historical_candidate": {
+    "program_commit": "223cbfc1681f0b4d3a7bad668d40822a9267137e",
+    "archive_sha256": "5727d5035e416ed665ecfd19ee48a585428e1edd0466ac8bcb5dabfb9e0c11d5",
+    "archive_bytes": 119131524,
+    "native_gate": {
+      "status": "PASS",
+      "tests": 716,
+      "files": 38,
+      "elapsed_seconds": 90.368,
+      "receipt": "native-sealed-223cbfc1.json",
+      "official_runner": true,
+      "archive_identity_bound": true
+    },
+    "fresh_gate": {
+      "status": "PASS",
+      "actual_process_exit": 73,
+      "later_synthetic_data_preserved": true,
+      "elapsed_seconds": 276.601,
+      "receipt": "fresh-install-223cbfc1-041.json"
+    },
+    "integration_gate": {
+      "status": "PASS",
+      "tests": 626,
+      "elapsed_seconds": 793.1115276360069,
+      "receipt": "integration-sealed-223cbfc1.json"
+    },
+    "interruption_gate": {
+      "actual_systemd_exit": 73,
+      "checkpoint": "programs-published",
+      "operation": "aeeff7ce70ae4f8997706c8d74fcef14",
+      "receipt": "development-bunfixed-interruption-exit.json",
+      "recovery_admitted": true,
+      "recovery_complete": true,
+      "status": "PASS",
+      "recovery_receipt": "development-bunfixed-interruption-recovery.json"
+    },
+    "completed": [
+      "Native public failure reproduced",
+      "Real parser regression fails before fix and all seven command tests pass after fix",
+      "Candidate sealed and built",
+      "PR16 review clear; primary repeats stock CLI and archive probes",
+      "Official Hermes runner: 716 tests across 38 files",
+      "Fresh installation and actual interrupted recovery with later data preservation",
+      "Complete frozen integration: 626 tests",
+      "Actual installed interruption exit73 and public CLI recovery to exact0.3.1, all3services and model mapping preserved"
+    ]
+  },
+  "configuration_inventory": {
+    "old_sdk_seconds": 10.037685242947191,
+    "old_sdk_error": "load timed out after 10s (import + register() never returned)",
+    "corrected_source_copy_sdk_seconds": 7.068040531943552,
+    "default_deadline_seconds": 10,
+    "commands": 7,
+    "sealed_acceptance": false,
+    "baseline_receipt": "config-inventory-baseline.json",
+    "corrected_receipt": "config-inventory-sdk-replay.json",
+    "role_regression_before_failures": 2,
+    "corrected_inventory_tests": 5,
+    "existing_config_change_tests": 9,
+    "private_223_preparation_ca163b3527834302950dd1d112f678f1": "READY_UNAPPLIED_SUPERSEDED",
+    "unqualified_0ee_candidate": "candidate-0ee59dcf"
+  },
+  "completed": [
+    "Configuration inventory fix and source-copy SDK experiment",
+    "Exact corrected committed candidate sealed",
+    "Configuration inventory focused review clear and primary probes repeated",
+    "Official Hermes runner: 716 tests across 38 files on corrected sealed archive",
+    "Corrected sealed fresh installation and actual interrupted recovery with later data preservation",
+    "Complete corrected sealed integration: 631 tests, no skips",
+    "Corrected installed interruption exit73 and public CLI recovery: exact03, all3services, all3aliases and model mapping",
+    "Actual corrected normal installed update: exact041/96/SHA462, all3services, aliases and model mapping",
+    "Actual corrected guest reboot: exact041, all3services enabled/automatic, no restarts, Bun1.4.3",
+    "Three synthetic Atlas whole-guest recovery fixtures prepared without personal data",
+    "Exact whole-guest recovery: three Atlas cases, 143 program targets, offline guest removed",
+    "Normal authenticated rollback restores exact03, all3services, aliases and model mapping",
+    "Strict exact-archive qualification certificate passes all completed gates"
+  ],
+  "boot_gate": {
+    "status": "PASS",
+    "receipt": "candidate-96f4f8fb/development-bunfixed-boot.json",
+    "automatic_start": true,
+    "restarts": 0
+  },
+  "whole_guest_gate": {
+    "status": "PASS",
+    "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
+    "operation": "87561ff313e348508c3c7e1331b838be",
+    "host_directory": "/root/lifeos-release-0.4.1/history-restore",
+    "first_backup_exit": 255,
+    "first_failure_receipt": "candidate-96f4f8fb/whole-backup-failure-metadata.json",
+    "measured_interruption": "PBS container stops5.921seconds before backup failure and restarts afterward",
+    "correlation_receipt": "candidate-96f4f8fb/pbs-restart-correlation.json",
+    "retry_directory": "/root/lifeos-release-0.4.1/history-restore-retry2",
+    "backup_archive": "PBS-01:backup/ct/101/2026-10-13T06:25:09Z",
+    "backup_seconds": 2951.643565791077,
+    "source_services_resumed": true,
+    "source_observer_receipt": "candidate-96f4f8fb/development-after-backup-retry1.json",
+    "source_network_repaired": true,
+    "first_restore_exit": 255,
+    "first_restore_failure": "Disk quota exceeded (os error122)",
+    "quota_receipt": "candidate-96f4f8fb/restore-quota-measurement.json",
+    "restore_rootfs_gib": 300,
+    "backup_reused": true,
+    "receipt": "candidate-96f4f8fb/whole-guest-recovery.json",
+    "program_coverage_receipt": "candidate-96f4f8fb/whole-guest-program-coverage.json",
+    "program_targets": 143,
+    "disposable_guest_removed": true
+  },
+  "rollback_gate": {
+    "status": "PASS",
+    "receipt": "candidate-96f4f8fb/development-bunfixed-rollback.json",
+    "prior_version": "0.3.1",
+    "services": 3,
+    "model_mapping_preserved": true
+  },
+  "certificate": {
+    "status": "QUALIFIED",
+    "sha256": "4f6bea28370d899e2ec13a003d4fe90e57c1cfdeddf511f01e636676603c0ddc",
+    "receipt": "candidate-96f4f8fb/RELEASE-CERTIFICATE.json"
+  }
+}

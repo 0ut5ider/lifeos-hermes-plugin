@@ -1,0 +1,33 @@
+test_atomic_replacement_and_removal_change_signatures (test_config_inventory.ConfigInventoryTests.test_atomic_replacement_and_removal_change_signatures) ... ok
+test_nested_project_settings_keep_final_skills_role (test_config_inventory.ConfigInventoryTests.test_nested_project_settings_keep_final_skills_role) ... FAIL
+test_nested_skill_settings_change_reaches_all_active_sessions (test_config_inventory.ConfigInventoryTests.test_nested_skill_settings_change_reaches_all_active_sessions) ... FAIL
+test_overlapping_roots_keep_project_setting_role (test_config_inventory.ConfigInventoryTests.test_overlapping_roots_keep_project_setting_role) ... ok
+test_roles_and_signatures_keep_all_skill_inputs (test_config_inventory.ConfigInventoryTests.test_roles_and_signatures_keep_all_skill_inputs) ... ok
+
+======================================================================
+FAIL: test_nested_project_settings_keep_final_skills_role (test_config_inventory.ConfigInventoryTests.test_nested_project_settings_keep_final_skills_role)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_config_inventory.py", line 92, in test_nested_project_settings_keep_final_skills_role
+    self.assertEqual(sources[nested_settings], 'skills')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'project_settings' != 'skills'
+- project_settings
++ skills
+
+
+======================================================================
+FAIL: test_nested_skill_settings_change_reaches_all_active_sessions (test_config_inventory.ConfigInventoryTests.test_nested_skill_settings_change_reaches_all_active_sessions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_config_inventory.py", line 126, in test_nested_skill_settings_change_reaches_all_active_sessions
+    self.assertEqual({row['session_id'] for row in rows}, {'nested-session', 'other-session'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the second set but not the first:
+'nested-session'
+'other-session'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.040s
+
+FAILED (failures=2)

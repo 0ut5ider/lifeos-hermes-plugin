@@ -917,25 +917,55 @@ class HookBridge:
         self.user_permission_rules = settings.get("permissions") or {}
         self.environment = environment
 
-    def _config_sources(self) -> dict[Path, str]:
-        sources = {
-            self.settings_path: "user_settings",
-            POLICY_DIRECTORY / "managed-settings.json": "policy_settings",
-        }
+    @staticmethod
+    def _skill_config_entries(root: Path):
+        pending = [root]
+        while pending:
+            directory = pending.pop()
+            try:
+                with os.scandir(directory) as entries:
+                    for entry in entries:
+                        try:
+                            if entry.is_dir(follow_symlinks=False):
+                                pending.append(Path(entry.path))
+                            elif entry.is_file():
+                                yield Path(entry.path), "skills", entry.stat()
+                        except OSError:
+                            continue
+            except OSError:
+                continue
+
+    def _config_entries(self):
+        def selected(path, source):
+            try:
+                return path, source, path.stat()
+            except OSError:
+                return path, source, None
+
+        yield selected(self.settings_path, "user_settings")
+        yield selected(POLICY_DIRECTORY / "managed-settings.json", "policy_settings")
+        skill_entries = {}
+        def cached_skills(root):
+            if root not in skill_entries:
+                skill_entries[root] = tuple(self._skill_config_entries(root))
+            return skill_entries[root]
+
         for project_dir in self.project_dirs:
             project_settings = project_dir / ".claude"
-            sources[project_settings / "settings.json"] = "project_settings"
-            sources[project_settings / "settings.local.json"] = "local_settings"
+            yield selected(project_settings / "settings.json", "project_settings")
+            yield selected(project_settings / "settings.local.json", "local_settings")
             skills = project_settings / "skills"
-            if skills.is_dir():
-                sources.update((path, "skills") for path in skills.rglob("*") if path.is_file())
+            yield from cached_skills(skills)
         dropins = POLICY_DIRECTORY / "managed-settings.d"
         if dropins.is_dir():
-            sources.update((path, "policy_settings") for path in dropins.glob("*.json") if path.is_file())
+            for path in dropins.glob("*.json"):
+                if path.is_file():
+                    yield selected(path, "policy_settings")
         user_skills = self.settings_path.parent / "skills"
-        if user_skills.is_dir():
-            sources.update((path, "skills") for path in user_skills.rglob("*") if path.is_file())
-        return sources
+        yield from cached_skills(user_skills)
+
+    def _config_sources(self) -> dict[Path, str]:
+        return {path: source for path, source, _ in self._config_entries()}
 
     def _remember_project(self, cwd: str, session_id: str, task_id: str = "") -> None:
         if not _task_uses_host_paths(task_id):
@@ -1186,14 +1216,12 @@ class HookBridge:
 
     def _config_files(self) -> dict[Path, tuple[int, int, int, int, int]]:
         result = {}
-        for path in self._config_sources():
-            try:
-                stat = path.stat()
-                result[path] = (
-                    stat.st_mtime_ns, stat.st_size, stat.st_ctime_ns, stat.st_dev, stat.st_ino,
-                )
-            except OSError:
+        for path, _, metadata in self._config_entries():
+            if metadata is None:
                 continue
+            result[path] = (
+                metadata.st_mtime_ns, metadata.st_size, metadata.st_ctime_ns, metadata.st_dev, metadata.st_ino,
+            )
         return result
 
     def poll_config_changes(self, force: bool = False) -> None:

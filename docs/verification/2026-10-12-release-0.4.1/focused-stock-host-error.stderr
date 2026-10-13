@@ -1,0 +1,42 @@
+test_detached_worker_uses_a_new_session_and_reaps (test_release_manager_cli.ReleaseManagerCommandTests.test_detached_worker_uses_a_new_session_and_reaps) ... ok
+test_exact_release_version_does_not_enable_hermes_global_version (test_release_manager_cli.ReleaseManagerCommandTests.test_exact_release_version_does_not_enable_hermes_global_version) ... ok
+test_invalid_operation_identifier_refuses_without_reading_an_external_file (test_release_manager_cli.ReleaseManagerCommandTests.test_invalid_operation_identifier_refuses_without_reading_an_external_file) ... ok
+test_preparation_uses_the_qualified_candidate_worker (test_release_manager_cli.ReleaseManagerCommandTests.test_preparation_uses_the_qualified_candidate_worker) ... ok
+test_registers_release_management_without_loading_the_runtime_bridge (test_release_manager_cli.ReleaseManagerCommandTests.test_registers_release_management_without_loading_the_runtime_bridge) ... ok
+test_status_includes_preparation_before_the_request_exists (test_release_manager_cli.ReleaseManagerCommandTests.test_status_includes_preparation_before_the_request_exists) ... ok
+test_status_reports_no_operations_and_does_not_create_release_state (test_release_manager_cli.ReleaseManagerCommandTests.test_status_reports_no_operations_and_does_not_create_release_state) ... ok
+test_mutations_reject_foreign_origin_and_client_supplied_fields (test_release_dashboard.ReleaseDashboardTests.test_mutations_reject_foreign_origin_and_client_supplied_fields) ... ok
+test_native_review_keeps_the_dashboard_responsive (test_release_dashboard.ReleaseDashboardTests.test_native_review_keeps_the_dashboard_responsive) ... skipped 'An actual prepared fresh operation is required'
+test_native_sessions_enforce_owner_binding_and_current_revocation (test_release_dashboard.ReleaseDashboardTests.test_native_sessions_enforce_owner_binding_and_current_revocation) ... ok
+test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call) ... FAIL
+test_absent_release_receipt_reports_unrecorded_identity (test_release_version.ReleaseVersionTests.test_absent_release_receipt_reports_unrecorded_identity) ... ok
+test_installed_source_hashes_and_staged_candidate_are_distinct (test_release_version.ReleaseVersionTests.test_installed_source_hashes_and_staged_candidate_are_distinct) ... ok
+test_mismatched_or_malformed_versions_refuse (test_release_version.ReleaseVersionTests.test_mismatched_or_malformed_versions_refuse) ... ok
+test_receipt_paths_and_aliases_cannot_read_other_files (test_release_version.ReleaseVersionTests.test_receipt_paths_and_aliases_cannot_read_other_files) ... ok
+test_receipt_version_cannot_mislabel_the_installed_code (test_release_version.ReleaseVersionTests.test_receipt_version_cannot_mislabel_the_installed_code) ... ok
+test_stable_development_and_candidate_versions_match_all_three_declarations (test_release_version.ReleaseVersionTests.test_stable_development_and_candidate_versions_match_all_three_declarations) ... ok
+test_unrecorded_program_files_do_not_claim_an_exact_release (test_release_version.ReleaseVersionTests.test_unrecorded_program_files_do_not_claim_an_exact_release) ... ok
+test_dependency_changing_commands_are_refused (test_native_dependencies.BunWrapperCommandTests.test_dependency_changing_commands_are_refused) ... ok
+test_install_aliases_and_global_flags_go_through_the_lock_check (test_native_dependencies.BunWrapperCommandTests.test_install_aliases_and_global_flags_go_through_the_lock_check) ... ok
+test_other_commands_reach_bun_unchanged (test_native_dependencies.BunWrapperCommandTests.test_other_commands_reach_bun_unchanged) ... ok
+test_changed_package_and_existing_lock_refuse_before_bun_runs (test_native_dependencies.NativeDependenciesTests.test_changed_package_and_existing_lock_refuse_before_bun_runs) ... skipped 'Bun and the full native candidate are required'
+test_empty_installation_gets_all_release_locks_before_native_deployment (test_native_dependencies.NativeDependenciesTests.test_empty_installation_gets_all_release_locks_before_native_deployment) ... skipped 'Bun and the full native candidate are required'
+test_native_bun_installs_exact_locked_dependencies (test_native_dependencies.NativeDependenciesTests.test_native_bun_installs_exact_locked_dependencies) ... skipped 'Bun and the full native candidate are required'
+test_release_catalog_covers_every_source_package_and_refuses_changes (test_native_dependencies.NativeDependenciesTests.test_release_catalog_covers_every_source_package_and_refuses_changes) ... skipped 'Bun and the full native candidate are required'
+test_stale_shipped_dashboard_lock_requires_reviewed_release_lock (test_native_dependencies.NativeDependenciesTests.test_stale_shipped_dashboard_lock_requires_reviewed_release_lock) ... skipped 'Bun and the full native candidate are required'
+
+======================================================================
+FAIL: test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_version.py", line 119, in test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : hermes: 'lifeos-version' is not a `hermes` command.
+Run `hermes --help` to see all commands.
+
+
+----------------------------------------------------------------------
+Ran 26 tests in 5.047s
+
+FAILED (failures=1, skipped=6)

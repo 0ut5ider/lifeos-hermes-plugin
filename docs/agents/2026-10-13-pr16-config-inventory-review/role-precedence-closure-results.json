@@ -1,0 +1,80 @@
+{
+  "before": {
+    "nested_settings_role": "skills",
+    "nested_local_role": "skills",
+    "path_count": 4,
+    "paths": [
+      "other-project/.claude/settings.json",
+      "user/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.local.json"
+    ],
+    "nested_signatures": {
+      "settings.json": [
+        1791867906066071769,
+        2,
+        1791867906066071769,
+        48,
+        11482525
+      ],
+      "settings.local.json": [
+        1791867906066108921,
+        2,
+        1791867906066108921,
+        48,
+        11482526
+      ]
+    },
+    "actual_hook_events": [
+      {
+        "session_id": "nested-session",
+        "source": "skills",
+        "file_path": "/tmp/pr16-role-hook-r93r_h0w/user/.claude/skills/research-project/.claude/settings.json"
+      },
+      {
+        "session_id": "other-session",
+        "source": "skills",
+        "file_path": "/tmp/pr16-role-hook-r93r_h0w/user/.claude/skills/research-project/.claude/settings.json"
+      }
+    ]
+  },
+  "closure": {
+    "nested_settings_role": "skills",
+    "nested_local_role": "skills",
+    "path_count": 4,
+    "paths": [
+      "other-project/.claude/settings.json",
+      "user/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.json",
+      "user/.claude/skills/research-project/.claude/settings.local.json"
+    ],
+    "nested_signatures": {
+      "settings.json": [
+        1791867906066071769,
+        2,
+        1791867906066071769,
+        48,
+        11482525
+      ],
+      "settings.local.json": [
+        1791867906066108921,
+        2,
+        1791867906066108921,
+        48,
+        11482526
+      ]
+    },
+    "actual_hook_events": [
+      {
+        "session_id": "nested-session",
+        "source": "skills",
+        "file_path": "/tmp/pr16-role-hook-_kltif2l/user/.claude/skills/research-project/.claude/settings.json"
+      },
+      {
+        "session_id": "other-session",
+        "source": "skills",
+        "file_path": "/tmp/pr16-role-hook-_kltif2l/user/.claude/skills/research-project/.claude/settings.json"
+      }
+    ]
+  }
+}

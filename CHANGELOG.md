@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1 (2026-10-13)
+
+- Keep the plugin release choice in a separate argument field from the Hermes global version flag.
+- Preserve the external `hermes lifeos-release prepare --version X.Y.Z` option.
+- Use cached directory metadata for skill inventories during plugin loading. Preserve file-change signatures and source roles.
+- Scan each skill root once and replay its entries in the original source order. Keep the native SDK load deadline active.
+- Pin public plugin installation to the full release commit SHA required by stock Hermes.
+- Preserve the published 0.4.0 and 0.3.1 release assets.
+
 ## 0.4.0 (2026-10-12)
 
 Release qualification is recorded in the published release certificate.
