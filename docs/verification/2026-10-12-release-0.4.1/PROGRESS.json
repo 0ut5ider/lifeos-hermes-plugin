@@ -53,7 +53,7 @@
     "receipt": "fresh-install-223cbfc1-041.json"
   },
   "running": [
-    "Diagnostic frozen-worker admission with unchanged verification subprocess behavior"
+    "Second diagnostic preparation to capture mounted-profile SDK parser errors before rollback"
   ],
   "integration_gate": {
     "status": "PASS",
@@ -91,5 +91,15 @@
     "cause_established": false,
     "rollback_complete": true
   },
-  "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af"
+  "diagnostic_operation": "c78b6c52e0724e44b6ed46bdf38f93af",
+  "diagnostic_repeat": {
+    "status": "REFUSED_AND_ROLLED_BACK",
+    "operation": "c78b6c52e0724e44b6ed46bdf38f93af",
+    "receipt": "instrumented-runtime-verification-refusal.json",
+    "config_check_exit": 0,
+    "service_launcher_version_exit": 2,
+    "candidate_registration_error": null,
+    "restored_profile_commands_present": true,
+    "cause_established": false
+  }
 }

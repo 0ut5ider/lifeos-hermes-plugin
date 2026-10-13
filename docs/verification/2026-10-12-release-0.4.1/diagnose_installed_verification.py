@@ -39,6 +39,17 @@ def observe(request, **options):
             'stderr_bytes': len((result.stderr or '').encode()),
             'restored': options.get('restored', False)})
         (folder / 'receipt.json').write_text(json.dumps(receipts, indent=2) + '\n')
+        if result.returncode != 0:
+            try:
+                with (folder / 'parser-probe.stdout').open('w') as stdout, (folder / 'parser-probe.stderr').open('w') as stderr:
+                    probe = original([request['runtime']['python'], '-B',
+                        str(Path(__file__).with_name('diagnose_parser_registration.py')),
+                        request['runtime']['source'], str(folder)],
+                        env=keywords.get('env'), cwd=keywords.get('cwd'),
+                        stdout=stdout, stderr=stderr, timeout=45)
+                (folder / 'parser-probe.exit').write_text(str(probe.returncode) + '\n')
+            except Exception as error:
+                (folder / 'parser-probe.error').write_text(type(error).__name__ + '\n')
         return result
 
     subprocess.run = capture
