@@ -118,5 +118,3 @@ def verify_installed_services(current, profile, installed, *, installation_lease
     module = current.memory_module('profile_services')
     module._run('daemon-reload')
     module.ProfileServices(profile, installed, installation_lease=installation_lease).preview()
-
-
