@@ -16,7 +16,6 @@
     "PR15 review and certificate binding regression correction"
   ],
   "remaining": [
-    "Native 716-test repeat with enforced receipt identity",
     "Whole-guest off-server restore and three Atlas cases",
     "Authenticated normal development rollback",
     "Qualified publication and public installation verification"
@@ -25,8 +24,7 @@
   "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
   "archive_bytes": 119131156,
   "running": [
-    "Off-server whole-guest backup and disconnected restore",
-    "Bound native qualification waiting for actual SSH fixture"
+    "Off-server whole-guest restore"
   ],
   "dependency_preparation_failure": {
     "operation": "16e36a5f9d0f413f82d7833bd2fa7b2f",
@@ -119,7 +117,7 @@
     "evidence": "/root/lifeos-release-0.4.0/history-restore",
     "source_guest": 101,
     "disposable_guest": 110,
-    "state": "Source writers drained; backup running"
+    "state": "Backup passes; source services resume; actual disconnected restore runs"
   },
   "release_pr": 15,
   "historical_fresh_acceptance": {
@@ -136,12 +134,16 @@
     "restored": "Exact accepted 0.3.1, preserved configuration and routing, all three services running"
   },
   "native_receipt_binding": {
-    "status": "RUNNING",
+    "status": "PASS",
     "prior_receipt": "native-sealed-a87e7ae9-unbound.json",
     "required_receipt": "native-sealed-a87e7ae9.json",
     "regression_cases": 13,
     "regression_result": "PASS",
-    "product_archive_changed": false
+    "product_archive_changed": false,
+    "receipt": "native-sealed-a87e7ae9.json",
+    "tests": 716,
+    "files": 38,
+    "elapsed_seconds": 71.471
   },
   "focused_review": {
     "status": "CLEAR",
