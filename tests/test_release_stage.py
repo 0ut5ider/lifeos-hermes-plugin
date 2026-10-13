@@ -17,6 +17,24 @@ from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
 class ReleaseStageTests(unittest.TestCase):
+    def test_stage_subprocess_creates_private_files_with_a_permissive_caller(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            script = ("import os, sys, json\nfrom pathlib import Path\n"
+                "from optional.lifeos_release_manager.release_stage import run_stage\n"
+                "os.umask(0o002)\nroot=Path(sys.argv[1])\n"
+                "child=\"from pathlib import Path; Path('directory').mkdir(); Path('directory/file').write_text('synthetic')\"\n"
+                "run_stage([sys.executable, '-B', '-c', child], root, 'permissions', environment=dict(os.environ))\n"
+                "print(json.dumps({'directory': (root/'directory').stat().st_mode & 0o777,"
+                " 'file': (root/'directory/file').stat().st_mode & 0o777, 'caller': os.umask(0o002)}))\n")
+            result = subprocess.run([sys.executable, '-B', '-c', script, str(root)],
+                capture_output=True, text=True, timeout=20)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(result.stderr, '')
+            self.assertEqual(json.loads(result.stdout), {'directory': 0o700, 'file': 0o600, 'caller': 0o002})
+            self.assertEqual((root / 'permissions.stdout').read_bytes(), b'')
+            self.assertEqual((root / 'permissions.stderr').read_bytes(), b'')
+
     def test_authenticated_archive_refuses_coordinated_program_and_manifest_changes(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

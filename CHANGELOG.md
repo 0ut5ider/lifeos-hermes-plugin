@@ -2,6 +2,8 @@
 
 ## 0.4.2-rc.3 (2026-10-13 test prerelease)
 
+- Create private runtime metadata in stage subprocesses. Preserve the caller's umask.
+
 - Verify the configured and running dashboard profile before service drain and after restart.
 - Recognize the exact pinned Hermes bundled launcher. Refuse unrelated inline programs.
 - Preserve literal percent signs in the effective systemd environment. Refuse declared environment files.

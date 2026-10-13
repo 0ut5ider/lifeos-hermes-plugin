@@ -74,6 +74,8 @@ The original selected suite still skips three optional fixture cases: the fully 
 
 The current final source changes require a new rc.3 complete-package build and qualification, and any published rc.3 claim must bind those new exact bytes. The primary owns that work. Stable release selection, default-branch web replay, and daily deployment remain governed by their existing explicit gates.
 
+The primary starts the new rc.3 archive qualification during report finalization. It is incomplete at this checkpoint. The primary also updates PROGRESS.json to mark the old acceptance as historical and link the final-review replay. My unchanged-snapshot assertion detects that evidence-only edit; `snapshot-change.json` preserves both hashes and the assertion. All product hashes remain unchanged. The final hash map includes the updated progress file, and the preceding map is retained separately. This observation does not establish rc.3 qualification.
+
 ## Independent checks and exact commands
 
 All commands run from `/home/outsider/Projects/Hermes_agent/LifeOS_plugin`. Structured command metadata and complete outputs are retained here.

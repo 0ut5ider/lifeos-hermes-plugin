@@ -181,7 +181,7 @@ def run_stage(command, job, label, *, environment, cwd=None, timeout=1800):
     with (job / (label + '.stdout')).open('wb') as stdout, (job / (label + '.stderr')).open('wb') as stderr:
         os.fchmod(stdout.fileno(), 0o600); os.fchmod(stderr.fileno(), 0o600)
         result = subprocess.run([str(part) for part in command], env=environment, cwd=cwd or job,
-            stdout=stdout, stderr=stderr, timeout=timeout)
+            stdout=stdout, stderr=stderr, timeout=timeout, umask=0o077)
     if result.returncode:
         raise ReleaseRejected('Release preparation fails at ' + label + '. The active installation is unchanged.')
 

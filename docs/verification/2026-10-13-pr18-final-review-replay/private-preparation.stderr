@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/release-ui-fixture/prepare_reviewed_fixture.py", line 33, in <module>
+    result=prepare(profile,settings['version'],name='SyntheticAdrian',assistant='SyntheticCerebo',catalog=ReleaseCatalog(api_origin=origin,asset_origin=origin))
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-release-manager/cli.py", line 97, in prepare
+    return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, intent=intent)
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-release-manager/cli.py", line 140, in _prepare
+    'runtime': runtime, 'runtime_fingerprint': runtime_source_fingerprint(Path(runtime['source'])),
+                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-release-manager/release_stage.py", line 29, in runtime_source_fingerprint
+    return fingerprint(path, excluded_root_entries=frozenset({'.hermes', '.bytecode-fingerprint'}))
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-release-manager/release_programs.py", line 83, in fingerprint
+    raise ProgramConflict('Program trees require regular owner artifacts without shared write access')
+ui_fixture_manager.release_programs.ProgramConflict: Program trees require regular owner artifacts without shared write access

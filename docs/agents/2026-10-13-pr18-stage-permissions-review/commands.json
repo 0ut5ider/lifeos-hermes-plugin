@@ -1,0 +1,71 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "commands": [
+    {
+      "purpose": "Complete follow-up product diff",
+      "command": [
+        "git",
+        "diff",
+        "f29e40a6...10459df6c2b27bda8911dfd96a25b92bee769c93",
+        "--",
+        ":!docs/agents",
+        ":!docs/verification"
+      ],
+      "stdout": "product-diff.patch",
+      "exit_code": 0
+    },
+    {
+      "purpose": "All run_stage callsites",
+      "command": [
+        "rg",
+        "-n",
+        "run_stage\\(",
+        "optional/lifeos_release_manager",
+        "tests"
+      ],
+      "exit_code": 0
+    },
+    {
+      "purpose": "Stage CLI preparation regression suite",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_release_stage",
+        "test_release_manager_cli",
+        "test_release_preparation"
+      ],
+      "stdout": "focused-tests.stdout",
+      "stderr": "focused-tests.stderr",
+      "exit_code": 0,
+      "tests": 36,
+      "skips": 0,
+      "seconds": 0.72
+    },
+    {
+      "purpose": "Actual native metadata reproduction and correction",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hermes-managed-20261012/upstream"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "docs/agents/2026-10-13-pr18-stage-permissions-review/native_metadata_probe.py"
+      ],
+      "stdout": "native-metadata-probe.stdout",
+      "stderr": "native-metadata-probe.stderr",
+      "exit_code": 0
+    }
+  ]
+}
