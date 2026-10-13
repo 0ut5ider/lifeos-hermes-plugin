@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2-rc.2 (unpublished version-only test candidate)
+
+- Change the complete integration version to verify a numerical update through Hermes and both dashboard update controls.
+- Keep the program behavior from the corrected 0.4.2-rc.1 candidate.
+
 ## 0.4.2-rc.1 (unpublished test candidate)
 
 - Add Install LifeOS, Update LifeOS, and Update plugin controls to the LifeOS releases page.
