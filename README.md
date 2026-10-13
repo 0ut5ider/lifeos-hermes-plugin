@@ -1,14 +1,20 @@
 # LifeOS plugin for Hermes
 
-**Release candidate:** `0.4.0`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
-The native port passes 716 selected tests and all twelve upstream source checks. The candidate applies ten Hermes patch groups and twenty-five LifeOS patch groups.
+**Qualified release:** `0.4.0`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+The exact package passes 625 integration checks and 716 native tests across 38 files.
+It uses ten Hermes patch groups and twenty-five LifeOS patch groups.
+Bun 1.4.3 replaces the extraction-failing 1.3.14 pin. All twelve native dependency locks stay fixed.
 
-The complete release manager in `optional/lifeos_release_manager` passes development acceptance for fresh installation, update, interruption recovery, and rollback.
-Three independent PR review rounds resolve eight findings. The final frozen candidate passes 625 integration checks and actual development update, recovery, and rollback. Bun 1.4.3 replaces the extraction-failing 1.3.14 pin during stable qualification. All twelve native dependency locks stay fixed. The stable archive must pass qualification before publication and daily deployment.
-The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records its current state.
+The complete release manager in `optional/lifeos_release_manager` supports fresh installation, updates, interruption recovery, and rollback.
+Actual development checks pass, including automatic reboot, off-server whole-guest recovery, three Atlas cases, all 143 program targets, and authenticated normal rollback.
+The final focused review is clear. Twenty-nine certificate refusal cases and actual historical-receipt refusal pass.
+The [stable qualification record](docs/verification/2026-10-12-release-0.4.0/README.md) identifies the exact archive and certificate.
+The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
-**Deployed version:** `0.3.1`. At the start of 0.4.0 qualification, development `.252` and daily `.253` run the exact release package from `9af63325`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+**Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
+Normal qualification rollback restores that same exact release on development `.252` before the public update check.
+See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
 
@@ -41,7 +47,7 @@ This plugin is a translation layer that allows a full replacement of Claude code
 
 The [governed Content disposal gate](docs/verification/2026-10-08-remaining-reader-audit/README.md) passes 72 final checks and 131 broader checks. Current native ledger admission guards tombstones and recoverable source, sidecar, and derivative moves. Existing trash and later owner edits survive. Partial committed cleanup resumes from the original file inventory. At that checkpoint, live runner cancellation, custom inboxes, installed acceptance, and the combined daily release remained open.
 
-**Status:** Daily text release 0.2.0 deployed on `.253`. The bridge runs native LifeOS hooks at matching Hermes events. The approved Step 1 checklist passes all 152 scenarios. The first daily-use release uses Discord text and a fresh store on a separate server. `.252` remains the development server. The October 10 combined candidate passes installed memory, background work, local profile recovery, and rollback. PR7 merges its corrections. The daily guest at `.253` passes off-server restoration. Private-channel delivery and managed memory activation pass. Cross-session Discord memory acceptance passes, including governed synthetic-fact cleanup. Voice, import, reverse migration, and the complete Hermes-managed installer are deferred. See the [current release plan](docs/full-experience-release-plan.md#daily-guest-installation-and-recovery-october-11).
+**Status:** Daily text release 0.3.1 deployed on `.253`. The bridge runs native LifeOS hooks at matching Hermes events. The approved Step 1 checklist passes all 152 scenarios. The first daily-use release uses Discord text and a fresh store on a separate server. `.252` remains the development server. The October 10 combined candidate passes installed memory, background work, local profile recovery, and rollback. PR7 merges its corrections. The daily guest at `.253` passes off-server restoration. Private-channel delivery and managed memory activation pass. Cross-session Discord memory acceptance passes, including governed synthetic-fact cleanup. Voice, import, and reverse migration remain deferred. The complete Hermes-managed installer is qualified in 0.4.0. See the [current release plan](docs/full-experience-release-plan.md#daily-guest-installation-and-recovery-october-11).
 
 The [October 6 selected hook completion checks](docs/verification/2026-10-06-hook-completion/README.md) give every one of the 74 registrations a selected passing case. The ledger contains 152 equal selected cases. The [additional guard controls](docs/verification/2026-10-06-step1/guard-branches/README.md) verify 23 Bash, Write, and Edit pairs. Cases for 65 registrations use native client events; nine use actual Hermes tools with direct native handler comparisons. The checks verify Pulse guards, question state, configuration audit sources, web Safety delivery, and successful or partial batch patches. The [native parser controls](docs/verification/2026-10-06-step1/guard-parser/README.md) also correct a missed shell-quoted literal target and verify six actual RTK branches. The [real evaluation controls](docs/verification/2026-10-06-step1/evaluation-branches/README.md) add seven Write and Edit pairs, including actual child inference and protected-file approval. The [protected-file patch](docs/verification/2026-10-06-step1/protected-instructions/README.md) prevents an unattended approval wait. The [service fixture controls](docs/verification/2026-10-06-step1/service-isolation/README.md) isolate the shared user service manager without weakening product admission. The [file-effect controls](docs/verification/2026-10-06-step1/file-effects/README.md) cover 78 actual native and Hermes operations. The [Edit delivery pair](docs/verification/2026-10-06-step1/knowledge-edit/README.md) and [model-selected batch control](docs/verification/2026-10-06-step1/knowledge-batch/README.md) retain actual knowledge warning delivery. The approved branch checks and Discord question round trip pass. Development and the Discord gateway run on `.252`. The `.212` gateway is masked and inactive.
 
@@ -259,13 +265,13 @@ The `host`, `user`, `port`, and `root` must match the active Hermes SSH backend.
 
 The standalone manager in `optional/lifeos_release_manager` adds the `lifeos-release` command and a registered Hermes skill.
 The complete package includes the supported Hermes runtime, LifeOS programs, bridge, manager, dependencies, dashboard, and public commands.
-The current candidate has no published production certificate. The public installation path requires a qualified release with the frozen dependency closure.
+The qualified 0.4.0 certificate binds the complete package and frozen dependency closure. Public installation verification follows stable publication.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
-After publication, replace `QUALIFIED_TAG` with the exact qualified release tag:
+Use the qualified stable tag after publication:
 
 ```bash
-hermes plugins install 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager' --ref QUALIFIED_TAG
+hermes plugins install 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager' --ref v0.4.0
 hermes plugins enable lifeos-release-manager
 hermes lifeos-release status
 hermes lifeos-release prepare --name Adrian --assistant Cerebo

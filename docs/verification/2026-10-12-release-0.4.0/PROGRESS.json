@@ -1,9 +1,9 @@
 {
-  "status": "QUALIFYING_CORRECTED_ARCHIVE",
+  "status": "QUALIFIED_AWAITING_PUBLICATION",
   "version": "0.4.0",
   "merged_pr": 14,
   "merged_commit": "be215380dcbda35c92e6f28b23b4a1d7bc15004e",
-  "production_qualified": false,
+  "production_qualified": true,
   "daily_server_changed": false,
   "completed": [
     "PR14 merged",
@@ -13,19 +13,19 @@
     "Fresh stock plugin installation and real interrupted recovery",
     "Authenticated development update and real interruption recovery",
     "Development automatic reboot verification",
-    "PR15 review and certificate binding regression correction"
+    "PR15 review and certificate binding regression correction",
+    "Whole-guest off-server restore, three Atlas cases, 143 program targets, and disposable cleanup",
+    "Authenticated normal development rollback to exact accepted 0.3.1",
+    "Public release certificate generated from all completed gates"
   ],
   "remaining": [
-    "Whole-guest off-server restore and three Atlas cases",
-    "Authenticated normal development rollback",
-    "Qualified publication and public installation verification"
+    "PR15 merge and immutable stable publication",
+    "Public stock installation and public development update verification"
   ],
   "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
   "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
   "archive_bytes": 119131156,
-  "running": [
-    "Off-server whole-guest restore"
-  ],
+  "running": [],
   "dependency_preparation_failure": {
     "operation": "16e36a5f9d0f413f82d7833bd2fa7b2f",
     "safe_refusal": true,
@@ -120,7 +120,7 @@
     "evidence": "/root/lifeos-release-0.4.0/history-restore",
     "source_guest": 101,
     "disposable_guest": 110,
-    "state": "Replacement disposable restore running; successful backup reused",
+    "state": "PASS; disconnected verification completes and disposable guest 110 is removed",
     "restore_timeout_seconds": 7200,
     "prior_attempt": "Intentionally cancelled before the original one-hour ceiling; partial guest and volume removed by Proxmox",
     "prior_attempt_receipt": "restore-ceiling-adjustment.json"
@@ -179,5 +179,27 @@
     "required_interruption_exit_receipt": "development-bunfixed-interruption-exit.json",
     "review": "CLEAR",
     "program_archive_changed": false
+  },
+  "whole_guest_recovery": {
+    "status": "PASS",
+    "receipt": "whole-guest-recovery.json",
+    "cases": 3,
+    "program_coverage_receipt": "whole-guest-program-coverage.json",
+    "program_targets": 143,
+    "controller_receipt": "whole-guest-controller.json",
+    "disposable_guest_removed": true
+  },
+  "normal_rollback": {
+    "status": "PASS",
+    "operation": "5a659e7f11e1437b8e33d65f3e064426",
+    "receipt": "development-bunfixed-rollback.json",
+    "configuration_and_model_preserved": true,
+    "all_three_services_running": true
+  },
+  "certificate": {
+    "file": "RELEASE-CERTIFICATE.json",
+    "sha256": "d57f24578a05467afd57df96b3bc9c2110a6b0b88777bac429544dd9f3b75a0d",
+    "production_qualified": true,
+    "daily_promotion_verified": false
   }
 }

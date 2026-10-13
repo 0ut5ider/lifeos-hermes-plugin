@@ -96,3 +96,14 @@ The actual whole-guest restore is still running. Do not certify or roll back unt
 
 Final interruption prerequisite review is clear. All twenty-nine cases and actual historical proof refusal pass independently.
 The primary reruns the reviewed three-case probe, including all fourteen certificate receipt hashes, and confirms exact reviewed file bytes.
+
+Whole-guest controller finishes process.done 0. Actual restore, all three Atlas cases, and all 143 program targets pass. Guest 110 is removed.
+Safe receipts: whole-guest-recovery.json, whole-guest-program-coverage.json, whole-guest-controller.json.
+The normal owner rollback request first refuses HTTP 400 because an empty JSON body is supplied. This is a client request error; no effect occurs.
+A corrected bodyless POST to operation 5a/restore is pending in browser tab_h_6cbd26ac-befc-4d03-95f7-0b4474990134 window.normalRollback040.
+
+All corrected archive qualification gates pass. Whole restore verifies three Atlas cases and 143 program targets and removes guest 110.
+Normal bodyless owner rollback passes HTTP 200, completes, and verifies exact 0.3.1, configuration, model mapping, aliases, and all services.
+Public RELEASE-CERTIFICATE.json is generated, SHA-256 d57f24578a05467afd57df96b3bc9c2110a6b0b88777bac429544dd9f3b75a0d. Do not replace it.
+Next: finalize PR15 and merge, publish immutable v0.4.0 assets, then actual public stock installation and default stable update on .252.
+Daily .253 remains unchanged. No product code changes occur after sealed program commit a87e7ae9.

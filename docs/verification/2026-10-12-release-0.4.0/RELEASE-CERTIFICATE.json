@@ -1,0 +1,86 @@
+{
+  "format": 1,
+  "status": "QUALIFIED",
+  "production_qualified": true,
+  "version": "0.4.0",
+  "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+  "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+  "archive_bytes": 119131156,
+  "hermes_dashboard_sha256": "e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec",
+  "hermes_base": "71d34bad1045610252eda02ee79549436896e784",
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "hermes_patch_count": 10,
+  "lifeos_patch_count": 25,
+  "bun_version": "1.4.3",
+  "bun_archive_sha256": "1fc2edac843102909e3a1be1d8d9802cc6071cf074e67e88231f4ffe0f8b397b",
+  "frozen_native_locks_unchanged": true,
+  "integration_tests": 625,
+  "native_tests": 716,
+  "native_test_files": 38,
+  "fresh_interruption_recovery_verified": true,
+  "installed_development_verified": true,
+  "development_interruption_recovery_verified": true,
+  "development_program_rollback_verified": true,
+  "development_boot_verified": true,
+  "whole_guest_history_recovery": {
+    "status": "PASS",
+    "archive": "PBS-01:backup/ct/101/2026-10-13T00:43:38Z",
+    "source_guest": 101,
+    "restored_guest": 110,
+    "network_disconnected": true,
+    "application_services_masked": true,
+    "cases": [
+      {
+        "case": "baseline",
+        "status": "PASS",
+        "restored_files": 16,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "interrupted",
+        "status": "PASS",
+        "restored_files": 20,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "later-edit",
+        "status": "PASS",
+        "restored_files": 20,
+        "later_edit_refused": true,
+        "archive_and_live_group_verified": true
+      }
+    ],
+    "production_guest_changed": false
+  },
+  "whole_guest_program_coverage": {
+    "status": "PASS",
+    "version": "0.4.0",
+    "program_commit": "a87e7ae94894dabc3651454d1334cb23c4fae27e",
+    "archive_sha256": "82acd3da141ef5aad322b49f30a8306305c298fa6706d44cc320de54f76442da",
+    "program_targets": 143,
+    "native_mount_targets": 8,
+    "network_disconnected": true,
+    "application_services_masked": true
+  },
+  "qualification_receipt_sha256": {
+    "integration-sealed-a87e7ae9.json": "57d8958d16eb4a1315e3355731e78a6d54899e9143bb0013a0e8721f8ed1368d",
+    "integration-sealed-a87e7ae9.stderr": "a08d9608f0d1a19c143fc0b7e35dd05a171a852f23e68efb7e7d2cfc2b51ce4c",
+    "native-sealed-a87e7ae9.json": "262d2d0b7b1f40a99493b2b53b14fd63c2d9bce3083b488d10cc1d595ce646ee",
+    "native-sealed-a87e7ae9.stdout": "a2f8ec5fc9b6d7e4148437b3dd03b37c7f408d7c19068845e22f9a70f9a34406",
+    "native-sealed-a87e7ae9.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fresh-install-a87e7ae9-bunfixed.json": "b1a2d054099c38437d39a5b84de00be989c32ccd9a817512db815a300cc8f746",
+    "development-bunfixed-update.json": "678eabcbb68290f603deecc0605f6e7c91fb7b5db02ce6fd238f8dc649b163fd",
+    "development-bunfixed-rollback.json": "d80ffc62609e3989807447a28d224f561ce33e86949e60cb60b8bf9c82216e55",
+    "development-bunfixed-interruption-recovery.json": "4bcb6c6ed5070f62cff3082b2e8a4905fe3806960d8ae19b7c68517e44a6a250",
+    "development-preparation-bunfixed-interruption.json": "120d211ed335cef7dedb596e3a830103fd092644f44775946a4129e0f1efcc97",
+    "development-bunfixed-interruption-exit.json": "88de8a67ca389fa9b26ee2a5ef0fd146c44263133ba50d82e5bb7a470089c547",
+    "whole-guest-recovery.json": "839b14b1d8bbb8e3aec212808b310ba2446f6f177b396efbdb791cc4bbf3645d",
+    "whole-guest-program-coverage.json": "f0d13522735caec28989f86c507cb16627f8bc68056fa9b897ab2ecbea7b36df",
+    "development-bunfixed-boot.json": "388585f33d7d995cd9774584a363254c2bfc3a75397654e07f6dd211b568ea6f"
+  },
+  "daily_promotion_verified": false,
+  "automatic_morning_observed": false,
+  "build_manifest_note": "The immutable candidate manifest records build-time state. This certificate records completed release qualification."
+}
