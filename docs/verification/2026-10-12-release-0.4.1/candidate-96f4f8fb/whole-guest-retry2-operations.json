@@ -1,0 +1,261 @@
+[
+  {
+    "label": "inventory",
+    "command": [
+      "pvesh",
+      "get",
+      "/cluster/resources",
+      "--type",
+      "vm",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.02189386903774
+  },
+  {
+    "label": "drain-source",
+    "command": [
+      "pct",
+      "exec",
+      "101",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/87561ff313e348508c3c7e1331b838be/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 32.07599549903534
+  },
+  {
+    "label": "backup-source",
+    "command": [
+      "vzdump",
+      "101",
+      "--storage",
+      "PBS-01",
+      "--mode",
+      "stop",
+      "--notes-template",
+      "LifeOS 0.4.1 managed release recovery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2951.643565791077
+  },
+  {
+    "label": "archives",
+    "command": [
+      "pvesh",
+      "get",
+      "/nodes/pve-tr1950x/storage/PBS-01/content",
+      "--content",
+      "backup",
+      "--vmid",
+      "101",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.5151178839150816
+  },
+  {
+    "label": "resume-source",
+    "command": [
+      "pct",
+      "exec",
+      "101",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/87561ff313e348508c3c7e1331b838be/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.2219785929191858
+  },
+  {
+    "label": "inventory",
+    "command": [
+      "pvesh",
+      "get",
+      "/cluster/resources",
+      "--type",
+      "vm",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.2703006389783695
+  },
+  {
+    "label": "restore",
+    "command": [
+      "pct",
+      "restore",
+      "110",
+      "PBS-01:backup/ct/101/2026-10-13T06:25:09Z",
+      "--storage",
+      "local-zfs",
+      "--rootfs",
+      "local-zfs:300",
+      "--unprivileged",
+      "1",
+      "--onboot",
+      "0",
+      "--hostname",
+      "lifeos-041-recovery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4541.958772354992
+  },
+  {
+    "label": "disconnect",
+    "command": [
+      "pct",
+      "set",
+      "110",
+      "--delete",
+      "net0",
+      "--onboot",
+      "0",
+      "--tags",
+      "disposable;lifeos-041-recovery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.07378413900733
+  },
+  {
+    "label": "mount",
+    "command": [
+      "pct",
+      "mount",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9657475959975272
+  },
+  {
+    "label": "unmount",
+    "command": [
+      "pct",
+      "unmount",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8846347730141133
+  },
+  {
+    "label": "boot-isolated",
+    "command": [
+      "pct",
+      "start",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.112558417953551
+  },
+  {
+    "label": "restored-config",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9106962429359555
+  },
+  {
+    "label": "network",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "ip",
+      "-brief",
+      "address"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8671247980091721
+  },
+  {
+    "label": "verify-history",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/87561ff313e348508c3c7e1331b838be/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-20261013-041-96f4f8fb/history_guest_recovery.py",
+      "verify",
+      "/home/lifeos-hermes/releases/qualification-20261013-041-96f4f8fb/source"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.629474706016481
+  },
+  {
+    "label": "verify-stable-programs",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/87561ff313e348508c3c7e1331b838be/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-20261013-041-96f4f8fb/verify_stable_restored.py",
+      "87561ff313e348508c3c7e1331b838be"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 41.62833596696146
+  },
+  {
+    "label": "shutdown-restore",
+    "command": [
+      "pct",
+      "shutdown",
+      "110",
+      "--timeout",
+      "90"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.5758194889640436
+  },
+  {
+    "label": "cleanup-config",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8549149569589645
+  },
+  {
+    "label": "destroy-disposable",
+    "command": [
+      "pct",
+      "destroy",
+      "110",
+      "--purge",
+      "1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.809072095900774
+  }
+]

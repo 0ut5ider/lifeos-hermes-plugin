@@ -1,15 +1,13 @@
 {
-  "status": "QUALIFYING_CORRECTED_SEALED_CANDIDATE",
+  "status": "QUALIFIED_AWAITING_PUBLICATION",
   "version": "0.4.1",
-  "production_qualified": false,
+  "production_qualified": true,
   "daily_server_changed": false,
   "published_040_assets_unchanged": true,
   "reason": "Actual installed SDK registration exceeded its 10-second deadline while scanning skill metadata.",
   "fix": "Cache scandir file metadata once per root and replay entries in source order.",
   "remaining": [
-    "Corrected sealed integration, official native runner, fresh installation and interruption recovery",
-    "Installed development interruption/recovery, normal update, reboot, exact whole-guest restore and rollback",
-    "Strict certificate, PR16 merge, immutable publication",
+    "PR16 merge and immutable publication",
     "Actual public exact-version installation and default development update"
   ],
   "focused_controls": {
@@ -43,10 +41,7 @@
     "elapsed_seconds": 285.60277056798805,
     "receipt": "candidate-96f4f8fb/fresh-install-96f4f8fb-041.json"
   },
-  "running": {
-    "whole_guest_retry2_supervisor": 2373839,
-    "restore_task": "UPID:pve-tr1950x:002438F0:044DE82C:6ACDECFF:vzrestore:110:root@pam:"
-  },
+  "running": {},
   "integration_gate": {
     "status": "PASS",
     "tests": 631,
@@ -167,7 +162,10 @@
     "Corrected installed interruption exit73 and public CLI recovery: exact03, all3services, all3aliases and model mapping",
     "Actual corrected normal installed update: exact041/96/SHA462, all3services, aliases and model mapping",
     "Actual corrected guest reboot: exact041, all3services enabled/automatic, no restarts, Bun1.4.3",
-    "Three synthetic Atlas whole-guest recovery fixtures prepared without personal data"
+    "Three synthetic Atlas whole-guest recovery fixtures prepared without personal data",
+    "Exact whole-guest recovery: three Atlas cases, 143 program targets, offline guest removed",
+    "Normal authenticated rollback restores exact03, all3services, aliases and model mapping",
+    "Strict exact-archive qualification certificate passes all completed gates"
   ],
   "boot_gate": {
     "status": "PASS",
@@ -176,7 +174,7 @@
     "restarts": 0
   },
   "whole_guest_gate": {
-    "status": "RESTORE_RETRY2_RUNNING",
+    "status": "PASS",
     "program_commit": "96f4f8fbef21f53ee704eb16f34698bc35b5dc77",
     "operation": "87561ff313e348508c3c7e1331b838be",
     "host_directory": "/root/lifeos-release-0.4.1/history-restore",
@@ -194,6 +192,22 @@
     "first_restore_failure": "Disk quota exceeded (os error122)",
     "quota_receipt": "candidate-96f4f8fb/restore-quota-measurement.json",
     "restore_rootfs_gib": 300,
-    "backup_reused": true
+    "backup_reused": true,
+    "receipt": "candidate-96f4f8fb/whole-guest-recovery.json",
+    "program_coverage_receipt": "candidate-96f4f8fb/whole-guest-program-coverage.json",
+    "program_targets": 143,
+    "disposable_guest_removed": true
+  },
+  "rollback_gate": {
+    "status": "PASS",
+    "receipt": "candidate-96f4f8fb/development-bunfixed-rollback.json",
+    "prior_version": "0.3.1",
+    "services": 3,
+    "model_mapping_preserved": true
+  },
+  "certificate": {
+    "status": "QUALIFIED",
+    "sha256": "4f6bea28370d899e2ec13a003d4fe90e57c1cfdeddf511f01e636676603c0ddc",
+    "receipt": "candidate-96f4f8fb/RELEASE-CERTIFICATE.json"
   }
 }
