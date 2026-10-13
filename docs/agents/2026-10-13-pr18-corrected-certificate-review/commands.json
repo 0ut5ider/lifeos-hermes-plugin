@@ -1,0 +1,40 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "commands": [
+    {
+      "purpose": "Applied predicate and recovery-admission AST control",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "docs/agents/2026-10-13-pr18-corrected-certificate-review/predicate_probe.py"
+      ],
+      "stdout": "predicate-probe.stdout",
+      "stderr": "predicate-probe.stderr",
+      "exit_code": 0,
+      "certificate_issuance_executed": false
+    },
+    {
+      "purpose": "Independent actual archive and native evidence chain",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "command": [
+        "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "docs/agents/2026-10-13-pr18-corrected-certificate-review/archive_chain_probe.py"
+      ],
+      "stdout": "archive-chain-probe.stdout",
+      "stderr": "archive-chain-probe.stderr",
+      "exit_code": 0,
+      "new_extraction": false,
+      "certificate_issuance_executed": false
+    }
+  ]
+}

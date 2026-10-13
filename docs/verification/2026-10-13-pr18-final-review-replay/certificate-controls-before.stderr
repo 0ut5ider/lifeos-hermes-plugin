@@ -1,0 +1,185 @@
+test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) ... 
+  test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=0) ... FAIL
+  test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=1) ... FAIL
+  test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=2) ... FAIL
+  test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=3) ... FAIL
+test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) ... 
+  test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-fresh-recovery.json', unit='hermes-gateway.service') ... FAIL
+  test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-fresh-recovery.json', unit='com.lifeos.pulse.service') ... FAIL
+  test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-installed-update.json', unit='hermes-gateway.service') ... FAIL
+  test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-installed-update.json', unit='com.lifeos.pulse.service') ... FAIL
+test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) ... 
+  test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) (changes={'native_present': False}) ... FAIL
+  test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) (changes={'program_state': 'preparing'}) ... FAIL
+  test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) (changes={'program_targets': 0}) ... FAIL
+test_valid_actual_receipts_create_a_scoped_test_certificate (__main__.CorrectedCertificateTests.test_valid_actual_receipts_create_a_scoped_test_certificate) ... ok
+
+======================================================================
+FAIL: test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 48, in test_invalid_recovery_admission_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "f37a8a112ce617008846124d57a9714c03c7a1c39a6b780a550adfd762219c39",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 48, in test_invalid_recovery_admission_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "14f9e5eb87e60d755ad1ce5533d9c6eb7c8d2c27cc52558fd55426a268a442d1",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 48, in test_invalid_recovery_admission_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "65c900d69f651ca95efff432b9b347d7ae1b223c834410dd5aa52f7beb448812",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_invalid_recovery_admission_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_invalid_recovery_admission_refuses_certificate_creation) (mutation=3)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 48, in test_invalid_recovery_admission_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "d6f05ead655535e14e41a7ff28a8cf81ab162b0a94a28a882d2fcd5e1d36685b",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-fresh-recovery.json', unit='hermes-gateway.service')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 56, in test_missing_inactive_services_refuse_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "deb905b2aaed2d4dcbd6b7b9760fc6b1b8399d713f0aceb173a683fd811db697",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-fresh-recovery.json', unit='com.lifeos.pulse.service')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 56, in test_missing_inactive_services_refuse_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "48d2ddd81220d8ef2721cf4326fadd778009ee9d0d6e70d3df78b8454e80763a",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-installed-update.json', unit='hermes-gateway.service')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 56, in test_missing_inactive_services_refuse_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "251c0d93e9d17f5e31b67856ab3d1119f131f96e22948ff2f3d16fe7e6beeed9",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_inactive_services_refuse_certificate_creation (__main__.CorrectedCertificateTests.test_missing_inactive_services_refuse_certificate_creation) (receipt='private-stage-installed-update.json', unit='com.lifeos.pulse.service')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 56, in test_missing_inactive_services_refuse_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "fcfc43a4c9ee03ff3f0aca961f0fd9bbb426a12546d03a9db4a3102cea416dea",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) (changes={'native_present': False})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 63, in test_missing_native_program_publication_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "bdc27071df42b9a7b2468b0876f13fc15668a27845cb09477524dc005afaa21a",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) (changes={'program_state': 'preparing'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 63, in test_missing_native_program_publication_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "3989270adbb17da456ecac027efbffed1357b3d4e9e968a75f1e5aa2626cfb95",
+  "production_qualified": false
+}
+
+
+======================================================================
+FAIL: test_missing_native_program_publication_refuses_certificate_creation (__main__.CorrectedCertificateTests.test_missing_native_program_publication_refuses_certificate_creation) (changes={'program_targets': 0})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-pr18-final-review-replay/test_corrected_certificate.py", line 63, in test_missing_native_program_publication_refuses_certificate_creation
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {
+  "version": "0.4.2-rc.3",
+  "archive_sha256": "fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474",
+  "certificate_sha256": "6a659161f84e89a2ede9103db362373b63194bd636eb0263afaee595104dc90b",
+  "production_qualified": false
+}
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 28.290s
+
+FAILED (failures=11)
