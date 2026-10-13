@@ -16,9 +16,9 @@
     "Complete frozen integration: 626 tests"
   ],
   "remaining": [
-    "Focused review and actual stock CLI exact selection",
-    "Immutable candidate build and full qualification",
-    "Corrected stable publication and public workflow verification"
+    "Normal installed update, automatic reboot verification, exact whole-guest recovery and rollback",
+    "Strict certificate, PR16 merge, immutable publication",
+    "Actual public exact-version installation and default development update"
   ],
   "focused_controls": {
     "status": "PASS",
@@ -52,8 +52,7 @@
     "receipt": "fresh-install-223cbfc1-041.json"
   },
   "running": [
-    "Authenticated owner review of interrupted candidate",
-    "Second candidate preparation for normal acceptance"
+    "Actual installed public CLI recovery of the interrupted development update"
   ],
   "integration_gate": {
     "status": "PASS",
@@ -61,5 +60,13 @@
     "elapsed_seconds": 793.1115276360069,
     "receipt": "integration-sealed-223cbfc1.json"
   },
-  "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14"
+  "interruption_operation": "aeeff7ce70ae4f8997706c8d74fcef14",
+  "interruption_gate": {
+    "actual_systemd_exit": 73,
+    "checkpoint": "programs-published",
+    "operation": "aeeff7ce70ae4f8997706c8d74fcef14",
+    "receipt": "development-bunfixed-interruption-exit.json",
+    "recovery_admitted": true,
+    "recovery_complete": false
+  }
 }
