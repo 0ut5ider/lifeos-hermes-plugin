@@ -1,0 +1,27 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "docs/verification/2026-10-13-pr18-final-review-replay"
+  },
+  "command": [
+    "/home/outsider/.cache/lifeos-hermes-managed-20261012/native-test-environment/bin/python",
+    "-B",
+    "-W",
+    "error::ResourceWarning",
+    "-m",
+    "unittest",
+    "-v",
+    "test_corrected_certificate"
+  ],
+  "launcher": "setsid bash docs/agents/2026-10-13-pr18-corrected-certificate-review-2/run_controls.sh",
+  "stdout": "certificate-controls.stdout",
+  "stderr": "certificate-controls.stderr",
+  "completion": "certificate-controls.done",
+  "exit_code": 0,
+  "tests": 4,
+  "certifier_subprocess_cases": 12,
+  "seconds": 27.948,
+  "real_certificate_output": false,
+  "new_archive_extraction": false
+}
