@@ -144,3 +144,17 @@ Use observe_whole_restore.py retry1, not the initial failed observerdefault.
 Same actual package, operation875, preserved three synthetic fixtures, new backup timestamp. No product changes or fixture resets.
 Source services resume after retrybackup and before longrestore. Do not admit normalrollback until actualwholePASS and cleanup.
 Actual host recovery receipts will be in retry1/verification.json and retry1/stable-program-coverage.json.
+
+
+## Actual041backup complete and restore running
+
+Retry1 backupPASS2951.644s. Protected archivePBS-01:backup/ct/101/2026-10-13T06:25:09Z, logical260066615373bytes.
+Controller source-services resumePASS. Initial directSSHsource observerfailsNoRoute because DHCPgivesguest101newIPv4.247 after restart.
+Proxmoxguest101running; eth0.247/24 proves addresschange, no source-program failure.
+No replies/ARPneighborFAILED at.252. Proxmoxnet0 changed onlyip fromdhcp to192.168.8.252/24, existinggateway192.168.8.1.
+MAC BC:24:11:DB:53:50, bridgevmbr0, firewall1, IPv6manual preserved. Originalnet0 recordeddevelopment-address-restoration.json forundo.
+PVEpersistent/etc/systemd/network/eth0.network has DHCPno, Address.252/24, existinggateway. networkctl reload/reconfigure removes transient.247.
+Finaleth0only.252/24; SSHworks. Primary sourceobserverPASS exact041/all3services/modelsA4 afterbackup.
+Actualrestore task UPID:pve-tr1950x:002317B6:04469B7E:6ACDDA4F:vzrestore:110:root@pam: starts07:14:23UTC; latest13percent.
+Do not admit normalrollback yet. Wait retry1 process.done0 +verification and programcoverage +guarded110cleanup.
+Sourceonline anddataunchanged; .253dailyuntouched. Externalnetworkconfigchange is outsideGit and must be reportedwithundo.
