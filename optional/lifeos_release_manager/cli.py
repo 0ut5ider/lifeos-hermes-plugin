@@ -233,6 +233,8 @@ def launch_worker(profile, identifier, action, *, authorization=None):
     from .release_worker import admit_operation
     from .release_operation import record_worker
     job, request = operation(profile, identifier)
+    manifest = validate_package(job / 'package', request['certificate'])
+    validate_files(job / 'worker', manifest['manager_files'], forbid_bytecode=True)
     admit_operation(job, request, action, authorization=authorization)
     command = [request['runtime']['python'], '-B', str(job / 'worker/release_worker.py'), str(job), '--action', action]
     environment = {'HOME': request['account_home'], 'HERMES_HOME': request['profile'],

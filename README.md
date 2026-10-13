@@ -288,6 +288,9 @@ The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f85
 
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
 The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
+The manager compares the extracted release manifest with the certificate-bound archive before it imports candidate source.
+Both native source manifests must match their hashes in that authenticated release manifest.
+The launcher checks the retained worker files before it admits an installation, recovery, or rollback action.
 The owner reviews the operation in the authenticated Hermes dashboard and selects the installation action.
 A native mount under managed memory requires the owner's grant for that operation.
 After Hermes restarts, `hermes lifeos-release status IDENTIFIER` reports the result and `hermes lifeos-version` verifies the installed identity.
