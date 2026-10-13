@@ -28,6 +28,13 @@ assert bun_version=='1.4.3'
 assert sha(bun)=='7ce7d6b654eddeec20afddf2396317fba6dc19ab52788a27e894e1806bf8f24b'
 command=['bash', str(root/'scripts/run_tests.sh'), '-j', '4', 'tests/agent/test_prompt_hook_block.py', 'tests/agent/test_terminal_approval_batch.py', 'tests/agent/test_tool_result_context_hook.py', 'tests/agent/test_turn_context.py', 'tests/agent/test_verification_continuation_budget.py', 'tests/gateway/test_clarify_cancellation_outcome.py', 'tests/gateway/test_clarify_delivery_fallback.py', 'tests/gateway/test_discord_command_identity.py', 'tests/gateway/test_discord_connect.py', 'tests/gateway/test_discord_guild_channel_only.py', 'tests/gateway/test_discord_sync_limit.py', 'tests/gateway/test_resume_command.py', 'tests/gateway/test_stop_clarify_waiters.py', 'tests/hermes_cli/test_approval_transport.py', 'tests/hermes_cli/test_cli_resume_command.py', 'tests/hermes_cli/test_plugins.py', 'tests/hermes_cli/test_required_middleware.py', 'tests/hermes_cli/test_required_policy_hooks.py', 'tests/hermes_cli/test_session_boundary_hooks.py', 'tests/hermes_cli/test_stop_policy_dispatch.py', 'tests/plugins/test_transform_tool_result_hook.py', 'tests/test_lifeos_aux_no_fallback.py', 'tests/test_lifeos_batch_schema.py', 'tests/test_lifeos_delegate_tier_route.py', 'tests/test_lifeos_execute_code_session.py', 'tests/tools/test_approval_plugin_hooks.py', 'tests/tools/test_code_execution.py', 'tests/tools/test_code_execution_file_rpc.py', 'tests/tools/test_code_kernel.py', 'tests/tools/test_code_kernel_remote.py', 'tests/tools/test_plugin_command_approval.py', 'tests/tools/test_remote_file_staleness.py', 'tests/tools/test_protected_instruction_cli_channel.py']
 command.extend(['tests/hermes_cli/test_plugin_policy_arguments.py','tests/hermes_cli/test_plugins_middleware_chain.py','tests/agent/test_auxiliary_client.py','tests/agent/test_auxiliary_fallback_multihop.py','tests/hermes_cli/test_plugin_async_dispatch.py'])
+# The actual SSH fixture returns after the independent stop-mode guest backup.
+ready_deadline=time.monotonic()+1800
+while True:
+ ready=subprocess.run(['ssh','-o','ConnectTimeout=5','root@192.168.8.252','true'],capture_output=True,timeout=15)
+ if ready.returncode==0:break
+ assert time.monotonic()<ready_deadline,'The actual SSH fixture does not return'
+ time.sleep(5)
 started=time.monotonic()
 with (out/('native-sealed-'+identity+'.stdout')).open('w') as stdout,(out/('native-sealed-'+identity+'.stderr')).open('w') as stderr:
  r=subprocess.run(command,cwd=root,env=env,stdout=stdout,stderr=stderr,timeout=1800)
