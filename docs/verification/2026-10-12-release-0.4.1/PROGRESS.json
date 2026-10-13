@@ -6,9 +6,7 @@
   "published_040_assets_unchanged": true,
   "reason": "Actual installed SDK registration exceeded its 10-second deadline while scanning skill metadata.",
   "fix": "Cache scandir file metadata once per root and replay entries in source order.",
-  "remaining": [
-    "Documentation PR review and merge"
-  ],
+  "remaining": [],
   "focused_controls": {
     "status": "PASS",
     "tests": 26,
@@ -259,5 +257,13 @@
   "public_acceptance_asset": {
     "status": "PASS",
     "receipt": "candidate-96f4f8fb/public-acceptance-asset-publication.json"
+  },
+  "documentation_pr": {
+    "number": 17,
+    "url": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/17",
+    "review": "CLEAR",
+    "reviewed_head": "330c3b51a99216578d5c5a005837c098d8fd6c30",
+    "primary_repeated_audit_checks": 46,
+    "report": "docs/agents/2026-10-13-pr17-public-release-evidence-review/pr17-public-release-evidence-review.md"
   }
 }
