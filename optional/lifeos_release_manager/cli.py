@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -151,15 +152,33 @@ def prepare_plan(job, request, files):
 
 
 def preparation_status(job, value):
-    if value['state'] == 'preparing' and (job / 'preparation-worker.json').exists():
+    if value['state'] == 'preparing':
         from .release_operation import process_stamp
-        worker = read_private(job / 'preparation-worker.json')
-        if set(worker) != {'pid', 'start_time'}:
-            raise ReleaseRejected('The preparation worker identity changes')
-        stamp = process_stamp(worker['pid'])
-        if stamp is None or stamp != worker['start_time']:
-            return {**value, 'state': 'preparation_interrupted',
-                    'error': 'Preparation stops before a ready plan. Prepare another release. Active programs stay in place.'}
+        if (job / 'preparation-worker.json').exists():
+            worker = read_private(job / 'preparation-worker.json')
+            if set(worker) != {'pid', 'start_time'}:
+                raise ReleaseRejected('The preparation worker identity changes')
+            stamp = process_stamp(worker['pid'])
+            if stamp is not None and stamp == worker['start_time']:
+                return value
+        # The parent holds this lease before spawning; the detached child inherits it.
+        try:
+            descriptor = os.open(job.parent / 'preparation.lock', os.O_RDWR | os.O_NOFOLLOW)
+        except FileNotFoundError:
+            descriptor = None
+        if descriptor is not None:
+            try:
+                info = os.fstat(descriptor)
+                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+                    raise ReleaseRejected('Preparation requires a private owner lock')
+                try:
+                    fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    return value
+            finally:
+                os.close(descriptor)
+        return {**value, 'state': 'preparation_interrupted',
+                'error': 'Preparation stops before a ready plan. Prepare another release. Active programs stay in place.'}
     return value
 
 

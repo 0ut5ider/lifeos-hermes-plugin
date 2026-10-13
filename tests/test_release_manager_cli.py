@@ -61,6 +61,10 @@ class ReleaseManagerCommandTests(unittest.TestCase):
             job = profile / '.lifeos-releases' / ('a' * 32)
             job.mkdir(parents=True, mode=0o700)
             write_state(job, 'preparing')
+            from optional.lifeos_release_manager.release_operation import process_stamp
+            from optional.lifeos_release_manager.release_programs import publish
+            publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(),
+                'start_time': process_stamp(os.getpid())}).encode())
             self.assertEqual(status(profile)['operations'], [{'identifier': job.name, 'state': 'preparing'}])
             write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
             self.assertEqual(status(profile, job.name)['state'], 'preparation_failed')

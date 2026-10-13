@@ -1,0 +1,11 @@
+# Stock installation requires a service lifecycle
+
+The first PR18 review finds an abandoned launch window. Preparation writes its durable state before publishing the worker identity. A crash in that window leaves `preparing` indefinitely and disables all three page actions. The correction checks the actual inherited preparation lease before reporting interruption. Both missing-worker and dead-worker states stay active while the lease is held. They become retryable when the lease is free.
+
+The review also finds a pre-existing installation-to-update gap. Stock container 103 has a loaded active Hermes dashboard service, but its gateway and Pulse services are not found. Fresh installation skips services, while every later update requires all three. Creating those units manually between actions would hide the broken user workflow.
+
+A second source review rejects the initial unit-files-only correction. The stock Hermes dashboard runs agents itself. It must stop around publication, and a child with a new process session still belongs to its systemd control group. The installer therefore uses a separate worker service and a fixed first-install dashboard journal. Its service controller keeps the existing three-role defaults for updates. The reviewed transaction preserves existing definitions and adds missing inactive definitions. The gateway and Pulse remain disabled and inactive.
+
+The bounded Linux path requires a managed dashboard and its fixed account launcher. Procfs checks reject a matching foreground backend. An abrupt worker exit can leave the dashboard stopped and require the retained qualified command for recovery. Caught failures return only a verified dashboard runtime. They do not activate memory or replace user data. This limit needs actual guest verification before qualification.
+
+The focused first-install service test initially fails because the controller has no first-install mode. The corrected real user-manager test drains only the synthetic dashboard before the native root exists and resumes it after publication. All 14 actual service controls pass. The selected 46 release controls and three UI contracts also pass. Full qualification and guest installation remain unfinished at this checkpoint.

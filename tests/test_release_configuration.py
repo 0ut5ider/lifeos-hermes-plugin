@@ -43,7 +43,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
             commands = {name: 'bin/' + name for name in ('hermes', 'hermes-agent', 'hermes-acp')}
             (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
             (job / 'manifest.json').chmod(0o644)
-            request = {'profile': str(profile), 'account_home': str(root), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
+            request = {'profile': str(profile), 'account_home': str(root), 'installed': str(root / '.claude'), 'runtime': {'python': sys.executable, 'source': str(Path(__import__('hermes_cli').__file__).resolve().parents[1]), 'hermes': str(job / 'bin/hermes'), 'bun': str(job / 'tools/bun')},
                        'certificate': {'hermes_base': 'synthetic', 'lifeos_base': 'synthetic',
                            'hermes_patch_count': 10, 'lifeos_patch_count': 25},
                        'version': '0.4.0-dev.1', 'commit': 'a' * 40, 'package_sha256': 'b' * 64}
@@ -70,6 +70,37 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
             self.assertEqual((job / 'generated/config.yaml').read_bytes(), before)
             self.assertEqual(yaml.load((profile / 'config.yaml').read_bytes())['_config_version'], 46)
+
+    def test_fresh_service_files_are_reviewed_without_starting_or_enabling_them(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, generated = root / '.hermes', root / 'generated'
+            profile.mkdir(mode=0o700)
+            generated.mkdir(mode=0o700)
+            units = root / '.config/systemd/user'
+            units.mkdir(parents=True)
+            dashboard = units / 'hermes-dashboard.service'
+            original = '# Synthetic existing dashboard\n[Service]\nWorkingDirectory=' + str(root) + '\n'
+            dashboard.write_text(original)
+            files = service_files({'account_home': str(root), 'profile': str(profile), 'installed': str(root / '.claude')}, generated)
+            self.assertEqual(files[dashboard], dashboard)
+            gateway, pulse = units / 'hermes-gateway.service', units / 'com.lifeos.pulse.service'
+            self.assertFalse(gateway.exists())
+            self.assertFalse(pulse.exists())
+            self.assertIn('WorkingDirectory="' + str(profile) + '"', files[gateway].read_text())
+            self.assertIn('WorkingDirectory="' + str(root / '.claude/LIFEOS/PULSE') + '"', files[pulse].read_text())
+            transaction = ProgramTransaction(root / 'snapshot')
+            transaction.prepare(directories={}, files=files)
+            self.assertEqual(len(transaction._load()['entries']), 3)
+            transaction.apply()
+            self.assertEqual(dashboard.read_text(), original)
+            self.assertTrue(gateway.is_file() and pulse.is_file())
+            self.assertFalse((units / 'default.target.wants').exists())
+            transaction.restore()
+            self.assertFalse(gateway.exists() or pulse.exists())
+            self.assertEqual(dashboard.read_text(), original)
 
     def test_required_enablement_preserves_other_plugins_and_model_tiers(self):
         with tempfile.TemporaryDirectory() as temp:

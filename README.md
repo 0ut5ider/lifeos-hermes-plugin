@@ -305,6 +305,15 @@ Recovery and rollback use the prepared operation and retained program journal. T
 Rollback requires the current release identity and retained native mount. A later native remount or release can expire that operation's rollback.
 Status hides an expired rollback. Admission checks current and retained programs before it stops services.
 Installation keeps the model and tier mapping and does not activate lasting memory automatically.
+The Linux first-installation path requires an owner user service for the Hermes dashboard.
+That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
+The installer drains that dashboard and runs its worker in a separate user service.
+The reviewed installation creates missing gateway and Pulse definitions but leaves them disabled and inactive.
+It preserves existing service definitions. A foreground dashboard or a foreign service binding refuses preparation.
+Fresh installation uses a separate dashboard service journal. Later updates verify and drain all three services.
+An abrupt worker termination can require recovery from the command line when the dashboard is stopped.
+Use the retained operation's qualified `bin/hermes lifeos-release recover IDENTIFIER` command in that case.
+Recovery preserves user data and refuses later program or service-definition edits.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) records the tested paths and publication limits.
 
 ## Install the plugin

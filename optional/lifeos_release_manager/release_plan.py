@@ -48,7 +48,13 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
         from gateway.status import live_gateway_pid_for_home
         if live_gateway_pid_for_home(profile):
             raise ReleaseRejected('Stop this profile gateway before its first native installation')
-        result.update(native_changes=True, services=None, launchers=[Path.home() / '.local/bin/hermes'])
+        if fresh_recovery:
+            from .cli import read_private
+            preview = read_private(job / 'plan.json')['services']
+        else:
+            from .release_services import fresh_preview
+            preview = fresh_preview(candidate, profile, installed, installation_lease=installation_lease)
+        result.update(native_changes=True, services=preview, launchers=[Path.home() / '.local/bin/hermes'])
         return result
     if not bridge.is_dir() or bridge.is_symlink():
         raise ReleaseRejected('The existing native installation requires its installed bridge')

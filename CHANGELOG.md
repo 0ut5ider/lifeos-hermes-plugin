@@ -9,6 +9,9 @@
 - Prevent isolated stock Python from writing bytecode into qualified source trees during dashboard review.
 - Prepare valid block YAML for native mounting while preserving configuration values.
 - Block further preparation during installation or required recovery. Display each operation identifier.
+- Detect interrupted preparation before the worker identity is published. Preserve active launch leases.
+- Drain the managed stock dashboard during first installation through a separate worker service.
+- Include missing inactive gateway and Pulse definitions in the reviewed program transaction.
 - Keep release 0.4.1 as the default stable release during isolated user-action acceptance.
 
 ## 0.4.1 (2026-10-13)

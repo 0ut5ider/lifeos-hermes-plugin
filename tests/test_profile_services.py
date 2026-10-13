@@ -139,6 +139,26 @@ class ProfileServicesTests(unittest.TestCase):
         self.record('lifecycle', {'before': before, 'drain': result, 'stopped': stopped, 'resume': restarted,
             'after': after, 'journal': json.loads(self.barrier().journal.read_text())})
 
+    def test_first_installation_drains_dashboard_before_native_root_exists(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        absent = self.home / 'native-not-installed'
+        before = {role: self.properties(role) for role in self.units}
+        barrier = ProfileServices(self.profile, absent,
+            units={'dashboard': self.units['dashboard']}, first_installation=True)
+        preview = barrier.preview()
+        self.assertEqual(barrier.drain(signature=preview['signature'])['services_stopped'], ['dashboard'])
+        barrier.verify_stopped()
+        self.assertEqual(self.properties('dashboard')['MainPID'], '0')
+        for role in ('gateway', 'pulse'):
+            self.assertEqual(self.properties(role)['MainPID'], before[role]['MainPID'])
+        absent.mkdir()
+        restarted = ProfileServices(self.profile, absent,
+            units={'dashboard': self.units['dashboard']}, first_installation=True)
+        self.assertEqual(restarted.resume()['services_started'], ['dashboard'])
+        self.assertNotEqual(self.properties('dashboard')['MainPID'], before['dashboard']['MainPID'])
+        self.assertEqual(restarted.journal.parent.name, '.lifeos-installation-services')
+        self.assertFalse(self.barrier().journal.exists())
+
     def test_unit_from_another_profile_refuses_before_any_writer_stops(self):
         before = {role: self.properties(role) for role in self.units}
         other = self.home / 'different-profile'

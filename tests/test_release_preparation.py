@@ -72,6 +72,31 @@ class ReleasePreparationTests(unittest.TestCase):
             self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'preparing')
             self.assertFalse((job / 'request.json').exists())
 
+    def test_status_identifies_interruption_before_worker_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            job.parent.chmod(0o700)
+            write_state(job, 'preparing')
+            self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
+            self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'preparing')
+
+    def test_held_launch_lease_preserves_preparing_without_worker_identity(self):
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            job = profile / '.lifeos-releases' / ('a' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            job.parent.chmod(0o700)
+            write_state(job, 'preparing')
+            with (job.parent / 'preparation.lock').open('wb') as lock:
+                os.fchmod(lock.fileno(), 0o600)
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                self.assertEqual(status(profile, job.name)['state'], 'preparing')
+                publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
+                self.assertEqual(status(profile, job.name)['state'], 'preparing')
+            self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
+
     def test_status_identifies_interruption_after_the_request_is_published(self):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)
