@@ -4,14 +4,167 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
 class ReleaseAccountTests(unittest.TestCase):
+    def test_installed_inspector_accepts_the_account_launcher_under_native_home(self):
+        from lifeos_hook_bridge import lifeos_installation
+        from optional.lifeos_release_manager import release_plan
+        from optional.lifeos_release_manager.release_programs import ProgramConflict
+        from optional.lifeos_release_manager.release_stage import sha, runtime_source_fingerprint
+        from test_release_stage import ReleaseStageTests
+        with tempfile.TemporaryDirectory() as temporary:
+            owner = Path(temporary) / 'account'
+            profile = owner / '.hermes'
+            native_home = owner / 'native/home'
+            installed = native_home / '.claude'
+            bridge = profile / 'plugins/lifeos-hook-bridge'
+            launcher = owner / '.local/bin/hermes'
+            for directory in (profile, installed, bridge, launcher.parent):
+                directory.mkdir(parents=True, mode=0o700)
+            launcher.write_text('#!/bin/sh\nexit 0\n')
+            launcher.chmod(0o700)
+            lifeos_installation.publish(profile, native_home, owner / 'workspace')
+            selection_bytes = (profile / lifeos_installation.SETTING).read_bytes()
+            job = profile / '.lifeos-releases' / ('b' * 32)
+            job.mkdir(parents=True, mode=0o700)
+            package, certificate, _, archive = ReleaseStageTests().package(job)
+            (job / 'manifest.json').write_text('{}')
+            runtime = {key: str(job / relative) for key, relative in {
+                'python': 'python-environment/bin/python', 'bun': 'tools/bun',
+                'hermes': 'bin/hermes', 'source': 'hermes', 'reference': 'reference-home/.claude'}.items()}
+            Path(runtime['source']).mkdir(mode=0o700)
+            request = {'profile': str(profile), 'installed': str(installed), 'account_home': str(owner),
+                'identifier': job.name, 'certificate': certificate, 'version': certificate['version'],
+                'commit': certificate['program_commit'], 'package_sha256': sha(archive),
+                'runtime_metadata_sha256': sha(job / 'manifest.json'),
+                'python_lock_sha256': sha(package / 'python-runtime/uv.lock'), 'runtime': runtime,
+                'runtime_fingerprint': runtime_source_fingerprint(Path(runtime['source']))}
+            service_launcher = launcher
+            class Services:
+                def __init__(self, *arguments, **options):
+                    pass
+                def preview(self):
+                    return {'synthetic': True}
+                def _inspect(self, role):
+                    return {'ExecStart': '{ path=' + str(service_launcher) + ' ; argv[]=hermes ; }'}, None
+            modules = {'lifeos_installation': lifeos_installation,
+                'release_version': SimpleNamespace(status=lambda *args: {'active': {'verification': 'verified'}}),
+                'version_drift': SimpleNamespace(default_baseline_path=lambda home: home / 'baseline.json',
+                    load_baseline=lambda *args: {'source_root': str(owner / 'source')}),
+                'update_worker': SimpleNamespace(check_prior_source=lambda *args: None,
+                    check_template_compatibility=lambda *args: None),
+                'update_plan': SimpleNamespace(plan_system_files=lambda *args: {'add': [], 'replace': [], 'remove': []}),
+                'profile_services': SimpleNamespace(ProfileServices=Services),
+                'update_dependencies': SimpleNamespace(_package_roots=lambda *args: set())}
+            source = SimpleNamespace(memory_module=modules.__getitem__)
+            # Native source planning and systemd queries are separate unit boundaries.
+            with patch.dict(os.environ, HOME=str(native_home)), patch.object(release_plan, 'load_bridge', return_value=source):
+                self.assertEqual(Path.home(), native_home)
+                result = release_plan.inspect_operation(job, request)
+                self.assertEqual(result['launchers'], [launcher])
+                self.assertEqual(result['installed'], installed)
+                self.assertFalse(result['fresh'])
+                request['account_home'] = str(native_home)
+                with self.assertRaisesRegex(ReleaseRejected, 'installation binding'):
+                    release_plan.inspect_operation(job, request)
+                request['account_home'] = str(owner)
+                service_launcher = Path(temporary) / 'outside-hermes'
+                service_launcher.write_text('#!/bin/sh\nexit 0\n')
+                with self.assertRaisesRegex(ReleaseRejected, 'regular account program'):
+                    release_plan.inspect_operation(job, request)
+                service_launcher = launcher.with_name('alias-hermes')
+                service_launcher.symlink_to(launcher)
+                with self.assertRaises(ProgramConflict):
+                    release_plan.inspect_operation(job, request)
+            self.assertEqual((profile / lifeos_installation.SETTING).read_bytes(), selection_bytes)
+
+    def test_dashboard_queue_launches_from_the_account_under_native_home(self):
+        import inspect
+        from optional.lifeos_release_manager import release_preparation
+        class LaunchBoundary(Exception):
+            pass
+        lines, start = inspect.getsourcelines(release_preparation.queue)
+        boundary = start + next(i for i, line in enumerate(lines) if 'process = subprocess.Popen(' in line)
+        for relative in ('.hermes', '.hermes/profiles/work'):
+            with self.subTest(profile=relative), tempfile.TemporaryDirectory() as temporary:
+                owner = Path(temporary)
+                profile = owner / relative
+                profile.mkdir(parents=True, mode=0o700)
+                native_home = owner / 'native/home'
+                native_home.mkdir(parents=True, mode=0o700)
+                captured = {}
+                def trace(frame, event, argument):
+                    if frame.f_code is release_preparation.queue.__code__ and event == 'line' and frame.f_lineno == boundary:
+                        captured.update(home=frame.f_locals['home'], environment=frame.f_locals['environment'])
+                        raise LaunchBoundary()
+                    return trace
+                previous = sys.gettrace()
+                try:
+                    with patch.dict(os.environ, HOME=str(native_home)):
+                        sys.settrace(trace)
+                        with self.assertRaises(LaunchBoundary):
+                            release_preparation.queue(profile, {'intent': 'update', 'version': '0.4.3'})
+                finally:
+                    sys.settrace(previous)
+                self.assertEqual(captured['home'], owner)
+                self.assertEqual(captured['environment']['HOME'], str(owner))
+                self.assertEqual(captured['environment']['HERMES_HOME'], str(profile))
+
+    def test_cli_preparation_records_account_and_preserves_native_selection(self):
+        from lifeos_hook_bridge import lifeos_installation
+        from optional.lifeos_release_manager import cli
+        from test_release_stage import ReleaseStageTests
+        class PlanningBoundary(Exception):
+            pass
+        for relative in ('.hermes', '.hermes/profiles/work'):
+            with self.subTest(profile=relative), tempfile.TemporaryDirectory() as temporary:
+                owner = Path(temporary)
+                profile = owner / relative
+                profile.mkdir(parents=True, mode=0o700)
+                native_home = owner / 'native/home'
+                (native_home / '.claude').mkdir(parents=True, mode=0o700)
+                lifeos_installation.publish(profile, native_home, owner / 'workspace')
+                selection_bytes = (profile / lifeos_installation.SETTING).read_bytes()
+                (profile / 'config.yaml').write_text('model: synthetic\n')
+                catalog_root = owner / 'catalog'
+                catalog_root.mkdir(mode=0o700)
+                _, certificate, _, archive = ReleaseStageTests().package(catalog_root)
+                class Catalog:
+                    def download(self, directory, version):
+                        directory.mkdir(mode=0o700)
+                        retained = directory / archive.name
+                        shutil.copy2(archive, retained)
+                        return {'archive': retained, 'certificate': certificate, 'dashboard': owner / 'dashboard.tgz'}
+                source = SimpleNamespace(memory_module={
+                    'fresh_store': SimpleNamespace(_name=lambda value: value),
+                    'lifeos_installation': lifeos_installation}.__getitem__)
+                captured = {}
+                def prepare_runtime(job, package, dashboard, selected_profile):
+                    (job / 'manifest.json').write_text('{}')
+                    return {'source': str(catalog_root)}
+                def stop_planning(job, request, files):
+                    captured.update(cli.read_private(job / 'request.json'))
+                    raise PlanningBoundary()
+                with patch.dict(os.environ, HOME=str(native_home)), \
+                        patch.object(cli, 'load_bridge', return_value=source), \
+                        patch.object(cli, 'prepare_runtime', side_effect=prepare_runtime), \
+                        patch.object(cli, 'prepare_plan', side_effect=stop_planning):
+                    with self.assertRaises(PlanningBoundary):
+                        cli.prepare(profile, catalog=Catalog(), intent='update')
+                self.assertEqual(captured['account_home'], str(owner))
+                self.assertEqual(captured['installed'], str(native_home / '.claude'))
+                self.assertEqual(captured['profile'], str(profile))
+                self.assertEqual((profile / lifeos_installation.SETTING).read_bytes(), selection_bytes)
+
     def test_standard_profile_keeps_account_home_under_native_service_home(self):
         from optional.lifeos_release_manager.release_accounts import account_home
         with tempfile.TemporaryDirectory() as temporary:
