@@ -18,8 +18,19 @@ from optional.lifeos_release_manager.release_catalog import extract_package
 build = json.loads(Path(os.environ['LIFEOS_QUALIFICATION_BUILD']).read_bytes())
 fixture = Path(os.environ['LIFEOS_EDITOR_FIXTURE'])
 prepared = json.loads((fixture / 'fresh-preparation.json').read_bytes())
-assert prepared['status'] == 'PASS'
-job = Path(prepared['job'])
+if prepared['status'] == 'PASS':
+    job = Path(prepared['job'])
+else:
+    assert prepared['candidate'] == build['head']
+    assert prepared['error'] == 'Release preparation fails at candidate-review. The active installation is unchanged.'
+    jobs = list((fixture / 'account/.hermes/.lifeos-releases').glob('*/runtime.json'))
+    assert len(jobs) == 1
+    job = jobs[0].parent
+    failure = json.loads((job / 'worker-failure.json').read_bytes())
+    assert failure['exception'] == 'MemoryUnavailable'
+    assert failure['frames'][-1]['function'] == '_inspect'
+request = json.loads((job / 'request.json').read_bytes())
+assert request['commit'] == build['head'] and request['package_sha256'] == build['archive_sha256']
 archive = Path(build['archive'])
 assert hashlib.sha256(archive.read_bytes()).hexdigest() == build['archive_sha256']
 assert archive.stat().st_size == build['archive_bytes']
@@ -49,11 +60,19 @@ env = dict(os.environ, TZ='UTC', PYTHONDONTWRITEBYTECODE='1',
     LIFEOS_MANAGED_FRESH_OPERATION=str(job), LIFEOS_MANAGED_REFERENCE=str(native),
     LIFEOS_MANAGED_TEMPLATE_ORIGINALS=str(job / 'fresh-templates/template-originals'),
     LIFEOS_QUALIFICATION_BUILD=str(bound_build))
+historical = Path('/home/outsider/.cache/lifeos-daily-promotion-20261014/historical-fixture-040/account/.hermes/.lifeos-releases/98ecab3f82ed4689a59a965a04ba7b2c')
+env['LIFEOS_MANAGED_FRESH_OPERATION'] = str(historical)
+env['PYTHON'] = python
+label = os.environ.get('LIFEOS_QUALIFICATION_LABEL', 'candidate-integration')
+assert label in {'candidate-integration', 'candidate-corrected-controls'}
+if os.environ.get('LIFEOS_QUALIFICATION_TESTS'):
+    names = os.environ['LIFEOS_QUALIFICATION_TESTS'].split(',')
+    assert set(names) <= set(previous['command'][6:])
 command = [python, '-W', 'error::ResourceWarning', '-m', 'unittest', '-v', *names]
 start = time.monotonic()
 code = 1
 try:
-    with (folder / 'candidate-integration.stdout').open('w') as stdout, (folder / 'candidate-integration.stderr').open('w') as stderr:
+    with (folder / (label + '.stdout')).open('w') as stdout, (folder / (label + '.stderr')).open('w') as stderr:
         result = subprocess.run(command, cwd=package, env=env, stdout=stdout, stderr=stderr, timeout=7200)
     generated = package_matches(package, expected, allow_generated=True)
     code = result.returncode
@@ -61,7 +80,8 @@ try:
         'archive_bytes': build['archive_bytes'], 'archive_file_map_sha256': file_map_digest(expected),
         'archive_regular_files': len(expected), 'archive_files_match_before': True, 'archive_files_match_after': True,
         'generated_test_files': generated, 'tested_package': str(package), 'command': command,
+        'historical_fresh_operation': str(historical), 'fixture_service_admission': prepared['status'], 'fixture_limit': 'Native files and dependencies are prepared. Local stock service admission is a separate open check.',
         'exit_code': code, 'elapsed_seconds': time.monotonic() - start, 'live_selection_changed': False}
-    (folder / 'candidate-integration.json').write_text(json.dumps(report, indent=2) + '\n')
+    (folder / (label + '.json')).write_text(json.dumps(report, indent=2) + '\n')
 finally:
-    (folder / 'candidate-integration.done').write_text(str(code) + '\n')
+    (folder / (label + '.done')).write_text(str(code) + '\n')

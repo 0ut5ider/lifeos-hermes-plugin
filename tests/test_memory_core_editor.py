@@ -187,6 +187,30 @@ class MemoryCoreEditorTests(unittest.TestCase):
             self.assertEqual(response.status_code, 503, response.text)
             self.assertNotIn('Synthetic withheld core identity', response.text)
 
+    def test_forgotten_claim_cannot_return_through_core_reads_or_saves(self):
+        from lifeos_hook_bridge.memory_access import NativeMemory
+        from test_memory_native import OWNER
+        path = self.seed()
+        memory = NativeMemory(self.root, profile=self.fixture.configuration.path.parent)
+        claim = 'The synthetic retired pipeline uses violet envelopes.'
+        saved = memory.remember(OWNER, category='project', content=claim, title='Synthetic retired pipeline',
+            project='lab', request_id='core-retirement-remember')
+        self.assertEqual(saved['status'], 'committed')
+        self.assertEqual(memory.forget(OWNER, saved['reference'], 'core-retirement-forget')['status'], 'committed')
+        with httpx.Client(timeout=60) as client:
+            self.login(client)
+            reference = self.read(client).json()['reference']
+            before = path.read_bytes()
+            response = client.put(self.native + '/api/hermes/file/principal-identity',
+                json={'content': claim, 'reference': reference, 'request_id': 'core-retirement-refused-save'})
+            self.assertEqual(response.status_code, 503, response.text)
+            self.assertNotIn(claim, response.text)
+            self.assertEqual(path.read_bytes(), before)
+            path.write_text(claim)
+            response = self.read(client)
+            self.assertEqual(response.status_code, 503, response.text)
+            self.assertNotIn(claim, response.text)
+
     def test_redirected_and_hardlinked_profile_sources_are_withheld(self):
         profile = self.fixture.configuration.path.parent
         external = self.fixture.home / 'synthetic-external-core-config'

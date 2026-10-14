@@ -11,3 +11,5 @@ Three synthetic Atlas fixtures exercise the restored current programs: baseline,
 The cleanup command first uses an unsupported storage-list option. The supported Proxmox storage-content API confirms the owned storage is empty. The guest and storage are removed. All original guest states are preserved and the checkpoint remains protected. Failed observation and cleanup receipts remain separate from the completed safe verification.
 
 The public initial deployment checkpoint remains immutable. This later restore supplies new evidence and does not change the earlier historical asset. Automatic October 15 morning acceptance remains pending.
+
+The safe receipt is published as a new [daily-postpromotion-restore-verification.json asset](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.4.3/daily-postpromotion-restore-verification.json). The publication check preserves all four prior assets on v0.4.3, including its initial deployment checkpoint. The initial deployment asset remains the historical observation that precedes this restore test.
