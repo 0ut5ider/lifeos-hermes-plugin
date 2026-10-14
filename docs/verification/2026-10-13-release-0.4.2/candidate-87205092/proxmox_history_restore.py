@@ -54,7 +54,7 @@ try:
         archives=json.loads((out/'archives.stdout').read_text())
         archive=max(archives,key=lambda row:row['ctime'])['volid']
     else:
-        source(services_code.replace('ACTION',"s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Source writers drained')"),'drain-source')
+        source(services_code.replace('ACTION',"s.resume() if s.status()['recovery_required'] else None;s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Source writers drained')"),'drain-source')
         drained=True
         captured=json.loads(run(['pct','exec','101','--','runuser','-u','lifeos-hermes','--',python,'-B',
             '/home/lifeos-hermes/releases/qualification-0.4.2-87205092/program_artifact_receipt.py','capture',os.environ['LIFEOS_STABLE_OPERATION']], 'capture-program-artifacts'))

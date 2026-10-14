@@ -21,12 +21,12 @@
     },
     {
       "number": 4,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "name": "Development operation and reboot"
     },
     {
       "number": 5,
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "name": "Whole-guest restore and Atlas recovery"
     },
     {
@@ -140,8 +140,8 @@
     "ownership_activation": "PASS",
     "development_update": "PASS",
     "rollback_and_interruption": "PENDING",
-    "reboot": "PENDING",
-    "whole_guest_restore": "PENDING",
+    "reboot": "PASS",
+    "whole_guest_restore": "RUNNING",
     "stable_publication": "PENDING",
     "program_rollback": "PASS",
     "clean_full_installation": "PASS",
@@ -158,15 +158,26 @@
     "private_discord_audience": "PASS",
     "private_discord_delivery": "PASS",
     "native_atlas_job": "PASS",
-    "native_algorithm_job": "OVERVIEW_PENDING"
+    "native_algorithm_job": "PASS"
   },
   "active_development_operation": "3240c42939f2451293bd9d5cfcd8bf12",
   "algorithm_generation": {
     "cards": 24,
     "completed_cards": 24,
-    "overview_current": false,
+    "overview_current": true,
     "first_run_seconds": 546.336,
     "second_run_seconds": 546.029,
-    "resumable_progress_verified": true
+    "resumable_progress_verified": true,
+    "overview_completion_seconds": 77.562
+  },
+  "whole_guest_recovery": {
+    "status": "RUNNING",
+    "source_guest": 101,
+    "restored_guest": 110,
+    "backup_storage": "PBS-01",
+    "backup_mode": "snapshot",
+    "source_application_writers_drained": true,
+    "restore_storage": "lifeos-042-tests",
+    "disconnected_restore_required": true
   }
 }
