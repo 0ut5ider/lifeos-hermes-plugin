@@ -1,8 +1,8 @@
 {
   "version": "0.4.2",
-  "status": "CORRECTED_CANDIDATE_QUALIFICATION",
+  "status": "QUALIFIED_PENDING_PUBLICATION",
   "daily_server_changed": false,
-  "production_qualified": false,
+  "production_qualified": true,
   "steps": [
     {
       "number": 1,
@@ -26,7 +26,7 @@
     },
     {
       "number": 5,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "name": "Whole-guest restore and Atlas recovery"
     },
     {
@@ -141,7 +141,7 @@
     "development_update": "PASS",
     "rollback_and_interruption": "PASS",
     "reboot": "PASS",
-    "whole_guest_restore": "RUNNING",
+    "whole_guest_restore": "PASS",
     "stable_publication": "PENDING",
     "program_rollback": "PASS",
     "clean_full_installation": "PASS",
@@ -171,7 +171,7 @@
     "overview_completion_seconds": 77.562
   },
   "whole_guest_recovery": {
-    "status": "RESTORING_AFTER_MEASURED_CAPACITY_FAILURE",
+    "status": "PASS",
     "source_guest": 101,
     "restored_guest": 110,
     "backup_storage": "PBS-01",
@@ -190,7 +190,13 @@
     "retry_task": "UPID:pve-tr1950x:00076FD3:001800A0:6ACEE8E8:vzrestore:110:root@pam:",
     "remote_output_directory": "/root/lifeos-release-0.4.2/candidate-87205092/whole-guest-restore",
     "failed_attempt_directory": "/root/lifeos-release-0.4.2/candidate-87205092/whole-guest-restore-300g-failed",
-    "supervisor_stderr": "/root/lifeos-release-0.4.2/candidate-87205092/whole-restore-400g-supervisor.stderr"
+    "supervisor_stderr": "/root/lifeos-release-0.4.2/candidate-87205092/whole-restore-400g-supervisor.stderr",
+    "receipt": "candidate-87205092/whole-guest-recovery.json",
+    "process_completion": "PASS",
+    "disposable_restore_guest_removed": true,
+    "atlas_cases": 3,
+    "runtime_artifacts": 64268,
+    "regular_files": 57843
   },
   "pr_review": {
     "pr": 21,
@@ -224,5 +230,6 @@
     "receipt": "candidate-87205092/public-rc3-baseline.json",
     "synthetic_fact_preserved": true,
     "selected_models_and_tiers_preserved": true
-  }
+  },
+  "release_certificate": "candidate-87205092/RELEASE-CERTIFICATE.json"
 }

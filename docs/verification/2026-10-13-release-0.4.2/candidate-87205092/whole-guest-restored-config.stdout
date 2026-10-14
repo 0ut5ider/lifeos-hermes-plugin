@@ -1,0 +1,12 @@
+arch: amd64
+cores: 8
+description: LifeOS Hermes plugin development environment created 2026-10-05. Root disk is a ZFS dataset with zstd-3 compression.%0A
+features: nesting=1
+hostname: lifeos-042-recovery
+memory: 16384
+onboot: 0
+ostype: ubuntu
+rootfs: lifeos-042-tests:110/vm-110-disk-0.raw,size=400G
+swap: 0
+tags: disposable;lifeos-042-recovery
+unprivileged: 1
