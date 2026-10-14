@@ -1,0 +1,71 @@
+{
+  "old_exact_timing": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The current Pulse state and cron delivery receipt must agree"
+  },
+  "utc_Z_clock": {
+    "status": "PASS",
+    "receipt": {
+      "execution_source": "pulse-cron-journal",
+      "cron_starts": 1,
+      "cron_completions": 1,
+      "started_at": "2026-10-14T18:02:53.006000-04:00",
+      "completed_at": "2026-10-14T18:03:19.076000-04:00",
+      "timestamp_basis": "native-pulse-event",
+      "journal_capture_delay_ms": {
+        "start": 0.212,
+        "completion": 0.475
+      }
+    }
+  },
+  "duplicate_start": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "Pulse must record exactly one cron start and completion in the observation window"
+  },
+  "duplicate_completion": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "Pulse must record exactly one cron start and completion in the observation window"
+  },
+  "stale_state": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The current Pulse state and cron delivery receipt must agree"
+  },
+  "state_after_bound": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The current Pulse state and cron delivery receipt must agree"
+  },
+  "negative_capture_delay": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The native Pulse timestamp must agree with its bounded journal capture"
+  },
+  "late_capture": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The native Pulse timestamp must agree with its bounded journal capture"
+  },
+  "start_after_completion": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "Pulse must record exactly one cron start and completion in the observation window"
+  },
+  "completion_outside_window": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "Pulse must record exactly one cron start and completion in the observation window"
+  },
+  "completion_missing_clock": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The native Pulse timestamp must agree with its bounded journal capture"
+  },
+  "completion_naive_clock": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The native Pulse timestamp must agree with its bounded journal capture"
+  },
+  "wrong_channel": {
+    "status": "EXPECTED_REFUSAL",
+    "error": "The current Pulse state and cron delivery receipt must agree"
+  },
+  "safe_receipt_provenance": {
+    "status": "PASS",
+    "validator_sha256": "7bf8bfc72e44924dd4d463db71ae74c17ce7c4f823c0fa0832aee9b475c5b8a3",
+    "initial_failure_preserved": true,
+    "0700_observed": false
+  }
+}

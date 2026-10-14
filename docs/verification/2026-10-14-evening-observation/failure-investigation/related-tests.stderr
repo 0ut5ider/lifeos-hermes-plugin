@@ -1,0 +1,89 @@
+test_case_variants_accepted_by_the_parser_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_case_variants_accepted_by_the_parser_refuse_before_send) ... ok
+test_media_directives_refuse_even_when_quoted_missing_or_extensionless (test_daily_morning_delivery.DailyMorningDeliveryTests.test_media_directives_refuse_even_when_quoted_missing_or_extensionless) ... ok
+test_native_goals_sparks_and_next_actions_refuse_file_uploads (test_daily_morning_delivery.DailyMorningDeliveryTests.test_native_goals_sparks_and_next_actions_refuse_file_uploads) ... ok
+test_normal_narration_preserves_text_and_fixed_destination (test_daily_morning_delivery.DailyMorningDeliveryTests.test_normal_narration_preserves_text_and_fixed_destination) ... ok
+test_voice_and_document_transport_markers_refuse_before_send (test_daily_morning_delivery.DailyMorningDeliveryTests.test_voice_and_document_transport_markers_refuse_before_send) ... ok
+test_connector_loss_cannot_use_unmanaged_personal_sources (test_memory_morning_brief.MemoryMorningBriefTests.test_connector_loss_cannot_use_unmanaged_personal_sources) ... ok
+test_enabled_owner_job_executes_the_actual_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_enabled_owner_job_executes_the_actual_brief) ... ok
+test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) ... 
+  test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) (legacy=False) ... ERROR
+  test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) (legacy=True) ... ERROR
+test_missing_sources_preserve_native_no_action (test_memory_morning_brief.MemoryMorningBriefTests.test_missing_sources_preserve_native_no_action) ... ERROR
+test_oversized_source_and_control_text_never_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_oversized_source_and_control_text_never_enter_brief) ... ok
+test_owner_brief_preserves_native_goal_spark_and_action_output (test_memory_morning_brief.MemoryMorningBriefTests.test_owner_brief_preserves_native_goal_spark_and_action_output) ... ERROR
+test_private_sources_do_not_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_private_sources_do_not_enter_brief) ... ok
+test_read_only_owner_can_read_brief_without_publishing_files (test_memory_morning_brief.MemoryMorningBriefTests.test_read_only_owner_can_read_brief_without_publishing_files) ... ok
+test_redirected_source_cannot_supply_narration (test_memory_morning_brief.MemoryMorningBriefTests.test_redirected_source_cannot_supply_narration) ... ok
+test_retired_source_does_not_enter_brief (test_memory_morning_brief.MemoryMorningBriefTests.test_retired_source_does_not_enter_brief) ... ok
+test_revoked_brief_cannot_read_personal_sources (test_memory_morning_brief.MemoryMorningBriefTests.test_revoked_brief_cannot_read_personal_sources) ... ok
+test_source_and_authority_changes_after_actual_render_withhold_narration (test_memory_morning_brief.MemoryMorningBriefTests.test_source_and_authority_changes_after_actual_render_withhold_narration) ... ok
+test_standalone_legacy_goals_do_not_open_unused_unified_source (test_memory_morning_brief.MemoryMorningBriefTests.test_standalone_legacy_goals_do_not_open_unused_unified_source) ... ERROR
+test_unbound_brief_cannot_read_personal_sources (test_memory_morning_brief.MemoryMorningBriefTests.test_unbound_brief_cannot_read_personal_sources) ... ok
+
+======================================================================
+ERROR: test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) (legacy=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 95, in test_legacy_goals_and_unified_telos_fallback_match_native
+    result=self.call();expected=self.call(original=True)
+                                ~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 32, in call
+    source=Path(os.environ['LIFEOS_HARVEST_CONTROL_SOURCE']) if original else self.root
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_HARVEST_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_legacy_goals_and_unified_telos_fallback_match_native (test_memory_morning_brief.MemoryMorningBriefTests.test_legacy_goals_and_unified_telos_fallback_match_native) (legacy=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 95, in test_legacy_goals_and_unified_telos_fallback_match_native
+    result=self.call();expected=self.call(original=True)
+                                ~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 32, in call
+    source=Path(os.environ['LIFEOS_HARVEST_CONTROL_SOURCE']) if original else self.root
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_HARVEST_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_missing_sources_preserve_native_no_action (test_memory_morning_brief.MemoryMorningBriefTests.test_missing_sources_preserve_native_no_action)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 56, in test_missing_sources_preserve_native_no_action
+    self.assertEqual(result.stdout,self.call(original=True).stdout)
+                                   ~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 32, in call
+    source=Path(os.environ['LIFEOS_HARVEST_CONTROL_SOURCE']) if original else self.root
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_HARVEST_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_owner_brief_preserves_native_goal_spark_and_action_output (test_memory_morning_brief.MemoryMorningBriefTests.test_owner_brief_preserves_native_goal_spark_and_action_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 44, in test_owner_brief_preserves_native_goal_spark_and_action_output
+    expected=self.call(original=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 32, in call
+    source=Path(os.environ['LIFEOS_HARVEST_CONTROL_SOURCE']) if original else self.root
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_HARVEST_CONTROL_SOURCE'
+
+======================================================================
+ERROR: test_standalone_legacy_goals_do_not_open_unused_unified_source (test_memory_morning_brief.MemoryMorningBriefTests.test_standalone_legacy_goals_do_not_open_unused_unified_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 118, in test_standalone_legacy_goals_do_not_open_unused_unified_source
+    expected=self.call(original=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_morning_brief.py", line 32, in call
+    source=Path(os.environ['LIFEOS_HARVEST_CONTROL_SOURCE']) if original else self.root
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 709, in __getitem__
+KeyError: 'LIFEOS_HARVEST_CONTROL_SOURCE'
+
+----------------------------------------------------------------------
+Ran 19 tests in 3.645s
+
+FAILED (errors=5)
