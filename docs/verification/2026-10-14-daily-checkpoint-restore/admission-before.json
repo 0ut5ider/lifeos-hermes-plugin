@@ -1,0 +1,69 @@
+{
+  "status": "FAIL",
+  "scope": "Actual admission statements with local synthetic input files. No guest or backup operation.",
+  "cases": [
+    {
+      "case": "complete",
+      "passed": true,
+      "accepted": true,
+      "expected_accept": true,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "occupied_guest",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "unprotected",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "wrong_size",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "wrong_format",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "wrong_archive",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "archive_suffix",
+      "passed": false,
+      "accepted": true,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "occupied_storage",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    },
+    {
+      "case": "existing_directory",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false,
+      "mutation_commands_called": false
+    }
+  ]
+}
