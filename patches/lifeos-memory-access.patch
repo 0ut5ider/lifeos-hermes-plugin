@@ -14621,10 +14621,28 @@ index 235a0b5..58fe4c4 100644
    const daysIdx = argv.indexOf("--days");
 
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx b/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
-index 55eb097..0712901 100644
+index 55eb097..fc2b6f0 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
-@@ -39,6 +39,8 @@ export interface HermesFileEntry {
+@@ -1,3 +1,5 @@
++// ABOUTME: Displays declared owner core files with reviewed and recoverable saves.
++// ABOUTME: Withholds cached owner content after a current core request denies access.
+ "use client";
+ 
+ /**
+@@ -16,9 +18,10 @@
+  * Server contract: `LIFEOS/PULSE/modules/hermes.ts`.
+  */
+ 
+-import { useEffect, useState } from "react";
++import { useEffect, useRef, useState } from "react";
+ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+ import { localApiCall } from "@/lib/local-api";
++import { coreApiCall } from "@/lib/core-api";
+ import { Panel, PanelHeader, Pill } from "@/components/ui/chrome";
+ import {
+   FileText, Lock, RefreshCw, Save, X, ChevronRight, ChevronDown,
+@@ -39,6 +42,8 @@ export interface HermesFileEntry {
    exists: boolean;
    sealed: boolean;
    editable: boolean;
@@ -14633,7 +14651,31 @@ index 55eb097..0712901 100644
    generatedBy: string | null;
    sourceIds: string[];
    bytes: number | null;
-@@ -217,34 +219,40 @@ function FileRow({
+@@ -89,10 +94,10 @@ const SEVERITY_DIM: Record<string, "err" | "warn" | "neutral"> = { high: "err",
+  * refused call is classified, retry loops and zero-evidence taints surface as
+  * findings, and each finding names its deterministic next step.
+  */
+-function GuardFrictionPanel() {
++function GuardFrictionPanel({ onDenied }: { onDenied: () => void }) {
+   const { data } = useQuery<GuardLogAnalysis>({
+     queryKey: ["hermes-log-analysis"],
+-    queryFn: () => localApiCall("/api/hermes/log-analysis?days=14"),
++    queryFn: () => coreApiCall<GuardLogAnalysis>("/api/hermes/log-analysis?days=14", onDenied),
+     refetchInterval: 120_000,
+   });
+ 
+@@ -208,43 +213,51 @@ function FileRow({
+   onToggle,
+   byId,
+   onJump,
++  onDenied,
+ }: {
+   file: HermesFileEntry;
+   open: boolean;
+   onToggle: () => void;
+   byId: Map<string, HermesFileEntry>;
+   onJump: (id: string) => void;
++  onDenied: () => void;
  }) {
    const queryClient = useQueryClient();
    const [draft, setDraft] = useState<string | null>(null);
@@ -14644,8 +14686,9 @@ index 55eb097..0712901 100644
 -  const { data, isLoading } = useQuery<{ content: string; meta: HermesFileEntry }>({
 +  const { data, isLoading, isFetching, isError, error: readError } = useQuery<{ content: string; meta: HermesFileEntry; reference: string }>({
      queryKey: ["hermes-file", file.id],
-     queryFn: () => localApiCall(`/api/hermes/file/${encodeURIComponent(file.id)}`),
+-    queryFn: () => localApiCall(`/api/hermes/file/${encodeURIComponent(file.id)}`),
 -    enabled: open && !file.sealed && file.exists,
++    queryFn: () => coreApiCall<{content: string; meta: HermesFileEntry; reference: string}>(`/api/hermes/file/${encodeURIComponent(file.id)}`, onDenied),
 +    enabled: open && !file.sealed && file.readable !== false && file.exists,
      refetchOnWindowFocus: false,
    });
@@ -14673,7 +14716,7 @@ index 55eb097..0712901 100644
 -    mutationFn: (content: string) =>
 -      localApiCall(`/api/hermes/file/${encodeURIComponent(file.id)}`, {
 +    mutationFn: (fields: {content: string; reference: string; request_id: string}) =>
-+      localApiCall<{ok: boolean; reference: string}>(`/api/hermes/file/${encodeURIComponent(file.id)}`, {
++      coreApiCall<{ok: boolean; reference: string}>(`/api/hermes/file/${encodeURIComponent(file.id)}`, onDenied, {
          method: "PUT",
 -        body: JSON.stringify({ content }),
 +        body: JSON.stringify(fields),
@@ -14684,7 +14727,7 @@ index 55eb097..0712901 100644
        setError(null);
        setSaved(true);
        queryClient.invalidateQueries({ queryKey: ["hermes-file", file.id] });
-@@ -254,7 +262,7 @@ function FileRow({
+@@ -254,7 +267,7 @@ function FileRow({
      onError: (err: Error) => setError(err.message || "Save failed"),
    });
  
@@ -14693,7 +14736,7 @@ index 55eb097..0712901 100644
    const statusColor = !file.exists ? "var(--ink-3)" : file.sealed ? "var(--warn)" : file.editable ? "var(--ok)" : "var(--ink-2)";
  
    return (
-@@ -298,6 +306,10 @@ function FileRow({
+@@ -298,6 +311,10 @@ function FileRow({
              </div>
            )}
  
@@ -14704,7 +14747,7 @@ index 55eb097..0712901 100644
            {file.generatedBy && !file.sealed && (
              <div className="text-[12px] text-ink-2 flex items-start gap-2">
                <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "var(--warn)" }} />
-@@ -334,10 +346,10 @@ function FileRow({
+@@ -334,10 +351,10 @@ function FileRow({
              </div>
            )}
  
@@ -14717,7 +14760,7 @@ index 55eb097..0712901 100644
                  <textarea
                    value={draft}
                    onChange={(e) => setDraft(e.target.value)}
-@@ -352,12 +364,12 @@ function FileRow({
+@@ -352,12 +369,12 @@ function FileRow({
                    {error}
                  </div>
                )}
@@ -14733,7 +14776,7 @@ index 55eb097..0712901 100644
                      className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-md border border-line-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
                    >
                      <Save className="w-3.5 h-3.5" /> {save.isPending ? "Saving…" : "Save"}
-@@ -365,7 +377,12 @@ function FileRow({
+@@ -365,7 +382,12 @@ function FileRow({
                    <button
                      type="button"
                      disabled={!dirty}
@@ -14747,27 +14790,65 @@ index 55eb097..0712901 100644
                      className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-md border border-line-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
                    >
                      <X className="w-3.5 h-3.5" /> Revert
-@@ -393,10 +410,11 @@ export default function HermesFiles() {
+@@ -392,15 +414,29 @@ export default function HermesFiles() {
+   const queryClient = useQueryClient();
    const [openFile, setOpenFile] = useState<string | null>(null);
    const [remountResult, setRemountResult] = useState<string | null>(null);
++  const [refused, setRefused] = useState(false);
++  const denialRevision = useRef(0);
  
 -  const { data, isLoading } = useQuery<HermesOverview>({
++  function refuseOwner() {
++    denialRevision.current += 1;
++    setRefused(true);
++    void queryClient.invalidateQueries({queryKey: ["hermes-overview"]});
++  }
++
 +  const { data, isLoading, isError } = useQuery<HermesOverview>({
      queryKey: ["hermes-overview"],
-     queryFn: () => localApiCall("/api/hermes"),
+-    queryFn: () => localApiCall("/api/hermes"),
++    queryFn: async () => {
++      const revision = denialRevision.current;
++      const result = await localApiCall<HermesOverview>("/api/hermes");
++      if (revision === denialRevision.current) setRefused(false);
++      return result;
++    },
      refetchInterval: 60_000,
 +    retry: false,
    });
  
    const remount = useMutation({
-@@ -410,7 +428,7 @@ export default function HermesFiles() {
+-    mutationFn: () => localApiCall<{ ok: boolean; output: string; error: string | null }>("/api/hermes/remount", { method: "POST" }),
++    mutationFn: () => coreApiCall<{ ok: boolean; output: string; error: string | null }>("/api/hermes/remount", refuseOwner, { method: "POST" }),
+     onSuccess: (r) => {
+       setRemountResult(r.ok ? r.output : (r.error ?? "mount failed"));
+       queryClient.invalidateQueries({ queryKey: ["hermes-overview"] });
+@@ -410,7 +446,7 @@ export default function HermesFiles() {
    });
  
    if (isLoading) return <div className="text-[13px] text-ink-3">Loading Hermes core files…</div>;
 -  if (!data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
-+  if (isError || !data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
++  if (refused || isError || !data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
  
    const byId = new Map(data.files.map((f) => [f.id, f]));
+ 
+@@ -463,7 +499,7 @@ export default function HermesFiles() {
+         )}
+       </Panel>
+ 
+-      <GuardFrictionPanel />
++      <GuardFrictionPanel onDenied={refuseOwner} />
+ 
+       {PLANE_ORDER.map((plane) => {
+         const files = data.files.filter((f) => f.plane === plane);
+@@ -482,6 +518,7 @@ export default function HermesFiles() {
+                     onToggle={() => setOpenFile(openFile === f.id ? null : f.id)}
+                     byId={byId}
+                     onJump={jump}
++                    onDenied={refuseOwner}
+                   />
+                 </div>
+               ))}
 
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
 index 0259a78..319661b 100644
@@ -14851,3 +14932,54 @@ index 0259a78..319661b 100644
  
    if (method === "GET" && (pathname === "/api/hermes" || pathname === "/api/hermes/")) {
      let hermes: HermesHealth | null = null;
+
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts
+index 19f75fb..2e764fb 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts
+@@ -1,5 +1,13 @@
++// ABOUTME: Sends dashboard requests and retains the HTTP status of refused responses.
++// ABOUTME: Preserves the shared API exports and existing error messages.
+ // API client — relative paths so it works on any host (observatory server at :31337)
+ 
++export class LocalAPIError extends Error {
++  constructor(readonly status: number, statusText: string) {
++    super(`API error: ${status} ${statusText}`);
++  }
++}
++
+ async function apiCall<T = unknown>(
+   path: string,
+   options?: RequestInit
+@@ -12,7 +20,7 @@ async function apiCall<T = unknown>(
+     },
+   });
+   if (!response.ok) {
+-    throw new Error(`API error: ${response.status} ${response.statusText}`);
++    throw new LocalAPIError(response.status, response.statusText);
+   }
+   return response.json() as Promise<T>;
+ }
+
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/core-api.ts b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/core-api.ts
+new file mode 100644
+index 0000000..06981ee
+--- /dev/null
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/core-api.ts
+@@ -0,0 +1,16 @@
++// ABOUTME: Reports current owner denials before a core request returns its error.
++// ABOUTME: Preserves ordinary source conflicts and transport errors for the editor.
++import { localApiCall, LocalAPIError } from "./local-api";
++
++export async function coreApiCall<T = unknown>(
++  path: string, onDenied: () => void, options?: RequestInit,
++): Promise<T> {
++  try {
++    return await localApiCall<T>(path, options);
++  } catch (error) {
++    if (error instanceof LocalAPIError && (error.status === 401 || error.status === 403)) {
++      onDenied();
++    }
++    throw error;
++  }
++}

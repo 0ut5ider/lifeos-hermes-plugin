@@ -1,0 +1,18 @@
+21 |   for (const status of [401, 403, 409, 503]) {
+22 |     let failure: unknown;
+23 |     try { await api.localApiCall(`${server.url}${status}`); } catch (error) { failure = error; }
+24 |     assert.ok(failure instanceof Error);
+25 |     assert.ok(failure.message.startsWith(`API error: ${status}`));
+26 |     assert.ok(typeof api.LocalAPIError === "function", "HTTP errors must expose their status");
+                ^
+AssertionError: HTTP errors must expose their status
+ generatedMessage: false,
+     actual: false,
+   expected: true,
+   operator: "==",
+       diff: "simple",
+       code: "ERR_ASSERTION"
+
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/native_core_api.ts:26:12
+
+Bun v1.4.3 (Linux x64)

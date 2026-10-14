@@ -1,0 +1,67 @@
+{
+  "before": {
+    "toolIcon": {
+      "_tag": "website",
+      "pageUrl": "http://127.0.0.1:44151/assistant"
+    },
+    "value": {
+      "phase": "before-revocation",
+      "textarea": [
+        "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"
+      ],
+      "requests": [
+        {
+          "url": "/api/hermes",
+          "status": 200,
+          "time": 1792009932858
+        },
+        {
+          "url": "/api/hermes/log-analysis?days=14",
+          "status": 200,
+          "time": 1792009933052
+        },
+        {
+          "url": "/api/hermes/file/principal-identity",
+          "status": 200,
+          "time": 1792009943364
+        }
+      ],
+      "now": 1792009948447
+    }
+  },
+  "afterAutomaticOverviewDenial": {
+    "toolIcon": {
+      "_tag": "website",
+      "pageUrl": "http://127.0.0.1:44151/assistant"
+    },
+    "value": {
+      "phase": "after-real-timer",
+      "textarea": [],
+      "ownerRows": 0,
+      "unavailable": true,
+      "requests": [
+        {
+          "url": "/api/hermes",
+          "status": 200,
+          "time": 1792009932858
+        },
+        {
+          "url": "/api/hermes/log-analysis?days=14",
+          "status": 200,
+          "time": 1792009933052
+        },
+        {
+          "url": "/api/hermes/file/principal-identity",
+          "status": 200,
+          "time": 1792009943364
+        },
+        {
+          "url": "/api/hermes",
+          "status": 403,
+          "time": 1792009992942
+        }
+      ],
+      "now": 1792009998294
+    }
+  }
+}

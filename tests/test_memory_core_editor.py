@@ -21,6 +21,18 @@ class MemoryCoreEditorTests(unittest.TestCase):
     stop_pulse = relay_fixture.MemoryPulseRelayTests.stop_pulse
     login = relay_fixture.MemoryPulseRelayTests.login
 
+    def test_real_core_api_distinguishes_owner_denials_from_source_conflicts(self):
+        source = Path(os.environ['LIFEOS_MEMORY_SOURCE']) / 'LIFEOS/PULSE/Observability'
+        result = subprocess.run(['bun', str(Path(__file__).with_name('native_core_api.ts')), str(source)],
+            capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr, '')
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt['status'], 'PASS')
+        self.assertTrue(receipt['actualHTTP'])
+        self.assertEqual(receipt['cases'], [{'status': status, 'denial': status in (401, 403)}
+            for status in (200, 401, 403, 409, 503)])
+
     def seed(self):
         path = self.root / 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md'
         path.parent.mkdir(parents=True, exist_ok=True)
