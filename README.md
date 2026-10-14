@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Staged development candidate:** `0.5.0-rc.1` adds the governed Pulse core-file editor. Its [verification record](docs/verification/2026-10-14-pulse-core-editor/EDITOR-SCOPE.md) records completed checks and outstanding qualification. The [PR25 follow-up](docs/verification/2026-10-14-pr25-followup/README.md) tracks the active editor revocation fix. The candidate also corrects a measured observer timestamp failure. The correction needs complete package qualification. Both deployed servers remain on the stable package below.
+**Unpublished qualification candidate:** `0.5.0` adds the governed Pulse core-file editor. Its [verification record](docs/verification/2026-10-14-pulse-core-editor/EDITOR-SCOPE.md) records completed checks and outstanding qualification. The [PR25 follow-up](docs/verification/2026-10-14-pr25-followup/README.md) tracks the active editor revocation fix. The candidate also corrects a measured observer timestamp failure. The correction needs complete package qualification. Both deployed servers remain on the stable package below.
 
 **Qualified stable release:** `0.4.3`. The [corrective release record](docs/verification/2026-10-14-release-0.4.3/README.md) identifies the exact package, release certificate, and deployment evidence. Both daily `.253` and development `.252` run program commit `a1abb579`. The release separates the native LifeOS HOME from the account that owns the Hermes profile. All 45 prior release assets remain unchanged.
 

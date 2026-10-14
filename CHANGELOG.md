@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0-rc.1 (staged editor candidate)
+## 0.5.0 (unpublished qualification candidate)
 
 - Compare observer completion state with native event timestamps and bound journal capture delay.
 
