@@ -1,6 +1,6 @@
 # LifeOS 0.4.2 stable release qualification
 
-The candidate preserves the reviewed rc.3 program behavior and fixed native inputs. Its stable version creates a distinct package identity. Qualification binds all evidence to that package.
+All six release gates pass. Stable 0.4.2 is published, and its public installation and update acceptance is complete. The package preserves the reviewed rc.3 program behavior and fixed native inputs. Qualification binds all evidence to its distinct stable identity.
 
 The authorized work completes six gates: freeze the candidate, verify manager-free web installation and synthetic memory ownership, verify installed update and recovery, qualify development .252, verify off-server whole-guest recovery, and publish stable assets with public latest-stable acceptance.
 
@@ -35,3 +35,7 @@ The separate [public acceptance checkpoint](candidate-87205092/PUBLIC-LATEST-ACC
 The first documentation review identifies five missing verifier bindings. The corrected verifier checks the qualified manager inventory, exact prerelease baseline, measured guests, accepted daily package, and published asset digests. Primary controls also check the stock Hermes base, owner model selection, and complete public service states. Fourteen controls accept the actual receipts and refuse thirteen altered cases. The earlier failed controls and unpublished checkpoint remain retained. No product programs change for these corrections.
 
 The fresh test guests retain their prior service states. Their dashboards run; their gateway and Pulse services remain inactive. Development .252 independently verifies all three running application services. Fresh test acceptance does not claim Discord delivery or scheduled operation on these disposable guests.
+
+The [follow-up review](../../agents/2026-10-14-pr22-acceptance-review-2/pr22-acceptance-review-2.md) is clear. The public checkpoint is published as a new release asset at SHA-256 `c0a3bda0f5a3126e9eed1096c5dfe9b3c3821635d1da85d430b3847f66113619`. An actual public download reproduces the reviewed bytes. The three initial 0.4.2 assets and all 41 historical assets remain unchanged.
+
+Owned release-test guests 108, 109, and 111 are removed after acceptance and review. Their allocated files reclaim 24.1 GiB. Restore guest 110 is already removed by its successful operator. The temporary storage has no remaining volumes and is removed. Original guests 100, 101, 102, 106, and VM 801 retain their previous running states. Post-cleanup checks verify the exact development 0.4.2 and daily 0.3.1 identities, with all three application services running on each server.

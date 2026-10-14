@@ -1,6 +1,6 @@
 {
   "version": "0.4.2",
-  "status": "PUBLIC_ACCEPTANCE_VERIFIED_PENDING_ASSET",
+  "status": "COMPLETE",
   "daily_server_changed": false,
   "production_qualified": true,
   "steps": [
@@ -31,7 +31,7 @@
     },
     {
       "number": 6,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "name": "Stable publication and public latest acceptance"
     }
   ],
@@ -243,13 +243,15 @@
   "public_latest_acceptance": {
     "status": "PASS",
     "receipt": "candidate-87205092/PUBLIC-LATEST-ACCEPTANCE.json",
-    "public_release_asset": "PENDING_REVIEW",
+    "public_release_asset": "PASS",
     "fresh_guest": 111,
     "update_guest": 109,
     "fresh_governed_memory": "PASS",
     "update_fact_and_models_preserved": "PASS",
     "interactive_command_approval": "PASS",
-    "single_query_approval_refusal": "PASS"
+    "single_query_approval_refusal": "PASS",
+    "asset_receipt": "candidate-87205092/public-acceptance-release-asset.json",
+    "public_download_receipt": "candidate-87205092/public-acceptance-download-verification.json"
   },
   "stable_publication": {
     "status": "PASS",
@@ -266,7 +268,7 @@
     "interactive_hermes_update": "1dee04bca35a4afe9fb6f4b0027a05d7"
   },
   "test_guest_cleanup": {
-    "status": "PENDING",
+    "status": "PASS",
     "owned_guests": [
       108,
       109,
@@ -279,7 +281,15 @@
       102,
       106,
       801
-    ]
+    ],
+    "owned_guests_removed": [
+      108,
+      109,
+      111
+    ],
+    "temporary_storage_removed": true,
+    "allocated_bytes_reclaimed": 25893997568,
+    "receipt": "candidate-87205092/public-test-cleanup.json"
   },
   "public_verifier_review": {
     "pr": 22,
@@ -287,7 +297,19 @@
     "findings_fixed": 5,
     "primary_controls": 14,
     "primary_control_status": "PASS",
-    "followup_review": "PENDING",
-    "report": "../../agents/2026-10-14-pr22-acceptance-review-1/pr22-acceptance-review-1.md"
+    "followup_review": "PASS",
+    "report": "../../agents/2026-10-14-pr22-acceptance-review-1/pr22-acceptance-review-1.md",
+    "findings_remaining": 0,
+    "reviewed_head": "f95f29f38dadd2395666d1922916b77465504363",
+    "followup_report": "../../agents/2026-10-14-pr22-acceptance-review-2/pr22-acceptance-review-2.md",
+    "independent_public_controls": 14,
+    "independently_rerun_primary_controls": 14
+  },
+  "final_health": {
+    "status": "PASS",
+    "receipt": "candidate-87205092/post-cleanup-release-health.json",
+    "development_version": "0.4.2",
+    "daily_version": "0.3.1",
+    "running_application_services_per_server": 3
   }
 }

@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "servers": [
+    {
+      "active_identity": {
+        "version": "0.4.2",
+        "commit": "87205092832c550a09fce6e1cb3ca944fdb69a8c",
+        "package_sha256": "76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4"
+      },
+      "services": {
+        "hermes-gateway.service": {
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "hermes-dashboard.service": {
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "com.lifeos.pulse.service": {
+          "ActiveState": "active",
+          "SubState": "running"
+        }
+      },
+      "guest": 101
+    },
+    {
+      "active_identity": {
+        "version": "0.3.1",
+        "commit": "9af633252004a0ac8dd780d5fc12e9644f97bb0c",
+        "package_sha256": "2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24"
+      },
+      "services": {
+        "hermes-gateway.service": {
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "hermes-dashboard.service": {
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "com.lifeos.pulse.service": {
+          "ActiveState": "active",
+          "SubState": "running"
+        }
+      },
+      "guest": 102
+    }
+  ],
+  "daily_server_changed": false
+}
