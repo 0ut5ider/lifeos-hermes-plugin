@@ -2245,22 +2245,69 @@ index fb6dffa..599a563 100644
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
-index 0259a78..583cb24 100644
+index 0259a78..1dfffe6 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
 @@ -35,6 +35,8 @@
   * same rule the guard plugin enforces on the sidecar itself — a dashboard is not
   * an exemption.
   */
-+import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess.ts";
++import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryHTTPResponseAsync } from "../../TOOLS/lib/MemoryAccess.ts";
 +
  import { spawn } from "node:child_process";
  import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
  import { homedir } from "node:os";
-@@ -418,6 +420,21 @@ function backup(f: CoreFile): string | null {
+@@ -291,6 +293,19 @@ const CORE_FILES: readonly CoreFile[] = [
+   },
+ ];
+ 
++function coreEditBody(value: unknown): value is Record<string, unknown> {
++  return value !== null && typeof value === 'object' && !Array.isArray(value);
++}
++
++export function coreFileRegistry(): readonly CoreFile[] {
++  return CORE_FILES;
++}
++
++export function validateCoreFileContent(content: string, label: string): boolean {
++  try { assertClean(content, label); return true; }
++  catch { return false; }
++}
++
+ const BY_ID = new Map(CORE_FILES.map((f) => [f.id, f]));
+ 
+ const state: { running: boolean } = { running: false };
+@@ -418,6 +433,48 @@ function backup(f: CoreFile): string | null {
  
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
    const method = req.method;
++  if (pathname !== '/api/hermes/remount') {
++    try {
++      if (hasManagedMemoryHTTP()) {
++        const url = new URL(req.url);
++        if (method === 'GET') return memoryHTTPResponseAsync(req, 'core_file', pathname + url.search);
++        if (method === 'PUT' && pathname.startsWith('/api/hermes/file/')) {
++          const origin = req.headers.get('origin');
++          if (origin && origin !== url.origin) return Response.json({error: 'Use the installed PULSE origin'},
++            {status: 403, headers: {'cache-control': 'no-store'}});
++          if (url.search) return Response.json({error: 'Core edits use the installed file route'},
++            {status: 400, headers: {'cache-control': 'no-store'}});
++          const raw = await req.text();
++          if (Buffer.byteLength(raw) > 3 * 1024 * 1024) return Response.json({error: 'The core edit exceeds its request limit'},
++            {status: 413, headers: {'cache-control': 'no-store'}});
++          let body: unknown;
++          try { body = JSON.parse(raw); }
++          catch { return Response.json({error: 'Invalid JSON body'}, {status: 400, headers: {'cache-control': 'no-store'}}); }
++          if (!coreEditBody(body)) return Response.json({error: 'Choose complete core edit fields'}, {status: 400, headers: {'cache-control': 'no-store'}});
++          return memoryHTTPResponseAsync(req, 'core_file_edit', pathname, body);
++        }
++        return Response.json({error: 'Choose a declared core file method'}, {status: 405, headers: {'cache-control': 'no-store'}});
++      }
++    } catch {
++      return Response.json({error: 'Authenticated core files are unavailable'}, {status: 503, headers: {'cache-control': 'no-store'}});
++    }
++  }
++
 +  if (pathname === "/api/hermes/remount" && method === "POST") {
 +    try {
 +      if (hasManagedMemoryHTTP()) {

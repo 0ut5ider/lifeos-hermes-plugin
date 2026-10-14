@@ -150,8 +150,10 @@ class NativeMemory:
         environment["HOME"] = str(self.root.parent)
         environment["LIFEOS_DIR"] = str(self.root / "LIFEOS")
         environment["LIFEOS_CONFIG_DIR"] = str(self.root / "LIFEOS/USER/CONFIG")
-        if action == 'algorithm_edit_commit':
+        if action == 'algorithm_edit_commit' or action.startswith('core_file_'):
             environment['CLAUDE_CONFIG_DIR'] = str(self.root)
+        if action.startswith('core_file_'):
+            environment['HERMES_HOME'] = str(self.profile)
         environment.pop("LIFEOS_MEMORY_PUBLICATION_JOURNAL", None)
         if self.transaction.inherited_descriptors():
             environment["LIFEOS_MEMORY_PUBLICATION_JOURNAL"] = str(self.transaction.journal)
@@ -197,6 +199,9 @@ class NativeMemory:
         return path
 
     def _publication_path(self, name: str) -> Path:
+        if name.startswith('core-file/'):
+            from .memory_core_file import publication_path
+            return publication_path(self, name)
         if name.startswith('atlas/history/'):
             from .memory_atlas_history import publication_path
             return publication_path(self, name)
@@ -390,6 +395,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'core_file_edit':
+            from .memory_core_file import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'local_run':
             from .memory_local_runs import publication_paths
             return publication_paths(self, scope, payload)

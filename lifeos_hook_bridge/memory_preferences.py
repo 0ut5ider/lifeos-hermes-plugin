@@ -367,6 +367,28 @@ class MemoryPreferences:
         return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
             check_current=check_current), account=account)
 
+    def core_file_response(self, target, *, account=None):
+        from .memory_core_file import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The core file owner authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent),
+            scope, target, check_current=check_current), account=account)
+
+    def edit_core_file(self, request, *, account=None):
+        from .memory_core_file import edit
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'identifier', 'content', 'reference', 'request_id'}:
+            raise ValueError('Provide the current core file reference and requested content')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The core file owner authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, edit(NativeMemory(self.root, profile=self.configuration.path.parent),
+            scope, **request, check_current=check_current), account=account)
+
     def telos_file_response(self, target, *, account=None):
         from .memory_telos_file import view
         config = self._configuration(account=account)

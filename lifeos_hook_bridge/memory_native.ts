@@ -27,7 +27,17 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'local_refresh_inputs') {
+  if (input.action === 'core_file_registry' || input.action === 'core_file_validate') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hermes.ts')).href);
+    if (!object(module) || typeof module.coreFileRegistry !== 'function' || typeof module.validateCoreFileContent !== 'function') {
+      throw new Error('Native core file exports are unavailable');
+    }
+    if (input.action === 'core_file_registry') result = {files: module.coreFileRegistry()};
+    else {
+      if (typeof input.content !== 'string' || typeof input.label !== 'string') throw new Error('Choose declared core code text');
+      result = {accepted: module.validateCoreFileContent(input.content, input.label)};
+    }
+  } else if (input.action === 'local_refresh_inputs') {
     if (!['hometown', 'sources', 'prepare'].includes(String(input.kind)) || !object(input.contents)
         || Object.values(input.contents).some(value => !(value === null || typeof value === 'string'))
         || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
