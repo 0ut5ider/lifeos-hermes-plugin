@@ -57,5 +57,9 @@ report = {'status': 'PASS', 'model': 'flashnext-w4a16-fp8ple', 'sessions': sessi
     'synthetic_data_only': True, 'development_profile_only': True, 'daily_server_changed': False,
     'discord_delivery_verified': False, 'scheduled_work_verified': False,
     'search_argument_refusals': len(responses) - 1, 'process_elapsed_seconds': [item['elapsed_seconds'] for item in processes]}
+identity = json.loads((Path.home() / '.hermes/integration-release.json').read_bytes())
+assert identity['version'] == '0.4.2' and identity['commit'] == '87205092832c550a09fce6e1cb3ca944fdb69a8c'
+assert identity['package_sha256'] == '76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4'
+report['verification_active_identity'] = {key: identity[key] for key in ('version', 'commit', 'package_sha256')}
 (root / 'release-owner-turn-verification.json').write_text(json.dumps(report, indent=2) + '\n')
 print(json.dumps(report, indent=2))

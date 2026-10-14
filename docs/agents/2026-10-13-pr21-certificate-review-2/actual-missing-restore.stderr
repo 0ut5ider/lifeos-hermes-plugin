@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<stdin>", line 39, in <module>
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-release-0.4.2/candidate-87205092/certify_release.py", line 116, in <module>
+    whole = passed('whole-guest-recovery.json')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-release-0.4.2/candidate-87205092/certify_release.py", line 23, in passed
+    receipt = load(name)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-13-release-0.4.2/candidate-87205092/certify_release.py", line 15, in load
+    return json.loads((out / name).read_bytes())
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pr21-certificate-review-mlde9ttb/whole-guest-recovery.json'

@@ -57,7 +57,7 @@
     "corrected_fresh_guest": 109,
     "corrected_fresh_guest_ip": "192.168.8.248",
     "corrected_provisioning": "PASS",
-    "corrected_stock_runtime": "INSTALLING"
+    "corrected_stock_runtime": "PASS"
   },
   "integration_gate": {
     "status": "PASS",
@@ -139,7 +139,7 @@
     "clean_web_installation": "PASS",
     "ownership_activation": "PASS",
     "development_update": "PASS",
-    "rollback_and_interruption": "PENDING",
+    "rollback_and_interruption": "PASS",
     "reboot": "PASS",
     "whole_guest_restore": "RUNNING",
     "stable_publication": "PENDING",
@@ -179,5 +179,17 @@
     "source_application_writers_drained": true,
     "restore_storage": "lifeos-042-tests",
     "disconnected_restore_required": true
+  },
+  "pr_review": {
+    "pr": 21,
+    "reviewed_head": "efebe014d8b7e498ed3df7f3576ca620454c221c",
+    "findings": 0,
+    "focused_tests": 45,
+    "primary_rerun": "PASS",
+    "report": "../../agents/2026-10-13-pr21-release-review-1/pr21-release-review-1.md",
+    "certificate_followup": "PASS",
+    "certificate_findings_fixed": 3,
+    "certificate_negative_controls": 14,
+    "certificate_report": "../../agents/2026-10-13-pr21-certificate-review-3/pr21-certificate-review-3.md"
   }
 }

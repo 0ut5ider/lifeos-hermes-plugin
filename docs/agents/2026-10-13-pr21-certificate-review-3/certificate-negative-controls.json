@@ -1,0 +1,131 @@
+{
+  "source_sha256": "9027f18f5023b86acd397fb5232e5eee05d28ea1eb7b2e780f46032d580a1549",
+  "workspace": "/tmp/pr21-certificate-review-fixed-buybesb2",
+  "actual_full_operator_result": "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pr21-certificate-review-fixed-buybesb2/whole-guest-recovery.json'",
+  "certificate_exists": false,
+  "repository_certificate_exists": false,
+  "restore_receipt_absent_at_start": true,
+  "controls": [
+    {
+      "case": "actual_pre_restore_receipts",
+      "result": "ACCEPTED_PRE_RESTORE_GATES_ONLY",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "stale_integration_commit",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "incomplete_fresh_ownership",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: fresh-ownership-activation.json",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "cross_profile_owner_turn_swap",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "missing_all_development_services",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "missing_all_boot_units",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "unapplied_final_update",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong_native_manager_source",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "real_2026_10_09_owner_turn_receipt_substitution",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "KeyError: 'development_profile_only'",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "stale_owner_active_identity",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong_synthetic_memory_reference",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "missing_one_development_service",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong_native_manager_revision",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong_native_hermes_base",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong_rollback_identity",
+      "result": "REFUSED_BEFORE_RESTORE_GATE",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "full_qualification_exercised": false,
+      "certificate_created": false
+    }
+  ],
+  "method": "Exact pre-restore statements execute against copied real receipts. Only receipt-directory binding changes. The actual full operator stops at the absent restore receipt. No completed restore evidence is constructed or supplied."
+}

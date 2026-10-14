@@ -1,0 +1,45 @@
+[
+  {
+    "case": "current",
+    "pre_restore_accepted": true,
+    "expected": true,
+    "full_certificate_created": false,
+    "control_only": true
+  },
+  {
+    "case": "stale-owner-synthetic-fixture",
+    "pre_restore_accepted": false,
+    "expected": false,
+    "full_certificate_created": false,
+    "control_only": true,
+    "synthetic_receipt": true
+  },
+  {
+    "case": "swapped-owner",
+    "pre_restore_accepted": false,
+    "expected": false,
+    "full_certificate_created": false,
+    "control_only": true
+  },
+  {
+    "case": "empty-services",
+    "pre_restore_accepted": false,
+    "expected": false,
+    "full_certificate_created": false,
+    "control_only": true
+  },
+  {
+    "case": "unapplied",
+    "pre_restore_accepted": false,
+    "expected": false,
+    "full_certificate_created": false,
+    "control_only": true
+  },
+  {
+    "case": "wrong-source",
+    "pre_restore_accepted": false,
+    "expected": false,
+    "full_certificate_created": false,
+    "control_only": true
+  }
+]

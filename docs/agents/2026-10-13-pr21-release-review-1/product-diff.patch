@@ -1,0 +1,168 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4706d688..ab250102 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,16 @@
+ # Changelog
+ 
++## 0.4.2 (release candidate)
++
++- Add Install LifeOS, Update LifeOS, and Update plugin controls for complete qualified packages.
++- Prepare dashboard requests in detached processes. Keep owner review before installation.
++- Bind service operations to the configured and running Hermes profile.
++- Share one preparation lease between command-line and dashboard requests.
++- Recognize the exact bundled Hermes launcher and preserve effective systemd environment paths.
++- Create private stage metadata without changing the caller's umask.
++- Use a private worker mask for native profile files and backup artifacts.
++- Keep Hermes v0.21.7, the pinned LifeOS revision, and all native dependency locks fixed.
++
+ ## 0.4.2-rc.3 (2026-10-13 test prerelease)
+ 
+ - Create private runtime metadata in stage subprocesses. Preserve the caller's umask.
+diff --git a/README.md b/README.md
+index 676f62f1..202ce463 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,7 @@
+ # LifeOS plugin for Hermes
+ 
++**Candidate under qualification:** `0.4.2`. The [stable release gates](docs/verification/2026-10-13-release-0.4.2/README.md) track clean installation, memory ownership, updates, development operation, and whole-guest restoration. Daily `.253` stays on `0.3.1` during qualification.
++
+ **Qualified release:** `0.4.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+ The exact package passes 631 integration tests and 716 native tests across 38 files.
+ It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
+@@ -273,6 +275,10 @@ The qualified 0.4.1 certificate binds the complete package and frozen dependency
+ The existing 0.3.1 assets remain historical release and rollback inputs.
+ 
+ The 0.4.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
++
++Managed first installation requires the owner dashboard service to use the account home as its working directory.
++Set `UMask=0077` in that service before installing the manager through the native GitHub form.
++The complete release worker also uses a private mask for native profile files and backup artifacts.
+ They qualify the synthetic installation and complete-package update workflow. They do not qualify deployment to the daily server.
+ Select an exact test version during these checks. An empty version still selects stable 0.4.1.
+ 
+diff --git a/TODO.md b/TODO.md
+index 13958db7..33f5b729 100644
+--- a/TODO.md
++++ b/TODO.md
+@@ -4,7 +4,8 @@
+ - [x] Qualify the candidate Hermes v0.21.7 port with ten Hermes patches and twenty-five LifeOS patches. Upstream behavior replaces the inactive protected-instruction patch. The accepted 0.3.1 pins retain all 36 patches. See the [candidate verification](docs/verification/2026-10-12-hermes-managed-release/README.md).
+ - [x] Implement complete LifeOS installation and updates from Hermes. Fresh recovery, installed update, installed recovery, rollback, and activated-memory checks pass. See the [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md).
+ - [x] Complete the independent product PR review, publish qualified 0.4.1, and verify the public complete package on development `.252`. Exact-version fresh installation and default development update pass. The [public acceptance record](docs/verification/2026-10-12-release-0.4.1/README.md) retains the initial manager refusal and corrected bootstrap.
+-- [ ] After PR18 merges, replay installation of the new release manager from the default GitHub URL through the native Hermes web form. The [0.4.2 test prerelease checks](docs/verification/2026-10-13-release-ui-install/README.md) pass public installation, both complete-package update buttons, numeric rollback, and Hermes chat. The unmerged manager uses a checkout of the public feature branch for the web-form test.
++- [x] Replay installation of the release manager from the default GitHub URL through the native Hermes web form. The [final rc.3 replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) passes fresh LifeOS installation and post-installation chat. The baseline manager replacement uses Force reinstall. The final stable qualification adds a manager-free baseline.
++- [ ] Qualify and publish stable 0.4.2, including clean web installation, owner activation, complete updates, development operation, reboot, and off-server restoration. Keep daily .253 on 0.3.1 during these gates.
+ - [ ] Promote a qualified complete release to daily `.253` after its daily deployment acceptance. The daily guest stays on accepted 0.3.1 until that gate completes.
+ - [ ] Complete Discord voice input and spoken replies after the first daily-use text release.
+ - [ ] Add native Content audio and video processing with the later voice release. Verify extraction, transcription, runner control, and actual media outputs before enabling the runner.
+diff --git a/VERSION b/VERSION
+index a6701afe..2b7c5ae0 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-0.4.2-rc.3
++0.4.2
+diff --git a/lifeos_hook_bridge/dashboard/manifest.json b/lifeos_hook_bridge/dashboard/manifest.json
+index 7dd32f54..783827f1 100644
+--- a/lifeos_hook_bridge/dashboard/manifest.json
++++ b/lifeos_hook_bridge/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS Bridge",
+   "description": "Configure LifeOS models and Stop hooks",
+   "icon": "Settings",
+-  "version": "0.4.2-rc.3",
++  "version": "0.4.2",
+   "tab": {
+     "path": "/lifeos-bridge",
+     "position": "after:plugins"
+diff --git a/lifeos_hook_bridge/plugin.yaml b/lifeos_hook_bridge/plugin.yaml
+index 44003e02..4eb9c944 100644
+--- a/lifeos_hook_bridge/plugin.yaml
++++ b/lifeos_hook_bridge/plugin.yaml
+@@ -1,6 +1,6 @@
+ name: lifeos-hook-bridge
+ kind: standalone
+-version: 0.4.2-rc.3
++version: 0.4.2
+ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+ author: 0ut5ider
+ python_dependencies:
+diff --git a/optional/lifeos_release_manager/dashboard/manifest.json b/optional/lifeos_release_manager/dashboard/manifest.json
+index 57261e61..aaeda852 100644
+--- a/optional/lifeos_release_manager/dashboard/manifest.json
++++ b/optional/lifeos_release_manager/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS releases",
+   "description": "Install and update complete qualified integration releases",
+   "icon": "Package",
+-  "version": "0.4.2-rc.3",
++  "version": "0.4.2",
+   "tab": {
+     "path": "/lifeos-releases",
+     "position": "after:plugins"
+diff --git a/optional/lifeos_release_manager/plugin.yaml b/optional/lifeos_release_manager/plugin.yaml
+index c5a7b86e..60ec1ce8 100644
+--- a/optional/lifeos_release_manager/plugin.yaml
++++ b/optional/lifeos_release_manager/plugin.yaml
+@@ -1,5 +1,5 @@
+ name: lifeos-release-manager
+ kind: standalone
+-version: 0.4.2-rc.3
++version: 0.4.2
+ description: Installs and updates qualified LifeOS integration releases from Hermes.
+ author: 0ut5ider
+diff --git a/optional/lifeos_release_manager/release_worker.py b/optional/lifeos_release_manager/release_worker.py
+index f4e2e0e1..78a91b97 100644
+--- a/optional/lifeos_release_manager/release_worker.py
++++ b/optional/lifeos_release_manager/release_worker.py
+@@ -566,6 +566,7 @@ def _restore_mount(job, request, mount):
+ 
+ 
+ def main():
++    os.umask(0o077)
+     parser = argparse.ArgumentParser()
+     parser.add_argument('job', type=Path)
+     parser.add_argument('--action', choices=('prepare', 'apply', 'recover', 'restore'), default='apply')
+diff --git a/tests/test_release_operation.py b/tests/test_release_operation.py
+index b98d87a8..e36f93e4 100644
+--- a/tests/test_release_operation.py
++++ b/tests/test_release_operation.py
+@@ -15,6 +15,37 @@ from optional.lifeos_release_manager.release_programs import publish
+ 
+ 
+ class ReleaseOperationTests(unittest.TestCase):
++    def test_worker_children_create_private_state_from_shared_service_mask(self):
++        import stat
++        import subprocess
++        import sys
++        from optional.lifeos_release_manager import release_worker as worker
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            profile, job, request = self.recovery_fixture(root)
++            write_admission(job, request, 'recover')
++            write_state(job, 'queued-recover')
++            child = os.fork()
++            if child == 0:
++                os.umask(0o002)
++                def trace(frame, event, arg):
++                    if frame.f_code is worker.execute.__code__ and event == 'call':
++                        sys.settrace(None)
++                        code = ('from pathlib import Path;import sys;'
++                                'root=Path(sys.argv[1]);'
++                                '(root/"native-state").mkdir();'
++                                '(root/"native-state"/"result.json").write_text("{}")')
++                        subprocess.run([sys.executable, '-B', '-c', code, str(root)],
++                            capture_output=True, check=True)
++                    return trace
++                sys.argv = ['release_worker.py', str(job), '--action', 'recover']
++                sys.settrace(trace)
++                os._exit(worker.main())
++            _, result = os.waitpid(child, 0)
++            self.assertEqual(os.waitstatus_to_exitcode(result), 1)
++            self.assertEqual(stat.S_IMODE((root / 'native-state/result.json').stat().st_mode), 0o600)
++            self.assertEqual(stat.S_IMODE((root / 'native-state').stat().st_mode), 0o700)
++
+     def test_worker_failure_keeps_the_lock_until_state_publication(self):
+         import inspect
+         import select
