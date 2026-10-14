@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "response": {
+    "status": "ok",
+    "results": [
+      {
+        "reference": {
+          "id": "a7bcab5925a64588b8c169b7b8565a62",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic authenticated PULSE fact",
+        "category": "principal",
+        "project": "",
+        "writer": "local:owner",
+        "status": "active",
+        "source": {
+          "kind": "explicit",
+          "session": "",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 2
+      }
+    ]
+  },
+  "before": "model: synthetic-interrupted\n",
+  "after_while_program_locks_held": "model: synthetic-original\n"
+}

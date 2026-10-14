@@ -1,0 +1,65 @@
+{
+  "installation_save": {
+    "status": 503,
+    "unchanged": true
+  },
+  "installation_read": {
+    "status": 200,
+    "content_present": true
+  },
+  "program_save": {
+    "status": 503,
+    "unchanged": true
+  },
+  "program_read": {
+    "status": 503,
+    "content_present": false
+  },
+  "ascii-near-limit": {
+    "bytes": 989027,
+    "characters": 989027,
+    "status": 200,
+    "content_type": "application/json",
+    "matches": true,
+    "unchanged": false,
+    "error": null
+  },
+  "unicode-near-limit": {
+    "bytes": 1040025,
+    "characters": 988025,
+    "status": 400,
+    "content_type": "application/json",
+    "matches": false,
+    "unchanged": true,
+    "error": "Invalid core edit request"
+  },
+  "over-byte-limit": {
+    "bytes": 1000002,
+    "characters": 500001,
+    "status": 400,
+    "content_type": "application/json",
+    "matches": false,
+    "unchanged": true,
+    "error": "Invalid core edit request"
+  },
+  "recovery_while_both_locks_held": {
+    "http_status": 200,
+    "response": {
+      "status": "unavailable",
+      "reason": "Core files wait for current turns and installation operations"
+    },
+    "before": "model: synthetic-interrupted\n",
+    "after": "model: synthetic-interrupted\n"
+  },
+  "recovery_after_lock_release": {
+    "http_status": 200,
+    "tool_status": "ok",
+    "after": "model: synthetic-original\n"
+  },
+  "malformed_yaml_overview": {
+    "status": 200,
+    "rows": 24,
+    "config_readable": false,
+    "identity_readable": true
+  }
+}

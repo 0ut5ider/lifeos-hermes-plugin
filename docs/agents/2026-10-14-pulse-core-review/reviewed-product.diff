@@ -1,0 +1,981 @@
+diff --git a/lifeos_hook_bridge/dashboard/plugin_api.py b/lifeos_hook_bridge/dashboard/plugin_api.py
+index cf9d7483..ddfeb75b 100644
+--- a/lifeos_hook_bridge/dashboard/plugin_api.py
++++ b/lifeos_hook_bridge/dashboard/plugin_api.py
+@@ -429,6 +429,43 @@ async def prepare_memory_owner_job(request: Request, account: str = Depends(_mem
+     return JSONResponse(result, headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+ 
+ 
++@router.get('/memory/core_file')
++def get_memory_core_file(request: Request, account: str = Depends(_memory_account)):
++    return _memory_source_read('core_file', request, account)
++
++
++@router.post('/memory/core_file')
++async def edit_memory_core_file(request: Request, account: str = Depends(_memory_account)):
++    headers = {'Cache-Control': 'no-store'}
++    content = bytearray()
++    async for chunk in request.stream():
++        content.extend(chunk)
++        if len(content) > 3 * 1024 * 1024:
++            return JSONResponse({'error': 'The core edit exceeds its request limit'}, status_code=400, headers=headers)
++    preferences = _memory_preferences()
++    try:
++        if request.query_params:
++            raise ValueError('Core edits require the fixed installed route')
++        body = json.loads(content)
++        result, binding = await run_in_threadpool(lambda: preferences.edit_core_file(body, account=account))
++    except PermissionError:
++        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
++    except ValueError:
++        return JSONResponse({'error': 'Invalid core edit request'}, status_code=400, headers=headers)
++    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
++        from lifeos_memory_settings.memory_http import installation_binding
++        try:
++            config = preferences._configuration(account=account)
++            binding = installation_binding(config, preferences.configuration.path)
++        except PermissionError:
++            return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
++        except (ValueError, OSError, RuntimeError):
++            return JSONResponse({'error': 'Core editing is unavailable'}, status_code=503, headers=headers)
++        result = {'status': 409, 'body': {'error': 'The core save conflicts with the current source or policy. Open the file again.'}}
++    return JSONResponse(result['body'], status_code=result['status'],
++        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
++
++
+ @router.get('/memory/telos_file')
+ def get_memory_telos_file(request: Request, account: str = Depends(_memory_account)):
+     return _memory_source_read('telos_file', request, account)
+@@ -489,7 +526,7 @@ def get_memory_knowledge(request: Request, account: str = Depends(_memory_accoun
+     return _memory_source_read('knowledge', request, account)
+ 
+ 
+-def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file'], request: Request, account: str):
++def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file', 'core_file'], request: Request, account: str):
+     preferences = _memory_preferences()
+     module = {'hypotheses':'memory_hypothesis_queue','upgrades':'memory_upgrade_queue'}.get(view, 'memory_' + view)
+     request_target = importlib.import_module('lifeos_memory_settings.' + module).request_target
+@@ -506,7 +543,7 @@ def _memory_source_read(view: Literal['wiki', 'knowledge', 'hypotheses', 'upgrad
+         operation = getattr(preferences, {'wiki': 'wiki_response', 'knowledge': 'knowledge_response',
+                      'hypotheses': 'hypothesis_response', 'upgrades': 'upgrade_response',
+                      'tab_freshness': 'tab_freshness_response', 'life': 'life_response',
+-                     'telos_file': 'telos_file_response'}[view])
++                     'telos_file': 'telos_file_response', 'core_file': 'core_file_response'}[view])
+         result, binding = operation(target, account=account)
+     except PermissionError:
+         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+diff --git a/lifeos_hook_bridge/memory_access.py b/lifeos_hook_bridge/memory_access.py
+index 34d27038..61ec70b7 100644
+--- a/lifeos_hook_bridge/memory_access.py
++++ b/lifeos_hook_bridge/memory_access.py
+@@ -150,8 +150,10 @@ class NativeMemory:
+         environment["HOME"] = str(self.root.parent)
+         environment["LIFEOS_DIR"] = str(self.root / "LIFEOS")
+         environment["LIFEOS_CONFIG_DIR"] = str(self.root / "LIFEOS/USER/CONFIG")
+-        if action == 'algorithm_edit_commit':
++        if action == 'algorithm_edit_commit' or action.startswith('core_file_'):
+             environment['CLAUDE_CONFIG_DIR'] = str(self.root)
++        if action.startswith('core_file_'):
++            environment['HERMES_HOME'] = str(self.physical_profile)
+         environment.pop("LIFEOS_MEMORY_PUBLICATION_JOURNAL", None)
+         if self.transaction.inherited_descriptors():
+             environment["LIFEOS_MEMORY_PUBLICATION_JOURNAL"] = str(self.transaction.journal)
+@@ -197,6 +199,9 @@ class NativeMemory:
+         return path
+ 
+     def _publication_path(self, name: str) -> Path:
++        if name.startswith('core-file/'):
++            from .memory_core_file import publication_path
++            return publication_path(self, name)
+         if name.startswith('atlas/history/'):
+             from .memory_atlas_history import publication_path
+             return publication_path(self, name)
+@@ -390,6 +395,9 @@ class NativeMemory:
+ 
+     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
+                            payload: dict[str, Any]) -> list[str]:
++        if payload['operation'] == 'core_file_edit':
++            from .memory_core_file import publication_paths
++            return publication_paths(self, scope, payload)
+         if payload['operation'] == 'local_run':
+             from .memory_local_runs import publication_paths
+             return publication_paths(self, scope, payload)
+diff --git a/lifeos_hook_bridge/memory_core_file.py b/lifeos_hook_bridge/memory_core_file.py
+new file mode 100644
+index 00000000..2beca394
+--- /dev/null
++++ b/lifeos_hook_bridge/memory_core_file.py
+@@ -0,0 +1,334 @@
++# ABOUTME: Reads declared Pulse core files under current installation owner authority.
++# ABOUTME: Binds private recoverable saves to current file references and preserves registered fact revisions.
++from datetime import datetime, timezone
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import subprocess
++from urllib.parse import urlsplit, parse_qs, urlencode
++
++from .memory_access import MemoryConflict, MemoryUnavailable, _digest
++from .memory_policy import CATEGORIES
++from .memory_source_review import _retirement_digest
++from .memory_sources import authorize, _admit, _source_time, json_projection, markdown_projection
++from .memory_tab_freshness import _checked
++from .memory_transaction import publish
++
++LIMIT = 1_000_000
++PROFILE_FILES = {'soul': 'SOUL.md', 'config': 'config.yaml', 'policy': 'plugins/lifeos/policy.json',
++    'guard-installed': 'plugins/lifeos/guard.py', 'plugin-manifest': 'plugins/lifeos/plugin.yaml',
++    'cron-jobs': 'cron/jobs.json', 'hermes-env': '.env', 'hermes-auth': 'auth.json'}
++SOURCE_FILES = {'system-prompt': 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md',
++    'da-identity': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
++    'da-memory': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md',
++    'principal-identity': 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
++    'principal-memory': 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
++    'telos': 'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'projects': 'LIFEOS/USER/PROJECTS.md'}
++CODE_FILES = {'render-soul': 'RenderSoul.ts', 'mount': 'Mount.ts', 'policy-src': 'Policy.ts',
++    'health': 'Health.ts', 'guard-src': 'plugin/guard.py', 'plugin-manifest-src': 'plugin/plugin.yaml',
++    'plugin-init': 'plugin/__init__.py', 'bunker-config': 'bunker.config.ts', 'isa': 'ISA.md'}
++IDS = frozenset(PROFILE_FILES) | frozenset(SOURCE_FILES) | frozenset(CODE_FILES)
++
++
++class CoreSourceWithheld(MemoryUnavailable):
++    pass
++
++
++def request_target(value):
++    if not isinstance(value, str) or len(value) > 256:
++        raise ValueError('Choose a bounded core file route')
++    url = urlsplit(value)
++    if url.path == '/api/hermes/log-analysis' and not (url.scheme or url.netloc or url.fragment):
++        query = parse_qs(url.query, keep_blank_values=True, strict_parsing=True)
++        if not query: return url.path + '?days=14'
++        if set(query) != {'days'} or len(query['days']) != 1 or not query['days'][0].isdigit() or not 1 <= int(query['days'][0]) <= 90:
++            raise ValueError('Choose one supported guard-log window')
++        return url.path + '?' + urlencode({'days': int(query['days'][0])})
++    if url.scheme or url.netloc or url.query or url.fragment:
++        raise ValueError('Core files require their fixed installed route')
++    if url.path in ('/api/hermes', '/api/hermes/'):
++        return '/api/hermes'
++    prefix = '/api/hermes/file/'
++    if not url.path.startswith(prefix) or url.path.removeprefix(prefix) not in IDS:
++        raise LookupError('Choose one declared core file')
++    return url.path
++
++
++def _path(memory, identifier):
++    if identifier in PROFILE_FILES:
++        path = memory.physical_profile / PROFILE_FILES[identifier]
++        if memory.profile.resolve() != memory.physical_profile or path.parent.resolve() != path.parent:
++            raise MemoryUnavailable('The core file changes its profile boundary')
++        profile_info = memory.physical_profile.stat()
++        if profile_info.st_uid != os.getuid() or profile_info.st_mode & 0o022:
++            raise MemoryUnavailable('The core profile requires its private owner boundary')
++        from .memory_service import MemoryConfiguration
++        configuration = MemoryConfiguration(memory.physical_profile / 'lifeos-memory.json').load()
++        if Path(configuration['root']).resolve() != memory.physical_root:
++            raise MemoryUnavailable('The core profile belongs to another LifeOS installation')
++        if path.is_symlink() or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
++                or path.stat().st_nlink != 1 or memory.database.exists() and path.samefile(memory.database)):
++            raise MemoryUnavailable('The core file changes its fixed owner source')
++        return path
++    if identifier in SOURCE_FILES:
++        return _checked(memory, memory.root / SOURCE_FILES[identifier])
++    if identifier in CODE_FILES:
++        return _checked(memory, memory.root / 'LIFEOS/HERMES' / CODE_FILES[identifier])
++    raise LookupError('Choose one declared core file')
++
++
++def _registry(memory):
++    value = memory._native('core_file_registry')
++    rows = value.get('files')
++    if not isinstance(rows, list) or len(rows) != len(IDS) or any(not isinstance(row, dict) for row in rows):
++        raise MemoryUnavailable('The native core file registry changes')
++    if {row.get('id') for row in rows} != IDS:
++        raise MemoryUnavailable('The native core file registry changes')
++    for row in rows:
++        identifier = row['id']
++        plane = 'runtime' if identifier in PROFILE_FILES else 'source' if identifier in SOURCE_FILES else 'code'
++        if row.get('plane') != plane or row.get('path') != str(_path(memory, identifier)):
++            raise MemoryUnavailable('The native core file registry changes its declared path')
++        if any(not isinstance(row.get(key), str) for key in ('label', 'language', 'role')):
++            raise MemoryUnavailable('The native core file metadata changes')
++        if bool(row.get('sealed')) != (identifier in {'hermes-env', 'hermes-auth'}):
++            raise MemoryUnavailable('The native credential boundary changes')
++        if bool(row.get('generatedBy')) != (identifier in {'soul', 'policy', 'guard-installed', 'plugin-manifest', 'telos'}):
++            raise MemoryUnavailable('The native generated file boundary changes')
++    return {row['id']: row for row in rows}
++
++
++def _display(memory, path):
++    home = str(memory.root.parent)
++    return str(path).replace(home + '/', '~/')
++
++
++def _snapshot(memory, scope, connection, identifier, *, catalog=None, allow_withheld=False):
++    authorize(scope)
++    if not scope.principal:
++        raise MemoryUnavailable('Core files require a bound owner')
++    catalog = catalog or _registry(memory)
++    row = catalog[identifier]
++    path = _path(memory, identifier)
++    content = None
++    withheld = False
++    stamp = None
++    info = path.stat() if path.exists() else None
++    if info is not None:
++        stamp = [info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns]
++        if not row.get('sealed'):
++            if info.st_size > LIMIT:
++                raise MemoryUnavailable('The core file exceeds its native byte limit')
++            with path.open('rb') as stream:
++                raw = stream.read(LIMIT + 1)
++            if len(raw) > LIMIT:
++                raise MemoryUnavailable('The core file exceeds its native byte limit')
++            try: content = raw.decode('utf-8')
++            except UnicodeError as error: raise MemoryUnavailable('The core file must contain UTF-8 text') from error
++            after = _path(memory, identifier).stat()
++            if stamp != [after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns]:
++                raise MemoryConflict('The core file changes during review')
++            try:
++                _admit_content(memory, scope, connection, identifier, row, content, _source_time(info))
++            except CoreSourceWithheld:
++                if not allow_withheld: raise
++                withheld = True
++                content = None
++    relative = SOURCE_FILES.get(identifier)
++    registered = bool(relative and connection.execute('SELECT 1 FROM records WHERE path=? AND status=\'active\' LIMIT 1', (relative,)).fetchone())
++    meta = {key: row[key] for key in ('id', 'label', 'plane', 'language', 'role')}
++    meta.update(displayPath=_display(memory, path), exists=info is not None, sealed=bool(row.get('sealed')),
++        editable=info is not None and not row.get('sealed') and not row.get('generatedBy') and not registered and not withheld,
++        readable=not row.get('sealed') and not withheld,
++        generatedBy=row.get('generatedBy'), sourceIds=row.get('sourceIds', []),
++        bytes=info.st_size if info else None, lines=len(content.split('\n')) if content is not None else None,
++        modified=datetime.fromtimestamp(info.st_mtime_ns / 1e9, timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z') if info else None)
++    if withheld: meta['editReason'] = 'This source requires current safe owner review before reading or editing.'
++    if registered: meta['editReason'] = 'Use memory correction tools to preserve registered fact references.'
++    reference = _digest(json.dumps({'root': str(memory.root), 'profile': str(memory.profile),
++        'principal': scope.principal, 'scope': scope.signature, 'id': identifier, 'meta': meta,
++        'content': content, 'stamp': stamp, 'retirement': _retirement_digest(connection)}, sort_keys=True))
++    return {'meta': meta, 'content': content, 'reference': reference}
++
++
++def _admit_content(memory, scope, connection, identifier, row, content, timestamp):
++    relative = SOURCE_FILES.get(identifier, 'core-file/' + identifier)
++    projection = json_projection(content) if row['language'] == 'json' else markdown_projection(memory, relative, content)
++    if row['language'] == 'yaml':
++        from ruamel.yaml import YAML
++        try:
++            decoded = YAML(typ='safe').load(content)
++            projection = json_projection(json.dumps(decoded)) if isinstance(decoded, dict) else None
++        except Exception as error:
++            raise MemoryUnavailable('The core configuration requires complete safe YAML') from error
++    checked = memory._native('validate_source_batch', contents=[content, (projection or '') + '\n' + relative])
++    if projection is None or checked.get('accepted') != [True, True] or _admit(memory, connection, scope,
++            content, relative, timestamp, projection=projection, source_reviewed=True)['excluded']:
++        raise CoreSourceWithheld('The core file requires current safe owner review')
++
++
++
++def _profile_source(memory, scope, connection, name, *, json_lines=False):
++    allowed = {'gateway_state.json', 'gateway-starts.log', 'plugins/lifeos/blocked.jsonl'}
++    if name not in allowed or memory.profile.resolve() != memory.physical_profile:
++        raise MemoryUnavailable('Choose a fixed current core diagnostic source')
++    path = memory.physical_profile / name
++    if path.parent.resolve() != path.parent or path.is_symlink():
++        raise MemoryUnavailable('The core diagnostic source redirects its owner path')
++    if not path.exists(): return None, None
++    before = path.stat()
++    if not path.is_file() or before.st_uid != os.getuid() or before.st_nlink != 1 or before.st_size > LIMIT or memory.database.exists() and path.samefile(memory.database):
++        raise MemoryUnavailable('The core diagnostic source requires a bounded regular owner file')
++    with path.open('rb') as stream: raw = stream.read(LIMIT + 1)
++    if len(raw) > LIMIT: raise MemoryUnavailable('The core diagnostic source exceeds its byte limit')
++    try: content = raw.decode('utf-8')
++    except UnicodeError as error: raise MemoryUnavailable('The core diagnostic source must contain UTF-8 text') from error
++    after = path.stat()
++    stamp = [before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns]
++    if stamp != [after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns]:
++        raise MemoryConflict('The core diagnostic source changes during review')
++    projection = content
++    if name.endswith('.json'): projection = json_projection(content)
++    elif json_lines:
++        rows = []
++        for line in content.splitlines():
++            try: rows.append(json.loads(line))
++            except ValueError: continue
++        projection = json_projection(json.dumps(rows))
++    checked = memory._native('validate_source_batch', contents=[content, projection or ''])
++    if projection is None or checked.get('accepted') != [True, True] or _admit(memory, connection, scope,
++            content, 'core-diagnostic/' + name, _source_time(before), projection=projection, source_reviewed=True)['excluded']:
++        raise MemoryUnavailable('The core diagnostic source requires current safe owner review')
++    return content, stamp
++
++
++def _diagnostic(memory, scope, connection, kind, days=14):
++    authorize(scope)
++    names = ['gateway_state.json', 'gateway-starts.log'] if kind == 'health' else ['plugins/lifeos/blocked.jsonl']
++    captured = {name: _profile_source(memory, scope, connection, name, json_lines=kind == 'log') for name in names}
++    result = memory._native('core_file_' + kind, sources={name: row[0] for name, row in captured.items()}, days=days)
++    if any(_profile_source(memory, scope, connection, name, json_lines=kind == 'log') != row for name, row in captured.items()):
++        raise MemoryConflict('The core diagnostic source changes before delivery')
++    _admit_content(memory, scope, connection, 'diagnostic-' + kind, {'language': 'json'}, json.dumps(result), datetime.now(timezone.utc).isoformat())
++    return result
++
++def view(memory, scope, target, *, check_current):
++    target = request_target(target)
++    check_current()
++    with memory._transaction() as connection:
++        if urlsplit(target).path == '/api/hermes/log-analysis':
++            result = _diagnostic(memory, scope, connection, 'log', int(parse_qs(urlsplit(target).query)['days'][0]))
++            check_current()
++            return {'status': 200, 'body': result}
++        if target == '/api/hermes':
++            catalog = _registry(memory)
++            before = [_snapshot(memory, scope, connection, identifier, catalog=catalog, allow_withheld=True) for identifier in catalog]
++            check_current()
++            after = [_snapshot(memory, scope, connection, identifier, catalog=catalog, allow_withheld=True) for identifier in catalog]
++            if before != after: raise MemoryConflict('The core manifest changes before delivery')
++            return {'status': 200, 'body': {'files': [row['meta'] for row in before], 'hermesHome': _display(memory, memory.profile),
++                'health': _diagnostic(memory, scope, connection, 'health'), 'mount': {'stale': False, 'detail': 'Use the authenticated remount action to refresh the install.', 'probed': False},
++                'reference': _digest(json.dumps([row['reference'] for row in before])),
++                'planes': {'runtime': 'The installed Hermes profile.', 'source': 'Current admitted owner sources.', 'code': 'Installed program files. Edits change release verification.'}}}
++        identifier = target.removeprefix('/api/hermes/file/')
++        if identifier in {'hermes-env', 'hermes-auth'}:
++            return {'status': 403, 'body': {'error': 'Credential material is sealed.'}}
++        before = _snapshot(memory, scope, connection, identifier)
++        check_current()
++        if before != _snapshot(memory, scope, connection, identifier):
++            raise MemoryConflict('The core file changes before delivery')
++        check_current()
++        return {'status': 200 if before['meta']['exists'] else 404, 'body': before}
++
++
++
++def mount_probe(memory, scope, environment, *, check_current):
++    check_current()
++    script = memory.root / 'LIFEOS/HERMES/Mount.ts'
++    if not script.is_file():
++        return {'stale': False, 'detail': 'The native mount program is unavailable.', 'probed': False}
++    result = subprocess.run([memory.bun, '--no-install', str(script), '--check'], cwd=script.parent,
++        env=environment, capture_output=True, text=True, timeout=60)
++    check_current()
++    output = (result.stdout or result.stderr).strip()
++    if len(output.encode()) > LIMIT:
++        raise MemoryUnavailable('The mount diagnostic exceeds its byte limit')
++    with memory._transaction() as connection:
++        _admit_content(memory, scope, connection, 'mount-check', {'language': 'text'}, output,
++            datetime.now(timezone.utc).isoformat())
++        check_current()
++    detail = _display(memory, Path(output)) if output.startswith('/') and '\n' not in output else output.replace(str(memory.root.parent), '~').replace(str(memory.profile), '~/.hermes')
++    return {'stale': result.returncode == 1, 'detail': detail, 'probed': result.returncode >= 0}
++
++def publication_path(memory, name):
++    identifier = name.removeprefix('core-file/')
++    if not name.startswith('core-file/') or identifier not in IDS or identifier in {'hermes-env', 'hermes-auth', 'soul', 'policy', 'guard-installed', 'plugin-manifest', 'telos'}:
++        raise MemoryUnavailable('Choose one editable declared core file')
++    path = _path(memory, identifier)
++    if not path.is_file() or path.stat().st_size > LIMIT:
++        raise MemoryUnavailable('The core edit requires a bounded existing owner file')
++    return path
++
++
++def publication_paths(memory, scope, payload):
++    authorize(scope)
++    if not scope.principal or not CATEGORIES <= set(scope.write):
++        raise MemoryUnavailable('Core saves require unrestricted owner write authority')
++    identifier = payload['identifier']
++    publication_path(memory, 'core-file/' + identifier)
++    backup = payload['backup']
++    if not isinstance(backup, str) or re.fullmatch(r'LIFEOS/MEMORY/STATE/hermes-edits/[a-z-]+\.[0-9a-f]{64}\.bak', backup) is None:
++        raise MemoryUnavailable('The core backup changes its fixed private destination')
++    _checked(memory, memory.root / backup)
++    return ['core-file/' + identifier, backup]
++
++
++def edit(memory, scope, *, identifier, content, reference, request_id, check_current):
++    if identifier not in IDS or not isinstance(content, str) or len(content.encode()) > LIMIT or not isinstance(reference, str) or re.fullmatch('[0-9a-f]{64}', reference) is None or not isinstance(request_id, str) or not 1 <= len(request_id) <= 256:
++        raise ValueError('Choose bounded core content, its reviewed reference, and a request identifier')
++    if identifier in {'hermes-env', 'hermes-auth'}: return {'status': 403, 'body': {'error': 'Credential material is sealed.'}}
++    payload = {'operation': 'core_file_edit', 'identifier': identifier,
++        'backup': 'LIFEOS/MEMORY/STATE/hermes-edits/' + identifier + '.' + _digest(scope.writer + '\n' + request_id) + '.bak'}
++    publication_paths(memory, scope, payload)
++    check_current()
++    identity = {**payload, 'content': content, 'reference': reference, 'scope': scope.signature}
++    with memory._transaction() as connection:
++        prior = connection.execute('SELECT * FROM operations WHERE writer=? AND request_id=?', (scope.writer, request_id)).fetchone()
++        before = _snapshot(memory, scope, connection, identifier)
++        if prior is not None:
++            receipt = json.loads(prior['receipt'])
++            if prior['payload_digest'] != _digest(json.dumps(identity, sort_keys=True)) or receipt.get('status') != 'committed' or receipt.get('reference') != before['reference']:
++                raise MemoryConflict('The core retry preserves a later source or policy change')
++            check_current()
++            return receipt['result']
++        if not before['meta']['editable']: raise MemoryUnavailable('This core file requires its governed generator or memory correction tools')
++        if before['reference'] != reference: raise MemoryConflict('The core file changes after review')
++        _admit_content(memory, scope, connection, identifier, before['meta'], content, datetime.now(timezone.utc).isoformat())
++        if identifier in CODE_FILES and not memory._native('core_file_validate', content=content, label=before['meta']['label']).get('accepted'):
++            return {'status': 422, 'body': {'error': 'Program edits must contain install-generic text.'}}
++        check_current()
++
++    def apply(connection):
++        check_current()
++        if _snapshot(memory, scope, connection, identifier) != before: raise MemoryConflict('The core file changes before publication')
++        publication_paths(memory, scope, payload)
++        publish(_checked(memory, memory.root / payload['backup']), before['content'].encode())
++        publish(_path(memory, identifier), content.encode())
++        after = _snapshot(memory, scope, connection, identifier)
++        check_current()
++        result = {'status': 200, 'body': {'ok': True, 'meta': after['meta'], 'reference': after['reference'],
++            'backup': _display(memory, memory.root / payload['backup']), 'written': datetime.now(timezone.utc).isoformat(),
++            'releaseModified': identifier in CODE_FILES or identifier == 'system-prompt'}}
++        return {'status': 'committed', 'reference': after['reference'], 'result': result}
++
++    receipt = memory._operation(scope, request_id, payload, apply, identity_payload=identity,
++        publication_digests={'core-file/' + identifier: hashlib.sha256(content.encode()).hexdigest(),
++            payload['backup']: hashlib.sha256(before['content'].encode()).hexdigest()})
++    if receipt['status'] != 'committed': raise MemoryConflict('The core edit does not complete its recoverable publication')
++    with memory._transaction() as connection:
++        if _snapshot(memory, scope, connection, identifier)['reference'] != receipt['reference']:
++            raise MemoryConflict('The core save response preserves a later source or policy change')
++        check_current()
++        return receipt['result']
+diff --git a/lifeos_hook_bridge/memory_http.py b/lifeos_hook_bridge/memory_http.py
+index 862d16b9..4c7bcf9b 100644
+--- a/lifeos_hook_bridge/memory_http.py
++++ b/lifeos_hook_bridge/memory_http.py
+@@ -66,12 +66,13 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
+ 
+ 
+ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
+-    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file')
++    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file', 'core_file')
+     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
+     edit = arguments.get('view') == 'telos_file_edit'
+     algorithm_edit = arguments.get('view') == 'algorithm_edit'
+     content_action = arguments.get('view') == 'content_action'
+-    action = algorithm_edit or content_action
++    core_edit = arguments.get('view') == 'core_file_edit'
++    action = algorithm_edit or content_action or core_edit
+     runtime = arguments.get('view') == 'pulse_runtime'
+     job = arguments.get('view') in ('conduit_job', 'atlas_job', 'local_job', 'algorithm_job')
+     delivery = runtime and 'observation' in arguments
+@@ -96,6 +97,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
+             from .memory_upgrade_queue import request_target
+         elif arguments['view']=='life':
+             from .memory_life import request_target
++        elif arguments['view']=='core_file':
++            from .memory_core_file import request_target
+         elif arguments['view']=='telos_file':
+             from .memory_telos_file import request_target
+         else:
+@@ -148,6 +151,19 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
+             return _response(400,{'error':'Invalid memory review arguments'})
+         route = '/memory/' + ('hypotheses' if arguments['view']=='hypothesis_review' else 'upgrades') + '/review'
+         data = json.dumps({key:arguments[key] for key in ('target','note','request_id')},ensure_ascii=False).encode()
++    if core_edit:
++        from .memory_core_file import request_target
++        try:
++            target = request_target(arguments['target'])
++            body = arguments['observation']
++            if not target.startswith('/api/hermes/file/') or not isinstance(body, dict) or set(body) != {'content', 'reference', 'request_id'}:
++                raise ValueError('Choose a reviewed core file edit')
++        except LookupError:
++            return _response(404, {'error': 'Choose one declared core file'})
++        except ValueError:
++            return _response(400, {'error': 'Choose complete core file edit fields'})
++        route = '/memory/core_file'
++        data = json.dumps({'identifier': target.removeprefix('/api/hermes/file/'), **body}, ensure_ascii=False).encode()
+     if algorithm_edit:
+         from .memory_algorithm_edit import _target
+         try:
+@@ -198,6 +214,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
+                                       headers=credentials,method='POST' if remount or review or edit or action or delivery or job else 'GET')
+         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
+         timeout = 120 if remount else 30 if runtime or action or job else 8
++        if arguments['view'] == 'core_file': timeout = 120 if target == '/api/hermes' else 30
+         if arguments['view'] == 'life':
+             from .memory_operational_views import CAPABILITY_WINDOWS
+             from .memory_performance import ROUTES as PERFORMANCE_ROUTES
+diff --git a/lifeos_hook_bridge/memory_native.ts b/lifeos_hook_bridge/memory_native.ts
+index 0c70db4c..368a31b1 100644
+--- a/lifeos_hook_bridge/memory_native.ts
++++ b/lifeos_hook_bridge/memory_native.ts
+@@ -27,7 +27,41 @@ async function main(): Promise<void> {
+     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
+   }
+   let result: unknown;
+-  if (input.action === 'local_refresh_inputs') {
++  if (input.action === 'core_file_health' || input.action === 'core_file_log') {
++    if (!object(input.sources) || Object.values(input.sources).some(value => value !== null && typeof value !== 'string')) {
++      throw new Error('Choose admitted core diagnostic snapshots');
++    }
++    if (input.action === 'core_file_health') {
++      const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/HERMES/Health.ts')).href);
++      if (!object(module) || typeof module.checkHermesHealth !== 'function') throw new Error('Native Hermes health is unavailable');
++      const sources = input.sources;
++      const home = process.env.HERMES_HOME;
++      if (!home) throw new Error('The selected Hermes profile is required');
++      result = module.checkHermesHealth({home, installed: true, read: (path: string): string | null => {
++        const prefix = home + '/';
++        if (!path.startsWith(prefix)) throw new Error('The health reader leaves its admitted profile');
++        const value = sources[path.slice(prefix.length)];
++        if (value === undefined || value !== null && typeof value !== 'string') throw new Error('The health reader names an undeclared source');
++        return value;
++      }});
++    } else {
++      const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/HERMES/LogAnalysis.ts')).href);
++      if (!object(module) || typeof module.analyzeGuardLogSnapshot !== 'function' || typeof input.days !== 'number') throw new Error('Native guard-log snapshots are unavailable');
++      const content = input.sources['plugins/lifeos/blocked.jsonl'];
++      if (content !== null && typeof content !== 'string') throw new Error('Choose admitted guard-log text');
++      result = module.analyzeGuardLogSnapshot(content, input.days);
++    }
++  } else if (input.action === 'core_file_registry' || input.action === 'core_file_validate') {
++    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hermes.ts')).href);
++    if (!object(module) || typeof module.coreFileRegistry !== 'function' || typeof module.validateCoreFileContent !== 'function') {
++      throw new Error('Native core file exports are unavailable');
++    }
++    if (input.action === 'core_file_registry') result = {files: module.coreFileRegistry()};
++    else {
++      if (typeof input.content !== 'string' || typeof input.label !== 'string') throw new Error('Choose declared core code text');
++      result = {accepted: module.validateCoreFileContent(input.content, input.label)};
++    }
++  } else if (input.action === 'local_refresh_inputs') {
+     if (!['hometown', 'sources', 'prepare'].includes(String(input.kind)) || !object(input.contents)
+         || Object.values(input.contents).some(value => !(value === null || typeof value === 'string'))
+         || typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
+diff --git a/lifeos_hook_bridge/memory_preferences.py b/lifeos_hook_bridge/memory_preferences.py
+index fed619ab..ecdd2b0b 100644
+--- a/lifeos_hook_bridge/memory_preferences.py
++++ b/lifeos_hook_bridge/memory_preferences.py
+@@ -367,6 +367,40 @@ class MemoryPreferences:
+         return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+             check_current=check_current), account=account)
+ 
++    def core_file_response(self, target, *, account=None):
++        from .memory_core_file import view
++        config = self._configuration(account=account)
++        def check_current():
++            if self._configuration(account=account) != config:
++                raise MemoryUnavailable('The core file owner authority changes')
++        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
++        memory = NativeMemory(self.root, profile=self.configuration.path.parent)
++        result = view(memory, scope, target, check_current=check_current)
++        if target in ('/api/hermes', '/api/hermes/'):
++            from .memory_core_file import mount_probe
++            from .memory_administration import lease, mount_environment
++            with lease(self.configuration, account) as authorization:
++                environment = mount_environment(self.root, self.configuration.path.parent, authorization)
++                probe = mount_probe(memory, scope, environment, check_current=check_current)
++            after = view(memory, scope, target, check_current=check_current)
++            if after['body']['reference'] != result['body']['reference']:
++                raise MemoryUnavailable('The core sources change during the mount probe')
++            result = after
++            result['body']['mount'] = probe
++        return self._response(config, result, account=account)
++
++    def edit_core_file(self, request, *, account=None):
++        from .memory_core_file import edit
++        config = self._configuration(account=account)
++        if not isinstance(request, dict) or set(request) != {'identifier', 'content', 'reference', 'request_id'}:
++            raise ValueError('Provide the current core file reference and requested content')
++        def check_current():
++            if self._configuration(account=account) != config:
++                raise MemoryUnavailable('The core file owner authority changes')
++        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
++        return self._response(config, edit(NativeMemory(self.root, profile=self.configuration.path.parent),
++            scope, **request, check_current=check_current), account=account)
++
+     def telos_file_response(self, target, *, account=None):
+         from .memory_telos_file import view
+         config = self._configuration(account=account)
+diff --git a/tests/test_memory_core_editor.py b/tests/test_memory_core_editor.py
+new file mode 100644
+index 00000000..7f1938e7
+--- /dev/null
++++ b/tests/test_memory_core_editor.py
+@@ -0,0 +1,384 @@
++# ABOUTME: Exercises the Pulse core-file editor through real native and authenticated owner HTTP listeners.
++# ABOUTME: Checks owner-only disclosure, reviewed saves, sealed files, and preservation of later edits.
++import os
++import shutil
++import json
++import time
++import subprocess
++import sys
++from pathlib import Path
++import unittest
++import httpx
++import test_memory_pulse_relay as relay_fixture
++
++
++class MemoryCoreEditorTests(unittest.TestCase):
++    native_module = 'hermes.ts'
++    setUp = relay_fixture.MemoryPulseRelayTests.setUp
++    create_fixture = relay_fixture.MemoryPulseRelayTests.create_fixture
++    native_module_name = relay_fixture.MemoryPulseRelayTests.native_module_name
++    stop_dashboard = relay_fixture.MemoryPulseRelayTests.stop_dashboard
++    stop_pulse = relay_fixture.MemoryPulseRelayTests.stop_pulse
++    login = relay_fixture.MemoryPulseRelayTests.login
++
++    def seed(self):
++        path = self.root / 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md'
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text('# SyntheticCoreEditorIdentity\nSynthetic owner identity\n')
++        return path
++
++    def read(self, client, identifier='principal-identity'):
++        return client.get(self.native + '/api/hermes/file/' + identifier)
++
++    def test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation(self):
++        path = self.seed()
++        before = path.read_bytes()
++        response = httpx.get(self.native + '/api/hermes/file/principal-identity')
++        self.assertEqual(response.status_code, 401, response.text)
++        self.assertNotIn('SyntheticCoreEditorIdentity', response.text)
++        response = httpx.put(self.native + '/api/hermes/file/principal-identity', json={'content': '# Unauthorized edit', 'reference': '0' * 64, 'request_id': 'synthetic-unauthorized-core-edit'})
++        self.assertEqual(response.status_code, 401, response.text)
++        self.assertEqual(path.read_bytes(), before)
++
++    def test_current_owner_read_preserves_body_and_supplies_review_reference(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            response = self.read(client)
++            self.assertEqual(response.status_code, 200, response.text)
++            self.assertEqual(response.json()['content'], path.read_text())
++            self.assertEqual(response.json()['meta']['id'], 'principal-identity')
++            self.assertRegex(response.json()['reference'], r'^[0-9a-f]{64}$')
++            self.assertEqual(response.headers.get('cache-control'), 'no-store')
++
++    def test_current_reviewed_save_is_private_and_idempotent(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            read = self.read(client)
++            self.assertEqual(read.status_code, 200, read.text)
++            body = {'content': '# SyntheticCurrentCoreEdit\n', 'reference': read.json()['reference'],
++                'request_id': 'synthetic-core-editor-save'}
++            saved = client.put(self.native + '/api/hermes/file/principal-identity', json=body)
++            self.assertEqual(saved.status_code, 200, saved.text)
++            self.assertTrue(saved.json()['ok'])
++            self.assertEqual(path.read_text(), body['content'])
++            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
++            repeated = client.put(self.native + '/api/hermes/file/principal-identity', json=body)
++            self.assertEqual(repeated.status_code, 200, repeated.text)
++            self.assertEqual(repeated.json(), saved.json())
++
++    def test_later_owner_edit_refuses_stale_save(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            read = self.read(client)
++            self.assertEqual(read.status_code, 200, read.text)
++            reference = read.json()['reference']
++            path.write_text('# SyntheticLaterCoreEdit\n')
++            before = path.read_bytes(), path.stat().st_mtime_ns
++            response = client.put(self.native + '/api/hermes/file/principal-identity',
++                json={'content': '# Stale overwrite', 'reference': reference, 'request_id': 'synthetic-stale-core-edit'})
++            self.assertEqual(response.status_code, 409, response.text)
++            self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
++
++    def test_revoked_owner_cannot_read_profile_details(self):
++        self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            self.fixture.configuration.update(lambda value: value['accounts'].pop('dashboard:basic:synthetic-owner'))
++            response = self.read(client)
++            self.assertEqual(response.status_code, 403, response.text)
++            self.assertNotIn('SyntheticCoreEditorIdentity', response.text)
++
++    def test_current_owner_cannot_read_or_edit_credential_material(self):
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            for method in ('GET', 'PUT'):
++                response = client.request(method, self.native + '/api/hermes/file/hermes-env',
++                    json={'content': 'Synthetic edit', 'reference': '0' * 64, 'request_id': 'synthetic-sealed-core-edit'} if method == 'PUT' else None)
++                self.assertEqual(response.status_code, 403, response.text)
++                self.assertNotIn('synthetic-password', response.text)
++
++    def seed_programs(self):
++        source = Path(os.environ['LIFEOS_MEMORY_SOURCE']) / 'LIFEOS/HERMES'
++        target = self.root / 'LIFEOS/HERMES'
++        shutil.copytree(source, target)
++        return target
++
++    def test_all_native_program_files_preserve_their_exact_public_bodies(self):
++        from lifeos_hook_bridge.memory_core_file import CODE_FILES
++        programs = self.seed_programs()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            for identifier, relative in CODE_FILES.items():
++                with self.subTest(identifier=identifier):
++                    response = self.read(client, identifier)
++                    if (programs / relative).is_file():
++                        self.assertEqual(response.status_code, 200, response.text)
++                        self.assertEqual(response.json()['content'], (programs / relative).read_text())
++                    else:
++                        self.assertEqual(response.status_code, 404, response.text)
++                        self.assertFalse(response.json()['meta']['exists'])
++
++    def test_profile_configuration_and_cron_definitions_use_reviewed_saves(self):
++        profile = self.fixture.configuration.path.parent
++        (profile / 'cron').mkdir()
++        for identifier, relative, before, after in (
++            ('config', 'config.yaml', 'model: synthetic-private-model\n', 'model: synthetic-new-private-model\n'),
++            ('cron-jobs', 'cron/jobs.json', '{"jobs": []}\n', '{"jobs": [], "version": 1}\n')):
++            with self.subTest(identifier=identifier):
++                path = profile / relative
++                path.write_text(before)
++                with httpx.Client(timeout=60) as client:
++                    self.login(client)
++                    read = self.read(client, identifier)
++                    self.assertEqual(read.status_code, 200, read.text)
++                    response = client.put(self.native + '/api/hermes/file/' + identifier,
++                        json={'content': after, 'reference': read.json()['reference'], 'request_id': 'synthetic-core-' + identifier})
++                    self.assertEqual(response.status_code, 200, response.text)
++                    self.assertEqual(path.read_text(), after)
++
++    def test_program_save_refuses_credentials_and_records_release_change(self):
++        programs = self.seed_programs()
++        path = programs / 'Health.ts'
++        before = path.read_bytes()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            read = self.read(client, 'health')
++            self.assertEqual(read.status_code, 200, read.text)
++            denied = client.put(self.native + '/api/hermes/file/health', json={
++                'content': 'export const token = "sk-' + 'a' * 40 + '";\n',
++                'reference': read.json()['reference'], 'request_id': 'synthetic-code-containment'})
++            self.assertEqual(denied.status_code, 422, denied.text)
++            self.assertEqual(path.read_bytes(), before)
++            edited = before.decode() + '\n// Synthetic owner program edit\n'
++            saved = client.put(self.native + '/api/hermes/file/health', json={'content': edited,
++                'reference': read.json()['reference'], 'request_id': 'synthetic-core-program-edit'})
++            self.assertEqual(saved.status_code, 200, saved.text)
++            self.assertTrue(saved.json()['releaseModified'])
++            self.assertEqual(path.read_text(), edited)
++
++    def test_generated_files_refuse_save_and_registered_facts_remain_bound(self):
++        profile = self.fixture.configuration.path.parent
++        (profile / 'SOUL.md').write_text('# Synthetic generated soul\n')
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            for identifier in ('soul', 'principal-memory'):
++                with self.subTest(identifier=identifier):
++                    read = self.read(client, identifier)
++                    self.assertEqual(read.status_code, 200, read.text)
++                    self.assertFalse(read.json()['meta']['editable'])
++                    response = client.put(self.native + '/api/hermes/file/' + identifier,
++                        json={'content': '# Synthetic raw replacement', 'reference': read.json()['reference'],
++                            'request_id': 'synthetic-forbidden-core-' + identifier})
++                    self.assertEqual(response.status_code, 409, response.text)
++            found = client.post(self.dashboard + '/api/plugins/lifeos-hook-bridge/memory/review',
++                json={'tool': 'lifeos_memory_search', 'arguments': {'query': 'authenticated PULSE'}})
++            self.assertEqual(found.status_code, 200, found.text)
++            self.assertTrue(found.json()['results'])
++
++    def test_private_and_retired_source_bodies_are_withheld(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            path.write_text('<private>Synthetic withheld core identity</private>\n')
++            response = self.read(client)
++            self.assertEqual(response.status_code, 503, response.text)
++            self.assertNotIn('Synthetic withheld core identity', response.text)
++
++    def test_redirected_and_hardlinked_profile_sources_are_withheld(self):
++        profile = self.fixture.configuration.path.parent
++        external = self.fixture.home / 'synthetic-external-core-config'
++        external.write_text('model: synthetic-external\n')
++        path = profile / 'config.yaml'
++        path.symlink_to(external)
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            for kind in ('symlink', 'hardlink'):
++                with self.subTest(kind=kind):
++                    if kind == 'hardlink':
++                        path.unlink()
++                        os.link(external, path)
++                    response = self.read(client, 'config')
++                    self.assertEqual(response.status_code, 503, response.text)
++                    self.assertNotIn('synthetic-external', response.text)
++
++    def test_overview_retains_registry_and_native_gateway_health(self):
++        self.seed()
++        self.seed_programs()
++        profile = self.fixture.configuration.path.parent
++        (profile / 'gateway_state.json').write_text(json.dumps({'pid': os.getpid(), 'active_agents': 2,
++            'updated_at': '2026-10-14T00:00:00Z', 'platforms': {'discord': {'state': 'connected'}}}))
++        (profile / 'gateway-starts.log').write_text(str(time.time()) + '\n')
++        with httpx.Client(timeout=120) as client:
++            self.login(client)
++            response = client.get(self.native + '/api/hermes')
++            self.assertEqual(response.status_code, 200, response.text)
++            body = response.json()
++            self.assertEqual(len(body['files']), 24)
++            self.assertEqual(body['health']['pid'], os.getpid())
++            self.assertEqual(body['health']['activeAgents'], 2)
++            self.assertEqual(body['health']['platforms'][0]['state'], 'connected')
++            self.assertEqual(body['health']['recentStarts'], 1)
++            self.assertTrue(body['mount']['probed'])
++
++    def test_guard_analysis_keeps_actual_native_counts_and_refuses_anonymous_access(self):
++        self.seed_programs()
++        profile = self.fixture.configuration.path.parent
++        folder = profile / 'plugins/lifeos'
++        folder.mkdir(parents=True)
++        row = {'ts': '2099-01-01T00:00:00Z', 'tool': 'terminal', 'target': 'synthetic target',
++            'reason': "deny rule 'synthetic-example'"}
++        (folder / 'blocked.jsonl').write_text(json.dumps(row) + '\n')
++        response = httpx.get(self.native + '/api/hermes/log-analysis?days=14')
++        self.assertEqual(response.status_code, 401, response.text)
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            response = client.get(self.native + '/api/hermes/log-analysis?days=14')
++            self.assertEqual(response.status_code, 200, response.text)
++            body = response.json()
++            self.assertEqual(body['totalBlocks'], 1)
++            self.assertEqual(body['byClass'], {'deny-rule': 1})
++            self.assertEqual(body['topRules'][0]['rule'], 'synthetic-example')
++
++    def interrupt_save(self, identifier, path, client):
++        read = self.read(client, identifier)
++        self.assertEqual(read.status_code, 200, read.text)
++        request = {'identifier': identifier, 'content': 'model: synthetic-interrupted\n' if identifier == 'config' else '# Synthetic interrupted core source\n',
++            'reference': read.json()['reference'], 'request_id': 'synthetic-core-interruption-' + identifier}
++        result = subprocess.run([sys.executable, str(Path(__file__).with_name('memory_core_edit_process.py')),
++            str(self.fixture.configuration.path), json.dumps(request), 'interrupt'], capture_output=True, text=True, timeout=60,
++            env=dict(os.environ, PYTHONPATH=str(Path(__file__).resolve().parents[1])))
++        self.assertEqual(result.returncode, 86, result.stderr)
++        self.assertEqual(result.stdout + result.stderr, '')
++        self.assertEqual(path.read_text(), request['content'])
++        return request
++
++    def test_real_process_interruption_recovers_source_bytes_and_permissions(self):
++        path = self.seed()
++        path.chmod(0o640)
++        before = path.read_bytes(), path.stat().st_mode & 0o777
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            self.interrupt_save('principal-identity', path, client)
++            response = self.read(client)
++            self.assertEqual(response.status_code, 200, response.text)
++            self.assertEqual((path.read_bytes(), path.stat().st_mode & 0o777), before)
++
++    def test_interrupted_profile_save_recovers_through_the_other_owner_memory_route(self):
++        profile = self.fixture.configuration.path.parent
++        (self.fixture.home / '.hermes').symlink_to(profile, target_is_directory=True)
++        path = profile / 'config.yaml'
++        path.write_text('model: synthetic-original\n')
++        path.chmod(0o640)
++        before = path.read_bytes(), path.stat().st_mode & 0o777
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            self.interrupt_save('config', path, client)
++            response = client.post(self.dashboard + '/api/plugins/lifeos-hook-bridge/memory/review',
++                json={'tool': 'lifeos_memory_search', 'arguments': {'query': 'authenticated PULSE'}})
++            self.assertEqual(response.status_code, 200, response.text)
++            self.assertEqual(response.json()['status'], 'ok', response.text)
++            self.assertEqual((path.read_bytes(), path.stat().st_mode & 0o777), before)
++
++    def test_later_edit_after_interruption_survives_recovery(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            self.interrupt_save('principal-identity', path, client)
++            path.write_text('# Synthetic later edit after interrupted save\n')
++            later = path.read_bytes()
++            response = self.read(client)
++            self.assertEqual(response.status_code, 503, response.text)
++            self.assertEqual(path.read_bytes(), later)
++
++    def test_owner_revocation_after_real_snapshot_refuses_publication(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            read = self.read(client)
++            request = {'identifier': 'principal-identity', 'content': '# Synthetic revoked core save\n',
++                'reference': read.json()['reference'], 'request_id': 'synthetic-core-revoke'}
++            before = path.read_bytes(), path.stat().st_mtime_ns
++            result = subprocess.run([sys.executable, str(Path(__file__).with_name('memory_core_edit_process.py')),
++                str(self.fixture.configuration.path), json.dumps(request), 'revoke'], capture_output=True, text=True, timeout=60,
++                env=dict(os.environ, PYTHONPATH=str(Path(__file__).resolve().parents[1])))
++            self.assertEqual(result.returncode, 0, result.stderr)
++            self.assertEqual(result.stderr, '')
++            self.assertEqual(json.loads(result.stdout), {'observed': True, 'withheld': True})
++            self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
++
++    def test_withheld_identity_does_not_hide_the_other_authorized_manifest_entries(self):
++        path = self.seed()
++        self.seed_programs()
++        path.write_text('<private>Synthetic withheld manifest identity</private>\n')
++        with httpx.Client(timeout=120) as client:
++            self.login(client)
++            response = client.get(self.native + '/api/hermes')
++            self.assertEqual(response.status_code, 200, response.text)
++            entries = {row['id']: row for row in response.json()['files']}
++            self.assertEqual(len(entries), 24)
++            self.assertFalse(entries['principal-identity']['readable'])
++            self.assertFalse(entries['principal-identity']['editable'])
++            self.assertIsNone(entries['principal-identity']['lines'])
++            self.assertNotIn('Synthetic withheld manifest identity', response.text)
++            self.assertTrue(entries['health']['readable'])
++
++    def test_invalid_save_fields_origin_and_reused_request_ids_preserve_the_file(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            read = self.read(client)
++            valid = {'content': '# Synthetic saved core source\n', 'reference': read.json()['reference'],
++                'request_id': 'synthetic-core-request-binding'}
++            before = path.read_bytes()
++            for changes in ({'reference': ''}, {'request_id': ''}, {'content': 1}, {'extra': True}):
++                with self.subTest(changes=changes):
++                    response = client.put(self.native + '/api/hermes/file/principal-identity', json={**valid, **changes})
++                    self.assertEqual(response.status_code, 400, response.text)
++                    self.assertEqual(path.read_bytes(), before)
++            response = client.put(self.native + '/api/hermes/file/principal-identity', json=valid,
++                headers={'Origin': 'https://synthetic-foreign.example.invalid'})
++            self.assertEqual(response.status_code, 403, response.text)
++            self.assertEqual(path.read_bytes(), before)
++            response = client.put(self.native + '/api/hermes/file/principal-identity', json=valid)
++            self.assertEqual(response.status_code, 200, response.text)
++            saved = path.read_bytes()
++            response = client.put(self.native + '/api/hermes/file/principal-identity', json={**valid, 'content': '# Another request body'})
++            self.assertEqual(response.status_code, 409, response.text)
++            self.assertEqual(path.read_bytes(), saved)
++
++    def test_invalid_bearer_cannot_borrow_an_owner_cookie(self):
++        path = self.seed()
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            read = self.read(client)
++            before = path.read_bytes()
++            response = self.read(client)
++            self.assertEqual(response.status_code, 200, response.text)
++            response = client.get(self.native + '/api/hermes/file/principal-identity',
++                headers={'Authorization': 'Bearer synthetic-invalid'})
++            self.assertEqual(response.status_code, 401, response.text)
++            self.assertNotIn('SyntheticCoreEditorIdentity', response.text)
++            response = client.put(self.native + '/api/hermes/file/principal-identity',
++                json={'content': '# Synthetic bearer bypass', 'reference': read.json()['reference'], 'request_id': 'synthetic-denied-bearer'},
++                headers={'Authorization': 'Bearer synthetic-invalid'})
++            self.assertEqual(response.status_code, 401, response.text)
++            self.assertEqual(path.read_bytes(), before)
++
++    def test_remount_requires_current_owner_and_empty_fixed_arguments(self):
++        response = httpx.post(self.native + '/api/hermes/remount')
++        self.assertEqual(response.status_code, 401, response.text)
++        with httpx.Client(timeout=60) as client:
++            self.login(client)
++            for suffix, body in (('?profile=other', b''), ('', b'{}')):
++                response = client.post(self.native + '/api/hermes/remount' + suffix, content=body)
++                self.assertEqual(response.status_code, 400, response.text)
++            self.fixture.configuration.update(lambda value: value['accounts'].pop('dashboard:basic:synthetic-owner'))
++            response = client.post(self.native + '/api/hermes/remount')
++            self.assertEqual(response.status_code, 403, response.text)
++
++
++if __name__ == '__main__':
++    unittest.main()
