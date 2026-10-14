@@ -2,15 +2,17 @@
 
 Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest is container 102 at `192.168.8.253`.
 
-## Current release and next work (October 13)
+## Current release and next work (October 14)
 
-The development guest `.252` runs qualified release 0.4.1 at program commit `96f4f8fbef21f53ee704eb16f34698bc35b5dc77`. The published exact-version fresh installation and default development update pass. All three services, public aliases, and the selected model mapping pass. The [0.4.1 qualification record](verification/2026-10-12-release-0.4.1/README.md) includes the public acceptance asset and manager bootstrap requirement.
+Daily `.253` and development `.252` run qualified release 0.4.3 at program commit `a1abb579558edcf29f7cd04ecfd998995d48db54`. The exact public package passes both deployment gates. All three services, their HOME bindings, the selected private model and tier mapping, credential bytes, and memory configuration survive promotion. Actual Cerebo memory save and recall across the update pass. Governed cleanup removes only the synthetic acceptance fact and leaves a fresh daily session. See the [current release evidence](verification/2026-10-14-release-0.4.3/README.md).
 
-The daily guest `.253` stays on accepted release 0.3.1 at program commit `9af633252004a0ac8dd780d5fc12e9644f97bb0c`. All six daily release acceptance steps pass. The final daily restore verifies 41,742 artifacts and baseline, interrupted-publication, and later-edit Atlas cases. The real automatic morning run completes once, and Cerebo delivers exactly one matching brief in the October 12 observation window. See the [final release acceptance](verification/2026-10-12-capture-cursor/README.md).
+PR23 and PR24 are merged. The public certificate and deployment checkpoint remain immutable. The stronger automatic observer is installed. Its real October 15 observation runs at 07:15 America/Toronto and verifies the automatic 07:00 Pulse execution and exact single Cerebo delivery. This observation remains pending.
 
-Adrian authorizes roadmap reconciliation, stronger automatic morning verification, complete installation and updates from Hermes, and compatibility with the latest Hermes release. The complete 0.4.1 package passes qualification and public acceptance on `.252`. A later daily promotion must pass the daily deployment gate. Keep `.253` on its accepted package until that gate completes. Preserve the selected model efforts and personal data. Voice, Content media processing, the Pulse core-file editor, import, and reverse migration remain deferred.
+The protected daily post-promotion checkpoint is `PBS-01:backup/ct/102/2026-10-14T16:15:12Z`. This checkpoint has not yet received an isolated restore. The prior daily restore verifies 41,742 artifacts and three Atlas cases. The separate 0.4.3 qualification restore verifies 64,282 runtime artifacts, nine sealed targets, and three Atlas cases. These earlier checks do not replace verification of the current daily checkpoint.
 
-The dated sections below preserve historical checkpoint states. Their earlier version numbers and open gates do not describe the current daily release. The [project todos](../TODO.md) record the remaining work.
+Adrian authorizes documentation reconciliation, isolated restoration of the current daily checkpoint, then the governed Pulse core-file editor on development. The daily text release stays available during this work. Product changes must form a complete tested release before daily deployment. Voice, Content media processing, import, and reverse migration remain deferred.
+
+The dated sections below preserve historical checkpoints. Their earlier version numbers and open gates do not describe the current release. The [project todos](../TODO.md) record the remaining work.
 
 ## Daily guest installation and recovery (October 11)
 
@@ -30,7 +32,7 @@ Acceptance exposes two corrections. New-store preparation removes sample persona
 
 Daily guest provisioning and coherent off-server restoration pass on October 11. Private-channel admission, inbound owner delivery, and lasting-memory activation also pass on October 11. Actual Discord save and recall pass in separate sessions. Governed cleanup returns zero search matches and zero active facts. Cerebo starts a fresh daily session, and the selected text release is ready for daily use. The [daily deployment guide](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) requires external Atlas state and interrupted-publication recovery. Local profile reconstruction does not complete this guest gate. Voice, media processing, import, reverse migration, the complete Hermes-managed installer, and the governed Pulse core-file editor remain deferred.
 
-The sections below retain the dated evidence and earlier open-state descriptions. The October 13 section supplies the current release status.
+The sections below retain the dated evidence and earlier open-state descriptions. The October 14 section supplies the current release status.
 
 ## Initial daily-use release plan (October 7)
 
