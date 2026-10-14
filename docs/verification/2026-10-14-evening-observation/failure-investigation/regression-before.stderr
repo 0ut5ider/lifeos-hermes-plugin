@@ -1,0 +1,16 @@
+test_native_completion_precedes_its_asynchronous_journal_capture (test_morning_observation.MorningObservationTests.test_native_completion_precedes_its_asynchronous_journal_capture) ... ERROR
+
+======================================================================
+ERROR: test_native_completion_precedes_its_asynchronous_journal_capture (test_morning_observation.MorningObservationTests.test_native_completion_precedes_its_asynchronous_journal_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_morning_observation.py", line 185, in test_native_completion_precedes_its_asynchronous_journal_capture
+    result = morning_execution('\n'.join(lines), state, self.start, self.end, '1558870196784205927')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/morning_observation.py", line 119, in morning_execution
+    raise ValueError('The current Pulse state and cron delivery receipt must agree')
+ValueError: The current Pulse state and cron delivery receipt must agree
+
+----------------------------------------------------------------------
+Ran 1 test in 0.502s
+
+FAILED (errors=1)

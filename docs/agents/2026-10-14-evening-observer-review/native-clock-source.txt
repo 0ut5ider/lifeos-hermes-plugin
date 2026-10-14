@@ -1,0 +1,40 @@
+Source: /home/outsider/.cache/lifeos-pulse-editor-20261014/prepared/lifeos/LifeOS/install/LIFEOS/PULSE
+
+lib.ts:427-434
+export function log(level: string, msg: string, data?: Record<string, unknown>): void {
+  const entry = { ts: new Date().toISOString(), level, msg, ...data }
+  if (level === "error") {
+    console.error(JSON.stringify(entry))
+  } else {
+    console.log(JSON.stringify(entry))
+  }
+}
+
+pulse.ts:1165-1191
+      log("info", `Running: ${job.name}`, { type: job.type, subsystem: "cron" })
+      const startMs = Date.now()
+
+      try {
+        let output: string
+
+        if (job.type === "claude") {
+          output = await spawnClaude(job.prompt!, { model: job.model ?? "sonnet" })
+        } else {
+          output = await spawnScript(job.command!, job.timeout_ms)
+        }
+
+        const durationMs = Date.now() - startMs
+
+        if (!isSentinel(output)) {
+          await dispatch(output, job.output as any, job.name)
+          const targets = Array.isArray(job.output) ? job.output.join(", ") : job.output
+          log("info", `${job.name} completed — dispatched to ${targets}`, {
+            durationMs,
+            subsystem: "cron",
+            outputPreview: output.slice(0, 200),
+          })
+        } else {
+          log("info", `${job.name} completed — nothing to report`, { durationMs, subsystem: "cron" })
+        }
+
+        state.jobs[job.name] = { lastRun: Date.now(), lastResult: "ok", consecutiveFailures: 0 }

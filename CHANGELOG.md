@@ -2,6 +2,8 @@
 
 ## 0.5.0-rc.1 (staged editor candidate)
 
+- Compare observer completion state with native event timestamps and bound journal capture delay.
+
 - Add authenticated owner reads for the 24 declared Pulse core files.
 - Bind eligible saves to reviewed source references and private recoverable backups.
 - Keep credentials sealed, generated files read-only, and registered facts under the memory correction tools.

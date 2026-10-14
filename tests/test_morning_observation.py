@@ -158,6 +158,7 @@ class MorningObservationTests(unittest.TestCase):
     def test_execution_requires_cron_start_and_completion_and_current_state(self):
         started, completed = self.start+timedelta(seconds=1), self.start+timedelta(minutes=1)
         def event(at, body):
+            body['ts'] = at.isoformat()
             return json.dumps({'__REALTIME_TIMESTAMP': str(int(at.timestamp()*1000000)), 'MESSAGE': json.dumps(body)})
         lines = [event(started, {'subsystem':'cron','msg':'Running: life-morning-brief'}),
                  event(completed, {'subsystem':'cron','msg':'life-morning-brief completed; dispatched to log',
@@ -169,6 +170,50 @@ class MorningObservationTests(unittest.TestCase):
         for journal, bad_state in [(lines[1],state), ('\n'.join(lines+lines),state), ('\n'.join(lines),dict(state,lastResult='error'))]:
             with self.assertRaises(ValueError):
                 morning_execution(journal,bad_state,self.start,self.end,'1558870196784205927')
+
+    def test_native_completion_precedes_its_asynchronous_journal_capture(self):
+        started = self.start + timedelta(seconds=53, milliseconds=6)
+        completed = self.start + timedelta(minutes=1, seconds=19, milliseconds=76)
+        lines = []
+        for at, delay, body in (
+                (started, 212, {'msg': 'Running: life-morning-brief'}),
+                (completed, 475, {'msg': 'life-morning-brief completed; dispatched to log',
+                    'outputPreview': json.dumps({'status': 'delivered', 'channel_id': '1558870196784205927'})})):
+            body.update(subsystem='cron', ts=at.isoformat())
+            lines.append(json.dumps({'__REALTIME_TIMESTAMP': str(int(at.timestamp() * 1000000) + delay),
+                'MESSAGE': json.dumps(body)}))
+        state = {'lastResult': 'ok', 'lastRun': int(completed.timestamp() * 1000), 'consecutiveFailures': 0}
+        result = morning_execution('\n'.join(lines), state, self.start, self.end, '1558870196784205927')
+        self.assertEqual(result['completed_at'], completed.isoformat())
+        self.assertEqual(result['timestamp_basis'], 'native-pulse-event')
+        self.assertAlmostEqual(result['journal_capture_delay_ms']['completion'], 0.475)
+
+    def test_execution_rejects_invalid_event_clocks_and_stale_state(self):
+        started = self.start + timedelta(seconds=1)
+        completed = self.start + timedelta(minutes=1)
+        state = {'lastResult': 'ok', 'lastRun': int(completed.timestamp() * 1000), 'consecutiveFailures': 0}
+        def journal(delay, timestamp):
+            rows = []
+            for at, body in ((started, {'msg': 'Running: life-morning-brief'}),
+                    (completed, {'msg': 'life-morning-brief completed; dispatched to log',
+                        'outputPreview': json.dumps({'status': 'delivered', 'channel_id': '1558870196784205927'})})):
+                body.update(subsystem='cron', ts=at.isoformat() if at == started else timestamp)
+                rows.append(json.dumps({'__REALTIME_TIMESTAMP': str(int(at.timestamp() * 1000000) + delay),
+                    'MESSAGE': json.dumps(body)}))
+            return '\n'.join(rows)
+        for delay in (0, 475, 2_000_000, 5_000_000):
+            with self.subTest(valid_delay_us=delay):
+                result = morning_execution(journal(delay, completed.isoformat()), state,
+                    self.start, self.end, '1558870196784205927')
+                self.assertEqual(result['completed_at'], completed.isoformat())
+        for delay, timestamp in ((-1, completed.isoformat()), (5_000_001, completed.isoformat()),
+                (0, completed.replace(tzinfo=None).isoformat()), (0, None), (0, 'invalid')):
+            with self.subTest(delay=delay, timestamp=timestamp), self.assertRaises(ValueError):
+                morning_execution(journal(delay, timestamp), state, self.start, self.end, '1558870196784205927')
+        for offset in (-1, 5001):
+            with self.subTest(state_offset_ms=offset), self.assertRaises(ValueError):
+                morning_execution(journal(475, completed.isoformat()),
+                    dict(state, lastRun=state['lastRun'] + offset), self.start, self.end, '1558870196784205927')
 
 
 if __name__ == '__main__':

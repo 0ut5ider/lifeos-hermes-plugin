@@ -95,16 +95,23 @@ def morning_execution(journal: str, state: dict, start, end, channel):
         try:
             outer = json.loads(line)
             event = json.loads(outer['MESSAGE'])
-            if not isinstance(event, dict) or event.get('subsystem') != 'cron':
-                continue
-            msg = event.get('msg', '')
-            if msg != 'Running: ' + JOB and not msg.startswith(JOB + ' completed'):
-                continue
-            at = datetime.fromtimestamp(int(outer['__REALTIME_TIMESTAMP']) / 1000000, start.tzinfo)
         except (ValueError, KeyError, TypeError, OverflowError):
             continue
+        if not isinstance(event, dict) or event.get('subsystem') != 'cron':
+            continue
+        msg = event.get('msg', '')
+        if not isinstance(msg, str) or msg != 'Running: ' + JOB and not msg.startswith(JOB + ' completed'):
+            continue
+        try:
+            recorded = datetime.fromtimestamp(int(outer['__REALTIME_TIMESTAMP']) / 1000000, start.tzinfo)
+            at = datetime.fromisoformat(event['ts'])
+            if at.tzinfo is None or not 0 <= (recorded - at).total_seconds() <= 5:
+                raise ValueError
+            at = at.astimezone(start.tzinfo)
+        except (ValueError, KeyError, TypeError, OverflowError):
+            raise ValueError('The native Pulse timestamp must agree with its bounded journal capture') from None
         if start <= at <= end:
-            (starts if msg == 'Running: ' + JOB else completions).append((at, event))
+            (starts if msg == 'Running: ' + JOB else completions).append((at, event, recorded))
     if len(starts) != 1 or len(completions) != 1 or starts[0][0] > completions[0][0]:
         raise ValueError('Pulse must record exactly one cron start and completion in the observation window')
     try:
@@ -118,7 +125,11 @@ def morning_execution(journal: str, state: dict, start, end, channel):
     if not valid:
         raise ValueError('The current Pulse state and cron delivery receipt must agree')
     return {'execution_source': 'pulse-cron-journal', 'cron_starts': 1, 'cron_completions': 1,
-            'started_at': starts[0][0].isoformat(), 'completed_at': completed.isoformat()}
+            'started_at': starts[0][0].isoformat(), 'completed_at': completed.isoformat(),
+            'timestamp_basis': 'native-pulse-event',
+            'journal_capture_delay_ms': {
+                'start': (starts[0][2] - starts[0][0]).total_seconds() * 1000,
+                'completion': (completions[0][2] - completions[0][0]).total_seconds() * 1000}}
 
 
 def observe(profile: Path, date: str, channel: str | None = None):
