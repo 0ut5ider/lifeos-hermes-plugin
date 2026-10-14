@@ -452,7 +452,7 @@ async def edit_memory_core_file(request: Request, account: str = Depends(_memory
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
     except ValueError:
         return JSONResponse({'error': 'Invalid core edit request'}, status_code=400, headers=headers)
-    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+    except (OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired) as error:
         from lifeos_memory_settings.memory_http import installation_binding
         try:
             config = preferences._configuration(account=account)
@@ -461,7 +461,11 @@ async def edit_memory_core_file(request: Request, account: str = Depends(_memory
             return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
         except (ValueError, OSError, RuntimeError):
             return JSONResponse({'error': 'Core editing is unavailable'}, status_code=503, headers=headers)
-        result = {'status': 409, 'body': {'error': 'The core save conflicts with the current source or policy. Open the file again.'}}
+        from lifeos_memory_settings.memory_access import MemoryConflict
+        if isinstance(error, MemoryConflict):
+            result = {'status': 409, 'body': {'error': 'The core save conflicts with the current source or policy. Open the file again.'}}
+        else:
+            result = {'status': 503, 'body': {'error': 'Core editing is unavailable'}}
     return JSONResponse(result['body'], status_code=result['status'],
         headers={**headers, 'X-LifeOS-Memory-Installation': binding})
 

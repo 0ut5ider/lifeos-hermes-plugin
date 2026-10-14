@@ -1,0 +1,47 @@
+test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation (test_memory_core_editor.MemoryCoreEditorTests.test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation) ... FAIL
+test_current_owner_cannot_read_or_edit_credential_material (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_cannot_read_or_edit_credential_material) ... ok
+test_current_owner_read_preserves_body_and_supplies_review_reference (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_read_preserves_body_and_supplies_review_reference) ... FAIL
+test_current_reviewed_save_is_private_and_idempotent (test_memory_core_editor.MemoryCoreEditorTests.test_current_reviewed_save_is_private_and_idempotent) ... FAIL
+test_later_owner_edit_refuses_stale_save (test_memory_core_editor.MemoryCoreEditorTests.test_later_owner_edit_refuses_stale_save) ... FAIL
+test_revoked_owner_cannot_read_profile_details (test_memory_core_editor.MemoryCoreEditorTests.test_revoked_owner_cannot_read_profile_details) ... ok
+
+======================================================================
+FAIL: test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation (test_memory_core_editor.MemoryCoreEditorTests.test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 35, in test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 401 : {"error": "Choose complete core file edit fields"}
+
+======================================================================
+FAIL: test_current_owner_read_preserves_body_and_supplies_review_reference (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_read_preserves_body_and_supplies_review_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 43, in test_current_owner_read_preserves_body_and_supplies_review_reference
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_current_reviewed_save_is_private_and_idempotent (test_memory_core_editor.MemoryCoreEditorTests.test_current_reviewed_save_is_private_and_idempotent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 54, in test_current_reviewed_save_is_private_and_idempotent
+    self.assertEqual(read.status_code, 200, read.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_later_owner_edit_refuses_stale_save (test_memory_core_editor.MemoryCoreEditorTests.test_later_owner_edit_refuses_stale_save)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 71, in test_later_owner_edit_refuses_stale_save
+    self.assertEqual(read.status_code, 200, read.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.102s
+
+FAILED (failures=4)

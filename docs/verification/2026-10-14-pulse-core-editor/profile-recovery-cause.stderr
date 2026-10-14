@@ -1,0 +1,18 @@
+test_interrupted_profile_save_recovers_through_the_other_owner_memory_route (test_memory_core_editor.MemoryCoreEditorTests.test_interrupted_profile_save_recovers_through_the_other_owner_memory_route) ... FAIL
+
+======================================================================
+FAIL: test_interrupted_profile_save_recovers_through_the_other_owner_memory_route (test_memory_core_editor.MemoryCoreEditorTests.test_interrupted_profile_save_recovers_through_the_other_owner_memory_route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 282, in test_interrupted_profile_save_recovers_through_the_other_owner_memory_route
+    self.assertEqual(response.json()['status'], 'ok', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' != 'ok'
+- unavailable
++ ok
+ : {"status":"unavailable","reason":"The core file changes its profile boundary"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.446s
+
+FAILED (failures=1)

@@ -27,7 +27,31 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'core_file_registry' || input.action === 'core_file_validate') {
+  if (input.action === 'core_file_health' || input.action === 'core_file_log') {
+    if (!object(input.sources) || Object.values(input.sources).some(value => value !== null && typeof value !== 'string')) {
+      throw new Error('Choose admitted core diagnostic snapshots');
+    }
+    if (input.action === 'core_file_health') {
+      const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/HERMES/Health.ts')).href);
+      if (!object(module) || typeof module.checkHermesHealth !== 'function') throw new Error('Native Hermes health is unavailable');
+      const sources = input.sources;
+      const home = process.env.HERMES_HOME;
+      if (!home) throw new Error('The selected Hermes profile is required');
+      result = module.checkHermesHealth({home, installed: true, read: (path: string): string | null => {
+        const prefix = home + '/';
+        if (!path.startsWith(prefix)) throw new Error('The health reader leaves its admitted profile');
+        const value = sources[path.slice(prefix.length)];
+        if (value === undefined || value !== null && typeof value !== 'string') throw new Error('The health reader names an undeclared source');
+        return value;
+      }});
+    } else {
+      const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/HERMES/LogAnalysis.ts')).href);
+      if (!object(module) || typeof module.analyzeGuardLogSnapshot !== 'function' || typeof input.days !== 'number') throw new Error('Native guard-log snapshots are unavailable');
+      const content = input.sources['plugins/lifeos/blocked.jsonl'];
+      if (content !== null && typeof content !== 'string') throw new Error('Choose admitted guard-log text');
+      result = module.analyzeGuardLogSnapshot(content, input.days);
+    }
+  } else if (input.action === 'core_file_registry' || input.action === 'core_file_validate') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hermes.ts')).href);
     if (!object(module) || typeof module.coreFileRegistry !== 'function' || typeof module.validateCoreFileContent !== 'function') {
       throw new Error('Native core file exports are unavailable');

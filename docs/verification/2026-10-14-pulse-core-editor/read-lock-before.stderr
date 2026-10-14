@@ -1,0 +1,15 @@
+test_program_swap_refuses_core_reads_before_disclosure (test_memory_core_editor.MemoryCoreEditorTests.test_program_swap_refuses_core_reads_before_disclosure) ... FAIL
+
+======================================================================
+FAIL: test_program_swap_refuses_core_reads_before_disclosure (test_memory_core_editor.MemoryCoreEditorTests.test_program_swap_refuses_core_reads_before_disclosure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 377, in test_program_swap_refuses_core_reads_before_disclosure
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"meta": {"id": "principal-identity", "label": "PRINCIPAL_IDENTITY.md", "plane": "source", "language": "markdown", "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.", "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md", "exists": true, "sealed": false, "editable": true, "readable": true, "generatedBy": null, "sourceIds": [], "bytes": 55, "lines": 3, "modified": "2026-10-14T19:31:05.596Z"}, "content": "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n", "reference": "9392a826191f7452fd8b69038a2e6a9b5efb0300d87ba8019d72695698d78283"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.309s
+
+FAILED (failures=1)

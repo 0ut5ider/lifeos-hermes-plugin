@@ -1,0 +1,13 @@
+# Governed Pulse core-file editor
+
+Adrian authorizes this work after daily 0.4.3 promotion. The daily server retains its qualified text release while development stages the complete editor package. Voice, media processing, import, and reverse migration remain deferred.
+
+The native registry declares 24 core files across runtime, source, and code planes. The governed surface preserves that registry. Anonymous and revoked callers must not receive profile content. Credential material stays sealed, generated files stay read-only, and registered facts require memory correction tools that preserve their references. Existing files receive exact review references, private backup copies, idempotent saves, and recoverable publication. Later edits, revoked authority, invalid registry paths, and redirected files must refuse replacement.
+
+The editor must retain the overview, health, mount drift, guard-log analysis, file reads, eligible file writes, and authenticated remount. The 22 focused checks and 95 related checks pass. They cover all file planes, owner refusal, private backups, interruption, physical-profile recovery, native health, guard logs, and mount probes. The actual compiled browser saves an eligible synthetic source with mode 0600 and one private backup. A stale browser save returns 409 and preserves later bytes. The candidate template enables the editor; no deployed profile changes. Additional review findings, installed development acceptance, and complete release qualification remain open.
+
+Program edits change the installed release verification and can cause later update admission to refuse a modified target. The editor must disclose this effect before a program save. Current personal data and later edits must survive update and rollback. The release must preserve the current private model and tier mapping.
+
+The first independent review finds five issues beyond the first 22 checks: cached draft authorization, program-lock admission, revoked cached display, large-edit transport, and malformed YAML isolation. The staged fixes bind draft bytes to their original reference, wait for a fresh read before seeding, clear refused drafts, serialize publication and cross-route recovery, preserve the declared content limit, and isolate withheld rows. All 27 expanded checks pass with ResourceWarning treated as an error. The repeat independent compiled-browser review remains pending.
+
+Malformed JSON and YAML remain withheld because decoded privacy and retirement admission cannot verify them. The overview lists their metadata without content and keeps other admitted rows available. The editor cannot repair a withheld file directly. This is a policy limit, not a claim of complete repair support.

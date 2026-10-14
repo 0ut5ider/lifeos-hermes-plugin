@@ -6,7 +6,8 @@ import json
 import os
 from pathlib import Path
 import re
-from urllib.parse import urlsplit
+import subprocess
+from urllib.parse import urlsplit, parse_qs, urlencode
 
 from .memory_access import MemoryConflict, MemoryUnavailable, _digest
 from .memory_policy import CATEGORIES
@@ -31,10 +32,20 @@ CODE_FILES = {'render-soul': 'RenderSoul.ts', 'mount': 'Mount.ts', 'policy-src':
 IDS = frozenset(PROFILE_FILES) | frozenset(SOURCE_FILES) | frozenset(CODE_FILES)
 
 
+class CoreSourceWithheld(MemoryUnavailable):
+    pass
+
+
 def request_target(value):
     if not isinstance(value, str) or len(value) > 256:
         raise ValueError('Choose a bounded core file route')
     url = urlsplit(value)
+    if url.path == '/api/hermes/log-analysis' and not (url.scheme or url.netloc or url.fragment):
+        query = parse_qs(url.query, keep_blank_values=True, strict_parsing=True)
+        if not query: return url.path + '?days=14'
+        if set(query) != {'days'} or len(query['days']) != 1 or not query['days'][0].isdigit() or not 1 <= int(query['days'][0]) <= 90:
+            raise ValueError('Choose one supported guard-log window')
+        return url.path + '?' + urlencode({'days': int(query['days'][0])})
     if url.scheme or url.netloc or url.query or url.fragment:
         raise ValueError('Core files require their fixed installed route')
     if url.path in ('/api/hermes', '/api/hermes/'):
@@ -47,9 +58,16 @@ def request_target(value):
 
 def _path(memory, identifier):
     if identifier in PROFILE_FILES:
-        path = memory.profile / PROFILE_FILES[identifier]
+        path = memory.physical_profile / PROFILE_FILES[identifier]
         if memory.profile.resolve() != memory.physical_profile or path.parent.resolve() != path.parent:
             raise MemoryUnavailable('The core file changes its profile boundary')
+        profile_info = memory.physical_profile.stat()
+        if profile_info.st_uid != os.getuid() or profile_info.st_mode & 0o022:
+            raise MemoryUnavailable('The core profile requires its private owner boundary')
+        from .memory_service import MemoryConfiguration
+        configuration = MemoryConfiguration(memory.physical_profile / 'lifeos-memory.json').load()
+        if Path(configuration['root']).resolve() != memory.physical_root:
+            raise MemoryUnavailable('The core profile belongs to another LifeOS installation')
         if path.is_symlink() or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
                 or path.stat().st_nlink != 1 or memory.database.exists() and path.samefile(memory.database)):
             raise MemoryUnavailable('The core file changes its fixed owner source')
@@ -87,7 +105,7 @@ def _display(memory, path):
     return str(path).replace(home + '/', '~/')
 
 
-def _snapshot(memory, scope, connection, identifier, *, catalog=None):
+def _snapshot(memory, scope, connection, identifier, *, catalog=None, allow_withheld=False):
     authorize(scope)
     if not scope.principal:
         raise MemoryUnavailable('Core files require a bound owner')
@@ -95,6 +113,7 @@ def _snapshot(memory, scope, connection, identifier, *, catalog=None):
     row = catalog[identifier]
     path = _path(memory, identifier)
     content = None
+    withheld = False
     stamp = None
     info = path.stat() if path.exists() else None
     if info is not None:
@@ -111,15 +130,22 @@ def _snapshot(memory, scope, connection, identifier, *, catalog=None):
             after = _path(memory, identifier).stat()
             if stamp != [after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns]:
                 raise MemoryConflict('The core file changes during review')
-            _admit_content(memory, scope, connection, identifier, row, content, _source_time(info))
+            try:
+                _admit_content(memory, scope, connection, identifier, row, content, _source_time(info))
+            except CoreSourceWithheld:
+                if not allow_withheld: raise
+                withheld = True
+                content = None
     relative = SOURCE_FILES.get(identifier)
     registered = bool(relative and connection.execute('SELECT 1 FROM records WHERE path=? AND status=\'active\' LIMIT 1', (relative,)).fetchone())
     meta = {key: row[key] for key in ('id', 'label', 'plane', 'language', 'role')}
     meta.update(displayPath=_display(memory, path), exists=info is not None, sealed=bool(row.get('sealed')),
-        editable=info is not None and not row.get('sealed') and not row.get('generatedBy') and not registered,
+        editable=info is not None and not row.get('sealed') and not row.get('generatedBy') and not registered and not withheld,
+        readable=not row.get('sealed') and not withheld,
         generatedBy=row.get('generatedBy'), sourceIds=row.get('sourceIds', []),
         bytes=info.st_size if info else None, lines=len(content.split('\n')) if content is not None else None,
         modified=datetime.fromtimestamp(info.st_mtime_ns / 1e9, timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z') if info else None)
+    if withheld: meta['editReason'] = 'This source requires current safe owner review before reading or editing.'
     if registered: meta['editReason'] = 'Use memory correction tools to preserve registered fact references.'
     reference = _digest(json.dumps({'root': str(memory.root), 'profile': str(memory.profile),
         'principal': scope.principal, 'scope': scope.signature, 'id': identifier, 'meta': meta,
@@ -136,25 +162,75 @@ def _admit_content(memory, scope, connection, identifier, row, content, timestam
             decoded = YAML(typ='safe').load(content)
             projection = json_projection(json.dumps(decoded)) if isinstance(decoded, dict) else None
         except Exception as error:
-            raise MemoryUnavailable('The core configuration requires complete safe YAML') from error
+            raise CoreSourceWithheld('The core configuration requires complete safe YAML') from error
     checked = memory._native('validate_source_batch', contents=[content, (projection or '') + '\n' + relative])
     if projection is None or checked.get('accepted') != [True, True] or _admit(memory, connection, scope,
             content, relative, timestamp, projection=projection, source_reviewed=True)['excluded']:
-        raise MemoryUnavailable('The core file requires current safe owner review')
+        raise CoreSourceWithheld('The core file requires current safe owner review')
 
+
+
+def _profile_source(memory, scope, connection, name, *, json_lines=False):
+    allowed = {'gateway_state.json', 'gateway-starts.log', 'plugins/lifeos/blocked.jsonl'}
+    if name not in allowed or memory.profile.resolve() != memory.physical_profile:
+        raise MemoryUnavailable('Choose a fixed current core diagnostic source')
+    path = memory.physical_profile / name
+    if path.parent.resolve() != path.parent or path.is_symlink():
+        raise MemoryUnavailable('The core diagnostic source redirects its owner path')
+    if not path.exists(): return None, None
+    before = path.stat()
+    if not path.is_file() or before.st_uid != os.getuid() or before.st_nlink != 1 or before.st_size > LIMIT or memory.database.exists() and path.samefile(memory.database):
+        raise MemoryUnavailable('The core diagnostic source requires a bounded regular owner file')
+    with path.open('rb') as stream: raw = stream.read(LIMIT + 1)
+    if len(raw) > LIMIT: raise MemoryUnavailable('The core diagnostic source exceeds its byte limit')
+    try: content = raw.decode('utf-8')
+    except UnicodeError as error: raise MemoryUnavailable('The core diagnostic source must contain UTF-8 text') from error
+    after = path.stat()
+    stamp = [before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns]
+    if stamp != [after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns]:
+        raise MemoryConflict('The core diagnostic source changes during review')
+    projection = content
+    if name.endswith('.json'): projection = json_projection(content)
+    elif json_lines:
+        rows = []
+        for line in content.splitlines():
+            try: rows.append(json.loads(line))
+            except ValueError: continue
+        projection = json_projection(json.dumps(rows))
+    checked = memory._native('validate_source_batch', contents=[content, projection or ''])
+    if projection is None or checked.get('accepted') != [True, True] or _admit(memory, connection, scope,
+            content, 'core-diagnostic/' + name, _source_time(before), projection=projection, source_reviewed=True)['excluded']:
+        raise MemoryUnavailable('The core diagnostic source requires current safe owner review')
+    return content, stamp
+
+
+def _diagnostic(memory, scope, connection, kind, days=14):
+    authorize(scope)
+    names = ['gateway_state.json', 'gateway-starts.log'] if kind == 'health' else ['plugins/lifeos/blocked.jsonl']
+    captured = {name: _profile_source(memory, scope, connection, name, json_lines=kind == 'log') for name in names}
+    result = memory._native('core_file_' + kind, sources={name: row[0] for name, row in captured.items()}, days=days)
+    if any(_profile_source(memory, scope, connection, name, json_lines=kind == 'log') != row for name, row in captured.items()):
+        raise MemoryConflict('The core diagnostic source changes before delivery')
+    _admit_content(memory, scope, connection, 'diagnostic-' + kind, {'language': 'json'}, json.dumps(result), datetime.now(timezone.utc).isoformat())
+    return result
 
 def view(memory, scope, target, *, check_current):
     target = request_target(target)
     check_current()
     with memory._transaction() as connection:
+        if urlsplit(target).path == '/api/hermes/log-analysis':
+            result = _diagnostic(memory, scope, connection, 'log', int(parse_qs(urlsplit(target).query)['days'][0]))
+            check_current()
+            return {'status': 200, 'body': result}
         if target == '/api/hermes':
             catalog = _registry(memory)
-            before = [_snapshot(memory, scope, connection, identifier, catalog=catalog) for identifier in catalog]
+            before = [_snapshot(memory, scope, connection, identifier, catalog=catalog, allow_withheld=True) for identifier in catalog]
             check_current()
-            after = [_snapshot(memory, scope, connection, identifier, catalog=catalog) for identifier in catalog]
+            after = [_snapshot(memory, scope, connection, identifier, catalog=catalog, allow_withheld=True) for identifier in catalog]
             if before != after: raise MemoryConflict('The core manifest changes before delivery')
             return {'status': 200, 'body': {'files': [row['meta'] for row in before], 'hermesHome': _display(memory, memory.profile),
-                'health': None, 'mount': {'stale': False, 'detail': 'Use the authenticated remount action to refresh the install.', 'probed': False},
+                'health': _diagnostic(memory, scope, connection, 'health'), 'mount': {'stale': False, 'detail': 'Use the authenticated remount action to refresh the install.', 'probed': False},
+                'reference': _digest(json.dumps([row['reference'] for row in before])),
                 'planes': {'runtime': 'The installed Hermes profile.', 'source': 'Current admitted owner sources.', 'code': 'Installed program files. Edits change release verification.'}}}
         identifier = target.removeprefix('/api/hermes/file/')
         if identifier in {'hermes-env', 'hermes-auth'}:
@@ -166,6 +242,25 @@ def view(memory, scope, target, *, check_current):
         check_current()
         return {'status': 200 if before['meta']['exists'] else 404, 'body': before}
 
+
+
+def mount_probe(memory, scope, environment, *, check_current):
+    check_current()
+    script = memory.root / 'LIFEOS/HERMES/Mount.ts'
+    if not script.is_file():
+        return {'stale': False, 'detail': 'The native mount program is unavailable.', 'probed': False}
+    result = subprocess.run([memory.bun, '--no-install', str(script), '--check'], cwd=script.parent,
+        env=environment, capture_output=True, text=True, timeout=60)
+    check_current()
+    output = (result.stdout or result.stderr).strip()
+    if len(output.encode()) > LIMIT:
+        raise MemoryUnavailable('The mount diagnostic exceeds its byte limit')
+    with memory._transaction() as connection:
+        _admit_content(memory, scope, connection, 'mount-check', {'language': 'text'}, output,
+            datetime.now(timezone.utc).isoformat())
+        check_current()
+    detail = _display(memory, Path(output)) if output.startswith('/') and '\n' not in output else output.replace(str(memory.root.parent), '~').replace(str(memory.profile), '~/.hermes')
+    return {'stale': result.returncode == 1, 'detail': detail, 'probed': result.returncode >= 0}
 
 def publication_path(memory, name):
     identifier = name.removeprefix('core-file/')
@@ -194,6 +289,8 @@ def edit(memory, scope, *, identifier, content, reference, request_id, check_cur
     if identifier not in IDS or not isinstance(content, str) or len(content.encode()) > LIMIT or not isinstance(reference, str) or re.fullmatch('[0-9a-f]{64}', reference) is None or not isinstance(request_id, str) or not 1 <= len(request_id) <= 256:
         raise ValueError('Choose bounded core content, its reviewed reference, and a request identifier')
     if identifier in {'hermes-env', 'hermes-auth'}: return {'status': 403, 'body': {'error': 'Credential material is sealed.'}}
+    if identifier in {'soul', 'policy', 'guard-installed', 'plugin-manifest', 'telos'}:
+        return {'status': 409, 'body': {'error': 'This file requires its governed generator.'}}
     payload = {'operation': 'core_file_edit', 'identifier': identifier,
         'backup': 'LIFEOS/MEMORY/STATE/hermes-edits/' + identifier + '.' + _digest(scope.writer + '\n' + request_id) + '.bak'}
     publication_paths(memory, scope, payload)
@@ -208,7 +305,7 @@ def edit(memory, scope, *, identifier, content, reference, request_id, check_cur
                 raise MemoryConflict('The core retry preserves a later source or policy change')
             check_current()
             return receipt['result']
-        if not before['meta']['editable']: raise MemoryUnavailable('This core file requires its governed generator or memory correction tools')
+        if not before['meta']['editable']: raise MemoryConflict('This core file requires its governed generator or memory correction tools')
         if before['reference'] != reference: raise MemoryConflict('The core file changes after review')
         _admit_content(memory, scope, connection, identifier, before['meta'], content, datetime.now(timezone.utc).isoformat())
         if identifier in CODE_FILES and not memory._native('core_file_validate', content=content, label=before['meta']['label']).get('accepted'):
