@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "source_guest": 102,
+  "prior_version": "0.3.1",
+  "archive": "PBS-01:backup/ct/102/2026-10-14T12:48:53Z",
+  "backup_bytes": 17251989346,
+  "backup_mode": "snapshot",
+  "application_writers_drained": true,
+  "original_services_resumed": true,
+  "prior_protected_checkpoint_preserved": true,
+  "restore_test_performed": false,
+  "safe_operations": [
+    {
+      "action": "drain-services",
+      "exit_code": 0,
+      "elapsed_seconds": 3.337
+    },
+    {
+      "action": "backup-daily",
+      "exit_code": 0,
+      "elapsed_seconds": 92.028
+    },
+    {
+      "action": "list-backups",
+      "exit_code": 0,
+      "elapsed_seconds": 1.115
+    },
+    {
+      "action": "verify-backup-storage-enabled",
+      "exit_code": 0,
+      "elapsed_seconds": 0.532
+    },
+    {
+      "action": "resume-services",
+      "exit_code": 0,
+      "elapsed_seconds": 1.075
+    }
+  ]
+}
