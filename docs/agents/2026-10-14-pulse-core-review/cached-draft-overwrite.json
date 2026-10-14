@@ -1,0 +1,122 @@
+{
+  "before": {
+    "draft": "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n",
+    "saveDisabled": false,
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 66,
+            "lines": 3,
+            "modified": "2026-10-14T19:24:21.666Z"
+          },
+          "content": "# SyntheticLaterOwnerEdit\nDo not overwrite this later owner edit.\n",
+          "reference": "450c3b433f53e7daf0a1225f9e8f0824d3ac99c8a385984908d970043d6c507e"
+        }
+      }
+    ]
+  },
+  "after": {
+    "draft": "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n",
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 66,
+            "lines": 3,
+            "modified": "2026-10-14T19:24:21.666Z"
+          },
+          "content": "# SyntheticLaterOwnerEdit\nDo not overwrite this later owner edit.\n",
+          "reference": "450c3b433f53e7daf0a1225f9e8f0824d3ac99c8a385984908d970043d6c507e"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "PUT",
+        "body": "{\"content\":\"# SyntheticCoreEditorIdentity\\nSynthetic owner identity\\n\",\"reference\":\"450c3b433f53e7daf0a1225f9e8f0824d3ac99c8a385984908d970043d6c507e\",\"request_id\":\"cb3c27c7-b9c0-491e-ab19-14e0e8c8323d\"}",
+        "status": 200,
+        "response": {
+          "ok": true,
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 55,
+            "lines": 3,
+            "modified": "2026-10-14T19:24:30.550Z"
+          },
+          "reference": "1c0c6a95943d2652fc6e19dea9b2b77418e61765ca435e5e73e0c9159f1d4ca9",
+          "backup": "~/.claude/LIFEOS/MEMORY/STATE/hermes-edits/principal-identity.e68cb017e6f038f12bf8819239b5adf82bf36ae63db64aedd157b227bd90e5b8.bak",
+          "written": "2026-10-14T19:24:30.649646+00:00",
+          "releaseModified": false
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 55,
+            "lines": 3,
+            "modified": "2026-10-14T19:24:30.550Z"
+          },
+          "content": "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n",
+          "reference": "1c0c6a95943d2652fc6e19dea9b2b77418e61765ca435e5e73e0c9159f1d4ca9"
+        }
+      }
+    ]
+  },
+  "reproduction": "Open identity, close identity, write later synthetic owner bytes to fixture, delay real GET by2s without replacing response, reopen identity, wait GET complete, click Save."
+}

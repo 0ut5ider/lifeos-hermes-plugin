@@ -1,0 +1,78 @@
+{
+  "draft": "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n",
+  "traffic": [
+    {
+      "url": "/api/hermes/file/principal-identity",
+      "method": "PUT",
+      "body": "{\"content\":\"# SyntheticCoreEditorIdentity\\nSynthetic owner identity\\n\",\"reference\":\"450c3b433f53e7daf0a1225f9e8f0824d3ac99c8a385984908d970043d6c507e\",\"request_id\":\"cb3c27c7-b9c0-491e-ab19-14e0e8c8323d\"}",
+      "status": 200,
+      "response": {
+        "ok": true,
+        "meta": {
+          "id": "principal-identity",
+          "label": "PRINCIPAL_IDENTITY.md",
+          "plane": "source",
+          "language": "markdown",
+          "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+          "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+          "exists": true,
+          "sealed": false,
+          "editable": true,
+          "readable": true,
+          "generatedBy": null,
+          "sourceIds": [],
+          "bytes": 55,
+          "lines": 3,
+          "modified": "2026-10-14T19:24:30.550Z"
+        },
+        "reference": "1c0c6a95943d2652fc6e19dea9b2b77418e61765ca435e5e73e0c9159f1d4ca9",
+        "backup": "~/.claude/LIFEOS/MEMORY/STATE/hermes-edits/principal-identity.e68cb017e6f038f12bf8819239b5adf82bf36ae63db64aedd157b227bd90e5b8.bak",
+        "written": "2026-10-14T19:24:30.649646+00:00",
+        "releaseModified": false
+      }
+    },
+    {
+      "url": "/api/hermes/file/principal-identity",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "meta": {
+          "id": "principal-identity",
+          "label": "PRINCIPAL_IDENTITY.md",
+          "plane": "source",
+          "language": "markdown",
+          "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+          "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+          "exists": true,
+          "sealed": false,
+          "editable": true,
+          "readable": true,
+          "generatedBy": null,
+          "sourceIds": [],
+          "bytes": 55,
+          "lines": 3,
+          "modified": "2026-10-14T19:24:30.550Z"
+        },
+        "content": "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n",
+        "reference": "1c0c6a95943d2652fc6e19dea9b2b77418e61765ca435e5e73e0c9159f1d4ca9"
+      }
+    },
+    {
+      "url": "/api/hermes/file/principal-identity",
+      "method": "GET",
+      "status": 403,
+      "response": {
+        "error": "This dashboard account has no installation owner binding"
+      }
+    },
+    {
+      "url": "/api/hermes/file/principal-identity",
+      "method": "GET",
+      "status": 403,
+      "response": {
+        "error": "This dashboard account has no installation owner binding"
+      }
+    }
+  ],
+  "visible": "uth token store. Sealed: listed, never read into a response.\n—\n—\nCODE · INSTALL-GENERIC, SHIPS PUBLICLY\n9 files\nInstalled program files. Edits change release verification.\nRenderSoul.ts\nBuilds SOUL.md: two tiers, PII and secret scrubbing, per-section budgets.\n457 ln\n1h ago\nMount.ts\nThe installer. Writes SOUL.md, installs the guard, patches config.yaml, sets the write sandbox.\n322 ln\n1h ago\nPolicy.ts\nWhat the sidecar may never read, and why. Source of the compiled policy.json.\n421 ln\n1h ago\nHealth.ts\nThe read-only probe behind every Hermes status in Pulse and the menu bar.\n307 ln\n1h ago\nplugin/guard.py\nThe guard itself — vetoes any tool call that would put a secret in the sidecar's context.\n432 ln\n1h ago\nplugin/plugin.yaml\nPlugin manifest source, copied into the install by Mount.ts.\n11 ln\n1h ago\nplugin/__init__.py\nPlugin entry point — registers the guard hook with Hermes.\n88 ln\n1h ago\nbunker.config.ts\nRegisters the sidecar with the Bunker harness so its probes run under bunker monitor.\n22 ln\n1h ago\nISA.md\nState of record for the sidecar — the claims, their falsifiers, and the evidence that closed them.\n—\n—\nEvery save keeps the previous bytes under\nLIFEOS/MEMORY/STATE/hermes-edits/\n."
+}

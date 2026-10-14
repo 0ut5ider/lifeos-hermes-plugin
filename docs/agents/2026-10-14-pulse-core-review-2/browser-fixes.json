@@ -1,0 +1,259 @@
+{
+  "reopenPending": {
+    "traffic": []
+  },
+  "reopenComplete": {
+    "draft": "# SyntheticRound2LaterOwnerEdit\nKeep this later owner edit.\n",
+    "saveDisabled": true,
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 60,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:17.682Z"
+          },
+          "content": "# SyntheticRound2LaterOwnerEdit\nKeep this later owner edit.\n",
+          "reference": "f94e63dd548e07b12471bea75fb25722adea62e43dfc9a8300f71c9c0c5c9659"
+        }
+      }
+    ]
+  },
+  "draftRefetch": {
+    "draft": "# SyntheticRound2DraftEdit\nKeep my draft until save.\n",
+    "saveDisabled": false,
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 60,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:17.682Z"
+          },
+          "content": "# SyntheticRound2LaterOwnerEdit\nKeep this later owner edit.\n",
+          "reference": "f94e63dd548e07b12471bea75fb25722adea62e43dfc9a8300f71c9c0c5c9659"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 79,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:48.375Z"
+          },
+          "content": "# SyntheticRound2LaterDuringDraft\nDo not overwrite this concurrent owner edit.\n",
+          "reference": "25dc63ad3430609ca312d830906260f2d89b97f9fb26211cf3f9025644865c34"
+        }
+      }
+    ]
+  },
+  "staleSave": {
+    "draft": "# SyntheticRound2DraftEdit\nKeep my draft until save.\n",
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 60,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:17.682Z"
+          },
+          "content": "# SyntheticRound2LaterOwnerEdit\nKeep this later owner edit.\n",
+          "reference": "f94e63dd548e07b12471bea75fb25722adea62e43dfc9a8300f71c9c0c5c9659"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 79,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:48.375Z"
+          },
+          "content": "# SyntheticRound2LaterDuringDraft\nDo not overwrite this concurrent owner edit.\n",
+          "reference": "25dc63ad3430609ca312d830906260f2d89b97f9fb26211cf3f9025644865c34"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "PUT",
+        "body": "{\"content\":\"# SyntheticRound2DraftEdit\\nKeep my draft until save.\\n\",\"reference\":\"f94e63dd548e07b12471bea75fb25722adea62e43dfc9a8300f71c9c0c5c9659\",\"request_id\":\"ef3e9402-61cd-4ade-8cf7-c5c44cec1b26\"}",
+        "status": 409,
+        "response": {
+          "error": "The core save conflicts with the current source or policy. Open the file again."
+        }
+      }
+    ],
+    "errors": false
+  },
+  "revocationPending": {
+    "textareaCount": 0,
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 79,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:48.375Z"
+          },
+          "content": "# SyntheticRound2LaterDuringDraft\nDo not overwrite this concurrent owner edit.\n",
+          "reference": "25dc63ad3430609ca312d830906260f2d89b97f9fb26211cf3f9025644865c34"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "PUT",
+        "body": "{\"content\":\"# SyntheticRound2DraftEdit\\nKeep my draft until save.\\n\",\"reference\":\"f94e63dd548e07b12471bea75fb25722adea62e43dfc9a8300f71c9c0c5c9659\",\"request_id\":\"ef3e9402-61cd-4ade-8cf7-c5c44cec1b26\"}",
+        "status": 409,
+        "response": {
+          "error": "The core save conflicts with the current source or policy. Open the file again."
+        }
+      }
+    ]
+  },
+  "revocationComplete": {
+    "textareaCount": 0,
+    "traffic": [
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "response": {
+          "meta": {
+            "id": "principal-identity",
+            "label": "PRINCIPAL_IDENTITY.md",
+            "plane": "source",
+            "language": "markdown",
+            "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+            "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+            "exists": true,
+            "sealed": false,
+            "editable": true,
+            "readable": true,
+            "generatedBy": null,
+            "sourceIds": [],
+            "bytes": 79,
+            "lines": 3,
+            "modified": "2026-10-14T19:32:48.375Z"
+          },
+          "content": "# SyntheticRound2LaterDuringDraft\nDo not overwrite this concurrent owner edit.\n",
+          "reference": "25dc63ad3430609ca312d830906260f2d89b97f9fb26211cf3f9025644865c34"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "PUT",
+        "body": "{\"content\":\"# SyntheticRound2DraftEdit\\nKeep my draft until save.\\n\",\"reference\":\"f94e63dd548e07b12471bea75fb25722adea62e43dfc9a8300f71c9c0c5c9659\",\"request_id\":\"ef3e9402-61cd-4ade-8cf7-c5c44cec1b26\"}",
+        "status": 409,
+        "response": {
+          "error": "The core save conflicts with the current source or policy. Open the file again."
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 403,
+        "response": {
+          "error": "This dashboard account has no installation owner binding"
+        }
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 403,
+        "response": {
+          "error": "This dashboard account has no installation owner binding"
+        }
+      }
+    ],
+    "rowText": "PRINCIPAL_IDENTITY.mdWho the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.3 ln1m ago~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.mdAPI error: 403 Forbidden"
+  }
+}

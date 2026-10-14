@@ -1,0 +1,51 @@
+{
+  "toolIcon": {
+    "_tag": "website",
+    "pageUrl": "http://127.0.0.1:37447/assistant"
+  },
+  "value": {
+    "phase": "settled-after-retries",
+    "textarea": [
+      "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"
+    ],
+    "requests": [
+      {
+        "url": "/api/hermes",
+        "status": 200,
+        "time": 1792009644035
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "status": 200,
+        "time": 1792009644220
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 200,
+        "time": 1792009646751
+      },
+      {
+        "url": "/api/hermes",
+        "status": 403,
+        "time": 1792009704118
+      },
+      {
+        "url": "/api/hermes",
+        "status": 403,
+        "time": 1792009705205
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 403,
+        "time": 1792009717084
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 403,
+        "time": 1792009737225
+      }
+    ],
+    "now": 1792009737529,
+    "unavailable": false
+  }
+}

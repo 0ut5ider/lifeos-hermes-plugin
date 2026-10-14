@@ -1,0 +1,33 @@
+{
+  "status": "CODE_REVIEW_CLEAR",
+  "program_commit": "cb67820f864cf6d7bd4b4190a2887eacd1c031de",
+  "editor_tests": 29,
+  "editor_seconds": 48.974,
+  "editor_resource_warnings": "errors",
+  "patch_and_preparation_tests": 6,
+  "patch_seconds": 3.249,
+  "restore_admission_cases": 9,
+  "strict_dashboard_types": "PASS",
+  "dashboard_build": "PASS with two recorded native warnings",
+  "compiled_files_exact_replay": 175,
+  "primary_browser_confirmations": [
+    "overview403:0textarea,0rows,GET403",
+    "save403:0textarea,0rows,GET403",
+    "conflict409:draft retained,currentexternaledit retained"
+  ],
+  "independent_review_status": "CLEAR after three additional PR review rounds",
+  "historical_archive_superseded_for_current_source": true,
+  "new_complete_package_qualification_required": true,
+  "production_changed": false,
+  "independent_editor_tests": 29,
+  "independent_editor_seconds": 47.15,
+  "unresolved_findings": 0,
+  "fixed_findings": 2,
+  "review_report": "../../agents/2026-10-14-pr25-review-3/pr25-review-3.md",
+  "browser_fixture_cleanup": "All three fixtures exit0 and remove synthetic profiles",
+  "limits": [
+    "No separate compiled guard-log denial case",
+    "Late response result observed; no continuous frame capture",
+    "No complete package qualification for current source"
+  ]
+}

@@ -1,0 +1,94 @@
+[
+  {
+    "action": "retained-guest-guard",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.796
+  },
+  {
+    "action": "replace-owned-test-verifier",
+    "command": [
+      "pct",
+      "push",
+      "110",
+      "/root/lifeos-daily-checkpoint-restore-20261014/verify_daily_checkpoint.py",
+      "/home/lifeos-hermes/checkpoint-verification-20261014/verify_daily_checkpoint.py",
+      "--user",
+      "1000",
+      "--group",
+      "1000",
+      "--perms",
+      "0600"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.867
+  },
+  {
+    "action": "verify-current-daily",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/52af3122ef614ac49ef55b692e392f0c/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/checkpoint-verification-20261014/verify_daily_checkpoint.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 26.396
+  },
+  {
+    "action": "shutdown-test-guest",
+    "command": [
+      "pct",
+      "shutdown",
+      "110",
+      "--timeout",
+      "90"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.804
+  },
+  {
+    "action": "cleanup-guard",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.823
+  },
+  {
+    "action": "remove-owned-test-guest",
+    "command": [
+      "pct",
+      "destroy",
+      "110",
+      "--purge",
+      "1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.892
+  },
+  {
+    "action": "empty-storage",
+    "command": [
+      "pvesm",
+      "list",
+      "lifeos-daily-restore",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 255,
+    "elapsed_seconds": 0.52
+  }
+]

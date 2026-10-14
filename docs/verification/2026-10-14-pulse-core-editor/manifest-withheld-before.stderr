@@ -1,0 +1,15 @@
+test_withheld_identity_does_not_hide_the_other_authorized_manifest_entries (test_memory_core_editor.MemoryCoreEditorTests.test_withheld_identity_does_not_hide_the_other_authorized_manifest_entries) ... FAIL
+
+======================================================================
+FAIL: test_withheld_identity_does_not_hide_the_other_authorized_manifest_entries (test_memory_core_editor.MemoryCoreEditorTests.test_withheld_identity_does_not_hide_the_other_authorized_manifest_entries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 319, in test_withheld_identity_does_not_hide_the_other_authorized_manifest_entries
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.034s
+
+FAILED (failures=1)

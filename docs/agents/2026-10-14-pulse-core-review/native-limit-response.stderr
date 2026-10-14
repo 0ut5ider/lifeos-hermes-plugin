@@ -1,0 +1,10 @@
+280 |       resolveResult(output);
+281 |     });
+282 |     child.stdin.end(JSON.stringify({operation: "pulse_http", arguments: arguments_}));
+283 |   });
+284 |   const response: unknown = JSON.parse(result);
+285 |   if (!validHTTPResponse(response)) throw new Error("The native memory service returned an invalid result");
+                                                    ^
+error: The native memory service returned an invalid result
+      at memoryHTTPResponseAsync (/home/outsider/.cache/lifeos-pulse-editor-20261014/prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:285:47)
+PUT - http://127.0.0.1:40965/api/hermes/file/principal-identity failed

@@ -1,0 +1,49 @@
+{
+  "installation_lock": {
+    "status": 200,
+    "response": {
+      "ok": true,
+      "meta": {
+        "id": "principal-identity",
+        "label": "PRINCIPAL_IDENTITY.md",
+        "plane": "source",
+        "language": "markdown",
+        "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.",
+        "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md",
+        "exists": true,
+        "sealed": false,
+        "editable": true,
+        "readable": true,
+        "generatedBy": null,
+        "sourceIds": [],
+        "bytes": 49,
+        "lines": 2,
+        "modified": "2026-10-14T19:27:00.199Z"
+      },
+      "reference": "31db94ce4e642cb1bf64171554c1108d9bdfd0464d3e2080f4297fd505eea59c",
+      "backup": "~/.claude/LIFEOS/MEMORY/STATE/hermes-edits/principal-identity.a95228322d0a8914d8a30b1405ee814c06a712abcea585205fc5a1e54ad58191.bak",
+      "written": "2026-10-14T19:27:00.292870+00:00",
+      "releaseModified": false
+    },
+    "source_changed_while_lock_held": true
+  },
+  "native_core_limit": {
+    "content_bytes": 161037,
+    "status": 500,
+    "response": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Internal Server Error</title>\n  </head>\n  <body>\n    <!-- The bracketed placeholders below are filled in by DevErrorPage.rs; keep prettier away from them. -->\n    <!-- prettier-ignore -->\n    <script id=\"__bunfallback\" type=\"application/json\">{\"message\":\"PUT - http://127.0.0.1:40965/api/hermes/file/principal-identity failed\",\"cwd\":\"/home/outsider/Projects/Hermes_agent/LifeOS_plugin\",\"problems\":{\"exceptions\":[{\"name\":\"Error\",\"message\":\"The native memory service returned an invalid result\",\"runtime_type\":0,\"code\":0,\"stack\":{\"frames\":[{\"function_name\":\"memoryHTTPResponseAsync\",\"file\":\"/home/outsider/.cache/lifeos-pulse-editor-20261014/prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts\",\"scope\":3,\"position\":{\"line\":285,\"column\":47}}],\"source_lines\":[{\"line\":280,\"text\":\"      resolveResult(output);\"},{\"line\":281,\"text\":\" ",
+    "content_type": "text/html;charset=utf-8",
+    "source_matches_requested_content": false
+  },
+  "malformed_yaml": {
+    "status": 503,
+    "response": {
+      "error": "Authenticated memory is unavailable"
+    }
+  },
+  "overview_with_malformed_yaml": {
+    "status": 503,
+    "response": {
+      "error": "Authenticated memory is unavailable"
+    }
+  }
+}

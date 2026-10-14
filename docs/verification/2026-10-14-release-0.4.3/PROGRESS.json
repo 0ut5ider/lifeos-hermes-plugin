@@ -51,7 +51,7 @@
   "synthetic_fact_cleanup": "PASS committed revision 2; ordinary search empty",
   "final_daily_backup": "PBS-01:backup/ct/102/2026-10-14T16:15:12Z",
   "final_daily_backup_protected": true,
-  "final_daily_backup_restore_tested": false,
+  "final_daily_backup_restore_tested": true,
   "owned_test_resources_removed": true,
   "automatic_morning_observed": false,
   "automatic_observation_date": "2026-10-15",
@@ -65,5 +65,7 @@
   "deployment_checkpoint_published": true,
   "deployment_checkpoint_sha256": "bfe3a04f0443e442f03740bab17194292ee93a6221969860d0db0590e69515e9",
   "deployment_checkpoint_asset_id": 641031028,
-  "all_48_existing_assets_preserved": true
+  "all_48_existing_assets_preserved": true,
+  "postpromotion_restore_evidence": "../2026-10-14-daily-checkpoint-restore/daily-postpromotion-restore-verification.json",
+  "postpromotion_restore_scope": "Exact protected checkpoint, nine sealed targets, configuration and model preservation, authenticated owner routes. Three synthetic Atlas cases created after restore."
 }

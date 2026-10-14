@@ -1,0 +1,47 @@
+runTest (__main__.EditorReviewProbe.runTest) ... ERROR
+runTest (__main__.EditorReviewProbe.runTest) ... FAIL
+
+======================================================================
+ERROR: runTest (__main__.EditorReviewProbe.runTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pulse-core-review/probe_editor.py", line 31, in runTest
+    'response': response.json(), 'source_matches_requested_content': source.read_text() == large}
+                ~~~~~~~~~~~~~^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/lib/python3.14/site-packages/httpx/_models.py", line 832, in json
+    return jsonlib.loads(self.content, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+FAIL: runTest (__main__.EditorReviewProbe.runTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 88, in stop_pulse
+    self.assertEqual(error, '', error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: '280 |       resolveResult(output);\n281 |[630 chars]ed\n' != ''
+Diff is 686 characters long. Set self.maxDiff to None to see it. : 280 |       resolveResult(output);
+281 |     });
+282 |     child.stdin.end(JSON.stringify({operation: "pulse_http", arguments: arguments_}));
+283 |   });
+284 |   const response: unknown = JSON.parse(result);
+285 |   if (!validHTTPResponse(response)) throw new Error("The native memory service returned an invalid result");
+                                                    ^
+error: The native memory service returned an invalid result
+      at memoryHTTPResponseAsync (/home/outsider/.cache/lifeos-pulse-editor-20261014/prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:285:47)
+PUT - http://127.0.0.1:39803/api/hermes/file/principal-identity failed
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.996s
+
+FAILED (failures=1, errors=1)

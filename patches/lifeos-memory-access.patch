@@ -2244,41 +2244,6 @@ index fb6dffa..599a563 100644
 +  if (found.row.confidence < confidenceThreshold) return { ok: false, reason: "proposal is below its confidence threshold" };
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
-diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
-index 0259a78..583cb24 100644
---- a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
-+++ b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
-@@ -35,6 +35,8 @@
-  * same rule the guard plugin enforces on the sidecar itself — a dashboard is not
-  * an exemption.
-  */
-+import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess.ts";
-+
- import { spawn } from "node:child_process";
- import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
- import { homedir } from "node:os";
-@@ -418,6 +420,21 @@ function backup(f: CoreFile): string | null {
- 
- export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
-   const method = req.method;
-+  if (pathname === "/api/hermes/remount" && method === "POST") {
-+    try {
-+      if (hasManagedMemoryHTTP()) {
-+        const url = new URL(req.url);
-+        const origin = req.headers.get("origin");
-+        if (origin && origin !== url.origin) return Response.json({error: "Use the installed PULSE origin"},
-+          {status: 403, headers: {"cache-control": "no-store"}});
-+        if (url.search || (await req.text()).length) return Response.json({error: "Remount uses the installed owner configuration"},
-+          {status: 400, headers: {"cache-control": "no-store"}});
-+        return memoryHTTPResponse(req, "remount");
-+      }
-+    } catch {
-+      return Response.json({error: "Authenticated mounting is unavailable"}, {status: 503, headers: {"cache-control": "no-store"}});
-+    }
-+  }
- 
-   if (method === "GET" && (pathname === "/api/hermes" || pathname === "/api/hermes/")) {
-     let hermes: HermesHealth | null = null;
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/memory.ts b/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
 index ea4d80b..c290760 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
@@ -14598,4 +14563,423 @@ diff --git a/LifeOS/install/LIFEOS/ATLAS/Store.ts b/LifeOS/install/LIFEOS/ATLAS/
 +      return {database: readFileSync(path).toString("base64"), snapshot, graph, runs: applied};
 +    } finally { store.close(); }
 +  } finally { rmSync(directory, {recursive: true, force: true}); }
++}
+
+diff --git a/LifeOS/install/LIFEOS/HERMES/LogAnalysis.ts b/LifeOS/install/LIFEOS/HERMES/LogAnalysis.ts
+index 235a0b5..58fe4c4 100644
+--- a/LifeOS/install/LIFEOS/HERMES/LogAnalysis.ts
++++ b/LifeOS/install/LIFEOS/HERMES/LogAnalysis.ts
+@@ -84,13 +84,13 @@ function classify(reason: string): { cls: BlockClass; rule: string | null; taint
+   return { cls: "credential", rule: reason, taintSource: null, shapes: null };
+ }
+ 
+-export function readBlockedLog(days: number, path: string = BLOCKED_LOG): BlockRow[] {
+-  if (!existsSync(path)) return [];
++export function readBlockedLog(days: number, path: string = BLOCKED_LOG, supplied?: string | null): BlockRow[] {
++  if (supplied === null || supplied === undefined && !existsSync(path)) return [];
+   const cutoff = Date.now() - days * 86_400_000;
+   const rows: BlockRow[] = [];
+   let raw: string;
+   try {
+-    raw = readFileSync(path, "utf8");
++    raw = supplied ?? readFileSync(path, "utf8");
+   } catch {
+     return [];
+   }
+@@ -147,10 +147,10 @@ function retryLoops(rows: BlockRow[]): Finding[] {
+   return out.sort((a, b) => b.count - a.count).slice(0, 8);
+ }
+ 
+-export function analyzeGuardLog(opts: { days?: number; path?: string } = {}): GuardLogAnalysis {
++export function analyzeGuardLog(opts: { days?: number; path?: string; content?: string | null } = {}): GuardLogAnalysis {
+   const days = opts.days ?? 14;
+   const path = opts.path ?? BLOCKED_LOG;
+-  const rows = readBlockedLog(days, path);
++  const rows = readBlockedLog(days, path, opts.content);
+ 
+   const byClass: Record<string, number> = {};
+   const byDayMap = new Map<string, { total: number; taint: number }>();
+@@ -226,7 +226,7 @@ export function analyzeGuardLog(opts: { days?: number; path?: string } = {}): Gu
+ 
+   const sortedDays = [...byDayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
+   return {
+-    available: existsSync(path),
++    available: opts.content === undefined ? existsSync(path) : opts.content !== null,
+     logPath: path,
+     windowDays: days,
+     totalBlocks: rows.length,
+@@ -245,6 +245,10 @@ export function analyzeGuardLog(opts: { days?: number; path?: string } = {}): Gu
+   };
+ }
+ 
++export function analyzeGuardLogSnapshot(content: string | null, days: number): GuardLogAnalysis {
++  return analyzeGuardLog({content, days});
++}
++
+ if (import.meta.main) {
+   const argv = process.argv.slice(2);
+   const daysIdx = argv.indexOf("--days");
+
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx b/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
+index 55eb097..fc2b6f0 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
+@@ -1,3 +1,5 @@
++// ABOUTME: Displays declared owner core files with reviewed and recoverable saves.
++// ABOUTME: Withholds cached owner content after a current core request denies access.
+ "use client";
+ 
+ /**
+@@ -16,9 +18,10 @@
+  * Server contract: `LIFEOS/PULSE/modules/hermes.ts`.
+  */
+ 
+-import { useEffect, useState } from "react";
++import { useEffect, useRef, useState } from "react";
+ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+ import { localApiCall } from "@/lib/local-api";
++import { coreApiCall } from "@/lib/core-api";
+ import { Panel, PanelHeader, Pill } from "@/components/ui/chrome";
+ import {
+   FileText, Lock, RefreshCw, Save, X, ChevronRight, ChevronDown,
+@@ -39,6 +42,8 @@ export interface HermesFileEntry {
+   exists: boolean;
+   sealed: boolean;
+   editable: boolean;
++  editReason?: string;
++  readable?: boolean;
+   generatedBy: string | null;
+   sourceIds: string[];
+   bytes: number | null;
+@@ -89,10 +94,10 @@ const SEVERITY_DIM: Record<string, "err" | "warn" | "neutral"> = { high: "err",
+  * refused call is classified, retry loops and zero-evidence taints surface as
+  * findings, and each finding names its deterministic next step.
+  */
+-function GuardFrictionPanel() {
++function GuardFrictionPanel({ onDenied }: { onDenied: () => void }) {
+   const { data } = useQuery<GuardLogAnalysis>({
+     queryKey: ["hermes-log-analysis"],
+-    queryFn: () => localApiCall("/api/hermes/log-analysis?days=14"),
++    queryFn: () => coreApiCall<GuardLogAnalysis>("/api/hermes/log-analysis?days=14", onDenied),
+     refetchInterval: 120_000,
+   });
+ 
+@@ -208,43 +213,51 @@ function FileRow({
+   onToggle,
+   byId,
+   onJump,
++  onDenied,
+ }: {
+   file: HermesFileEntry;
+   open: boolean;
+   onToggle: () => void;
+   byId: Map<string, HermesFileEntry>;
+   onJump: (id: string) => void;
++  onDenied: () => void;
+ }) {
+   const queryClient = useQueryClient();
+   const [draft, setDraft] = useState<string | null>(null);
++  const [review, setReview] = useState<{content: string; reference: string} | null>(null);
+   const [error, setError] = useState<string | null>(null);
+   const [saved, setSaved] = useState(false);
+ 
+-  const { data, isLoading } = useQuery<{ content: string; meta: HermesFileEntry }>({
++  const { data, isLoading, isFetching, isError, error: readError } = useQuery<{ content: string; meta: HermesFileEntry; reference: string }>({
+     queryKey: ["hermes-file", file.id],
+-    queryFn: () => localApiCall(`/api/hermes/file/${encodeURIComponent(file.id)}`),
+-    enabled: open && !file.sealed && file.exists,
++    queryFn: () => coreApiCall<{content: string; meta: HermesFileEntry; reference: string}>(`/api/hermes/file/${encodeURIComponent(file.id)}`, onDenied),
++    enabled: open && !file.sealed && file.readable !== false && file.exists,
+     refetchOnWindowFocus: false,
+   });
+ 
+   // The draft is seeded once per open, from whatever the server last returned.
+   // Re-seeding on every render would fight the operator's cursor.
+   useEffect(() => {
+-    if (open && data && draft === null) setDraft(data.content);
+-    if (!open) {
++    if (open && data && !isFetching && !isError && file.readable !== false && draft === null) {
++      setDraft(data.content);
++      setReview({content: data.content, reference: data.reference});
++    }
++    if (!open || isError || file.readable === false) {
+       setDraft(null);
+-      setError(null);
++      setReview(null);
++      setError(isError ? readError?.message || "Read failed" : null);
+       setSaved(false);
+     }
+-  }, [open, data, draft]);
++  }, [open, data, draft, isFetching, isError, readError, file.readable]);
+ 
+   const save = useMutation({
+-    mutationFn: (content: string) =>
+-      localApiCall(`/api/hermes/file/${encodeURIComponent(file.id)}`, {
++    mutationFn: (fields: {content: string; reference: string; request_id: string}) =>
++      coreApiCall<{ok: boolean; reference: string}>(`/api/hermes/file/${encodeURIComponent(file.id)}`, onDenied, {
+         method: "PUT",
+-        body: JSON.stringify({ content }),
++        body: JSON.stringify(fields),
+       }),
+-    onSuccess: () => {
++    onSuccess: (result, fields) => {
++      setReview({content: fields.content, reference: result.reference});
+       setError(null);
+       setSaved(true);
+       queryClient.invalidateQueries({ queryKey: ["hermes-file", file.id] });
+@@ -254,7 +267,7 @@ function FileRow({
+     onError: (err: Error) => setError(err.message || "Save failed"),
+   });
+ 
+-  const dirty = draft !== null && data !== undefined && draft !== data.content;
++  const dirty = draft !== null && review !== null && draft !== review.content;
+   const statusColor = !file.exists ? "var(--ink-3)" : file.sealed ? "var(--warn)" : file.editable ? "var(--ok)" : "var(--ink-2)";
+ 
+   return (
+@@ -298,6 +311,10 @@ function FileRow({
+             </div>
+           )}
+ 
++          {file.editReason && <div className="text-[12px] text-ink-2">{file.editReason}</div>}
++          {file.editable && (file.plane === "code" || file.id === "system-prompt") && (
++            <div className="text-[12px] text-ink-2">Saving this program file changes release verification. An update can require review of the changed file.</div>
++          )}
+           {file.generatedBy && !file.sealed && (
+             <div className="text-[12px] text-ink-2 flex items-start gap-2">
+               <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "var(--warn)" }} />
+@@ -334,10 +351,10 @@ function FileRow({
+             </div>
+           )}
+ 
+-          {!file.sealed && file.exists && (
++          {!file.sealed && file.readable !== false && file.exists && (
+             <>
+               {isLoading && <div className="text-[12px] text-ink-3">Loading…</div>}
+-              {draft !== null && (
++              {draft !== null && !isError && (
+                 <textarea
+                   value={draft}
+                   onChange={(e) => setDraft(e.target.value)}
+@@ -352,12 +369,12 @@ function FileRow({
+                   {error}
+                 </div>
+               )}
+-              {file.editable && draft !== null && (
++              {file.editable && draft !== null && !isError && (
+                 <div className="flex items-center gap-2">
+                   <button
+                     type="button"
+-                    disabled={!dirty || save.isPending}
+-                    onClick={() => save.mutate(draft)}
++                    disabled={!dirty || review === null || save.isPending}
++                    onClick={() => review && save.mutate({content: draft, reference: review.reference, request_id: crypto.randomUUID()})}
+                     className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-md border border-line-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
+                   >
+                     <Save className="w-3.5 h-3.5" /> {save.isPending ? "Saving…" : "Save"}
+@@ -365,7 +382,12 @@ function FileRow({
+                   <button
+                     type="button"
+                     disabled={!dirty}
+-                    onClick={() => data && setDraft(data.content)}
++                    onClick={() => {
++                      if (data) {
++                        setDraft(data.content);
++                        setReview({content: data.content, reference: data.reference});
++                      }
++                    }}
+                     className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-md border border-line-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
+                   >
+                     <X className="w-3.5 h-3.5" /> Revert
+@@ -392,15 +414,29 @@ export default function HermesFiles() {
+   const queryClient = useQueryClient();
+   const [openFile, setOpenFile] = useState<string | null>(null);
+   const [remountResult, setRemountResult] = useState<string | null>(null);
++  const [refused, setRefused] = useState(false);
++  const denialRevision = useRef(0);
+ 
+-  const { data, isLoading } = useQuery<HermesOverview>({
++  function refuseOwner() {
++    denialRevision.current += 1;
++    setRefused(true);
++    void queryClient.invalidateQueries({queryKey: ["hermes-overview"]});
++  }
++
++  const { data, isLoading, isError } = useQuery<HermesOverview>({
+     queryKey: ["hermes-overview"],
+-    queryFn: () => localApiCall("/api/hermes"),
++    queryFn: async () => {
++      const revision = denialRevision.current;
++      const result = await localApiCall<HermesOverview>("/api/hermes");
++      if (revision === denialRevision.current) setRefused(false);
++      return result;
++    },
+     refetchInterval: 60_000,
++    retry: false,
+   });
+ 
+   const remount = useMutation({
+-    mutationFn: () => localApiCall<{ ok: boolean; output: string; error: string | null }>("/api/hermes/remount", { method: "POST" }),
++    mutationFn: () => coreApiCall<{ ok: boolean; output: string; error: string | null }>("/api/hermes/remount", refuseOwner, { method: "POST" }),
+     onSuccess: (r) => {
+       setRemountResult(r.ok ? r.output : (r.error ?? "mount failed"));
+       queryClient.invalidateQueries({ queryKey: ["hermes-overview"] });
+@@ -410,7 +446,7 @@ export default function HermesFiles() {
+   });
+ 
+   if (isLoading) return <div className="text-[13px] text-ink-3">Loading Hermes core files…</div>;
+-  if (!data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
++  if (refused || isError || !data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
+ 
+   const byId = new Map(data.files.map((f) => [f.id, f]));
+ 
+@@ -463,7 +499,7 @@ export default function HermesFiles() {
+         )}
+       </Panel>
+ 
+-      <GuardFrictionPanel />
++      <GuardFrictionPanel onDenied={refuseOwner} />
+ 
+       {PLANE_ORDER.map((plane) => {
+         const files = data.files.filter((f) => f.plane === plane);
+@@ -482,6 +518,7 @@ export default function HermesFiles() {
+                     onToggle={() => setOpenFile(openFile === f.id ? null : f.id)}
+                     byId={byId}
+                     onJump={jump}
++                    onDenied={refuseOwner}
+                   />
+                 </div>
+               ))}
+
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
+index 0259a78..319661b 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
+@@ -35,6 +35,8 @@
+  * same rule the guard plugin enforces on the sidecar itself — a dashboard is not
+  * an exemption.
+  */
++import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryHTTPResponseAsync } from "../../TOOLS/lib/MemoryAccess.ts";
++
+ import { spawn } from "node:child_process";
+ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
+@@ -291,6 +293,19 @@ const CORE_FILES: readonly CoreFile[] = [
+   },
+ ];
+ 
++function coreEditBody(value: unknown): value is Record<string, unknown> {
++  return value !== null && typeof value === 'object' && !Array.isArray(value);
++}
++
++export function coreFileRegistry(): readonly CoreFile[] {
++  return CORE_FILES;
++}
++
++export function validateCoreFileContent(content: string, label: string): boolean {
++  try { assertClean(content, label); return true; }
++  catch { return false; }
++}
++
+ const BY_ID = new Map(CORE_FILES.map((f) => [f.id, f]));
+ 
+ const state: { running: boolean } = { running: false };
+@@ -418,6 +433,48 @@ function backup(f: CoreFile): string | null {
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+   const method = req.method;
++  if (pathname !== '/api/hermes/remount') {
++    try {
++      if (hasManagedMemoryHTTP()) {
++        const url = new URL(req.url);
++        if (method === 'GET') return await memoryHTTPResponseAsync(req, 'core_file', pathname + url.search);
++        if (method === 'PUT' && pathname.startsWith('/api/hermes/file/')) {
++          const origin = req.headers.get('origin');
++          if (origin && origin !== url.origin) return Response.json({error: 'Use the installed PULSE origin'},
++            {status: 403, headers: {'cache-control': 'no-store'}});
++          if (url.search) return Response.json({error: 'Core edits use the installed file route'},
++            {status: 400, headers: {'cache-control': 'no-store'}});
++          const raw = await req.text();
++          if (Buffer.byteLength(raw) > 3 * 1024 * 1024) return Response.json({error: 'The core edit exceeds its request limit'},
++            {status: 413, headers: {'cache-control': 'no-store'}});
++          let body: unknown;
++          try { body = JSON.parse(raw); }
++          catch { return Response.json({error: 'Invalid JSON body'}, {status: 400, headers: {'cache-control': 'no-store'}}); }
++          if (!coreEditBody(body)) return Response.json({error: 'Choose complete core edit fields'}, {status: 400, headers: {'cache-control': 'no-store'}});
++          return await memoryHTTPResponseAsync(req, 'core_file_edit', pathname, body);
++        }
++        return Response.json({error: 'Choose a declared core file method'}, {status: 405, headers: {'cache-control': 'no-store'}});
++      }
++    } catch {
++      return Response.json({error: 'Authenticated core files are unavailable'}, {status: 503, headers: {'cache-control': 'no-store'}});
++    }
++  }
++
++  if (pathname === "/api/hermes/remount" && method === "POST") {
++    try {
++      if (hasManagedMemoryHTTP()) {
++        const url = new URL(req.url);
++        const origin = req.headers.get("origin");
++        if (origin && origin !== url.origin) return Response.json({error: "Use the installed PULSE origin"},
++          {status: 403, headers: {"cache-control": "no-store"}});
++        if (url.search || (await req.text()).length) return Response.json({error: "Remount uses the installed owner configuration"},
++          {status: 400, headers: {"cache-control": "no-store"}});
++        return memoryHTTPResponse(req, "remount");
++      }
++    } catch {
++      return Response.json({error: "Authenticated mounting is unavailable"}, {status: 503, headers: {"cache-control": "no-store"}});
++    }
++  }
+ 
+   if (method === "GET" && (pathname === "/api/hermes" || pathname === "/api/hermes/")) {
+     let hermes: HermesHealth | null = null;
+
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts
+index 19f75fb..2e764fb 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/local-api.ts
+@@ -1,5 +1,13 @@
++// ABOUTME: Sends dashboard requests and retains the HTTP status of refused responses.
++// ABOUTME: Preserves the shared API exports and existing error messages.
+ // API client — relative paths so it works on any host (observatory server at :31337)
+ 
++export class LocalAPIError extends Error {
++  constructor(readonly status: number, statusText: string) {
++    super(`API error: ${status} ${statusText}`);
++  }
++}
++
+ async function apiCall<T = unknown>(
+   path: string,
+   options?: RequestInit
+@@ -12,7 +20,7 @@ async function apiCall<T = unknown>(
+     },
+   });
+   if (!response.ok) {
+-    throw new Error(`API error: ${response.status} ${response.statusText}`);
++    throw new LocalAPIError(response.status, response.statusText);
+   }
+   return response.json() as Promise<T>;
+ }
+
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/core-api.ts b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/core-api.ts
+new file mode 100644
+index 0000000..06981ee
+--- /dev/null
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/lib/core-api.ts
+@@ -0,0 +1,16 @@
++// ABOUTME: Reports current owner denials before a core request returns its error.
++// ABOUTME: Preserves ordinary source conflicts and transport errors for the editor.
++import { localApiCall, LocalAPIError } from "./local-api";
++
++export async function coreApiCall<T = unknown>(
++  path: string, onDenied: () => void, options?: RequestInit,
++): Promise<T> {
++  try {
++    return await localApiCall<T>(path, options);
++  } catch (error) {
++    if (error instanceof LocalAPIError && (error.status === 401 || error.status === 403)) {
++      onDenied();
++    }
++    throw error;
++  }
 +}

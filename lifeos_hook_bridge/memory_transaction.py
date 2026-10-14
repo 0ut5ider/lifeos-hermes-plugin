@@ -1,7 +1,7 @@
 # ABOUTME: Journals native file publication so interrupted memory operations can recover.
 # ABOUTME: Serializes cooperating writers and keeps temporary recovery copies private.
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from contextvars import ContextVar
 import base64
 import fcntl
@@ -37,10 +37,11 @@ def publish(path: Path, data: bytes, *, mode: int = 0o600) -> None:
 
 
 class MemoryTransaction:
-    def __init__(self, state: Path, resolve, *, moves=None):
+    def __init__(self, state: Path, resolve, *, moves=None, recovery_guard=None):
         self.state = state
         self.resolve = resolve
         self.moves = moves
+        self.recovery_guard = recovery_guard
         self.journal = state / "memory-operation.json"
         self._descriptor = ContextVar("memory_lock_descriptor", default=None)
 
@@ -170,6 +171,11 @@ class MemoryTransaction:
                 or not isinstance(operation['request_id'], str) or not 1 <= len(operation['request_id']) <= 256
                 or not isinstance(operation['copies'], list)):
             raise MemoryUnavailable('The publication recovery journal has invalid operation metadata')
+        with self.recovery_guard(operation) if self.recovery_guard else nullcontext():
+            self._recover(connection, operation)
+
+    def _recover(self, connection, operation):
+        from .memory_access import MemoryUnavailable
         if 'moves' in operation:
             self._move_publications(operation)
             if self.moves is None:

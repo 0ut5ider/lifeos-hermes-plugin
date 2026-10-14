@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "version": "0.4.3",
+  "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+  "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+  "operation": "52af3122ef614ac49ef55b692e392f0c",
+  "sealed_program_targets": 9,
+  "credential_and_memory_configuration_bytes_preserved": true,
+  "model_and_tiers_preserved": true,
+  "authenticated_restored_owner_verified": true,
+  "dashboard_background_startup_disabled": true,
+  "governed_synthetic_forget_state_preserved": true,
+  "personal_records_exported": false,
+  "personal_data_imported_or_reset": false,
+  "atlas_cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 51,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "atlas_scope": "Synthetic current-program fixtures created and verified after restoring the daily checkpoint. These fixtures were not inside the checkpoint.",
+  "source_daily_server_modified": false,
+  "backup_archive": "PBS-01:backup/ct/102/2026-10-14T16:15:12Z",
+  "source_guest": 102,
+  "restored_guest": 110,
+  "network_disconnected": true,
+  "application_services_masked_before_boot": true,
+  "original_guest_states_preserved": true,
+  "source_guest_changed": false,
+  "disposable_guest_removed": true,
+  "owned_storage_removed": true,
+  "checkpoint_still_protected": true,
+  "historical_failed_probe_preserved": true,
+  "historical_cleanup_cli_refusal_preserved": true,
+  "restoration_repeated": false
+}

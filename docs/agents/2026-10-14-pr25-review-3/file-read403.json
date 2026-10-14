@@ -1,0 +1,45 @@
+{
+  "toolIcon": {
+    "_tag": "website",
+    "pageUrl": "http://127.0.0.1:42451/assistant"
+  },
+  "value": {
+    "phase": "existing-file-read403",
+    "rows": 0,
+    "textarea": [],
+    "unavailable": true,
+    "events": [
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010570450
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010570635
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010575665
+      },
+      {
+        "url": "/api/hermes/file/health",
+        "method": "GET",
+        "status": 403,
+        "time": 1792010575811
+      },
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 403,
+        "time": 1792010575894
+      }
+    ],
+    "now": 1792010582065
+  }
+}

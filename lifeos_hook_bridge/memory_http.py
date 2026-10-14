@@ -66,12 +66,13 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
-    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file')
+    source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses', 'upgrades', 'tab_freshness', 'life', 'telos_file', 'core_file')
     review = arguments.get('view') in ('hypothesis_review','upgrades_review')
     edit = arguments.get('view') == 'telos_file_edit'
     algorithm_edit = arguments.get('view') == 'algorithm_edit'
     content_action = arguments.get('view') == 'content_action'
-    action = algorithm_edit or content_action
+    core_edit = arguments.get('view') == 'core_file_edit'
+    action = algorithm_edit or content_action or core_edit
     runtime = arguments.get('view') == 'pulse_runtime'
     job = arguments.get('view') in ('conduit_job', 'atlas_job', 'local_job', 'algorithm_job')
     delivery = runtime and 'observation' in arguments
@@ -96,6 +97,8 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             from .memory_upgrade_queue import request_target
         elif arguments['view']=='life':
             from .memory_life import request_target
+        elif arguments['view']=='core_file':
+            from .memory_core_file import request_target
         elif arguments['view']=='telos_file':
             from .memory_telos_file import request_target
         else:
@@ -148,6 +151,19 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             return _response(400,{'error':'Invalid memory review arguments'})
         route = '/memory/' + ('hypotheses' if arguments['view']=='hypothesis_review' else 'upgrades') + '/review'
         data = json.dumps({key:arguments[key] for key in ('target','note','request_id')},ensure_ascii=False).encode()
+    if core_edit:
+        from .memory_core_file import request_target
+        try:
+            target = request_target(arguments['target'])
+            body = arguments['observation']
+            if not target.startswith('/api/hermes/file/') or not isinstance(body, dict) or set(body) != {'content', 'reference', 'request_id'}:
+                raise ValueError('Choose a reviewed core file edit')
+        except LookupError:
+            return _response(404, {'error': 'Choose one declared core file'})
+        except ValueError:
+            return _response(400, {'error': 'Choose complete core file edit fields'})
+        route = '/memory/core_file'
+        data = json.dumps({'identifier': target.removeprefix('/api/hermes/file/'), **body}, ensure_ascii=False).encode()
     if algorithm_edit:
         from .memory_algorithm_edit import _target
         try:
@@ -198,6 +214,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
                                       headers=credentials,method='POST' if remount or review or edit or action or delivery or job else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         timeout = 120 if remount else 30 if runtime or action or job else 8
+        if arguments['view'] == 'core_file': timeout = 120 if target == '/api/hermes' else 30
         if arguments['view'] == 'life':
             from .memory_operational_views import CAPABILITY_WINDOWS
             from .memory_performance import ROUTES as PERFORMANCE_ROUTES

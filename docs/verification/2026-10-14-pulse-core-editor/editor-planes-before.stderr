@@ -1,0 +1,27 @@
+test_all_native_program_files_preserve_their_exact_public_bodies (test_memory_core_editor.MemoryCoreEditorTests.test_all_native_program_files_preserve_their_exact_public_bodies) ... 
+  test_all_native_program_files_preserve_their_exact_public_bodies (test_memory_core_editor.MemoryCoreEditorTests.test_all_native_program_files_preserve_their_exact_public_bodies) (identifier='isa') ... FAIL
+test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation (test_memory_core_editor.MemoryCoreEditorTests.test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation) ... ok
+test_current_owner_cannot_read_or_edit_credential_material (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_cannot_read_or_edit_credential_material) ... ok
+test_current_owner_read_preserves_body_and_supplies_review_reference (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_read_preserves_body_and_supplies_review_reference) ... ok
+test_current_reviewed_save_is_private_and_idempotent (test_memory_core_editor.MemoryCoreEditorTests.test_current_reviewed_save_is_private_and_idempotent) ... ok
+test_generated_files_refuse_save_and_registered_facts_remain_bound (test_memory_core_editor.MemoryCoreEditorTests.test_generated_files_refuse_save_and_registered_facts_remain_bound) ... ok
+test_later_owner_edit_refuses_stale_save (test_memory_core_editor.MemoryCoreEditorTests.test_later_owner_edit_refuses_stale_save) ... ok
+test_private_and_retired_source_bodies_are_withheld (test_memory_core_editor.MemoryCoreEditorTests.test_private_and_retired_source_bodies_are_withheld) ... ok
+test_profile_configuration_and_cron_definitions_use_reviewed_saves (test_memory_core_editor.MemoryCoreEditorTests.test_profile_configuration_and_cron_definitions_use_reviewed_saves) ... ok
+test_program_save_refuses_credentials_and_records_release_change (test_memory_core_editor.MemoryCoreEditorTests.test_program_save_refuses_credentials_and_records_release_change) ... ok
+test_redirected_and_hardlinked_profile_sources_are_withheld (test_memory_core_editor.MemoryCoreEditorTests.test_redirected_and_hardlinked_profile_sources_are_withheld) ... ok
+test_revoked_owner_cannot_read_profile_details (test_memory_core_editor.MemoryCoreEditorTests.test_revoked_owner_cannot_read_profile_details) ... ok
+
+======================================================================
+FAIL: test_all_native_program_files_preserve_their_exact_public_bodies (test_memory_core_editor.MemoryCoreEditorTests.test_all_native_program_files_preserve_their_exact_public_bodies) (identifier='isa')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 113, in test_all_native_program_files_preserve_their_exact_public_bodies
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"meta": {"id": "isa", "label": "ISA.md", "plane": "code", "language": "markdown", "role": "State of record for the sidecar \u2014 the claims, their falsifiers, and the evidence that closed them.", "displayPath": "~/.claude/LIFEOS/HERMES/ISA.md", "exists": false, "sealed": false, "editable": false, "generatedBy": null, "sourceIds": [], "bytes": null, "lines": null, "modified": null}, "content": null, "reference": "88a4ff4d831af08dfbabf6fe88df8024185dbff27ba4cdbb202b9d969dcf72a7"}
+
+----------------------------------------------------------------------
+Ran 12 tests in 18.352s
+
+FAILED (failures=1)

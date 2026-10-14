@@ -367,6 +367,45 @@ class MemoryPreferences:
         return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
             check_current=check_current), account=account)
 
+    def core_file_response(self, target, *, account=None):
+        from .memory_core_file import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The core file owner authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        memory = NativeMemory(self.root, profile=self.configuration.path.parent)
+        from .memory_core_lease import core_file_read_lease
+        with core_file_read_lease(memory):
+            result = view(memory, scope, target, check_current=check_current)
+            if target in ('/api/hermes', '/api/hermes/'):
+                from .memory_core_file import mount_probe
+                from .memory_administration import lease, mount_environment
+                with lease(self.configuration, account) as authorization:
+                    environment = mount_environment(self.root, self.configuration.path.parent, authorization)
+                    probe = mount_probe(memory, scope, environment, check_current=check_current)
+                after = view(memory, scope, target, check_current=check_current)
+                if after['body']['reference'] != result['body']['reference']:
+                    raise MemoryUnavailable('The core sources change during the mount probe')
+                result = after
+                result['body']['mount'] = probe
+            return self._response(config, result, account=account)
+
+    def edit_core_file(self, request, *, account=None):
+        from .memory_core_file import edit
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'identifier', 'content', 'reference', 'request_id'}:
+            raise ValueError('Provide the current core file reference and requested content')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The core file owner authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        from .memory_core_lease import core_file_lease
+        with core_file_lease(self.configuration.path.parent):
+            check_current()
+            return self._response(config, edit(NativeMemory(self.root, profile=self.configuration.path.parent),
+                scope, **request, check_current=check_current), account=account)
+
     def telos_file_response(self, target, *, account=None):
         from .memory_telos_file import view
         config = self._configuration(account=account)

@@ -1,0 +1,36 @@
+test_active_installation_or_turn_lock_refuses_core_save (test_memory_core_editor.MemoryCoreEditorTests.test_active_installation_or_turn_lock_refuses_core_save) ... 
+  test_active_installation_or_turn_lock_refuses_core_save (test_memory_core_editor.MemoryCoreEditorTests.test_active_installation_or_turn_lock_refuses_core_save) (lock='_GeneratorContextManager') ... FAIL
+  test_active_installation_or_turn_lock_refuses_core_save (test_memory_core_editor.MemoryCoreEditorTests.test_active_installation_or_turn_lock_refuses_core_save) (lock='_GeneratorContextManager') ... FAIL
+test_invalid_configuration_withholds_only_its_own_row (test_memory_core_editor.MemoryCoreEditorTests.test_invalid_configuration_withholds_only_its_own_row) ... FAIL
+
+======================================================================
+FAIL: test_active_installation_or_turn_lock_refuses_core_save (test_memory_core_editor.MemoryCoreEditorTests.test_active_installation_or_turn_lock_refuses_core_save) (lock='_GeneratorContextManager')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 367, in test_active_installation_or_turn_lock_refuses_core_save
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"ok": true, "meta": {"id": "principal-identity", "label": "PRINCIPAL_IDENTITY.md", "plane": "source", "language": "markdown", "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.", "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md", "exists": true, "sealed": false, "editable": true, "readable": true, "generatedBy": null, "sourceIds": [], "bytes": 34, "lines": 2, "modified": "2026-10-14T19:26:45.206Z"}, "reference": "4c9be6744678a62970ba97707877f3ce6a6633b6f2115abf7c68dba6e4e4532f", "backup": "~/.claude/LIFEOS/MEMORY/STATE/hermes-edits/principal-identity.9a33499ff499e36cf2e972e0f8c0bd5d8bab7265c2c77130f84b6ff754590791.bak", "written": "2026-10-14T19:26:45.300496+00:00", "releaseModified": false}
+
+======================================================================
+FAIL: test_active_installation_or_turn_lock_refuses_core_save (test_memory_core_editor.MemoryCoreEditorTests.test_active_installation_or_turn_lock_refuses_core_save) (lock='_GeneratorContextManager')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 367, in test_active_installation_or_turn_lock_refuses_core_save
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {"ok": true, "meta": {"id": "principal-identity", "label": "PRINCIPAL_IDENTITY.md", "plane": "source", "language": "markdown", "role": "Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.", "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md", "exists": true, "sealed": false, "editable": true, "readable": true, "generatedBy": null, "sourceIds": [], "bytes": 34, "lines": 2, "modified": "2026-10-14T19:26:45.206Z"}, "reference": "4c9be6744678a62970ba97707877f3ce6a6633b6f2115abf7c68dba6e4e4532f", "backup": "~/.claude/LIFEOS/MEMORY/STATE/hermes-edits/principal-identity.9a33499ff499e36cf2e972e0f8c0bd5d8bab7265c2c77130f84b6ff754590791.bak", "written": "2026-10-14T19:26:45.300496+00:00", "releaseModified": false}
+
+======================================================================
+FAIL: test_invalid_configuration_withholds_only_its_own_row (test_memory_core_editor.MemoryCoreEditorTests.test_invalid_configuration_withholds_only_its_own_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 378, in test_invalid_configuration_withholds_only_its_own_row
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.656s
+
+FAILED (failures=3)

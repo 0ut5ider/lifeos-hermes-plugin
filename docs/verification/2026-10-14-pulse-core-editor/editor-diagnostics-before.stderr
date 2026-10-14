@@ -1,0 +1,25 @@
+test_overview_retains_registry_and_native_gateway_health (test_memory_core_editor.MemoryCoreEditorTests.test_overview_retains_registry_and_native_gateway_health) ... ERROR
+test_guard_analysis_keeps_actual_native_counts_and_refuses_anonymous_access (test_memory_core_editor.MemoryCoreEditorTests.test_guard_analysis_keeps_actual_native_counts_and_refuses_anonymous_access) ... FAIL
+
+======================================================================
+ERROR: test_overview_retains_registry_and_native_gateway_health (test_memory_core_editor.MemoryCoreEditorTests.test_overview_retains_registry_and_native_gateway_health)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 218, in test_overview_retains_registry_and_native_gateway_health
+    self.assertEqual(body['health']['pid'], os.getpid())
+                     ~~~~~~~~~~~~~~^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+FAIL: test_guard_analysis_keeps_actual_native_counts_and_refuses_anonymous_access (test_memory_core_editor.MemoryCoreEditorTests.test_guard_analysis_keeps_actual_native_counts_and_refuses_anonymous_access)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 231, in test_guard_analysis_keeps_actual_native_counts_and_refuses_anonymous_access
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 401 : {"error": "Invalid source read route"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.753s
+
+FAILED (failures=1, errors=1)

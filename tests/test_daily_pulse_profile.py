@@ -34,10 +34,10 @@ class DailyPulseProfileTests(unittest.TestCase):
 
     def test_native_module_merger_disables_only_the_selected_optional_surfaces(self):
         modules = self.config()['modules']
-        for name in ('voice', 'work', 'synapse', 'usage', 'bunker', 'imessage', 'syslog', 'da', 'hermes'):
+        for name in ('voice', 'work', 'synapse', 'usage', 'bunker', 'imessage', 'syslog', 'da'):
             with self.subTest(module=name): self.assertFalse(modules[name])
         for name in ('telos', 'memory', 'projects', 'books', 'upgrades', 'hypotheses',
-                     'algorithm', 'docs', 'health', 'finances', 'business', 'content'):
+                     'algorithm', 'docs', 'health', 'finances', 'business', 'content', 'hermes'):
             with self.subTest(module=name): self.assertTrue(modules[name])
 
     def test_native_job_merger_has_no_raw_memory_command_or_external_output(self):

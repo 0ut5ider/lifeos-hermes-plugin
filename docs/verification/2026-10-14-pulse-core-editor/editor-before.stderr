@@ -1,0 +1,56 @@
+test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation (test_memory_core_editor.MemoryCoreEditorTests.test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation) ... FAIL
+test_current_owner_cannot_read_or_edit_credential_material (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_cannot_read_or_edit_credential_material) ... ok
+test_current_owner_read_preserves_body_and_supplies_review_reference (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_read_preserves_body_and_supplies_review_reference) ... ERROR
+test_current_reviewed_save_is_private_and_idempotent (test_memory_core_editor.MemoryCoreEditorTests.test_current_reviewed_save_is_private_and_idempotent) ... ERROR
+test_later_owner_edit_refuses_stale_save (test_memory_core_editor.MemoryCoreEditorTests.test_later_owner_edit_refuses_stale_save) ... ERROR
+test_revoked_owner_cannot_read_profile_details (test_memory_core_editor.MemoryCoreEditorTests.test_revoked_owner_cannot_read_profile_details) ... FAIL
+
+======================================================================
+ERROR: test_current_owner_read_preserves_body_and_supplies_review_reference (test_memory_core_editor.MemoryCoreEditorTests.test_current_owner_read_preserves_body_and_supplies_review_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 46, in test_current_owner_read_preserves_body_and_supplies_review_reference
+    self.assertRegex(response.json()['reference'], r'^[0-9a-f]{64}$')
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+ERROR: test_current_reviewed_save_is_private_and_idempotent (test_memory_core_editor.MemoryCoreEditorTests.test_current_reviewed_save_is_private_and_idempotent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 55, in test_current_reviewed_save_is_private_and_idempotent
+    body = {'content': '# SyntheticCurrentCoreEdit\n', 'reference': read.json()['reference'],
+                                                                    ~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+ERROR: test_later_owner_edit_refuses_stale_save (test_memory_core_editor.MemoryCoreEditorTests.test_later_owner_edit_refuses_stale_save)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 72, in test_later_owner_edit_refuses_stale_save
+    reference = read.json()['reference']
+                ~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'reference'
+
+======================================================================
+FAIL: test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation (test_memory_core_editor.MemoryCoreEditorTests.test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 32, in test_anonymous_file_read_and_write_refuse_before_disclosure_or_mutation
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"meta":{"id":"principal-identity","label":"PRINCIPAL_IDENTITY.md","plane":"source","language":"markdown","role":"Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.","displayPath":"~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md","exists":true,"sealed":false,"editable":true,"generatedBy":null,"sourceIds":[],"bytes":55,"lines":3,"modified":"2026-10-14T18:02:54.849Z"},"content":"# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"}
+
+======================================================================
+FAIL: test_revoked_owner_cannot_read_profile_details (test_memory_core_editor.MemoryCoreEditorTests.test_revoked_owner_cannot_read_profile_details)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_core_editor.py", line 86, in test_revoked_owner_cannot_read_profile_details
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"meta":{"id":"principal-identity","label":"PRINCIPAL_IDENTITY.md","plane":"source","language":"markdown","role":"Who the principal is. PII lines are dropped at render time, so the sidecar gets the person without the address.","displayPath":"~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md","exists":true,"sealed":false,"editable":true,"generatedBy":null,"sourceIds":[],"bytes":55,"lines":3,"modified":"2026-10-14T18:02:56.460Z"},"content":"# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"}
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.060s
+
+FAILED (failures=2, errors=3)

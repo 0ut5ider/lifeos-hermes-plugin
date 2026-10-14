@@ -1,0 +1,16 @@
+test_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) ... 
+  test_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) (module='hermes') ... FAIL
+
+======================================================================
+FAIL: test_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) (module='hermes')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 41, in test_native_module_merger_disables_only_the_selected_optional_surfaces
+    with self.subTest(module=name): self.assertTrue(modules[name])
+                                    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 0.067s
+
+FAILED (failures=1)

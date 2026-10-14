@@ -1,0 +1,63 @@
+{
+  "toolIcon": {
+    "_tag": "website",
+    "pageUrl": "http://127.0.0.1:44151/assistant"
+  },
+  "value": {
+    "phase": "after-revoked-save-denial",
+    "textarea": [
+      "# SyntheticRestoredOwnerIdentity\nCurrent source after denied view\nSynthetic unsaved draft\n"
+    ],
+    "ownerRows": 24,
+    "unavailable": false,
+    "saveError": true,
+    "requests": [
+      {
+        "url": "/api/hermes",
+        "status": 200,
+        "time": 1792009932858
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "status": 200,
+        "time": 1792009933052
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 200,
+        "time": 1792009943364
+      },
+      {
+        "url": "/api/hermes",
+        "status": 403,
+        "time": 1792009992942
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 403,
+        "time": 1792010011190
+      },
+      {
+        "url": "/api/hermes",
+        "status": 200,
+        "time": 1792010055738
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "status": 200,
+        "time": 1792010055928
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 200,
+        "time": 1792010056129
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "status": 403,
+        "time": 1792010067651
+      }
+    ],
+    "now": 1792010072809
+  }
+}
