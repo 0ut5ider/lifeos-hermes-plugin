@@ -16,6 +16,13 @@ cases = [
     ('wrong-conversation-operation', 'public-conversation-update-applied.json', ['operation'], '0' * 32),
     ('changed-update-model', 'public-lifeos-update-applied.json', ['model_selection_sha256'], '0' * 64),
     ('missing-memory-proof', 'public-plugin-update-memory-preservation.json', ['matched_content'], False),
+    ('wrong-manager-file-digest', 'public-default-github-manager-install.json', ['files', 'release_worker.py', 'sha256'], '0' * 64),
+    ('mixed-fresh-guest', 'public-latest-fresh-preparation.json', ['guest'], 109),
+    ('wrong-daily-package-identity', 'final-server-identities.json', ['servers', 1, 'active_identity', 'commit'], '0' * 40),
+    ('wrong-published-package-digest', 'stable-publication.json', ['asset_digests', '0.4.2-87205092.tgz'], '0' * 64),
+    ('wrong-stock-hermes-base', 'public-default-github-manager-install.json', ['hermes_base'], '0' * 40),
+    ('wrong-owner-model-selection', 'public-fresh-ownership-activation.json', ['model_selection_sha256'], '0' * 64),
+    ('empty-public-service-map', 'public-lifeos-update-applied.json', ['services'], {}),
 ]
 results = []
 for name, receipt, keys, value in cases:

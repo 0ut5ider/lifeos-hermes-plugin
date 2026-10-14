@@ -1,0 +1,90 @@
+[
+  {
+    "case": "current",
+    "accepted": true,
+    "expected": true,
+    "exit_code": 0,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "wrong-rc3-commit",
+    "accepted": false,
+    "expected": false,
+    "exit_code": 1,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "wrong-fresh-reference",
+    "accepted": false,
+    "expected": false,
+    "exit_code": 1,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "unapplied-conversation",
+    "accepted": false,
+    "expected": false,
+    "exit_code": 1,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "wrong-conversation-operation",
+    "accepted": false,
+    "expected": false,
+    "exit_code": 1,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "changed-update-model",
+    "accepted": false,
+    "expected": false,
+    "exit_code": 1,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "missing-memory-proof",
+    "accepted": false,
+    "expected": false,
+    "exit_code": 1,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "wrong-manager-file-digest",
+    "accepted": true,
+    "expected": false,
+    "exit_code": 0,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "mixed-fresh-guest",
+    "accepted": true,
+    "expected": false,
+    "exit_code": 0,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "wrong-daily-package-identity",
+    "accepted": true,
+    "expected": false,
+    "exit_code": 0,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  },
+  {
+    "case": "wrong-published-package-digest",
+    "accepted": true,
+    "expected": false,
+    "exit_code": 0,
+    "actual_receipts_used": true,
+    "test_copy_only": true
+  }
+]

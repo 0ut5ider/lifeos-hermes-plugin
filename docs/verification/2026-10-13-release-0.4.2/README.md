@@ -32,4 +32,6 @@ The Hermes conversational replay also passes through the interactive dashboard. 
 
 The separate [public acceptance checkpoint](candidate-87205092/PUBLIC-LATEST-ACCEPTANCE.json) binds these four public operations to their receipts. It completes the public replay without replacing the published release certificate. Daily promotion and automatic morning observation remain separate acceptance decisions.
 
+The first documentation review identifies five missing verifier bindings. The corrected verifier checks the qualified manager inventory, exact prerelease baseline, measured guests, accepted daily package, and published asset digests. Primary controls also check the stock Hermes base, owner model selection, and complete public service states. Fourteen controls accept the actual receipts and refuse thirteen altered cases. The earlier failed controls and unpublished checkpoint remain retained. No product programs change for these corrections.
+
 The fresh test guests retain their prior service states. Their dashboards run; their gateway and Pulse services remain inactive. Development .252 independently verifies all three running application services. Fresh test acceptance does not claim Discord delivery or scheduled operation on these disposable guests.

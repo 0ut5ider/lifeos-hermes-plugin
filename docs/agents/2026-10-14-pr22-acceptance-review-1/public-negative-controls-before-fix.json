@@ -1,0 +1,105 @@
+{
+  "reviewed_script_sha256": "afd753aa27db34658094e4ea6fdc84a9587a32110284ef0cd6f886678960d959",
+  "workspace": "/tmp/pr22-public-negative-rn_b22cz",
+  "controls": [
+    {
+      "case": "current-public",
+      "accepted": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true
+    },
+    {
+      "case": "stale-package-identity",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "mixed-operation",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "explicit-version-selection",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "unapplied-public-update",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "wrong-owner-reference",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "missing-command-approval",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "missing-memory-receipt",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "wrong-certificate",
+      "accepted": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true
+    },
+    {
+      "case": "wrong-manager-file-digest",
+      "accepted": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true
+    },
+    {
+      "case": "mixed-fresh-guest",
+      "accepted": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true
+    },
+    {
+      "case": "wrong-rc3-baseline-commit",
+      "accepted": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true
+    },
+    {
+      "case": "wrong-daily-package-identity",
+      "accepted": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true
+    },
+    {
+      "case": "wrong-published-package-digest",
+      "accepted": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true
+    }
+  ],
+  "published_certificate_unchanged": true
+}

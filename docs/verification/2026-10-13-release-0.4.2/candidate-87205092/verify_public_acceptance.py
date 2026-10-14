@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+import tarfile
 
 out = Path(__file__).resolve().parent
 used = set()
@@ -19,6 +20,14 @@ identity = {'version': '0.4.2', 'commit': '87205092832c550a09fce6e1cb3ca944fdb69
     'package_sha256': '76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4'}
 certificate_sha = 'd937719db08eb0218a4f3f037a7132537f4e7ba55b48790467936df8a59e977e'
 assert hashlib.sha256((out / 'RELEASE-CERTIFICATE.json').read_bytes()).hexdigest() == certificate_sha
+certificate = json.loads((out / 'RELEASE-CERTIFICATE.json').read_bytes())
+used.add('stable-build.json')
+build_bytes = (out / 'stable-build.json').read_bytes()
+assert hashlib.sha256(build_bytes).hexdigest() == certificate['qualification_receipt_sha256']['stable-build.json']
+build = json.loads(build_bytes)
+assert build['head'] == identity['commit'] and build['archive_sha256'] == identity['package_sha256']
+archive_path = Path(build['archive'])
+assert hashlib.sha256(archive_path.read_bytes()).hexdigest() == identity['package_sha256']
 manager = load('public-default-github-manager-install.json')
 assert manager['guest'] == 111 and manager['force_reinstall'] is False
 assert manager['initial_manager_hash_inventory_captured'] is True
@@ -27,15 +36,29 @@ assert manager['metadata']['source'] == 'https://github.com/0ut5ider/lifeos-herm
 assert manager['metadata']['revision'] == '7ac93c6902dd1311fea804f160f4a765c42b9e01'
 assert manager['explicit_branch_or_commit_selected'] is False and manager['metadata']['pinned'] is False
 assert manager['manager_program_commit'] == identity['commit']
+assert manager['hermes_base'] == build['hermes_base']
+with tarfile.open(archive_path) as archive:
+    prefix = 'optional/lifeos_release_manager/'
+    expected_files = {item.name[len(prefix):]: hashlib.sha256(archive.extractfile(item).read()).hexdigest()
+        for item in archive.getmembers() if item.isfile() and item.name.startswith(prefix)}
+assert set(manager['files']) == set(expected_files)
+assert manager['directory_mode'] == 0o700
+assert all(manager['files'][name] == {'sha256': digest, 'mode': 0o600}
+    for name, digest in expected_files.items())
 baseline = load('public-rc3-baseline.json')
 assert baseline['active_identity'] == {'version': '0.4.2-rc.3',
     'commit': '10459df6c2b27bda8911dfd96a25b92bee769c93',
     'package_sha256': 'fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474'}
 assert baseline['actual_update_lifeos_button'] is True
+assert baseline['guest'] == 109
 prior_reference = baseline['synthetic_fact_preserved']['reference']
 assert prior_reference == {'id': 'da7e20b95b904ca7ac4aab594c23b5ee', 'revision': 1}
 assert baseline['synthetic_fact_preserved']['actual_authenticated_mcp_get'] is True
 model_hash = baseline['model_selection_sha256']
+assert model_hash == '6f6aae9afe9ae447d2e8a4d7df31642a826ca4e2e2cd76112b9b3caad3710770'
+expected_services = {'hermes-dashboard.service': {'ActiveState': 'active', 'SubState': 'running'},
+    'hermes-gateway.service': {'ActiveState': 'inactive', 'SubState': 'dead'},
+    'com.lifeos.pulse.service': {'ActiveState': 'inactive', 'SubState': 'dead'}}
 operations = {}
 for label, intent in [('fresh', 'install'), ('plugin-update', 'plugin'), ('lifeos-update', 'update')]:
     prefix = {'fresh': 'fresh', 'plugin-update': 'plugin-update', 'lifeos-update': 'lifeos-update'}[label]
@@ -49,8 +72,10 @@ for label, intent in [('fresh', 'install'), ('plugin-update', 'plugin'), ('lifeo
     assert prepare['blank_latest_stable_selected'] is True
     assert applied['operation_state'] == applied['program_transaction_state'] == 'applied'
     assert applied['operation'] == prepare['operation']
+    assert prepare['guest'] == (111 if label == 'fresh' else 109)
     assert applied['model_selection_sha256'] == model_hash
     assert applied['selected_models_and_tiers_preserved'] is True
+    assert applied['services'] == expected_services
     if label != 'fresh':
         memory = load('public-' + prefix + '-memory-preservation.json')
         assert memory['operation'] == applied['operation']
@@ -61,6 +86,7 @@ owner = load('public-fresh-ownership-activation.json')
 turn = load('public-fresh-owner-turn-verification.json')
 assert owner['operation'] == operations['fresh'] and owner['authenticated_owner_verified'] is True
 assert owner['connector_verified'] is True and owner['selected_model_and_tiers_preserved'] is True
+assert owner['model_selection_sha256'] == model_hash and owner['local_owner_uid'] == 1000
 assert owner['personal_data_imported'] is owner['sharing_enabled'] is False
 assert turn['verification_active_identity'] == identity and turn['actual_write_and_fresh_conversation_read_verified'] is True
 assert len(turn['sessions']) == 2 and turn['sessions'][0] != turn['sessions'][1]
@@ -77,10 +103,13 @@ prepared = json.loads(tool['output'])
 assert prepared == conversation['prepared_operation'] and prepared['state'] == 'ready'
 assert {key: prepared[key] for key in identity} == identity
 assert conversation['interactive_owner_approval_verified'] is True
+assert conversation['approval_choice'] == 'once'
+assert conversation['guest'] == 109
 applied = load('public-conversation-update-applied.json')
 assert applied['operation'] == prepared['identifier'] and applied['active_identity'] == identity
 assert applied['operation_state'] == applied['program_transaction_state'] == 'applied'
 assert applied['model_selection_sha256'] == model_hash
+assert applied['services'] == expected_services
 memory = load('public-conversation-memory-preservation.json')
 assert memory['operation'] == applied['operation'] and memory['reference'] == prior_reference
 assert memory['http_status'] == 200 and memory['tool_status'] == 'ok' and memory['matched_content'] is True
@@ -90,11 +119,18 @@ historical = load('protected-all-release-assets-after.json')
 assert historical['historical_releases'] == 7 and historical['historical_assets'] == 41
 assert historical['all_asset_ids_sizes_and_digests_unchanged'] is True
 servers = load('final-server-identities.json')
-assert servers['servers'][0]['active_identity'] == identity
-assert servers['servers'][1]['active_identity']['version'] == '0.3.1'
+assert servers['servers'][0] == {'guest': 101, 'ip': '192.168.8.252', 'active_identity': identity}
+assert servers['servers'][1] == {'guest': 102, 'ip': '192.168.8.253', 'active_identity': {
+    'version': '0.3.1', 'commit': '9af633252004a0ac8dd780d5fc12e9644f97bb0c',
+    'package_sha256': '2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24'}}
+assert servers['daily_server_changed'] is False
 publication = load('stable-publication.json')
 assert publication['latest_stable_verified'] is True and publication['tag'] == 'v0.4.2'
 assert publication['certificate_sha256'] == certificate_sha
+assert publication['program_commit'] == identity['commit']
+assert publication['asset_digests'] == {'0.4.2-87205092.tgz': identity['package_sha256'],
+    'hermes-dashboard.tgz': 'e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec',
+    'RELEASE-CERTIFICATE.json': certificate_sha}
 report = {'format': 1, 'status': 'PASS', 'version': '0.4.2', 'program_commit': identity['commit'],
     'archive_sha256': identity['package_sha256'], 'qualification_certificate_sha256': certificate_sha,
     'public_latest_stable_verified': True, 'default_github_url_installation_verified': True,
