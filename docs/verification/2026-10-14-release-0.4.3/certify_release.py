@@ -50,6 +50,10 @@ assert not text('native-sealed-a1abb579.stderr')
 assert text('native-sealed-a1abb579.done').strip() == '0'
 with tarfile.open(build['archive']) as archive:
     manifest = archive.extractfile('hermes/hermes-source-manifest.json').read()
+    input_names = {'hermes/hermes-source-manifest.json', 'lifeos/lifeos-source-manifest.json',
+                   'lifeos_hook_bridge/dependency_locks/catalog.json'}
+    candidate_inputs = {name: hashlib.sha256(archive.extractfile(name).read()).hexdigest()
+                        for name in input_names}
 assert native['source_manifest_sha256'] == hashlib.sha256(manifest).hexdigest()
 assert native['source_tree_sha256'] == json.loads(manifest)['tree_sha256']
 assert native['archived_source_files_unchanged'] is True and native['bun_version'] == '1.4.3'
@@ -58,7 +62,17 @@ assert 'Ran 39 tests' in text('frozen-focused.stderr') and text('frozen-focused.
 assert 'Ran 4 tests' in text('restore-binding-after.stderr') and text('restore-binding-after.stderr').rstrip().endswith('OK')
 unchanged = passed('unchanged-native-inputs.json')
 assert unchanged['candidate_archive_sha256'] == archive_sha
-assert all(row['program_identity_equal'] for row in unchanged['inputs'].values())
+assert set(unchanged['inputs']) == input_names
+accepted_input_sha256 = {
+    'hermes/hermes-source-manifest.json': 'c828676c4915468f8489ae7d572f700115a740e434ac5a4e761771bf74865c69',
+    'lifeos/lifeos-source-manifest.json': 'de564ad81fdfa2e6f4a5a1f39bb216a5fc90d63f120fe8ac6e1b5660b25e5991',
+    'lifeos_hook_bridge/dependency_locks/catalog.json': '2d4cfce96064f9473747b8b008dd50bf982f6e32d48814b227f99dde57103695'}
+for name, row in unchanged['inputs'].items():
+    assert row['program_identity_equal'] is True
+    assert row['candidate_sha256'] == candidate_inputs[name]
+    assert row['accepted_sha256'] == accepted_input_sha256[name]
+    assert row['excluded_build_location_fields'] == (['upstream'] if name.startswith('lifeos/') else [])
+    assert row['byte_identical'] is (not name.startswith('lifeos/'))
 prior_certificate = out.parent / '2026-10-13-release-0.4.2/candidate-87205092/RELEASE-CERTIFICATE.json'
 assert digest(prior_certificate) == 'd937719db08eb0218a4f3f037a7132537f4e7ba55b48790467936df8a59e977e'
 prior = json.loads(prior_certificate.read_bytes())
@@ -72,11 +86,16 @@ for receipt in (applied, restored, final):
     assert receipt['synthetic_memory_reference'] == applied['synthetic_memory_reference']
     assert receipt['model_mapping_preserved'] and receipt['native_store_preserved']
     assert not receipt['production_guest_changed'] and not receipt['personal_data_imported_or_reset']
-    assert len(receipt['services']) == 3 and all(all(unit.values()) for unit in receipt['services'].values())
+    assert set(receipt['services']) == {'hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service'}
+    for unit in receipt['services'].values():
+        assert set(unit) == {'active', 'native_home_preserved', 'profile_preserved'}
+        assert all(value is True for value in unit.values())
 for receipt in (applied, final):
     assert receipt['active']['version'] == '0.4.3' and receipt['active']['commit'] == commit
     assert receipt['active']['package_sha256'] == archive_sha and receipt['active']['verification'] == 'verified'
 assert restored['active']['version'] == '0.3.1' and restored['active']['verification'] == 'verified'
+assert restored['active']['commit'] == '9af633252004a0ac8dd780d5fc12e9644f97bb0c'
+assert restored['active']['package_sha256'] == '2aada985dd26dee4ffb4da1d3348c43c76cff2e697d04028cfbba9d6f1b11a24'
 interrupted = load('collection-interruption-exit.json')
 assert interrupted['exit_status'] == 73 and interrupted['unit_collected'] and interrupted['authenticated_owner_verified']
 assert interrupted['candidate_commit'] == commit and interrupted['native_mount_required'] is False
@@ -85,7 +104,8 @@ assert len(states) == 4
 for row in states:
     assert row['program_commit'] == commit and row['archive_sha256'] == archive_sha
     assert row['account_home'] == '/home/lifeos-hermes' and row['native_home'] != row['account_home']
-assert next(row for row in states if row['operation'] == interrupted['operation'])['state'] == 'rolled_back'
+recovered = next(row for row in states if row['operation'] == interrupted['operation'])
+assert recovered['state'] == 'rolled_back' and recovered['program_state'] == 'restored'
 assert states[0]['state'] == 'rolled_back' and states[0]['program_state'] == 'restored'
 operation = 'd5621dc92681425b9ee4553a063b7f0c'
 assert states[-1]['operation'] == operation and states[-1]['state'] == states[-1]['program_state'] == 'applied'
@@ -107,9 +127,16 @@ for receipt in (whole, coverage, artifacts, captured):
     assert receipt['program_commit'] == commit and receipt['archive_sha256'] == archive_sha
     assert receipt['operation'] == operation
 assert whole['archive'] == coverage['backup_archive'] and whole['archive'].startswith('PBS-01:backup/ct/111/')
+for receipt in (whole, coverage):
+    assert receipt['source_guest'] == 111 and receipt['restored_guest'] == 110
+    assert receipt['version'] == '0.4.3'
 assert whole['network_disconnected'] and whole['application_services_masked']
 assert {row['case'] for row in whole['cases']} == {'baseline', 'interrupted', 'later-edit'}
 assert len(whole['cases']) == 3 and all(row['status'] == 'PASS' for row in whole['cases'])
+for row in whole['cases']:
+    assert row['archive_and_live_group_verified'] is True
+    assert row['later_edit_refused'] is (row['case'] == 'later-edit')
+    assert row['restored_files'] == (51 if row['case'] == 'baseline' else 55)
 assert coverage['program_targets'] == 9 and coverage['application_services_masked']
 assert whole['runtime_artifact_coverage'] == artifacts
 frontend = Path('/home/outsider/.cache/lifeos-daily-promotion-20261014/hermes-dashboard.tgz')

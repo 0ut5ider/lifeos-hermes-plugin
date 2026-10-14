@@ -1,0 +1,96 @@
+{
+  "operator_sha256": "6630c02705c85ccc2c1581895410b7e9fa25ce0daafa59507cf25cbedce075c4",
+  "scratch": "/tmp/pr23-cert-review-t5gbraig",
+  "controls": [
+    {
+      "name": "current",
+      "expected_accept": true,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408",
+      "byte_identical_to_current": true
+    },
+    {
+      "name": "empty-service-details",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"b88be0bee7e8769a3a9669a63df6523b78484f70bb552ecfec0ef685357a8dea\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "b88be0bee7e8769a3a9669a63df6523b78484f70bb552ecfec0ef685357a8dea",
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "wrong-rollback-identity",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"f71929ec011519eb83d555919c0da56052480cf7383f6198fbca7caf8d250800\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "f71929ec011519eb83d555919c0da56052480cf7383f6198fbca7caf8d250800",
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "mixed-restore-guest",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"6d80a9b025b367d024e1e692ee63e45d43859508798c045b6d3bef31754bc68e\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "6d80a9b025b367d024e1e692ee63e45d43859508798c045b6d3bef31754bc68e",
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "empty-native-inputs",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"31613110af48f5a7d621c8cef5b2a7a94c9cbad051f4c8be5c8f7d294085a974\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "31613110af48f5a7d621c8cef5b2a7a94c9cbad051f4c8be5c8f7d294085a974",
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "interrupted-programs-still-applied",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"ea20bbb286dc4720469476206025cf0390e10c58ca74424118e020050c2a80c8\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "ea20bbb286dc4720469476206025cf0390e10c58ca74424118e020050c2a80c8",
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "later-edit-was-not-refused",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"5019cf288bb5f7806a60a02715681608f9c8ed9bf47df26e72cfecafd68228b6\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "5019cf288bb5f7806a60a02715681608f9c8ed9bf47df26e72cfecafd68228b6",
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "missing-completion",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-cert-review-t5gbraig/missing-completion/certify_release.py\", line 101, in <module>\n    assert text('bound-whole-guest-process.done').strip() == '0'\n           ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/pr23-cert-review-t5gbraig/missing-completion/certify_release.py\", line 23, in text\n    return (out / name).read_text()\n           ~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/usr/lib64/python3.14/pathlib/__init__.py\", line 787, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib64/python3.14/pathlib/__init__.py\", line 771, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/pr23-cert-review-t5gbraig/missing-completion/bound-whole-guest-process.done'\n",
+      "certificate_sha256": null,
+      "byte_identical_to_current": null
+    },
+    {
+      "name": "wrong-package-archive",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-cert-review-t5gbraig/wrong-package-archive/certify_release.py\", line 36, in <module>\n    assert build['archive_sha256'] == digest(build['archive']) == archive_sha\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null,
+      "byte_identical_to_current": null
+    }
+  ]
+}
