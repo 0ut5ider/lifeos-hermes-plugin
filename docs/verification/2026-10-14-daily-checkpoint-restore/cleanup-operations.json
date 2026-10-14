@@ -1,0 +1,57 @@
+[
+  {
+    "action": "final-inventory",
+    "command": [
+      "pvesh",
+      "get",
+      "/cluster/resources",
+      "--type",
+      "vm",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "action": "storage-guard",
+    "command": [
+      "pvesh",
+      "get",
+      "/storage/lifeos-daily-restore",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "action": "empty-storage",
+    "command": [
+      "pvesh",
+      "get",
+      "/nodes/pve-tr1950x/storage/lifeos-daily-restore/content",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "action": "remove-owned-storage",
+    "command": [
+      "pvesm",
+      "remove",
+      "lifeos-daily-restore"
+    ],
+    "exit_code": 0
+  },
+  {
+    "action": "final-protected-archive",
+    "command": [
+      "pvesh",
+      "get",
+      "/nodes/pve-tr1950x/storage/PBS-01/content/PBS-01:backup/ct/102/2026-10-14T16:15:12Z",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0
+  }
+]

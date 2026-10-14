@@ -53,11 +53,11 @@ selection = {'model': config.get('model'), 'tiers': {key: value for key, value i
 assert hashlib.sha256(json.dumps(selection, sort_keys=True).encode()).hexdigest() == baseline['model_selection_sha256']
 stdout = (stage / 'dashboard.stdout').open('w')
 stderr = (stage / 'dashboard.stderr').open('w')
-server_code = "from dotenv import load_dotenv;load_dotenv('.env');from hermes_cli.web_server import app;import uvicorn;uvicorn.run(app,host='127.0.0.1',port=18819,lifespan='off',ws='none',log_level='error')"
+server_code = "from dotenv import load_dotenv;load_dotenv('.env');from hermes_cli.plugins import get_plugin_manager;get_plugin_manager().discover_and_load();import hermes_cli.web_server as server;server._configure_auth_gate('0.0.0.0',False,None,None);import uvicorn;uvicorn.run(server.app,host='127.0.0.1',port=18819,lifespan='off',ws='none',log_level='error')"
 dashboard = subprocess.Popen([sys.executable, '-B', '-c', server_code],
     cwd=profile, stdout=stdout, stderr=stderr, start_new_session=True)
 try:
-    with httpx.Client(base_url='http://127.0.0.1:18819', timeout=60) as client:
+    with httpx.Client(base_url='http://127.0.0.1:18819', timeout=60, trust_env=False) as client:
         deadline = time.monotonic() + 90
         while True:
             assert dashboard.poll() is None, 'The isolated dashboard exits before readiness'

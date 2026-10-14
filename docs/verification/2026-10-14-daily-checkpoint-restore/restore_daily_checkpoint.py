@@ -87,7 +87,7 @@ try:
     assert 'tags: disposable;lifeos-daily-checkpoint-recovery' in cleanup_config
     run(['pct', 'destroy', str(vmid), '--purge', '1'], 'remove-owned-test-guest')
     created = False
-    volumes = json.loads(run(['pvesm', 'list', storage, '--output-format', 'json'], 'empty-storage'))
+    volumes = json.loads(run(['pvesh', 'get', '/nodes/pve-tr1950x/storage/' + storage + '/content', '--output-format', 'json'], 'empty-storage'))
     assert not volumes
     run(['pvesm', 'remove', storage], 'remove-owned-storage')
     storage_created = False
