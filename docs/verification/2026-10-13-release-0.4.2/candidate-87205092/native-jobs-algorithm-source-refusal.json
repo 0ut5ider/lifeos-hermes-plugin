@@ -1,0 +1,26 @@
+{
+  "status": "FAIL",
+  "jobs": [
+    {
+      "job": "atlas-insights",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "receipt_status": "completed",
+      "receipt_job": "atlas-insights",
+      "output_sha256": "a3e85e58d002200ae2b68154c4063aaaa75aa0ee9041ac799782142ec4621a30",
+      "elapsed_seconds": 52.879
+    },
+    {
+      "job": "algorithm-summaries",
+      "exit_code": 1,
+      "stderr_bytes": 0,
+      "receipt_status": null,
+      "receipt_job": null,
+      "output_sha256": "219c28ec6fa1b29c7a211b72a1ef6aac097afc64cb3fb001816112c859cb13ac",
+      "elapsed_seconds": 6.05
+    }
+  ],
+  "error_type": "AssertionError",
+  "daily_server_changed": false,
+  "private_output_exported": false
+}

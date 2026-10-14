@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "native_mount_state": "committed",
+  "changed_directories": [
+    {
+      "relative_path": ".lifeos-mount/58823404147944a38e714b19d7ee15e6/stage/cache",
+      "mode": "0o775",
+      "owner_uid": 1008,
+      "after_mode": "0o755"
+    },
+    {
+      "relative_path": ".lifeos-mount/58823404147944a38e714b19d7ee15e6/stage/plugins",
+      "mode": "0o775",
+      "owner_uid": 1008,
+      "after_mode": "0o755"
+    },
+    {
+      "relative_path": ".lifeos-mount/58823404147944a38e714b19d7ee15e6/stage/plugins/lifeos",
+      "mode": "0o775",
+      "owner_uid": 1008,
+      "after_mode": "0o755"
+    },
+    {
+      "relative_path": ".lifeos-mount/58823404147944a38e714b19d7ee15e6/stage/backups",
+      "mode": "0o775",
+      "owner_uid": 1008,
+      "after_mode": "0o755"
+    },
+    {
+      "relative_path": ".lifeos-mount/58823404147944a38e714b19d7ee15e6/stage/backups/config",
+      "mode": "0o775",
+      "owner_uid": 1008,
+      "after_mode": "0o755"
+    }
+  ],
+  "file_contents_changed": false,
+  "active_programs_changed": false,
+  "reason": "Historical native staging directories retain group-write permission. The protected backup refuses them.",
+  "undo": "Restore each recorded original directory mode if required."
+}

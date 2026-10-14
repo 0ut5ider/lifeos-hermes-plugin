@@ -14,6 +14,7 @@ parser.add_argument('--resume-backup',action='store_true')
 args=parser.parse_args()
 if args.resume_backup:
     assert (out/'archives.stdout').is_file()
+    captured=json.loads((out/'capture-program-artifacts.stdout').read_text())
     operations=json.loads((out/'operations.json').read_text())
 else:
     assert not out.exists();out.mkdir(parents=True,mode=0o700)
@@ -55,7 +56,9 @@ try:
     else:
         source(services_code.replace('ACTION',"s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Source writers drained')"),'drain-source')
         drained=True
-        run(['vzdump','101','--storage','PBS-01','--mode','stop','--notes-template','LifeOS 0.4.2 managed release recovery'],'backup-source')
+        captured=json.loads(run(['pct','exec','101','--','runuser','-u','lifeos-hermes','--',python,'-B',
+            '/home/lifeos-hermes/releases/qualification-0.4.2-87205092/program_artifact_receipt.py','capture',os.environ['LIFEOS_STABLE_OPERATION']], 'capture-program-artifacts'))
+        run(['vzdump','101','--storage','PBS-01','--mode','snapshot','--notes-template','LifeOS 0.4.2 managed release recovery'],'backup-source')
         archives=json.loads(run(['pvesh','get','/nodes/pve-tr1950x/storage/PBS-01/content','--content','backup','--vmid','101','--output-format','json'],'archives'))
         archive=max(archives,key=lambda row:row['ctime'])['volid']
         source(services_code.replace('ACTION',"s.resume();print('Source writers resumed')"),'resume-source')
@@ -76,6 +79,11 @@ try:
     report=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B',
         '/home/lifeos-hermes/releases/qualification-0.4.2-87205092/history_guest_recovery.py','verify',package],'verify-history'))
     assert report['status']=='PASS' and report['version']=='0.4.2' and len(report['cases'])==3
+    artifacts=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B',
+        '/home/lifeos-hermes/releases/qualification-0.4.2-87205092/program_artifact_receipt.py','verify',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-program-artifacts'))
+    assert artifacts['status']=='PASS' and artifacts['private_map_sha256']==captured['private_map_sha256']
+    assert artifacts['artifacts']==captured['artifacts'] and artifacts['program_commit']==captured['program_commit']
+    (out/'program-artifact-coverage.json').write_text(json.dumps(artifacts,indent=2)+'\n')
     coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-0.4.2-87205092/verify_stable_restored.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
     assert coverage['status']=='PASS' and coverage['version']==report['version']
     assert coverage['operation']==os.environ['LIFEOS_STABLE_OPERATION']
@@ -85,7 +93,7 @@ try:
         'version':coverage['version'],'program_commit':coverage['program_commit'],'archive_sha256':coverage['archive_sha256'],
         'operation':coverage['operation'],
         'network_disconnected':True,'application_services_masked':True,'cases':report['cases'],
-        'production_guest_changed':False},indent=2)+'\n')
+        'production_guest_changed':False,'runtime_artifact_coverage':artifacts},indent=2)+'\n')
     run(['pct','shutdown',str(vmid),'--timeout','90'],'shutdown-restore')
     result=0
 finally:

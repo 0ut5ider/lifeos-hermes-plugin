@@ -24,7 +24,7 @@ os.environ.update(HERMES_HOME=str(profile), XDG_RUNTIME_DIR='/run/user/' + str(o
     DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(os.getuid()) + '/bus',
     PATH=str(Path.home() / '.local/bin') + ':/usr/bin:/bin')
 sys.path[:0] = [str(profile / 'plugins'),
-    str(profile / '.lifeos-releases/ef9b659b8e4e4c3581489fe66353eb34/hermes')]
+    str(profile / '.lifeos-releases/3240c42939f2451293bd9d5cfcd8bf12/hermes')]
 
 
 def module(name):
@@ -64,16 +64,22 @@ configuration.update(local_grant)
 installed = Path(selected['root'])
 publish = module('memory_transaction').publish
 connector = installed / 'LIFEOS/USER/CONFIG/memory-access.json'
-assert not connector.exists() and not connector.is_symlink()
-publish(connector, json.dumps({'version': 1, 'command': [sys.executable,
+expected = {'version': 1, 'command': [sys.executable,
     str(profile / 'plugins/lifeos-hook-bridge/memory_rpc.py'),
-    '--configuration', str(configuration.path)]}).encode())
+    '--configuration', str(configuration.path)]}
+if connector.exists():
+    assert not connector.is_symlink() and json.loads(connector.read_bytes()) == expected
+else:
+    publish(connector, json.dumps(expected).encode())
 http = connector.with_name('memory-http.json')
-assert not http.exists() and not http.is_symlink()
-publish(http, json.dumps({'version': 1, 'dashboard_base_url': 'http://127.0.0.1:9119'}).encode())
+expected_http = {'version': 1, 'dashboard_base_url': 'http://127.0.0.1:9119'}
+if http.exists():
+    assert not http.is_symlink() and json.loads(http.read_bytes()) == expected_http
+else:
+    publish(http, json.dumps(expected_http).encode())
 module('memory_administration')._connector(configuration, configuration.load())
 setup = module('ownership_setup').OwnershipSetup(configuration)
-report = {'status': 'IN_PROGRESS', 'operation': 'ef9b659b8e4e4c3581489fe66353eb34',
+report = {'status': 'IN_PROGRESS', 'operation': '3240c42939f2451293bd9d5cfcd8bf12',
     'authenticated_owner_verified': True, 'local_owner_uid': os.getuid(),
     'private_model_route_sha256': route, 'model_selection_sha256': before,
     'connector_verified': True, 'personal_data_imported': False, 'sharing_enabled': False,
