@@ -1,0 +1,109 @@
+{
+  "evidence_digests": [
+    {
+      "file": "daily-promotion.json",
+      "expected": "db08e750cd0dbf7addfff4ae9b23a95b7a6f71248eb2891d16a0753b78fe86c0",
+      "actual": "db08e750cd0dbf7addfff4ae9b23a95b7a6f71248eb2891d16a0753b78fe86c0",
+      "match": true
+    },
+    {
+      "file": "development-promotion.json",
+      "expected": "2e8741e59a3b2c8819aac5457a1bc6d81d6e4b1e9ca65dbda319d6cffa0bf5cd",
+      "actual": "2e8741e59a3b2c8819aac5457a1bc6d81d6e4b1e9ca65dbda319d6cffa0bf5cd",
+      "match": true
+    },
+    {
+      "file": "daily-native-manager-bootstrap.json",
+      "expected": "7dd4a8e75d944b707303d307655fb473d15f21e3dd8535d7549bb49bc6d23158",
+      "actual": "7dd4a8e75d944b707303d307655fb473d15f21e3dd8535d7549bb49bc6d23158",
+      "match": true
+    },
+    {
+      "file": "daily-cerebo-live.json",
+      "expected": "bc84a0d64a3bd9017f5ec724a55754ea77c7fb4a1e36fea7515c31189f5c0900",
+      "actual": "bc84a0d64a3bd9017f5ec724a55754ea77c7fb4a1e36fea7515c31189f5c0900",
+      "match": true
+    },
+    {
+      "file": "daily-cerebo-live-replay.json",
+      "expected": "4c300e9f4f84bd25f44ffd436d0e24b32864829ed8e62239fce80ee1d96d8190",
+      "actual": "4c300e9f4f84bd25f44ffd436d0e24b32864829ed8e62239fce80ee1d96d8190",
+      "match": true
+    },
+    {
+      "file": "daily-cerebo-postbackup.json",
+      "expected": "c2b21acedca9705f10606c7c850fe30aca5c6e4227edd0a0fdf5bde14148319f",
+      "actual": "c2b21acedca9705f10606c7c850fe30aca5c6e4227edd0a0fdf5bde14148319f",
+      "match": true
+    },
+    {
+      "file": "daily-synthetic-cleanup.json",
+      "expected": "27bf4c9b2e53bfebd39cff5e804689f402c5014854ded13f9e7d32fcdd6e1190",
+      "actual": "27bf4c9b2e53bfebd39cff5e804689f402c5014854ded13f9e7d32fcdd6e1190",
+      "match": true
+    },
+    {
+      "file": "daily-postpromotion-backup.json",
+      "expected": "f805630302120dd79af0c1041ba03fe81fc4b04eb8b8dfad6c1b5987d6d19aba",
+      "actual": "f805630302120dd79af0c1041ba03fe81fc4b04eb8b8dfad6c1b5987d6d19aba",
+      "match": true
+    },
+    {
+      "file": "daily-postbackup-health.json",
+      "expected": "5094d6b831c9871133621a0928fe7812b53e3b1dd0ae0636aedf52f2d9c1f339",
+      "actual": "5094d6b831c9871133621a0928fe7812b53e3b1dd0ae0636aedf52f2d9c1f339",
+      "match": true
+    },
+    {
+      "file": "owned-test-cleanup.json",
+      "expected": "487dc1ef6e6111be9f07002a2028acaa8a49b60d645ed2d39e15fd5f2bad93dd",
+      "actual": "487dc1ef6e6111be9f07002a2028acaa8a49b60d645ed2d39e15fd5f2bad93dd",
+      "match": true
+    },
+    {
+      "file": "stable-publication.json",
+      "expected": "3e8e0b0f8bb8f594d9df8b706fadc868b3432d3882f9833e13728c40d8b8c30c",
+      "actual": "3e8e0b0f8bb8f594d9df8b706fadc868b3432d3882f9833e13728c40d8b8c30c",
+      "match": true
+    },
+    {
+      "file": "automatic-morning-schedule.json",
+      "expected": "08244d58c179225107491a92958be853737f9f4ccb6610bf44d0859f93fc0244",
+      "actual": "08244d58c179225107491a92958be853737f9f4ccb6610bf44d0859f93fc0244",
+      "match": true
+    },
+    {
+      "file": "daily-fresh-session.json",
+      "expected": "d75a89b1206546313df60a13c9fbda8fa445b0c708608ac78f6f5763ed766575",
+      "actual": "d75a89b1206546313df60a13c9fbda8fa445b0c708608ac78f6f5763ed766575",
+      "match": true
+    },
+    {
+      "file": "promotion-operator-controls-after.json",
+      "expected": "007c461a1b8a907dc84046325c9815751b159b07406dac23dbbdd03f8d5e5057",
+      "actual": "007c461a1b8a907dc84046325c9815751b159b07406dac23dbbdd03f8d5e5057",
+      "match": true
+    },
+    {
+      "file": "development-observer-review-recheck.json",
+      "expected": "2e8741e59a3b2c8819aac5457a1bc6d81d6e4b1e9ca65dbda319d6cffa0bf5cd",
+      "actual": "2e8741e59a3b2c8819aac5457a1bc6d81d6e4b1e9ca65dbda319d6cffa0bf5cd",
+      "match": true
+    }
+  ],
+  "development_actual_recheck_matches_accepted_receipt": true,
+  "development_exit_zero_stderr_empty": true,
+  "historical_successful_backup_unchanged": true,
+  "final_daily_backup_restore_tested": false,
+  "automatic_morning_observed": false,
+  "fresh_session_empty": true,
+  "certificate_digest_match": true,
+  "operator_syntax": {
+    "postpromotion_backup.py": "PASS",
+    "verify_promotion.py": "PASS",
+    "check_promotion_operators.py": "PASS"
+  },
+  "credential_pattern_matches": [],
+  "diff_check_exit": 0,
+  "diff_check_output": ""
+}

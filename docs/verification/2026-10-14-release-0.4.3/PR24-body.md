@@ -7,3 +7,5 @@ The daily PBS checkpoint is protected. The prior protected checkpoints remain pr
 Automatic morning acceptance remains pending until October 15 at 07:15 Toronto. The observer checks the real 07:00 execution and exact single delivery. It does not start a job or send a substitute message. The schedule removes itself after its first observation.
 
 Validation: both installed version commands, sealed program targets, actual authenticated memory tools, actual native Discord tool receipts, post-backup service health, asset digests, and cleanup guards pass. The qualified product package remains unchanged. Existing release assets remain immutable.
+
+The focused review reports two guard issues in the evidence operators. The corrected operators resume services after a partial failed drain and reject incomplete baselines. All 14 local controls pass. The corrected observer also verifies the real development installation. These checks do not change or deploy the product package again.
