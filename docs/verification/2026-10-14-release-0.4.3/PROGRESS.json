@@ -1,5 +1,5 @@
 {
-  "status": "DEPLOYED_RESCHEDULED_AUTOMATIC_OBSERVATION_PENDING",
+  "status": "DEPLOYED_RESCHEDULED_AUTOMATIC_ACCEPTANCE_VERIFIED",
   "version": "0.4.3",
   "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
   "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
@@ -56,7 +56,7 @@
   "automatic_morning_observed": false,
   "automatic_observation_date": "2026-10-14",
   "automatic_observation_time": "18:18 America/Toronto",
-  "automatic_observation_next_run_at": "2026-10-14T22:18:00.000Z",
+  "automatic_observation_next_run_at": null,
   "initial_deployment_evidence_pr": "PR24, focused review CLEAR round 2",
   "daily_fresh_session": "20261014_123528_dda57980",
   "promotion_operator_controls": 14,
@@ -72,5 +72,16 @@
   "automatic_observation_window_start": "2026-10-14T18:02:00-04:00",
   "automatic_observation_window_end": "2026-10-14T18:17:00-04:00",
   "original_0700_wall_clock_observed": false,
-  "rescheduled_observation_record": "../2026-10-14-evening-observation/PREPARATION.json"
+  "rescheduled_observation_record": "../2026-10-14-evening-observation/PREPARATION.json",
+  "automatic_acceptance_complete": true,
+  "automatic_observation_schedule_deleted": true,
+  "automatic_observation_receipt": "../2026-10-14-evening-observation/automatic-rescheduled-verification.json",
+  "automatic_observation_installed_result": "FAIL, preserved; state precedes asynchronous journal capture by0.475ms",
+  "automatic_observation_reverification": "PASS using isolated staged timestamp validator and original recorded window",
+  "automatic_observation_message_id": "1560050392140742737",
+  "automatic_observation_message_time": "2026-10-14T18:03:17.821-04:00",
+  "normal_0700_schedule_restored": true,
+  "observer_timestamp_fix_deployed": false,
+  "observer_timestamp_fix_qualification_required": true,
+  "automatic_observation_asset_published": false
 }

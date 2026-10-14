@@ -1,0 +1,66 @@
+{
+  "format": 3,
+  "status": "PASS",
+  "observation_kind": "owner-rescheduled-automatic-run",
+  "version": "0.4.3",
+  "commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+  "package_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+  "window_start": "2026-10-14T18:02:00-04:00",
+  "window_end": "2026-10-14T18:17:00-04:00",
+  "automatic_execution_verified": true,
+  "discord_delivery_verified": true,
+  "original_0700_wall_clock_observed": false,
+  "scheduler": {
+    "before_sha256": "566d9071a57fea08f5b5abf40bf6622bdc2009193fd29f652d9a63c53ca87003",
+    "after_sha256": "1970e15237f2df6908033af1cd46cd98518c3d090963ed91f761cb16a0e49e66",
+    "normal_schedule": "0 7 * * *",
+    "evening_schedule": "2 18 14 10 *",
+    "window_start": "2026-10-14T18:02:00-04:00",
+    "window_end": "2026-10-14T18:17:00-04:00"
+  },
+  "execution": {
+    "execution_source": "pulse-cron-journal",
+    "cron_starts": 1,
+    "cron_completions": 1,
+    "started_at": "2026-10-14T18:02:53.006000-04:00",
+    "completed_at": "2026-10-14T18:03:19.076000-04:00",
+    "timestamp_basis": "native-pulse-event",
+    "journal_capture_delay_ms": {
+      "start": 0.212,
+      "completion": 0.475
+    }
+  },
+  "discord": {
+    "message_id": "1560050392140742737",
+    "message_timestamp": "2026-10-14T22:03:17.821000+00:00",
+    "channel_id": "1558870196784205927",
+    "pages": 1,
+    "messages_examined": 58,
+    "window_covered": true,
+    "coverage_basis": "history_exhausted",
+    "oldest_message_timestamp": "2026-10-11T15:55:23.808000+00:00",
+    "bot_id": "1558867947152347198"
+  },
+  "initial_installed_observer": {
+    "format": 3,
+    "status": "FAIL",
+    "error_type": "ValueError",
+    "error": "The current Pulse state and cron delivery receipt must agree",
+    "schedule_restoration": {
+      "status": "RESTORED",
+      "normal_schedule": "0 7 * * *",
+      "all_original_bytes_restored": true
+    }
+  },
+  "verification_method": "isolated-staged-validator-replay",
+  "validator_sha256": "7bf8bfc72e44924dd4d463db71ae74c17ce7c4f823c0fa0832aee9b475c5b8a3",
+  "qualified_installed_program_changed": false,
+  "job_manually_run": false,
+  "services": {
+    "com.lifeos.pulse.service": "active",
+    "hermes-gateway.service": "active",
+    "hermes-dashboard.service": "active"
+  },
+  "normal_schedule_restored": true,
+  "all_original_configuration_bytes_restored": true
+}

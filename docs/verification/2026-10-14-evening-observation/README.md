@@ -12,4 +12,14 @@ The operator is `/home/lifeos-hermes/releases/observe_rescheduled_20261014.py` o
 
 The app schedule title and identifier are in PREPARATION.json. To cancel before execution, first use the operator restore action as lifeos-hermes with its existing venv and user systemd environment. Then stop the two owned timers and remove the app schedule with `delete_scheduled_task`. Do not start the job as a cancellation or verification step.
 
-Acceptance remains pending. A passing evening result can close the explicitly rescheduled automatic-delivery gate. It cannot establish that a 07:00 wall-clock execution was observed. Publish a new automatic-rescheduled-verification.json asset after verification and preserve existing assets.
+## Recorded outcome
+
+The installed observer returns FAIL because the Pulse state time precedes journald capture by 0.475 milliseconds. The original receipt remains in initial-observer-failure.json. Pulse records one successful automatic start at 18:02:53.006 and completion at 18:03:19.076. The native completion event timestamp agrees with the millisecond state exactly. The later journal capture timestamp is not the native completion clock.
+
+The staged fix uses the native event timestamp for state correlation and separately bounds journal capture delay to five seconds. A regression with the measured delay fails before the fix. All 12 observer tests pass afterward. The test set also rejects invalid timestamps, stale state, duplicate execution, incomplete Discord coverage, and multiple deliveries.
+
+The isolated read-only replay uses that staged validator on the original recorded cron events. It uses the unchanged installed Discord checker to cover the entire 18:02 to 18:17 window. The checker scans 58 messages and identifies exactly one Cerebo delivery, message 1560050392140742737, at 18:03:17.821. The corrected receipt is automatic-rescheduled-verification.json. It preserves the original failure and binds the isolated validator hash. It does not claim that the installed observer passed. No job, generation, or send runs again.
+
+The regular 07:00 schedule and all original configuration bytes are restored. Pulse, gateway, and dashboard are active. The app schedule is deleted and both owned timers are inactive and collected. The installed 0.4.3 package stays unchanged. The timestamp fix is staged for the next complete qualified release.
+
+The owner-rescheduled automatic-delivery check passes, subject to focused review of the correction and evidence. The 07:00 wall-clock observation remains unperformed. The new safe asset must preserve this scope and all existing release assets.
