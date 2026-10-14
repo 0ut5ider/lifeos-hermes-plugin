@@ -1,5 +1,7 @@
 # LifeOS plugin for Hermes
 
+**Candidate under qualification:** `0.4.2`. The [stable release gates](docs/verification/2026-10-13-release-0.4.2/README.md) track clean installation, memory ownership, updates, development operation, and whole-guest restoration. Daily `.253` stays on `0.3.1` during qualification.
+
 **Qualified release:** `0.4.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
 The exact package passes 631 integration tests and 716 native tests across 38 files.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
@@ -15,9 +17,8 @@ The [managed release record](docs/verification/2026-10-12-hermes-managed-release
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
 **Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
-**Development deployed version:** `0.4.1`, program commit `96f4f8fb`. The actual default public update passes on `.252`.
-All three services and public command aliases pass. The selected model mapping stays fixed.
-**Installation test guest:** `.249` runs `0.4.2-rc.3`. The [final default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) passes fresh LifeOS installation and a post-installation Hermes web chat. The earlier [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) cover both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
+**Development deployed candidate:** `0.4.2`, program commit `87205092`. Its update, rollback, actual interruption recovery, private Discord operation, native jobs, and automatic reboot checks pass on `.252`. The selected model mapping stays fixed. Off-server restoration and stable publication remain pending.
+**Installation test guests:** The stopped `.249` guest retains `0.4.2-rc.3`. Clean candidate acceptance passes on `.248`. A separate manager-free guest at `.246` prepares the public stable replay. The [earlier default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) passes fresh prerelease installation and a post-installation Hermes web chat. The earlier [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) cover both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
@@ -273,6 +274,10 @@ The qualified 0.4.1 certificate binds the complete package and frozen dependency
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
 The 0.4.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
+
+Managed first installation requires the owner dashboard service to use the account home as its working directory.
+Set `UMask=0077` in that service before installing the manager through the native GitHub form.
+The complete release worker also uses a private mask for native profile files and backup artifacts.
 They qualify the synthetic installation and complete-package update workflow. They do not qualify deployment to the daily server.
 Select an exact test version during these checks. An empty version still selects stable 0.4.1.
 

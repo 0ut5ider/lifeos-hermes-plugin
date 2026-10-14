@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_services.py", line 238, in preview
+    return {'signature': self._signature(self._admission())}
+                                         ~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_services.py", line 216, in _admission
+    values, definition = self._inspect(role)
+                         ~~~~~~~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_services.py", line 144, in _inspect
+    output = _run('show', self.units[role], '--property=' + ','.join(PROPERTIES), '--no-pager')
+  File "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge/profile_services.py", line 36, in _run
+    raise MemoryUnavailable('The owner service manager refuses the selected operation')
+restart_bridge.memory_access.MemoryUnavailable: The owner service manager refuses the selected operation

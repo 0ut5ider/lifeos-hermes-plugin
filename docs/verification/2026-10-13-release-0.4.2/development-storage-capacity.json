@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "guest": 101,
+  "previous_quota_gib": 150,
+  "quota_gib": 200,
+  "reason": "The development guest has less than 2 GiB free before release application and qualification backups.",
+  "daily_guest_modified": false,
+  "observations": [
+    {
+      "command": [
+        "pct",
+        "config",
+        "101"
+      ],
+      "metadata": {
+        "hostname": "lifeos-dev",
+        "rootfs": "local-zfs:subvol-101-disk-0,size=150G"
+      },
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "resize",
+        "101",
+        "rootfs",
+        "200G"
+      ],
+      "metadata": "",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "101"
+      ],
+      "metadata": {
+        "hostname": "lifeos-dev",
+        "rootfs": "local-zfs:subvol-101-disk-0,size=200G"
+      },
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    },
+    {
+      "command": [
+        "pct",
+        "exec",
+        "101",
+        "--",
+        "df",
+        "-B1",
+        "/home/lifeos-hermes"
+      ],
+      "metadata": "Filesystem                      1B-blocks         Used   Available Use% Mounted on\nrpool/data/subvol-101-disk-0 214748364800 159020482560 55727882240  75% /",
+      "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+--- certifier-before
++++ certifier-reviewed
+@@ -62,6 +62,9 @@
+ 
+ fresh = passed('fresh-native-github-manager-install.json')
+ assert fresh['guest'] == 109 and fresh['force_reinstall'] is False
++assert fresh['source'] == 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager'
++assert fresh['hermes_base'] == build['hermes_base']
++assert fresh['native_install_metadata_revision'] == '5791ca25b69538c85cad30aeaa8b223e50ff57ae'
+ assert fresh['explicit_branch_or_commit_selected'] is False and fresh['native_install_metadata_pinned'] is False
+ assert fresh['post_full_package_manager_matches_candidate'] == commit
+ assert fresh['post_full_package_all_manager_files_private'] is True
+@@ -70,8 +73,13 @@
+ ownership = passed('fresh-ownership-activation.json')
+ assert ownership['operation'] == prepared['identifier'] and ownership['authenticated_owner_verified'] is True
+ assert ownership['personal_data_imported'] is False and ownership['selected_model_and_tiers_preserved'] is True
+-for name in ('release-owner-turn-verification.json', 'development-owner-turn-verification.json'):
++for name, writer, scope, reference in (
++    ('release-owner-turn-verification.json', 'terminal:1000', 'synthetic_profile_only', 'da7e20b95b904ca7ac4aab594c23b5ee'),
++    ('development-owner-turn-verification.json', 'terminal:1008', 'development_profile_only', '4228f0b5518e4510aac2bc95ca62433c')):
+     owner = passed(name)
++    assert owner['writer'] == writer and owner[scope] is True
++    assert owner['reference'] == {'id': reference, 'revision': 1}
++    assert owner['verification_active_identity'] == active
+     assert owner['actual_write_and_fresh_conversation_read_verified'] is True
+     assert len(set(owner['sessions'])) == 2 and owner['synthetic_data_only'] is True
+ 
+@@ -80,7 +88,10 @@
+ interrupted = passed('development-interruption-exit.json')
+ recovery = passed('development-interruption-recovery.json')
+ final = passed('development-final-update.json')
++units = {'hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service'}
+ assert update['active_identity'] == final['active_identity'] == active
++assert update['operation_state'] == final['operation_state'] == 'applied'
++assert update['program_transaction_state'] == final['program_transaction_state'] == 'applied'
+ assert update['operation'] == rollback['operation']
+ assert interrupted['operation'] == recovery['operation']
+ assert interrupted['candidate_commit'] == commit and interrupted['archive_sha256'] == archive_sha
+@@ -88,9 +99,12 @@
+ assert interrupted['real_entrypoint_mask_used'] is True
+ assert interrupted['operation_state'] == 'applying' and interrupted['program_transaction_state'] == 'applied'
+ assert rollback['active_identity'] == recovery['active_identity']
++assert rollback['active_identity'] == {'version': '0.4.2', 'commit': '742a0c33a29a8adbf11402669e620a7571e1142e',
++                                     'package_sha256': '9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5'}
+ for receipt in (update, rollback, recovery, final):
+     assert receipt['model_selection_sha256'] == update['model_selection_sha256']
+     assert receipt['daily_server_changed'] is False
++    assert set(receipt['services']) == units
+     assert all(unit['ActiveState'] == 'active' and unit['SubState'] == 'running' for unit in receipt['services'].values())
+ assert rollback['operation_state'] == recovery['operation_state'] == 'rolled_back'
+ assert rollback['program_transaction_state'] == recovery['program_transaction_state'] == 'restored'
+@@ -98,6 +112,7 @@
+ boot = passed('development-boot.json')
+ assert boot['operation'] == final['operation'] and boot['active_identity'] == active
+ assert boot['boot_id'] != boot['before_boot_id'] and boot['manual_service_start_after_reboot'] is False
++assert set(boot['units']) == units
+ assert all(unit['ActiveState'] == 'active' and unit['UnitFileState'] == 'enabled' and unit['NRestarts'] == '0'
+            for unit in boot['units'].values())
+ audience = passed('development-private-discord-configuration.json')

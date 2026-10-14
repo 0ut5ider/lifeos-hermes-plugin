@@ -1,0 +1,42 @@
+[
+  {
+    "command": [
+      "qm",
+      "start",
+      "801"
+    ],
+    "exit_code": 0,
+    "stdout": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "start",
+      "100"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "start",
+      "101"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "start",
+      "102"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "status": "FAIL",
+  "jobs": [
+    {
+      "job": "user-index",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "receipt_status": "completed",
+      "receipt_job": "user-index",
+      "output_sha256": "b787f607c6321b56840d63524f7102c887cfacff7d14667fed96d62b3543170e",
+      "elapsed_seconds": 7.549
+    },
+    {
+      "job": "conduit-insight",
+      "exit_code": 0,
+      "stderr_bytes": 0,
+      "receipt_status": "completed",
+      "receipt_job": "conduit-insight",
+      "output_sha256": "dbe0d49636a2dd0986ca814b78fc1cee25d28b63381d0d27867272b990782917",
+      "elapsed_seconds": 8.043
+    },
+    {
+      "job": "atlas-insights",
+      "exit_code": 1,
+      "stderr_bytes": 0,
+      "receipt_status": null,
+      "receipt_job": null,
+      "output_sha256": "f45d4c852caec7466a200bd6bc8bb5246239bb37e1c30cafea89ec2c257387aa",
+      "elapsed_seconds": 6.02
+    }
+  ],
+  "error_type": "AssertionError",
+  "daily_server_changed": false,
+  "private_output_exported": false
+}

@@ -1,0 +1,74 @@
+{
+  "source_sha256": "efa0efbd11a0020f326c3eebe2a15445431ef6403c128d23dcbb1948e9cf6013",
+  "workspace": "/tmp/pr21-certificate-review-mlde9ttb",
+  "actual_full_operator_result": "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pr21-certificate-review-mlde9ttb/whole-guest-recovery.json'",
+  "certificate_exists": false,
+  "production_certificate_exists": false,
+  "controls": [
+    {
+      "case": "actual_pre_restore_receipts",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "stale_integration_commit",
+      "result": "REFUSED",
+      "detail": "AssertionError: ",
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "incomplete_fresh_ownership",
+      "result": "REFUSED",
+      "detail": "AssertionError: fresh-ownership-activation.json",
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "cross_profile_owner_turn_swap",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "missing_all_development_services",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "missing_all_boot_units",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "unapplied_final_update",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong_native_manager_source",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    },
+    {
+      "case": "real_2026_10_09_owner_turn_receipt_substitution",
+      "source": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-09-daily-release-installed/owner-turn-verification.json",
+      "result": "ACCEPTED_PRE_RESTORE_GATES",
+      "detail": null,
+      "completed_restore_supplied": false,
+      "certificate_created": false
+    }
+  ],
+  "method": "The exact pre-restore statements execute against copied real receipts. Only receipt-directory binding changes. No completed restore evidence is constructed or supplied."
+}

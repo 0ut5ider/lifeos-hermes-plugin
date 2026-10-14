@@ -1,0 +1,195 @@
+{
+  "version": "0.4.2",
+  "status": "CORRECTED_CANDIDATE_QUALIFICATION",
+  "daily_server_changed": false,
+  "production_qualified": false,
+  "steps": [
+    {
+      "number": 1,
+      "status": "PASS",
+      "name": "Freeze and build final package"
+    },
+    {
+      "number": 2,
+      "status": "PASS",
+      "name": "Clean web installation and synthetic ownership"
+    },
+    {
+      "number": 3,
+      "status": "IN_PROGRESS",
+      "name": "Installed update recovery and rollback"
+    },
+    {
+      "number": 4,
+      "status": "PASS",
+      "name": "Development operation and reboot"
+    },
+    {
+      "number": 5,
+      "status": "IN_PROGRESS",
+      "name": "Whole-guest restore and Atlas recovery"
+    },
+    {
+      "number": 6,
+      "status": "PENDING",
+      "name": "Stable publication and public latest acceptance"
+    }
+  ],
+  "program_commit": "87205092832c550a09fce6e1cb3ca944fdb69a8c",
+  "archive_sha256": "76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4",
+  "archive_bytes": 119149672,
+  "native_gate": {
+    "status": "PASS",
+    "tests": 716,
+    "files": 38,
+    "receipt": "candidate-87205092/native-sealed-87205092.json",
+    "fresh_execution": true
+  },
+  "infrastructure": {
+    "stock_reset": "FAILED_ATTEMPT_RETAINED",
+    "source_guest": 106,
+    "duplicate_rollback_submitted": false,
+    "fresh_guest": 108,
+    "provisioning": "PASS",
+    "fresh_guest_ip": "192.168.8.202",
+    "kernel_wait_recovered": true,
+    "failed_guest_107_cleanup": "PASS",
+    "corrected_fresh_guest": 109,
+    "corrected_fresh_guest_ip": "192.168.8.248",
+    "corrected_provisioning": "PASS",
+    "corrected_stock_runtime": "PASS"
+  },
+  "integration_gate": {
+    "status": "PASS",
+    "expected_tests": 675,
+    "receipt_directory": "candidate-87205092",
+    "original_candidate_674_test_pass_retained": true,
+    "tests": 675,
+    "receipt": "candidate-87205092/integration-archive-bound-87205092.json",
+    "fresh_execution": true
+  },
+  "host_restart": {
+    "user_approved_controlled": true,
+    "original_guests_stopped_gracefully": true,
+    "zfs_pool_sync_passed": true,
+    "normal_host_sync": "BLOCKED",
+    "forced_restart_approval": "APPROVED",
+    "application_drain_recovery": "PASS",
+    "status": "PASS",
+    "receipt": "forced-host-restart-return.json",
+    "original_release_health_252": "PASS",
+    "original_release_health_253": "PASS",
+    "original_run_states_restored": true
+  },
+  "development_update": {
+    "status": "PASS",
+    "receipt": "development-final-update.json",
+    "operation": "02050dbb7a3e4fdea68396d3a2f18c00",
+    "saved_synthetic_fact_preserved": true,
+    "selected_model_and_tiers_preserved": true,
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
+  },
+  "clean_web_manager_install": {
+    "status": "PASS",
+    "receipt": "stock-native-github-manager-install.json",
+    "force_reinstall": false,
+    "explicit_branch_or_commit_selected": false,
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
+  },
+  "installed_controls": {
+    "update": "PASS",
+    "program_rollback": "PASS",
+    "actual_worker_exit_73": "PASS",
+    "installed_interruption_recovery": "PASS",
+    "later_synthetic_edit_preserved": "PASS",
+    "public_update_buttons_and_conversation": "PENDING_PUBLICATION",
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
+  },
+  "clean_full_preparation": {
+    "status": "PASS",
+    "receipt": "fresh-final-preparation.json",
+    "operation": "f7dd8b48bbf2483aad7a453b31ada199",
+    "first_service_working_directory_attempt": "RETAINED_FAIL",
+    "second_service_mask_attempt": "RETAINED_FAIL",
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "current_candidate_accepted": false,
+    "repeat_required_for_current_candidate": true
+  },
+  "next_candidate_required": false,
+  "original_candidate_superseded": {
+    "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "archive_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5",
+    "reason": "The detached native worker inherits a shared-write mask. Fresh ownership backup refuses the created files.",
+    "published": false,
+    "source_and_receipts_retained": true
+  },
+  "fresh_ownership_activation": {
+    "status": "FAIL",
+    "recovered_service_state": "cancelled",
+    "cause_receipt": "worker-private-mask-cause.json"
+  },
+  "current_build_receipt": "candidate-87205092/stable-build.json",
+  "corrected_candidate_controls": {
+    "clean_web_installation": "PASS",
+    "ownership_activation": "PASS",
+    "development_update": "PASS",
+    "rollback_and_interruption": "PASS",
+    "reboot": "PASS",
+    "whole_guest_restore": "RUNNING",
+    "stable_publication": "PENDING",
+    "program_rollback": "PASS",
+    "clean_full_installation": "PASS",
+    "owner_turn": "PASS",
+    "receipts": {
+      "development_update": "candidate-87205092/development-update.json",
+      "program_rollback": "candidate-87205092/development-rollback.json",
+      "ownership_activation": "candidate-87205092/fresh-ownership-activation.json"
+    },
+    "installed_interruption_recovery": "PASS",
+    "development_final_update": "PASS",
+    "development_ownership": "PASS",
+    "development_owner_turn": "PASS",
+    "private_discord_audience": "PASS",
+    "private_discord_delivery": "PASS",
+    "native_atlas_job": "PASS",
+    "native_algorithm_job": "PASS"
+  },
+  "active_development_operation": "3240c42939f2451293bd9d5cfcd8bf12",
+  "algorithm_generation": {
+    "cards": 24,
+    "completed_cards": 24,
+    "overview_current": true,
+    "first_run_seconds": 546.336,
+    "second_run_seconds": 546.029,
+    "resumable_progress_verified": true,
+    "overview_completion_seconds": 77.562
+  },
+  "whole_guest_recovery": {
+    "status": "RUNNING",
+    "source_guest": 101,
+    "restored_guest": 110,
+    "backup_storage": "PBS-01",
+    "backup_mode": "snapshot",
+    "source_application_writers_drained": true,
+    "restore_storage": "lifeos-042-tests",
+    "disconnected_restore_required": true
+  },
+  "pr_review": {
+    "pr": 21,
+    "reviewed_head": "efebe014d8b7e498ed3df7f3576ca620454c221c",
+    "findings": 0,
+    "focused_tests": 45,
+    "primary_rerun": "PASS",
+    "report": "../../agents/2026-10-13-pr21-release-review-1/pr21-release-review-1.md",
+    "certificate_followup": "PASS",
+    "certificate_findings_fixed": 3,
+    "certificate_negative_controls": 14,
+    "certificate_report": "../../agents/2026-10-13-pr21-certificate-review-3/pr21-certificate-review-3.md"
+  }
+}

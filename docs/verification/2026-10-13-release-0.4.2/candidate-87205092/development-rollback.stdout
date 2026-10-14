@@ -1,0 +1,33 @@
+{
+  "operation": "ef9b659b8e4e4c3581489fe66353eb34",
+  "status": "PASS",
+  "test_fixture_only": true,
+  "operation_state": "rolled_back",
+  "program_transaction_state": "restored",
+  "active_identity": {
+    "version": "0.4.2",
+    "commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
+    "package_sha256": "9c5b87ef902d398c1b69530b1ee0a5afd064e9ca20e48806e1a3c5f01fb63ce5"
+  },
+  "model_selection_sha256": "a4cabe0e802a98b003882fbdc776f4b30179b7ac3795de6644f1bdb9bca89e2f",
+  "public_commands_sha256": {
+    "hermes": "fefdbd3b315a8d3ede443d7dfbe03a8a82b80f483bc8c22244a4a67fc984a067",
+    "hermes-agent": "c429098da22afd9fbb4ed62ccfb7e7af3bc486438f78730e954a8be2ab49d7f2",
+    "hermes-acp": "6f2810c60c04aee4b155656a50a662c96b3ce3e5a93604a351f477255f4105a1"
+  },
+  "services": {
+    "hermes-gateway.service": {
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "hermes-dashboard.service": {
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "com.lifeos.pulse.service": {
+      "ActiveState": "active",
+      "SubState": "running"
+    }
+  },
+  "daily_server_changed": false
+}

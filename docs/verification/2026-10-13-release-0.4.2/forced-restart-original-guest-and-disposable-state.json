@@ -1,0 +1,64 @@
+[
+  {
+    "command": [
+      "qm",
+      "status",
+      "801"
+    ],
+    "exit_code": 0,
+    "stdout": "status: stopped\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "status",
+      "100"
+    ],
+    "exit_code": 0,
+    "stdout": "status: stopped\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "status",
+      "101"
+    ],
+    "exit_code": 0,
+    "stdout": "status: stopped\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "status",
+      "102"
+    ],
+    "exit_code": 0,
+    "stdout": "status: stopped\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "pct",
+      "status",
+      "108"
+    ],
+    "exit_code": 0,
+    "stdout": "status: running\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  {
+    "command": [
+      "ps",
+      "-p",
+      "3202755",
+      "-o",
+      "pid,ppid,stat,wchan:32,args"
+    ],
+    "exit_code": 0,
+    "stdout": "    PID    PPID STAT WCHAN                            COMMAND\n3202755 3202181 Ds   super_lock                       systemd-machine-id-setup --commit\n",
+    "stderr": ""
+  }
+]
