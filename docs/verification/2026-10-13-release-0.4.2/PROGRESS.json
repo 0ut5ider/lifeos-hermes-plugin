@@ -171,7 +171,7 @@
     "overview_completion_seconds": 77.562
   },
   "whole_guest_recovery": {
-    "status": "RESTORING",
+    "status": "RESTORING_AFTER_MEASURED_CAPACITY_FAILURE",
     "source_guest": 101,
     "restored_guest": 110,
     "backup_storage": "PBS-01",
@@ -182,7 +182,11 @@
     "backup_status": "PASS",
     "backup_archive": "PBS-01:backup/ct/101/2026-10-14T00:38:27Z",
     "backup_receipt": "candidate-87205092/off-server-backup.json",
-    "source_services_resumed": "PASS"
+    "source_services_resumed": "PASS",
+    "failed_rootfs_gib": 300,
+    "retry_rootfs_gib": 400,
+    "failure_receipt": "candidate-87205092/restore-capacity-cause.json",
+    "backup_reused": true
   },
   "pr_review": {
     "pr": 21,
