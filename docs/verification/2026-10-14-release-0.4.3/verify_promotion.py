@@ -23,6 +23,17 @@ home = Path('/home/lifeos-hermes')
 profile = home / '.hermes'
 baseline = json.loads(args.baseline.read_bytes())
 assert baseline['status'] == 'PASS' and baseline['server'] == args.server
+assert isinstance(baseline['configuration_file_sha256'], dict)
+assert set(baseline['configuration_file_sha256']) == {'.env', 'lifeos-memory.json'}
+for digest in [baseline['model_selection_sha256'], *baseline['configuration_file_sha256'].values()]:
+    assert isinstance(digest, str) and len(digest) == 64 and set(digest) <= set('0123456789abcdef')
+assert isinstance(baseline['services'], dict)
+assert set(baseline['services']) == {'hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service'}
+for expected in baseline['services'].values():
+    assert isinstance(expected, dict) and expected['active'] is True
+    assert expected['profile'] == str(profile)
+    assert isinstance(expected['home'], str) and Path(expected['home']).is_absolute()
+    assert Path(expected['home']).is_relative_to(home) and '..' not in Path(expected['home']).parts
 os.environ.update(HERMES_HOME=str(profile), XDG_RUNTIME_DIR='/run/user/' + str(os.getuid()),
     DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(os.getuid()) + '/bus',
     PATH=str(home / '.local/bin') + ':/usr/bin:/bin', PYTHONDONTWRITEBYTECODE='1')

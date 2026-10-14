@@ -40,18 +40,19 @@ ACTION
         python, '-B', '-'], 'resume-services' if 's.resume()' in action else 'drain-services', input=code)
 
 
-drained = False
+drain_attempted = False
 completed = False
 try:
-    services("assert not s.status()['recovery_required'];s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Daily writers drained')")
-    drained = True
+    services("assert not s.status()['recovery_required'];print('Daily service recovery preflight passed')")
+    drain_attempted = True
+    services("s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Daily writers drained')")
     run(['vzdump', '102', '--storage', 'PBS-01', '--mode', 'snapshot',
         '--notes-template', 'LifeOS 0.4.3 daily postpromotion checkpoint'], 'backup-daily')
     archives = json.loads(run(['pvesh', 'get', '/nodes/pve-tr1950x/storage/PBS-01/content',
         '--content', 'backup', '--vmid', '102', '--output-format', 'json'], 'list-backups'))
     archive = max((row for row in archives if row['volid'].startswith('PBS-01:backup/ct/102/')), key=lambda row: row['ctime'])
     services("s.resume();assert not s.status()['recovery_required'];print('Daily writers resumed')")
-    drained = False
+    drain_attempted = False
     receipt = {'status': 'PASS', 'source_guest': 102, 'selected_version': '0.4.3',
         'archive': archive['volid'], 'backup_bytes': archive['size'], 'backup_mode': 'snapshot',
         'application_writers_drained': True, 'original_services_resumed': True,
@@ -60,6 +61,8 @@ try:
     (out / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     completed = True
 finally:
-    if drained:
-        services("s.resume();print('Daily writers resumed after failure')")
-    (out / 'process.done').write_text('0\n' if completed else '1\n')
+    try:
+        if drain_attempted:
+            services("if s.status()['recovery_required']: s.resume()\nassert not s.status()['recovery_required'];print('Daily service recovery checked after failure')")
+    finally:
+        (out / 'process.done').write_text('0\n' if completed else '1\n')
