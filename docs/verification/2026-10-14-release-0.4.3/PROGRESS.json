@@ -1,5 +1,5 @@
 {
-  "status": "DEPLOYED_AUTOMATIC_OBSERVATION_PENDING",
+  "status": "DEPLOYED_RESCHEDULED_AUTOMATIC_OBSERVATION_PENDING",
   "version": "0.4.3",
   "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
   "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
@@ -54,9 +54,9 @@
   "final_daily_backup_restore_tested": true,
   "owned_test_resources_removed": true,
   "automatic_morning_observed": false,
-  "automatic_observation_date": "2026-10-15",
-  "automatic_observation_time": "07:15 America/Toronto",
-  "automatic_observation_next_run_at": "2026-10-15T11:15:00.000Z",
+  "automatic_observation_date": "2026-10-14",
+  "automatic_observation_time": "18:18 America/Toronto",
+  "automatic_observation_next_run_at": "2026-10-14T22:18:00.000Z",
   "initial_deployment_evidence_pr": "PR24, focused review CLEAR round 2",
   "daily_fresh_session": "20261014_123528_dda57980",
   "promotion_operator_controls": 14,
@@ -67,5 +67,10 @@
   "deployment_checkpoint_asset_id": 641031028,
   "all_48_existing_assets_preserved": true,
   "postpromotion_restore_evidence": "../2026-10-14-daily-checkpoint-restore/daily-postpromotion-restore-verification.json",
-  "postpromotion_restore_scope": "Exact protected checkpoint, nine sealed targets, configuration and model preservation, authenticated owner routes. Three synthetic Atlas cases created after restore."
+  "postpromotion_restore_scope": "Exact protected checkpoint, nine sealed targets, configuration and model preservation, authenticated owner routes. Three synthetic Atlas cases created after restore.",
+  "automatic_observation_owner_rescheduled": true,
+  "automatic_observation_window_start": "2026-10-14T18:02:00-04:00",
+  "automatic_observation_window_end": "2026-10-14T18:17:00-04:00",
+  "original_0700_wall_clock_observed": false,
+  "rescheduled_observation_record": "../2026-10-14-evening-observation/PREPARATION.json"
 }
