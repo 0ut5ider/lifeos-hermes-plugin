@@ -1,0 +1,108 @@
+{
+  "scope": "Exact current operator blocks with real local child processes and files; unavailable guest boundaries isolated. No guest/service/backup qualification.",
+  "backup_controls": [
+    {
+      "case": "partial-drain",
+      "passed": true,
+      "state": "active",
+      "expected_state": "active",
+      "process_done": "1",
+      "calls": [
+        "preflight",
+        "drain",
+        "recovery-check",
+        "resume"
+      ],
+      "exception": "CalledProcessError"
+    },
+    {
+      "case": "preflight-denied",
+      "passed": true,
+      "state": "stopped-before-admission",
+      "expected_state": "stopped-before-admission",
+      "process_done": "1",
+      "calls": [
+        "preflight"
+      ],
+      "exception": "RuntimeError"
+    },
+    {
+      "case": "drain-before-journal",
+      "passed": true,
+      "state": "unchanged",
+      "expected_state": "unchanged",
+      "process_done": "1",
+      "calls": [
+        "preflight",
+        "drain",
+        "recovery-check"
+      ],
+      "exception": "CalledProcessError"
+    },
+    {
+      "case": "resume-failed",
+      "passed": true,
+      "state": "stopped",
+      "expected_state": "stopped",
+      "process_done": "1",
+      "calls": [
+        "preflight",
+        "drain",
+        "recovery-check",
+        "resume"
+      ],
+      "exception": "CalledProcessError"
+    }
+  ],
+  "baseline_controls": [
+    {
+      "case": "complete",
+      "accepted": true,
+      "expected_accept": true,
+      "passed": true,
+      "exception": null
+    },
+    {
+      "case": "empty-maps",
+      "accepted": false,
+      "expected_accept": false,
+      "passed": true,
+      "exception": "AssertionError"
+    },
+    {
+      "case": "missing-credential",
+      "accepted": false,
+      "expected_accept": false,
+      "passed": true,
+      "exception": "AssertionError"
+    },
+    {
+      "case": "missing-service",
+      "accepted": false,
+      "expected_accept": false,
+      "passed": true,
+      "exception": "AssertionError"
+    },
+    {
+      "case": "home-outside-account",
+      "accepted": false,
+      "expected_accept": false,
+      "passed": true,
+      "exception": "AssertionError"
+    },
+    {
+      "case": "parent-traversal-home",
+      "accepted": false,
+      "expected_accept": false,
+      "passed": true,
+      "exception": "AssertionError"
+    },
+    {
+      "case": "changed-config",
+      "accepted": false,
+      "expected_accept": false,
+      "passed": true,
+      "exception": "AssertionError"
+    }
+  ]
+}

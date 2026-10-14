@@ -1,11 +1,9 @@
 # LifeOS plugin for Hermes
 
-**Candidate under qualification:** `0.4.3`. The daily promotion rehearsal exposes a release-manager account binding error when services use the private fresh-store directory as HOME. The candidate separates that native HOME from the account that owns the Hermes profile. Daily `.253` stays on accepted `0.3.1` during repair and qualification. Published `0.4.2` assets remain unchanged.
-
-**Qualified stable release:** `0.4.2`. The [stable release record](docs/verification/2026-10-13-release-0.4.2/README.md) identifies the exact package, release certificate, and installation evidence. Daily `.253` stays on its accepted `0.3.1` package.
+**Qualified stable release:** `0.4.3`. The [corrective release record](docs/verification/2026-10-14-release-0.4.3/README.md) identifies the exact package, release certificate, and deployment evidence. Both daily `.253` and development `.252` run program commit `a1abb579`. The release separates the native LifeOS HOME from the account that owns the Hermes profile. All 45 prior release assets remain unchanged.
 
 The release targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
-The exact package passes 675 integration tests and 716 native tests across 38 files.
+The exact package passes 683 integration tests and 716 native tests across 38 files. It also passes 39 focused account checks.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
 Bun 1.4.3 supplies the verified runtime.
 
@@ -13,22 +11,22 @@ The release adds Install LifeOS, Update LifeOS, and Update plugin controls for c
 The detached release worker creates private native files. Updates preserve the selected model and tier mapping.
 The complete release manager in `optional/lifeos_release_manager` supports fresh installation, updates, interruption recovery, and rollback.
 Actual development checks pass, including automatic reboot, program rollback, worker interruption, and installed recovery.
-Disconnected whole-guest recovery verifies 64,268 runtime artifacts and all three Atlas cases.
+The actual synthetic guest passes update, rollback, interruption recovery, and automatic startup after reboot. Disconnected whole-guest recovery verifies 64,282 runtime artifacts, nine sealed program targets, and all three Atlas cases.
 The focused product review and certificate review are clear. Current completed receipts pass; altered and incomplete receipts refuse.
-All 41 historical release assets retain their identifiers, sizes, and digests.
-Public installation from the default GitHub URL and both blank-version update controls pass against the published archive and certificate.
+All 45 historical release assets retain their identifiers, sizes, and digests.
+The accepted 0.4.2 checkpoint verifies fresh public installation, both update controls, and an interactive Hermes update. Daily 0.4.3 uses the default GitHub URL to replace its existing manager, then the blank-version Update LifeOS control to install the complete public package.
 An interactive Hermes conversation prepares the latest stable release, obtains command approval, and completes dashboard review and installation.
 The [previous patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) retains the 0.4.1 checkpoint.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
-**Daily deployed version:** `0.3.1`, program commit `9af63325`, on `.253`.
-**Development deployed version:** `0.4.2`, program commit `87205092`, on `.252`. Private Discord operation, native jobs, automatic reboot, and off-server restoration pass. The selected model mapping stays fixed.
-**Public installation tests:** A manager-free guest at `.246` installs the complete stable package through the native Plugins page and Install LifeOS. A separate guest at `.248` updates from `0.4.2-rc.3` through Update plugin, then verifies Update LifeOS. Both guests preserve their private FlashNext selection. Fresh installation also passes actual lasting-memory save and recall in separate Hermes conversations. The earlier [default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) and [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) remain historical checkpoints. The stopped `.249` guest retains `0.4.2-rc.3`. Test qualification does not select a daily production release.
+**Daily deployed version:** `0.4.3`, program commit `a1abb579`, on `.253`. The authenticated update preserves the native HOME, model and tier mapping, credential file, memory configuration, and synthetic memory reference. Automatic morning verification for this release remains pending.
+**Development deployed version:** `0.4.3`, program commit `a1abb579`, on `.252`. The exact public update verifies all ten sealed program targets and preserves service HOME bindings and the selected model mapping. Earlier private Discord, native job, reboot, and restore checks remain historical release evidence.
+**Historical 0.4.2 public installation tests:** A manager-free guest at `.246` installs the complete stable package through the native Plugins page and Install LifeOS. A separate guest at `.248` updates from `0.4.2-rc.3` through Update plugin, then verifies Update LifeOS. Both guests preserve their private FlashNext selection. Fresh installation also passes actual lasting-memory save and recall in separate Hermes conversations. The earlier [default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) and [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) remain historical checkpoints. The stopped `.249` guest retains `0.4.2-rc.3`. Test qualification does not select a daily production release.
 The owned release-test guests are removed after acceptance. Their receipts remain in the release record. The [published public acceptance checkpoint](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.4.2/PUBLIC-LATEST-ACCEPTANCE.json) records the completed installation and update paths.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
-The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
+The [October 12 release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
 
 The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) describes the initial daily installation. The [October 12 acceptance record](docs/verification/2026-10-12-capture-cursor/README.md) supplies the current release status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
 

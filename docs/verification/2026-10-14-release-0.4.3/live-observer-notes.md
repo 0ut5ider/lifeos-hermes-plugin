@@ -1,0 +1,3 @@
+The initial scoped Discord observer passes before a later synthetic probe runs in the same session. Its original unbounded session query then rejects the second call. The corrected observer selects only the exact acceptance turn through the next user-message boundary. The recorded first turn replays successfully after cleanup.
+
+The post-backup turn returns the actual empty search result. Native Hermes appends its known repeated-input loop warning. The observer accepts only that exact measured warning for this phase, while retaining it as native-loop-warning in the receipt. It rejects other annotations. The original live turn has no warning. No memory write occurs in either turn. The original receipt remains unchanged.

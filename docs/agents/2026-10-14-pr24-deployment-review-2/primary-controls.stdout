@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "scope": "Local operator controls with actual statement blocks, real child processes, and real temporary files. No guest or backup verification.",
+  "results": [
+    {
+      "case": "backup_drain",
+      "passed": true,
+      "state": "active",
+      "expected_state": "active",
+      "calls": [
+        "preflight",
+        "resume"
+      ],
+      "exception": "CalledProcessError",
+      "process_done": "1"
+    },
+    {
+      "case": "backup_backup",
+      "passed": true,
+      "state": "active",
+      "expected_state": "active",
+      "calls": [
+        "preflight",
+        "drain",
+        "resume"
+      ],
+      "exception": "RuntimeError",
+      "process_done": "1"
+    },
+    {
+      "case": "backup_preflight",
+      "passed": true,
+      "state": "unchanged",
+      "expected_state": "unchanged",
+      "calls": [
+        "preflight"
+      ],
+      "exception": "RuntimeError",
+      "process_done": "1"
+    },
+    {
+      "case": "backup_None",
+      "passed": true,
+      "state": "active",
+      "expected_state": "active",
+      "calls": [
+        "preflight",
+        "drain",
+        "resume"
+      ],
+      "exception": null,
+      "process_done": "0"
+    },
+    {
+      "case": "baseline_empty_maps",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_missing_config",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_missing_service",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_bad_digest",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_bad_model_digest",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_inactive_service",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_wrong_profile",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_relative_home",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_changed_config",
+      "passed": true,
+      "accepted": false,
+      "expected_accept": false
+    },
+    {
+      "case": "baseline_complete",
+      "passed": true,
+      "accepted": true,
+      "expected_accept": true
+    }
+  ]
+}

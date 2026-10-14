@@ -1,0 +1,21 @@
+{
+  "scheduledTaskId": "scheduled-task:command:mcp:21d59ba1-b1df-4dc6-a520-b24d3ac324aa:schedule-task:lifeos-043-daily-morning-observation-20261015",
+  "title": "LifeOS 0.4.3 daily automatic morning acceptance, one observation 2026-10-15",
+  "prompt": "Complete the authorized one-time LifeOS 0.4.3 daily automatic morning observation for 2026-10-15 at 07:15 America/Toronto. Project /home/outsider/Projects/Hermes_agent/LifeOS_plugin. Read docs/verification/2026-10-14-release-0.4.3/PROGRESS.json before work. Both .252 and .253 select exact 0.4.3 package at program commit a1abb579558edcf29f7cd04ecfd998995d48db54, archive SHA-256 1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177. Daily operation52af3122ef614ac49ef55b692e392f0c. On root@192.168.8.253, run the installed qualified command as lifeos-hermes, with cwd /home/lifeos-hermes/.hermes, HOME=/home/lifeos-hermes, HERMES_HOME=/home/lifeos-hermes/.hermes, PATH=/home/lifeos-hermes/.local/bin:/usr/bin:/bin, XDG_RUNTIME_DIR=/run/user/1000, DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus: /home/lifeos-hermes/.local/bin/hermes lifeos-observe-morning --date 2026-10-15 --channel 1558870196784205927. This command only observes. Verify its format2 PASS receipt identifies the expected version/commit, exactly one real cron start/completion at 07:00 Toronto, full Discord window coverage, and exactly one Cerebo morning delivery in #cerebo (bot1558867947152347198). Confirm the active package SHA independently with hermes lifeos-version. Do not run the morning job manually, send a substitute Discord message, import/reset personal data, bypass memory MCP policy, read personal memory records raw, or use the legacy releases/observe_morning.py. Export only the safe receipt, not narration, credentials, or private maps. Find this exact schedule by title 'LifeOS 0.4.3 daily automatic morning acceptance, one observation 2026-10-15' in list_scheduled_tasks and DELETE IT after the first observation whether verification passes or fails, so it cannot recur. If PASS, add automatic-morning-verification.json as a NEW immutable asset to existing v0.4.3, verify every existing asset unchanged, update deployment evidence and completion status on an authorized feature documentation branch, open/link a PR, obtain the authorized focused review, fix measured findings, merge when clear. Preserve the initial DEPLOYMENT-ACCEPTANCE.json and RELEASE-CERTIFICATE.json as immutable historical checkpoints, never replace or clobber assets. If FAIL, inspect safe scheduler metadata, report actual measured failure to Adrian in this thread, and continue authorized repair as a qualified whole release when product fixes are needed. Do not start new product changes just to update evidence. Report the actual verification result to Adrian in this thread.",
+  "enabled": true,
+  "projectId": "99e2b842-2a7d-447b-9f77-ebb807cdb18a",
+  "boundThreadId": "fce4d0a9-0755-4829-be5a-70ed918eae15",
+  "schedule": {
+    "type": "fixed_time",
+    "timeOfDay": "07:15",
+    "weekdays": [
+      4
+    ]
+  },
+  "nextRunAt": "2026-10-15T11:15:00.000Z",
+  "lastRunStatus": "never",
+  "delete_after_first_observation": true,
+  "expected_observation_date": "2026-10-15",
+  "timezone": "America/Toronto",
+  "actual_automatic_observation_complete": false
+}

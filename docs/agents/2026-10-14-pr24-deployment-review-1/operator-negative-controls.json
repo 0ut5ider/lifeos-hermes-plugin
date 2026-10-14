@@ -1,0 +1,30 @@
+{
+  "drain_failure": {
+    "scope": "Actual outer try/finally block with a real child failing after a synthetic drain checkpoint; no actual service change",
+    "exception": "CalledProcessError",
+    "service_calls": [
+      "drained"
+    ],
+    "remaining_state": "drained",
+    "process_done": "1",
+    "resume_attempted": false,
+    "expected_resume_attempt": true
+  },
+  "incomplete_baseline": {
+    "scope": "Exact baseline admission, configuration digest, and service verification statements only; no guest qualification",
+    "baseline": {
+      "status": "PASS",
+      "server": "development",
+      "configuration_file_sha256": {},
+      "services": {}
+    },
+    "accepted": true,
+    "exception": null,
+    "verified_services": {},
+    "changed_real_fixture_files": [
+      ".env",
+      "lifeos-memory.json"
+    ],
+    "expected_accept": false
+  }
+}
