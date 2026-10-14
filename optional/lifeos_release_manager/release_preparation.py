@@ -22,6 +22,7 @@ if not __package__:
 
 from .cli import job_directory, prepare, profile_directory, read_private, status, write_state
 from .release_catalog import ReleaseRejected, VERSION
+from .release_accounts import account_home
 from .release_operation import OperationBusy, process_stamp
 from .release_programs import publish
 from .release_services import FirstInstallationUnavailable
@@ -79,19 +80,20 @@ def preparation_admission(profile):
 def queue(profile, value):
     value = selection(value)
     profile = profile_directory(profile)
+    home = account_home(profile)
     state = profile / '.lifeos-releases'
     with preparation_admission(profile) as descriptor:
         job = state / uuid4().hex
         job.mkdir(mode=0o700)
         write_state(job, 'preparing')
         publish(job / 'preparation.json', (json.dumps(value) + '\n').encode())
-        environment = dict(os.environ, HERMES_HOME=str(profile), PYTHONDONTWRITEBYTECODE='1')
+        environment = dict(os.environ, HOME=str(home), HERMES_HOME=str(profile), PYTHONDONTWRITEBYTECODE='1')
         with (job / 'preparation.stdout').open('ab') as stdout, (job / 'preparation.stderr').open('ab') as stderr:
             os.fchmod(stdout.fileno(), 0o600)
             os.fchmod(stderr.fileno(), 0o600)
             try:
                 process = subprocess.Popen([sys.executable, '-B', str(Path(__file__).resolve()), str(profile), job.name],
-                    env=environment, cwd=Path.home(), stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
+                    env=environment, cwd=home, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
                     start_new_session=True, pass_fds=(descriptor,))
             except OSError:
                 write_state(job, 'preparation_failed', error='The preparation process does not start.')

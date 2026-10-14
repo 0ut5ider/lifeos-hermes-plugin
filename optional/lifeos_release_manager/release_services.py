@@ -7,6 +7,7 @@ import re
 import shlex
 
 from .release_catalog import ReleaseRejected
+from .release_accounts import account_home
 from .release_programs import fingerprint, publish
 
 
@@ -138,14 +139,15 @@ def dashboard_binding(module, profile, values):
 
 
 def fresh_preview(current, profile, installed, *, installation_lease=None):
-    _service_paths(Path.home(), profile, installed)
+    home = account_home(profile)
+    _service_paths(home, profile, installed)
     services = fresh_services(current, profile, installed, installation_lease=installation_lease)
     preview = services.preview()
     values, _ = services._inspect('dashboard')
     match = re.search(r'\bpath=([^ ;}]+)', values['ExecStart'])
     launcher = Path(match.group(1)) if match is not None else None
-    if (launcher != Path.home() / '.local/bin/hermes' or fingerprint(launcher) is None or not launcher.is_file()
-            or values['FragmentPath'] != str(Path.home() / '.config/systemd/user/hermes-dashboard.service')
+    if (launcher != home / '.local/bin/hermes' or fingerprint(launcher) is None or not launcher.is_file()
+            or values['FragmentPath'] != str(home / '.config/systemd/user/hermes-dashboard.service')
             or values['DropInPaths']):
         raise ReleaseRejected('Start the owner dashboard service with the account Hermes launcher before installation')
     check_dashboard_writers(profile, values['ControlGroup'])
@@ -157,8 +159,8 @@ def fresh_preview(current, profile, installed, *, installation_lease=None):
         if properties.get('LoadState') == 'not-found':
             continue
         expected = profile if role == 'gateway' else installed / 'LIFEOS/PULSE'
-        target = Path.home() / '.config/systemd/user' / module.UNITS[role]
-        executable = Path.home() / '.local/bin' / ('hermes' if role == 'gateway' else 'bun')
+        target = home / '.config/systemd/user' / module.UNITS[role]
+        executable = home / '.local/bin' / ('hermes' if role == 'gateway' else 'bun')
         match = re.search(r'\bpath=([^ ;}]+)', properties.get('ExecStart', ''))
         arguments = ('gateway run --external-supervisor' if role == 'gateway'
                      else '--no-install ' + str(installed / 'LIFEOS/PULSE/pulse.ts'))

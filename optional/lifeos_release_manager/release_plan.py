@@ -9,6 +9,7 @@ import re
 import subprocess
 
 from .release_catalog import ReleaseRejected
+from .release_accounts import account_home
 from .release_programs import fingerprint
 from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint
 
@@ -26,7 +27,8 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
     candidate = load_bridge(package / 'lifeos_hook_bridge')
     selected = candidate.memory_module('lifeos_installation').selection(profile)
     installed = selected.installed
-    if (str(installed) != request['installed'] or Path(request['account_home']) != Path.home()
+    home = account_home(profile)
+    if (str(installed) != request['installed'] or Path(request['account_home']) != home
             or request['identifier'] != job.name or job.parent != profile / '.lifeos-releases'):
         raise ReleaseRejected('The operation changes its profile or installation binding')
     for key, expected in {'python': job / 'python-environment/bin/python',
@@ -55,7 +57,7 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
         else:
             from .release_services import fresh_preview
             preview = fresh_preview(candidate, profile, installed, installation_lease=installation_lease)
-        result.update(native_changes=True, services=preview, launchers=[Path.home() / '.local/bin/hermes'])
+        result.update(native_changes=True, services=preview, launchers=[home / '.local/bin/hermes'])
         return result
     if not bridge.is_dir() or bridge.is_symlink():
         raise ReleaseRejected('The existing native installation requires its installed bridge')
@@ -79,7 +81,7 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
         if match is None:
             raise ReleaseRejected('A bound service has no fixed launcher path')
         executable = Path(match.group(1))
-        if (not executable.is_absolute() or not executable.is_relative_to(Path.home())
+        if (not executable.is_absolute() or not executable.is_relative_to(home)
                 or fingerprint(executable) is None or not executable.is_file()):
             raise ReleaseRejected('The bound service launcher is not a regular account program')
         launchers.add(executable)
