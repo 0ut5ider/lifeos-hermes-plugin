@@ -6,7 +6,8 @@
 - Bind eligible saves to reviewed source references and private recoverable backups.
 - Keep credentials sealed, generated files read-only, and registered facts under the memory correction tools.
 - Govern native health, guard-log analysis, mount checks, and remount requests.
-- Hide cached core files when the overview refuses current owner access.
+- Hide cached core files when the overview fails or a core request refuses current owner access.
+- Preserve drafts for source conflicts and require fresh reads after owner access resumes.
 - Enable the governed editor in the candidate profile. Keep the deployed 0.4.3 profile unchanged during qualification.
 
 ## 0.4.3 (2026-10-14)

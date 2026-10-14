@@ -1,0 +1,39 @@
+{
+  "toolIcon": {
+    "_tag": "website",
+    "pageUrl": "http://127.0.0.1:42451/assistant"
+  },
+  "value": {
+    "phase": "remount403",
+    "rows": 0,
+    "textarea": [],
+    "unavailable": true,
+    "events": [
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010601282
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010601469
+      },
+      {
+        "url": "/api/hermes/remount",
+        "method": "POST",
+        "status": 403,
+        "time": 1792010608675
+      },
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 403,
+        "time": 1792010608766
+      }
+    ],
+    "now": 1792010615749
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "toolIcon": {
+    "_tag": "website",
+    "pageUrl": "http://127.0.0.1:42451/assistant"
+  },
+  "value": {
+    "phase": "fresh-owner-recovery",
+    "rows": 24,
+    "textarea": [
+      "# SyntheticRound3FreshIdentity\nCurrent body after owner recovery\n"
+    ],
+    "events": [
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010373852
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010374045
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010378975
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "PUT",
+        "status": 403,
+        "time": 1792010387545
+      },
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 403,
+        "time": 1792010387645
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 403,
+        "time": 1792010403912
+      },
+      {
+        "url": "/api/hermes",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010462239
+      },
+      {
+        "url": "/api/hermes/log-analysis?days=14",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010462418
+      },
+      {
+        "url": "/api/hermes/file/principal-identity",
+        "method": "GET",
+        "status": 200,
+        "time": 1792010462637
+      }
+    ],
+    "now": 1792010470094
+  }
+}
