@@ -1,0 +1,39 @@
+{
+  "controls": [
+    {
+      "case": "current",
+      "expected_accept": true,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408"
+    },
+    {
+      "case": "mixed-claimed-pbs-archive",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review5-s5a1o72i/mixed-claimed-pbs-archive/certify_release.py\", line 132, in <module>\n    assert commands['restore'] == ['pct', 'restore', '110', whole['archive'], '--storage', 'lifeos-043-tests',\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        '--rootfs', 'lifeos-043-tests:120', '--unprivileged', '1', '--onboot', '0', '--hostname', 'lifeos-043-recovery']\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "case": "wrong-source-capture-exit",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"52783ba2e7b67e8bdb0f5fd50b5b610e5c8411fb910756f94bd38051021a3161\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "52783ba2e7b67e8bdb0f5fd50b5b610e5c8411fb910756f94bd38051021a3161"
+    },
+    {
+      "case": "backup-appended-storage-override",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"d211b512f8e098e6f4cd049df79af20b3d673da8943eb259d4becfdced9bafd2\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "d211b512f8e098e6f4cd049df79af20b3d673da8943eb259d4becfdced9bafd2"
+    }
+  ]
+}

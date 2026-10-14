@@ -1,0 +1,29 @@
+{
+  "controls": [
+    {
+      "case": "current",
+      "expected_accept": true,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408"
+    },
+    {
+      "case": "failed-source-capture",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review6-4_kdf74g/failed-source-capture/certify_release.py\", line 119, in <module>\n    assert all(row['exit_code'] == 0 for row in backup_operations)\n           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "case": "unexpected-backup-storage",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review6-4_kdf74g/unexpected-backup-storage/certify_release.py\", line 150, in <module>\n    assert source_commands['backup-source'] == ['vzdump', '111', '--storage', 'PBS-01', '--mode', 'stop',\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        '--notes-template', 'LifeOS 0.4.3 managed release recovery']\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    }
+  ]
+}

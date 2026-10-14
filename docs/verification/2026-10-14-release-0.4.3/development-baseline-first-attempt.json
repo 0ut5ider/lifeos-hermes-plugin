@@ -1,0 +1,7 @@
+{
+  "status": "FAIL",
+  "cause": "The dashboard inherits account HOME instead of an explicit unit HOME assignment. The baseline observer only checked explicit unit assignments.",
+  "instrumentation": "Actual MainPID environment confirms account HOME for the dashboard and native HOME for gateway and Pulse.",
+  "corrected_observer": "Reads effective HOME from the running process and validates explicit assignments when present.",
+  "server_changed": false
+}

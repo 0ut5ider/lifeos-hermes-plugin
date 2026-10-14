@@ -116,6 +116,7 @@ artifacts = passed('bound-whole-guest-artifact-coverage.json')
 captured = passed('source-program-artifact-capture.json')
 backup_operations = load('source-backup-operations.json')
 assert {'backup-source', 'resume-source'} <= {row['label'] for row in backup_operations if row['exit_code'] == 0}
+assert all(row['exit_code'] == 0 for row in backup_operations)
 assert artifacts['private_map_sha256'] == captured['private_map_sha256']
 assert artifacts['artifacts'] == captured['artifacts']
 assert text('bound-whole-guest-process.done').strip() == '0'
@@ -146,7 +147,8 @@ assert commands['verify-program-artifacts'] == execution + [operator_path + 'pro
 assert commands['verify-stable-programs'] == execution + [operator_path + 'verify_restored_programs.py', operation]
 source_commands = {row['label']: row['command'] for row in backup_operations}
 assert len(source_commands) == len(backup_operations)
-assert source_commands['backup-source'][:6] == ['vzdump', '111', '--storage', 'PBS-01', '--mode', 'stop']
+assert source_commands['backup-source'] == ['vzdump', '111', '--storage', 'PBS-01', '--mode', 'stop',
+    '--notes-template', 'LifeOS 0.4.3 managed release recovery']
 source_execution = ['pct', 'exec', '111', '--', 'runuser', '-u', 'lifeos-hermes', '--', selected_python, '-B']
 assert source_commands['capture-program-artifacts'] == source_execution + [operator_path + 'program_artifact_receipt.py', 'capture', operation]
 assert source_commands['drain-source'] == source_commands['resume-source'] == source_execution + ['-']

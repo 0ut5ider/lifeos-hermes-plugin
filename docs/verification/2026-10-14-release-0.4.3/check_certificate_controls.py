@@ -36,6 +36,8 @@ cases = [
     ('later-edit-was-not-refused', 'bound-whole-guest-recovery.json', lambda row: next(item for item in row['cases'] if item['case'] == 'later-edit').update(later_edit_refused=False)),
     ('mixed-restore-command-guest', 'bound-whole-guest-operations.json', change_restore_guest),
     ('mixed-restore-command-archive', 'bound-whole-guest-operations.json', change_restore_archive),
+    ('failed-source-capture', 'source-backup-operations.json', lambda rows: next(row for row in rows if row['label'] == 'capture-program-artifacts').update(exit_code=1)),
+    ('unexpected-backup-storage', 'source-backup-operations.json', lambda rows: next(row for row in rows if row['label'] == 'backup-source')['command'].extend(['--storage', 'local'])),
 ]
 results = []
 with tempfile.TemporaryDirectory(prefix='lifeos-043-certificate-controls-') as temporary:
