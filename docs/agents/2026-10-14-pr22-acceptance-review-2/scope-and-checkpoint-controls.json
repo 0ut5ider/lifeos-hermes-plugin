@@ -1,0 +1,23 @@
+{
+  "reviewed_head": "f95f29f38dadd2395666d1922916b77465504363",
+  "public_checkpoint_claims_unchanged": true,
+  "added_receipt_hashes": [
+    "stable-build.json"
+  ],
+  "current_public_receipt_hash_count": 19,
+  "historical_failed_control_files_retained": [
+    "public-acceptance-controls-before-baseline-fix.json",
+    "public-acceptance-controls-before-review-fix.json",
+    "public-acceptance-controls-before-state-fix.json"
+  ],
+  "credential_pattern_scan": {
+    "github_token": 0,
+    "openai_token": 0,
+    "aws_access_key": 0,
+    "private_key": 0,
+    "discord_token": 0
+  },
+  "published_certificate_sha256": "d937719db08eb0218a4f3f037a7132537f4e7ba55b48790467936df8a59e977e",
+  "product_diff_exit": 0,
+  "manual_scope_review": "The correction changes public acceptance evidence verification and preserves failed probes. Pending public asset upload and disposable guest cleanup remain explicit. No private map or credentials are added."
+}

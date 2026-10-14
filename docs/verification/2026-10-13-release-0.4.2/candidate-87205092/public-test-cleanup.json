@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "owned_guests_removed": [
+    108,
+    109,
+    111
+  ],
+  "guarded_preflight": [
+    {
+      "guest": 108,
+      "hostname": "lifeos-042-stock-test",
+      "rootfs": "lifeos-042-tests:108/vm-108-disk-0.raw,size=120G",
+      "onboot": 0
+    },
+    {
+      "guest": 109,
+      "hostname": "lifeos-042-owner-test",
+      "rootfs": "lifeos-042-tests:109/vm-109-disk-0.raw,size=120G",
+      "onboot": 0
+    },
+    {
+      "guest": 111,
+      "hostname": "lifeos-042-public-test",
+      "rootfs": "lifeos-042-tests:111/vm-111-disk-0.raw,size=120G",
+      "onboot": 0
+    }
+  ],
+  "operations": [
+    {
+      "guest": 108,
+      "action": "shutdown",
+      "exit_code": 0,
+      "elapsed_seconds": 8.226
+    },
+    {
+      "guest": 108,
+      "action": "destroy",
+      "exit_code": 0,
+      "elapsed_seconds": 0.881
+    },
+    {
+      "guest": 109,
+      "action": "shutdown",
+      "exit_code": 0,
+      "elapsed_seconds": 10.777
+    },
+    {
+      "guest": 109,
+      "action": "destroy",
+      "exit_code": 0,
+      "elapsed_seconds": 0.892
+    },
+    {
+      "guest": 111,
+      "action": "shutdown",
+      "exit_code": 0,
+      "elapsed_seconds": 7.957
+    },
+    {
+      "guest": 111,
+      "action": "destroy",
+      "exit_code": 0,
+      "elapsed_seconds": 0.888
+    }
+  ],
+  "temporary_storage_removed": true,
+  "remaining_storage_volumes": 0,
+  "allocated_bytes_before": 25893999616,
+  "allocated_bytes_after": 2048,
+  "allocated_bytes_reclaimed": 25893997568,
+  "protected_guest_states": {
+    "100": "status: running",
+    "101": "status: running",
+    "102": "status: running",
+    "106": "status: stopped",
+    "801": "status: running"
+  },
+  "protected_guest_states_unchanged": true,
+  "daily_server_changed": false,
+  "private_synthetic_cli_streams_retained": true
+}

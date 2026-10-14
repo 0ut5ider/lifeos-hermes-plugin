@@ -1,6 +1,6 @@
 # LifeOS 0.4.2 stable release qualification
 
-The candidate preserves the reviewed rc.3 program behavior and fixed native inputs. Its stable version creates a distinct package identity. Qualification binds all evidence to that package.
+All six release gates pass. Stable 0.4.2 is published, and its public installation and update acceptance is complete. The package preserves the reviewed rc.3 program behavior and fixed native inputs. Qualification binds all evidence to its distinct stable identity.
 
 The authorized work completes six gates: freeze the candidate, verify manager-free web installation and synthetic memory ownership, verify installed update and recovery, qualify development .252, verify off-server whole-guest recovery, and publish stable assets with public latest-stable acceptance.
 
@@ -18,4 +18,24 @@ Development Discord uses private `#hermes-dev`. The current audience check admit
 
 Cold Algorithm generation preserves 14 completed cards after the first 546-second run and all 24 cards after the second. The overview completes in a separate 77.6-second run. The installed jobs preserve the model configuration. The receipts retain the two incomplete runs and the completed result.
 
-Whole-guest restoration is running. The source application writers are drained before the filesystem snapshot. Its private runtime map covers 64,268 artifacts, including 57,843 regular files. Public stable publication and replay remain incomplete. The existing release assets remain unchanged.
+Whole-guest restoration passes from `PBS-01:backup/ct/101/2026-10-14T00:38:27Z`. The source application writers are drained before the filesystem snapshot. The disconnected guest verifies 64,268 runtime artifacts, including 57,843 regular files, and all three Atlas cases. The operator completes with exit code zero and removes the restore guest.
+
+The first restore exhausts a 300 GiB filesystem. Measured block allocation requires 297.76 GiB for regular files alone, before directories and reserved blocks. The same backup restores into a 400 GiB filesystem. The failed attempt and capacity measurements remain in the evidence.
+
+Stable `v0.4.2` is published as the latest stable release. Its three initial assets match the qualified digests. The release certificate remains the immutable publication checkpoint. All 41 historical assets remain unchanged.
+
+The public manager-free replay on guest 111 uses the native Plugins page and the default GitHub URL. It verifies all 19 initial manager files before complete installation. Install LifeOS with a blank version applies the published package. Governed ownership activation and actual Hermes save and recall pass in separate conversations with synthetic data.
+
+Guest 109 starts from the published `0.4.2-rc.3` package. Update plugin with a blank version applies the complete stable integration. Update LifeOS then applies the same published package through its separate control. Both operations preserve the existing synthetic fact and selected model and tier mapping.
+
+The Hermes conversational replay also passes through the interactive dashboard. Hermes reads the installed release skill and calls `hermes lifeos-release prepare` without a version argument. The owner approves the command once, then reviews and applies the prepared operation through the releases page. The actual tool result, applied program state, selected models, and preserved synthetic fact are verified. The earlier single-query attempt correctly refuses the command because it cannot obtain interactive approval. No approval policy changes are made.
+
+The separate [public acceptance checkpoint](candidate-87205092/PUBLIC-LATEST-ACCEPTANCE.json) binds these four public operations to their receipts. It completes the public replay without replacing the published release certificate. Daily promotion and automatic morning observation remain separate acceptance decisions.
+
+The first documentation review identifies five missing verifier bindings. The corrected verifier checks the qualified manager inventory, exact prerelease baseline, measured guests, accepted daily package, and published asset digests. Primary controls also check the stock Hermes base, owner model selection, and complete public service states. Fourteen controls accept the actual receipts and refuse thirteen altered cases. The earlier failed controls and unpublished checkpoint remain retained. No product programs change for these corrections.
+
+The fresh test guests retain their prior service states. Their dashboards run; their gateway and Pulse services remain inactive. Development .252 independently verifies all three running application services. Fresh test acceptance does not claim Discord delivery or scheduled operation on these disposable guests.
+
+The [follow-up review](../../agents/2026-10-14-pr22-acceptance-review-2/pr22-acceptance-review-2.md) is clear. The public checkpoint is published as a new release asset at SHA-256 `c0a3bda0f5a3126e9eed1096c5dfe9b3c3821635d1da85d430b3847f66113619`. An actual public download reproduces the reviewed bytes. The three initial 0.4.2 assets and all 41 historical assets remain unchanged.
+
+Owned release-test guests 108, 109, and 111 are removed after acceptance and review. Their allocated files reclaim 24.1 GiB. Restore guest 110 is already removed by its successful operator. The temporary storage has no remaining volumes and is removed. Original guests 100, 101, 102, 106, and VM 801 retain their previous running states. Post-cleanup checks verify the exact development 0.4.2 and daily 0.3.1 identities, with all three application services running on each server.

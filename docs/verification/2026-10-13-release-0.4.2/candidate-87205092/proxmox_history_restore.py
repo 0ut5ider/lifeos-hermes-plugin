@@ -63,7 +63,7 @@ try:
         archive=max(archives,key=lambda row:row['ctime'])['volid']
         source(services_code.replace('ACTION',"s.resume();print('Source writers resumed')"),'resume-source')
         drained=False
-    run(['pct','restore',str(vmid),archive,'--storage','lifeos-042-tests','--rootfs','lifeos-042-tests:300','--unprivileged','1','--onboot','0','--hostname','lifeos-042-recovery'],'restore')
+    run(['pct','restore',str(vmid),archive,'--storage','lifeos-042-tests','--rootfs','lifeos-042-tests:400','--unprivileged','1','--onboot','0','--hostname','lifeos-042-recovery'],'restore')
     created=True
     run(['pct','set',str(vmid),'--delete','net0','--onboot','0','--tags','disposable;lifeos-042-recovery'],'disconnect')
     run(['pct','mount',str(vmid)],'mount')

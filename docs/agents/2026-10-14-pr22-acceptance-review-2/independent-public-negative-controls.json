@@ -1,0 +1,134 @@
+{
+  "reviewed_script_sha256": "ab429935b103cc625673ce3a716aec44d5bc8984e8b1bec275eda459ae26cd92",
+  "workspace": "/tmp/pr22-independent-followup-controls-a9o5opih",
+  "controls": [
+    {
+      "case": "current-public",
+      "accepted": true,
+      "expected": true,
+      "exit_code": 0,
+      "checkpoint_created": true,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "stale-package-identity",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "mixed-operation",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "explicit-version-selection",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "unapplied-public-update",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "wrong-owner-reference",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "missing-command-approval",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "missing-memory-receipt",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "wrong-certificate",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "wrong-manager-file-digest",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "mixed-fresh-guest",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "wrong-rc3-baseline-commit",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "wrong-daily-package-identity",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    },
+    {
+      "case": "wrong-published-package-digest",
+      "accepted": false,
+      "expected": false,
+      "exit_code": 1,
+      "checkpoint_created": false,
+      "test_copy_only": true,
+      "check_passed": true
+    }
+  ],
+  "all_checks_passed": true,
+  "published_certificate_sha256_after": "d937719db08eb0218a4f3f037a7132537f4e7ba55b48790467936df8a59e977e"
+}
