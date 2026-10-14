@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "guest": 109,
+  "session_id": "20261014_035331_368289",
+  "tool_call_id": "chatcmpl-tool-b20f1c189172590e",
+  "actual_terminal_input": {
+    "command": "hermes lifeos-release prepare",
+    "timeout": 300
+  },
+  "actual_terminal_result": {
+    "output": "{\n  \"identifier\": \"1dee04bca35a4afe9fb6f4b0027a05d7\",\n  \"state\": \"ready\",\n  \"version\": \"0.4.2\",\n  \"commit\": \"87205092832c550a09fce6e1cb3ca944fdb69a8c\",\n  \"package_sha256\": \"76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4\",\n  \"active_unchanged\": true,\n  \"next\": \"Use the release dashboard to review the operation, or run hermes lifeos-release start 1dee04bca35a4afe9fb6f4b0027a05d7\"\n}",
+    "exit_code": 0,
+    "error": null,
+    "approval": "Command required approval (Plugin command policy requires review) and was approved by the user."
+  },
+  "prepared_operation": {
+    "identifier": "1dee04bca35a4afe9fb6f4b0027a05d7",
+    "state": "ready",
+    "version": "0.4.2",
+    "commit": "87205092832c550a09fce6e1cb3ca944fdb69a8c",
+    "package_sha256": "76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4",
+    "active_unchanged": true,
+    "next": "Use the release dashboard to review the operation, or run hermes lifeos-release start 1dee04bca35a4afe9fb6f4b0027a05d7"
+  },
+  "interactive_owner_approval_verified": true,
+  "approval_choice": "once",
+  "exact_version_argument_used": false,
+  "model_narration_used_as_evidence": false,
+  "daily_server_changed": false
+}

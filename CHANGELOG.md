@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.2 (release candidate)
+## 0.4.2 (2026-10-13)
 
 - Add Install LifeOS, Update LifeOS, and Update plugin controls for complete qualified packages.
 - Prepare dashboard requests in detached processes. Keep owner review before installation.
@@ -10,6 +10,10 @@
 - Create private stage metadata without changing the caller's umask.
 - Use a private worker mask for native profile files and backup artifacts.
 - Keep Hermes v0.21.7, the pinned LifeOS revision, and all native dependency locks fixed.
+- Qualify the exact package with 675 integration tests and 716 native tests.
+- Verify public GitHub URL installation, both latest-stable update controls, and governed lasting memory.
+- Verify disconnected whole-guest recovery of 64,268 runtime artifacts and all three Atlas cases.
+- Preserve all 41 historical release assets. Keep daily 0.3.1 unchanged.
 
 ## 0.4.2-rc.3 (2026-10-13 test prerelease)
 

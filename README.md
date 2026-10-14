@@ -1,24 +1,28 @@
 # LifeOS plugin for Hermes
 
-**Candidate under qualification:** `0.4.2`. The [stable release gates](docs/verification/2026-10-13-release-0.4.2/README.md) track clean installation, memory ownership, updates, development operation, and whole-guest restoration. Daily `.253` stays on `0.3.1` during qualification.
+**Qualified stable release:** `0.4.2`. The [stable release record](docs/verification/2026-10-13-release-0.4.2/README.md) identifies the exact package, release certificate, and installation evidence. Daily `.253` stays on its accepted `0.3.1` package.
 
-**Qualified release:** `0.4.1`. It targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
-The exact package passes 631 integration tests and 716 native tests across 38 files.
+The release targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+The exact package passes 675 integration tests and 716 native tests across 38 files.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
 Bun 1.4.3 supplies the verified runtime.
 
-The release corrects exact version selection and preserves configuration roles while reducing repeated skills inventory work.
+The release adds Install LifeOS, Update LifeOS, and Update plugin controls for complete qualified integration packages.
+The detached release worker creates private native files. Updates preserve the selected model and tier mapping.
 The complete release manager in `optional/lifeos_release_manager` supports fresh installation, updates, interruption recovery, and rollback.
-Actual development checks pass, including automatic reboot, off-server whole-guest recovery, three Atlas cases, all 143 program targets, and authenticated normal rollback.
-The focused reviews are clear. Thirty-eight certificate controls and actual historical-receipt refusal pass.
-The [patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) identifies the exact archive and certificate.
-Published 0.3.1 and 0.4.0 assets remain immutable. Public exact-version installation passes against the published archive and certificate.
+Actual development checks pass, including automatic reboot, program rollback, worker interruption, and installed recovery.
+Disconnected whole-guest recovery verifies 64,268 runtime artifacts and all three Atlas cases.
+The focused product review and certificate review are clear. Current completed receipts pass; altered and incomplete receipts refuse.
+All 41 historical release assets retain their identifiers, sizes, and digests.
+Public installation from the default GitHub URL and both blank-version update controls pass against the published archive and certificate.
+An interactive Hermes conversation prepares the latest stable release, obtains command approval, and completes dashboard review and installation.
+The [previous patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) retains the 0.4.1 checkpoint.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
-**Daily deployed version:** `0.3.1`. The daily guest `.253` remains on the accepted package from `9af63325` during stable publication.
-**Development deployed candidate:** `0.4.2`, program commit `87205092`. Its update, rollback, actual interruption recovery, private Discord operation, native jobs, and automatic reboot checks pass on `.252`. The selected model mapping stays fixed. Off-server restoration and stable publication remain pending.
-**Installation test guests:** The stopped `.249` guest retains `0.4.2-rc.3`. Clean candidate acceptance passes on `.248`. A separate manager-free guest at `.246` prepares the public stable replay. The [earlier default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) passes fresh prerelease installation and a post-installation Hermes web chat. The earlier [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) cover both complete-package update buttons, numeric rollback, and a Hermes conversational update. This test qualification does not select a daily production release.
+**Daily deployed version:** `0.3.1`, program commit `9af63325`, on `.253`.
+**Development deployed version:** `0.4.2`, program commit `87205092`, on `.252`. Private Discord operation, native jobs, automatic reboot, and off-server restoration pass. The selected model mapping stays fixed.
+**Public installation tests:** A manager-free guest at `.246` installs the complete stable package through the native Plugins page and Install LifeOS. A separate guest at `.248` updates from `0.4.2-rc.3` through Update plugin, then verifies Update LifeOS. Both guests preserve their private FlashNext selection. Fresh installation also passes actual lasting-memory save and recall in separate Hermes conversations. The earlier [default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) and [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) remain historical checkpoints. The stopped `.249` guest retains `0.4.2-rc.3`. Test qualification does not select a daily production release.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [current release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.

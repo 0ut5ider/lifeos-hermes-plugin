@@ -1,6 +1,6 @@
 {
   "version": "0.4.2",
-  "status": "QUALIFIED_PENDING_PUBLICATION",
+  "status": "PUBLIC_ACCEPTANCE_VERIFIED_PENDING_ASSET",
   "daily_server_changed": false,
   "production_qualified": true,
   "steps": [
@@ -16,7 +16,7 @@
     },
     {
       "number": 3,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "name": "Installed update recovery and rollback"
     },
     {
@@ -31,7 +31,7 @@
     },
     {
       "number": 6,
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "name": "Stable publication and public latest acceptance"
     }
   ],
@@ -89,7 +89,8 @@
     "selected_model_and_tiers_preserved": true,
     "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
     "current_candidate_accepted": false,
-    "repeat_required_for_current_candidate": true
+    "repeat_required_for_current_candidate": true,
+    "scope": "Historical superseded unpublished 742a0c33 checkpoint. The corrected candidate controls contain current acceptance."
   },
   "clean_web_manager_install": {
     "status": "PASS",
@@ -98,7 +99,8 @@
     "explicit_branch_or_commit_selected": false,
     "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
     "current_candidate_accepted": false,
-    "repeat_required_for_current_candidate": true
+    "repeat_required_for_current_candidate": true,
+    "scope": "Historical superseded unpublished 742a0c33 checkpoint. The corrected candidate controls contain current acceptance."
   },
   "installed_controls": {
     "update": "PASS",
@@ -109,7 +111,8 @@
     "public_update_buttons_and_conversation": "PENDING_PUBLICATION",
     "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
     "current_candidate_accepted": false,
-    "repeat_required_for_current_candidate": true
+    "repeat_required_for_current_candidate": true,
+    "scope": "Historical superseded unpublished 742a0c33 checkpoint. The corrected candidate controls contain current acceptance."
   },
   "clean_full_preparation": {
     "status": "PASS",
@@ -119,7 +122,8 @@
     "second_service_mask_attempt": "RETAINED_FAIL",
     "program_commit": "742a0c33a29a8adbf11402669e620a7571e1142e",
     "current_candidate_accepted": false,
-    "repeat_required_for_current_candidate": true
+    "repeat_required_for_current_candidate": true,
+    "scope": "Historical superseded unpublished 742a0c33 checkpoint. The corrected candidate controls contain current acceptance."
   },
   "next_candidate_required": false,
   "original_candidate_superseded": {
@@ -132,7 +136,8 @@
   "fresh_ownership_activation": {
     "status": "FAIL",
     "recovered_service_state": "cancelled",
-    "cause_receipt": "worker-private-mask-cause.json"
+    "cause_receipt": "worker-private-mask-cause.json",
+    "scope": "Historical superseded unpublished 742a0c33 checkpoint. The corrected candidate controls contain current acceptance."
   },
   "current_build_receipt": "candidate-87205092/stable-build.json",
   "corrected_candidate_controls": {
@@ -142,7 +147,7 @@
     "rollback_and_interruption": "PASS",
     "reboot": "PASS",
     "whole_guest_restore": "PASS",
-    "stable_publication": "PENDING",
+    "stable_publication": "PASS",
     "program_rollback": "PASS",
     "clean_full_installation": "PASS",
     "owner_turn": "PASS",
@@ -158,7 +163,10 @@
     "private_discord_audience": "PASS",
     "private_discord_delivery": "PASS",
     "native_atlas_job": "PASS",
-    "native_algorithm_job": "PASS"
+    "native_algorithm_job": "PASS",
+    "public_latest_installation": "PASS",
+    "public_update_buttons": "PASS",
+    "public_hermes_conversation": "PASS"
   },
   "active_development_operation": "3240c42939f2451293bd9d5cfcd8bf12",
   "algorithm_generation": {
@@ -221,7 +229,7 @@
     "source_revision": "7ac93c6902dd1311fea804f160f4a765c42b9e01",
     "force_reinstall": false,
     "source_files": 19,
-    "complete_stable_installation": "PENDING_PUBLICATION"
+    "complete_stable_installation": "PASS"
   },
   "public_numeric_update_baseline": {
     "status": "PASS",
@@ -231,5 +239,46 @@
     "synthetic_fact_preserved": true,
     "selected_models_and_tiers_preserved": true
   },
-  "release_certificate": "candidate-87205092/RELEASE-CERTIFICATE.json"
+  "release_certificate": "candidate-87205092/RELEASE-CERTIFICATE.json",
+  "public_latest_acceptance": {
+    "status": "PASS",
+    "receipt": "candidate-87205092/PUBLIC-LATEST-ACCEPTANCE.json",
+    "public_release_asset": "PENDING_REVIEW",
+    "fresh_guest": 111,
+    "update_guest": 109,
+    "fresh_governed_memory": "PASS",
+    "update_fact_and_models_preserved": "PASS",
+    "interactive_command_approval": "PASS",
+    "single_query_approval_refusal": "PASS"
+  },
+  "stable_publication": {
+    "status": "PASS",
+    "tag": "v0.4.2",
+    "receipt": "candidate-87205092/stable-publication.json",
+    "initial_assets": 3,
+    "immutable_certificate_sha256": "d937719db08eb0218a4f3f037a7132537f4e7ba55b48790467936df8a59e977e",
+    "historical_assets_preserved": 41
+  },
+  "public_operations": {
+    "fresh_installation": "1bb1646990434c48932f8f4d25edcae2",
+    "update_plugin": "282f7f644c824de4a0764cee91dfb737",
+    "update_lifeos": "20fedd1ecf6347b68ba34597fde5b282",
+    "interactive_hermes_update": "1dee04bca35a4afe9fb6f4b0027a05d7"
+  },
+  "test_guest_cleanup": {
+    "status": "PENDING",
+    "owned_guests": [
+      108,
+      109,
+      111
+    ],
+    "restored_guest_110_removed": true,
+    "original_guests_preserved": [
+      100,
+      101,
+      102,
+      106,
+      801
+    ]
+  }
 }
