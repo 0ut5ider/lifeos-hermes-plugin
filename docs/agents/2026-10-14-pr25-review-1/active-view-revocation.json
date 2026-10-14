@@ -1,0 +1,104 @@
+{
+  "before": {
+    "toolIcon": {
+      "_tag": "website",
+      "pageUrl": "http://127.0.0.1:37447/assistant"
+    },
+    "value": {
+      "phase": "before",
+      "textarea": [
+        "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"
+      ],
+      "requests": [
+        {
+          "url": "/api/hermes",
+          "status": 200,
+          "time": 1792009644035
+        },
+        {
+          "url": "/api/hermes/log-analysis?days=14",
+          "status": 200,
+          "time": 1792009644220
+        },
+        {
+          "url": "/api/hermes/file/principal-identity",
+          "status": 200,
+          "time": 1792009646751
+        }
+      ],
+      "now": 1792009652713
+    }
+  },
+  "intermediate": {
+    "toolIcon": {
+      "_tag": "website",
+      "pageUrl": "http://127.0.0.1:37447/assistant"
+    },
+    "value": {
+      "phase": "after-overview-denial",
+      "textarea": [
+        "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"
+      ],
+      "requests": [
+        {
+          "url": "/api/hermes",
+          "status": 200,
+          "time": 1792009644035
+        },
+        {
+          "url": "/api/hermes/log-analysis?days=14",
+          "status": 200,
+          "time": 1792009644220
+        },
+        {
+          "url": "/api/hermes/file/principal-identity",
+          "status": 200,
+          "time": 1792009646751
+        }
+      ],
+      "now": 1792009674119,
+      "bodyShowsUnavailable": false
+    }
+  },
+  "afterAutomaticOverviewDenial": {
+    "toolIcon": {
+      "_tag": "website",
+      "pageUrl": "http://127.0.0.1:37447/assistant"
+    },
+    "value": {
+      "phase": "after-real-timer",
+      "textarea": [
+        "# SyntheticCoreEditorIdentity\nSynthetic owner identity\n"
+      ],
+      "requests": [
+        {
+          "url": "/api/hermes",
+          "status": 200,
+          "time": 1792009644035
+        },
+        {
+          "url": "/api/hermes/log-analysis?days=14",
+          "status": 200,
+          "time": 1792009644220
+        },
+        {
+          "url": "/api/hermes/file/principal-identity",
+          "status": 200,
+          "time": 1792009646751
+        },
+        {
+          "url": "/api/hermes",
+          "status": 403,
+          "time": 1792009704118
+        },
+        {
+          "url": "/api/hermes",
+          "status": 403,
+          "time": 1792009705205
+        }
+      ],
+      "now": 1792009708973,
+      "bodyShowsUnavailable": false
+    }
+  }
+}

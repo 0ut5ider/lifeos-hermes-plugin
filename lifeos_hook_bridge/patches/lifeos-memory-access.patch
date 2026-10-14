@@ -14621,7 +14621,7 @@ index 235a0b5..58fe4c4 100644
    const daysIdx = argv.indexOf("--days");
 
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx b/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
-index 55eb097..9d4beb5 100644
+index 55eb097..0712901 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
 +++ b/LifeOS/install/LIFEOS/PULSE/Observability/src/components/HermesFiles.tsx
 @@ -39,6 +39,8 @@ export interface HermesFileEntry {
@@ -14747,6 +14747,28 @@ index 55eb097..9d4beb5 100644
                      className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-md border border-line-2 hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
                    >
                      <X className="w-3.5 h-3.5" /> Revert
+@@ -393,10 +410,11 @@ export default function HermesFiles() {
+   const [openFile, setOpenFile] = useState<string | null>(null);
+   const [remountResult, setRemountResult] = useState<string | null>(null);
+ 
+-  const { data, isLoading } = useQuery<HermesOverview>({
++  const { data, isLoading, isError } = useQuery<HermesOverview>({
+     queryKey: ["hermes-overview"],
+     queryFn: () => localApiCall("/api/hermes"),
+     refetchInterval: 60_000,
++    retry: false,
+   });
+ 
+   const remount = useMutation({
+@@ -410,7 +428,7 @@ export default function HermesFiles() {
+   });
+ 
+   if (isLoading) return <div className="text-[13px] text-ink-3">Loading Hermes core files…</div>;
+-  if (!data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
++  if (isError || !data) return <div className="text-[13px] text-ink-3">Hermes file surface unavailable.</div>;
+ 
+   const byId = new Map(data.files.map((f) => [f.id, f]));
+
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
 index 0259a78..319661b 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
