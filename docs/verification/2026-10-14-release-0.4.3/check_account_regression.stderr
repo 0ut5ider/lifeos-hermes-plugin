@@ -1,0 +1,15 @@
+test_installed_inspector_accepts_the_account_launcher_under_native_home (test_release_accounts.ReleaseAccountTests.test_installed_inspector_accepts_the_account_launcher_under_native_home) ... ERROR
+
+======================================================================
+ERROR: test_installed_inspector_accepts_the_account_launcher_under_native_home (test_release_accounts.ReleaseAccountTests.test_installed_inspector_accepts_the_account_launcher_under_native_home)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_accounts.py", line 72, in test_installed_inspector_accepts_the_account_launcher_under_native_home
+    result = release_plan.inspect_operation(job, request)
+  File "<native-home-defect-mutation>", line 70, in inspect_operation
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The bound service launcher is not a regular account program
+
+----------------------------------------------------------------------
+Ran 1 test in 0.058s
+
+FAILED (errors=1)

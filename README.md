@@ -1,5 +1,7 @@
 # LifeOS plugin for Hermes
 
+**Candidate under qualification:** `0.4.3`. The daily promotion rehearsal exposes a release-manager account binding error when services use the private fresh-store directory as HOME. The candidate separates that native HOME from the account that owns the Hermes profile. Daily `.253` stays on accepted `0.3.1` during repair and qualification. Published `0.4.2` assets remain unchanged.
+
 **Qualified stable release:** `0.4.2`. The [stable release record](docs/verification/2026-10-13-release-0.4.2/README.md) identifies the exact package, release certificate, and installation evidence. Daily `.253` stays on its accepted `0.3.1` package.
 
 The release targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.

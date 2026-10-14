@@ -1,0 +1,28 @@
+{
+  "reviewed_head": "a008a2b7699ab15e8fa75ee58a58e346623a6db1",
+  "source_sha256": {
+    "verify_restored_programs.py": "db47487f297176cbc60bf4b1d681b0084f5227cc8152af21caccfba39d624bf9",
+    "proxmox_rehearsal_restore.py": "2daa5cc223e98080dd8bf96168f4632c840071ba1b05a6b7c1898f39e817ace2",
+    "program_artifact_receipt.py": "7942ed7d0cb610c221c8ce7706daafe00e5ff78e1fcac1e588590c36a43cf0db",
+    "verify_rehearsal.py": "e5dfc5498d82d3719507d85c9625d38673d0d5c73bb95117833037f8ff6a010d",
+    "prepare_rehearsal.py": "2335a60c26187dd1afb4bd601f50054486624b435c551722a7699df952345e0c",
+    "install_rehearsal_baseline.py": "64f90324e25b777b5e25e5af7b233934a90ac97b261d550166eced198669c9e9",
+    "run_archive_bound_integration.py": "82f44d7af6c3ceaed708979f737872097d7609eb720b50aa92200a5f3d47bfa4",
+    "run_sealed_native.py": "8294091a6e61a33a9fcc36e32e3d32d70f2d8bfafc71e4230be825bc06735eaf",
+    "provision_rehearsal.py": "12f865630c04e90b38bf16263c52bf39e82bc4f99df9f4d88e817f3afab2001e",
+    "interrupt_rehearsal_worker.py": "0dd5c20655a4eb0061f32b9d44da660c9526fc6f89b876289ad956e4584bf0ee",
+    "start_rehearsal_collection_interruption.py": "0e5d07cddcd86a784e4f6f220eb827eac4e4728047dc476cd8baae0ff5b54388",
+    "history_guest_recovery.py": "6ba7c56bd2c1d496fda60e120a13f6524eab9c486cd8153e6fc424a1c4df8b94"
+  },
+  "syntax_controls": "PASS",
+  "credential_pattern_scan": {
+    "github_token": 0,
+    "openai_token": 0,
+    "aws_access_key": 0,
+    "private_key": 0,
+    "discord_token": 0
+  },
+  "wrong_guest_target_inspection": "Provisioning targets synthetic111; restore drains/backs up111 and creates disconnected110. Existing guest110 collision refuses. Source101/.252 is used only as an existing native-test SSH fixture, not for this rehearsal backup. Daily102/.253 is not an operator target.",
+  "provisional_certificates": "Local and rehearsal fixture certificates mark production_qualified false and test_fixture_only true. No published0.4.3 certificate is present.",
+  "whole_restore_receipt_present_in_reviewed_commit": false
+}

@@ -1,0 +1,98 @@
+{
+  "status": "FAIL",
+  "controls": [
+    {
+      "case": "completed-inputs",
+      "expected_result_verified": true,
+      "result": "accepted"
+    },
+    {
+      "case": "failed-integration",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "stale-restore-commit",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "missing-atlas-case",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "changed-runtime-count",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "changed-operation",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "no-owner-admission",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "changed-native-inputs",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "empty-service-details",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "wrong-rollback-identity",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "mixed-restore-guest",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "empty-native-inputs",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "interrupted-programs-still-applied",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "later-edit-was-not-refused",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "mixed-restore-command-guest",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "mixed-restore-command-archive",
+      "expected_result_verified": true,
+      "result": "refused"
+    },
+    {
+      "case": "failed-source-capture",
+      "expected_result_verified": false,
+      "result": "accepted"
+    },
+    {
+      "case": "unexpected-backup-storage",
+      "expected_result_verified": false,
+      "result": "accepted"
+    }
+  ],
+  "temporary_evidence_mutations_only": true,
+  "guest_completion_receipt_constructed": false,
+  "published_asset_changed": false
+}

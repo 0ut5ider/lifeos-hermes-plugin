@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/build_managed_release.py", line 79, in <module>
+    build(parser.parse_args())
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/build_managed_release.py", line 36, in build
+    from lifeos_hook_bridge import install_source, release_version
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/packages/0.4.3-9e6868d0/lifeos_hook_bridge/release_version.py", line 10, in <module>
+    from ruamel.yaml import YAML
+ModuleNotFoundError: No module named 'ruamel'

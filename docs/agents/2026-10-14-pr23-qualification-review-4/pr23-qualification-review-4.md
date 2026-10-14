@@ -1,0 +1,36 @@
+Date: 2026-10-14
+Agent role: Independent read-only corrective qualification reviewer, pr21_release_review
+Question: Do the final 0.4.3 qualification certificate fixes close the prior six receipt-refusal findings and consistently bind actual backup and restore execution before publication?
+Model: GPT-6, Codex harness. A more specific backend suffix is not exposed to this agent.
+
+The six prior certificate findings are closed at reviewed head 63ad1d0aed067890babca13ba361ffab8ca9f658. The tested certifier SHA-256 is f5a1a917b405a6e46b48a550cc7f3b96521de719ce3d1f9a53c1b9aab2b0f5f8. One remaining P2 concerns command-to-receipt binding for the off-server restore. The actual receipt set is consistent. The measured defect is that the certifier can qualify inconsistent temporary copies.
+
+P2: Bind claimed recovery archive and guests to their actual commands.
+File and lines: docs/verification/2026-10-14-release-0.4.3/certify_release.py:118, :125, and :129.
+The certifier checks required command labels and zero exit codes. It separately checks the recovery and coverage metadata, including source 111, restore 110, candidate identity, and agreement of their PBS archive fields. It does not join these values to the commands that actually performed backup, restore, and verification. A changed claim or a command from another guest therefore qualifies despite conflicting with the supposedly supporting execution.
+
+Two bounded reproductions use copies of the actual completed receipt set and the unmodified certifier:
+
+1. Change bound-whole-guest-recovery.json archive and bound-whole-guest-program-coverage.json backup_archive together to PBS-01:backup/ct/111/2026-10-13T00:00:00Z. Leave the measured restore command at the actual October 14 archive. The certifier exits zero and writes a production-qualified certificate for the inconsistent archive.
+2. Change the restore command in bound-whole-guest-operations.json from guest 110 to guest 253. Leave the whole recovery and program coverage metadata at source 111 and restore 110. The certifier exits zero and writes a production-qualified certificate despite a measured command for the daily guest.
+
+These fixtures do not cause any guest operation. They modify local receipt copies only. The current actual restore command names guest 110 and PBS-01:backup/ct/111/2026-10-14T15:10:02Z. No daily guest was touched or misreported in the actual evidence. Require the measured backup source, exact PBS restore archive, restore guest, and operation/verifier arguments to agree with the corresponding qualification claims. This needs an operator guard and regression controls, not another restore or product change.
+
+Independent verification:
+The six original bad receipt copies now refuse: empty service details, wrong accepted 0.3.1 rollback identity, mixed program coverage guest IDs, empty native input comparisons, collected interruption program journal still applied, and later-edit refusal false. Additional bounded controls refuse a wrong candidate manifest hash, expanded LifeOS build-field exemption, wrong Atlas restored-file count, unverified Atlas live group, missing completion, and wrong candidate archive digest.
+
+All 14 primary expanded certificate controls pass when independently run in a temporary copy. The independent set has 15 cases: one actual positive, 12 correctly refused negative copies, and the two accepted inconsistencies above. Every stdout, stderr, exit code, and certificate digest is retained in independent-certificate-controls.json. The actual positive regenerates the existing private certificate byte for byte at SHA-256 a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408. Neither the published certificate nor original candidate receipts were replaced.
+
+I independently reopened the accepted and candidate archives. The accepted archive SHA-256 is 76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4. The candidate archive is 207693549 bytes and SHA-256 1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177. Both the Hermes source manifest and dependency catalog are byte-identical. The LifeOS source manifest has equal parsed content after removing only upstream. All three accepted and candidate input digests reproduce the new exact comparisons. Missing comparisons and an expanded exemption are refused.
+
+The prior program journal finding stays closed. ProgramTransaction checks the expected sealed plan digest, selected live targets, applied state, and retained before images. The prior independent four filesystem controls pass and remain preserved in round 3 raw evidence. The actual corrected restore verifies 64,282 artifacts, 57,858 regular files, nine selected program targets, and all three Atlas cases. Source and restored map digests agree. Actual process completion is zero and guest 110 is removed. The historical weaker-verifier restore stays separate from these corrected receipts.
+
+The real synthetic guest reboot report binds the unchanged candidate, preserved model selection and memory reference, all three services automatically active, and a changed boot identifier. It records no manual service start. The report does not establish daily or morning acceptance. The reviewed product commit remains a1abb579558edcf29f7cd04ecfd998995d48db54. Existing archive-bound 683 integration, 716 native, and 39 focused test evidence stays valid; no full suite or remote operation was repeated for this operator review.
+
+The corrected qualification source and documentation distinguish current success from the retained missing interpreter, missing Discord SDK, initial transient unit collection failure, first weaker-verifier restore, and before-fix certificate controls. The README, progress record, and certificate leave public 0.4.3 replay, daily promotion, live Cerebo verification, and actual automatic morning observation pending. Daily .253 remains accepted 0.3.1. Development .252 remains 0.4.2. Published 0.4.2 assets remain immutable. These downstream gates are not additional product findings.
+
+I syntax-checked 23 qualification operators and inspected their privacy boundary. Common credential and private-key patterns had zero matches. The exported reports contain synthetic references, safe operation identities, service flags, counts, and digests. No private runtime map or credential backup export was found. The copied restore verifier stays outside selected immutable runtime artifacts and preserves owner and mode before offline boot.
+
+The coding-rules skill governs this review. I changed only the owned review directory and temporary local evidence copies. I used no SSH, memory, journal, original evidence edit, product edit, Git mutation, publication, or guest operation. The raw data includes frozen reviewed operators and hashes, controls and mutated receipt fixtures, independent actual-archive input comparisons, primary controls, syntax/privacy checks, and an independently regenerated private certificate clearly named as review output.
+
+Adrian's remaining review concern is the command-to-receipt binding guard and its two measured regressions. The prior account-binding product change, six certificate corrections, and actual corrected restore evidence remain valid. Release publication and production acceptance must follow a clear final evidence review.

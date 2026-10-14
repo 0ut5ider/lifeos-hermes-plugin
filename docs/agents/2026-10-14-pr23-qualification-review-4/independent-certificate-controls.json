@@ -1,0 +1,139 @@
+{
+  "controls": [
+    {
+      "case": "current",
+      "expected_accept": true,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408"
+    },
+    {
+      "case": "empty-service-details",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/empty-service-details/certify_release.py\", line 91, in <module>\n    assert set(unit) == {'active', 'native_home_preserved', 'profile_preserved'}\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "wrong-rollback-identity",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/wrong-rollback-identity/certify_release.py\", line 97, in <module>\n    assert restored['active']['commit'] == '9af633252004a0ac8dd780d5fc12e9644f97bb0c'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "mixed-restore-guest",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/mixed-restore-guest/certify_release.py\", line 131, in <module>\n    assert receipt['source_guest'] == 111 and receipt['restored_guest'] == 110\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "empty-native-inputs",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/empty-native-inputs/certify_release.py\", line 65, in <module>\n    assert set(unchanged['inputs']) == input_names\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "interrupted-programs-still-applied",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/interrupted-programs-still-applied/certify_release.py\", line 108, in <module>\n    assert recovered['state'] == 'rolled_back' and recovered['program_state'] == 'restored'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "later-edit-was-not-refused",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/later-edit-was-not-refused/certify_release.py\", line 138, in <module>\n    assert row['later_edit_refused'] is (row['case'] == 'later-edit')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "missing-completion",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/missing-completion/certify_release.py\", line 121, in <module>\n    assert text('bound-whole-guest-process.done').strip() == '0'\n           ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/pr23-review4-hlwj__w5/missing-completion/certify_release.py\", line 23, in text\n    return (out / name).read_text()\n           ~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/usr/lib64/python3.14/pathlib/__init__.py\", line 787, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib64/python3.14/pathlib/__init__.py\", line 771, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/pr23-review4-hlwj__w5/missing-completion/bound-whole-guest-process.done'\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "wrong-package-archive",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/wrong-package-archive/certify_release.py\", line 36, in <module>\n    assert build['archive_sha256'] == digest(build['archive']) == archive_sha\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "wrong-native-manifest-hash",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/wrong-native-manifest-hash/certify_release.py\", line 72, in <module>\n    assert row['candidate_sha256'] == candidate_inputs[name]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "broadened-build-field-exemption",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/broadened-build-field-exemption/certify_release.py\", line 74, in <module>\n    assert row['excluded_build_location_fields'] == (['upstream'] if name.startswith('lifeos/') else [])\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "wrong-atlas-restored-count",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/wrong-atlas-restored-count/certify_release.py\", line 139, in <module>\n    assert row['restored_files'] == (51 if row['case'] == 'baseline' else 55)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "unverified-atlas-live-group",
+      "expected_accept": false,
+      "accepted": false,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr23-review4-hlwj__w5/unverified-atlas-live-group/certify_release.py\", line 137, in <module>\n    assert row['archive_and_live_group_verified'] is True\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "certificate_sha256": null
+    },
+    {
+      "case": "mixed-pbs-archive",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"432375e0490620311e42afe304db68f1f31edc064c43c4e8c4a2154dda9a24ab\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "432375e0490620311e42afe304db68f1f31edc064c43c4e8c4a2154dda9a24ab"
+    },
+    {
+      "case": "wrong-restore-command-guest",
+      "expected_accept": false,
+      "accepted": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"QUALIFIED\",\n  \"program_commit\": \"a1abb579558edcf29f7cd04ecfd998995d48db54\",\n  \"certificate_sha256\": \"b7dbca8ee1309e8ee473b3a65bc146cd7e308c6a881a41033048c30cc4b869ac\"\n}\n",
+      "stderr": "",
+      "certificate_sha256": "b7dbca8ee1309e8ee473b3a65bc146cd7e308c6a881a41033048c30cc4b869ac"
+    }
+  ]
+}

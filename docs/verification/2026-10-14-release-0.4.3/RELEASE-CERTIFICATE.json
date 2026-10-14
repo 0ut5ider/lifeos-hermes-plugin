@@ -1,0 +1,180 @@
+{
+  "format": 1,
+  "status": "QUALIFIED",
+  "production_qualified": true,
+  "version": "0.4.3",
+  "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+  "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+  "archive_bytes": 207693549,
+  "hermes_dashboard_sha256": "e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec",
+  "hermes_base": "71d34bad1045610252eda02ee79549436896e784",
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "hermes_patch_count": 10,
+  "lifeos_patch_count": 25,
+  "integration_tests": 683,
+  "native_tests": 716,
+  "native_test_files": 38,
+  "focused_account_tests": 39,
+  "qualification_scope": "Corrective account binding, exact package regression, real daily-layout update, rollback, interruption recovery, and disconnected whole-guest restore",
+  "native_service_home_and_model_mapping_preserved": true,
+  "whole_guest_history_recovery": {
+    "status": "PASS",
+    "archive": "PBS-01:backup/ct/111/2026-10-14T15:10:02Z",
+    "source_guest": 111,
+    "restored_guest": 110,
+    "version": "0.4.3",
+    "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+    "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+    "operation": "d5621dc92681425b9ee4553a063b7f0c",
+    "network_disconnected": true,
+    "application_services_masked": true,
+    "cases": [
+      {
+        "case": "baseline",
+        "status": "PASS",
+        "restored_files": 51,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "interrupted",
+        "status": "PASS",
+        "restored_files": 55,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "later-edit",
+        "status": "PASS",
+        "restored_files": 55,
+        "later_edit_refused": true,
+        "archive_and_live_group_verified": true
+      }
+    ],
+    "production_guest_changed": false,
+    "runtime_artifact_coverage": {
+      "status": "PASS",
+      "action": "verify",
+      "operation": "d5621dc92681425b9ee4553a063b7f0c",
+      "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+      "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+      "artifacts": 64282,
+      "regular_files": 57858,
+      "bytes": 1649122873,
+      "private_map_sha256": "769f4f782375fe73a6703d0f57d4bfdb434c2c397c02e2d88980297f7775872a",
+      "runtime_roots": [
+        "bin",
+        "compiled-dashboard",
+        "dependency-profile",
+        "hermes",
+        "package",
+        "pm-runtime",
+        "python-environment",
+        "tools",
+        "worker"
+      ],
+      "private_map_exported": false
+    }
+  },
+  "whole_guest_program_coverage": {
+    "status": "PASS",
+    "operation": "d5621dc92681425b9ee4553a063b7f0c",
+    "version": "0.4.3",
+    "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+    "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+    "program_targets": 9,
+    "application_services_masked": true,
+    "private_configuration_exported": false,
+    "backup_archive": "PBS-01:backup/ct/111/2026-10-14T15:10:02Z",
+    "source_guest": 111,
+    "restored_guest": 110
+  },
+  "whole_guest_runtime_coverage": {
+    "status": "PASS",
+    "action": "verify",
+    "operation": "d5621dc92681425b9ee4553a063b7f0c",
+    "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+    "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+    "artifacts": 64282,
+    "regular_files": 57858,
+    "bytes": 1649122873,
+    "private_map_sha256": "769f4f782375fe73a6703d0f57d4bfdb434c2c397c02e2d88980297f7775872a",
+    "runtime_roots": [
+      "bin",
+      "compiled-dashboard",
+      "dependency-profile",
+      "hermes",
+      "package",
+      "pm-runtime",
+      "python-environment",
+      "tools",
+      "worker"
+    ],
+    "private_map_exported": false
+  },
+  "prior_native_qualification": {
+    "version": "0.4.2",
+    "certificate_sha256": "d937719db08eb0218a4f3f037a7132537f4e7ba55b48790467936df8a59e977e",
+    "program_inputs": {
+      "status": "PASS",
+      "accepted_archive_sha256": "76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4",
+      "candidate_archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+      "inputs": {
+        "hermes/hermes-source-manifest.json": {
+          "byte_identical": true,
+          "program_identity_equal": true,
+          "excluded_build_location_fields": [],
+          "accepted_sha256": "c828676c4915468f8489ae7d572f700115a740e434ac5a4e761771bf74865c69",
+          "candidate_sha256": "c828676c4915468f8489ae7d572f700115a740e434ac5a4e761771bf74865c69"
+        },
+        "lifeos/lifeos-source-manifest.json": {
+          "byte_identical": false,
+          "program_identity_equal": true,
+          "excluded_build_location_fields": [
+            "upstream"
+          ],
+          "accepted_sha256": "de564ad81fdfa2e6f4a5a1f39bb216a5fc90d63f120fe8ac6e1b5660b25e5991",
+          "candidate_sha256": "bf24d30a9907a4c3cab4b465ecd6ba149992615c77527ea3ecbeca0091d6934b"
+        },
+        "lifeos_hook_bridge/dependency_locks/catalog.json": {
+          "byte_identical": true,
+          "program_identity_equal": true,
+          "excluded_build_location_fields": [],
+          "accepted_sha256": "2d4cfce96064f9473747b8b008dd50bf982f6e32d48814b227f99dde57103695",
+          "candidate_sha256": "2d4cfce96064f9473747b8b008dd50bf982f6e32d48814b227f99dde57103695"
+        }
+      }
+    },
+    "reexecuted_native_tests": 716,
+    "prior_public_installation_retained_as_historical_evidence": true
+  },
+  "qualification_receipt_sha256": {
+    "bound-whole-guest-artifact-coverage.json": "517391186438d79a79084ba2bd8d7471d5ec27fd41dce566a4e1cde165c56b78",
+    "bound-whole-guest-operations.json": "3b408f0407188ef5f521785732a136b0b3ca5efc74f8593f198fb975a8b0cd76",
+    "bound-whole-guest-process.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "bound-whole-guest-program-coverage.json": "19a8fcd753ad2bd938ffcc291c564dce7221985c4b1042a6b60c4e553155b9be",
+    "bound-whole-guest-recovery.json": "2a6f3ed16155a62c33a4ece2049effb2a8b2da7f275dafc3590c9728160273c2",
+    "collection-interruption-exit.json": "69689f94f6cdcee8deb36ccb1e8528a014d1c3e693a6a68c1f8b5418be65c52b",
+    "daily-layout-operation-states.json": "3ef4198986810944ed3e7aaef1db14f1c074e2e7ba9be3b8f3b890f04f8c4e04",
+    "frozen-focused.stderr": "2d09b65d14cf27e64cc722b5037c6ce64f2db19e56a1757a7ba3e4d25467693b",
+    "integration-archive-bound-a1abb579.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "integration-archive-bound-a1abb579.json": "faec0b50263215e0ad82f934a14f451340ce9fb235704cbd54cfa4f8cf75f1b5",
+    "integration-archive-bound-a1abb579.stderr": "fb7a0871bf9cd116e7b337b437a5044fa5b34255400b1e1a372fadfa35b25945",
+    "native-sealed-a1abb579.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "native-sealed-a1abb579.json": "6337ca6a8c296b7c4d1d2ba9f87989c3217da63b0f3ca41d85470869932f0c45",
+    "native-sealed-a1abb579.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-sealed-a1abb579.stdout": "482a02be0cad9a1e11ba9f089c93a851e2653fc28cb7b8b37c3c1c494cfe9a16",
+    "restore-binding-after.stderr": "80144f3bf12d071a1497821467ab02765712cb11da3f547a5e2b5cf79f938e9a",
+    "source-backup-operations.json": "92bddadbf6067f67fe24a20f6f0be970955e56fabc6e6907a8f7e92d89f3fbcf",
+    "source-program-artifact-capture.json": "bf389bf2d06e993e50434d9b2ca458458cf6d0e8883ad46d499c5b4799327059",
+    "stable-build.json": "f941d3e8855927afffc9b56c4e6528f01d175751b97a5c731130c346f38e43fc",
+    "unchanged-native-inputs.json": "1cdc0c34568932e87638ea13ebc08ab9c7ed3bbd25e1ec152d9e934a4e080d93",
+    "verify-applied.json": "3a0da1539d5e4e564aeedae2455365ee6bb409bc10bc7b1f46b3f09dee20931d",
+    "verify-final-applied.json": "7abd460bfdf515adcbe78d158114ad58cb71ad5cca6bc75791103b001c4aedbf",
+    "verify-restored.json": "d9692edb071911cbf5a12e74ce69524c8c8ca510ad68e023abcd552d5704068d"
+  },
+  "daily_promotion_verified": false,
+  "automatic_morning_observed": false,
+  "public_default_url_replay_for_043": "Pending public publication",
+  "build_manifest_note": "The immutable package manifest records build-time state. This certificate records completed corrective qualification."
+}

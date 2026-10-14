@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "accepted_archive_sha256": "76c1c10e82ce75f86858a2cd27ae609f5f7eb8a8bc79612d94df6f95f45136a4",
+  "candidate_archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+  "inputs": {
+    "hermes/hermes-source-manifest.json": {
+      "byte_identical": true,
+      "program_identity_equal": true,
+      "excluded_build_location_fields": [],
+      "accepted_sha256": "c828676c4915468f8489ae7d572f700115a740e434ac5a4e761771bf74865c69",
+      "candidate_sha256": "c828676c4915468f8489ae7d572f700115a740e434ac5a4e761771bf74865c69"
+    },
+    "lifeos/lifeos-source-manifest.json": {
+      "byte_identical": false,
+      "program_identity_equal": true,
+      "excluded_build_location_fields": [
+        "upstream"
+      ],
+      "accepted_sha256": "de564ad81fdfa2e6f4a5a1f39bb216a5fc90d63f120fe8ac6e1b5660b25e5991",
+      "candidate_sha256": "bf24d30a9907a4c3cab4b465ecd6ba149992615c77527ea3ecbeca0091d6934b"
+    },
+    "lifeos_hook_bridge/dependency_locks/catalog.json": {
+      "byte_identical": true,
+      "program_identity_equal": true,
+      "excluded_build_location_fields": [],
+      "accepted_sha256": "2d4cfce96064f9473747b8b008dd50bf982f6e32d48814b227f99dde57103695",
+      "candidate_sha256": "2d4cfce96064f9473747b8b008dd50bf982f6e32d48814b227f99dde57103695"
+    }
+  }
+}

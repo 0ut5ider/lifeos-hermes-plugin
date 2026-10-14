@@ -1,0 +1,32 @@
+F.FF
+======================================================================
+FAIL: test_changed_retained_program_refused (test_restored_program_binding.RestoredProgramBinding.test_changed_retained_program_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-14-release-0.4.3/test_restored_program_binding.py", line 68, in test_changed_retained_program_refused
+    with self.assertRaisesRegex(ProgramConflict, 'retained program differs'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ProgramConflict not raised
+
+======================================================================
+FAIL: test_empty_entries_refused (test_restored_program_binding.RestoredProgramBinding.test_empty_entries_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-14-release-0.4.3/test_restored_program_binding.py", line 60, in test_empty_entries_refused
+    with self.assertRaisesRegex(ProgramConflict, 'reviewed program entries change'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ProgramConflict not raised
+
+======================================================================
+FAIL: test_substituted_target_refused (test_restored_program_binding.RestoredProgramBinding.test_substituted_target_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-14-release-0.4.3/test_restored_program_binding.py", line 64, in test_substituted_target_refused
+    with self.assertRaisesRegex(ProgramConflict, 'reviewed program entries change'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ProgramConflict not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.008s
+
+FAILED (failures=3)

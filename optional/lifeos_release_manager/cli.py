@@ -16,6 +16,7 @@ from uuid import uuid4
 from threading import Thread
 
 from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, _json
+from .release_accounts import account_home
 from .release_programs import publish
 from .release_stage import (load_bridge, prepare_runtime, sha, validate_package, runtime_source_fingerprint,
                             validate_files, run_stage, _environment)
@@ -88,6 +89,7 @@ def write_state(job, state, *, error=None):
 
 def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=None, job=None, intent=None):
     profile = profile_directory(profile)
+    account_home(profile)
     for value in (name, assistant):
         if not isinstance(value, str) or not value.strip() or len(value) > 100 or any(ord(c) < 32 for c in value):
             raise ReleaseRejected('Fresh installation names require bounded text')
@@ -99,6 +101,7 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
 
 
 def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, intent=None):
+    home = account_home(profile)
     state = profile / '.lifeos-releases'
     state.mkdir(mode=0o700, exist_ok=True)
     if state.resolve() != state or state.stat().st_uid != os.getuid() or state.stat().st_mode & 0o077:
@@ -133,7 +136,7 @@ def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, 
             raise ReleaseRejected('Install LifeOS before requesting an update')
         runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
         request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
-            'account_home': str(Path.home()), 'installed': str(selected.installed),
+            'account_home': str(home), 'installed': str(selected.installed),
             'version': manifest['version'], 'commit': manifest['head'],
             'package_sha256': sha(downloaded['archive']), 'certificate': downloaded['certificate'],
             'configuration_sha256': sha(profile / 'config.yaml'),

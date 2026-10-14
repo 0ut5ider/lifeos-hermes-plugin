@@ -1,0 +1,164 @@
+{
+  "scope": "Exact current AST assertions with actual inputs, not full guest qualification",
+  "controls": [
+    {
+      "case": "current",
+      "expected_accept": true,
+      "accepted": true
+    },
+    {
+      "case": "failed-inventory",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-drain-source",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-capture-program-artifacts",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-backup-source",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-archives",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-resume-source",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-restore",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-disconnect",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-mount",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-unmount",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-boot-isolated",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-restored-config",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-network",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-verify-history",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-verify-program-artifacts",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-verify-stable-programs",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-shutdown-restore",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-cleanup-config",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "failed-destroy-disposable",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "extra-storage",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "missing-notes",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "case": "wrong-notes",
+      "expected_accept": false,
+      "accepted": false,
+      "exception": "AssertionError",
+      "detail": ""
+    }
+  ]
+}

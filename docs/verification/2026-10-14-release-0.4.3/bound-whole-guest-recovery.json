@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "archive": "PBS-01:backup/ct/111/2026-10-14T15:10:02Z",
+  "source_guest": 111,
+  "restored_guest": 110,
+  "version": "0.4.3",
+  "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+  "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+  "operation": "d5621dc92681425b9ee4553a063b7f0c",
+  "network_disconnected": true,
+  "application_services_masked": true,
+  "cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 51,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "production_guest_changed": false,
+  "runtime_artifact_coverage": {
+    "status": "PASS",
+    "action": "verify",
+    "operation": "d5621dc92681425b9ee4553a063b7f0c",
+    "program_commit": "a1abb579558edcf29f7cd04ecfd998995d48db54",
+    "archive_sha256": "1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d44491741d56645f400177",
+    "artifacts": 64282,
+    "regular_files": 57858,
+    "bytes": 1649122873,
+    "private_map_sha256": "769f4f782375fe73a6703d0f57d4bfdb434c2c397c02e2d88980297f7775872a",
+    "runtime_roots": [
+      "bin",
+      "compiled-dashboard",
+      "dependency-profile",
+      "hermes",
+      "package",
+      "pm-runtime",
+      "python-environment",
+      "tools",
+      "worker"
+    ],
+    "private_map_exported": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "tested_operator_sha256": "6630c02705c85ccc2c1581895410b7e9fa25ce0daafa59507cf25cbedce075c4",
+  "closed_original_restore_journal_finding": true,
+  "findings": [
+    {
+      "priority": "P2",
+      "file": "docs/verification/2026-10-14-release-0.4.3/certify_release.py",
+      "line": 75,
+      "control": "empty-service-details"
+    },
+    {
+      "priority": "P2",
+      "file": "docs/verification/2026-10-14-release-0.4.3/certify_release.py",
+      "line": 79,
+      "control": "wrong-rollback-identity"
+    },
+    {
+      "priority": "P2",
+      "file": "docs/verification/2026-10-14-release-0.4.3/certify_release.py",
+      "line": 106,
+      "control": "mixed-restore-guest"
+    },
+    {
+      "priority": "P2",
+      "file": "docs/verification/2026-10-14-release-0.4.3/certify_release.py",
+      "line": 61,
+      "control": "empty-native-inputs"
+    },
+    {
+      "priority": "P2",
+      "file": "docs/verification/2026-10-14-release-0.4.3/certify_release.py",
+      "line": 88,
+      "control": "interrupted-programs-still-applied"
+    },
+    {
+      "priority": "P2",
+      "file": "docs/verification/2026-10-14-release-0.4.3/certify_release.py",
+      "line": 111,
+      "control": "later-edit-was-not-refused"
+    }
+  ]
+}
