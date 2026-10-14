@@ -73,8 +73,10 @@ if args.server == 'daily':
     with httpx.Client(base_url='http://127.0.0.1:18819', timeout=60) as client:
         login = client.post('/auth/password-login', json={'provider': 'basic', **credentials})
         assert login.status_code == 200
-        me = client.get('/api/auth/me').json()
-        assert me['session']['provider'] == 'basic' and me['session']['user_id'] == 'adrian'
+        identity = client.get('/api/auth/me')
+        assert identity.status_code == 200
+        me = identity.json()
+        assert me['provider'] == 'basic' and me['user_id'] == 'adrian'
         response = client.post('/api/plugins/lifeos-hook-bridge/memory/review',
             headers={'X-Hermes-Profile': 'default'}, json={'tool': 'lifeos_memory_search',
                 'arguments': {'query': 'D253-042-PROMOTION-1014'}})

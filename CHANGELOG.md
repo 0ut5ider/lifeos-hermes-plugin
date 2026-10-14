@@ -1,11 +1,14 @@
 # Changelog
 
-## 0.4.3 (release candidate)
+## 0.4.3 (2026-10-14)
 
 - Bind release launchers to the account that owns the selected Hermes profile.
 - Preserve a separate native service HOME during release preparation, review, and installation.
 - Refuse account aliases and shared-write directories before preparation creates files.
-- Preserve all published 0.4.2 assets. Keep daily 0.3.1 active during qualification.
+- Verify the exact package with 683 integration tests, 716 native tests, and 39 account checks.
+- Verify actual update, rollback, interruption recovery, reboot, and disconnected guest restore.
+- Deploy the complete package to development .252 and daily .253 with existing data and model settings preserved.
+- Preserve all 45 prior published assets. Record automatic morning acceptance separately.
 
 ## 0.4.2 (2026-10-13)
 
