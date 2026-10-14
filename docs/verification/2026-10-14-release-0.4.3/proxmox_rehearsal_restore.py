@@ -5,17 +5,26 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import time
 
 os.umask(0o077)
-out=Path('/root/lifeos-release-0.4.3/rehearsal-whole-guest-restore')
 parser=argparse.ArgumentParser()
 parser.add_argument('--resume-backup',action='store_true')
+parser.add_argument('--out',type=Path,default=Path('/root/lifeos-release-0.4.3/rehearsal-whole-guest-restore'))
+parser.add_argument('--backup-evidence',type=Path)
+parser.add_argument('--verifier',type=Path)
 args=parser.parse_args()
+out=args.out
 if args.resume_backup:
-    assert (out/'archives.stdout').is_file()
-    captured=json.loads((out/'capture-program-artifacts.stdout').read_text())
-    operations=json.loads((out/'operations.json').read_text())
+    backup_evidence=args.backup_evidence or out
+    assert (backup_evidence/'archives.stdout').is_file()
+    captured=json.loads((backup_evidence/'capture-program-artifacts.stdout').read_text())
+    if backup_evidence!=out:
+        assert not out.exists();out.mkdir(parents=True,mode=0o700)
+        operations=[]
+    else:
+        operations=json.loads((out/'operations.json').read_text())
 else:
     assert not out.exists();out.mkdir(parents=True,mode=0o700)
     operations=[]
@@ -51,7 +60,7 @@ try:
     guests=json.loads(run(['pvesh','get','/cluster/resources','--type','vm','--output-format','json'],'inventory'))
     assert all(row['vmid']!=vmid for row in guests),'The disposable guest identifier is already used'
     if args.resume_backup:
-        archives=json.loads((out/'archives.stdout').read_text())
+        archives=json.loads((backup_evidence/'archives.stdout').read_text())
         archive=max(archives,key=lambda row:row['ctime'])['volid']
     else:
         source(services_code.replace('ACTION',"s.resume() if s.status()['recovery_required'] else None;s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Source writers drained')"),'drain-source')
@@ -68,6 +77,12 @@ try:
     run(['pct','set',str(vmid),'--delete','net0','--onboot','0','--tags','disposable;lifeos-043-recovery'],'disconnect')
     run(['pct','mount',str(vmid)],'mount')
     rootfs=Path('/var/lib/lxc')/str(vmid)/'rootfs'
+    if args.verifier:
+        verifier=rootfs/'home/lifeos-hermes/releases/qualification-0.4.3/verify_restored_programs.py'
+        prior=verifier.stat()
+        shutil.copyfile(args.verifier,verifier)
+        os.chown(verifier,prior.st_uid,prior.st_gid)
+        os.chmod(verifier,prior.st_mode & 0o777)
     units=rootfs/'home/lifeos-hermes/.config/systemd/user'
     for name in ('hermes-dashboard.service','hermes-gateway.service','com.lifeos.pulse.service'):
         p=units/name;p.rename(units/(name+'.before-restore'));p.symlink_to('/dev/null')

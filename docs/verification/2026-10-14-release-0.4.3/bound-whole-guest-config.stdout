@@ -1,0 +1,11 @@
+arch: amd64
+cores: 4
+features: nesting=1
+hostname: lifeos-043-recovery
+memory: 8192
+onboot: 0
+ostype: ubuntu
+rootfs: lifeos-043-tests:110/vm-110-disk-0.raw,size=120G
+swap: 512
+tags: disposable;lifeos-043-recovery
+unprivileged: 1

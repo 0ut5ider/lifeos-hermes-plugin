@@ -23,14 +23,22 @@
     "interruption": "PASS at programs-published",
     "first_recovery": "PASS after correcting retained test unit",
     "collected_unit_replay": "PASS",
-    "whole_guest_recovery": "PENDING",
+    "whole_guest_recovery": "PASS",
     "collected_interruption_operation": "bb646e0d665d4e3f9483aa32671247e5",
     "clean_recovery_result": "rolled_back to 0.3.1 with all services and both synthetic facts preserved",
-    "final_prepared_operation": "d5621dc92681425b9ee4553a063b7f0c"
+    "final_prepared_operation": "d5621dc92681425b9ee4553a063b7f0c",
+    "final_apply": "PASS",
+    "restored_runtime_artifacts": 64282,
+    "restored_program_targets": 9,
+    "atlas_recovery_cases": 3,
+    "disconnected_restore_guest_removed": true,
+    "whole_guest_archive": "PBS-01:backup/ct/111/2026-10-14T15:10:02Z"
   },
   "daily_active_version": "0.3.1",
   "development_active_version": "0.4.2",
   "production_promotion": "PENDING",
   "published_042_assets_immutable": true,
-  "personal_data_imported_or_reset": false
+  "personal_data_imported_or_reset": false,
+  "qualification_certificate_sha256": "a3fe6ee4867e402b5ed31c3db46412714c9585333d1494fcbae1152d2e5ea408",
+  "qualification_operator_review": "P2 fixed; final review in progress"
 }

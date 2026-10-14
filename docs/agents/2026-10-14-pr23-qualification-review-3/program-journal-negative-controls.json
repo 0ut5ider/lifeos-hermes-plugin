@@ -1,0 +1,37 @@
+{
+  "source_sha256": "db47487f297176cbc60bf4b1d681b0084f5227cc8152af21caccfba39d624bf9",
+  "workspace": "/tmp/pr23-program-journal-control-nqsgkvn4",
+  "controls": [
+    {
+      "case": "current-sealed-entry",
+      "exact_current_verifier_statements_accept": true,
+      "sealed_plan_still_valid": true,
+      "journal_matches_sealed_entry_digest": true,
+      "entries_count": 1,
+      "detail": null,
+      "synthetic_local_files_only": true,
+      "completed_guest_restore_constructed": false
+    },
+    {
+      "case": "empty-entries",
+      "exact_current_verifier_statements_accept": true,
+      "sealed_plan_still_valid": true,
+      "journal_matches_sealed_entry_digest": false,
+      "entries_count": 0,
+      "detail": null,
+      "synthetic_local_files_only": true,
+      "completed_guest_restore_constructed": false
+    },
+    {
+      "case": "same-count-substituted-target",
+      "exact_current_verifier_statements_accept": true,
+      "sealed_plan_still_valid": true,
+      "journal_matches_sealed_entry_digest": false,
+      "entries_count": 1,
+      "detail": null,
+      "synthetic_local_files_only": true,
+      "completed_guest_restore_constructed": false
+    }
+  ],
+  "method": "Execute the exact journal loading/state/fingerprint loop from verify_restored_programs.py. Use actual validate_plan and ProgramTransaction digest validation with synthetic regular owner files. No qualification certificate or whole-guest receipt is constructed."
+}

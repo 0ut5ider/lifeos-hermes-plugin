@@ -9,7 +9,7 @@ os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
 source = Path('/home/lifeos-hermes/releases/0.4.3-a1abb579')
 sys.path.insert(0, str(source))
 from optional.lifeos_release_manager.release_operation import validate_plan
-from optional.lifeos_release_manager.release_programs import fingerprint
+from optional.lifeos_release_manager.release_programs import ProgramTransaction
 
 profile = Path('/home/lifeos-hermes/.hermes')
 job = profile / '.lifeos-releases' / sys.argv[1]
@@ -20,11 +20,10 @@ assert request['package_sha256'] == '1c7de7abc4014bfee83bc9bdcd4bfdb6c169526844d
 assert json.loads((job / 'status.json').read_bytes())['state'] == 'applied'
 plan = validate_plan(job, request)
 assert not plan['native_mount_required']
-programs = json.loads((job / 'program-snapshot/programs.json').read_bytes())
-assert programs['state'] == 'applied'
-for row in programs['entries']:
-    path = Path(row['target'])
-    assert fingerprint(path, allow_links=row['allow_links']) == row['after'], row['target']
+transaction = ProgramTransaction(job / 'program-snapshot',
+    expected_entries_sha256=plan['program_entries_sha256'])
+transaction.check_applied()
+programs = transaction._load()
 units = Path('/home/lifeos-hermes/.config/systemd/user')
 for name in ('hermes-dashboard.service', 'hermes-gateway.service', 'com.lifeos.pulse.service'):
     assert (units / name).is_symlink() and os.readlink(units / name) == '/dev/null'
