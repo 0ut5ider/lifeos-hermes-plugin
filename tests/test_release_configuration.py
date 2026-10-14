@@ -148,7 +148,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
             selected = {'profile': profile, 'installed': installed, 'package': package,
                 'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes'],
                 'current': SimpleNamespace(memory_module=modules.__getitem__), 'fresh': False,
-                'native_changes': False, 'baseline': baseline_path}
+                'native_changes': False, 'baseline': baseline_path, 'reviewed_baseline': baseline}
             directories, files, dependencies = _program_plan(job, request, selected)
             prepared = (job / 'generated/baseline.json').read_bytes()
             self.assertEqual(json.loads(prepared)['created_at'], baseline['created_at'])

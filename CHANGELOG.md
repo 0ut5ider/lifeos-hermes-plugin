@@ -2,6 +2,8 @@
 
 ## 0.5.0 (unpublished qualification candidate)
 
+- Verify omitted native program baseline entries against the exact accepted archive before release updates.
+- Preserve later edits and refuse changed, missing, or redirected accepted archives.
 - Compare observer completion state with native event timestamps and bound journal capture delay.
 
 - Add authenticated owner reads for the 24 declared Pulse core files.

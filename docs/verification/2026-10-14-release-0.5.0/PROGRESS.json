@@ -1,6 +1,6 @@
 {
   "version": "0.5.0",
-  "status": "PREPARING_COMPLETE_PACKAGE",
+  "status": "BASELINE_COLLISION_REPAIR_REQUIRES_NEW_PACKAGE",
   "published": false,
   "production_qualified": false,
   "development_version": "0.4.3",
@@ -17,5 +17,15 @@
     "daily_promotion": "pending"
   },
   "preserve_models_and_data": true,
-  "original_0700_wall_clock_observed": false
+  "original_0700_wall_clock_observed": false,
+  "initial_candidate_commit": "aaaa511af9493b8bfd9a8d59794c7e0b7c48b2d1",
+  "initial_archive_sha256": "6dc3581c3a6d6116bff8d8f16443924f0ca716ec97c12f48db025edecc606294",
+  "initial_archive_bytes": 206852906,
+  "initial_native_tests": 716,
+  "initial_native_status": "PASS",
+  "initial_guest_update_preparation": "FAIL before selecting programs",
+  "measured_cause": "LogAnalysis.ts is outside the prior VersionDrift baseline; current bytes match the accepted prior archive.",
+  "baseline_proof_controls": 14,
+  "actual_synthetic_baseline_proof": "PASS with no installed changes",
+  "daily_baseline_omission_confirmed": true
 }

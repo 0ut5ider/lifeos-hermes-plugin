@@ -10,6 +10,7 @@ import subprocess
 
 from .release_catalog import ReleaseRejected
 from .release_accounts import account_home
+from .release_baseline import reviewed_baseline
 from .release_programs import fingerprint
 from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint
 
@@ -69,8 +70,11 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
     source = Path(prior['source_root'])
     current.memory_module('update_worker').check_prior_source(prior, source, installed)
     current.memory_module('update_worker').check_template_compatibility(source, package / 'lifeos/LifeOS/install')
-    changes = current.memory_module('update_plan').plan_system_files(installed, prior,
-        package / 'lifeos/LifeOS/install', Path(request['runtime']['reference']))
+    planner = current.memory_module('update_plan')
+    native, reference = package / 'lifeos/LifeOS/install', Path(request['runtime']['reference'])
+    prior = reviewed_baseline(profile, prior, installed,
+        planner.deployed_system_files(native, reference), active, planner)
+    changes = planner.plan_system_files(installed, prior, native, reference)
     services = current.memory_module('profile_services').ProfileServices(profile, installed,
         installation_lease=installation_lease)
     preview = services.preview()
@@ -92,7 +96,8 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
         (sha(source / root / name) if (source / root / name).is_file() else None)
         != (sha(next_source / root / name) if (next_source / root / name).is_file() else None)
         for root in dependency_roots for name in ('package.json', 'bun.lock'))
-    result.update(prior_source=source, native_changes=dependency_changes or any(changes[key] for key in ('add', 'replace', 'remove')),
+    result.update(prior_source=source, reviewed_baseline=prior,
+                  native_changes=dependency_changes or any(changes[key] for key in ('add', 'replace', 'remove')),
                   services=preview, launchers=sorted(launchers))
     return result
 
