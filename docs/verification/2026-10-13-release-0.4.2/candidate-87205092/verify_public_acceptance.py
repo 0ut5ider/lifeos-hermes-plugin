@@ -28,7 +28,9 @@ assert manager['metadata']['revision'] == '7ac93c6902dd1311fea804f160f4a765c42b9
 assert manager['explicit_branch_or_commit_selected'] is False and manager['metadata']['pinned'] is False
 assert manager['manager_program_commit'] == identity['commit']
 baseline = load('public-rc3-baseline.json')
-assert baseline['active_identity']['version'] == '0.4.2-rc.3'
+assert baseline['active_identity'] == {'version': '0.4.2-rc.3',
+    'commit': '10459df6c2b27bda8911dfd96a25b92bee769c93',
+    'package_sha256': 'fe7a9bfbf1c3f68355fc1125f125fac8250a1f9ccecf95ff697b5979dc3d5474'}
 assert baseline['actual_update_lifeos_button'] is True
 prior_reference = baseline['synthetic_fact_preserved']['reference']
 assert prior_reference == {'id': 'da7e20b95b904ca7ac4aab594c23b5ee', 'revision': 1}
