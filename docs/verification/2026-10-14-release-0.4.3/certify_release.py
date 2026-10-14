@@ -127,6 +127,29 @@ for receipt in (whole, coverage, artifacts, captured):
     assert receipt['program_commit'] == commit and receipt['archive_sha256'] == archive_sha
     assert receipt['operation'] == operation
 assert whole['archive'] == coverage['backup_archive'] and whole['archive'].startswith('PBS-01:backup/ct/111/')
+commands = {row['label']: row['command'] for row in operations}
+assert len(commands) == len(operations)
+assert commands['restore'] == ['pct', 'restore', '110', whole['archive'], '--storage', 'lifeos-043-tests',
+    '--rootfs', 'lifeos-043-tests:120', '--unprivileged', '1', '--onboot', '0', '--hostname', 'lifeos-043-recovery']
+assert commands['disconnect'] == ['pct', 'set', '110', '--delete', 'net0', '--onboot', '0',
+    '--tags', 'disposable;lifeos-043-recovery']
+for label, verb in (('mount', 'mount'), ('unmount', 'unmount'), ('boot-isolated', 'start')):
+    assert commands[label] == ['pct', verb, '110']
+assert commands['shutdown-restore'] == ['pct', 'shutdown', '110', '--timeout', '90']
+assert commands['destroy-disposable'] == ['pct', 'destroy', '110', '--purge', '1']
+selected_python = '/home/lifeos-hermes/.hermes/.lifeos-releases/' + operation + '/python-environment/bin/python'
+execution = ['pct', 'exec', '110', '--', 'runuser', '-u', 'lifeos-hermes', '--', selected_python, '-B']
+operator_path = '/home/lifeos-hermes/releases/qualification-0.4.3/'
+assert commands['verify-history'] == execution + [operator_path + 'history_guest_recovery.py',
+    'verify', '/home/lifeos-hermes/releases/0.4.3-a1abb579']
+assert commands['verify-program-artifacts'] == execution + [operator_path + 'program_artifact_receipt.py', 'verify', operation]
+assert commands['verify-stable-programs'] == execution + [operator_path + 'verify_restored_programs.py', operation]
+source_commands = {row['label']: row['command'] for row in backup_operations}
+assert len(source_commands) == len(backup_operations)
+assert source_commands['backup-source'][:6] == ['vzdump', '111', '--storage', 'PBS-01', '--mode', 'stop']
+source_execution = ['pct', 'exec', '111', '--', 'runuser', '-u', 'lifeos-hermes', '--', selected_python, '-B']
+assert source_commands['capture-program-artifacts'] == source_execution + [operator_path + 'program_artifact_receipt.py', 'capture', operation]
+assert source_commands['drain-source'] == source_commands['resume-source'] == source_execution + ['-']
 for receipt in (whole, coverage):
     assert receipt['source_guest'] == 111 and receipt['restored_guest'] == 110
     assert receipt['version'] == '0.4.3'

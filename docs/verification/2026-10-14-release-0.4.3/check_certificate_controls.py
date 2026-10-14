@@ -9,6 +9,16 @@ import shutil
 import tempfile
 
 source = Path(__file__).resolve().parent
+
+
+def change_restore_guest(rows):
+    next(row for row in rows if row['label'] == 'restore')['command'][2] = '253'
+
+
+def change_restore_archive(rows):
+    next(row for row in rows if row['label'] == 'restore')['command'][3] = 'PBS-01:backup/ct/111/2026-10-13T00:00:00Z'
+
+
 cases = [
     ('completed-inputs', None, None),
     ('failed-integration', 'integration-archive-bound-a1abb579.json', lambda row: row.update(exit_code=1)),
@@ -24,6 +34,8 @@ cases = [
     ('empty-native-inputs', 'unchanged-native-inputs.json', lambda row: row.update(inputs={})),
     ('interrupted-programs-still-applied', 'daily-layout-operation-states.json', lambda row: next(item for item in row['operations'] if item['operation'] == 'bb646e0d665d4e3f9483aa32671247e5').update(program_state='applied')),
     ('later-edit-was-not-refused', 'bound-whole-guest-recovery.json', lambda row: next(item for item in row['cases'] if item['case'] == 'later-edit').update(later_edit_refused=False)),
+    ('mixed-restore-command-guest', 'bound-whole-guest-operations.json', change_restore_guest),
+    ('mixed-restore-command-archive', 'bound-whole-guest-operations.json', change_restore_archive),
 ]
 results = []
 with tempfile.TemporaryDirectory(prefix='lifeos-043-certificate-controls-') as temporary:
