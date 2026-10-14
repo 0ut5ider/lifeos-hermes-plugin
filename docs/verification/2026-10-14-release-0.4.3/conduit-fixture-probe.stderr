@@ -1,0 +1,110 @@
+test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) ... 
+  test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='source') ... ERROR
+  test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='destination') ... ERROR
+  test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='authority') ... ERROR
+  test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='interrupt') ... ERROR
+
+======================================================================
+ERROR: test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/integration-workspaces/integration-bound-tbcctiru/package/tests/test_memory_conduit_insight.py", line 281, in test_actual_post_render_edits_and_interruption_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_conduit_insight_process.py')), str(self.fixture.configuration.path),
+        mode, json.dumps(asdict(self.fixture.context))], capture_output=True, text=True, timeout=45)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='destination')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/integration-workspaces/integration-bound-tbcctiru/package/tests/test_memory_conduit_insight.py", line 281, in test_actual_post_render_edits_and_interruption_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_conduit_insight_process.py')), str(self.fixture.configuration.path),
+        mode, json.dumps(asdict(self.fixture.context))], capture_output=True, text=True, timeout=45)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/integration-workspaces/integration-bound-tbcctiru/package/tests/test_memory_conduit_insight.py", line 281, in test_actual_post_render_edits_and_interruption_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_conduit_insight_process.py')), str(self.fixture.configuration.path),
+        mode, json.dumps(asdict(self.fixture.context))], capture_output=True, text=True, timeout=45)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+======================================================================
+ERROR: test_actual_post_render_edits_and_interruption_preserve_recovery (test_memory_conduit_insight.MemoryConduitInsightTests.test_actual_post_render_edits_and_interruption_preserve_recovery) (mode='interrupt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/integration-workspaces/integration-bound-tbcctiru/package/tests/test_memory_conduit_insight.py", line 281, in test_actual_post_render_edits_and_interruption_preserve_recovery
+    result = subprocess.run([os.environ.get('PYTHON', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'),
+        str(Path(__file__).with_name('memory_conduit_insight_process.py')), str(self.fixture.configuration.path),
+        mode, json.dumps(asdict(self.fixture.context))], capture_output=True, text=True, timeout=45)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.033s
+
+FAILED (errors=4)

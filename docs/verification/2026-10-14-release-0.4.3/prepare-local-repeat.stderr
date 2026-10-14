@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-14-release-0.4.3/prepare_local_fixture.py", line 82, in <module>
+    result = cli.prepare(profile, package['version'], name='Synthetic Qualification', assistant='Qualification Hermes', intent='install', catalog=catalog.ReleaseCatalog(api_origin=origin, asset_origin=origin))
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/local-fixture-repeat/account/.hermes/plugins/lifeos-release-manager/cli.py", line 99, in prepare
+    return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, intent=intent)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/local-fixture-repeat/account/.hermes/plugins/lifeos-release-manager/cli.py", line 150, in _prepare
+    prepare_plan(job, request, manifest['manager_files'])
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/local-fixture-repeat/account/.hermes/plugins/lifeos-release-manager/cli.py", line 167, in prepare_plan
+    run_stage([request['runtime']['python'], '-B', job / 'worker/release_worker.py', job,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               '--action', 'prepare'], job, 'candidate-review', environment=environment)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/local-fixture-repeat/account/.hermes/plugins/lifeos-release-manager/release_stage.py", line 186, in run_stage
+    raise ReleaseRejected('Release preparation fails at ' + label + '. The active installation is unchanged.')
+lifeos_development_manager.release_catalog.ReleaseRejected: Release preparation fails at candidate-review. The active installation is unchanged.
