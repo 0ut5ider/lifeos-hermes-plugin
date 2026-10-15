@@ -44,3 +44,13 @@ The final stock review finds that the initial verifier ignores extra runtime fil
 The first development owner application rolls back during native mount preparation. All 222 program targets return to their recorded prior identities. The prior 0.4.3 release, model mapping, credential bytes, memory configuration, and all three service HOME settings pass verification. The saved failure has no native stderr, so its exact error remains unknown.
 
 The authenticated owner prompt preview has no launcher name before a source-review refresh. Both current identity sources pass the installed retirement policy. The authenticated owner endpoint refreshes those two reviews, and the prompt preview then has a launcher name. No identity bytes or personal records change. A new exact-package preparation tests this measured mount prerequisite. Neither the review refresh nor the rollback qualifies development acceptance.
+
+## Completed development acceptance
+
+The actual retry applies the exact archive. All 222 sealed program targets, selected model mapping, credential bytes, owner memory configuration, service HOME settings, and three active services pass verification. The real private model commits one synthetic write. A fresh conversation recalls the exact reference twice. The verifier now validates every exact successful search; its thirteen controls pass. The original streams pass without another model call or write.
+
+The authenticated prompt preview initially admits one of 56 native skills. All 56 current skill review digests match the exact package and pass the installed retirement policy. The owner endpoint commits their reviews. Prompt preview then admits all 56 skills, and actual owner remounting succeeds. Personal context is excluded. The gateway restarts. Current identity, configuration bytes, model mapping, and service HOME settings pass supplementary verification.
+
+The owner remount replaces the earlier release-bound mount journal. The earlier update operation reports `restore_available: false`, and the original restoration verifier refuses the later journal. This protects the later owner mount. The 222-target receipt records the actual post-apply checkpoint before the remount. The separate current receipt records post-admission preservation. The qualification retains both scopes. The protected development archive remains available for recovery.
+
+The supplementary helper now requires exact baseline digest keys and valid baseline provenance. Eight controls pass after the primary reproduces the missing-map gap. The initial full certificate run passes 33 cases. Further controls bind the current post-admission state explicitly.

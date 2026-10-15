@@ -40,23 +40,28 @@ assert calls and all(item['name'] == 'lifeos_memory_search' for item in calls)
 results = [item for item in search if item['type'] == 'tool_result']
 assert len(results) == len(calls) and all(not item['is_error'] for item in results)
 responses = [json.loads(item['output']) for item in results]
-assert all(item == {'status': 'rejected', 'reason': 'Memory tool arguments contain missing or unrecognized fields'} for item in responses[:-1])
-found = responses[-1]
-assert found['status'] == 'ok'
-matches = [item for item in found['results'] if item['reference'] == receipt['reference']]
-assert len(matches) == 1
-match = matches[0]
-assert match['reference'] == receipt['reference']
-assert match['content'] == 'Synthetic daily acceptance verification code is STABLE-050-DEV-04EFE633.'
-assert match['category'] == 'project' and match['project'] == 'release-0.5.0-qualification'
-assert match['writer'] == 'terminal:1008' and match['status'] == 'active'
-assert match['source']['session'] == sessions[0]
+assert responses and responses[-1]['status'] == 'ok'
+argument_refusals = successful_searches = 0
+for found in responses:
+    if found == {'status': 'rejected', 'reason': 'Memory tool arguments contain missing or unrecognized fields'}:
+        argument_refusals += 1
+        continue
+    assert found['status'] == 'ok' and len(found['results']) == 1
+    match = found['results'][0]
+    assert match['reference'] == receipt['reference']
+    assert match['content'] == 'Synthetic daily acceptance verification code is STABLE-050-DEV-04EFE633.'
+    assert match['category'] == 'project' and match['project'] == 'release-0.5.0-qualification'
+    assert match['writer'] == 'terminal:1008' and match['status'] == 'active'
+    assert match['source']['session'] == sessions[0]
+    successful_searches += 1
+assert successful_searches > 0
 report = {'status': 'PASS', 'model': 'flashnext-w4a16-fp8ple', 'sessions': sessions,
     'reference': receipt['reference'], 'writer': receipt['writer'],
     'actual_write_and_fresh_conversation_read_verified': True,
     'synthetic_data_only': True, 'development_profile_only': True, 'daily_server_changed': False,
     'discord_delivery_verified': False, 'scheduled_work_verified': False,
-    'search_argument_refusals': len(responses) - 1, 'process_elapsed_seconds': [item['elapsed_seconds'] for item in processes]}
+    'search_argument_refusals': argument_refusals, 'successful_searches': successful_searches,
+    'process_elapsed_seconds': [item['elapsed_seconds'] for item in processes]}
 identity = json.loads((Path.home() / '.hermes/integration-release.json').read_bytes())
 assert identity['version'] == '0.5.0' and identity['commit'] == '04efe633296eb2b1a1d95561ca6d3e9516cd47dc'
 assert identity['package_sha256'] == 'a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813'
