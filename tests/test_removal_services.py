@@ -42,7 +42,7 @@ class RemovalServicesTests(unittest.TestCase):
         for role,unit in self.fixture.units.items():
             values=dict(line.split('=',1) for line in self.fixture.command('systemctl','--user','show',unit,'--property=FragmentPath,DropInPaths').splitlines())
             for number,path in enumerate([values['FragmentPath'],*values['DropInPaths'].split()]):paths[role+str(number)]=path
-        output=Path(__file__).resolve().parents[1]/'docs/verification/2026-10-15-memory-portability/removal-service-layout.json'
+        output=self.home/'removal-service-layout.json'
         output.write_text(json.dumps({role:{'path':path,'mode':oct(Path(path).lstat().st_mode),'uid':Path(path).lstat().st_uid,'link':Path(path).is_symlink()} for role,path in paths.items()},indent=2)+'\n')
         operation=self.operation();review=operation.prepare(removed=[self.installed_pulse])
         operation.stop(review)

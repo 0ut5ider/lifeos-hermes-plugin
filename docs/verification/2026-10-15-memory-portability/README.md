@@ -4,6 +4,18 @@ Date: 2026-10-15. Status: implementation in progress. The daily server remains o
 
 The [implementation contract](../../memory-portability.md) covers import, portable export, provider return, complete software removal, and final release qualification. These checks verify the first primitives. They do not establish complete service orchestration, removal, browser acceptance, or deployment.
 
+## Current installed state
+
+CT110 at `192.168.8.244` runs private committed test checkpoints. The published and daily release remains qualified 0.5.0. The actual owner browser imports both authorized .213 files, applies reviewed native ownership, exports six required items, and verifies provider return. Fresh private FlashNext turns retrieve the imported project fact with its original source digest, search native synthetic memory, and recall the returned synthetic marker through built-in Hermes. Another actual built-in tool call adds a later fact and preserves existing entries. The private bundle download preserves the original .213 project content and provenance. No personal source text enters these receipts.
+
+Complete installed removal remains pending. The installed attempts identify two preparation inconsistencies: regenerated native architecture output, then valid contained dependency links. Both have failing regression evidence and focused corrections. No software is removed by the failed attempts. The latest dependency-link correction033af302 is staging through the normal browser package workflow. Its five focused controls pass, including actual synthetic removal and restoration, an escaping link, and a later dependency edit. Independent closure review is pending.
+
+The clean broad repeat passes 228 tests with no ignored exceptions or ResourceWarning diagnostics. It starts before the dependency-link correction and remains evidence for the prior checkpoint. The earlier 223-assertion result contains a SQLite fixture warning and is not clean qualification. The corrected fixture closes its connection, and the runner rejects ignored warnings. The current private archive also runs the complete prior integration selection plus portability tests from extracted package bytes. It is not yet a qualified release.
+
+The [final local removal review](../../agents/2026-10-15-final-removal-review/final-removal-review.md) passes 40 clean Python controls and 19 SDK controls before the dependency-link correction. The primary checks its source identities and independently repeats the three new actual rollback and current-memory controls. Installed complete removal, password-authenticated retained recovery, reboot, additional native learning and return, portable bundle replay, and full release qualification remain open.
+
+The disposable guest alone expands from 32 GiB to 64 GiB for retained test runtimes and recovery copies. No existing guest stops. Stock runtime preparation also needs Ubuntu `libatomic1`; the fixture supplies it through the signed operating-system package repository.
+
 ## Current checks
 
 The runner uses the existing qualified 0.5.0 native LifeOS fixture and frozen Hermes test environment. All data created by the tests is synthetic.

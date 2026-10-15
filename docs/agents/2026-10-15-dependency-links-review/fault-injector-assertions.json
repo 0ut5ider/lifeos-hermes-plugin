@@ -1,0 +1,70 @@
+{
+  "source_sha256": "a4a4606ee316db2908c15de68254a22042da5b90cc484de6cdcd2c9654f5725f",
+  "assertions": 13,
+  "assertion_sites": [
+    {
+      "line": 16,
+      "condition": "os.getuid() == 0"
+    },
+    {
+      "line": 17,
+      "condition": "re.fullmatch('[0-9a-f]{32}', args.identifier)"
+    },
+    {
+      "line": 18,
+      "condition": "re.fullmatch('[a-z0-9-]+', args.label)"
+    },
+    {
+      "line": 23,
+      "condition": "(job / 'review.json').is_file()"
+    },
+    {
+      "line": 25,
+      "condition": "review['state'] == 'ready'"
+    },
+    {
+      "line": 42,
+      "condition": "re.fullmatch('lifeos-memory-' + args.identifier + '-[0-9a-f]{8}', unit)"
+    },
+    {
+      "line": 48,
+      "condition": "pid > 1 and metadata['ActiveState'] == 'active'"
+    },
+    {
+      "line": 49,
+      "condition": "metadata['FragmentPath'] == '/run/user/1000/systemd/transient/' + unit + '.service'"
+    },
+    {
+      "line": 51,
+      "condition": "process.stat().st_uid == 1000"
+    },
+    {
+      "line": 55,
+      "condition": "str(job).encode() in arguments and b'apply' in arguments"
+    },
+    {
+      "line": 57,
+      "condition": "groups == {metadata['ControlGroup']}"
+    },
+    {
+      "line": 58,
+      "condition": "json.loads((job / 'launch.json').read_bytes())['unit'] == unit"
+    },
+    {
+      "line": 59,
+      "condition": "json.loads((job / 'status.json').read_bytes())['state'] == 'applying'"
+    }
+  ],
+  "compiled_assertion_checks_by_optimization": {
+    "0": 13,
+    "1": 0,
+    "2": 0
+  },
+  "source_executed": false,
+  "signals_sent": 0,
+  "signal_attribute_references_by_optimization": {
+    "0": 1,
+    "1": 1,
+    "2": 1
+  }
+}

@@ -1,0 +1,15 @@
+test_actual_removal_service_control_preserves_checkout_fixture (docs.verification.2026-10-15-memory-portability.test_fixture_isolation.FixtureIsolationTests.test_actual_removal_service_control_preserves_checkout_fixture) ... FAIL
+
+======================================================================
+FAIL: test_actual_removal_service_control_preserves_checkout_fixture (docs.verification.2026-10-15-memory-portability.test_fixture_isolation.FixtureIsolationTests.test_actual_removal_service_control_preserves_checkout_fixture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/test_fixture_isolation.py", line 26, in test_actual_removal_service_control_preserves_checkout_fixture
+    self.assertEqual(after, before, 'The actual service control changes evidence inside the checkout')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{\n[83 chars]test-bab92b04ce5f4285ac09763a94022f49-gateway.[949 chars]n}\n' != b'{\n[83 chars]test-a53adb1367e346ea8cb3382b386d62fd-gateway.[949 chars]n}\n' : The actual service control changes evidence inside the checkout
+
+----------------------------------------------------------------------
+Ran 1 test in 4.660s
+
+FAILED (failures=1)
