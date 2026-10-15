@@ -1,6 +1,6 @@
 # ABOUTME: Creates a protected checkpoint before the development release transition.
 # ABOUTME: Drains only the selected development profile and exports safe backup metadata.
-import json,os,subprocess,time
+import json,os,subprocess,sys,time
 from pathlib import Path
 os.umask(0o077)
 root=Path('/root/lifeos-release-0.5.0');out=root/'development-checkpoint'
@@ -27,7 +27,7 @@ s=importlib.import_module('lifeos-hook-bridge.profile_services').ProfileServices
 ACTION
 """
 def source(action,label):return run(['pct','exec','101','--','runuser','-u','lifeos-hermes','--',python,'-B','-'],label,input=code.replace('ACTION',action))
-result=1;drained=False
+result=1;recovery_required=False
 try:
  complete=root/'rehearsal-whole-guest-restore/process.done'
  deadline=time.monotonic()+3600
@@ -37,14 +37,23 @@ try:
  assert complete.read_text().strip()=='0'
  verification=json.loads((complete.parent/'verification.json').read_bytes())
  assert verification['status']=='PASS' and verification['program_commit']=='04efe633296eb2b1a1d95561ca6d3e9516cd47dc'
- source("s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Development writers drained')",'drain-development');drained=True
+ recovery_required=True
+ source("s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Development writers drained')",'drain-development')
  run(['vzdump','101','--storage','PBS-01','--mode','stop','--notes-template','LifeOS 0.4.3 before complete 0.5.0 transition'],'backup-development',timeout=7200)
  archives=json.loads(run(['pvesh','get','/nodes/pve-tr1950x/storage/PBS-01/content','--content','backup','--vmid','101','--output-format','json'],'archives'))
  archive=max(archives,key=lambda row:row['ctime'])['volid']
  assert archive.startswith('PBS-01:backup/ct/101/')
- source("s.resume();print('Development writers resumed')",'resume-development');drained=False
+ source("s.resume();print('Development writers resumed')",'resume-development');recovery_required=False
  (out/'checkpoint.json').write_text(json.dumps({'status':'PASS','guest':101,'version':'0.4.3','program_commit':'a1abb579558edcf29f7cd04ecfd998995d48db54','protected_archive':archive,'writers_drained':True,'services_resumed':True,'daily_guest_changed':False},indent=2)+'\n')
  result=0
 finally:
- if drained:source("s.resume();print('Development writers resumed after failure')",'recover-development-services')
- (out/'process.done').write_text(str(result)+'\n')
+ failure=sys.exc_info()[1]
+ try:
+  if recovery_required:
+   source("s.resume() if s.status()['recovery_required'] else None;print('Development service recovery checked')",'recover-development-services')
+ except BaseException as cleanup_error:
+  result=1
+  if failure is None:raise
+  failure.add_note('Development service recovery also fails: '+type(cleanup_error).__name__)
+ finally:
+  (out/'process.done').write_text(str(result)+'\n')

@@ -1,0 +1,436 @@
+{
+  "pinned_commit": "94ea72dd52a84425bf39f1e482ba64aaddb0c03b",
+  "results": [
+    {
+      "case": "baseline-awaits-development",
+      "input": null,
+      "refused_before_development": false,
+      "reached_pending_development_gate": true,
+      "failure": {
+        "type": "FileNotFoundError",
+        "line": 771,
+        "reason": "[Errno 2] No such file or directory: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/baseline-awaits-development/docs/verification/2026-10-14-release-0.5.0/development-verification.json'",
+        "missing_file": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/baseline-awaits-development/docs/verification/2026-10-14-release-0.5.0/development-verification.json"
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "failed-integration",
+      "input": "integration-04efe633.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 41,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-tested-commit",
+      "input": "integration-04efe633.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 41,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "failed-native",
+      "input": "native-sealed-04efe633.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 41,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-bootstrap-ref",
+      "input": "manager-bootstrap.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 72,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "fresh-owner-absent",
+      "input": "stock-first-install.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 74,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "stock-source-changed",
+      "input": "stock-source.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 83,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "unsafe-editor-mode",
+      "input": "installed-editor-verification.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 91,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "editor-remount-fails",
+      "input": "installed-editor-verification.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 92,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "browser-retains-revoked-draft",
+      "input": "browser-editor-verification.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 96,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "changed-compiled-page",
+      "input": "compiled-page-identity.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 97,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "empty-services",
+      "input": "verify-applied.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 113,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-prior-identity",
+      "input": "verify-restored.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 119,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "interruption-owner-absent",
+      "input": "interrupted-action.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 122,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "interruption-mount-absent",
+      "input": "interrupted-action.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 123,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "interrupted-programs-applied",
+      "input": "synthetic-operation-states.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 130,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "stale-restore-commit",
+      "input": "bound-whole-guest-recovery.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 150,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "missing-atlas-case",
+      "input": "bound-whole-guest-recovery.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 181,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "later-edit-not-refused",
+      "input": "bound-whole-guest-recovery.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 185,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "changed-runtime-count",
+      "input": "bound-whole-guest-artifact-coverage.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 143,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "changed-restore-operation",
+      "input": "bound-whole-guest-program-coverage.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 151,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "missing-native-restore",
+      "input": "bound-whole-guest-program-coverage.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 188,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "missing-owner-configuration-proof",
+      "input": "bound-whole-guest-program-coverage.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 189,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-restore-command-guest",
+      "input": "bound-whole-guest-operations.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 155,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-backup-storage",
+      "input": "source-backup-operations.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 172,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "no-reboot",
+      "input": "reboot-verification.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 196,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-whole-source-guest",
+      "input": "bound-whole-guest-recovery.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 178,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-whole-restore-guest",
+      "input": "bound-whole-guest-program-coverage.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 178,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-runtime-archive",
+      "input": "bound-whole-guest-artifact-coverage.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 150,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-source-capture-map",
+      "input": "source-program-artifact-capture.json",
+      "refused_before_development": true,
+      "reached_pending_development_gate": false,
+      "failure": {
+        "type": "AssertionError",
+        "line": 142,
+        "reason": "",
+        "missing_file": null
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-reboot-source-guest",
+      "input": "reboot-verification.json",
+      "refused_before_development": false,
+      "reached_pending_development_gate": true,
+      "failure": {
+        "type": "FileNotFoundError",
+        "line": 771,
+        "reason": "[Errno 2] No such file or directory: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/wrong-reboot-source-guest/docs/verification/2026-10-14-release-0.5.0/development-verification.json'",
+        "missing_file": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/wrong-reboot-source-guest/docs/verification/2026-10-14-release-0.5.0/development-verification.json"
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "reboot-claims-production-change",
+      "input": "reboot-verification.json",
+      "refused_before_development": false,
+      "reached_pending_development_gate": true,
+      "failure": {
+        "type": "FileNotFoundError",
+        "line": 771,
+        "reason": "[Errno 2] No such file or directory: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/reboot-claims-production-change/docs/verification/2026-10-14-release-0.5.0/development-verification.json'",
+        "missing_file": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/reboot-claims-production-change/docs/verification/2026-10-14-release-0.5.0/development-verification.json"
+      },
+      "certificate_created": false
+    },
+    {
+      "case": "fresh-claims-production-change",
+      "input": "stock-first-install.json",
+      "refused_before_development": false,
+      "reached_pending_development_gate": true,
+      "failure": {
+        "type": "FileNotFoundError",
+        "line": 771,
+        "reason": "[Errno 2] No such file or directory: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/fresh-claims-production-change/docs/verification/2026-10-14-release-0.5.0/development-verification.json'",
+        "missing_file": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-14-pr27-qualification-review/guard-inputs/fresh-claims-production-change/docs/verification/2026-10-14-release-0.5.0/development-verification.json"
+      },
+      "certificate_created": false
+    }
+  ],
+  "completion_receipts_constructed": false,
+  "remote_commands_run": false
+}

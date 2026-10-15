@@ -67,6 +67,7 @@ review = out.parents[1] / 'agents/2026-10-14-pr27-baseline-review/pr27-baseline-
 assert 'CLEAR for the reviewed product change.' in review.read_text() and commit in review.read_text()
 
 fresh = passed('stock-first-install.json')
+assert fresh['production_guest_changed'] is False
 manager = passed('stock-manager-install.json')
 bootstrap = passed('manager-bootstrap.json')
 assert fresh['commit'] == manager['commit'] == bootstrap['ref'] == commit
@@ -177,6 +178,7 @@ assert source_commands['drain-source'] == source_commands['resume-source'] == so
 for receipt in (whole, coverage):
     assert receipt['source_guest'] == 111 and receipt['restored_guest'] == 110
     assert receipt['version'] == '0.5.0'
+assert whole['production_guest_changed'] is False
 assert whole['network_disconnected'] and whole['application_services_masked']
 assert {row['case'] for row in whole['cases']} == {'baseline', 'interrupted', 'later-edit'}
 assert len(whole['cases']) == 3 and all(row['status'] == 'PASS' for row in whole['cases'])
@@ -192,6 +194,7 @@ assert whole['runtime_artifact_coverage'] == artifacts
 frontend = Path('/home/outsider/.cache/lifeos-daily-promotion-20261014/hermes-dashboard.tgz')
 assert digest(frontend) == 'e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec'
 reboot = passed('reboot-verification.json')
+assert reboot['source_guest'] == 111 and reboot['production_guest_changed'] is False
 assert reboot['operation'] == operation and reboot['program_commit'] == commit and reboot['archive_sha256'] == archive_sha
 assert reboot['boot_identity_changed'] and reboot['selected_programs_and_services_verified'] and reboot['model_mapping_and_synthetic_memory_preserved']
 development = passed('development-verification.json')
@@ -217,6 +220,7 @@ certificate = {'format': 1, 'status': 'QUALIFIED', 'production_qualified': True,
     'clean_stock_installation_verified': True, 'governed_editor_installed_verified': True,
     'governed_editor_browser_verified': True, 'development_owner_turn_verified': True,
     'older_manager_bootstrap_required': True,
+    'source_review_report_sha256': digest(review),
     'qualification_receipt_sha256': {name: digest(out / name) for name in sorted(used)},
     'daily_promotion_verified': False, 'automatic_morning_observed': False,
     'public_default_url_replay_for_050': 'Pending public publication',

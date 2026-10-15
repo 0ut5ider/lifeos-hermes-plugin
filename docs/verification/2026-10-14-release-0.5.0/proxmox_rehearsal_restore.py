@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import shutil
+import sys
 import time
 
 os.umask(0o077)
@@ -56,7 +57,7 @@ s=ProfileServices(profile,root)
 ACTION
 """.replace('PACKAGE',repr(package))
 result=1
-drained=False
+recovery_required=False
 created=False
 try:
     guests=json.loads(run(['pvesh','get','/cluster/resources','--type','vm','--output-format','json'],'inventory'))
@@ -65,15 +66,15 @@ try:
         archives=json.loads((backup_evidence/'archives.stdout').read_text())
         archive=max(archives,key=lambda row:row['ctime'])['volid']
     else:
+        recovery_required=True
         source(services_code.replace('ACTION',"s.resume() if s.status()['recovery_required'] else None;s.drain(signature=s.preview()['signature']);s.verify_stopped();print('Source writers drained')"),'drain-source')
-        drained=True
         captured=json.loads(run(['pct','exec','111','--','runuser','-u','lifeos-hermes','--',python,'-B',
             '/home/lifeos-hermes/releases/qualification-0.5.0/program_artifact_receipt.py','capture',os.environ['LIFEOS_STABLE_OPERATION']], 'capture-program-artifacts'))
         run(['vzdump','111','--storage','PBS-01','--mode','stop','--notes-template','LifeOS 0.5.0 managed release recovery'],'backup-source')
         archives=json.loads(run(['pvesh','get','/nodes/pve-tr1950x/storage/PBS-01/content','--content','backup','--vmid','111','--output-format','json'],'archives'))
         archive=max(archives,key=lambda row:row['ctime'])['volid']
         source(services_code.replace('ACTION',"s.resume();print('Source writers resumed')"),'resume-source')
-        drained=False
+        recovery_required=False
     run(['pct','restore',str(vmid),archive,'--storage','lifeos-050-tests','--rootfs','lifeos-050-tests:120','--unprivileged','1','--onboot','0','--hostname','lifeos-050-recovery'],'restore')
     created=True
     run(['pct','set',str(vmid),'--delete','net0','--onboot','0','--tags','disposable;lifeos-050-recovery'],'disconnect')
@@ -114,9 +115,15 @@ try:
     run(['pct','shutdown',str(vmid),'--timeout','90'],'shutdown-restore')
     result=0
 finally:
-    if drained:
-        source(services_code.replace('ACTION',"s.resume();print('Source writers resumed after failure')"),'recover-source-services')
+    failure=sys.exc_info()[1]
     try:
+        if recovery_required:
+            try:
+                source(services_code.replace('ACTION',"s.resume() if s.status()['recovery_required'] else None;print('Source service recovery checked')"),'recover-source-services')
+            except BaseException as cleanup_error:
+                result=1
+                if failure is None:raise
+                failure.add_note('Source service recovery also fails: '+type(cleanup_error).__name__)
         if created and result==0:
             config=run(['pct','config',str(vmid)],'cleanup-config')
             assert 'hostname: lifeos-050-recovery' in config and 'net0:' not in config
