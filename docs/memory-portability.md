@@ -47,7 +47,7 @@ The first standalone recovery command uses the existing password-authenticated d
 
 The host must satisfy the stock Hermes tool prerequisites before removal preparation. Ubuntu 24.04 needs the `libatomic1` system package for the managed Node runtime. An administrator installs this prerequisite. An unprivileged background worker cannot complete an interactive `sudo` request. Preparation refuses before software removal if a required stock tool cannot start.
 
-The implementation remains unreleased. Local component controls do not establish installed acceptance, reboot acceptance, a real model turn, or complete release qualification.
+The implementation remains unreleased. Installed checks now verify normal removal, real stock model learning, reboot, authenticated software rollback, and exact0.6 interrupted-removal recovery. The final whole-guest restore and release qualification remain open. See the current verification record for exact checkpoints.
 
 Removal preparation normalizes the retained environment with the pinned Hermes formatter before owner review. The review binds those exact bytes. Later environment edits still refuse publication and recovery. Invalid UTF-8 refuses before review.
 

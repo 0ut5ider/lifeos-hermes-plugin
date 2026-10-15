@@ -1,0 +1,22 @@
+{
+  "disposition": "CORRECTION_REQUIRED",
+  "findings": [
+    {
+      "id": "C1",
+      "priority": "P2",
+      "target": "certify_release.py:115-145",
+      "summary": "Required stock proofs and authentication workflow/action are not bound",
+      "independent_refusal_controls_failed": 3,
+      "genuine_other_workflow_receipt_refusal_failed": true
+    }
+  ],
+  "execution_operators_additional_measured_findings": [],
+  "existing_negative_controls_passed": 5,
+  "bounding_and_missing_cold_controls_passed": 2,
+  "syntax_sources_passed": 9,
+  "certificate_written": false,
+  "remote_execution_performed": false,
+  "cold_acceptance_verified": false,
+  "final_changed_certificate_source_clear": false,
+  "required_followup": "Focused closure of corrected certification and reviewed-operator source binding"
+}

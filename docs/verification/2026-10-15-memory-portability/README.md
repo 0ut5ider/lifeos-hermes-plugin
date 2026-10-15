@@ -1,10 +1,22 @@
 # Memory portability implementation checks
 
-Date: 2026-10-15. Status: implementation in progress. The daily server remains on qualified 0.5.0.
+Date: 2026-10-15. Status: final release qualification in progress. Development and daily remain on qualified 0.5.0.
 
-The [implementation contract](../../memory-portability.md) covers import, portable export, provider return, complete software removal, and final release qualification. These checks verify the first primitives. They do not establish complete service orchestration, removal, browser acceptance, or deployment.
+The [implementation contract](../../memory-portability.md) covers import, portable export, provider return, complete software removal, and final release qualification. The current results below establish installed service, browser, model, removal, and recovery checks. Public release qualification and production deployment remain separate gates.
 
 ## Current installed state
+
+The exact unpublished `0.6.0` archive at `c86b5887` passes 995 integration tests, 716 native Hermes tests across 38 files, and 33 user interface component tests. All archived source identities remain unchanged. The final product review is clear. The [progress receipt](PROGRESS.json) identifies completed gates and their checkpoints.
+
+The owned CT110 fixture at `192.168.8.244` verifies the exact `0.6.0` update. Its removal worker receives an actual `SIGKILL` after all three active plugins disappear. The retained helper authenticates the current dashboard owner and recovers publication. The [final receipt](installed-060-recovery-verified.json) verifies stock Hermes, retained native data, and unchanged built-in memory.
+
+Normal removal, real stock recall, later built-in learning, reboot, wrong-password refusal, and authenticated software rollback pass on the preceding `b35cf86e` candidate. Its bridge and manager runtime files match `c86b5887` except four version declarations. These checks remain identified as runtime-equivalent installed evidence. They do not claim exact `0.6.0` execution. The corrected export includes eleven required items and six native references. Actual fresh sessions recall newly learned native memory after return and recall later stock learning after reboot and software rollback.
+
+A separate empty CT112 fixture at `192.168.8.248` installs the public manager through the native Plugins form using the documented GitHub subdirectory URL. It then applies the private exact `0.6.0` candidate through separate owner review. The [fresh installation receipt](fresh-private-verification.json) verifies the program maps, preserved private FlashNext selection and all four effort settings, and a real model reply. The [post-model receipt](fresh-private-post-model-verification.json) rechecks the installed programs and model settings. No personal data enters this guest.
+
+The disconnected whole-guest restore and authenticated cold rollback are running. The verification operators are under independent review. The public latest-release replay follows publication. No change selects this candidate on `.252` or `.253`.
+
+## Earlier installed checkpoints
 
 CT110 at `192.168.8.244` runs private committed test checkpoints. The published and daily release remains qualified 0.5.0. The actual owner browser imports both authorized .213 files, applies reviewed native ownership, exports six required items, and verifies provider return. Fresh private FlashNext turns retrieve the imported project fact with its original source digest, search native synthetic memory, and recall the returned synthetic marker through built-in Hermes. Another actual built-in tool call adds a later fact and preserves existing entries. The private bundle download preserves the original .213 project content and provenance. No personal source text enters these receipts.
 
