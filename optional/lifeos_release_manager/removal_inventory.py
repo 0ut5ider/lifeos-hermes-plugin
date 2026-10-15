@@ -21,9 +21,11 @@ def native(installed, source, reference, *, bridge):
             raise ReleaseRejected('Removal requires physical qualified native program directories')
     planner=bridge.memory_module('update_plan')
     expected=planner.deployed_system_files(source,reference)
+    generated={installed/name for name in bridge.memory_module('version_drift').GENERATED_FILES}
     files={};before={}
     for name,digest in expected.items():
         target=installed/name
+        if target in generated:continue
         if (target.resolve()!=target or not target.is_file() or sha(target)!=digest):
             raise ReleaseRejected('A native program differs from the qualified removal source: '+name)
         identity=fingerprint(target)
@@ -51,7 +53,6 @@ def native(installed, source, reference, *, bridge):
                 raise ReleaseRejected('The native instructions change before removal')
             before[target]=fingerprint(original);files[target]=None
     retained={installed/name for name in ('LIFEOS/USER','LIFEOS/MEMORY','LIFEOS/PULSE/state')}
-    generated={installed/name for name in bridge.memory_module('version_drift').GENERATED_FILES}
     for name in ('hooks','skills','agents','commands','test','LIFEOS'):
         root=installed/name
         if not root.exists() and not root.is_symlink():continue

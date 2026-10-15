@@ -64,6 +64,35 @@ class RemovalInventoryTests(unittest.TestCase):
             with self.subTest(name=name),self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference,bridge=self.bridge)
             self.assertTrue(path.read_bytes().endswith(b'// Later edit\n'));path.write_bytes(before)
 
+    def test_regenerated_architecture_summary_is_retained_during_removal_and_restore(self):
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        name='LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md'
+        for root in (self.source,self.reference,self.installed):
+            path=root/name;path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text('# Synthetic shipped summary\n')
+        current=self.installed/name;later=b'# Synthetic generated session summary\n'
+        current.write_bytes(later)
+        plan=self.operation().native(self.installed,self.source,self.reference,bridge=self.bridge)
+        self.assertNotIn(current,plan['files'])
+        self.assertNotIn(current,plan['before'])
+        tx=ProgramTransaction(self.home/'generated-summary-transaction')
+        tx.prepare(directories={},files=plan['files'],dependencies=plan['dependencies'])
+        tx.apply();self.assertEqual(current.read_bytes(),later)
+        tx.restore();self.assertEqual(current.read_bytes(),later)
+
+    def test_generated_summary_exception_does_not_admit_links_or_other_documents(self):
+        name='LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md'
+        for root in (self.source,self.reference):
+            path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('# Synthetic summary\n')
+        current=self.installed/name;current.parent.mkdir(parents=True,exist_ok=True)
+        current.symlink_to(self.reference/name)
+        with self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference,bridge=self.bridge)
+        current.unlink();current.write_text('# Synthetic regenerated summary\n')
+        other=current.with_name('OWNER_NOTES.md');other.write_text('# Synthetic owner document\n')
+        with self.assertRaisesRegex(ValueError,'unreviewed native program'):
+            self.operation().native(self.installed,self.source,self.reference,bridge=self.bridge)
+        self.assertTrue(other.is_file())
+
     def test_unreviewed_hook_and_linked_source_refuse(self):
         path=self.installed/'hooks/Custom.hook.ts';path.write_text('// Owner program\n')
         with self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference,bridge=self.bridge)
