@@ -1,13 +1,13 @@
 # LifeOS plugin for Hermes
 
-**Published stable release:** `0.5.0`, program commit `04efe633`, on development `.252` and daily `.253`. The [release record](docs/verification/2026-10-14-release-0.5.0/README.md) binds the exact package, qualification, public installation, and daily activation evidence. The package adds the governed Pulse core-file editor, corrects observer timestamp comparison, and verifies omitted native baseline entries against the accepted archive.
+**Published stable release:** `0.6.0`, program commit `c86b5887`, adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [release record](docs/verification/2026-10-15-release-0.6.0/README.md) binds the exact package and qualification. The [portability contract](docs/memory-portability.md) defines retained data and recovery.
 
-**Unpublished candidate:** `0.6.0` adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [portability contract](docs/memory-portability.md) defines data retention and recovery. The [qualification record](docs/verification/2026-10-15-memory-portability/README.md) reports measured results and remaining gates. Development and daily remain on qualified `0.5.0`.
+**Deployed release:** Development `.252` and daily `.253` remain on qualified `0.5.0`, program commit `04efe633`. This release work changes neither installation. Production promotion requires current authenticated owner admission.
 
-The actual public Hermes web form installs the manager from the documented GitHub install URL. Install LifeOS then selects and installs the latest stable complete package after owner review. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/PUBLIC-LATEST-ACCEPTANCE.json) records that test. Daily `.253` applies the same package through Update plugin and owner review. Its protected complete backup and disconnected recovery pass. The [published deployment receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/DEPLOYMENT-ACCEPTANCE.json) binds these completed checks.
+The public Hermes Plugins form installs the manager from the documented GitHub subdirectory URL. Install LifeOS selects the latest stable complete package after separate owner review. The fresh `0.6.0` replay verifies all 38 manager files, the public certificate, 11 sealed program groups, preserved model choices, and an actual FlashNext reply. See the [public replay evidence](docs/verification/2026-10-15-release-0.6.0/public-fresh-verification.json).
 
 The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
-The exact archive passes 821 integration tests and 716 native tests across 38 files.
+The exact archive passes 995 integration tests, 716 native tests across 38 files, and 33 interface component tests.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
 Bun 1.4.3 supplies the verified runtime.
 
@@ -15,7 +15,7 @@ Install LifeOS, Update LifeOS, and Update plugin select complete qualified integ
 The detached release worker preserves the selected model, tier mapping, native HOME, credentials, and personal data.
 The complete release manager in `optional/lifeos_release_manager` supports fresh installation, updates, interruption recovery, and rollback.
 The older 0.4.3 manager requires an exact native GitHub plugin bootstrap before complete owner-reviewed package application.
-The isolated guests pass fresh installation, native update, rollback, worker interruption, recovery, and automatic startup after reboot.
+**Historical 0.5.0 deployment checkpoint:** The isolated guests pass fresh installation, native update, rollback, worker interruption, recovery, and automatic startup after reboot.
 The qualification rehearsal verifies 64,401 runtime artifacts, 221 sealed program targets, eight native mount targets, and all three Atlas cases.
 The final daily restore verifies 64,567 runtime artifacts, 221 selected program targets, seven current owner outputs, and all three Atlas cases.
 The protected daily archive is `PBS-01:backup/ct/102/2026-10-15T03:19:34Z`. The owned rehearsal guests and test storage are removed.
@@ -304,6 +304,9 @@ https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_man
 
 The page installs from the default branch. It has no revision field, and a GitHub tree URL does not select a branch or commit.
 The default GitHub URL replay retrieves the merged manager from `main` without a selected ref.
+Hermes can refuse this community plugin with a CAUTION security verdict because the manager runs processes and manages user services.
+Review the reported findings against the selected release. For a trusted source, the native **Force reinstall** control also confirms the scan.
+That control deletes an existing manager directory. The fresh 0.6.0 replay verifies an empty target before confirmation and matches all 38 installed manager files afterward.
 The test baseline already contains a manager, so its replacement uses **Force reinstall**. The LifeOS store is absent before installation.
 The release page installs the explicit test version `0.4.2-rc.3`, at program commit `10459df6c2b27bda8911dfd96a25b92bee769c93`.
 The [verification record](docs/verification/2026-10-13-pr18-final-review-replay/README.md) includes the exact public archive, service recovery, preserved settings, and post-installation chat.

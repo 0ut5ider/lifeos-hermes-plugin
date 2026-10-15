@@ -1,0 +1,16 @@
+{
+  "status": "PASS_WITH_EXPLICIT_NATIVE_CONFIRMATION",
+  "guest": 112,
+  "source": "https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager",
+  "initial_http_status": 400,
+  "native_scan_verdict": "CAUTION",
+  "findings": 18,
+  "initial_installation_refused": true,
+  "native_ui_control_used": "Force reinstall (delete existing folder first)",
+  "target_was_empty_before_confirmation": true,
+  "reason": "The reviewed release manager runs release workers and manages user services. The high traversal finding matches an exact /proc/self/cgroup read that checks worker ownership.",
+  "scanner_disabled": false,
+  "installation_result": "All 38 installed manager files match the qualified program. The native dashboard exposes the LifeOS releases page.",
+  "successful_http_response_retained": false,
+  "response_retention_limit": "The native dashboard restart clears the temporary browser response capture. Installed file hashes provide the successful installation evidence."
+}

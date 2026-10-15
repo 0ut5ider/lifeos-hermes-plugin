@@ -1,6 +1,6 @@
 # LifeOS 0.6.0 release qualification
 
-Status: qualified, pending publication. No public 0.6.0 release exists. Development and daily remain on qualified 0.5.0.
+Status: qualified and published. Public latest installation acceptance passes. The supplementary asset awaits focused evidence review. Development and daily remain on qualified 0.5.0.
 
 The program commit is `c86b5887b899ca779afbb217c33843e1ee12c381`. The 288,167,820-byte archive has SHA-256 `9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7`.
 
@@ -10,6 +10,6 @@ The earlier normal-removal candidate has identical bridge and manager runtime fi
 
 The protected whole-guest backup and disconnected restore pass. Current native consistency verifies through the authenticated backend. The standalone helper completes password-authenticated software rollback to the exact0.6 package. Both built-in memory hashes and all original guest states remain unchanged. The protected archive is `PBS-01:backup/ct/110/2026-10-15T21:26:10Z`. The certificate checker refuses missing evidence and mixed package identities. The final operator review is clear. All 21 independent controls and 37 individual mutations pass. The primary repeats the complete run cleanly and verifies all nine source hashes.
 
-Public latest-release installation follows publication. No private fixture receipt establishes that gate. Production promotion requires separate current owner admission. No personal data enters a fresh guest or production store through these checks.
+The public latest-release replay passes on a reset, empty owned guest. The native GitHub form requires explicit security-scan confirmation for the reviewed community manager. All 38 installed manager files match the exact program. Separate owner review and application select public 0.6.0 without a private catalog. The [fresh public receipt](public-fresh-verification.json) verifies the public certificate, 11 sealed program groups, preserved model choices, and a real FlashNext reply. The [post-model receipt](public-post-model-verification.json) rechecks program integrity and selected model choices. No private fixture receipt establishes this gate. Production promotion requires separate current owner admission. No personal data enters a fresh guest or production store through these checks.
 
 The [initial release certificate](RELEASE-CERTIFICATE.json) has SHA-256 `e53fa1a02d52637fd9678d6978900c10d3003bb2059c78c689078bc0de3db770`. It records completed qualification and leaves public and production acceptance as later gates. Publication must preserve this checkpoint.

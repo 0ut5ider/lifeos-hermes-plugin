@@ -1,12 +1,12 @@
 # Memory portability implementation checks
 
-Date: 2026-10-15. Status: final release qualification in progress. Development and daily remain on qualified 0.5.0.
+Date: 2026-10-15. Status: release 0.6.0 is qualified and published; public latest installation passes. Development and daily remain on qualified 0.5.0.
 
 The [implementation contract](../../memory-portability.md) covers import, portable export, provider return, complete software removal, and final release qualification. The current results below establish installed service, browser, model, removal, and recovery checks. Public release qualification and production deployment remain separate gates.
 
 ## Current installed state
 
-The exact unpublished `0.6.0` archive at `c86b5887` passes 995 integration tests, 716 native Hermes tests across 38 files, and 33 user interface component tests. All archived source identities remain unchanged. The final product review is clear. The [progress receipt](PROGRESS.json) identifies completed gates and their checkpoints.
+The exact published `0.6.0` archive at `c86b5887` passes 995 integration tests, 716 native Hermes tests across 38 files, and 33 user interface component tests. All archived source identities remain unchanged. The final product review is clear. The [progress receipt](PROGRESS.json) identifies completed gates and their checkpoints.
 
 The owned CT110 fixture at `192.168.8.244` verifies the exact `0.6.0` update. Its removal worker receives an actual `SIGKILL` after all three active plugins disappear. The retained helper authenticates the current dashboard owner and recovers publication. The [final receipt](installed-060-recovery-verified.json) verifies stock Hermes, retained native data, and unchanged built-in memory.
 
@@ -14,7 +14,7 @@ Normal removal, real stock recall, later built-in learning, reboot, wrong-passwo
 
 A separate empty CT112 fixture at `192.168.8.248` installs the public manager through the native Plugins form using the documented GitHub subdirectory URL. It then applies the private exact `0.6.0` candidate through separate owner review. The [fresh installation receipt](fresh-private-verification.json) verifies the program maps, preserved private FlashNext selection and all four effort settings, and a real model reply. The [post-model receipt](fresh-private-post-model-verification.json) rechecks the installed programs and model settings. No personal data enters this guest.
 
-The protected whole-guest backup and disconnected restore pass. The restored guest verifies the actual native consistency signature and stock constructor, then completes password-authenticated software rollback to the exact0.6 package. Built-in memory hashes and all original guest states remain unchanged. The [cold-restore receipt](cold-restore-verification.json) records the completed gate. The verification operator review is clear after corrections to decisive effect, authentication, and final review-source bindings. The primary repeats all 21 independent controls and 37 individual mutations cleanly. The complete package is qualified. Its [immutable initial certificate](../2026-10-15-release-0.6.0/RELEASE-CERTIFICATE.json) binds the exact archive, operational receipts, and current reviewed source hashes. The public latest-release replay follows publication. No change selects this candidate on `.252` or `.253`.
+The protected whole-guest backup and disconnected restore pass. The restored guest verifies the actual native consistency signature and stock constructor, then completes password-authenticated software rollback to the exact0.6 package. Built-in memory hashes and all original guest states remain unchanged. The [cold-restore receipt](cold-restore-verification.json) records the completed gate. The verification operator review is clear after corrections to decisive effect, authentication, and final review-source bindings. The primary repeats all 21 independent controls and 37 individual mutations cleanly. The complete package is qualified. Its [immutable initial certificate](../2026-10-15-release-0.6.0/RELEASE-CERTIFICATE.json) binds the exact archive, operational receipts, and current reviewed source hashes. The public latest-release replay also passes after the owned fixture returns to its pristine snapshot. It verifies the public certificate, 38 manager files, 11 program groups, preserved model settings, an actual model reply, and post-model integrity. See the [release record](../2026-10-15-release-0.6.0/README.md). No change selects this release on `.252` or `.253`.
 
 ## Earlier installed checkpoints
 
