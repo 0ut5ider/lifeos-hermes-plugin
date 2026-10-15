@@ -74,6 +74,11 @@ mount_module = current.memory_module('mount_transaction')
 baseline_path = current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)
 mount = mount_module.MountTransaction(Path(request['installed']), profile, baseline_path)
 worker.check_restore(job, request, plan, mount)
+assert plan['fresh'] is False and plan['native_mount_required'] is False
+mount_before = json.loads(args.baseline.with_name(args.server + '-owner-mount-before.json').read_bytes())
+assert mount_before['status'] == 'PASS' and mount_before['state'] == 'committed'
+assert hashlib.sha256(mount.journal.read_bytes()).hexdigest() == mount_before['current_owner_mount_sha256']
+mount.check_completed()
 active = json.loads(subprocess.run([str(home / '.local/bin/hermes'), 'lifeos-version'],
     capture_output=True, text=True, check=True, timeout=90).stdout)['active']
 assert active['verification'] == 'verified'
@@ -98,6 +103,7 @@ for name, expected in baseline['services'].items():
     services[name] = {'active': True, 'home_preserved': True, 'profile_preserved': True}
 report = {'status': 'PASS', 'server': args.server, 'operation': args.operation, 'active_identity': active,
     'program_state': 'applied', 'sealed_program_targets': len(transaction._load()['entries']),
+    'native_mount_required': False, 'current_owner_mount_journal_preserved': True,
     'model_selection_sha256': model_hash, 'model_and_tiers_preserved': True,
     'credential_file_bytes_preserved': True, 'memory_configuration_bytes_preserved': True,
     'services': services, 'personal_data_imported_or_reset': False, 'personal_records_read': False}
