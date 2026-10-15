@@ -105,6 +105,10 @@ class MemoryActivation:
             'operation_id':self.operation_id}
         with installation_lock(self.profile,lease=self.lease) as lease:
             self._verify(binding,account,lease)
+            if (self.directory/'binding.json').exists() or (self.directory/'binding.json').is_symlink():
+                self._binding(account,check_operation=False)
+            from .memory_cycle import retire_verified_return
+            retire_verified_return(self.configuration,account=account,units=self.units,installation_lease=lease)
             self.directory.mkdir(mode=0o700,exist_ok=True);_directory(self.directory,private=True)
             if (self.directory/'binding.json').exists() or (self.directory/'binding.json').is_symlink():
                 previous=self._binding(account,check_operation=False)

@@ -20,6 +20,8 @@ The portable bundle preserves source references and origins. It distinguishes ac
 
 Return and removal require a writer barrier, current source and destination checks, a private recovery journal, and fresh session verification. Interrupted operations resume or stop with an explicit conflict. Later edits remain intact. Return does not replay historical configuration over unrelated settings.
 
+A newly reviewed activation after a verified return archives the matched terminal journals. A durable intent permits interrupted journal moves to resume. The archive retains the old plans and proofs. Activation does not replay their historical configuration or memory. The new ownership plan selects the current LifeOS plugins and installed native skills again.
+
 Complete removal means that Hermes no longer loads the bridge, its hooks, prompts, memory provider, service overrides, or release manager. The operation stops LifeOS background services and removes only verified integration-owned software. Shared or changed program trees require a current verified replacement or a refusal. The operation retains source stores, exported knowledge, history, audit files, and recovery archives. Data erasure is a separate operation.
 
 ## Qualification stages

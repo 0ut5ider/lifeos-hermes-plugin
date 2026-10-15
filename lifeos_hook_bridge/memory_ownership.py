@@ -164,6 +164,30 @@ class OwnershipTransaction:
                    for mapping in (hermes, memory)):
                 raise MemoryUnavailable('Shared or merged ownership settings require configuration review')
             memory.update(provider='lifeos-hook-bridge', memory_enabled=False, user_profile_enabled=False)
+            from .memory_return import _independent
+            plugins=hermes.setdefault('plugins',{})
+            skills=hermes.setdefault('skills',{})
+            if any(not isinstance(value,dict) or getattr(value,'merge',None)
+                    or getattr(getattr(value,'anchor',None),'value',None) for value in (plugins,skills)):
+                raise MemoryUnavailable('Ownership activation requires unambiguous plugin and skill settings')
+            enabled=_independent(plugins.get('enabled',[]));disabled=_independent(plugins.get('disabled',[]))
+            plugin_entries=_independent(plugins.get('entries',{}))
+            if (not isinstance(enabled,list) or not isinstance(disabled,list) or not isinstance(plugin_entries,dict)
+                    or any(not isinstance(value,str) for value in (*enabled,*disabled))):
+                raise MemoryUnavailable('Ownership activation requires supported plugin selections')
+            plugins.update(enabled=enabled,disabled=disabled,entries=plugin_entries)
+            for name in ('lifeos','lifeos-hook-bridge'):
+                disabled[:]=[item for item in disabled if item!=name]
+                if name not in enabled:enabled.append(name)
+                if name in plugin_entries:
+                    if not isinstance(plugin_entries[name],dict):raise MemoryUnavailable('A LifeOS plugin entry is ambiguous')
+                    plugin_entries[name]=_independent(plugin_entries[name]);plugin_entries[name]['enabled']=True
+            directories=skills.get('external_dirs',[])
+            if not isinstance(directories,list) or any(not isinstance(path,str) for path in directories):
+                raise MemoryUnavailable('Ownership activation requires explicit external skill directories')
+            native_skills=Path(configuration['root'])/'skills'
+            if native_skills.is_dir():
+                skills['external_dirs']=list(dict.fromkeys([*directories,str(native_skills)]))
             stream = io.StringIO()
             yaml.dump(hermes, stream)
             targets['config.yaml'] = stream.getvalue().encode()
