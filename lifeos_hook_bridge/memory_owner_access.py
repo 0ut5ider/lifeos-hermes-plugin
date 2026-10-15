@@ -14,6 +14,7 @@ from .memory_policy import CATEGORIES
 
 def _route(profile, expected):
     import hermes_constants
+    from hermes_cli import _launchers
     host=Path(hermes_constants.__file__).resolve().parent
     code='''import contextlib,hashlib,io,json,sys
 from pathlib import Path
@@ -40,8 +41,10 @@ print(json.dumps(result))
 '''
     environment=dict(os.environ,HERMES_HOME=str(profile))
     try:
-        result=subprocess.run([sys.executable,'-B','-I','-c',code,str(host),str(profile),
-            hashlib.sha256(expected).hexdigest()],env=environment,capture_output=True,text=True,timeout=45)
+        command=_launchers.runtime_command(host,[str(host),str(profile),hashlib.sha256(expected).hexdigest()],
+            code=code,python=sys.executable,home=profile)
+        command.insert(1,'-B')
+        result=subprocess.run(command,env=environment,capture_output=True,text=True,timeout=45)
         if result.returncode or result.stderr or len(result.stdout)>16384:raise ValueError('Unavailable route')
         route=json.loads(result.stdout)
         if (not isinstance(route,dict) or set(route)!={'provider','model','base_url','api_mode'}
