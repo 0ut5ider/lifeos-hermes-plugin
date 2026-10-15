@@ -22,11 +22,19 @@ def retained(profile):
             or not isinstance(marker['workflow'],str) or IDENTIFIER.fullmatch(marker['workflow']) is None
             or not isinstance(marker['signature'],str) or SIGNATURE.fullmatch(marker['signature']) is None):
         raise ReleaseRejected('The removal recovery selection has invalid private metadata')
-    job=profile/'.lifeos-portability'/marker['workflow'];_directory(job)
+    return prepared(profile,marker['workflow'],marker['signature'])
+
+
+def prepared(profile, identifier, signature):
+    profile=profile_directory(profile)
+    if (not isinstance(identifier,str) or IDENTIFIER.fullmatch(identifier) is None
+            or not isinstance(signature,str) or SIGNATURE.fullmatch(signature) is None):
+        raise ReleaseRejected('Use the exact prepared removal identifier and review signature')
+    job=profile/'.lifeos-portability'/identifier;_directory(job)
     stage=job/'removal';_directory(stage)
     plan=read_private(stage/'plan.json')
     data=json.dumps(plan,sort_keys=True,separators=(',',':')).encode()
-    if (hashlib.sha256(data).hexdigest()!=marker['signature'] or not isinstance(plan,dict)
+    if (hashlib.sha256(data).hexdigest()!=signature or not isinstance(plan,dict)
             or plan.get('format')!=1 or plan.get('profile')!=str(profile) or plan.get('identifier')!=job.name
             or not isinstance(plan.get('owner'),str) or not plan['owner'].startswith('dashboard:')
             or not isinstance(plan.get('root'),str) or not Path(plan['root']).is_absolute()):
@@ -62,4 +70,4 @@ def retained(profile):
         def update(self,change):
             raise ReleaseRejected('Retained removal authority cannot publish native configuration')
 
-    return source,RecoveryConfiguration(profile/'lifeos-memory.json'),job,{**plan,'signature':marker['signature']}
+    return source,RecoveryConfiguration(profile/'lifeos-memory.json'),job,{**plan,'signature':signature}

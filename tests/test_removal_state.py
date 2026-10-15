@@ -58,3 +58,12 @@ class RemovalStateTests(unittest.TestCase):
         path.write_bytes(original)
         publish(self.stage/'owner-policy.json',b'{}')
         with self.assertRaises(ValueError):self.operation()(self.profile)
+
+    def test_completed_private_preparation_is_reviewable_without_selecting_live_removal(self):
+        from optional.lifeos_release_manager.removal_state import prepared
+        (self.profile/'.lifeos-removal.json').unlink()
+        source,configuration,job,plan=prepared(self.profile,self.job.name,self.signature)
+        self.assertEqual(job,self.job);self.assertEqual(plan['signature'],self.signature)
+        configuration.check_owner(configuration.load(),'dashboard:owner')
+        self.assertFalse((self.profile/'.lifeos-removal.json').exists())
+        with self.assertRaises(ValueError):prepared(self.profile,self.job.name,'f'*64)

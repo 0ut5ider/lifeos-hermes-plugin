@@ -1,0 +1,19 @@
+test_pending_native_publication_and_unknown_schema_refuse_without_recovery (test_removal_data_barrier.RemovalDataBarrierTests.test_pending_native_publication_and_unknown_schema_refuse_without_recovery) ... ok
+test_replaced_native_data_link_refuses_the_barrier (test_removal_data_barrier.RemovalDataBarrierTests.test_replaced_native_data_link_refuses_the_barrier) ... ok
+test_retained_registry_verification_works_without_tools_and_changes_no_data (test_removal_data_barrier.RemovalDataBarrierTests.test_retained_registry_verification_works_without_tools_and_changes_no_data) ... ok
+test_current_software_removal_preserves_data_and_later_builtin_memory_on_rollback (test_removal_publication.RemovalPublicationTests.test_current_software_removal_preserves_data_and_later_builtin_memory_on_rollback) ... Exception ignored while finalizing database connection <sqlite3.Connection object at 0x7f28e43147c0>:
+Traceback (most recent call last):
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7f28e43147c0>
+ok
+test_interruption_after_programs_can_resume_without_repeating_data_publication (test_removal_publication.RemovalPublicationTests.test_interruption_after_programs_can_resume_without_repeating_data_publication) ... ok
+test_other_owner_or_later_target_edit_refuses_before_service_stop (test_removal_publication.RemovalPublicationTests.test_other_owner_or_later_target_edit_refuses_before_service_stop) ... ok
+test_real_process_exit_after_first_target_resumes_without_losing_data (test_removal_publication.RemovalPublicationTests.test_real_process_exit_after_first_target_resumes_without_losing_data) ... ok
+test_actual_memory_tool_removal_can_roll_back (docs.agents.2026-10-15-removal-data-closure-review.previous_publication_probes.PublicationBoundaryReview.test_actual_memory_tool_removal_can_roll_back) ... ok
+test_interrupted_complete_native_removal_can_resume (docs.agents.2026-10-15-removal-data-closure-review.previous_publication_probes.PublicationBoundaryReview.test_interrupted_complete_native_removal_can_resume) ... ok
+test_native_data_ancestor_is_never_a_removal_target (docs.agents.2026-10-15-removal-data-closure-review.previous_publication_probes.PublicationBoundaryReview.test_native_data_ancestor_is_never_a_removal_target) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 23.319s
+
+OK
