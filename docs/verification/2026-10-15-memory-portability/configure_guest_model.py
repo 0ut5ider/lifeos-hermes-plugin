@@ -24,6 +24,7 @@ config=yaml.load((profile/'config.yaml').read_text())
 if config['model']['default']!='flashnext-w4a16-fp8ple' or config['model']['provider']!='custom':
     raise RuntimeError('The disposable model selection changes')
 config['model']['base_url']='http://192.168.8.90:42071/v1'
+config['model']['key_env']='CUSTOM_API_KEY'
 stream=io.StringIO();yaml.dump(config,stream)
 lines=(profile/'.env').read_bytes().splitlines(keepends=True)
 if sum(item.startswith(b'CUSTOM_API_KEY=') for item in lines)!=1:
