@@ -98,9 +98,13 @@ class MemoryReturn:
             self.configuration.validate(native)
             outputs={'config.yaml':self._configuration(config),'lifeos-memory.json':_encoded(native),'SOUL.md':prompt.encode(),
                 **{'memories/'+name:content.encode() for name,content in export_plan['files'].items()}}
-            state=destination/'return'
-            if state.exists() or state.is_symlink():raise MemoryUnavailable('Use the existing return review or prepare a new export')
+            final=destination/'return'
+            if final.exists() or final.is_symlink():raise MemoryUnavailable('Use the existing return review or prepare a new export')
+            state=destination/('.return-preparing-'+uuid4().hex)
             state.mkdir(mode=0o700)
+            publish(state/'preparation.json',_encoded({'profile':str(self.profile),'writer':account,
+                'operation_id':self.operation_id,'export_signature':export_signature,
+                'export_plan_signature':export_plan_signature}))
             targets=[]
             for index,name in enumerate(NAMES):
                 before,metadata=read_target(self.profile/name)
@@ -115,6 +119,7 @@ class MemoryReturn:
             data=_encoded(plan);signature=_digest(data)
             publish(state/'plan.json',data)
             self._state(state,signature,'ready')
+            os.rename(state,final);_sync_directory(destination)
             return {'state':'ready','signature':signature,'files':list(NAMES),'prompt':prompt,
                 'restart_required':True,'application_verified':False,'native_data_retained':True,
                 'lifeos_plugins_disabled':['lifeos','lifeos-hook-bridge'],'lifeos_background_jobs':'stop before application'}

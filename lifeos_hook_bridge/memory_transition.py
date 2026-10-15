@@ -159,7 +159,11 @@ class MemoryTransition:
                 'services_signature':service_signature,'pulse_enablement':self._enablement(),
                 'original_roles':[role for role,item in admitted['services'].items() if item['active']]}
             data=_encoded(document);signature=_digest(data)
-            publish(self.directory/'plan.json',data);self._state(signature,'ready')
+            stage=self.profile/('.lifeos-memory-transition-preparing-'+uuid4().hex)
+            stage.mkdir(mode=0o700)
+            publish(stage/'plan.json',data)
+            publish(stage/'operation.json',_encoded({'signature':signature,'state':'ready'}))
+            os.rename(stage,self.directory);_sync_directory(self.profile)
             return self._receipt(signature,'ready')
 
     def status(self, signature, *, account=None):

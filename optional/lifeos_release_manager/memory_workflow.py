@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from .cli import profile_directory, read_private
 from .release_accounts import account_home
-from .release_programs import fingerprint, publish
+from .release_programs import fingerprint, publish, sync_directory
 from .release_stage import load_bridge
 
 
@@ -101,10 +101,13 @@ def queue(profile, value, *, owner, launch):
             raise RuntimeError('Complete or recover the pending memory workflow first')
         root=profile/'.lifeos-portability';root.mkdir(mode=0o700,exist_ok=True)
         source.memory_module('memory_backup')._directory(root,private=True)
-        identifier=uuid4().hex;job=root/identifier;job.mkdir(mode=0o700)
+        preparing=profile/'.lifeos-portability-preparations';preparing.mkdir(mode=0o700,exist_ok=True)
+        source.memory_module('memory_backup')._directory(preparing,private=True)
+        identifier=uuid4().hex;job=preparing/identifier;job.mkdir(mode=0o700)
         request={'version':1,'identifier':identifier,'profile':str(profile),'owner':owner,
             'bridge':fingerprint(profile/'plugins/lifeos-hook-bridge'),'selection':value}
         publish(job/'request.json',_encoded(request));_state(job,'queued')
+        os.rename(job,root/identifier);sync_directory(root);sync_directory(preparing)
     return admit(profile,identifier,'prepare',None,owner=owner,launch=launch)
 
 
