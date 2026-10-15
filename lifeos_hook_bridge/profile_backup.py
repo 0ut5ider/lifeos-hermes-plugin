@@ -42,6 +42,9 @@ class ProfileBackupTooLarge(MemoryUnavailable):
 
 def _exclusion(relative, path):
     parts = relative.split('/')
+    if (len(parts)>=3 and parts[0]=='plugins' and parts[-1]=='__pycache__'
+            and path.is_dir() and not path.is_symlink()):
+        return 'regenerable'
     if len(parts) == 1:
         if relative in EXCLUDED_TOP_LEVEL:
             return EXCLUDED_TOP_LEVEL[relative]

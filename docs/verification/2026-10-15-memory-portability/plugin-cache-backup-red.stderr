@@ -1,0 +1,27 @@
+test_plugin_bytecode_cache_is_regenerable_and_workspace_data_stays_covered (test_profile_backup.ProfileBackupTests.test_plugin_bytecode_cache_is_regenerable_and_workspace_data_stays_covered) ... ERROR
+
+======================================================================
+ERROR: test_plugin_bytecode_cache_is_regenerable_and_workspace_data_stays_covered (test_profile_backup.ProfileBackupTests.test_plugin_bytecode_cache_is_regenerable_and_workspace_data_stays_covered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 60, in test_plugin_bytecode_cache_is_regenerable_and_workspace_data_stays_covered
+    result,manifest=self.snapshot()
+                    ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 49, in snapshot
+    result = create(self.configuration, self.destination)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 189, in create
+    databases = _databases(profile, user, stack)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 107, in _databases
+    for path, kind, _, _ in _entries(profile, user):
+                            ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 69, in _entries
+    _directory(directory)
+    ~~~~~~~~~~^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_backup.py", line 36, in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions
+
+----------------------------------------------------------------------
+Ran 1 test in 0.434s
+
+FAILED (errors=1)

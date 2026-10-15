@@ -120,3 +120,12 @@ MemoryActivation(MemoryConfiguration(Path(settings['configuration'])),units=sett
             with self.assertRaises(MemoryUnavailable):self.operation().apply(review['signature'],account='dashboard:owner')
         finally:sys.settrace(None)
         self.assertTrue(edited);self.assertEqual(path.read_text(),'Synthetic later connector edit')
+
+    def test_failed_backup_preparation_resumes_original_services(self):
+        self.publish();profile=self.configuration.path.parent
+        unsafe=profile/'synthetic-uncovered-directory';unsafe.mkdir();unsafe.chmod(0o775)
+        before={name:(profile/name).read_bytes() for name in ('config.yaml','lifeos-memory.json','memories/MEMORY.md')}
+        with self.assertRaises(MemoryUnavailable):self.prepare()
+        self.assertTrue(all(pid!='0' for pid in self.setup.pids().values()))
+        self.assertEqual(self.operation().status(account='dashboard:owner')['state'],'cancelled')
+        for name,data in before.items():self.assertEqual((profile/name).read_bytes(),data)

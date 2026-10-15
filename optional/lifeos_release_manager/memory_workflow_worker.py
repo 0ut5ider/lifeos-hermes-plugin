@@ -5,6 +5,8 @@ from pathlib import Path
 import sys
 import types
 
+sys.dont_write_bytecode=True
+
 if not __package__:
     package=types.ModuleType('lifeos_memory_workflow_manager')
     package.__path__=[str(Path(__file__).resolve().parent)]

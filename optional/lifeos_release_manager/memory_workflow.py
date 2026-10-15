@@ -191,13 +191,14 @@ def launch(job, unit, action):
     code="worker=sys.argv.pop(1)\nsys.argv[0]=worker\nrunpy.run_path(worker,run_name='__main__')\n"
     command=_launchers.runtime_command(host,[str(worker),str(job),action],
         code=code,python=python)
+    command.insert(1,'-B')
     if runtime is not None:
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     profile=job.parent.parent
     environment={'HOME':str(account_home(profile)),'HERMES_HOME':str(profile),'PATH':os.environ.get('PATH',os.defpath),
         'PYTHONDONTWRITEBYTECODE':'1'}
-    result=subprocess.run(['systemd-run','--user','--collect','--unit='+unit,
+    result=subprocess.run(['systemd-run','--user','--collect','--unit='+unit,'--property=UMask=0077',
         *['--setenv='+key+'='+value for key,value in environment.items()],*command],capture_output=True,text=True,timeout=30)
     if result.returncode:raise RuntimeError('The owner service manager cannot start the memory workflow')
 

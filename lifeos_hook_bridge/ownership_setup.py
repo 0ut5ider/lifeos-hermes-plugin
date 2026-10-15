@@ -131,23 +131,31 @@ class OwnershipSetup:
                 'installed_physical': str(self.physical_root), 'principal': self.principal,
                 'units': self.units, 'state': 'preparing', 'service_signature': review['signature'], 'plan': None}
             self._publish(document)
-            services.drain(signature=review['signature'])
-            services.verify_stopped()
-            if self.verify_ready is not None:
-                self.verify_ready()
-            snapshot = create(self.configuration, destination, account=account, installation_lease=lease)
-            services.verify_stopped()
-            preview = ownership.preview(Path(snapshot['snapshot']), snapshot['signature'], account=account)
-            plan = {'backup': snapshot['snapshot'], 'backup_signature': snapshot['signature'],
-                'ownership_signature': preview['signature']}
-            plan['signature'] = self._plan_signature(document, plan)
-            document['plan'] = plan
-            self._publish(document)
-            self._owner(account)
-            services.resume()
-            document['state'] = 'ready'
-            self._publish(document)
-            return self._receipt(document)
+            try:
+                services.drain(signature=review['signature'])
+                services.verify_stopped()
+                if self.verify_ready is not None:
+                    self.verify_ready()
+                snapshot = create(self.configuration, destination, account=account, installation_lease=lease)
+                services.verify_stopped()
+                preview = ownership.preview(Path(snapshot['snapshot']), snapshot['signature'], account=account)
+                plan = {'backup': snapshot['snapshot'], 'backup_signature': snapshot['signature'],
+                    'ownership_signature': preview['signature']}
+                plan['signature'] = self._plan_signature(document, plan)
+                document['plan'] = plan
+                self._publish(document)
+                self._owner(account)
+                services.resume()
+                document['state'] = 'ready'
+                self._publish(document)
+                return self._receipt(document)
+            except Exception:
+                self._owner(account)
+                if ownership.status(account=account)['state'] not in {'none','rolled_back'}:
+                    raise MemoryUnavailable('The interrupted preparation requires authenticated ownership recovery')
+                if services.status()['state'] not in {'none','active'}:services.resume()
+                document['state']='cancelled';self._publish(document)
+                raise
 
     def apply(self, signature, *, account=None):
         with self._lock(account) as (_, services, ownership):
