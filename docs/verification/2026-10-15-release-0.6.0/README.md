@@ -8,6 +8,6 @@ The [portability evidence](../2026-10-15-memory-portability/README.md) retains t
 
 The earlier normal-removal candidate has identical bridge and manager runtime files except four version declarations. Its real stock model recall, later learning, reboot, and authenticated software rollback remain identified as runtime-equivalent checks. Earlier import and portable replay checks retain their original checkpoint identities.
 
-The final gate requires a protected whole-guest backup, disconnected restore, current native consistency verification through the authenticated backend, and standalone software rollback. The certificate checker refuses missing evidence and mixed package identities. The final operator review remains open.
+The final gate requires a protected whole-guest backup, disconnected restore, current native consistency verification through the authenticated backend, and standalone software rollback. The certificate checker refuses missing evidence and mixed package identities. The final operator review is clear. All 21 independent controls and 37 individual mutations pass. The primary repeats the complete run cleanly and verifies all nine source hashes.
 
 Public latest-release installation follows publication. No private fixture receipt establishes that gate. Production promotion requires separate current owner admission. No personal data enters a fresh guest or production store through these checks.

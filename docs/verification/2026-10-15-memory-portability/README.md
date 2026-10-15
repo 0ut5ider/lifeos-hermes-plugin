@@ -14,7 +14,7 @@ Normal removal, real stock recall, later built-in learning, reboot, wrong-passwo
 
 A separate empty CT112 fixture at `192.168.8.248` installs the public manager through the native Plugins form using the documented GitHub subdirectory URL. It then applies the private exact `0.6.0` candidate through separate owner review. The [fresh installation receipt](fresh-private-verification.json) verifies the program maps, preserved private FlashNext selection and all four effort settings, and a real model reply. The [post-model receipt](fresh-private-post-model-verification.json) rechecks the installed programs and model settings. No personal data enters this guest.
 
-The disconnected whole-guest restore and authenticated cold rollback are running. The verification operators are under independent review. The public latest-release replay follows publication. No change selects this candidate on `.252` or `.253`.
+The disconnected whole-guest restore and authenticated cold rollback are running. The verification operator review is clear after corrections to decisive effect, authentication, and final review-source bindings. The primary repeats all 21 independent controls and 37 individual mutations cleanly. The public latest-release replay follows publication. No change selects this candidate on `.252` or `.253`.
 
 ## Earlier installed checkpoints
 
