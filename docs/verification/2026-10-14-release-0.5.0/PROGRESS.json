@@ -1,6 +1,6 @@
 {
   "version": "0.5.0",
-  "status": "ISOLATED_QUALIFICATION_PASS_DEVELOPMENT_CHECKPOINT_RUNNING",
+  "status": "DEVELOPMENT_CHECKPOINT_PASS_CANDIDATE_PREPARATION_RUNNING",
   "published": false,
   "production_qualified": false,
   "development_version": "0.4.3",
@@ -54,5 +54,7 @@
   "disposable_restore_guest_removed": true,
   "qualification_review": "CLEAR 43e0ab9c; both P2 fixes independently verified; primary reproduces all 22 cases",
   "preparation_operator_review": "CLEAR; primary reproduces 19 additional controls",
-  "daily_memory_preservation_baseline": "PASS new synthetic reference saved and recalled through actual owner tooling; both older forgotten facts remain absent"
+  "daily_memory_preservation_baseline": "PASS new synthetic reference saved and recalled through actual owner tooling; both older forgotten facts remain absent",
+  "development_protected_archive": "PBS-01:backup/ct/101/2026-10-15T00:09:10Z",
+  "development_manager_bootstrap": "PASS native exact reference; 21 files verified; credential and memory configuration bytes preserved"
 }
