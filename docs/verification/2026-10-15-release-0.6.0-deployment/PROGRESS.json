@@ -1,0 +1,30 @@
+{
+  "status": "UPDATE_IN_PROGRESS",
+  "target_version": "0.6.0",
+  "program_commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+  "package_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+  "development": {
+    "address": "192.168.8.252",
+    "guest": 101,
+    "uid": 1008,
+    "prior_version": "0.5.0",
+    "baseline": "PASS",
+    "protected_checkpoint": "RUNNING_UID_CORRECTED",
+    "update": "NOT_STARTED",
+    "owner_browser": "EXISTING_AUTHENTICATED_SESSION"
+  },
+  "daily": {
+    "address": "192.168.8.253",
+    "guest": 102,
+    "uid": 1000,
+    "prior_version": "0.5.0",
+    "baseline": "PASS",
+    "protected_checkpoint": "PENDING",
+    "update": "NOT_STARTED",
+    "owner_browser": "AUTHENTICATED"
+  },
+  "personal_data_imported_or_reset": false,
+  "provider_return_requested": false,
+  "software_removal_requested": false,
+  "initial_checkpoint_refusal": "Wrong fixed UID1000 on development; no service drain or backup occurred. Dynamic current UID correction passes actual service drain."
+}
