@@ -8,6 +8,8 @@ from pathlib import Path
 import subprocess
 import time
 
+from model_turn_assertions import verified_search
+
 os.umask(0o077)
 parser=argparse.ArgumentParser()
 parser.add_argument('mode',choices=('native-read','builtin-read'))
@@ -46,12 +48,14 @@ try:
     marker_matched=expected in final.get('text','')
     model_turn=final.get('tokens',{}).get('output',0)>0
     tool_match=(names==['lifeos_memory_search'] if args.mode=='native-read' else not names)
+    verified=verified_search(events,expected) if args.mode=='native-read' else {'verified':True,'references':[]}
     receipt.update(exit_code=result.returncode,model_turn_executed=model_turn,
         marker_matched=marker_matched,tool_names=names,expected_tool_selection=tool_match,
         final_sha256=hashlib.sha256(final.get('text','').encode()).hexdigest(),
         session_id=final.get('session_id'),model=next((event.get('model') for event in events
             if event.get('type')=='system' and event.get('subtype')=='init'),None))
-    if result.returncode==0 and final.get('exit_code')==0 and marker_matched and model_turn and tool_match:
+    receipt['actual_search']=verified
+    if result.returncode==0 and final.get('exit_code')==0 and marker_matched and model_turn and tool_match and verified['verified']:
         receipt['status']='PASS'
 except Exception as error:
     receipt['error_type']=type(error).__name__

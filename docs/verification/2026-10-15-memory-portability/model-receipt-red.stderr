@@ -1,0 +1,18 @@
+test_model_turn_assertions (unittest.loader._FailedTest.test_model_turn_assertions) ... ERROR
+
+======================================================================
+ERROR: test_model_turn_assertions (unittest.loader._FailedTest.test_model_turn_assertions)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_model_turn_assertions
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/test_model_turn_assertions.py", line 7, in <module>
+    from .model_turn_assertions import verified_search
+ModuleNotFoundError: No module named 'docs.verification.2026-10-15-memory-portability.model_turn_assertions'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
