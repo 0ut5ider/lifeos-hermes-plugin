@@ -1,0 +1,155 @@
+{
+  "status": "FAIL",
+  "cases": [
+    {
+      "case": "single-interface",
+      "status": "PASS",
+      "refused": false,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "disconnect",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "two-interfaces",
+      "status": "FAIL",
+      "refused": false,
+      "remaining_interfaces": [
+        "net1: name=eth1,bridge=vmbr1"
+      ],
+      "calls": [
+        {
+          "label": "disconnect",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "already-disconnected",
+      "status": "PASS",
+      "refused": false,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "disconnect",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "stubborn-interface",
+      "status": "FAIL",
+      "refused": false,
+      "remaining_interfaces": [
+        "net1: name=eth1,bridge=vmbr1"
+      ],
+      "calls": [
+        {
+          "label": "disconnect",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "raw-lxc-interface",
+      "status": "FAIL",
+      "refused": false,
+      "remaining_interfaces": [
+        "lxc.net.0.type: veth"
+      ],
+      "calls": [
+        {
+          "label": "disconnect",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "privileged-guest",
+      "status": "FAIL",
+      "refused": false,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "disconnect",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    }
+  ]
+}

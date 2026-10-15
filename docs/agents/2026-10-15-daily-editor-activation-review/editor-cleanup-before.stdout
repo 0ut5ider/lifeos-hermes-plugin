@@ -1,0 +1,47 @@
+{
+  "status": "FAIL",
+  "source": "docs/agents/2026-10-15-daily-editor-activation-review/activate_daily_editor.before.py",
+  "cases": [
+    {
+      "case": "partial-stop-failure",
+      "calls": [
+        "stop"
+      ],
+      "error_type": "OriginalFailure",
+      "error": "Partial stop failure",
+      "expected_cleanup_and_original_failure": false,
+      "notes": [],
+      "remote_calls": false,
+      "config_read": false,
+      "file_write": false
+    },
+    {
+      "case": "write-failure-start-succeeds",
+      "calls": [
+        "stop",
+        "start"
+      ],
+      "error_type": "OriginalFailure",
+      "error": "Configuration publication failure",
+      "expected_cleanup_and_original_failure": true,
+      "notes": [],
+      "remote_calls": false,
+      "config_read": false,
+      "file_write": false
+    },
+    {
+      "case": "write-failure-start-fails",
+      "calls": [
+        "stop",
+        "start"
+      ],
+      "error_type": "CleanupFailure",
+      "error": "Cleanup also fails",
+      "expected_cleanup_and_original_failure": false,
+      "notes": [],
+      "remote_calls": false,
+      "config_read": false,
+      "file_write": false
+    }
+  ]
+}

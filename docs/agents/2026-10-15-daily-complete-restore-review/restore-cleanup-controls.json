@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "obligated": false,
+      "cleanup_fails": false,
+      "recovery_called": false,
+      "failure_marker": "1",
+      "original_error": "Original restore failure",
+      "notes": [],
+      "status": "PASS",
+      "remote_calls": false,
+      "file_writes": false
+    },
+    {
+      "obligated": true,
+      "cleanup_fails": false,
+      "recovery_called": true,
+      "failure_marker": "1",
+      "original_error": "Original restore failure",
+      "notes": [],
+      "status": "PASS",
+      "remote_calls": false,
+      "file_writes": false
+    },
+    {
+      "obligated": true,
+      "cleanup_fails": true,
+      "recovery_called": true,
+      "failure_marker": "1",
+      "original_error": "Original restore failure",
+      "notes": [
+        "Source service recovery also fails: ValueError"
+      ],
+      "status": "PASS",
+      "remote_calls": false,
+      "file_writes": false
+    }
+  ]
+}

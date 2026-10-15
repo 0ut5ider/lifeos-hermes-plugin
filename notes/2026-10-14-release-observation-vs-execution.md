@@ -1,0 +1,7 @@
+# Release execution and observer state
+
+On October 14, the public 0.5.0 installation completed while its browser observer retained `queued-apply`. The actual native job reported `applied`. A separate verifier checked the exact public archive and certificate, all eleven fresh-install program groups, and preserved model settings. A renewed owner browser session then read HTTP 200 and `applied` for the same operation. No second installation or application ran. The original live polling failure cause remains unknown. A local control proves that HTTP 401 caused the original polling helper to retry without renewing authentication.
+
+The observer repair initially caught an owner-identity refusal inside its general retry handler. An independent local control returned `applied` after renewal supplied the wrong owner. Moving authentication checks outside the transport retry closes that path. The original interrupted receipt stays unchanged. A separate read-only completion receipt supplies the actual final browser observation.
+
+Deployment review also caught operator defects before production use: partial Pulse stop failure skipped restart cleanup; restart failure could hide the original write error; the restore command omitted its action argument; continuation could claim resumed writers without checking them; and removal of only `net0` allowed a restored `net1` to survive. Local failure controls now cover each case. These controls do not substitute for the subsequent actual installation, service, editor, backup, and disconnected restore checks.

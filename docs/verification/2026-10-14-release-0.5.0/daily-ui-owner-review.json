@@ -1,0 +1,31 @@
+{
+  "status": "REVIEWED",
+  "server": "daily",
+  "operation": "b9e873b251604202a58442b502a3c2b2",
+  "actions": [
+    {
+      "path": "/api/plugins/lifeos-release-manager/prepare",
+      "method": "POST",
+      "http_status": 202,
+      "identifier": "b9e873b251604202a58442b502a3c2b2",
+      "intent": "plugin",
+      "state": "preparing"
+    },
+    {
+      "path": "/api/plugins/lifeos-release-manager/operations/b9e873b251604202a58442b502a3c2b2/review",
+      "method": "POST",
+      "http_status": 200,
+      "identifier": "b9e873b251604202a58442b502a3c2b2",
+      "version": "0.5.0",
+      "commit": "04efe633296eb2b1a1d95561ca6d3e9516cd47dc",
+      "package_sha256": "a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813",
+      "fresh": false,
+      "state": "ready"
+    }
+  ],
+  "identity_review": {
+    "http_status": 200,
+    "status": "committed",
+    "reviewed_sources": 3
+  }
+}

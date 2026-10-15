@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "already-running",
+      "status": "PASS",
+      "calls": [
+        "verify-resumed-source",
+        "hermes-dashboard.service",
+        "hermes-gateway.service",
+        "com.lifeos.pulse.service"
+      ],
+      "obligation_at_source_call": [
+        true
+      ],
+      "remaining_recovery_obligation": false,
+      "error_type": null,
+      "remote_calls": false,
+      "private_inputs_used": false
+    },
+    {
+      "case": "needs-recovery",
+      "status": "PASS",
+      "calls": [
+        "verify-resumed-source",
+        "native-resume",
+        "hermes-dashboard.service",
+        "hermes-gateway.service",
+        "com.lifeos.pulse.service"
+      ],
+      "obligation_at_source_call": [
+        true
+      ],
+      "remaining_recovery_obligation": false,
+      "error_type": null,
+      "remote_calls": false,
+      "private_inputs_used": false
+    },
+    {
+      "case": "recovery-still-required",
+      "status": "PASS",
+      "calls": [
+        "verify-resumed-source",
+        "native-resume"
+      ],
+      "obligation_at_source_call": [
+        true
+      ],
+      "remaining_recovery_obligation": true,
+      "error_type": "AssertionError",
+      "remote_calls": false,
+      "private_inputs_used": false
+    },
+    {
+      "case": "inactive-service",
+      "status": "PASS",
+      "calls": [
+        "verify-resumed-source",
+        "hermes-dashboard.service"
+      ],
+      "obligation_at_source_call": [
+        true
+      ],
+      "remaining_recovery_obligation": true,
+      "error_type": "AssertionError",
+      "remote_calls": false,
+      "private_inputs_used": false
+    }
+  ]
+}
