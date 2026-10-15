@@ -1,0 +1,239 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8c9f4c29..c6866383 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,21 @@
+ # Changelog
+ 
++## 0.6.0 (unreleased)
++
++- Add owner-reviewed import from Hermes memory and portable LifeOS bundles.
++- Preserve source occurrences, original bytes, references, and import provenance.
++- Require explicit item decisions and current owner, source, and destination checks.
++- Export governed facts into a retained bundle and bounded Hermes memory files.
++- Return to built-in Hermes through a reviewed service transition and recovery journal.
++- Refuse stale return reviews and preserve later settings, grants, and memory edits.
++- Add complete software removal after verified provider return and separate owner review.
++- Select qualified stock Hermes and retain personal data, exports, and recovery records.
++- Disable Discord during removal and retain password-authenticated standalone recovery.
++- Bind stock runtime execution, retained recovery sources, and software ownership.
++- Normalize the retained environment before removal review with the pinned Hermes formatter.
++- Exclude portability runtime workspaces from data-only backups. Full guest backups retain them.
++- Keep release qualification and installed removal acceptance in progress.
++
+ ## 0.5.0 (2026-10-14)
+ 
+ - Verify omitted native program baseline entries against the exact accepted archive before release updates.
+diff --git a/README.md b/README.md
+index d4e0e57b..545060e0 100644
+--- a/README.md
++++ b/README.md
+@@ -2,6 +2,8 @@
+ 
+ **Published stable release:** `0.5.0`, program commit `04efe633`, on development `.252` and daily `.253`. The [release record](docs/verification/2026-10-14-release-0.5.0/README.md) binds the exact package, qualification, public installation, and daily activation evidence. The package adds the governed Pulse core-file editor, corrects observer timestamp comparison, and verifies omitted native baseline entries against the accepted archive.
+ 
++**Unpublished candidate:** `0.6.0` adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [portability contract](docs/memory-portability.md) defines data retention and recovery. The [qualification record](docs/verification/2026-10-15-memory-portability/README.md) reports measured results and remaining gates. Development and daily remain on qualified `0.5.0`.
++
+ The actual public Hermes web form installs the manager from the default GitHub URL. Install LifeOS then selects and installs the latest stable complete package after owner review. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/PUBLIC-LATEST-ACCEPTANCE.json) records that test. Daily `.253` applies the same package through Update plugin and owner review. Its protected complete backup and disconnected recovery pass. The [published deployment receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/DEPLOYMENT-ACCEPTANCE.json) binds these completed checks.
+ 
+ The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+diff --git a/VERSION b/VERSION
+index 8f0916f7..a918a2aa 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-0.5.0
++0.6.0
+diff --git a/docs/verification/2026-10-15-memory-portability/PROGRESS.json b/docs/verification/2026-10-15-memory-portability/PROGRESS.json
+index 62aea1aa..235d0cd7 100644
+--- a/docs/verification/2026-10-15-memory-portability/PROGRESS.json
++++ b/docs/verification/2026-10-15-memory-portability/PROGRESS.json
+@@ -11,7 +11,7 @@
+   "stages": {
+     "contracts_and_characterization": "COMPLETE",
+     "import_review_and_application": "COMPLETE_INSTALLED: actual owner browser review, current-checkpoint activation1e61e81db7c34d0083c2452187b8b626, real FlashNext search with actual verified tool result, fresh imported .213 fact retrieval with original source SHA-256, and active-ownership idempotent import all PASS.",
+-    "reverse_export_and_return": "COMPLETE_INSTALLED: six required items export, downloaded private bundle, exact original .213 project content, current browser return a04286e430f34511ad7cfeef7b061723, fresh constructor, and fresh real built-in model recall all PASS. Actual model adds later synthetic built-in fact with previous memory preserved.",
++    "reverse_export_and_return": "COMPLETE_INSTALLED: corrected b35 package returns eleven required items, verifies current provider return, and fresh actual builtin recall preserves new native learning and later builtin learning.",
+     "complete_software_removal": "Actual033 publication removes all1857 deletion targets and all active LifeOS plugins. Publication verification_required, outer workflow interrupted. Read-only diagnosis confirms stock runtime identity PASS, program target fingerprint check FAIL. Current memory hashes retained. Correctionf8 first-apply source selection has CLEAR component review; installed correction replay pending.",
+     "disposable_end_to_end": "PENDING",
+     "independent_review_and_release": "PENDING"
+@@ -25,7 +25,7 @@
+     "ct": 110,
+     "address": "192.168.8.244",
+     "stock_dashboard": "RUNNING",
+-    "integration": "Private52db5dfd applied and exact identity verified. Fresh browser import b54a53d51c3b4fd5af125c7270c2ece5 preserves five references at revision1. Owner-reviewed activation4f709b50bc55443fba9890dfa923a186 is configured. New actual FlashNext native save and fresh-session recall PASS. Corrected provider-return race still needs installed replay.",
++    "integration": "Private b35cf86e applied with exact plugin identity verified. Fresh export d11bb702d5f049a8ac7a11c00c2507e5 includes all11 required items and six native revision1 references. Owner-reviewed provider return a4c74ea2a4694edfbffd890f37fd7161 verifies. Fresh actual built-in Hermes recalls the newly learned native fact without tools or earlier history. Complete-removal preparation started.",
+     "production_qualified": false,
+     "model_route": "Private FlashNext and tier selections preserved. Actual fresh native search and get return successful tool output. Imported .213 project content matches original SHA-256. Discord disabled.",
+     "rootfs_gib": 64
+@@ -79,14 +79,14 @@
+     "installed_replay": "PASS_PREPARATION: actual corrected installed review reachesready with1863targets. Complete removal verification remainspending."
+   },
+   "native_archive_tests": {
+-    "checkpoint": "52db5dfd",
++    "checkpoint": "b35cf86e",
+     "tests": 716,
+     "files": 38,
+     "status": "PASS_CLEAN",
+     "archived_sources_unchanged": true,
+-    "elapsed_seconds": 75.88417005501105,
++    "elapsed_seconds": 80.39272931400046,
+     "daily_changed": false,
+-    "qualifies_later_return_fix": false
++    "qualifies_later_return_fix": true
+   },
+   "fixture_output_isolation": "Actual service control changes a tracked checkout diagnostic. Correction writes its temporary fixture directory. Dedicated isolation control and three actual service controls PASS; exact final archive rerun pending.",
+   "removal_execution_source": {
+@@ -107,7 +107,7 @@
+     "review": "CLEAR_COMPONENTS:15 independent tests,15 input cases and30 real stock child processes. Primary repeats4 independent controls cleanly and checks matching source hashes."
+   },
+   "ui_archive_tests": {
+-    "checkpoint": "10ac6013",
++    "checkpoint": "b35cf86e",
+     "tests": 33,
+     "status": "PASS_CLEAN",
+     "test_sources_unchanged": true
+@@ -123,9 +123,14 @@
+   },
+   "current_archive_integration": {
+     "checkpoint": "52db5dfd",
+-    "status": "RUNNING",
++    "status": "PASS_CLEAN",
+     "archive_sha256": "c7c6c43ad7c4826e5d18fd495f375589e46a980ecbd758153c9e26dba92ee872",
+-    "archive_bytes": 288174707
++    "archive_bytes": 288174707,
++    "tests": 991,
++    "modules": 98,
++    "elapsed_seconds": 1579.2331749269943,
++    "files_match_before_and_after": true,
++    "qualifies_later_return_fix": false
+   },
+   "portable_bundle_replay": "PASS_INSTALLED: actual original48917byte download uploaded in browser, all6 items required, same4 referencesrev1, no duplicates.",
+   "removal_cycle_backup": {
+@@ -151,14 +156,39 @@
+     "revision": 1,
+     "actual_remember": true,
+     "fresh_session_search": true,
+-    "builtin_return_recall": "PENDING"
++    "builtin_return_recall": "PASS_INSTALLED: fresh session20261015_202947_ce63bf, no tools, actual marker proof,12.968seconds"
+   },
+   "return_capture_review": {
+-    "status": "PASS_COMPONENTS_REVIEW_PENDING",
++    "status": "CLEAR_COMPONENTS",
+     "finding": "P2: configuration transformation before before-image capture can lose a setting or owner grant. A built-in source edit after the first source check can be replaced by the reviewed older export.",
+     "primary_reproduced": true,
+     "correction": "Capture return inputs before transformation, check current export after capture, bind captured policy, and check all captured files before finalizing the review.",
+-    "installed_replay": "PENDING",
+-    "primary_tests": 16
++    "installed_replay": "PASS: actual current browser preparation, separate apply, verified provider return, and fresh actual built-in model recall.",
++    "primary_tests": 16,
++    "review_commit": "b35cf86ef032ab81ac4306d48951b94615aca5a4",
++    "independent_tests": 55,
++    "primary_independent_repeat": "PASS_CLEAN:55 tests,120.379seconds; all43 package source hashes and39 closure artifact hashes match."
++  },
++  "checkpoint_preparation_operator": {
++    "first_attempt": "FAIL_SAFE",
++    "reason": "The operator uses Ubuntu Python without ruamel.yaml. Read-only actual validate_package reproduces ModuleNotFoundError for ruamel in release_version.py. No active change.",
++    "retry": "Use the existing installed Hermes venv, as the normal manager does.",
++    "product_change_required": false
++  },
++  "current_corrected_candidate": {
++    "checkpoint": "b35cf86ef032ab81ac4306d48951b94615aca5a4",
++    "archive_sha256": "d51eb1a5d5c175f3a0ef04871e29f443b4c07707e75899fba686934302161a82",
++    "archive_bytes": 288162161,
++    "operation": "15bcc1ca30614051a6a02f4ed5093401",
++    "state": "applied",
++    "production_qualified": false
++  },
++  "complete_removal_current": {
++    "workflow": "16403c963170432a822bc9e9a60ab649",
++    "package_commit": "b35cf86ef032ab81ac4306d48951b94615aca5a4",
++    "provider_return": "a4c74ea2a4694edfbffd890f37fd7161",
++    "state": "preparing",
++    "normal_first_apply_verified": false,
++    "operator_assisted_old_rollback_is_not_acceptance": true
+   }
+ }
+diff --git a/docs/verification/2026-10-15-memory-portability/README.md b/docs/verification/2026-10-15-memory-portability/README.md
+index 3b834752..cd265294 100644
+--- a/docs/verification/2026-10-15-memory-portability/README.md
++++ b/docs/verification/2026-10-15-memory-portability/README.md
+@@ -8,6 +8,10 @@ The [implementation contract](../../memory-portability.md) covers import, portab
+ 
+ CT110 at `192.168.8.244` runs private committed test checkpoints. The published and daily release remains qualified 0.5.0. The actual owner browser imports both authorized .213 files, applies reviewed native ownership, exports six required items, and verifies provider return. Fresh private FlashNext turns retrieve the imported project fact with its original source digest, search native synthetic memory, and recall the returned synthetic marker through built-in Hermes. Another actual built-in tool call adds a later fact and preserves existing entries. The private bundle download preserves the original .213 project content and provenance. No personal source text enters these receipts.
+ 
++The corrected private `b35cf86e` package now completes another current browser export and provider return. All 11 required items include six native references at revision 1. The reviewed files use 689 of 2,200 project-memory characters and 264 of 1,375 profile characters. A real model saves a new native fact, recalls it in a separate session, then recalls the same fact through built-in Hermes after verified return. The portable bundle also retains the later built-in learning. These receipts contain metadata and proofs only.
++
++The complete package review measures one return-preparation race with three lost-edit effects. The final correction captures the inputs before transformation and rechecks the reviewed export after capture. The independent closure passes 55 controls. The primary repeats all 55 controls cleanly and verifies the current source hashes. The exact `b35cf86e` package passes 716 native Hermes controls and 33 user interface component controls. Its integration archive run remains separate.
++
+ Complete installed removal remains pending. The installed preparation passes after corrections for regenerated native architecture output and contained dependency links. Actual033 publication removes all1857 software deletion targets, but final verification refuses the stock startup change to `.env`. The current file equals the reviewed23-byte file plus one LF. The [measured note](../../../notes/2026-10-15-removal-environment-newline.md) explains the correction and narrow operator repair. The old operation completes authenticated standalone rollback after the narrow operator repair. It restores software, archives the marker, and preserves later built-in memory hashes. It does not establish unaided recovery.
+ 
+ The [source-selection review](../../agents/2026-10-15-removal-execution-source-review/removal-execution-source-review.md) clears correctionf8e0d25b within component scope. Fifteen independent controls pass. The primary checks all seven current source hashes and repeats the five new grant and race controls with separate evidence. All pass. Nineteen adjacent controls also pass. Normal installed first apply still needs the corrected package.
+@@ -16,7 +20,7 @@ Preparation now uses the pinned Hermes environment formatter before owner review
+ 
+ The clean broad repeat passes 228 tests with no ignored exceptions or ResourceWarning diagnostics. It starts before the dependency-link correction and remains evidence for the prior checkpoint. The earlier 223-assertion result contains a SQLite fixture warning and is not clean qualification. The corrected fixture closes its connection, and the runner rejects ignored warnings. The current private archive also runs the complete prior integration selection plus portability tests from extracted package bytes. It is not yet a qualified release.
+ 
+-The [final local removal review](../../agents/2026-10-15-final-removal-review/final-removal-review.md) passes 40 clean Python controls and 19 SDK controls before the dependency-link correction. The primary checks its source identities and independently repeats the three new actual rollback and current-memory controls. Installed complete removal, password-authenticated retained recovery, reboot, additional native learning and return, portable bundle replay, and full release qualification remain open.
++The [final local removal review](../../agents/2026-10-15-final-removal-review/final-removal-review.md) passes 40 clean Python controls and 19 SDK controls before the dependency-link correction. The primary checks its source identities and independently repeats the three new actual rollback and current-memory controls. Installed complete removal, password-authenticated retained recovery, reboot, injected interruption, and full release qualification remain open. Installed portable bundle replay and additional native learning with corrected provider return now pass.
+ 
+ The disposable guest alone expands from 32 GiB to 64 GiB for retained test runtimes and recovery copies. No existing guest stops. Stock runtime preparation also needs Ubuntu `libatomic1`; the fixture supplies it through the signed operating-system package repository.
+ 
+diff --git a/lifeos_hook_bridge/dashboard/manifest.json b/lifeos_hook_bridge/dashboard/manifest.json
+index 106c3c9d..086637a1 100644
+--- a/lifeos_hook_bridge/dashboard/manifest.json
++++ b/lifeos_hook_bridge/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS Bridge",
+   "description": "Configure LifeOS models and Stop hooks",
+   "icon": "Settings",
+-  "version": "0.5.0",
++  "version": "0.6.0",
+   "tab": {
+     "path": "/lifeos-bridge",
+     "position": "after:plugins"
+diff --git a/lifeos_hook_bridge/plugin.yaml b/lifeos_hook_bridge/plugin.yaml
+index 285f81a4..7dd76353 100644
+--- a/lifeos_hook_bridge/plugin.yaml
++++ b/lifeos_hook_bridge/plugin.yaml
+@@ -1,6 +1,6 @@
+ name: lifeos-hook-bridge
+ kind: standalone
+-version: 0.5.0
++version: 0.6.0
+ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+ author: 0ut5ider
+ python_dependencies:
+diff --git a/notes/2026-10-15-return-input-capture.md b/notes/2026-10-15-return-input-capture.md
+index a6e62f34..41456e8a 100644
+--- a/notes/2026-10-15-return-input-capture.md
++++ b/notes/2026-10-15-return-input-capture.md
+@@ -7,3 +7,5 @@ Three product regressions reproduce the two transform/capture races and an earli
+ Separately, installed52db reaches current reviewed native ownership after the runtime backup correction. The stale pre-update review correctly refuses: safe comparison identifies only config_digest changed; source bindings, origin, and policy digest remain equal. A fresh review verifies the same five revision1 facts. A real FlashNext turn then commits one new synthetic native fact, reference0c5ffc94b03f48a7943ae95711361666 revision1. Fresh native recall and return to ordinary Hermes remain separate gates. No production server changes.
+ 
+ The independent reviewer then proves a third lost-edit effect after the initial correction: a built-in entry added after the first export-source check but before capture becomes an accepted before-image for older output. The primary reproduces actual loss with the real service transition. A fourth product regression fails before correction. Rechecking the current reviewed export after input capture, together with the final captured-file equality guard, refuses this stale source. All16 primary return, transition, and independent controls now pass with clean diagnostics. The fresh actual native recall also passes in a separate model session. Independent final closure and installed corrected return remain pending.
++
++Focused independent closure is clear at b35cf86e. It repeats55 controls, including the original three independent effects and four adjacent refusal cases. The primary independently repeats the same55 controls cleanly in120.379seconds and checks all43 current package hashes and39 closure artifacts. This closes the measured code finding. Installed corrected return and removal remain pending.
+diff --git a/optional/lifeos_release_manager/dashboard/manifest.json b/optional/lifeos_release_manager/dashboard/manifest.json
+index 22a88c8a..12857d5c 100644
+--- a/optional/lifeos_release_manager/dashboard/manifest.json
++++ b/optional/lifeos_release_manager/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS releases",
+   "description": "Install and update complete qualified integration releases",
+   "icon": "Package",
+-  "version": "0.5.0",
++  "version": "0.6.0",
+   "tab": {
+     "path": "/lifeos-releases",
+     "position": "after:plugins"
+diff --git a/optional/lifeos_release_manager/plugin.yaml b/optional/lifeos_release_manager/plugin.yaml
+index dd9f6cd3..fe7c51ad 100644
+--- a/optional/lifeos_release_manager/plugin.yaml
++++ b/optional/lifeos_release_manager/plugin.yaml
+@@ -1,5 +1,5 @@
+ name: lifeos-release-manager
+ kind: standalone
+-version: 0.5.0
++version: 0.6.0
+ description: Installs and updates qualified LifeOS integration releases from Hermes.
+ author: 0ut5ider

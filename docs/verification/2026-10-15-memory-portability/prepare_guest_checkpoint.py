@@ -21,7 +21,10 @@ if (len(arguments.checkpoint)!=40 or len(arguments.previous)!=32
     raise ValueError('Use exact checkpoint and previous operation identifiers')
 home=Path('/home/lifeos-hermes');profile=home/'.hermes'
 inputs=home/'install-input'/('removal-'+arguments.checkpoint[:8])
-build=json.loads((inputs/('0.5.0-'+arguments.checkpoint[:8]+'-build.json')).read_bytes())
+build_files=list(inputs.glob('*-'+arguments.checkpoint[:8]+'-build.json'))
+if len(build_files)!=1:
+    raise ValueError('Use one exact private build receipt for this checkpoint')
+build=json.loads(build_files[0].read_bytes())
 assert build['head']==arguments.checkpoint
 assert not build['combined_release_verified'] and not build['live_selection_changed']
 previous=profile/'.lifeos-releases'/arguments.previous
