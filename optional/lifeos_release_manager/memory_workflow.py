@@ -124,8 +124,8 @@ def admit(profile, identifier, action, signature, *, owner, launch):
             if signature!=review.get('signature'):raise ValueError('Use the exact reviewed memory workflow signature')
             if review['state']=='preparation' and action=='apply':
                 raise ValueError('The memory workflow has no completed review to apply')
-            permitted={'apply':{'ready'},'recover':{'interrupted'},
-                'rollback':{'ready','configured','verified','verification_required','interrupted'}}
+            permitted={'apply':{'ready'},'recover':{'queued','interrupted'},
+                'rollback':{'queued','ready','configured','verified','verification_required','interrupted'}}
             if current not in permitted[action] and current not in {'preparing','applying','recovering','rolling_back'}:
                 raise ValueError('The memory workflow state does not admit this action')
             if current in {'preparing','applying','recovering','rolling_back'}:
@@ -137,9 +137,11 @@ def admit(profile, identifier, action, signature, *, owner, launch):
                     raise RuntimeError('The detached memory workflow is still running')
         binding={'action':action,'workflow':identifier,'request':hashlib.sha256(_encoded(request)).hexdigest(),'signature':signature}
         administration=source.memory_administration()
+        previous=read_private(job/'admission.json') if (job/'admission.json').exists() else None
         grant=administration.issue(configuration,owner,ttl=3600,binding=binding,purpose='transition')
         unit='lifeos-memory-'+identifier+'-'+uuid4().hex[:8]
         publish(job/'admission.json',_encoded({'binding':binding,'authorization':str(grant)}))
+        if previous is not None:administration.revoke(configuration,previous['authorization'])
         publish(job/'launch.json',_encoded({'unit':unit}))
         _state(job,{'prepare':'preparing','apply':'applying','recover':'recovering','rollback':'rolling_back'}[action])
         try:launch(job,unit,action)
@@ -176,6 +178,41 @@ def _probe(profile, source, expected):
     return json.loads(result.stdout)
 
 
+def _cancel_preparation(source, configuration, job, request, lease):
+    owner=request['owner'];selected=request['selection'];profile=configuration.path.parent.absolute()
+    if selected['kind']=='activation':
+        activation=source.memory_module('memory_activation').MemoryActivation(configuration,
+            installation_lease=lease,operation_id=job.name)
+        if activation.owns_operation(account=owner):return activation.recover(account=owner)
+    else:
+        snapshot=source.memory_module('memory_import_sources').directory(profile,selected['identifier'])
+        returned=source.memory_module('memory_return').MemoryReturn(configuration,
+            installation_lease=lease,operation_id=job.name)
+        transition=source.memory_module('memory_transition').MemoryTransition(configuration,
+            installation_lease=lease,operation_id=job.name)
+        own_inner=returned.owns_operation(snapshot,account=owner)
+        own_outer=transition.owns_operation(account=owner)
+        if own_outer and not own_inner:raise RuntimeError('The transition loses its bound return preparation')
+        inner_signature=None
+        if own_inner:
+            data,_=source.memory_module('memory_backup')._read(snapshot/'return/plan.json',private=True)
+            inner_signature=hashlib.sha256(data).hexdigest()
+            inner,state,copies=returned._load(snapshot,inner_signature,owner)
+            if (state['state'] not in {'ready','cancelled'} or inner['export_signature']!=selected['signature']
+                    or inner['export_plan_signature']!=selected['plan_signature']
+                    or copies[('SOUL.md','after')]!=selected['prompt'].encode()):
+                raise RuntimeError('The return preparation differs from this admitted workflow')
+        if own_outer:
+            data,_=source.memory_module('memory_backup')._read(transition.directory/'plan.json',private=True)
+            signature=hashlib.sha256(data).hexdigest()
+            plan,state=transition._load(signature,owner)
+            if plan['snapshot']!=str(snapshot) or plan['return_signature']!=inner_signature or state not in {'ready','rolled_back'}:
+                raise RuntimeError('This workflow cannot cancel an applied or unrelated provider transition')
+            transition.cancel_preparation(signature,account=owner)
+        if own_inner:returned.cancel_preparation(snapshot,inner_signature,account=owner)
+    return {'state':'cancelled','application_verified':False}
+
+
 def execute(profile, identifier, action):
     profile=profile_directory(profile);source,configuration=_source(profile)
     lock=source.memory_module('installation_lock').installation_lock
@@ -194,8 +231,11 @@ def execute(profile, identifier, action):
             selected=request['selection'];owner=request['owner']
             paths=source.memory_module('memory_import_sources')
             snapshot=paths.directory(profile,selected['identifier'])
-            if selected['kind']=='activation':
-                activation=source.memory_module('memory_activation').MemoryActivation(configuration,installation_lease=lease)
+            if review is not None and review['state']=='preparation':
+                result=_cancel_preparation(source,configuration,job,request,lease)
+            elif selected['kind']=='activation':
+                activation=source.memory_module('memory_activation').MemoryActivation(configuration,
+                    installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     selected_source=read_private(snapshot/'source-binding.json')['source_identifier']
                     source_directory=paths.directory(profile,selected_source,source=True) if selected_source is not None else None
@@ -205,12 +245,13 @@ def execute(profile, identifier, action):
                 elif action=='apply':result=activation.apply(signature,account=owner)
                 else:result=activation.recover(account=owner)
             else:
-                transition=source.memory_module('memory_transition').MemoryTransition(configuration,installation_lease=lease)
+                transition=source.memory_module('memory_transition').MemoryTransition(configuration,
+                    installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
-                    returned=source.memory_module('memory_return').MemoryReturn(configuration,installation_lease=lease)
+                    returned=source.memory_module('memory_return').MemoryReturn(configuration,
+                        installation_lease=lease,operation_id=identifier)
                     review=returned.prepare(snapshot,selected['signature'],selected['plan_signature'],prompt=selected['prompt'],account=owner)
                     result={**transition.prepare_return(snapshot,review['signature'],account=owner),'prompt':review['prompt']}
-                elif review['state']=='preparation':result={'state':'cancelled','application_verified':False}
                 elif action=='rollback':result=transition.rollback(signature,account=owner)
                 else:
                     result=transition.apply(signature,account=owner)

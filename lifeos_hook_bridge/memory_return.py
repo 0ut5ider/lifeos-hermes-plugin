@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+from uuid import uuid4
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -20,7 +21,7 @@ from .mount_transaction import _read as read_target, _sync_directory
 
 
 NAMES=('memories/MEMORY.md','memories/USER.md','SOUL.md','lifeos-memory.json','config.yaml')
-STATES={'ready','applying','configured','restoring','rolled_back'}
+STATES={'ready','applying','configured','restoring','rolled_back','cancelled'}
 
 
 def _digest(data):
@@ -36,12 +37,15 @@ def _independent(value):
 
 
 class MemoryReturn:
-    def __init__(self, configuration, *, installation_lease=None, verify_writers=None):
+    def __init__(self, configuration, *, installation_lease=None, verify_writers=None, operation_id=None):
         self.configuration=configuration
         self.exporter=MemoryExport(configuration,installation_lease=installation_lease)
         self.importer=self.exporter.importer
         self.profile=self.importer.profile
         self.verify_writers=verify_writers
+        if operation_id is not None and (not isinstance(operation_id,str) or re.fullmatch('[0-9a-f]{32}',operation_id) is None):
+            raise ValueError('Provider return requires a server-issued operation identifier')
+        self.operation_id=operation_id
 
     def _configuration(self, data):
         yaml=YAML();yaml.preserve_quotes=True
@@ -105,6 +109,7 @@ class MemoryReturn:
                 publish(state/'after'/str(index),after)
                 targets.append({'name':name,'copy':index,'before':metadata,'after':{'digest':_digest(after),'mode':0o600}})
             plan={'version':1,'profile':str(self.profile),'root':str(self.importer.installed),'principal':self.importer.principal,
+                'operation_id':self.operation_id,
                 'writer':account,'export_signature':export_signature,'export_plan_signature':export_plan_signature,
                 'snapshot_signature':document['snapshot_signature'],'target_signature':captured['target_signature'],'targets':targets}
             data=_encoded(plan);signature=_digest(data)
@@ -118,6 +123,14 @@ class MemoryReturn:
     def _state(directory, signature, state):
         publish(directory/'operation.json',_encoded({'signature':signature,'state':state}))
 
+    def owns_operation(self, destination, *, account=None):
+        path=Path(destination).absolute()/'return/plan.json'
+        if not path.exists():return False
+        data,_=_read(path,private=True);plan=json.loads(data)
+        if not isinstance(plan,dict) or plan.get('writer')!=account:
+            raise MemoryUnavailable('The return preparation belongs to another installation owner')
+        return plan.get('operation_id')==self.operation_id
+
     def _load(self, destination, signature, account):
         directory=destination/'return'
         _directory(directory,private=True)
@@ -126,10 +139,10 @@ class MemoryReturn:
         try:plan=json.loads(data)
         except (ValueError,UnicodeError,RecursionError) as error:
             raise MemoryUnavailable('The return plan has invalid metadata') from error
-        fields={'version','profile','root','principal','writer','export_signature','export_plan_signature','snapshot_signature','target_signature','targets'}
+        fields={'version','profile','root','principal','writer','export_signature','export_plan_signature','snapshot_signature','target_signature','targets','operation_id'}
         if (not isinstance(plan,dict) or set(plan)!=fields or type(plan['version']) is not int or plan['version']!=1
                 or plan['profile']!=str(self.profile) or plan['root']!=str(self.importer.installed)
-                or plan['principal']!=self.importer.principal or plan['writer']!=account
+                or plan['principal']!=self.importer.principal or plan['writer']!=account or plan['operation_id']!=self.operation_id
                 or not isinstance(plan['targets'],list) or len(plan['targets'])!=len(NAMES)):
             raise MemoryUnavailable('The return plan belongs to another owner or installation')
         copies={}
@@ -153,6 +166,19 @@ class MemoryReturn:
                 or operation['signature']!=signature or operation['state'] not in STATES):
             raise MemoryUnavailable('The return operation has invalid state')
         return plan,operation,copies
+
+    def cancel_preparation(self, destination, signature, *, account=None):
+        destination=Path(destination).absolute()
+        with self.importer._locks(account):
+            plan,operation,_=self._load(destination,signature,account)
+            if operation['state'] not in {'ready','cancelled'}:
+                raise MemoryUnavailable('Only an unapplied return preparation can be cancelled')
+            history=destination/'return-history';history.mkdir(mode=0o700,exist_ok=True)
+            _directory(history,private=True)
+            self._state(destination/'return',signature,'cancelled')
+            retained=history/uuid4().hex
+            os.rename(destination/'return',retained);_sync_directory(destination);_sync_directory(history)
+            return {'state':'cancelled','signature':signature,'native_data_retained':True,'application_verified':False}
 
     def _barrier(self):
         if not callable(self.verify_writers):raise MemoryUnavailable('Provider return requires a verified profile writer barrier')

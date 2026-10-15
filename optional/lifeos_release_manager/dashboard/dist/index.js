@@ -11,29 +11,27 @@
     const [operations, setOperations] = SDK.hooks.useState([]);
     const [busy, setBusy] = SDK.hooks.useState(false);
     const [message, setMessage] = SDK.hooks.useState("");
+    const requests = SDK.hooks.useRef(0);
+    const mounted = SDK.hooks.useRef(true);
     async function refresh() {
+      const request = ++requests.current;
       try {
         const result = await SDK.fetchJSON(base);
-        setOperations(result.operations);
+        if (mounted.current && request === requests.current) setOperations(result.operations);
       } catch (error) {
-        setOperations([]); setMessage(error.message);
+        if (mounted.current && request === requests.current) {
+          ++requests.current; setOperations([]); setMessage(error.message);
+        }
       }
     }
     SDK.hooks.useEffect(function () {
-      let active = true;
-      async function poll() {
-        try {
-          const result = await SDK.fetchJSON(base);
-          if (active) setOperations(result.operations);
-        } catch (error) {
-          if (active) { setOperations([]); setMessage(error.message); }
-        }
-      }
-      poll();
-      const timer = setInterval(poll, 5000);
-      return function () { active = false; clearInterval(timer); };
+      mounted.current = true;
+      refresh();
+      const timer = setInterval(refresh, 5000);
+      return function () { mounted.current = false; ++requests.current; clearInterval(timer); };
     }, []);
     async function act(operation, action) {
+      ++requests.current;
       setBusy(true); setMessage("");
       try {
         await SDK.fetchJSON(base + "/" + operation.identifier + "/" + action, {
@@ -42,8 +40,11 @@
         });
         setMessage("Memory workflow started. Hermes can restart. Refresh this page to check its result.");
         await refresh();
-      } catch (error) { setOperations([]); setMessage(error.message); }
-      finally { setBusy(false); }
+      } catch (error) {
+        ++requests.current;
+        if (mounted.current) { setOperations([]); setMessage(error.message); }
+      }
+      finally { if (mounted.current) setBusy(false); }
     }
     return h("section", {className: "space-y-3 rounded border border-border p-4"},
       h("h2", {className: "text-lg font-semibold"}, "Memory ownership workflows"),
@@ -63,7 +64,7 @@
               "This operation selects the reviewed built-in memory, stops and disables Pulse, and restarts Hermes. It retains native data and exports."),
             h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "apply"); }},
               operation.kind === "activation" ? "Activate reviewed LifeOS ownership" : "Apply reviewed provider return")) : null,
-          operation.state === "interrupted" ? h("button", {type: "button", disabled: busy,
+          ["queued", "interrupted"].includes(operation.state) ? h("button", {type: "button", disabled: busy,
             onClick: function () { return act(operation, "recover"); }}, "Recover memory workflow") : null,
           ["configured", "verified", "verification_required", "interrupted"].includes(operation.state) ?
             h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "rollback"); }},

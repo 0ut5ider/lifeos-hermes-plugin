@@ -18,13 +18,15 @@
   },
   "source_213": "665 bytes captured privately; originals preserved; daily unchanged",
   "primitive_tests": 68,
-  "component_tests": 24,
-  "review_findings": "Three primitive P2 findings fixed and independently clear. Four orchestration P2 findings reproduced and fixed; primary closure passes 10 tests. Full workflow review pending.",
+  "component_tests": 25,
+  "review_findings": "Primitive review clear. Four orchestration findings fixed. Manager review finds one P1 and three P2 issues; primary reproduces and fixes all four, with operation IDs, private cancellation archives, and request ordering. Independent closure pending.",
   "workflow_tests": 70,
   "disposable_guest": {
     "ct": 110,
     "address": "192.168.8.244",
     "stock_dashboard": "RUNNING",
-    "integration": "PUBLIC_INSTALLATION_REPLAY_STARTED"
-  }
+    "integration": "PUBLIC_MANAGER_INSTALLED; release 0.5.0 preparation 95b943fdc1244b5ea76ce96b6a56d723 pending"
+  },
+  "workflow_recovery_controls": 18,
+  "stock_source_and_stage_tests": 20
 }

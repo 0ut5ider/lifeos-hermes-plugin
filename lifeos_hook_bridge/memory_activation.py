@@ -17,25 +17,34 @@ from .ownership_setup import OwnershipSetup
 
 
 class MemoryActivation:
-    def __init__(self, configuration, *, units=None, installation_lease=None):
+    def __init__(self, configuration, *, units=None, installation_lease=None, operation_id=None):
         self.configuration=configuration
         self.profile=configuration.path.parent.absolute()
         self.units=units
         self.lease=installation_lease
+        if operation_id is not None and (not isinstance(operation_id,str) or re.fullmatch('[0-9a-f]{32}',operation_id) is None):
+            raise ValueError('Activation requires a server-issued operation identifier')
+        self.operation_id=operation_id
         self.directory=self.profile/'.lifeos-memory-activation'
 
-    def _binding(self, account):
+    def _binding(self, account, *, check_operation=True):
         _directory(self.directory,private=True)
         data,_=_read(self.directory/'binding.json',private=True)
         value=json.loads(data)
-        if (not isinstance(value,dict) or set(value)!={'owner','snapshot','snapshot_signature','plan_signature','source'}
+        if (not isinstance(value,dict) or set(value)!={'owner','snapshot','snapshot_signature','plan_signature','source','operation_id'}
                 or value['owner']!=account or not isinstance(value['snapshot'],str)
                 or not Path(value['snapshot']).is_absolute()
                 or value['source'] is not None and (not isinstance(value['source'],str) or not Path(value['source']).is_absolute())
                 or any(not isinstance(value[key],str) or re.fullmatch('[0-9a-f]{64}',value[key]) is None
                     for key in ('snapshot_signature','plan_signature'))):
             raise MemoryUnavailable('The activation binding belongs to another import or owner')
+        if check_operation and value['operation_id']!=self.operation_id:
+            raise MemoryUnavailable('This activation belongs to another memory workflow')
         return value
+
+    def owns_operation(self, *, account=None):
+        if not (self.directory/'binding.json').exists():return False
+        return self._binding(account,check_operation=False)['operation_id']==self.operation_id
 
     def _verify(self, binding, account, lease):
         importer=MemoryImport(self.configuration,source_directory=binding['source'],installation_lease=lease)
@@ -92,12 +101,13 @@ class MemoryActivation:
 
     def prepare(self, snapshot, snapshot_signature, plan_signature, backup, *, account=None, source_directory=None):
         binding={'owner':account,'snapshot':str(Path(snapshot).absolute()),'snapshot_signature':snapshot_signature,
-            'plan_signature':plan_signature,'source':str(Path(source_directory).absolute()) if source_directory is not None else None}
+            'plan_signature':plan_signature,'source':str(Path(source_directory).absolute()) if source_directory is not None else None,
+            'operation_id':self.operation_id}
         with installation_lock(self.profile,lease=self.lease) as lease:
             self._verify(binding,account,lease)
             self.directory.mkdir(mode=0o700,exist_ok=True);_directory(self.directory,private=True)
             if (self.directory/'binding.json').exists() or (self.directory/'binding.json').is_symlink():
-                previous=self._binding(account)
+                previous=self._binding(account,check_operation=False)
                 setup=OwnershipSetup(self.configuration,units=self.units,installation_lease=lease)
                 status=setup.status(account=account)
                 cancelled=None

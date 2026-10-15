@@ -1,0 +1,15 @@
+test_recovery_of_failed_second_job_does_not_return_first_provider (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.ActivationJobReview.test_recovery_of_failed_second_job_does_not_return_first_provider) ... FAIL
+
+======================================================================
+FAIL: test_recovery_of_failed_second_job_does_not_return_first_provider (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.ActivationJobReview.test_recovery_of_failed_second_job_does_not_return_first_provider)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-closure/workflow_probes.py", line 184, in test_recovery_of_failed_second_job_does_not_return_first_provider
+    self.assertTrue(observed['ownership_after_second_recovery'],'The second failed job must not return the first configured provider')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The second failed job must not return the first configured provider
+
+----------------------------------------------------------------------
+Ran 1 test in 7.092s
+
+FAILED (failures=1)

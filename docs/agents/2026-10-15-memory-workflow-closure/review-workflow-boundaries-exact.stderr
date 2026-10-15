@@ -1,0 +1,25 @@
+test_exit_before_admission_is_recoverable (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.WorkflowReview.test_exit_before_admission_is_recoverable) ... FAIL
+test_failed_return_prepare_can_recover_then_reuse_export (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.WorkflowReview.test_failed_return_prepare_can_recover_then_reuse_export) ... FAIL
+
+======================================================================
+FAIL: test_exit_before_admission_is_recoverable (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.WorkflowReview.test_exit_before_admission_is_recoverable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-closure/workflow_probes.py", line 70, in test_exit_before_admission_is_recoverable
+    self.assertNotIn('recover',observed['errors'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'recover' unexpectedly found in {'recover': 'The memory workflow state does not admit this action', 'rollback': 'The memory workflow state does not admit this action', 'new_queue': 'Complete or recover the pending memory workflow first'}
+
+======================================================================
+FAIL: test_failed_return_prepare_can_recover_then_reuse_export (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.WorkflowReview.test_failed_return_prepare_can_recover_then_reuse_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-closure/workflow_probes.py", line 96, in test_failed_return_prepare_can_recover_then_reuse_export
+    self.assertNotIn('exact_retry_refusal',observed,'A cancelled preparation must leave a reusable export or a bound resumable return')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'exact_retry_refusal' unexpectedly found in {'first_prepare_exit': 1, 'first_prepare_stderr': 'The memory workflow stopped. The owner can review its private recovery state.\n', 'recover_exit': 0, 'recover_state': 'cancelled', 'second_prepare_exit': 1, 'second_prepare_stderr': 'The memory workflow stopped. The owner can review its private recovery state.\n', 'retained_inner_state': 'ready', 'exact_retry_refusal': 'Use the existing return review or prepare a new export'} : A cancelled preparation must leave a reusable export or a bound resumable return
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.048s
+
+FAILED (failures=2)

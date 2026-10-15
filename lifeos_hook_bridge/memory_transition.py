@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from uuid import uuid4
 
 from .installation_lock import installation_lock
 from . import program_lock
@@ -14,6 +15,7 @@ from .memory_backup import _directory, _read
 from .memory_import import _encoded
 from .memory_return import MemoryReturn, _digest
 from .memory_transaction import publish
+from .mount_transaction import _sync_directory
 from .profile_services import ProfileServices
 
 
@@ -23,12 +25,15 @@ ENABLEMENT={'enabled','enabled-runtime','disabled','static','linked','linked-run
 
 
 class MemoryTransition:
-    def __init__(self, configuration, *, units=None, installation_lease=None):
+    def __init__(self, configuration, *, units=None, installation_lease=None, operation_id=None):
         self.configuration=configuration
         self.profile=configuration.path.parent.absolute()
         selected=configuration.load()
         self.installed=Path(selected['root']).absolute()
         self.lease=installation_lease
+        if operation_id is not None and (not isinstance(operation_id,str) or re.fullmatch('[0-9a-f]{32}',operation_id) is None):
+            raise ValueError('Provider transition requires a server-issued operation identifier')
+        self.operation_id=operation_id
         self.units=ProfileServices(self.profile,self.installed,units=units).units
         self.directory=self.profile/'.lifeos-memory-transition'
 
@@ -43,7 +48,8 @@ class MemoryTransition:
                 raise MemoryUnavailable('The selected native store changes during provider return')
             self.directory.mkdir(mode=0o700,exist_ok=True);_directory(self.directory,private=True)
             services=ProfileServices(self.profile,self.installed,units=self.units,installation_lease=lease)
-            operation=MemoryReturn(self.configuration,installation_lease=lease,verify_writers=services.verify_stopped)
+            operation=MemoryReturn(self.configuration,installation_lease=lease,verify_writers=services.verify_stopped,
+                operation_id=self.operation_id)
             yield services,operation
 
     def _load(self, signature, account):
@@ -52,9 +58,9 @@ class MemoryTransition:
             raise MemoryUnavailable('Provider return requires the exact reviewed transition signature')
         plan=json.loads(data)
         if (not isinstance(plan,dict) or set(plan)!={'version','profile','root','owner','units','snapshot',
-                'return_signature','services_signature','original_roles','pulse_enablement'}
+                'return_signature','services_signature','original_roles','pulse_enablement','operation_id'}
                 or plan['version']!=1 or plan['profile']!=str(self.profile) or plan['root']!=str(self.installed)
-                or plan['owner']!=account or plan['units']!=self.units
+                or plan['owner']!=account or plan['units']!=self.units or plan['operation_id']!=self.operation_id
                 or not isinstance(plan['original_roles'],list)
                 or any(role not in self.units for role in plan['original_roles'])
                 or plan['pulse_enablement'] not in ENABLEMENT
@@ -70,6 +76,29 @@ class MemoryTransition:
 
     def _state(self, signature, state):
         publish(self.directory/'operation.json',_encoded({'signature':signature,'state':state}))
+
+    def owns_operation(self, *, account=None):
+        if not (self.directory/'plan.json').exists():return False
+        data,_=_read(self.directory/'plan.json',private=True)
+        value=json.loads(data)
+        if not isinstance(value,dict) or value.get('owner')!=account:
+            raise MemoryUnavailable('The provider transition belongs to another installation owner')
+        return value.get('operation_id')==self.operation_id
+
+    def _archive(self):
+        history=self.profile/'.lifeos-memory-transition-history'
+        history.mkdir(mode=0o700,exist_ok=True);_directory(history,private=True)
+        os.rename(self.directory,history/uuid4().hex)
+        _sync_directory(history);_sync_directory(self.profile)
+
+    def cancel_preparation(self, signature, *, account=None):
+        with self._lock(account):
+            _,state=self._load(signature,account)
+            if state not in {'ready','rolled_back'}:
+                raise MemoryUnavailable('Only an unapplied provider transition can be cancelled')
+            self._state(signature,'rolled_back')
+            self._archive()
+            return {'signature':signature,'state':'cancelled','application_verified':False,'native_data_retained':True}
 
     def _enablement(self):
         result=subprocess.run(['systemctl','--user','show',self.units['pulse'],
@@ -109,7 +138,13 @@ class MemoryTransition:
         destination=Path(destination).absolute()
         with self._lock(account) as (services,operation):
             if (self.directory/'plan.json').exists() or (self.directory/'plan.json').is_symlink():
-                raise MemoryUnavailable('Complete or recover the existing provider transition first')
+                data,_=_read(self.directory/'plan.json',private=True)
+                previous=json.loads(data)
+                prior=MemoryTransition(self.configuration,units=self.units,operation_id=previous.get('operation_id'))
+                _,old_state=prior._load(_digest(data),account)
+                if old_state!='rolled_back':
+                    raise MemoryUnavailable('Complete or recover the existing provider transition first')
+                self._archive();self.directory.mkdir(mode=0o700)
             plan,state,_=operation._load(destination,return_signature,account)
             if state['state']!='ready':raise MemoryUnavailable('Prepare an unapplied reviewed provider return')
             operation._check(plan,sides=('before',));operation._native_current(plan)
@@ -119,6 +154,7 @@ class MemoryTransition:
             if services._signature(admitted)!=service_signature:
                 raise MemoryUnavailable('The profile service state changes during transition review')
             document={'version':1,'profile':str(self.profile),'root':str(self.installed),'owner':account,
+                'operation_id':self.operation_id,
                 'units':self.units,'snapshot':str(destination),'return_signature':return_signature,
                 'services_signature':service_signature,'pulse_enablement':self._enablement(),
                 'original_roles':[role for role,item in admitted['services'].items() if item['active']]}

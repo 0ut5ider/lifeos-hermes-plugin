@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 
-def assemble_runtime(job, source, package, web, profile):
+def assemble_runtime(job, source, package, web, profile, *, integration=True):
     from pm import stage_manager_runtime
     from pm.environments import site_packages
     from pm.features import installed_extras, write_features
@@ -38,7 +38,7 @@ def assemble_runtime(job, source, package, web, profile):
         tools=store, pm_runtime=job / 'pm-runtime', features=job / 'enabled-features.json',
         frontends={'web': web})
     manifest = assemble(inputs, job)
-    members = {profile / 'plugins/lifeos-hook-bridge': package / 'lifeos_hook_bridge'}
+    members = {profile / 'plugins/lifeos-hook-bridge': package / 'lifeos_hook_bridge'} if integration else {}
     facts.record_state('venv', Venv(source).expected_stamp(features, plugin_dirs=members), features)
     if not (job / manifest['runtime']['commands']['hermes']).is_file():
         raise ValueError('Native assembly does not publish the required Hermes launcher')

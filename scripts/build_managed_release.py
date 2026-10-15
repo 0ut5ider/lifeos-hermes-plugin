@@ -37,6 +37,8 @@ def build(args):
     if release_version.versions(package) != version:
         raise ValueError('Integration version declarations differ')
     hermes = install_source.prepare_supported_hermes(args.hermes_source, package / 'hermes')
+    from optional.lifeos_release_manager.stock_hermes import build_archive
+    stock = build_archive(args.hermes_source, package / 'stock-hermes.tgz', hermes['base_commit'])
     lifeos = install_source.prepare_lifeos(str(args.lifeos_source), package / 'lifeos',
         install_source.SUPPORTED_LIFEOS_COMMIT, package / 'lifeos_hook_bridge/patches', install_source.LIFEOS_PATCHES)
     closure = package / 'python-runtime'
@@ -47,6 +49,7 @@ def build(args):
                     ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     bridge = file_map(package / 'lifeos_hook_bridge')
     manifest = {'version': version, 'head': head, 'status': 'release_candidate',
+        'stock_hermes': stock,
         'plugin_files': {'lifeos_hook_bridge/' + k: v for k, v in bridge.items()},
         'manager_files': file_map(package / 'optional/lifeos_release_manager'),
         'python_runtime_files': file_map(closure),
