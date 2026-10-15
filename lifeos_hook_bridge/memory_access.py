@@ -78,7 +78,7 @@ class NativeMemory:
             return core_file_lease(self.physical_profile)
         return nullcontext()
 
-    def _boundary(self) -> None:
+    def _data_boundary(self) -> None:
         if self.root.resolve() != self.physical_root:
             raise MemoryUnavailable("The installed root alias changed during the memory operation")
         user = self.root.parent / ".config/LIFEOS/USER"
@@ -88,6 +88,8 @@ class NativeMemory:
             path = self.root / "LIFEOS" / name
             if not path.is_symlink() or not path.is_dir() or not path.resolve().is_relative_to(user.resolve()):
                 raise MemoryUnavailable(f"LifeOS {name} is outside the physical USER_DATA boundary")
+    def _boundary(self) -> None:
+        self._data_boundary()
         if not (self.root / "LIFEOS/TOOLS/MemorySystem.ts").is_file():
             raise MemoryUnavailable("The native LifeOS memory tools are unavailable")
 

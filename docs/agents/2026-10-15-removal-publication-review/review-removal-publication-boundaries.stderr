@@ -1,0 +1,35 @@
+test_actual_memory_tool_removal_can_roll_back (docs.agents.2026-10-15-removal-publication-review.publication_probes.PublicationBoundaryReview.test_actual_memory_tool_removal_can_roll_back) ... FAIL
+test_interrupted_complete_native_removal_can_resume (docs.agents.2026-10-15-removal-publication-review.publication_probes.PublicationBoundaryReview.test_interrupted_complete_native_removal_can_resume) ... FAIL
+test_native_data_ancestor_is_never_a_removal_target (docs.agents.2026-10-15-removal-publication-review.publication_probes.PublicationBoundaryReview.test_native_data_ancestor_is_never_a_removal_target) ... FAIL
+
+======================================================================
+FAIL: test_actual_memory_tool_removal_can_roll_back (docs.agents.2026-10-15-removal-publication-review.publication_probes.PublicationBoundaryReview.test_actual_memory_tool_removal_can_roll_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-publication-review/publication_probes.py", line 53, in test_actual_memory_tool_removal_can_roll_back
+    self.assertNotIn('rollback_error',observed)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'rollback_error' unexpectedly found in {'apply_state': 'verification_required', 'memory_tool_removed': True, 'rollback_error': 'The native LifeOS memory tools are unavailable', 'service_pids': {'gateway': '0', 'dashboard': '0', 'pulse': '0'}}
+
+======================================================================
+FAIL: test_interrupted_complete_native_removal_can_resume (docs.agents.2026-10-15-removal-publication-review.publication_probes.PublicationBoundaryReview.test_interrupted_complete_native_removal_can_resume)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-publication-review/publication_probes.py", line 65, in test_interrupted_complete_native_removal_can_resume
+    self.assertNotIn('retry_error',observed)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'retry_error' unexpectedly found in {'memory_tool_removed': True, 'retry_error': 'The native LifeOS memory tools are unavailable'}
+
+======================================================================
+FAIL: test_native_data_ancestor_is_never_a_removal_target (docs.agents.2026-10-15-removal-publication-review.publication_probes.PublicationBoundaryReview.test_native_data_ancestor_is_never_a_removal_target)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-publication-review/publication_probes.py", line 75, in test_native_data_ancestor_is_never_a_removal_target
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'target_contains_native_user': True, 'accepted': True}
+
+----------------------------------------------------------------------
+Ran 3 tests in 10.516s
+
+FAILED (failures=3)

@@ -7,6 +7,7 @@ from .cli import read_private
 from .release_catalog import ReleaseRejected
 from .release_programs import ProgramTransaction,publish
 from .removal_services import RemovalServices
+from .removal_data import barrier
 from .removal_state import retained
 
 
@@ -31,13 +32,12 @@ class RemovalPublication:
         if bindings['profile']!=str(self.profile) or bindings['installed']!=self.plan['root']:
             raise ReleaseRejected('The removal service barrier belongs to another installation')
         self.importer=self.source.memory_module('memory_import').MemoryImport(self.configuration)
+        root=Path(self.plan['root'])
+        protected=(root.parent/'.config/LIFEOS/USER',self.profile/'memories',self.profile/'SOUL.md',
+            self.stage,root/'LIFEOS/USER',root/'LIFEOS/MEMORY',self.profile/'workspace',root.parent/'workspace')
         for entry in self.programs._load()['entries']:
             target=Path(entry['target'])
-            user=Path(self.plan['root']).parent/'.config/LIFEOS/USER'
-            if (target.is_relative_to(user) or target.is_relative_to(self.profile/'memories')
-                    or target==self.profile/'SOUL.md' or target.is_relative_to(self.stage)
-                    or target.is_relative_to(Path(self.plan['root'])/'LIFEOS/USER')
-                    or target.is_relative_to(Path(self.plan['root'])/'LIFEOS/MEMORY')):
+            if any(target.is_relative_to(path) or path.is_relative_to(target) for path in protected):
                 raise ReleaseRejected('Software removal cannot target personal data or its recovery sources')
 
     def _owner(self, account):
@@ -73,7 +73,7 @@ class RemovalPublication:
             if state=='ready':self.programs.check_prepared()
             else:self.programs.check_recovery()
             self._state('draining');self.services.stop(self.plan['service_signature']);checkpoint('drained')
-            with self.configuration._lock(),self.importer.memory._transaction() as connection:
+            with self.configuration._lock(),barrier(self.importer.memory) as connection:
                 self._owner(account)
                 if self.importer._target_signature(connection)!=self.plan['native_signature']:
                     raise ReleaseRejected('Native facts change after the reviewed reverse export')
@@ -95,7 +95,7 @@ class RemovalPublication:
             if state=='rolled_back':return self._receipt(state)
             self.programs.check_recovery()
             self._state('restoring');self.services.stop(self.plan['service_signature']);checkpoint('drained')
-            with self.configuration._lock(),self.importer.memory._transaction():
+            with self.configuration._lock(),barrier(self.importer.memory):
                 self._owner(account);self.services.verify_stopped(self.plan['service_signature'])
                 self.programs.restore();checkpoint('programs-restored')
                 self._owner(account);self.services.resume(self.plan['service_signature'],restored=True)
