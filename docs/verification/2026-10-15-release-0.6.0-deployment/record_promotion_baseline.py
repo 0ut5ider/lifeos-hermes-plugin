@@ -42,6 +42,7 @@ assert active['version'] == '0.5.0' and active['commit'] == '04efe633296eb2b1a1d
 assert active['package_sha256'] == 'a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813'
 report = {'status': 'PASS', 'server': sys.argv[1], 'prior_identity': active, 'services': services,
     'model_selection_sha256': model_hash,
+    'configuration_semantic_sha256': hashlib.sha256(json.dumps(config, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest(),
     'configuration_file_sha256': {name: hashlib.sha256((profile / name).read_bytes()).hexdigest()
         for name in ('.env', 'lifeos-memory.json')}, 'personal_records_read': False,
     'credential_values_exported': False}

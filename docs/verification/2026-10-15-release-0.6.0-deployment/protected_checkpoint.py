@@ -87,8 +87,13 @@ try:
 except Exception as error:
     receipt['error_type'] = type(error).__name__
 finally:
-    if drained:
-        services("s.resume();print('Writers resumed after failure')")
-    (out / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
-    (out / 'process.done').write_text('0\n' if receipt['status'] == 'PASS' else '1\n')
+    try:
+        if drained:
+            services("s.resume();print('Writers resumed after failure')")
+            receipt['services_resumed_after_failure'] = True
+    except Exception as error:
+        receipt.update(status='FAIL', service_recovery_error_type=type(error).__name__)
+    finally:
+        (out / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+        (out / 'process.done').write_text('0\n' if receipt['status'] == 'PASS' else '1\n')
 raise SystemExit(0 if receipt['status'] == 'PASS' else 1)

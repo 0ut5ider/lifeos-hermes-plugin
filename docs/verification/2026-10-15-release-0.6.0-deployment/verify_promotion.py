@@ -10,6 +10,7 @@ import shlex
 import subprocess
 import sys
 import types
+import tomllib
 
 import httpx
 from ruamel.yaml import YAML
@@ -84,6 +85,7 @@ active = json.loads(subprocess.run([str(home / '.local/bin/hermes'), 'lifeos-ver
 assert active['verification'] == 'verified'
 assert all(active[key] == request[key] for key in ('version', 'commit', 'package_sha256'))
 config = YAML(typ='safe').load((profile / 'config.yaml').read_bytes())
+assert hashlib.sha256(json.dumps(config, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest() == baseline['configuration_semantic_sha256']
 settings = config.get('plugins', {}).get('entries', {}).get('lifeos-hook-bridge', {}).get('settings', {})
 selection = {'model': config.get('model'), 'tiers': {key: value for key, value in settings.items()
     if key.startswith(('haiku', 'sonnet', 'opus', 'fable', 'pinned'))}}
@@ -101,13 +103,27 @@ for name, expected in baseline['services'].items():
         Path('/proc/' + values['MainPID'] + '/environ').read_bytes().decode().split('\0') if '=' in value)
     assert environment['HOME'] == expected['home'] and environment['HERMES_HOME'] == expected['profile']
     services[name] = {'active': True, 'home_preserved': True, 'profile_preserved': True}
+    if name != 'com.lifeos.pulse.service':
+        assert (Path('/proc') / values['MainPID'] / 'exe').resolve() == Path(request['runtime']['python']).resolve()
+        assert args.operation.encode() in (Path('/proc') / values['MainPID'] / 'cmdline').read_bytes()
+        services[name]['selected_python_runtime_verified'] = True
 report = {'status': 'PASS', 'server': args.server, 'operation': args.operation, 'active_identity': active,
     'program_state': 'applied', 'sealed_program_targets': len(transaction._load()['entries']),
     'native_mount_required': False, 'current_owner_mount_journal_preserved': True,
-    'model_selection_sha256': model_hash, 'model_and_tiers_preserved': True,
+    'model_selection_sha256': model_hash, 'model_and_tiers_preserved': True, 'complete_configuration_semantics_preserved': True,
     'credential_file_bytes_preserved': True, 'memory_configuration_bytes_preserved': True,
     'services': services, 'personal_data_imported_or_reset': False, 'personal_records_read': False}
 if args.server == 'daily':
+    pulse_before = json.loads(args.baseline.with_name('daily-pulse-before.json').read_bytes())
+    assert pulse_before['status'] == 'PASS'
+    root = Path(json.loads((profile / 'lifeos-memory.json').read_bytes())['root'])
+    pulse_file = root / 'LIFEOS/USER/CONFIG/PULSE.user.toml'
+    assert hashlib.sha256(pulse_file.read_bytes()).hexdigest() == pulse_before['pulse_user_configuration_sha256']
+    pulse = tomllib.loads(pulse_file.read_text())
+    morning = [row for row in pulse['job'] if row['name'] == 'life-morning-brief']
+    assert len(morning) == 1 and morning[0]['schedule'] == '0 7 * * *' and morning[0]['enabled'] is True
+    assert pulse['modules']['hermes'] is True
+    report.update(pulse_user_configuration_preserved=True, normal_morning_schedule='0 7 * * *', pulse_editor_enabled=True)
     credentials = json.loads((home / 'install-input/dashboard-access.json').read_bytes())
     with httpx.Client(base_url='http://127.0.0.1:18819', timeout=60) as client:
         login = client.post('/auth/password-login', json={'provider': 'basic', **credentials})

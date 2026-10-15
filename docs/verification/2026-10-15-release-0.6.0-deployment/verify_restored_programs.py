@@ -1,10 +1,12 @@
-# ABOUTME: Checks the exact selected synthetic program targets in a disconnected restored guest.
+# ABOUTME: Checks the exact selected program targets in a disconnected restored guest.
 # ABOUTME: Verifies private configuration bytes without exporting their values.
 import hashlib
 import json
 import os
 from pathlib import Path
 import sys
+import tomllib
+from ruamel.yaml import YAML
 
 if sys.flags.optimize:
     raise RuntimeError('Restore verification requires assertions')
@@ -44,7 +46,18 @@ for name in ('hermes-dashboard.service', 'hermes-gateway.service', 'com.lifeos.p
     assert (units / (name + '.before-restore')).is_file()
 preserved = json.loads((Path('/home/lifeos-hermes/releases/qualification-0.6.0/private-preservation-baseline.json')).read_bytes())
 assert set(preserved) == {'.env', 'lifeos-memory.json'}
+configuration_before = json.loads(Path('/home/lifeos-hermes/releases/qualification-0.6.0/daily-preapply-baseline.json').read_bytes())
+configuration = YAML(typ='safe').load((profile / 'config.yaml').read_bytes())
+assert hashlib.sha256(json.dumps(configuration, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest() == configuration_before['configuration_semantic_sha256']
 assert all(hashlib.sha256((profile / name).read_bytes()).hexdigest() == digest for name, digest in preserved.items())
+pulse_before = json.loads(Path('/home/lifeos-hermes/releases/qualification-0.6.0/daily-pulse-before.json').read_bytes())
+root = Path(json.loads((profile / 'lifeos-memory.json').read_bytes())['root'])
+pulse_file = root / 'LIFEOS/USER/CONFIG/PULSE.user.toml'
+assert pulse_before['status'] == 'PASS' and hashlib.sha256(pulse_file.read_bytes()).hexdigest() == pulse_before['pulse_user_configuration_sha256']
+pulse = tomllib.loads(pulse_file.read_text())
+morning = [row for row in pulse['job'] if row['name'] == 'life-morning-brief']
+assert len(morning) == 1 and morning[0]['schedule'] == '0 7 * * *' and morning[0]['enabled'] is True
+assert pulse['modules']['hermes'] is True
 receipt = json.loads((profile / 'integration-release.json').read_bytes())
 assert all(receipt[key] == request[key] for key in ('version', 'commit', 'package_sha256'))
 print(json.dumps({'status': 'PASS', 'operation': job.name, 'version': request['version'],
@@ -53,4 +66,5 @@ print(json.dumps({'status': 'PASS', 'operation': job.name, 'version': request['v
     'native_mount_required': False, 'native_mount_targets': len(mount._manifest()['entries']),
     'current_owner_mount_journal_preserved': True,
     'owner_memory_configuration_verified': True, 'credential_file_bytes_preserved': True,
-    'private_configuration_exported': False}, indent=2))
+    'private_configuration_exported': False, 'complete_configuration_semantics_preserved': True, 'pulse_user_configuration_preserved': True,
+    'normal_morning_schedule': '0 7 * * *', 'pulse_editor_enabled': True}, indent=2))

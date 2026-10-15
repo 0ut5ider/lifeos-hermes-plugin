@@ -1,4 +1,4 @@
-# ABOUTME: Backs up archived Atlas fixtures and verifies their actual off-server restore.
+# ABOUTME: Backs up the daily qualified runtime and verifies its disconnected off-server restore.
 # ABOUTME: Keeps the disposable restore guest disconnected with application services masked.
 import argparse
 import json

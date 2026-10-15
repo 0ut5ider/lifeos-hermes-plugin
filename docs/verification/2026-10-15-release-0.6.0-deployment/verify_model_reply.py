@@ -49,11 +49,14 @@ try:
             events.append(value)
     final = next((row for row in reversed(events) if row.get('type') == 'result'), {})
     tools = [row.get('name') for row in events if row.get('type') == 'tool_use']
+    initial = [row for row in events if row.get('type') == 'system']
+    assert len(initial) == 1 and initial[0].get('model') == 'flashnext-w4a16-fp8ple'
+    assert initial[0].get('session_id') == final.get('session_id')
     assert result.returncode == 0 and final.get('exit_code') == 0
     assert not tools and final.get('tokens', {}).get('output', 0) > 0
     assert marker in final.get('text', '') and final.get('session_id')
     receipt.update(status='PASS', actual_model_reply=True, expected_marker_verified=True,
-        session=final['session_id'], tool_names=tools, process_exit_code=result.returncode)
+        session=final['session_id'], model=initial[0]['model'], tool_names=tools, process_exit_code=result.returncode)
 except Exception as error:
     receipt['error_type'] = type(error).__name__
 finally:
