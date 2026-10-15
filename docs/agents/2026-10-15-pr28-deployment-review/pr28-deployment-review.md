@@ -45,7 +45,7 @@ The original loader read each file once to parse it and again to calculate its d
 
 ## P3: Current deployment guidance contradicted editor activation
 
-The daily-text guide described the enabled 0.5.0 editor, then said to complete that editor in a later release. The primary replaced the stale paragraph. The guide now separates the current enabled governed editor from the historical first-release disabled editor choice. `initial-documentation.diff` preserves the original contradiction.
+The daily-text guide described the enabled 0.5.0 editor, then said to complete that editor in a later release. The primary replaced the stale paragraph. The guide now separates the current enabled governed editor from the historical first-release disabled editor choice. `initial-documentation.diff.gz` preserves the original contradiction as a compressed raw patch. Its checksum records the exact decompressed bytes.
 
 # Validation
 
