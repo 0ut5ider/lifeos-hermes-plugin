@@ -12,7 +12,7 @@ from model_turn_assertions import verified_search
 
 os.umask(0o077)
 parser=argparse.ArgumentParser()
-parser.add_argument('mode',choices=('native-read','builtin-read'))
+parser.add_argument('mode',choices=('native-read','builtin-read','later-builtin-read'))
 parser.add_argument('--label',required=True)
 args=parser.parse_args()
 home=Path('/home/lifeos-hermes');profile=home/'.hermes'
@@ -27,6 +27,9 @@ query=('Use lifeos_memory_search exactly once with query "synthetic portability 
        if args.mode=='native-read' else
        'What is the synthetic portability project marker in your lasting memory? '
        'Answer only the marker. Do not use tools, shell, files, or earlier chat history.')
+if args.mode=='later-builtin-read':
+    query=('What is the synthetic memory added after complete software removal? '
+           'Answer only its marker. Do not use tools, shell, files, or earlier chat history.')
 query_path=output/'query.txt';query_path.write_text(query+'\n')
 command=[str(home/'.local/bin/hermes'),'chat','--query-file',str(query_path),
     '--oneshot','--format','stream-json','--max-turns','4','--run-budget','120']
@@ -44,7 +47,7 @@ try:
     final=final[-1] if final else {}
     tool_events=[event for event in events if event.get('type')=='tool_use']
     names=[event.get('name') for event in tool_events]
-    expected='D244-MEMORY-1015'
+    expected='D244-LATER-REMOVAL-1015' if args.mode=='later-builtin-read' else 'D244-MEMORY-1015'
     marker_matched=expected in final.get('text','')
     model_turn=final.get('tokens',{}).get('output',0)>0
     tool_match=(names==['lifeos_memory_search'] if args.mode=='native-read' else not names)
