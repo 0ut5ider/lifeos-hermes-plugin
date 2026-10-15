@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "source_guest": 110,
+  "restored_guest": 111,
+  "archive": "PBS-01:backup/ct/110/2026-10-15T21:26:10Z",
+  "archive_protected": true,
+  "network_disconnected": true,
+  "production_guest_changed": false,
+  "workflow": "ab99723289884679b706440c7005fa5c",
+  "active_identity": {
+    "version": "0.6.0",
+    "verification": "verified",
+    "verification_scope": "plugin_sources",
+    "commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+    "package_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+    "recorded_version": "0.6.0",
+    "modified_files": []
+  },
+  "native_consistency": {
+    "status": "PASS",
+    "workflow": "ab99723289884679b706440c7005fa5c",
+    "model_turn_executed": false,
+    "raw_record_content_exported": false,
+    "ownership_changed": false,
+    "production_changed": false,
+    "retained_bootstrap_help_verified": true,
+    "owner_authenticated": true,
+    "stock_commit": "71d34bad1045610252eda02ee79549436896e784",
+    "native_consistency_signature_verified": true,
+    "native_signature": "da4ce61eec71a74ca1fc5e796fd83dcdf838a3dc41afe3657f7563f28c665d4d",
+    "program_targets_verified": true,
+    "stock_runtime_verified": true,
+    "fresh_stock_constructor_verified": true,
+    "builtin_files_unchanged": true,
+    "builtin_files": {
+      "MEMORY.md": "85947afbbd323e608d2818f769097b51badbcb797f09fd04fb0392be99745435",
+      "USER.md": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    }
+  },
+  "retained_helper_authentication": {
+    "status": "PASS",
+    "daily_changed": false,
+    "action": "rollback",
+    "workflow": "ab99723289884679b706440c7005fa5c",
+    "actual_terminal": true,
+    "wrong_password": false,
+    "raw_credentials_exported": false,
+    "exit_code": 0,
+    "username_prompt": true,
+    "password_prompt": true,
+    "password_echo_disabled": true,
+    "admitted": true,
+    "builtin_memory_unchanged": true,
+    "before_sha256": {
+      "MEMORY.md": "85947afbbd323e608d2818f769097b51badbcb797f09fd04fb0392be99745435",
+      "USER.md": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    },
+    "after_sha256": {
+      "MEMORY.md": "85947afbbd323e608d2818f769097b51badbcb797f09fd04fb0392be99745435",
+      "USER.md": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    },
+    "elapsed_seconds": 20.573667443008162
+  },
+  "builtin_files": {
+    "MEMORY.md": {
+      "bytes": 780,
+      "sha256": "85947afbbd323e608d2818f769097b51badbcb797f09fd04fb0392be99745435"
+    },
+    "USER.md": {
+      "bytes": 267,
+      "sha256": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    }
+  },
+  "software_rollback_verified": true,
+  "restored_guest_stopped": true,
+  "all_original_guest_states_preserved": true,
+  "operations_sha256": "84dffcef44d71a97dc962b1cbe8e2e58b4baa4f342393dd0d6c08b45b265472a"
+}

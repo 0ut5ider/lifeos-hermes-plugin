@@ -1,5 +1,5 @@
 {
-  "status": "IMPLEMENTATION_IN_PROGRESS",
+  "status": "QUALIFIED_PENDING_PUBLICATION",
   "base_release": "0.5.0",
   "daily_changed": false,
   "source_data_authorized": [
@@ -13,8 +13,8 @@
     "import_review_and_application": "COMPLETE_INSTALLED: actual owner browser review, current-checkpoint activation1e61e81db7c34d0083c2452187b8b626, real FlashNext search with actual verified tool result, fresh imported .213 fact retrieval with original source SHA-256, and active-ownership idempotent import all PASS.",
     "reverse_export_and_return": "COMPLETE_INSTALLED: corrected b35 package returns eleven required items, verifies current provider return, and fresh actual builtin recall preserves new native learning and later builtin learning.",
     "complete_software_removal": "PASS_INSTALLED: normal removal, actual stock model recall and later learning, reboot, wrong-password refusal, authenticated software rollback, and exact0.6 worker-exit recovery verify. Cold whole-guest restore remains open.",
-    "disposable_end_to_end": "PENDING",
-    "independent_review_and_release": "PENDING"
+    "disposable_end_to_end": "COMPLETE_INSTALLED: actual owner browser import/export/return/removal, fresh native and stock learning, reboot, wrong-password refusal, authenticated rollback, exactcandidateworker-exitrecovery, and disconnectedPBSwholeguestrestore PASS.",
+    "independent_review_and_release": "REVIEWS_CLEAR_CERTIFICATE_GENERATED: public publication and latest installation replay remain."
   },
   "source_213": "665 bytes captured privately; originals preserved; daily unchanged",
   "primitive_tests": 68,
@@ -208,7 +208,7 @@
     "archive_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
     "archive_bytes": 288167820,
     "public_release": false,
-    "production_qualified": false,
+    "production_qualified": true,
     "pull_request": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/29",
     "pull_request_draft": true,
     "independent_final_review": "CLEAR:14 version/catalog controls and actual archive checks. Primary repeats actual archive map checks and matches37 review artifact hashes.",
@@ -229,7 +229,8 @@
       "publication_phase": "publishing",
       "authentication": "PASS: actual retained helper password prompt, echo disabled, current owner admitted; builtin hashes unchanged",
       "final_verification": "PASS: application_verified, stock builtin constructor, all3 plugins absent, native policy absent, retained native consistency, unchanged builtin hashes"
-    }
+    },
+    "certificate_sha256": "e53fa1a02d52637fd9678d6978900c10d3003bb2059c78c689078bc0de3db770"
   },
   "fresh_release_guest": {
     "ct": 112,
@@ -256,14 +257,18 @@
     "selected_model_and_tiers_preserved": true
   },
   "cold_whole_guest_restore": {
-    "state": "RESTORE_RUNNING",
+    "state": "PASS",
     "source_guest": 110,
     "restored_guest": 111,
     "archive": "PBS-01:backup/ct/110/2026-10-15T21:26:10Z",
     "archive_protected_verified": true,
     "backup_exit_code": 0,
     "backup_elapsed_seconds": 622.4313276720059,
-    "production_changed": false
+    "production_changed": false,
+    "software_rollback_verified": true,
+    "native_consistency_verified": true,
+    "builtin_memory_preserved": true,
+    "all_original_guest_states_preserved": true
   },
   "verification_operator_review": {
     "initial_finding": "C1 P2: missing decisive model effects, mixed authentication workflows/actions, and missing cold rollback authentication binding",
