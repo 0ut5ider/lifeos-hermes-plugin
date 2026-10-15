@@ -1,0 +1,36 @@
+test_actual_removed_pulse_definition_keeps_only_hermes_services_active (test_removal_services.RemovalServicesTests.test_actual_removed_pulse_definition_keeps_only_hermes_services_active) ... ERROR
+test_enabled_or_active_pulse_refuses_preparation (test_removal_services.RemovalServicesTests.test_enabled_or_active_pulse_refuses_preparation) ... ok
+test_later_unit_edit_refuses_before_stopping (test_removal_services.RemovalServicesTests.test_later_unit_edit_refuses_before_stopping) ... ERROR
+
+======================================================================
+ERROR: test_actual_removed_pulse_definition_keeps_only_hermes_services_active (test_removal_services.RemovalServicesTests.test_actual_removed_pulse_definition_keeps_only_hermes_services_active)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 37, in test_actual_removed_pulse_definition_keeps_only_hermes_services_active
+    operation=self.operation();review=operation.prepare(removed=[self.installed_pulse])
+                                      ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_services.py", line 52, in prepare
+    identities={path:fingerprint(path) for path in paths}
+                     ~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_programs.py", line 54, in fingerprint
+    raise ProgramConflict('A program artifact requires an owner file without shared write access')
+optional.lifeos_release_manager.release_programs.ProgramConflict: A program artifact requires an owner file without shared write access
+
+======================================================================
+ERROR: test_later_unit_edit_refuses_before_stopping (test_removal_services.RemovalServicesTests.test_later_unit_edit_refuses_before_stopping)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 54, in test_later_unit_edit_refuses_before_stopping
+    operation=self.operation();review=operation.prepare(removed=[self.installed_pulse])
+                                      ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_services.py", line 52, in prepare
+    identities={path:fingerprint(path) for path in paths}
+                     ~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_programs.py", line 54, in fingerprint
+    raise ProgramConflict('A program artifact requires an owner file without shared write access')
+optional.lifeos_release_manager.release_programs.ProgramConflict: A program artifact requires an owner file without shared write access
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.871s
+
+FAILED (errors=2)
