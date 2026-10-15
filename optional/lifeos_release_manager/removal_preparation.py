@@ -83,16 +83,21 @@ def _encoded(value):
     return json.dumps(value,sort_keys=True,separators=(',',':')).encode()
 
 
-def _consumers(profile, installed, services):
+def _consumers(profile, installed, services, *, workflow=None):
     from . import removal_consumers
     admitted=services._admission()
     known=set()
     for role in services.units:
         values,_=services._inspect(role)
         known.update([Path(values['FragmentPath']),*map(Path,values['DropInPaths'].split())])
-    removal_consumers.unit_files(profile,installed,known=known)
-    removal_consumers.processes(profile,installed,
-        groups={item['control_group'] for item in admitted['services'].values() if item['control_group']})
+    coordinator=removal_consumers.coordinator(profile,workflow) if workflow is not None else None
+    groups={item['control_group'] for item in admitted['services'].values() if item['control_group']}
+    if coordinator is not None:
+        known.add(coordinator['fragment']);known.update(coordinator['dropins']);groups.add(coordinator['group'])
+    removal_consumers.unit_files(profile,installed,known=known,coordinator=coordinator)
+    removal_consumers.processes(profile,installed,groups=groups)
+    if workflow is not None and removal_consumers.coordinator(profile,workflow)!=coordinator:
+        raise ReleaseRejected('The admitted removal coordinator changes during consumer inspection')
 
 
 def prepare(profile, job, selected, *, owner, source, configuration, installation_lease=None):
@@ -126,7 +131,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             if state.startswith('queued-') or state in {'preparing','applying','recovering','restoring','recovery_required'}:
                 raise ReleaseRejected('Finish or recover the pending complete release before removal')
         services=source.memory_module('profile_services').ProfileServices(profile,installed,installation_lease=lease)
-        _consumers(profile,installed,services)
+        _consumers(profile,installed,services,workflow=job)
         removal_ownership.guard(profile,installed,bridge=source)
         pulse=removal_ownership.pulse(profile,installed)
         package=generation['package'];dashboard=generation['job']/'download/hermes-dashboard.tgz'
@@ -145,7 +150,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             validate_files(stage/name,files,forbid_bytecode=True)
         binding=returned(profile,selected['identifier'],selected['signature'],owner=owner,
             source=source,configuration=configuration,installation_lease=lease)
-        _consumers(profile,installed,services)
+        _consumers(profile,installed,services,workflow=job)
         guard_identity=removal_ownership.guard(profile,installed,bridge=source)
         pulse_identity=fingerprint(pulse)
         if removal_ownership.pulse(profile,installed)!=pulse:

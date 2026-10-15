@@ -1,5 +1,6 @@
 # ABOUTME: Refuses other account services and processes that consume software selected for removal.
 # ABOUTME: Inspects bounded owner metadata and exports no command text, environment, or credentials.
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -45,7 +46,59 @@ def _paths(value):
     return paths
 
 
-def unit_files(profile, installed, *, known):
+def _definition(physical):
+    descriptor=os.open(physical,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+    with os.fdopen(descriptor,'rb') as stream:
+        before=os.fstat(stream.fileno())
+        if (not stat.S_ISREG(before.st_mode) or before.st_uid not in {0,os.getuid()}
+                or before.st_mode & 0o022 or before.st_size>1024*1024):
+            raise ReleaseRejected('An account service has an unsupported definition')
+        data=stream.read(1024*1024+1);after=os.fstat(stream.fileno())
+    stamp=lambda value:(value.st_dev,value.st_ino,value.st_size,value.st_mtime_ns,value.st_mode)
+    if len(data)>1024*1024 or stamp(before)!=stamp(after) or stamp(after)!=stamp(physical.stat()):
+        raise ReleaseRejected('An account service definition changes during inspection')
+    return data,stamp(after)
+
+
+def coordinator(profile, job):
+    from .cli import read_private
+    from .memory_workflow import _job
+    from .release_programs import fingerprint
+    job=Path(job).absolute()
+    fixed,request=_job(profile,job.name)
+    if fixed!=job or request['selection']['kind']!='removal':
+        raise ReleaseRejected('The removal coordinator belongs to another workflow')
+    launch=job/'launch.json'
+    if not launch.exists() and not launch.is_symlink():return None
+    admitted=read_private(launch)
+    if (set(admitted)!={'unit'} or not isinstance(admitted['unit'],str)
+            or re.fullmatch('lifeos-memory-'+job.name+'-[0-9a-f]{8}',admitted['unit']) is None):
+        raise ReleaseRejected('The removal coordinator loses its exact launched unit')
+    unit=admitted['unit']+'.service'
+    properties=('MainPID','ControlGroup','FragmentPath','DropInPaths','Transient')
+    values=dict(line.split('=',1) for line in _manager('show',unit,
+        '--property='+','.join(properties),'--no-pager').splitlines() if line)
+    fragment=Path('/run/user')/str(os.getuid())/'systemd/transient'/unit
+    groups={line.removeprefix('0::') for line in Path('/proc/self/cgroup').read_text().splitlines()
+        if line.startswith('0::')}
+    if (set(values)!=set(properties) or values['MainPID']!=str(os.getpid()) or values['Transient']!='yes'
+            or values['FragmentPath']!=str(fragment)
+            or not values['ControlGroup'] or groups!={values['ControlGroup']}
+            or not values['ControlGroup'].endswith('/'+unit)):
+        raise ReleaseRejected('The running removal worker does not own its admitted coordinator unit')
+    identity=fingerprint(fragment)
+    if identity is None or identity['type']!='file':
+        raise ReleaseRejected('The admitted removal coordinator loses its private definition')
+    dropins={};tokens=_tokens(profile,Path(request['profile']).parent/'.claude')+(str(profile).encode(),)
+    for path in _paths(values['DropInPaths']):
+        physical=path.resolve(strict=True);data,stamp=_definition(physical)
+        if path.resolve()!=physical or _consumes(data,profile,tokens):
+            raise ReleaseRejected('A removal coordinator override consumes the reviewed integration programs or profile')
+        dropins[physical]={'metadata':stamp,'sha256':hashlib.sha256(data).hexdigest()}
+    return {'unit':unit,'fragment':fragment,'identity':identity,'group':values['ControlGroup'],'dropins':dropins}
+
+
+def unit_files(profile, installed, *, known, coordinator=None):
     directories=[Path(profile).parent/'.config/systemd/user',
         *_paths(_manager('show','--property=UnitPath','--value'))]
     known={Path(path).absolute() for path in known};tokens=_tokens(profile,installed)+(str(profile).encode(),)
@@ -71,6 +124,8 @@ def unit_files(profile, installed, *, known):
     names=[item['unit'] for item in units]
     if any(not isinstance(name,str) or '\x00' in name for name in names):
         raise ReleaseRejected('The loaded account service inventory has unsupported names')
+    if coordinator is not None:
+        names=[name for name in names if name!=coordinator['unit']]
     properties=('FragmentPath','DropInPaths','ExecStart','ExecStartPre','ExecStartPost','ExecStop',
         'ExecStopPost','ExecReload','WorkingDirectory','EnvironmentFiles')
     for offset in range(0,len(names),128):
@@ -81,7 +136,8 @@ def unit_files(profile, installed, *, known):
                 raise ReleaseRejected('The loaded account service metadata has unsupported fields')
             definitions=_paths(values.get('FragmentPath',''))+_paths(values.get('DropInPaths',''))
             paths.extend(definitions)
-            if definitions and all(path in known or path.resolve() in known for path in definitions):continue
+            if (values.get('FragmentPath') and definitions
+                    and all(path in known or path.resolve() in known for path in definitions)):continue
             if _consumes(block.encode(),profile,tokens):
                 raise ReleaseRejected('Another loaded account service uses the reviewed integration programs or profile')
     visited=set()
@@ -95,16 +151,8 @@ def unit_files(profile, installed, *, known):
         if physical==Path('/dev/null') or physical in visited:continue
         visited.add(physical)
         if path in known or physical in known:continue
-        descriptor=os.open(physical,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
-        with os.fdopen(descriptor,'rb') as stream:
-            before=os.fstat(stream.fileno())
-            if (not stat.S_ISREG(before.st_mode) or before.st_uid not in {0,os.getuid()}
-                    or before.st_mode & 0o022 or before.st_size>1024*1024):
-                raise ReleaseRejected('An account service has an unsupported definition')
-            data=stream.read(1024*1024+1);after=os.fstat(stream.fileno())
-        stamp=lambda value:(value.st_dev,value.st_ino,value.st_size,value.st_mtime_ns,value.st_mode)
-        if (len(data)>1024*1024 or stamp(before)!=stamp(after) or stamp(after)!=stamp(physical.stat())
-                or path.resolve()!=physical):
+        data,_=_definition(physical)
+        if path.resolve()!=physical:
             raise ReleaseRejected('An account service definition changes during inspection')
         if _consumes(data,profile,tokens):
             raise ReleaseRejected('Another account service uses the reviewed integration programs or profile')

@@ -1,0 +1,59 @@
+test_exact_running_coordinator_is_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted) ... FAIL
+test_foreign_profile_consumer_still_refuses (test_removal_coordinator.RemovalCoordinatorTests.test_foreign_profile_consumer_still_refuses) ... FAIL
+test_other_coordinator_receipt_is_not_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_other_coordinator_receipt_is_not_admitted) ... FAIL
+
+======================================================================
+FAIL: test_exact_running_coordinator_is_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 50, in test_exact_running_coordinator_is_admitted
+    self.assertTrue(self.run_coordinator()['admitted'])
+                    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 45, in run_coordinator
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+    _consumers(p,Path(s['installed']),services,workflow=job)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _consumers() got an unexpected keyword argument 'workflow'
+
+
+======================================================================
+FAIL: test_foreign_profile_consumer_still_refuses (test_removal_coordinator.RemovalCoordinatorTests.test_foreign_profile_consumer_still_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 57, in test_foreign_profile_consumer_still_refuses
+    try:self.assertFalse(self.run_coordinator()['admitted'])
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 45, in run_coordinator
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+    _consumers(p,Path(s['installed']),services,workflow=job)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _consumers() got an unexpected keyword argument 'workflow'
+
+
+======================================================================
+FAIL: test_other_coordinator_receipt_is_not_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_other_coordinator_receipt_is_not_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 61, in test_other_coordinator_receipt_is_not_admitted
+    self.assertFalse(self.run_coordinator(forged=True)['admitted'])
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 45, in run_coordinator
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+    _consumers(p,Path(s['installed']),services,workflow=job)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _consumers() got an unexpected keyword argument 'workflow'
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 36.326s
+
+FAILED (failures=3)
