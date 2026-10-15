@@ -1,0 +1,43 @@
+--- reviewed-33-case-certifier
++++ current-41-case-certifier
+@@ -207,6 +207,29 @@
+ turn = passed('development-owner-turn-verification.json')
+ assert turn['actual_write_and_fresh_conversation_read_verified'] and len(set(turn['sessions'])) == 2
+ assert turn['verification_active_identity'] == {key: development['active_identity'][key] for key in ('version','commit','package_sha256')}
++admitted = passed('development-post-admission-verification.json')
++assert admitted['server'] == 'development' and admitted['active_identity'] == development['active_identity']
++for key in ('model_and_tiers_preserved', 'credential_file_bytes_preserved',
++            'memory_configuration_bytes_preserved', 'all_three_services_and_homes_preserved',
++            'gateway_restarted_after_remount'):
++    assert admitted[key] is True
++assert admitted['personal_records_read'] is False and admitted['personal_data_imported_or_reset'] is False
++skills = passed('development-native-skill-review.json')
++assert skills['server'] == 'development' and skills['operation'] == development['operation']
++assert skills['program_commit'] == commit and skills['archive_sha256'] == archive_sha
++assert skills['package_skill_digests_verified'] == skills['reviewed_sources'] == skills['after_admitted_skill_count'] == 56
++assert skills['after_omitted_program_skills'] == 0 and skills['personal_sources_reviewed'] == 0
++assert skills['review_http_status'] == skills['actual_remount_http_status'] == 200
++assert skills['review_status'] == skills['actual_remount_state'] == 'committed'
++assert skills['actual_remount_exit_code'] == 0 and skills['launcher_present'] is True
++assert skills['gateway_restart_verified'] is True and skills['gateway_restart_pending'] is False
++assert skills['native_skill_bytes_changed'] is False and skills['personal_data_imported_or_reset'] is False
++availability = passed('development-post-remount-restore-availability.json')
++assert availability['operation'] == development['operation'] and availability['state'] == 'applied'
++assert availability['version'] == '0.5.0' and availability['commit'] == commit
++assert availability['restore_available'] is False and availability['recover_available'] is False
++assert availability['later_owner_remount_refused_by_old_restore'] is True
++assert availability['old_release_bound_receipt_is_historical_checkpoint'] is True
+ certificate = {'format': 1, 'status': 'QUALIFIED', 'production_qualified': True,
+     'version': '0.5.0', 'program_commit': commit, 'archive_sha256': archive_sha,
+     'archive_bytes': build['archive_bytes'], 'hermes_dashboard_sha256': digest(frontend),
+@@ -219,6 +242,10 @@
+     'whole_guest_runtime_coverage': artifacts,
+     'clean_stock_installation_verified': True, 'governed_editor_installed_verified': True,
+     'governed_editor_browser_verified': True, 'development_owner_turn_verified': True,
++    'development_current_owner_skill_admission_verified': True,
++    'development_current_post_remount_preservation_verified': True,
++    'development_automatic_restore_available_after_owner_remount': False,
++    'rollback_scope': 'The isolated native rollback passes before later owner changes. The development owner remount prevents the earlier release operation from overwriting that later mount.',
+     'older_manager_bootstrap_required': True,
+     'source_review_report_sha256': digest(review),
+     'qualification_receipt_sha256': {name: digest(out / name) for name in sorted(used)},

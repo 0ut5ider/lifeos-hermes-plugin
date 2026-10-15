@@ -213,7 +213,7 @@ def _program_plan(job, request, selected):
         files.update(service_files(request, generated))
     if not selected['fresh']:
         drift = current.memory_module('version_drift')
-        previous = drift.load_baseline(selected['baseline'], installed)
+        previous = selected['reviewed_baseline']
         planner = current.memory_module('update_plan')
         native_plan = planner.plan_system_files(installed, previous, native, Path(request['runtime']['reference']))
         for name in (*native_plan['add'], *native_plan['replace']):

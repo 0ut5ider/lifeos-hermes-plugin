@@ -62,7 +62,8 @@ class ReleaseAccountTests(unittest.TestCase):
                     load_baseline=lambda *args: {'source_root': str(owner / 'source')}),
                 'update_worker': SimpleNamespace(check_prior_source=lambda *args: None,
                     check_template_compatibility=lambda *args: None),
-                'update_plan': SimpleNamespace(plan_system_files=lambda *args: {'add': [], 'replace': [], 'remove': []}),
+                'update_plan': SimpleNamespace(deployed_system_files=lambda *args: {},
+                    plan_system_files=lambda *args: {'add': [], 'replace': [], 'remove': []}),
                 'profile_services': SimpleNamespace(ProfileServices=Services),
                 'update_dependencies': SimpleNamespace(_package_roots=lambda *args: set())}
             source = SimpleNamespace(memory_module=modules.__getitem__)

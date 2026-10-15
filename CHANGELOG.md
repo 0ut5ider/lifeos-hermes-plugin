@@ -1,7 +1,9 @@
 # Changelog
 
-## 0.5.0-rc.1 (staged editor candidate)
+## 0.5.0 (qualified, publication pending)
 
+- Verify omitted native program baseline entries against the exact accepted archive before release updates.
+- Preserve later edits and refuse changed, missing, or redirected accepted archives.
 - Compare observer completion state with native event timestamps and bound journal capture delay.
 
 - Add authenticated owner reads for the 24 declared Pulse core files.
@@ -10,7 +12,8 @@
 - Govern native health, guard-log analysis, mount checks, and remount requests.
 - Hide cached core files when the overview fails or a core request refuses current owner access.
 - Preserve drafts for source conflicts and require fresh reads after owner access resumes.
-- Enable the governed editor in the candidate profile. Keep the deployed 0.4.3 profile unchanged during qualification.
+- Verify the governed editor in the installed candidate. Preserve the daily 0.4.3 profile until qualified promotion.
+- Qualify the exact package with 821 integration tests, 716 native tests, and actual recovery and development acceptance.
 
 ## 0.4.3 (2026-10-14)
 

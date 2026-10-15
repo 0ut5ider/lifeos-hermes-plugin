@@ -1,0 +1,367 @@
+diff --git a/optional/lifeos_release_manager/release_baseline.py b/optional/lifeos_release_manager/release_baseline.py
+new file mode 100644
+index 00000000..9e5a19dc
+--- /dev/null
++++ b/optional/lifeos_release_manager/release_baseline.py
+@@ -0,0 +1,106 @@
++# ABOUTME: Verifies omitted native program baselines against the accepted integration archive.
++# ABOUTME: Preserves recorded hashes and refuses later edits without changing installed state.
++import hashlib
++import os
++from pathlib import Path
++import re
++import stat
++import tarfile
++
++from .release_catalog import MAX_ARCHIVE_BYTES, MAX_EXTRACTED_BYTES, MAX_MEMBERS, VERSION
++
++
++def _digest(stream):
++    digest = hashlib.sha256()
++    for data in iter(lambda: stream.read(1024 * 1024), b''):
++        digest.update(data)
++    return digest.hexdigest()
++
++
++def _archive(profile, baseline, active, conflict):
++    version, commit, digest = (active.get(key) for key in ('version', 'commit', 'package_sha256'))
++    if (active.get('verification') != 'verified' or not isinstance(version, str)
++            or VERSION.fullmatch(version) is None or not isinstance(commit, str)
++            or re.fullmatch('[0-9a-f]{40}', commit) is None or not isinstance(digest, str)
++            or re.fullmatch('[0-9a-f]{64}', digest) is None):
++        raise conflict('The omitted program baseline requires an exact accepted release')
++    source = Path(baseline['source_root'])
++    if len(source.parents) < 3:
++        raise conflict('The accepted native source has no fixed package boundary')
++    package = source.parents[2]
++    if source != package / 'lifeos/LifeOS/install' or source.resolve() != source:
++        raise conflict('The accepted native source changes its package boundary')
++    name = version + '-' + commit[:8]
++    if package.name == name:
++        path = package.parent / (name + '.tgz')
++    elif (package.name == 'package' and package.parent.parent == profile / '.lifeos-releases'
++            and re.fullmatch('[0-9a-f]{32}', package.parent.name)):
++        path = package.parent / 'download' / (name + '.tgz')
++    else:
++        raise conflict('The accepted archive has no fixed retained location')
++    if path.parent.resolve() != path.parent:
++        raise conflict('The accepted archive changes its physical directory')
++    return path
++
++
++def _check_archive(info, conflict):
++    if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_nlink != 1
++            or info.st_mode & 0o022 or not 0 < info.st_size <= MAX_ARCHIVE_BYTES):
++        raise conflict('The accepted archive requires a bounded regular owner file')
++
++
++def _stamp(info):
++    return tuple(getattr(info, name) for name in ('st_dev', 'st_ino', 'st_mode', 'st_nlink',
++        'st_uid', 'st_gid', 'st_size', 'st_mtime_ns', 'st_ctime_ns'))
++
++
++def reviewed_baseline(profile, baseline, installed, desired, active, planner):
++    collisions = {}
++    for name, wanted in desired.items():
++        if name in baseline['files'] or name in planner.GENERATED_FILES:
++            continue
++        path = planner._checked_path(installed, name)
++        if path.exists():
++            if not path.is_file():
++                raise planner.UpdateConflict('The omitted program is not a regular file')
++            observed = planner._digest(path)
++            if observed != wanted:
++                collisions[name] = observed
++    if not collisions:
++        return baseline
++    conflict = planner.UpdateConflict
++    archive_path = _archive(profile, baseline, active, conflict)
++    expected = {}
++    try:
++        descriptor = os.open(archive_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++        with os.fdopen(descriptor, 'rb') as stream:
++            before = os.fstat(stream.fileno())
++            _check_archive(before, conflict)
++            if _digest(stream) != active['package_sha256']:
++                raise conflict('The accepted archive changes its recorded release digest')
++            stream.seek(0)
++            total = 0
++            with tarfile.open(fileobj=stream, mode='r:gz') as archive:
++                for number, member in enumerate(archive, 1):
++                    total += member.size
++                    if number > MAX_MEMBERS or total > MAX_EXTRACTED_BYTES:
++                        raise conflict('The accepted archive exceeds its member or content limit')
++                    prefix = 'lifeos/LifeOS/install/'
++                    name = member.name.removeprefix(prefix)
++                    if not member.name.startswith(prefix) or name not in collisions:
++                        continue
++                    if name in expected or not member.isfile():
++                        raise conflict('The accepted program archive entry is not unique and regular')
++                    with archive.extractfile(member) as content:
++                        expected[name] = _digest(content)
++            stream.seek(0)
++            after = os.fstat(stream.fileno())
++            _check_archive(after, conflict)
++            if (_stamp(before) != _stamp(after) or _stamp(archive_path.lstat()) != _stamp(after)
++                    or _digest(stream) != active['package_sha256']):
++                raise conflict('The accepted archive changes during program review')
++    except (OSError, tarfile.TarError) as error:
++        raise conflict('The accepted program archive is unavailable') from error
++    if expected != collisions:
++        raise conflict('An omitted program differs from its accepted archive or has no archive proof')
++    return {**baseline, 'files': {**baseline['files'], **expected}}
+diff --git a/optional/lifeos_release_manager/release_plan.py b/optional/lifeos_release_manager/release_plan.py
+index 0b21ce37..94dd7638 100644
+--- a/optional/lifeos_release_manager/release_plan.py
++++ b/optional/lifeos_release_manager/release_plan.py
+@@ -10,6 +10,7 @@ import subprocess
+ 
+ from .release_catalog import ReleaseRejected
+ from .release_accounts import account_home
++from .release_baseline import reviewed_baseline
+ from .release_programs import fingerprint
+ from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint
+ 
+@@ -69,8 +70,11 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
+     source = Path(prior['source_root'])
+     current.memory_module('update_worker').check_prior_source(prior, source, installed)
+     current.memory_module('update_worker').check_template_compatibility(source, package / 'lifeos/LifeOS/install')
+-    changes = current.memory_module('update_plan').plan_system_files(installed, prior,
+-        package / 'lifeos/LifeOS/install', Path(request['runtime']['reference']))
++    planner = current.memory_module('update_plan')
++    native, reference = package / 'lifeos/LifeOS/install', Path(request['runtime']['reference'])
++    prior = reviewed_baseline(profile, prior, installed,
++        planner.deployed_system_files(native, reference), active, planner)
++    changes = planner.plan_system_files(installed, prior, native, reference)
+     services = current.memory_module('profile_services').ProfileServices(profile, installed,
+         installation_lease=installation_lease)
+     preview = services.preview()
+@@ -92,7 +96,8 @@ def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=F
+         (sha(source / root / name) if (source / root / name).is_file() else None)
+         != (sha(next_source / root / name) if (next_source / root / name).is_file() else None)
+         for root in dependency_roots for name in ('package.json', 'bun.lock'))
+-    result.update(prior_source=source, native_changes=dependency_changes or any(changes[key] for key in ('add', 'replace', 'remove')),
++    result.update(prior_source=source, reviewed_baseline=prior,
++                  native_changes=dependency_changes or any(changes[key] for key in ('add', 'replace', 'remove')),
+                   services=preview, launchers=sorted(launchers))
+     return result
+ 
+diff --git a/optional/lifeos_release_manager/release_worker.py b/optional/lifeos_release_manager/release_worker.py
+index 78a91b97..5a118870 100644
+--- a/optional/lifeos_release_manager/release_worker.py
++++ b/optional/lifeos_release_manager/release_worker.py
+@@ -213,7 +213,7 @@ def _program_plan(job, request, selected):
+         files.update(service_files(request, generated))
+     if not selected['fresh']:
+         drift = current.memory_module('version_drift')
+-        previous = drift.load_baseline(selected['baseline'], installed)
++        previous = selected['reviewed_baseline']
+         planner = current.memory_module('update_plan')
+         native_plan = planner.plan_system_files(installed, previous, native, Path(request['runtime']['reference']))
+         for name in (*native_plan['add'], *native_plan['replace']):
+diff --git a/tests/test_release_accounts.py b/tests/test_release_accounts.py
+index ec867b8d..f4eaaa32 100644
+--- a/tests/test_release_accounts.py
++++ b/tests/test_release_accounts.py
+@@ -62,7 +62,8 @@ class ReleaseAccountTests(unittest.TestCase):
+                     load_baseline=lambda *args: {'source_root': str(owner / 'source')}),
+                 'update_worker': SimpleNamespace(check_prior_source=lambda *args: None,
+                     check_template_compatibility=lambda *args: None),
+-                'update_plan': SimpleNamespace(plan_system_files=lambda *args: {'add': [], 'replace': [], 'remove': []}),
++                'update_plan': SimpleNamespace(deployed_system_files=lambda *args: {},
++                    plan_system_files=lambda *args: {'add': [], 'replace': [], 'remove': []}),
+                 'profile_services': SimpleNamespace(ProfileServices=Services),
+                 'update_dependencies': SimpleNamespace(_package_roots=lambda *args: set())}
+             source = SimpleNamespace(memory_module=modules.__getitem__)
+diff --git a/tests/test_release_baseline.py b/tests/test_release_baseline.py
+new file mode 100644
+index 00000000..98bb6a7c
+--- /dev/null
++++ b/tests/test_release_baseline.py
+@@ -0,0 +1,173 @@
++# ABOUTME: Checks native program baseline completion against real immutable archive bytes.
++# ABOUTME: Refuses edited programs, unrelated collisions, and changed or redirected archives.
++import hashlib
++import io
++import json
++import os
++from pathlib import Path
++import tarfile
++import tempfile
++import unittest
++
++from lifeos_hook_bridge import update_plan
++from optional.lifeos_release_manager.release_baseline import reviewed_baseline
++
++
++class ReleaseBaselineTests(unittest.TestCase):
++    def setUp(self):
++        temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(temporary.cleanup)
++        self.root = Path(temporary.name)
++        self.profile = self.root / 'account/.hermes'
++        self.installed = self.root / 'native/.claude'
++        self.package = self.root / '0.4.3-aaaaaaaa'
++        self.source = self.package / 'lifeos/LifeOS/install'
++        self.next_source = self.root / 'next-source'
++        self.reference = self.root / 'next-reference'
++        self.name = 'LIFEOS/HERMES/LogAnalysis.ts'
++        for path in (self.profile, self.installed, self.source, self.next_source, self.reference):
++            path.mkdir(parents=True, mode=0o700)
++        self.before = b'export const generation = "accepted";\n'
++        self.after = b'export const generation = "candidate";\n'
++        self.put(self.installed, self.name, self.before)
++        self.put(self.next_source, self.name, self.after)
++        self.put(self.reference, self.name, self.after)
++        for root in (self.installed, self.source, self.next_source, self.reference):
++            self.put(root, 'hooks/hooks.json', b'{"hooks":{}}')
++        self.baseline = {'installed_root': str(self.installed), 'source_root': str(self.source),
++            'files': {'hooks/hooks.json': self.digest(b'{"hooks":{}}')}}
++        self.original = json.dumps(self.baseline, sort_keys=True)
++        self.archive = Path(str(self.package) + '.tgz')
++        self.write_archive([(self.name, self.before, 'file')])
++        self.active = {'version': '0.4.3', 'commit': 'a' * 40,
++            'package_sha256': self.digest(self.archive.read_bytes()), 'verification': 'verified'}
++        (self.profile / 'baseline.json').write_text(self.original)
++        self.desired = update_plan.deployed_system_files(self.next_source, self.reference)
++
++    @staticmethod
++    def digest(data):
++        return hashlib.sha256(data).hexdigest()
++
++    @staticmethod
++    def put(root, name, data):
++        path = root / name
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_bytes(data)
++        return path
++
++    def write_archive(self, rows):
++        with tarfile.open(self.archive, 'w:gz') as archive:
++            for name, data, kind in rows:
++                info = tarfile.TarInfo('lifeos/LifeOS/install/' + name)
++                info.mode = 0o600
++                if kind == 'link':
++                    info.type = tarfile.SYMTYPE
++                    info.linkname = '/outside'
++                    archive.addfile(info)
++                else:
++                    info.size = len(data)
++                    archive.addfile(info, io.BytesIO(data))
++        self.archive.chmod(0o600)
++
++    def review(self):
++        return reviewed_baseline(self.profile, self.baseline, self.installed,
++            self.desired, self.active, update_plan)
++
++    def test_accepted_untracked_program_enters_review_without_rewriting_the_baseline(self):
++        reviewed = self.review()
++        plan = update_plan.plan_system_files(self.installed, reviewed, self.next_source, self.reference)
++        self.assertEqual(plan['replace'], [self.name])
++        self.assertEqual(reviewed['files'][self.name], self.digest(self.before))
++        self.assertEqual(json.dumps(self.baseline, sort_keys=True), self.original)
++        self.assertEqual((self.profile / 'baseline.json').read_text(), self.original)
++        self.assertEqual((self.installed / self.name).read_bytes(), self.before)
++
++    def test_later_edit_cannot_be_adopted_as_an_accepted_program(self):
++        (self.installed / self.name).write_text('later owner edit')
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++        self.assertEqual((self.installed / self.name).read_text(), 'later owner edit')
++
++    def test_edit_after_review_refuses_the_actual_system_plan(self):
++        reviewed = self.review()
++        (self.installed / self.name).write_text('edit after review')
++        with self.assertRaises(update_plan.UpdateConflict):
++            update_plan.plan_system_files(self.installed, reviewed, self.next_source, self.reference)
++
++    def test_unrelated_new_file_collision_has_no_archive_proof(self):
++        other = 'LIFEOS/HERMES/Unrelated.ts'
++        self.put(self.installed, other, b'owner file')
++        self.put(self.next_source, other, b'candidate')
++        self.put(self.reference, other, b'candidate')
++        self.desired = update_plan.deployed_system_files(self.next_source, self.reference)
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_changed_recorded_program_keeps_its_original_refusal(self):
++        (self.installed / 'hooks/hooks.json').write_text('later hook edit')
++        reviewed = self.review()
++        with self.assertRaisesRegex(update_plan.UpdateConflict, 'changed since baseline'):
++            update_plan.plan_system_files(self.installed, reviewed, self.next_source, self.reference)
++
++    def test_changed_archive_refuses_before_using_its_program_bytes(self):
++        with self.archive.open('ab') as stream:
++            stream.write(b'changed accepted archive')
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_missing_archive_keeps_the_collision_closed(self):
++        self.archive.unlink()
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_shared_write_archive_refuses(self):
++        self.archive.chmod(0o622)
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_archive_alias_refuses(self):
++        retained = self.archive.with_name('retained.tgz')
++        self.archive.rename(retained)
++        self.archive.symlink_to(retained)
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_archive_hardlink_refuses(self):
++        os.link(self.archive, self.archive.with_name('second-link.tgz'))
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_redirected_installed_program_refuses(self):
++        target = self.root / 'outside'
++        target.write_bytes(self.before)
++        (self.installed / self.name).unlink()
++        (self.installed / self.name).symlink_to(target)
++        with self.assertRaises(update_plan.UpdateConflict):
++            self.review()
++
++    def test_duplicate_and_nonregular_archive_programs_refuse(self):
++        for rows in ([(self.name, self.before, 'file')] * 2, [(self.name, b'', 'link')]):
++            with self.subTest(rows=rows):
++                self.write_archive(rows)
++                self.active['package_sha256'] = self.digest(self.archive.read_bytes())
++                with self.assertRaises(update_plan.UpdateConflict):
++                    self.review()
++
++    def test_existing_current_bytes_need_no_additional_proof(self):
++        (self.installed / self.name).write_bytes(self.after)
++        self.archive.unlink()
++        reviewed = self.review()
++        self.assertEqual(reviewed, self.baseline)
++        self.assertEqual(update_plan.plan_system_files(self.installed, reviewed,
++            self.next_source, self.reference)['replace'], [])
++
++    def test_managed_operation_download_supplies_the_accepted_archive(self):
++        job = self.profile / '.lifeos-releases' / ('b' * 32)
++        package = job / 'package'
++        source = package / 'lifeos/LifeOS/install'
++        source.mkdir(parents=True)
++        download = job / 'download'
++        download.mkdir()
++        self.archive.rename(download / '0.4.3-aaaaaaaa.tgz')
++        self.baseline['source_root'] = str(source)
++        self.assertEqual(self.review()['files'][self.name], self.digest(self.before))
+diff --git a/tests/test_release_configuration.py b/tests/test_release_configuration.py
+index a8479cb7..8fc2ed00 100644
+--- a/tests/test_release_configuration.py
++++ b/tests/test_release_configuration.py
+@@ -148,7 +148,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
+             selected = {'profile': profile, 'installed': installed, 'package': package,
+                 'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes'],
+                 'current': SimpleNamespace(memory_module=modules.__getitem__), 'fresh': False,
+-                'native_changes': False, 'baseline': baseline_path}
++                'native_changes': False, 'baseline': baseline_path, 'reviewed_baseline': baseline}
+             directories, files, dependencies = _program_plan(job, request, selected)
+             prepared = (job / 'generated/baseline.json').read_bytes()
+             self.assertEqual(json.loads(prepared)['created_at'], baseline['created_at'])

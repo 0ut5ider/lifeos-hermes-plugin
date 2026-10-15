@@ -1,29 +1,32 @@
 # LifeOS plugin for Hermes
 
-**Staged development candidate:** `0.5.0-rc.1` adds the governed Pulse core-file editor. Its [verification record](docs/verification/2026-10-14-pulse-core-editor/EDITOR-SCOPE.md) records completed checks and outstanding qualification. The [PR25 follow-up](docs/verification/2026-10-14-pr25-followup/README.md) tracks the active editor revocation fix. The candidate also corrects a measured observer timestamp failure. The correction needs complete package qualification. Both deployed servers remain on the stable package below.
+**Qualified for publication:** `0.5.0`, program commit `04efe633`. The [complete qualification record](docs/verification/2026-10-14-release-0.5.0/README.md) binds the exact package, actual guest recovery, installed editor, development acceptance, and final independent reviews. The release adds the governed Pulse core-file editor, corrects observer timestamp comparison, and proves omitted native baseline entries against the accepted archive. Public publication and the daily transition remain pending.
 
-**Qualified stable release:** `0.4.3`. The [corrective release record](docs/verification/2026-10-14-release-0.4.3/README.md) identifies the exact package, release certificate, and deployment evidence. Both daily `.253` and development `.252` run program commit `a1abb579`. The release separates the native LifeOS HOME from the account that owns the Hermes profile. All 45 prior release assets remain unchanged.
+**Published stable release:** `0.4.3`. Daily `.253` still runs program commit `a1abb579`. The [corrective release record](docs/verification/2026-10-14-release-0.4.3/README.md) retains its exact package, certificate, and deployment evidence. Development `.252` selects qualified `0.5.0`.
 
-The release targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
-The exact package passes 683 integration tests and 716 native tests across 38 files. It also passes 39 focused account checks.
+The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
+The exact archive passes 821 integration tests and 716 native tests across 38 files.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
 Bun 1.4.3 supplies the verified runtime.
 
-The release adds Install LifeOS, Update LifeOS, and Update plugin controls for complete qualified integration packages.
-The detached release worker creates private native files. Updates preserve the selected model and tier mapping.
+Install LifeOS, Update LifeOS, and Update plugin select complete qualified integration packages.
+The detached release worker preserves the selected model, tier mapping, native HOME, credentials, and personal data.
 The complete release manager in `optional/lifeos_release_manager` supports fresh installation, updates, interruption recovery, and rollback.
-Actual development checks pass, including automatic reboot, program rollback, worker interruption, and installed recovery.
-The actual synthetic guest passes update, rollback, interruption recovery, and automatic startup after reboot. Disconnected whole-guest recovery verifies 64,282 runtime artifacts, nine sealed program targets, and all three Atlas cases.
-The focused product review and certificate review are clear. Current completed receipts pass; altered and incomplete receipts refuse.
-All 45 historical release assets retain their identifiers, sizes, and digests.
-The accepted 0.4.2 checkpoint verifies fresh public installation, both update controls, and an interactive Hermes update. Daily 0.4.3 uses the default GitHub URL to replace its existing manager, then the blank-version Update LifeOS control to install the complete public package.
-An interactive Hermes conversation prepares the latest stable release, obtains command approval, and completes dashboard review and installation.
+The older 0.4.3 manager requires an exact native GitHub plugin bootstrap before complete owner-reviewed package application.
+The isolated guests pass fresh installation, native update, rollback, worker interruption, recovery, and automatic startup after reboot.
+Disconnected whole-guest recovery verifies 64,401 runtime artifacts, 221 sealed program targets, eight native mount targets, and all three Atlas cases.
+The installed and compiled-browser editor checks pass. Development verifies 222 sealed program targets and real private-model memory effects.
+Current development owner admission includes all 56 exact package skills. An authenticated owner remount prevents the earlier release operation from overwriting the later mount.
+The focused reviews are clear. All 41 certificate controls and sixteen additional current-state guards pass.
+The last asset check preserves all 51 prior release assets. The current 0.5.0 public default URL replay remains pending publication.
+Earlier 0.4.2 and 0.4.3 receipts retain their completed public installation and update checkpoints.
+An interactive Hermes conversation can prepare the latest stable release and continue installation through authenticated owner review.
 The [previous patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) retains the 0.4.1 checkpoint.
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record release workspaces as runtime exclusions. Full guest backups preserve the installed runtime and rollback artifacts.
 
 **Daily deployed version:** `0.4.3`, program commit `a1abb579`, on `.253`. The authenticated update preserves the native HOME, model and tier mapping, credential file, memory configuration, and synthetic memory reference. The [owner-rescheduled automatic evening check](docs/verification/2026-10-14-evening-observation/README.md) verifies one execution and one Cerebo delivery. The original observer has a measured journal timestamp defect; the passing read-only replay uses a staged correction. The normal 07:00 schedule is restored. The 07:00 wall-clock observation did not run.
-**Development deployed version:** `0.4.3`, program commit `a1abb579`, on `.252`. The exact public update verifies all ten sealed program targets and preserves service HOME bindings and the selected model mapping. Earlier private Discord, native job, reboot, and restore checks remain historical release evidence.
+**Development deployed candidate:** `0.5.0`, program commit `04efe633`, on `.252`. The selected archive verifies all 222 sealed program targets and preserves service HOME bindings, credential bytes, owner memory configuration, and the selected model mapping. The [qualification record](docs/verification/2026-10-14-release-0.5.0/README.md) retains the protected checkpoint, actual rollback, owner review refresh, and retry evidence. Earlier private Discord, native job, reboot, and restore checks remain historical release evidence.
 **Historical 0.4.2 public installation tests:** A manager-free guest at `.246` installs the complete stable package through the native Plugins page and Install LifeOS. A separate guest at `.248` updates from `0.4.2-rc.3` through Update plugin, then verifies Update LifeOS. Both guests preserve their private FlashNext selection. Fresh installation also passes actual lasting-memory save and recall in separate Hermes conversations. The earlier [default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) and [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) remain historical checkpoints. The stopped `.249` guest retains `0.4.2-rc.3`. Test qualification does not select a daily production release.
 The owned release-test guests are removed after acceptance. Their receipts remain in the release record. The [published public acceptance checkpoint](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.4.2/PUBLIC-LATEST-ACCEPTANCE.json) records the completed installation and update paths.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
@@ -309,11 +312,14 @@ hermes lifeos-release status
 hermes lifeos-release prepare --name Adrian --assistant Cerebo
 ```
 
-An existing development-era standalone manager can create an incomplete plan for a published worker.
+An older installed manager can create an incomplete plan or refuse an omitted native program.
 Install the manager from the selected release before the first complete published update.
 Use `--force --enable` with the native install command when that development manager already exists.
 Restart the Hermes dashboard after replacement so it loads the selected manager.
-The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f855`.
+The current qualified 0.4.3 release commit is `a1abb579558edcf29f7cd04ecfd998995d48db54`.
+The 0.5.0 candidate verifies omitted native programs against the exact retained accepted archive.
+The 0.4.3 manager requires the selected manager replacement before complete 0.5.0 preparation and owner review.
+The 0.5.0 candidate remains unavailable for production until its release qualification completes.
 
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
 The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
@@ -340,7 +346,7 @@ Installation keeps the model and tier mapping and does not activate lasting memo
 The Linux first-installation path requires an owner user service for the Hermes dashboard.
 First installation also requires a qualified package with the first-install service interface.
 Historical packages without that interface refuse before native publication. Existing installation updates keep their three-service interface.
-During the isolated prerelease tests, select the exact test release version. Release 0.4.1 remains the latest stable package.
+During the isolated prerelease tests, select the exact test release version. Release 0.4.3 remains the latest stable package.
 The home, profile, and native installation paths must be physical paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces.
 That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
 The service must declare the selected physical profile in `HERMES_HOME` without an environment file.

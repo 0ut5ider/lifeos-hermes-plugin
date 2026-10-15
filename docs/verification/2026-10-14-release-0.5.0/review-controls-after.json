@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "revision": "working-tree",
+  "results": [
+    {
+      "case": "baseline",
+      "expected_result_verified": true,
+      "reached_pending_development_gate": true,
+      "certificate_created": false
+    },
+    {
+      "case": "wrong-reboot-source-guest",
+      "expected_result_verified": true,
+      "reached_pending_development_gate": false,
+      "certificate_created": false
+    },
+    {
+      "case": "reboot-production-change",
+      "expected_result_verified": true,
+      "reached_pending_development_gate": false,
+      "certificate_created": false
+    },
+    {
+      "case": "fresh-production-change",
+      "expected_result_verified": true,
+      "reached_pending_development_gate": false,
+      "certificate_created": false
+    },
+    {
+      "case": "whole-production-change",
+      "expected_result_verified": true,
+      "reached_pending_development_gate": false,
+      "certificate_created": false
+    },
+    {
+      "case": "partial-drain-cleanup",
+      "expected_result_verified": true,
+      "calls": [
+        "drain-development",
+        "recover-development-services"
+      ],
+      "preserved_failure": "partial-drain-failure",
+      "completion_receipt_written": false
+    },
+    {
+      "case": "partial-drain-cleanup-also-fails",
+      "expected_result_verified": true,
+      "calls": [
+        "drain-development",
+        "recover-development-services"
+      ],
+      "preserved_failure": "partial-drain-failure",
+      "completion_receipt_written": false
+    }
+  ],
+  "remote_commands_run": false,
+  "guest_completion_receipts_constructed": false,
+  "control_flow_fault_injection_only": true
+}

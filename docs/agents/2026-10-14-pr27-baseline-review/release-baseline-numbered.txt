@@ -1,0 +1,106 @@
+     1	# ABOUTME: Verifies omitted native program baselines against the accepted integration archive.
+     2	# ABOUTME: Preserves recorded hashes and refuses later edits without changing installed state.
+     3	import hashlib
+     4	import os
+     5	from pathlib import Path
+     6	import re
+     7	import stat
+     8	import tarfile
+     9	
+    10	from .release_catalog import MAX_ARCHIVE_BYTES, MAX_EXTRACTED_BYTES, MAX_MEMBERS, VERSION
+    11	
+    12	
+    13	def _digest(stream):
+    14	    digest = hashlib.sha256()
+    15	    for data in iter(lambda: stream.read(1024 * 1024), b''):
+    16	        digest.update(data)
+    17	    return digest.hexdigest()
+    18	
+    19	
+    20	def _archive(profile, baseline, active, conflict):
+    21	    version, commit, digest = (active.get(key) for key in ('version', 'commit', 'package_sha256'))
+    22	    if (active.get('verification') != 'verified' or not isinstance(version, str)
+    23	            or VERSION.fullmatch(version) is None or not isinstance(commit, str)
+    24	            or re.fullmatch('[0-9a-f]{40}', commit) is None or not isinstance(digest, str)
+    25	            or re.fullmatch('[0-9a-f]{64}', digest) is None):
+    26	        raise conflict('The omitted program baseline requires an exact accepted release')
+    27	    source = Path(baseline['source_root'])
+    28	    if len(source.parents) < 3:
+    29	        raise conflict('The accepted native source has no fixed package boundary')
+    30	    package = source.parents[2]
+    31	    if source != package / 'lifeos/LifeOS/install' or source.resolve() != source:
+    32	        raise conflict('The accepted native source changes its package boundary')
+    33	    name = version + '-' + commit[:8]
+    34	    if package.name == name:
+    35	        path = package.parent / (name + '.tgz')
+    36	    elif (package.name == 'package' and package.parent.parent == profile / '.lifeos-releases'
+    37	            and re.fullmatch('[0-9a-f]{32}', package.parent.name)):
+    38	        path = package.parent / 'download' / (name + '.tgz')
+    39	    else:
+    40	        raise conflict('The accepted archive has no fixed retained location')
+    41	    if path.parent.resolve() != path.parent:
+    42	        raise conflict('The accepted archive changes its physical directory')
+    43	    return path
+    44	
+    45	
+    46	def _check_archive(info, conflict):
+    47	    if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_nlink != 1
+    48	            or info.st_mode & 0o022 or not 0 < info.st_size <= MAX_ARCHIVE_BYTES):
+    49	        raise conflict('The accepted archive requires a bounded regular owner file')
+    50	
+    51	
+    52	def _stamp(info):
+    53	    return tuple(getattr(info, name) for name in ('st_dev', 'st_ino', 'st_mode', 'st_nlink',
+    54	        'st_uid', 'st_gid', 'st_size', 'st_mtime_ns', 'st_ctime_ns'))
+    55	
+    56	
+    57	def reviewed_baseline(profile, baseline, installed, desired, active, planner):
+    58	    collisions = {}
+    59	    for name, wanted in desired.items():
+    60	        if name in baseline['files'] or name in planner.GENERATED_FILES:
+    61	            continue
+    62	        path = planner._checked_path(installed, name)
+    63	        if path.exists():
+    64	            if not path.is_file():
+    65	                raise planner.UpdateConflict('The omitted program is not a regular file')
+    66	            observed = planner._digest(path)
+    67	            if observed != wanted:
+    68	                collisions[name] = observed
+    69	    if not collisions:
+    70	        return baseline
+    71	    conflict = planner.UpdateConflict
+    72	    archive_path = _archive(profile, baseline, active, conflict)
+    73	    expected = {}
+    74	    try:
+    75	        descriptor = os.open(archive_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    76	        with os.fdopen(descriptor, 'rb') as stream:
+    77	            before = os.fstat(stream.fileno())
+    78	            _check_archive(before, conflict)
+    79	            if _digest(stream) != active['package_sha256']:
+    80	                raise conflict('The accepted archive changes its recorded release digest')
+    81	            stream.seek(0)
+    82	            total = 0
+    83	            with tarfile.open(fileobj=stream, mode='r:gz') as archive:
+    84	                for number, member in enumerate(archive, 1):
+    85	                    total += member.size
+    86	                    if number > MAX_MEMBERS or total > MAX_EXTRACTED_BYTES:
+    87	                        raise conflict('The accepted archive exceeds its member or content limit')
+    88	                    prefix = 'lifeos/LifeOS/install/'
+    89	                    name = member.name.removeprefix(prefix)
+    90	                    if not member.name.startswith(prefix) or name not in collisions:
+    91	                        continue
+    92	                    if name in expected or not member.isfile():
+    93	                        raise conflict('The accepted program archive entry is not unique and regular')
+    94	                    with archive.extractfile(member) as content:
+    95	                        expected[name] = _digest(content)
+    96	            stream.seek(0)
+    97	            after = os.fstat(stream.fileno())
+    98	            _check_archive(after, conflict)
+    99	            if (_stamp(before) != _stamp(after) or _stamp(archive_path.lstat()) != _stamp(after)
+   100	                    or _digest(stream) != active['package_sha256']):
+   101	                raise conflict('The accepted archive changes during program review')
+   102	    except (OSError, tarfile.TarError) as error:
+   103	        raise conflict('The accepted program archive is unavailable') from error
+   104	    if expected != collisions:
+   105	        raise conflict('An omitted program differs from its accepted archive or has no archive proof')
+   106	    return {**baseline, 'files': {**baseline['files'], **expected}}

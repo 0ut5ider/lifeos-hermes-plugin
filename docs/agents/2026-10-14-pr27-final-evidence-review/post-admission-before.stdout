@@ -1,0 +1,46 @@
+{
+  "status": "FAIL",
+  "cases": 7,
+  "results": [
+    {
+      "case": "actual-safe-baseline",
+      "accepted": true,
+      "expected_result_verified": true
+    },
+    {
+      "case": "empty-digest-map",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "missing-credential-digest",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "extra-digest-path",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "invalid-digest-shape",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "failed-baseline",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "wrong-server-baseline",
+      "accepted": true,
+      "expected_result_verified": false
+    }
+  ],
+  "scope": "Actual pre-I/O baseline validation statements only",
+  "credential_file_read": false,
+  "memory_configuration_file_read": false,
+  "guest_completion_receipt_written": false,
+  "remote_commands_run": false
+}

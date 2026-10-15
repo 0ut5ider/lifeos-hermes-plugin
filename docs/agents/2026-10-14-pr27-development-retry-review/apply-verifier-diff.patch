@@ -1,0 +1,15 @@
+--- previous-apply-verifier
++++ retry-apply-verifier
+@@ -6,10 +6,10 @@
+ os.umask(0o077)
+ source=Path(__file__).resolve().parent
+ cache=Path('/home/outsider/.cache/lifeos-release-0.5.0-20261014')
+-out=cache/'development-applied-verification'
++out=cache/'development-retry-applied-verification'
+ assert not out.exists();out.mkdir(mode=0o700)
+ remote='root@192.168.8.252'
+-identifier='86340dd2f6f8473280cc411f5a3e4102'
++identifier='4eac8d1b398e47138d80f8b67b6df596'
+ job='/home/lifeos-hermes/.hermes/.lifeos-releases/'+identifier
+ python=job+'/python-environment/bin/python'
+ stage='/home/lifeos-hermes/releases/qualification-0.5.0'

@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "cases": 7,
+  "results": [
+    {
+      "case": "actual-safe-baseline",
+      "accepted": true,
+      "expected_result_verified": true
+    },
+    {
+      "case": "empty-digest-map",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "missing-credential-digest",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "extra-digest-path",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "invalid-digest-shape",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "failed-baseline",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "wrong-server-baseline",
+      "accepted": false,
+      "expected_result_verified": true
+    }
+  ],
+  "scope": "Actual baseline metadata validation statements before preservation file reads",
+  "credential_file_read": false,
+  "memory_configuration_file_read": false,
+  "guest_completion_receipt_written": false,
+  "remote_commands_run": false
+}

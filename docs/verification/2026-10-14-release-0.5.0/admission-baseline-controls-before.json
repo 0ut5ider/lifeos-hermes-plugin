@@ -1,0 +1,49 @@
+{
+  "status": "FAIL",
+  "cases": 8,
+  "characterization": false,
+  "results": [
+    {
+      "case": "exact-baseline",
+      "accepted": true,
+      "expected_result_verified": true
+    },
+    {
+      "case": "empty-digest-map",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "missing-memory-config",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "extra-config-key",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "failed-baseline",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "wrong-server",
+      "accepted": true,
+      "expected_result_verified": false
+    },
+    {
+      "case": "changed-digest",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "invalid-model-digest",
+      "accepted": true,
+      "expected_result_verified": false
+    }
+  ],
+  "remote_commands_run": false,
+  "completion_receipt_constructed": false
+}

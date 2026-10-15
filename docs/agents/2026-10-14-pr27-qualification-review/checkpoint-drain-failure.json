@@ -1,0 +1,18 @@
+{
+  "case": "partial-drain-failure",
+  "operator_commit": "94ea72dd52a84425bf39f1e482ba64aaddb0c03b",
+  "calls": [
+    "drain-development"
+  ],
+  "recovery_attempted": false,
+  "observed_drained_flag": false,
+  "failure_marker_in_memory": [
+    {
+      "name": "process.done",
+      "text": "1\n"
+    }
+  ],
+  "remote_commands_run": false,
+  "completion_receipt_written": false,
+  "limit": "This probes operator control flow. It does not simulate a successful backup or exercise real services."
+}
