@@ -151,6 +151,7 @@ class OwnershipTransaction:
                 raise MemoryUnavailable('Ownership configuration changes require a current reviewed profile backup')
             targets[name] = data
             entries.append({'name': name, 'copy': original['copy'], 'before': metadata})
+        original_hermes=targets['config.yaml']
         try:
             yaml = YAML()
             yaml.preserve_quotes = True
@@ -193,7 +194,8 @@ class OwnershipTransaction:
             targets['config.yaml'] = stream.getvalue().encode()
         except (YAMLError, UnicodeError, RecursionError) as error:
             raise MemoryUnavailable('Hermes ownership configuration cannot be parsed safely') from error
-        selected = {**configuration, 'ownership_enabled': True}
+        from .memory_owner_access import reviewed
+        selected,local_owner_access=reviewed(configuration,self.profile,original_hermes)
         self.configuration.validate(selected)
         targets['lifeos-memory.json'] = (json.dumps(selected, indent=2) + '\n').encode()
         for entry in entries:
@@ -201,17 +203,17 @@ class OwnershipTransaction:
         plan = {'version': 1, 'profile': str(self.profile), 'root': configuration['root'],
             'principal': configuration['principal'], 'backup': str(backup), 'backup_signature': backup_signature,
             'connector_digest': _digest(connector), 'entries': entries}
-        return {**plan, 'signature': _digest(_encoded(plan))}, targets
+        return {**plan, 'signature': _digest(_encoded(plan))}, targets, local_owner_access
 
     def preview(self, backup, backup_signature, *, account=None):
         with self._lock(account) as configuration:
             previous = self._load(configuration)
             if previous is not None and previous['state'] != 'rolled_back':
                 raise MemoryUnavailable('Recover or return the existing ownership configuration before setup')
-            plan, _ = self._plan(configuration, backup, backup_signature, account)
+            plan, _,local_owner_access = self._plan(configuration, backup, backup_signature, account)
             return {'signature': plan['signature'], 'backup': plan['backup'],
                 'backup_signature': backup_signature, 'configuration_files': list(NAMES),
-                'restart_required': True, 'service_verified': False}
+                'restart_required': True, 'service_verified': False,'local_owner_access':local_owner_access}
 
     def _check_targets(self, document, acceptable, *, restoring=False):
         for entry in document['entries']:
@@ -227,7 +229,7 @@ class OwnershipTransaction:
             previous = self._load(configuration)
             if previous is not None and previous['state'] != 'rolled_back':
                 raise MemoryUnavailable('Recover or return the existing ownership configuration before setup')
-            plan, targets = self._plan(configuration, backup, backup_signature, account)
+            plan, targets, _ = self._plan(configuration, backup, backup_signature, account)
             if not _signature(signature) or signature != plan['signature']:
                 raise MemoryUnavailable('Ownership setup requires the current reviewed configuration plan')
             document = {**plan, 'state': 'prepared'}

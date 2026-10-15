@@ -6,6 +6,8 @@ Adrian authorizes all six implementation stages and complete LifeOS software rem
 
 A fresh dashboard owner claim can lack the native memory connector. Ownership preparation binds a generated connector to the reviewed backup without publishing it. The separate ownership apply installs the connector under the writer barrier. Recovery restores its original absence only if its exact generated identity remains unchanged. Existing connector edits require another review.
 
+The ownership review also identifies the local operating-system account, selected profile, model, and model-route hash. Application grants that local owner access to lasting memory through the reviewed route. It preserves unrelated grants and refuses conflicting local identities or restricted local destinations. Other accounts and unreviewed routes remain blocked. A model change requires a current review.
+
 ## Supported operations
 
 1. Import reviewed built-in Hermes memory into a prepared or active LifeOS store.

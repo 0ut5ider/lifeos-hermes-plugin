@@ -21,8 +21,7 @@ class PortabilityLifecycleTests(unittest.TestCase):
         self.configuration=self.fixture.configuration;self.profile=self.configuration.path.parent
         self.home=self.fixture.setup.backup.fixture.fixture.home
         path=self.profile/'config.yaml'
-        path.write_text(path.read_text()+'model: {default: synthetic-model, provider: custom, base_url: "http://127.0.0.1:9/v1", api_key: synthetic-key}\n'
-            'plugins: {enabled: [lifeos, lifeos-hook-bridge, lifeos-release-manager]}\n')
+        path.write_text(path.read_text()+'plugins: {enabled: [lifeos, lifeos-hook-bridge, lifeos-release-manager]}\n')
         current=self.fixture.importer.preview(account='dashboard:owner')
         self.fixture.snapshot=self.home/'lifecycle-initial-import'
         self.fixture.captured=self.fixture.importer.prepare(self.fixture.snapshot,current['signature'],account='dashboard:owner')

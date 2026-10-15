@@ -79,6 +79,12 @@
               operation.kind === "removal" ?
               "This operation removes the integration software and selects stock Hermes. It retains built-in memory, native data, exports, and recovery records. Discord stays disabled." :
               "This operation selects the reviewed built-in memory, stops and disables Pulse, and restarts Hermes. It retains native data and exports."),
+            operation.kind === "activation" && operation.review.local_owner_access ? h("div", null,
+              h("p", null, "Local owner account: " + operation.review.local_owner_access.account),
+              h("p", {className: "break-all"}, "Approved profile: " + operation.review.local_owner_access.destination),
+              h("p", null, "Selected model: " + operation.review.local_owner_access.provider + " / " + operation.review.local_owner_access.model),
+              h("p", {className: "break-all"}, "Approved model route: " + operation.review.local_owner_access.model_route),
+              h("p", null, "This activation allows the local owner and selected model route to read and write lasting memory. Other accounts require their own grants.")) : null,
             operation.kind === "removal" ? h("div", null,
               h("p", null, "Stock Hermes commit: " + operation.review.stock_commit),
               h("p", null, "Copy this recovery command before you continue. This integration page closes after removal succeeds."),

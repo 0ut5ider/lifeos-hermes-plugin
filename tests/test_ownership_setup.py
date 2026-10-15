@@ -25,6 +25,8 @@ class OwnershipSetupTests(unittest.TestCase):
             accounts={**value['accounts'], 'dashboard:owner': 'owner'}))
         install_connector(self.configuration)
         self.profile = self.backup.profile
+        path=self.profile/'config.yaml'
+        path.write_text(path.read_text()+'model: {default: synthetic-model, provider: custom, base_url: "http://127.0.0.1:9/v1", api_key: synthetic-key}\n')
         self.original = {name: (self.profile / name).read_bytes()
             for name in ('config.yaml', 'lifeos-memory.json')}
         self.services = service_fixture.ProfileServicesTests()

@@ -39,3 +39,10 @@ test('a ready removal has distinct software application and recovery instruction
  assert.ok(post.url.endsWith('/'+operation.identifier+'/apply'));
  assert.deepEqual(JSON.parse(post.options.body),{signature:operation.review.signature});
 });
+test('a ready activation discloses the local account profile and exact model route',async()=>{
+ const access={account:'terminal:1000',destination:'terminal:/synthetic/profile',provider:'custom',model:'synthetic-model',model_route:'e'.repeat(64)};
+ const operation={identifier:'a'.repeat(32),kind:'activation',state:'ready',review:{signature:'b'.repeat(64),local_owner_access:access}};
+ const view=await panel([operation]);const rendered=view.render();const text=JSON.stringify(rendered);
+ for(const value of Object.values(access))assert.ok(text.includes(value),value);
+ assert.equal(view.calls.some(call=>call.options?.method==='POST'),false);
+});

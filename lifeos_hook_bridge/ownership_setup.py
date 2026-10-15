@@ -148,7 +148,7 @@ class OwnershipSetup:
                 services.resume()
                 document['state'] = 'ready'
                 self._publish(document)
-                return self._receipt(document)
+                return {**self._receipt(document),'local_owner_access':preview['local_owner_access']}
             except Exception:
                 self._owner(account)
                 if ownership.status(account=account)['state'] not in {'none','rolled_back'}:
