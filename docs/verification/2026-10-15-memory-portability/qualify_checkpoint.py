@@ -34,7 +34,7 @@ native = Path('/home/outsider/.cache/lifeos-release-0.5.0-20261014/candidate-fix
 assert (native / 'LIFEOS/PULSE/modules/hermes.ts').is_file()
 previous = json.loads((repo / 'docs/verification/2026-10-14-release-0.5.0/integration-04efe633.json').read_bytes())
 portability = json.loads((folder / 'portability-combined-current.json').read_bytes())
-names = list(dict.fromkeys(previous['command'][6:] + [name for name in portability['command'][6:] if not name.startswith('docs.')]))
+names = list(dict.fromkeys(previous['command'][6:] + [name for name in portability['command'][6:] if not name.startswith('docs.')] + ['test_removal_execution_source']))
 bound_build = workspace / 'build.json'
 bound_build.write_text(json.dumps(dict(build, package=str(package))))
 historical = base / 'historical-fixture-040/account/.hermes/.lifeos-releases/98ecab3f82ed4689a59a965a04ba7b2c'

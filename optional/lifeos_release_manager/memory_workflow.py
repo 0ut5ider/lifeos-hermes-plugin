@@ -43,12 +43,23 @@ def _encoded(value):
     return json.dumps(value,sort_keys=True,separators=(',',':')).encode()
 
 
-def _source(profile):
+def _source(profile, *, workflow=None):
     marker=Path(profile)/'.lifeos-removal.json'
     if marker.exists() or marker.is_symlink():
         from .removal_state import retained
         source,configuration,_,_=retained(profile)
         return source,configuration
+    if workflow is not None:
+        job,request=_job(profile,workflow)
+        review_path=job/'review.json'
+        if request['selection']['kind']=='removal' and (review_path.exists() or review_path.is_symlink()):
+            review=read_private(review_path)
+            if review.get('state')=='ready':
+                from .removal_state import prepared
+                source,configuration,_,_=prepared(profile,job.name,review.get('signature'))
+                return source,configuration
+            if review.get('state')!='preparation':
+                raise ValueError('The removal source requires a completed owner review')
     source=Path(profile)/'plugins/lifeos-hook-bridge'
     module=load_bridge(source)
     configuration=module.memory_module('memory_service').MemoryConfiguration(Path(profile)/'lifeos-memory.json')
@@ -263,7 +274,7 @@ def _cancel_preparation(source, configuration, job, request, lease):
 
 
 def execute(profile, identifier, action):
-    profile=profile_directory(profile);source,configuration=_source(profile)
+    profile=profile_directory(profile);source,configuration=_source(profile,workflow=identifier)
     lock=source.memory_module('installation_lock').installation_lock
     with lock(profile,wait=True) as lease:
         job,request=_job(profile,identifier)
