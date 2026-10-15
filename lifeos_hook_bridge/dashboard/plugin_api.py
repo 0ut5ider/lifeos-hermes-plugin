@@ -5,6 +5,7 @@ import importlib.util
 import importlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import sqlite3
@@ -15,7 +16,7 @@ from typing import Literal
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from starlette.concurrency import run_in_threadpool
 from starlette.requests import ClientDisconnect
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
@@ -578,16 +579,84 @@ def preview_memory_adoption(request: dict, account: str = Depends(_memory_accoun
 
 @router.post('/memory/import/preview')
 def preview_memory_import(request: dict, account: str = Depends(_memory_account)):
-    if request:
+    if set(request) not in (set(),{'source_identifier'}):
         raise HTTPException(status_code=400, detail='Import review uses the installed Hermes profile')
-    return _memory_action(lambda preferences: preferences.preview_import(account=account))
+    return _memory_action(lambda preferences: preferences.preview_import(account=account,**request))
+
+
+@router.post('/memory/import/upload')
+async def upload_memory_import(request: Request, account: str = Depends(_memory_account)):
+    content=bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content)>24*1024*1024:
+            raise HTTPException(status_code=400,detail='The memory import exceeds its upload byte limit')
+    try: body=json.loads(content)
+    except (ValueError,UnicodeError,RecursionError) as error:
+        raise HTTPException(status_code=400,detail='Provide a valid Hermes source upload') from error
+    return await run_in_threadpool(_memory_action,lambda preferences:preferences.upload_import(body,account=account))
 
 
 @router.post('/memory/import/snapshot')
 def prepare_memory_import(request: dict, account: str = Depends(_memory_account)):
-    if set(request) != {'signature'}:
+    if set(request) not in ({'signature'},{'signature','source_identifier'}):
         raise HTTPException(status_code=400, detail='Provide the reviewed Hermes import signature')
     return _memory_action(lambda preferences: preferences.prepare_import(request, account=account))
+
+
+def _import_request(request, fields):
+    if (set(request) != fields or not isinstance(request.get('identifier'),str)
+            or re.fullmatch('[0-9a-f]{32}',request['identifier']) is None
+            or not isinstance(request.get('snapshot_signature'),str)
+            or re.fullmatch('[0-9a-f]{64}',request['snapshot_signature']) is None):
+        raise HTTPException(status_code=400, detail='Provide the server-issued import identifier and reviewed signatures')
+
+
+@router.post('/memory/import/plan')
+def plan_memory_import(request: dict, account: str = Depends(_memory_account)):
+    _import_request(request, {'identifier','snapshot_signature','decisions'})
+    return _memory_action(lambda preferences: preferences.plan_import(request, account=account))
+
+
+@router.post('/memory/import/apply')
+def apply_memory_import(request: dict, account: str = Depends(_memory_account)):
+    _import_request(request, {'identifier','snapshot_signature','plan_signature'})
+    return _memory_action(lambda preferences: preferences.apply_import(request, account=account))
+
+
+@router.post('/memory/import/status')
+def status_memory_import(request: dict, account: str = Depends(_memory_account)):
+    _import_request(request, {'identifier','snapshot_signature'})
+    return _memory_action(lambda preferences: preferences.import_status(request, account=account))
+
+
+@router.post('/memory/export/preview')
+def preview_memory_export(request: dict, account: str = Depends(_memory_account)):
+    if request:raise HTTPException(status_code=400,detail='Reverse export uses the selected owner profile')
+    return _memory_action(lambda preferences:preferences.preview_export(account=account))
+
+
+@router.post('/memory/export/snapshot')
+def prepare_memory_export(request: dict, account: str = Depends(_memory_account)):
+    if set(request)!={'signature'}:raise HTTPException(status_code=400,detail='Provide the reviewed export signature')
+    return _memory_action(lambda preferences:preferences.prepare_export(request,account=account))
+
+
+@router.post('/memory/export/{action}')
+def memory_export_action(action: Literal['plan','apply','status','download'], request: dict,
+                         account: str = Depends(_memory_account)):
+    fields={'identifier','signature'}
+    if action=='plan':fields.add('decisions')
+    if action=='apply':fields.add('plan_signature')
+    if (set(request)!=fields or not isinstance(request.get('identifier'),str)
+            or re.fullmatch('[0-9a-f]{32}',request['identifier']) is None
+            or not isinstance(request.get('signature'),str) or re.fullmatch('[0-9a-f]{64}',request['signature']) is None):
+        raise HTTPException(status_code=400,detail='Provide the server-issued export identifier and reviewed signatures')
+    result=_memory_action(lambda preferences:preferences.export_action(action,request,account=account))
+    if action=='download':
+        return Response(result,media_type='application/json',headers={'Cache-Control':'no-store',
+            'Content-Disposition':'attachment; filename="lifeos-portable-memory.json"'})
+    return result
 
 
 @router.post('/memory/fresh/prepare')

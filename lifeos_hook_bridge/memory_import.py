@@ -27,6 +27,7 @@ from .memory_transaction import publish
 SOURCE_NAMES = ('MEMORY.md', 'USER.md')
 DELIMITER = '\n§\n'
 SOURCE_LIMIT = 1024 * 1024
+BUNDLE_LIMIT = 16 * SOURCE_LIMIT
 CHUNK_LIMIT = 10_000
 
 
@@ -67,7 +68,7 @@ def _chunks(name, data):
 
 
 class MemoryImport:
-    def __init__(self, configuration):
+    def __init__(self, configuration, *, source_directory=None, installation_lease=None):
         self.configuration = configuration
         self.profile = configuration.path.parent.absolute()
         if configuration.path.absolute() != self.profile / 'lifeos-memory.json':
@@ -77,6 +78,32 @@ class MemoryImport:
         self.physical_root = self.installed.resolve(strict=True)
         self.principal = selected['principal']
         self.memory = NativeMemory(self.installed)
+        self.source_directory = self.profile / 'memories' if source_directory is None else Path(source_directory).absolute()
+        self.external_source = source_directory is not None
+        self.installation_lease = installation_lease
+
+    def _source_origin(self):
+        if not self.external_source:
+            return {'kind':'hermes-profile','label':str(self.profile),'path':str(self.source_directory),'digest':None}
+        _directory(self.source_directory,private=True)
+        data,_=_read(self.source_directory/'source.json',private=True)
+        try: value=json.loads(data)
+        except (ValueError,UnicodeError,RecursionError) as error:
+            raise MemoryUnavailable('The external import source has invalid metadata') from error
+        if (not isinstance(value,dict) or set(value)!={'kind','label'} or value['kind'] not in ('hermes-files','lifeos-portable-memory')
+                or not isinstance(value['label'],str) or not value['label'].strip() or len(value['label'])>256):
+            raise MemoryUnavailable('The external import source needs a supported kind and bounded label')
+        return {**value,'path':str(self.source_directory),'digest':hashlib.sha256(data).hexdigest()}
+
+    def _source_names(self):
+        return ('portable-memory.json',) if self._source_origin()['kind']=='lifeos-portable-memory' else SOURCE_NAMES
+
+    @staticmethod
+    def _parse_source(name,data):
+        if name=='portable-memory.json':
+            from .memory_import_sources import portable_chunks
+            return portable_chunks(data)
+        return _chunks(name,data)
 
     def _owner(self, account):
         if not isinstance(account, str) or not account.startswith('dashboard:'):
@@ -90,13 +117,13 @@ class MemoryImport:
 
     @contextmanager
     def _locks(self, account):
-        with installation_lock(self.profile), self.configuration._lock(), ExitStack() as stack:
+        with installation_lock(self.profile,lease=self.installation_lease), self.configuration._lock(), ExitStack() as stack:
             selected = self._owner(account)
             _directory(self.profile)
-            directory = self.profile / 'memories'
+            directory = self.source_directory
             if directory.exists() or directory.is_symlink():
                 _directory(directory)
-                for name in SOURCE_NAMES:
+                for name in self._source_names():
                     descriptor = os.open(directory / (name + '.lock'), os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
                     stack.callback(os.close, descriptor)
                     info = os.fstat(descriptor)
@@ -107,11 +134,12 @@ class MemoryImport:
 
     def _sources(self):
         sources, originals = [], {}
-        for name in SOURCE_NAMES:
-            path = self.profile / 'memories' / name
+        for name in self._source_names():
+            path = self.source_directory / name
             try:
                 path.lstat()
             except FileNotFoundError:
+                if name=='portable-memory.json':raise MemoryUnavailable('The portable source bundle is unavailable')
                 sources.append({'path':'memories/' + name, 'status':'missing', 'chunks':[]})
                 continue
             info = path.lstat()
@@ -121,13 +149,13 @@ class MemoryImport:
                 data, metadata = _read(path)
             except OSError as error:
                 raise MemoryUnavailable('A Hermes import source cannot be read') from error
-            if len(data) > SOURCE_LIMIT:
+            if len(data) > (BUNDLE_LIMIT if name=='portable-memory.json' else SOURCE_LIMIT):
                 raise MemoryUnavailable('The Hermes source exceeds its private review byte limit')
             originals['sources/' + name] = data
             info = path.lstat()
             sources.append({'path':'memories/' + name, 'size':len(data),
                 'digest':hashlib.sha256(data).hexdigest(), 'identity':[info.st_dev, info.st_ino],
-                **metadata, **_chunks(name, data)})
+                **metadata, **self._parse_source(name, data)})
         return sources, originals
 
     def _settings(self):
@@ -139,12 +167,18 @@ class MemoryImport:
         if not isinstance(settings, dict) or not isinstance(settings.get('memory', {}), dict):
             raise MemoryUnavailable('Import review requires supported Hermes memory settings')
         memory = settings.get('memory', {})
-        if memory.get('provider', 'builtin') not in ('builtin', None):
-            raise MemoryUnavailable('This import source does not select the supported built-in Hermes provider')
+        provider = memory.get('provider') or 'builtin'
+        selected = self.configuration.load()
+        if provider not in ('builtin', 'lifeos-hook-bridge'):
+            raise MemoryUnavailable('Import review requires a supported Hermes memory provider')
+        if selected.get('ownership_enabled', False) != (provider == 'lifeos-hook-bridge'):
+            raise MemoryUnavailable('The Hermes provider and LifeOS ownership settings disagree')
         limits = {key:memory.get(key, default) for key, default in (('memory_char_limit',2200),('user_char_limit',1375))}
         flags = {key:memory.get(key, True) for key in ('memory_enabled','user_profile_enabled')}
         if any(type(value) is not int or value < 1 for value in limits.values()) or any(type(value) is not bool for value in flags.values()):
             raise MemoryUnavailable('The selected Hermes memory settings have unsupported limits or flags')
+        if provider == 'lifeos-hook-bridge' and any(flags.values()):
+            raise MemoryUnavailable('LifeOS ownership requires both built-in Hermes memory stores to be disabled')
         return {'provider':memory.get('provider') or 'builtin', **limits, **flags,
             'config_digest':hashlib.sha256(data).hexdigest(), 'config_mode':metadata['mode']}, data
 
@@ -170,7 +204,7 @@ class MemoryImport:
                 for chunk in source['chunks']:
                     if chunk['content']:
                         chunk['exact_native_matches'] = matches.get(chunk['content'], [])
-                        chunk['retired_claim'] = self.memory._blocked(connection, chunk['content']) or self.memory._filter_history(
+                        chunk['retired_claim'] = chunk['retired_claim'] or self.memory._blocked(connection, chunk['content']) or self.memory._filter_history(
                             connection, scope, chunk['content'], _now(), reviewed=True)['excluded']
             chunks = [chunk for source in sources for chunk in source['chunks'] if chunk['content']]
             if chunks:
@@ -186,6 +220,7 @@ class MemoryImport:
             'configuration_digest':_digest(json.dumps(selected,sort_keys=True)),
             'ownership_enabled':selected.get('ownership_enabled',False),
             'settings':settings, 'sources':sources, 'target':target, 'hot_snapshots':hot,
+            'source_origin':self._source_origin(),
             'retirement_digest':retired, 'target_signature':target_signature,
             'readers':{'destinations':selected.get('destinations',{}),'clients':selected.get('clients',{}),
                 'sharing_enabled':selected.get('sharing_enabled',False)},
@@ -256,7 +291,7 @@ class MemoryImport:
         review=document['review']
         if (not isinstance(review,dict) or review.get('profile')!=str(self.profile)
                 or review.get('installed')!=selected['root'] or review.get('installed_physical')!=str(self.physical_root)
-                or review.get('principal')!=selected['principal']):
+                or review.get('principal')!=selected['principal'] or review.get('source_origin')!=self._source_origin()):
             raise MemoryUnavailable('The private import snapshot belongs to another profile or native store')
         checked=dict(review)
         review_signature=checked.pop('signature',None)
@@ -264,13 +299,14 @@ class MemoryImport:
             raise MemoryUnavailable('The private import review has inconsistent metadata')
         if not isinstance(document['files'],list) or not 2<=len(document['files'])<=4:
             raise MemoryUnavailable('The private import snapshot has invalid source copies')
-        allowed={'sources/'+name for name in SOURCE_NAMES}|{'configuration/config.yaml','configuration/lifeos-memory.json'}
+        names=self._source_names()
+        allowed={'sources/'+name for name in names}|{'configuration/config.yaml','configuration/lifeos-memory.json'}
         seen=set()
         preserved={}
         for copy in document['files']:
             if (not isinstance(copy,dict) or set(copy)!={'path','size','digest'}
                     or not isinstance(copy['path'],str) or copy['path'] not in allowed or copy['path'] in seen
-                    or type(copy['size']) is not int or not 0<=copy['size']<=SOURCE_LIMIT
+                    or type(copy['size']) is not int or not 0<=copy['size']<=(BUNDLE_LIMIT if copy['path']=='sources/portable-memory.json' else SOURCE_LIMIT)
                     or not isinstance(copy['digest'],str)):
                 raise MemoryUnavailable('The private import snapshot has invalid source copies')
             seen.add(copy['path'])
@@ -282,9 +318,9 @@ class MemoryImport:
         if not {'configuration/config.yaml','configuration/lifeos-memory.json'}<=seen:
             raise MemoryUnavailable('The private import snapshot lacks its configuration copies')
         sources=review.get('sources')
-        if not isinstance(sources,list) or len(sources)!=len(SOURCE_NAMES):
+        if not isinstance(sources,list) or len(sources)!=len(names):
             raise MemoryUnavailable('The private import review has invalid source accounting')
-        for name,source in zip(SOURCE_NAMES,sources,strict=True):
+        for name,source in zip(names,sources,strict=True):
             if not isinstance(source,dict) or source.get('path')!='memories/'+name:
                 raise MemoryUnavailable('The private import review has invalid source accounting')
             content=preserved.get('sources/'+name)
@@ -292,7 +328,7 @@ class MemoryImport:
                 if source!={'path':'memories/'+name,'status':'missing','chunks':[]}:
                     raise MemoryUnavailable('The private import review does not account for a missing source')
                 continue
-            parsed=_chunks(name,content)
+            parsed=self._parse_source(name,content)
             if (source.get('digest')!=hashlib.sha256(content).hexdigest() or type(source.get('size')) is not int
                     or source['size']!=len(content) or source.get('status')!=parsed['status']
                     or type(source.get('byte_order_mark')) is not bool or source['byte_order_mark']!=parsed['byte_order_mark']
@@ -322,6 +358,7 @@ class MemoryImport:
         fields={'path','status','size','digest','identity','mode','mtime_ns','byte_order_mark'}
         source_binding=lambda rows:[{key:value for key,value in row.items() if key in fields} for row in rows]
         if (settings!=review['settings'] or source_binding(sources)!=source_binding(review['sources'])
+                or self._source_origin()!=review['source_origin']
                 or _digest(json.dumps(selected,sort_keys=True))!=review['configuration_digest']):
             raise MemoryConflict('The selected Hermes source or import permissions change after review')
         return selected
@@ -359,8 +396,11 @@ class MemoryImport:
                             or action not in ('import','exclude','pending')):
                         raise ValueError('An import decision requires exact fields and an explicit required-item choice')
                     item=dict(decision)
-                    item['provenance']={'kind':'hermes-import','session':'','path':str(self.profile/source['path']),
+                    item['provenance']={'kind':'hermes-import','session':'','path':str(self.source_directory/Path(source['path']).name),
                         'digest':source['digest'],'occurrence':chunk['id'],'original_author':'unknown','original_date':'unknown'}
+                    if self.external_source:item['provenance']['origin']=review['source_origin']
+                    if 'source_reference' in chunk:
+                        item['provenance']['upstream']={key:chunk[key] for key in ('source_reference','source_origin','source_category','source_project','source_action')}
                     if action in ('exclude','pending'):
                         if not isinstance(item['reason'],str) or not item['reason'].strip() or len(item['reason'])>4096:
                             raise ValueError('A pending or excluded source occurrence needs a bounded review reason')
@@ -429,6 +469,43 @@ class MemoryImport:
     @staticmethod
     def _request(plan, item):
         return 'hermes-import:'+plan['signature']+':'+item['id']
+
+    def status(self, destination, snapshot_signature, *, account=None):
+        destination=Path(destination).absolute()
+        with self._locks(account) as selected:
+            document=self.inspect(destination,snapshot_signature,account=account)
+            plan=None
+            if (destination/'plan.json').exists() or (destination/'plan.json').is_symlink():
+                data,_=_read(destination/'plan.json',private=True)
+                try: signature=json.loads(data)['signature']
+                except (ValueError,KeyError,TypeError) as error:
+                    raise MemoryUnavailable('The private import plan has invalid metadata') from error
+                plan=self._plan(destination,signature,snapshot_signature,account)
+            publication=None
+            if (destination/'publication.json').exists() or (destination/'publication.json').is_symlink():
+                data,_=_read(destination/'publication.json',private=True)
+                try: publication=json.loads(data)
+                except ValueError as error:
+                    raise MemoryUnavailable('The private import publication has invalid metadata') from error
+                if (plan is None or not isinstance(publication,dict)
+                        or publication.get('plan_signature')!=plan['signature']
+                        or publication.get('snapshot_signature')!=snapshot_signature
+                        or not isinstance(publication.get('items'),list)):
+                    raise MemoryUnavailable('The import publication belongs to another review')
+                scope=MemoryPreferences._owner_scope(selected)
+                for item in publication['items']:
+                    receipt=item.get('receipt')
+                    current=self.memory.get(scope,receipt['reference']) if receipt else {}
+                    item['verified']=bool(receipt and current.get('status')=='ok'
+                        and current.get('content')==item.get('content')
+                        and current.get('category')==item.get('category')
+                        and current.get('project')==item.get('project'))
+                publication['required_items_verified']=all(item['verified'] for item in publication['items'] if item['required'])
+                if any(not item['verified'] for item in publication['items'] if item['action']=='import'):
+                    publication['state']='conflict'
+                    publication['reason']='An imported fact changes after publication'
+            self._owner(account)
+            return {'review':document['review'],'plan':plan,'publication':publication}
 
     def apply(self, destination, snapshot_signature, plan_signature, *, account=None):
         destination=Path(destination).absolute()
