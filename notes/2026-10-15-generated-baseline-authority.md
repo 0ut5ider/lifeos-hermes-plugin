@@ -11,3 +11,5 @@ The evidence correction derives 1,742 deployed program hashes from the immutable
 The timestamp is bounded by public publication and the original apply-intent metadata. The helper does not prove the exact original timestamp. The source checkpoint records the proven baseline digest for exact comparison after restore. The immutable release certificate and product archive remain unchanged.
 
 The first attempt created three synthetic Atlas cases outside the personal store. A retry must validate and reuse those exact cases. It must not prepare them again or consume their interrupted transactions on the source guest. The actual disconnected restore remains the completion test.
+
+The actual retry and disconnected restore pass. They verify all 221 selected targets, seven current owner outputs, 64,567 runtime artifacts, and all three Atlas cases. The old release restore remains unavailable. The independently reviewed baseline correction changes evidence authority only. The later certifier review also catches command-target and single-read hash-binding gaps before immutable publication. The actual successful guest receipts remain unchanged.

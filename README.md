@@ -2,7 +2,7 @@
 
 **Published stable release:** `0.5.0`, program commit `04efe633`, on development `.252` and daily `.253`. The [release record](docs/verification/2026-10-14-release-0.5.0/README.md) binds the exact package, qualification, public installation, and daily activation evidence. The package adds the governed Pulse core-file editor, corrects observer timestamp comparison, and verifies omitted native baseline entries against the accepted archive.
 
-The actual public Hermes web form installs the manager from the default GitHub URL. Install LifeOS then selects and installs the latest stable complete package after owner review. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/PUBLIC-LATEST-ACCEPTANCE.json) records that test. Daily `.253` applies the same package through Update plugin and owner review. Its protected complete backup and disconnected recovery pass. The supplementary deployment receipt awaits independent publication review.
+The actual public Hermes web form installs the manager from the default GitHub URL. Install LifeOS then selects and installs the latest stable complete package after owner review. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/PUBLIC-LATEST-ACCEPTANCE.json) records that test. Daily `.253` applies the same package through Update plugin and owner review. Its protected complete backup and disconnected recovery pass. The [published deployment receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/DEPLOYMENT-ACCEPTANCE.json) binds these completed checks.
 
 The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
 The exact archive passes 821 integration tests and 716 native tests across 38 files.
@@ -21,6 +21,7 @@ The installed and compiled-browser editor checks pass. Development verifies 222 
 Current development owner admission includes all 56 exact package skills. An authenticated owner remount prevents the earlier release operation from overwriting the later mount.
 The focused reviews are clear. All 41 certificate controls and sixteen additional current-state guards pass.
 Publication preserves all 51 prior release assets. The new public acceptance asset preserves those assets and all three initial 0.5.0 assets.
+The final deployment asset preserves all 55 existing assets, including the initial certificate and public acceptance receipt.
 Earlier 0.4.2 and 0.4.3 receipts retain their completed public installation and update checkpoints.
 An interactive Hermes conversation can prepare the latest stable release and continue installation through authenticated owner review.
 The [previous patch qualification record](docs/verification/2026-10-12-release-0.4.1/README.md) retains the 0.4.1 checkpoint.

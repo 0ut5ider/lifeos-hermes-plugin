@@ -1,0 +1,124 @@
+{
+  "status": "FAIL_SAFELY_RECOVERED",
+  "operation": "b9e873b251604202a58442b502a3c2b2",
+  "stage": "capture-current-owner-mount",
+  "backup_created": false,
+  "source_services_recovered": true,
+  "measured_conflicts": 1,
+  "selected_program_targets": 221,
+  "conflict_kind": "Generated VersionDrift baseline file",
+  "cause": "The release mount publishes a generated baseline as an eighth output. A later owner remount records seven profile outputs and does not record the baseline.",
+  "repair_scope": "Independent public catalog proof in evidence operator. No product or memory policy change.",
+  "personal_records_read": false,
+  "personal_data_imported_or_reset": false,
+  "operations": [
+    {
+      "label": "inventory",
+      "command": [
+        "pvesh",
+        "get",
+        "/cluster/resources",
+        "--type",
+        "vm",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.2942248530016514
+    },
+    {
+      "label": "editor-checkpoint",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+        "-B",
+        "-"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.9662313830049243
+    },
+    {
+      "label": "prepare-synthetic-atlas",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+        "-B",
+        "/home/lifeos-hermes/releases/qualification-0.5.0/history_guest_recovery.py",
+        "prepare",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/package"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 13.232676611994975
+    },
+    {
+      "label": "drain-source",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+        "-B",
+        "-"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.749606233002851
+    },
+    {
+      "label": "capture-current-owner-mount",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+        "-B",
+        "/home/lifeos-hermes/releases/qualification-0.5.0/verify_daily_restored_programs.py",
+        "capture",
+        "b9e873b251604202a58442b502a3c2b2"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 2.244358217998524
+    },
+    {
+      "label": "recover-source-services",
+      "command": [
+        "pct",
+        "exec",
+        "102",
+        "--",
+        "runuser",
+        "-u",
+        "lifeos-hermes",
+        "--",
+        "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+        "-B",
+        "-"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.289289998007007
+    }
+  ]
+}

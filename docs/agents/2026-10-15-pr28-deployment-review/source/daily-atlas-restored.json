@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "action": "verify",
+  "version": "0.5.0",
+  "cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 51,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "personal_data_used": false,
+  "live_store_modified": false
+}

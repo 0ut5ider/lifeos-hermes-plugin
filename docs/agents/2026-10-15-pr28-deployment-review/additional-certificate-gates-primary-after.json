@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "backup-wrong-source",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "restore-wrong-destination",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "resume-wrong-source",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "verify-programs-wrong-guest",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "cleanup-shutdown-unowned-daily",
+      "receipt": "release-test-cleanup.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "cleanup-removes-unowned-storage",
+      "receipt": "release-test-cleanup.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "cleanup-drops-preserved-100",
+      "receipt": "release-test-cleanup.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "cleanup-drops-preserved-106",
+      "receipt": "release-test-cleanup.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "admission-wrong-program-commit",
+      "receipt": "daily-native-skill-review.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "admission-wrong-package",
+      "receipt": "daily-native-skill-review.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "admission-wrong-server",
+      "receipt": "daily-native-skill-review.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "preservation-wrong-server",
+      "receipt": "daily-post-admission-verification.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "capture-is-verify",
+      "receipt": "daily-current-program-capture.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "restored-is-capture",
+      "receipt": "daily-current-programs-restored.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "capture-missing-baseline-proof",
+      "receipt": "daily-current-program-capture.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "restored-claims-exact-old-timestamp",
+      "receipt": "daily-current-programs-restored.json",
+      "accepted": false,
+      "error_type": "AssertionError",
+      "desired_refusal_verified": true
+    },
+    {
+      "case": "capture-missing-timestamp-scope",
+      "receipt": "daily-current-program-capture.json",
+      "accepted": false,
+      "error_type": "KeyError",
+      "desired_refusal_verified": true
+    }
+  ],
+  "actual_safe_inputs_used": true,
+  "remote_calls": false,
+  "mutated_guest_receipts_written": false,
+  "release_certificate_written": false
+}

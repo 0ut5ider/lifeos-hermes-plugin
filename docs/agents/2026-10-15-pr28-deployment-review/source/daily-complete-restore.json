@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "archive": "PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+  "source_guest": 102,
+  "restored_guest": 110,
+  "version": "0.5.0",
+  "program_commit": "04efe633296eb2b1a1d95561ca6d3e9516cd47dc",
+  "archive_sha256": "a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813",
+  "operation": "b9e873b251604202a58442b502a3c2b2",
+  "network_disconnected": true,
+  "application_services_masked": true,
+  "cases": [
+    {
+      "case": "baseline",
+      "status": "PASS",
+      "restored_files": 51,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "interrupted",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": false,
+      "archive_and_live_group_verified": true
+    },
+    {
+      "case": "later-edit",
+      "status": "PASS",
+      "restored_files": 55,
+      "later_edit_refused": true,
+      "archive_and_live_group_verified": true
+    }
+  ],
+  "source_programs_or_personal_data_changed": false,
+  "source_synthetic_fixtures_created": true,
+  "source_writers_resumed": true,
+  "backup_pruning_protection_verified": true,
+  "runtime_artifact_coverage": {
+    "status": "PASS",
+    "action": "verify",
+    "operation": "b9e873b251604202a58442b502a3c2b2",
+    "program_commit": "04efe633296eb2b1a1d95561ca6d3e9516cd47dc",
+    "archive_sha256": "a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813",
+    "artifacts": 64567,
+    "regular_files": 58080,
+    "bytes": 1650659292,
+    "private_map_sha256": "88797567220bcb9d2cde7a93d335571e30c344e0549f843d2329ceeef60cf6da",
+    "runtime_roots": [
+      "bin",
+      "compiled-dashboard",
+      "dependency-profile",
+      "hermes",
+      "package",
+      "pm-runtime",
+      "python-environment",
+      "tools",
+      "worker"
+    ],
+    "private_map_exported": false
+  }
+}

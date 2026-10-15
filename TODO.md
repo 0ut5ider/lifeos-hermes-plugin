@@ -1,6 +1,6 @@
 # Project todos
 
-Current release: 0.5.0 on development `.252` and daily `.253`. The [release record](docs/verification/2026-10-14-release-0.5.0/README.md) records public installation, daily preservation, current owner admission, and governed editor activation. The protected final daily backup, disconnected restore, and owned test guest cleanup pass. The supplementary deployment receipt awaits independent publication review.
+Current release: 0.5.0 on development `.252` and daily `.253`. The [release record](docs/verification/2026-10-14-release-0.5.0/README.md) records public installation, daily preservation, current owner admission, and governed editor activation. The protected final daily backup, disconnected restore, and owned test guest cleanup pass. The supplementary [deployment receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/DEPLOYMENT-ACCEPTANCE.json) is published.
 
 - [x] Implement stronger automatic morning observation with complete Discord window coverage and the enabled scheduler definition. The complete 0.4.1 package includes the tested observer. Preserve historical receipts. A new automatic daily observation follows daily promotion.
 - [x] Qualify the candidate Hermes v0.21.7 port with ten Hermes patches and twenty-five LifeOS patches. Upstream behavior replaces the inactive protected-instruction patch. The accepted 0.3.1 pins retain all 36 patches. See the [candidate verification](docs/verification/2026-10-12-hermes-managed-release/README.md).

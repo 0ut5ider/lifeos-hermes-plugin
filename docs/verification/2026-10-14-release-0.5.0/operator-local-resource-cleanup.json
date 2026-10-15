@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "resources": [
+    {
+      "resource": "browser-fixture-login",
+      "state": "owned-process-stopped"
+    },
+    {
+      "resource": "browser-public-login",
+      "state": "owned-process-stopped"
+    },
+    {
+      "resource": "browser-daily-login",
+      "state": "owned-process-stopped"
+    },
+    {
+      "resource": "public-dashboard-tunnel.sock",
+      "state": "already-closed"
+    },
+    {
+      "resource": "daily-dashboard-tunnel.sock",
+      "state": "owned-tunnel-closed"
+    }
+  ],
+  "user_browser_profiles_changed": false,
+  "all_owned_login_bridges_stopped_verified": true,
+  "all_owned_dashboard_tunnels_closed_verified": true
+}
