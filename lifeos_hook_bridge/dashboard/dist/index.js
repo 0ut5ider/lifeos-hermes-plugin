@@ -441,10 +441,9 @@
         className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Claim this LifeOS installation") : null,
       memory?.state === "unavailable" ? h("p", { role: "alert" }, "Memory is unavailable: " + memory.message) : null,
       configured ? h("p", null, "Native memory check: " + memory.native_health + ". Current indexed facts: " + (memory.active_facts ?? "unknown") + ".") : null,
-      h("p", { className: "text-sm" }, "Ownership setup is still in development. This page cannot switch your memory provider until the checks below pass."),
-      h("ul", { className: "list-disc pl-5 text-sm" }, Object.entries(memory?.remaining_gates ?? {}).map(function (entry) {
-        return h("li", { key: entry[0] }, entry[1]);
-      })),
+      configured ? h("p", { className: "text-sm" }, memory.ownership_enabled
+        ? "LifeOS owns lasting memory. Export current facts and review a return to switch to built-in Hermes memory."
+        : "After the required import entries are verified, prepare an ownership review. Open LifeOS releases to review and apply the provider switch.") : null,
       h("button", { type: "button", disabled: busy, onClick: refresh, className: "rounded border border-border px-3 py-2" }, "Check memory status"),
       message ? h("p", { role: "status", className: "text-sm" }, message) : null,
       configured ? h("div", { className: "space-y-3" },
@@ -507,7 +506,7 @@
         }),
         h("p", { className: "text-sm" }, memory.ownership_enabled
           ? "Ask your agent to correct or forget a fact using its reference. Forget removes ordinary recall; it does not erase conversation history, audits, or backups."
-          : "Agent corrections and forgetting are unavailable until LifeOS memory ownership is enabled. Ownership activation is not available in this version."),
+          : "Agent corrections and forgetting are unavailable until LifeOS memory ownership is enabled. Complete the reviewed import activation from LifeOS releases."),
         memory.proposal_review_available ? h("details", null,
           h("summary", { className: "cursor-pointer font-semibold" }, "Pending preference and rule changes"),
           h("div", { className: "space-y-3 pt-3" },
