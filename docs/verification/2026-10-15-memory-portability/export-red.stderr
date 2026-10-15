@@ -1,0 +1,20 @@
+test_export_preserves_current_facts_origins_and_original_sources_without_switching (test_memory_export.MemoryExportTests.test_export_preserves_current_facts_origins_and_original_sources_without_switching) ... ERROR
+
+======================================================================
+ERROR: test_export_preserves_current_facts_origins_and_original_sources_without_switching (test_memory_export.MemoryExportTests.test_export_preserves_current_facts_origins_and_original_sources_without_switching)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_export.py", line 36, in test_export_preserves_current_facts_origins_and_original_sources_without_switching
+    review,saved=self.prepare()
+                 ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_export.py", line 27, in prepare
+    review=self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_export.py", line 23, in operation
+    from lifeos_hook_bridge.memory_export import MemoryExport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_export'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.456s
+
+FAILED (errors=1)

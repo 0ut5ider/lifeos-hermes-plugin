@@ -1,0 +1,44 @@
+test_cancelled_activation_can_be_prepared_again (docs.agents.2026-10-15-memory-transition-review.review_probes.ActivationReview.test_cancelled_activation_can_be_prepared_again) ... ERROR
+test_exit_between_transition_intent_and_service_intent (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_exit_between_transition_intent_and_service_intent) ... FAIL
+
+======================================================================
+ERROR: test_cancelled_activation_can_be_prepared_again (docs.agents.2026-10-15-memory-transition-review.review_probes.ActivationReview.test_cancelled_activation_can_be_prepared_again)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 54, in setUp
+    self.fixture.setUp()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 23, in setUp
+    self.plan=self.importer.plan(self.snapshot,self.captured['snapshot_signature'],decisions,account='dashboard:owner')
+              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import.py", line 414, in plan
+    raise ValueError('The selected source or native import destination is not eligible for publication')
+ValueError: The selected source or native import destination is not eligible for publication
+
+======================================================================
+FAIL: test_exit_between_transition_intent_and_service_intent (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_exit_between_transition_intent_and_service_intent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 48, in test_exit_between_transition_intent_and_service_intent
+    self.assertEqual(observed['errors'],{},'Both recovery choices must work after durable transition intent')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'apply': 'The selected profile services h[86 chars]ate'} != {}
++ {}
+- {'apply': 'The selected profile services have no recovery state',
+-  'rollback': 'The selected profile services have no recovery state'} : Both recovery choices must work after durable transition intent
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.099s
+
+FAILED (failures=1, errors=1)
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/tempfile.py", line 962, in _cleanup
+    _warnings.warn(warn_message, ResourceWarning)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/native-memory-0p7xju9l'>

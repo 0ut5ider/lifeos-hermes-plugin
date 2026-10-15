@@ -99,3 +99,27 @@ test('reverse export shows capacity and retains every item until the owner choos
   assert.equal(planned[0].action, 'retain'); assert.equal(planned[0].required, true);
   assert.equal(p.calls.filter(call => call.url.endsWith('/apply')).length, 0);
 });
+
+test('published import queues ownership review without applying the cutover', async () => {
+  let decision;
+  const p = await panel((url, body) => {
+    if (url.endsWith('/preview')) return review;
+    if (url.endsWith('/snapshot')) return { identifier: 'a'.repeat(32), snapshot_signature: 'b'.repeat(64) };
+    if (url.endsWith('/plan')) { decision = body.decisions[0]; return { signature: 'c'.repeat(64), items: [decision] }; }
+    if (url.endsWith('/import/apply')) return { state: 'published', required_items_verified: true, items: [] };
+    if (url.endsWith('/memory-workflows')) return { identifier: 'd'.repeat(32) };
+    throw new Error('Unexpected request: ' + url);
+  });
+  await find(p.render(), n => n.children.includes('Review Hermes memory')).props.onClick();
+  find(p.render(), n => n.type === 'select' && n.props.value === 'pending').props.onChange({ target: { value: 'import' } });
+  find(p.render(), n => n.props.id === 'import_chunk_project').props.onChange({ target: { value: 'lab' } });
+  await find(p.render(), n => n.children.includes('Review publication plan')).props.onClick();
+  await find(p.render(), n => n.children.includes('Apply reviewed import')).props.onClick();
+  const button = find(p.render(), n => n.children.includes('Prepare LifeOS ownership activation'));
+  assert.ok(button);
+  await button.props.onClick();
+  const call = p.calls.find(c => c.url.endsWith('/memory-workflows'));
+  assert.equal(JSON.parse(call.options.body).kind, 'activation');
+  assert.equal(JSON.parse(call.options.body).plan_signature, 'c'.repeat(64));
+  assert.equal(p.calls.filter(c => c.url.includes('/memory-workflows/')).length, 0);
+});

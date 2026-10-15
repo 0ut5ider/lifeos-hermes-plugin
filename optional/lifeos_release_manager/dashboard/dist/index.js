@@ -6,6 +6,71 @@
   const h = SDK.React.createElement;
   const endpoint = "/api/plugins/lifeos-release-manager/operations";
 
+  function MemoryWorkflows() {
+    const base = "/api/plugins/lifeos-release-manager/memory-workflows";
+    const [operations, setOperations] = SDK.hooks.useState([]);
+    const [busy, setBusy] = SDK.hooks.useState(false);
+    const [message, setMessage] = SDK.hooks.useState("");
+    async function refresh() {
+      try {
+        const result = await SDK.fetchJSON(base);
+        setOperations(result.operations);
+      } catch (error) {
+        setOperations([]); setMessage(error.message);
+      }
+    }
+    SDK.hooks.useEffect(function () {
+      let active = true;
+      async function poll() {
+        try {
+          const result = await SDK.fetchJSON(base);
+          if (active) setOperations(result.operations);
+        } catch (error) {
+          if (active) { setOperations([]); setMessage(error.message); }
+        }
+      }
+      poll();
+      const timer = setInterval(poll, 5000);
+      return function () { active = false; clearInterval(timer); };
+    }, []);
+    async function act(operation, action) {
+      setBusy(true); setMessage("");
+      try {
+        await SDK.fetchJSON(base + "/" + operation.identifier + "/" + action, {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({signature: operation.review.signature})
+        });
+        setMessage("Memory workflow started. Hermes can restart. Refresh this page to check its result.");
+        await refresh();
+      } catch (error) { setOperations([]); setMessage(error.message); }
+      finally { setBusy(false); }
+    }
+    return h("section", {className: "space-y-3 rounded border border-border p-4"},
+      h("h2", {className: "text-lg font-semibold"}, "Memory ownership workflows"),
+      h("p", null, "Prepare an import activation or provider return from the LifeOS memory page. Review the operation here before it changes your provider."),
+      h("a", {href: "/lifeos-bridge", className: "underline"}, "Open LifeOS memory controls"),
+      h("button", {type: "button", disabled: busy, onClick: refresh}, "Refresh memory workflows"),
+      operations.map(function (operation) {
+        return h("article", {key: operation.identifier, className: "space-y-2 rounded border border-border p-3"},
+          h("p", null, operation.kind + ": " + operation.state),
+          h("p", {className: "break-all text-xs"}, "Workflow: " + operation.identifier),
+          operation.review.prompt ? h("div", null, h("p", null, "Reviewed replacement Hermes prompt:"),
+            h("pre", {className: "whitespace-pre-wrap"}, operation.review.prompt)) : null,
+          h("p", null, "Application verified: " + Boolean(operation.receipt?.application_verified) + "."),
+          operation.state === "ready" ? h("div", null,
+            h("p", null, operation.kind === "activation" ?
+              "This operation selects LifeOS memory and restarts Hermes services. The original Hermes memory files stay retained." :
+              "This operation selects the reviewed built-in memory, stops and disables Pulse, and restarts Hermes. It retains native data and exports."),
+            h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "apply"); }},
+              operation.kind === "activation" ? "Activate reviewed LifeOS ownership" : "Apply reviewed provider return")) : null,
+          operation.state === "interrupted" ? h("button", {type: "button", disabled: busy,
+            onClick: function () { return act(operation, "recover"); }}, "Recover memory workflow") : null,
+          ["configured", "verified", "verification_required", "interrupted"].includes(operation.state) ?
+            h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "rollback"); }},
+              "Restore previous provider settings") : null);
+      }), message ? h("p", {role: "status"}, message) : null);
+  }
+
   function Releases() {
     const [operations, setOperations] = SDK.hooks.useState([]);
     const [reviewed, setReviewed] = SDK.hooks.useState(null);
@@ -81,6 +146,7 @@
 
     return h("section", {className: "space-y-4 p-6"},
       h("h1", {className: "text-2xl font-semibold"}, "LifeOS releases"),
+      installed === true ? h(MemoryWorkflows) : null,
       h("p", null, "Prepare a release with these controls or ask Hermes in chat. Review the prepared release before installation."),
       h("p", null, "All update actions prepare the complete tested package: Hermes, LifeOS, the bridge, and the release manager. Your personal data and model settings stay in place."),
       h("label", {className: "block"}, "Release version (leave blank for latest stable)",

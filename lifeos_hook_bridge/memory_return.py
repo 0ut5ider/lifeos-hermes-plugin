@@ -164,10 +164,12 @@ class MemoryReturn:
             if metadata not in [entry[side] for side in sides]:
                 raise MemoryConflict('Provider return preserves a later profile file edit')
 
-    def _native_current(self, plan):
-        with self.importer.memory._transaction() as connection:
-            if self.importer._target_signature(connection)!=plan['target_signature']:
-                raise MemoryConflict('LifeOS facts change after reverse export review')
+    def _native_current(self, plan, connection=None):
+        if connection is None:
+            with self.importer.memory._transaction() as selected:
+                return self._native_current(plan,selected)
+        if self.importer._target_signature(connection)!=plan['target_signature']:
+            raise MemoryConflict('LifeOS facts change after reverse export review')
 
     def _publish_target(self, entry, side, copies):
         path=self.profile/entry['name']
@@ -179,18 +181,18 @@ class MemoryReturn:
 
     def apply(self, destination, signature, *, account=None):
         destination=Path(destination).absolute()
-        with self.importer._locks(account):
+        with self.importer._locks(account), self.importer.memory._transaction() as connection:
             plan,operation,copies=self._load(destination,signature,account)
             if operation['state'] not in {'ready','applying','configured'}:
                 raise MemoryUnavailable('The return operation requires recovery before application')
-            self._barrier();self._native_current(plan)
+            self._barrier();self._native_current(plan,connection)
             self._check(plan,sides=('after',) if operation['state']=='configured' else ('before','after'))
             self._state(destination/'return',signature,'applying')
             for entry in plan['targets']:
                 self._barrier();self._check(plan,sides=('before','after'))
                 self.importer._owner(account)
                 self._publish_target(entry,'after',copies)
-            self._barrier();self._native_current(plan);self._check(plan,sides=('after',))
+            self._barrier();self._native_current(plan,connection);self._check(plan,sides=('after',))
             self._state(destination/'return',signature,'configured')
             return {'state':'configured','signature':signature,'restart_required':True,'application_verified':False,'native_data_retained':True}
 

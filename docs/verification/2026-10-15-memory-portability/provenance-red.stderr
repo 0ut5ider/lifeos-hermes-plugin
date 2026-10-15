@@ -1,0 +1,15 @@
+test_export_keeps_the_original_import_receipt_provenance (test_memory_export.MemoryExportTests.test_export_keeps_the_original_import_receipt_provenance) ... ERROR
+
+======================================================================
+ERROR: test_export_keeps_the_original_import_receipt_provenance (test_memory_export.MemoryExportTests.test_export_keeps_the_original_import_receipt_provenance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_export.py", line 170, in test_export_keeps_the_original_import_receipt_provenance
+    self.assertIn({'reference':receipt['reference'],'source':receipt['source']},item['origin']['receipts'])
+                                                                                ~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'receipts'
+
+----------------------------------------------------------------------
+Ran 1 test in 2.531s
+
+FAILED (errors=1)

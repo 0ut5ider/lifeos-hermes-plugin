@@ -273,10 +273,13 @@ class ProfileServices:
                 self._empty(document, role)
             return {'state': 'stopped', 'owner_turn_verified': False}
 
-    def resume(self, *, roles=None):
-        if (roles is not None and (not isinstance(roles,(tuple,list)) or len(roles)!=len(set(roles))
-                or any(not isinstance(role,str) or role not in self.units for role in roles))):
+    def resume(self, *, roles=None, activate=False):
+        if (roles is not None and (not isinstance(roles,(tuple,list))
+                or any(not isinstance(role,str) or role not in self.units for role in roles)
+                or len(roles)!=len(set(roles)))):
             raise ValueError('Resume only distinct roles from the bound profile services')
+        if type(activate) is not bool or activate and roles is None:
+            raise ValueError('Explicit service activation requires the reviewed role selection')
         with self._lock():
             document = self._load()
             if document is None:
@@ -292,6 +295,8 @@ class ProfileServices:
                     if role not in roles:
                         self._empty(document,role)
                         document['services'][role]['active']=False
+                    elif activate:
+                        document['services'][role]['active']=True
             document['state'] = 'starting'
             self._publish(document)
             started = []
@@ -317,3 +322,18 @@ class ProfileServices:
             state = document['state'] if document is not None else 'none'
             return {'state': state, 'recovery_required': state in {'stopping', 'stopped', 'starting'},
                 'owner_turn_verified': False}
+
+    def verify_active(self):
+        with self._lock():
+            document=self._load()
+            if document is None or document['state']!='active':
+                raise MemoryUnavailable('The selected profile services have no completed restart')
+            active=[]
+            for role in self.start_order:
+                values=self._check_definition(document,role)
+                if document['services'][role]['active']:
+                    if values['ActiveState']!='active' or int(values['MainPID'])==0:
+                        raise MemoryUnavailable('A restarted profile service does not remain active')
+                    active.append(role)
+                else:self._empty(document,role)
+            return {'state':'active','services_active':active,'owner_turn_verified':False}

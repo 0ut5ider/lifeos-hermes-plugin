@@ -1,0 +1,28 @@
+test_cancelled_activation_can_be_prepared_again (docs.agents.2026-10-15-memory-transition-review.review_probes.ActivationReview.test_cancelled_activation_can_be_prepared_again) ... FAIL
+test_exit_between_transition_intent_and_service_intent (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_exit_between_transition_intent_and_service_intent) ... FAIL
+
+======================================================================
+FAIL: test_cancelled_activation_can_be_prepared_again (docs.agents.2026-10-15-memory-transition-review.review_probes.ActivationReview.test_cancelled_activation_can_be_prepared_again)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 77, in test_cancelled_activation_can_be_prepared_again
+    self.assertNotIn('error',observed,'An explicitly recovered cancellation must permit a new review')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' unexpectedly found in {'first': {'state': 'ready', 'signature': 'd0deddbcbd0e5f2ecc604de9a2364e964b3cf3918498b1d35d09a1ce42fca8b7', 'backup': '/tmp/native-memory-ikiw1kbj/profile-backups/one', 'application_verified': False, 'owner_turn_verified': False}, 'recovered': {'state': 'cancelled', 'signature': 'd0deddbcbd0e5f2ecc604de9a2364e964b3cf3918498b1d35d09a1ce42fca8b7', 'backup': '/tmp/native-memory-ikiw1kbj/profile-backups/one', 'application_verified': False, 'owner_turn_verified': False}, 'error': 'Complete or recover the existing import activation first'} : An explicitly recovered cancellation must permit a new review
+
+======================================================================
+FAIL: test_exit_between_transition_intent_and_service_intent (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_exit_between_transition_intent_and_service_intent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 48, in test_exit_between_transition_intent_and_service_intent
+    self.assertEqual(observed['errors'],{},'Both recovery choices must work after durable transition intent')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'apply': 'The selected profile services h[86 chars]ate'} != {}
++ {}
+- {'apply': 'The selected profile services have no recovery state',
+-  'rollback': 'The selected profile services have no recovery state'} : Both recovery choices must work after durable transition intent
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.898s
+
+FAILED (failures=2)

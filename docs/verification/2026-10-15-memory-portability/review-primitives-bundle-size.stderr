@@ -1,0 +1,18 @@
+test_accepted_bundle_total_fits_portable_upload (docs.agents.2026-10-15-portability-primitives-review.review_probes.ExportReview.test_accepted_bundle_total_fits_portable_upload) ... ERROR
+
+======================================================================
+ERROR: test_accepted_bundle_total_fits_portable_upload (docs.agents.2026-10-15-portability-primitives-review.review_probes.ExportReview.test_accepted_bundle_total_fits_portable_upload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-primitives-review/review_probes.py", line 70, in test_accepted_bundle_total_fits_portable_upload
+    try:upload_bundle(self.fixture.profile,{'label':'Synthetic size round trip','bundle':json.loads(raw)})
+        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import_sources.py", line 94, in upload_bundle
+    if len(data)>SOURCE_LIMIT:raise ValueError('The portable source exceeds its import byte limit')
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: The portable source exceeds its import byte limit
+
+----------------------------------------------------------------------
+Ran 1 test in 2.139s
+
+FAILED (errors=1)

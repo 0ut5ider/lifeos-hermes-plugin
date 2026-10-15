@@ -96,8 +96,9 @@ def bootstrap(archive_sha256):
     for path in home.rglob('*'):os.chown(path,owner.pw_uid,owner.pw_gid,follow_symlinks=False)
     subprocess.run(['loginctl','enable-linger','lifeos-hermes'],check=True,capture_output=True)
     subprocess.run(['systemctl','start','user@'+str(owner.pw_uid)+'.service'],check=True,capture_output=True)
-    subprocess.run(['runuser','-u','lifeos-hermes','--',str(home/'stock-venv/bin/python'),str(program),'--configure'],
-        check=True,capture_output=True,timeout=120)
+    with (folder/'configure.stdout').open('w') as out,(folder/'configure.stderr').open('w') as err:
+        subprocess.run(['runuser','-u','lifeos-hermes','--',str(home/'stock-venv/bin/python'),str(program),'--configure'],
+            check=True,stdout=out,stderr=err,timeout=120)
     (folder/'bootstrap.done').write_text('0\n')
 
 
@@ -108,4 +109,8 @@ if __name__=='__main__':
     parser.add_argument('--archive-sha256')
     args=parser.parse_args()
     if args.configure:configure()
-    else:bootstrap(args.archive_sha256)
+    else:
+        try:bootstrap(args.archive_sha256)
+        except BaseException:
+            (Path('/root/lifeos-portability-bootstrap')/'bootstrap.done').write_text('1\n')
+            raise

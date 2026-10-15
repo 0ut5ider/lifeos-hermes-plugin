@@ -35,4 +35,10 @@ The shared `.211` connector returns `integrity_error`. No raw memory file or tra
 
 ## Remaining gates
 
+The primary final primitive run passes 68 tests. The independent closure review clears the three initial primitive findings. The broader `workflow-current-suite` passes 70 tests. It covers current activation, return, native owner grants, ownership recovery, actual user services, and the fresh actual Hermes constructor. The fresh probe emits only hashes and counts. It does not execute a model turn. The 24 dashboard component checks use an SDK test implementation and do not establish browser acceptance.
+
+The [orchestration review](../../agents/2026-10-15-memory-transition-review/memory-transition-review.md) measures four P2 findings: early drain intent recovery, enabled runtime-linked Pulse removal, cancelled activation retry, and native correction after final reference admission. `primary-transition-red` reproduces all four failures. The fixed `transition-closure` passes 10 tests. It refuses the enabled linked unit layout before publication. It separately verifies persistent disablement and rollback with an actual regular enabled user unit. The [cutover note](../../../notes/2026-10-15-memory-cutover-barrier.md) records the native writer barrier.
+
+The disposable guest is CT110 at `192.168.8.244`. Its unpatched stock dashboard runs without model or Discord delivery. The existing processing VM and guests retain their previous states. `guest.json` and `stock-dashboard.json` contain safe provisioning metadata. The public installation replay has started. No complete integration or detached workflow acceptance is claimed yet.
+
 Complete the detached owner-authorized service workflow, fresh import ownership cutover, complete software removal, and standalone recovery. Then test actual browser controls, source data, real session recall, interruptions, reboot, and retained data in a disposable guest. Obtain the final independent review and qualify one complete package before daily deployment.

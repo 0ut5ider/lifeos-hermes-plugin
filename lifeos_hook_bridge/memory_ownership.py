@@ -1,6 +1,6 @@
 # ABOUTME: Journals reviewed Hermes and LifeOS ownership configuration changes.
 # ABOUTME: Restores exact configuration from a verified profile backup without restoring native data.
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 import hashlib
 import io
 import json
@@ -37,12 +37,15 @@ def _signature(value):
 
 
 class OwnershipTransaction:
-    def __init__(self, configuration, *, installation_lease=None, verify_writers=None):
+    def __init__(self, configuration, *, installation_lease=None, verify_writers=None, publication_barrier=None):
         self.configuration = configuration
         self.installation_lease = installation_lease
         if verify_writers is not None and not callable(verify_writers):
             raise ValueError('Ownership publication requires a callable writer barrier')
         self.verify_writers = verify_writers
+        if publication_barrier is not None and not callable(publication_barrier):
+            raise ValueError('Ownership publication requires a callable native barrier')
+        self.publication_barrier = publication_barrier
         self.profile = configuration.path.parent.absolute()
         if configuration.path.absolute() != self.profile / 'lifeos-memory.json':
             raise MemoryUnavailable('Ownership setup requires the fixed profile configuration')
@@ -170,7 +173,7 @@ class OwnershipTransaction:
                 raise MemoryUnavailable('Ownership recovery preserves later configuration edits')
 
     def apply(self, backup, backup_signature, signature, *, account=None):
-        with self._lock(account) as configuration:
+        with self._lock(account) as configuration, (self.publication_barrier() if self.publication_barrier else nullcontext()):
             previous = self._load(configuration)
             if previous is not None and previous['state'] != 'rolled_back':
                 raise MemoryUnavailable('Recover or return the existing ownership configuration before setup')

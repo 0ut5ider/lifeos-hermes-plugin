@@ -10,14 +10,21 @@
   "shared_memory_connector": "integrity_error",
   "stages": {
     "contracts_and_characterization": "COMPLETE",
-    "import_review_and_application": "PRIMITIVES_PASS; browser and ownership cutover pending",
-    "reverse_export_and_return": "PRIMITIVES_PASS; service orchestration pending",
+    "import_review_and_application": "Owner-reviewed primitives and orchestration PASS; real detached browser cutover pending",
+    "reverse_export_and_return": "Owner-reviewed export, return, service, recovery, and fresh-constructor tests PASS; actual detached workflow acceptance pending",
     "complete_software_removal": "PENDING",
     "disposable_end_to_end": "PENDING",
     "independent_review_and_release": "PENDING"
   },
   "source_213": "665 bytes captured privately; originals preserved; daily unchanged",
-  "primitive_tests": 61,
-  "component_tests": 20,
-  "review_findings": "Three P2 findings reproduced and fixed; closure review in progress"
+  "primitive_tests": 68,
+  "component_tests": 24,
+  "review_findings": "Three primitive P2 findings fixed and independently clear. Four orchestration P2 findings reproduced and fixed; primary closure passes 10 tests. Full workflow review pending.",
+  "workflow_tests": 70,
+  "disposable_guest": {
+    "ct": 110,
+    "address": "192.168.8.244",
+    "stock_dashboard": "RUNNING",
+    "integration": "PUBLIC_INSTALLATION_REPLAY_STARTED"
+  }
 }

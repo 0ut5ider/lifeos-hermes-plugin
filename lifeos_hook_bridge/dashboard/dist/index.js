@@ -59,8 +59,8 @@
       for (const source of current.sources) {
         for (const item of source.chunks.filter(function (chunk) { return chunk.content; })) {
           selected[item.id] = { id: item.id, action: "pending", required: true,
-            reason: "Awaiting owner review.", category: source.path.endsWith("USER.md") ? "principal" : "project",
-            content: item.content, title: "Imported Hermes memory", project: "" };
+            reason: "Awaiting owner review.", category: item.source_category ?? (source.path.endsWith("USER.md") ? "principal" : "project"),
+            content: item.content, title: "Imported Hermes memory", project: item.source_project ?? "" };
         }
       }
       setDecisions(selected); setReview(current); setSnapshot(saved);
@@ -158,6 +158,10 @@
                   h("p", { className: "whitespace-pre-wrap" }, chunk.content),
                   h("p", null, "Original author and date: unknown. Exact matches: " + chunk.exact_native_matches.length +
                     ". Known retired claim: " + Boolean(chunk.retired_claim) + ". Source status: " + chunk.disposition + "."),
+                  chunk.source_reference ? h("p", null, "Source reference: " + chunk.source_reference.id +
+                    ", revision " + chunk.source_reference.revision + ". Source category: " + chunk.source_category + ".") : null,
+                  chunk.source_origin ? h("details", null, h("summary", null, "Source provenance"),
+                    h("pre", { className: "whitespace-pre-wrap" }, JSON.stringify(chunk.source_origin, null, 2))) : null,
                   h("label", null, "Decision", h("select", { value: item.action, disabled: busy || Boolean(plan),
                     onChange: function (event) { draft(item.id, "action", event.target.value); } },
                     ["pending", "import", "exclude"].map(function (action) { return h("option", { key: action, value: action }, action); }))),
@@ -186,6 +190,16 @@
             h("button", { type: "button", disabled: busy, onClick: function () { return run(refresh); } }, "Check import status")) : null,
           publication ? h("div", { role: "status" },
             h("p", null, "Import state: " + publication.state + ". Required entries verified: " + publication.required_items_verified + "."),
+            publication.state === "published" && publication.required_items_verified && !review.ownership_enabled ?
+              h("div", { className: "space-y-2" },
+                h("p", null, "Prepare a separate ownership review to use LifeOS memory in new Hermes sessions. The preparation saves a private backup and restarts Hermes services."),
+                h("button", { type: "button", disabled: busy, onClick: function () { return run(async function () {
+                  const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ kind: "activation", ...binding(), plan_signature: plan.signature }) });
+                  setMessage("Ownership review started. Workflow: " + result.identifier + ". Open LifeOS releases to review the cutover.");
+                }); } }, "Prepare LifeOS ownership activation"),
+                h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null,
             publication.reason ? h("p", null, publication.reason) : null,
             publication.items.map(function (item) { return h("p", { key: item.id }, item.action + ": " +
               (item.receipt?.reference ? item.receipt.reference.id + ", revision " + item.receipt.reference.revision : "No published reference") +
@@ -201,6 +215,7 @@
     const [receipt, setReceipt] = SDK.hooks.useState(null);
     const [busy, setBusy] = SDK.hooks.useState(false);
     const [message, setMessage] = SDK.hooks.useState("");
+    const [prompt, setPrompt] = SDK.hooks.useState("");
     async function post(path, body) {
       return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     }
@@ -282,7 +297,19 @@
             }); } }, "Create reviewed export")) : null,
           receipt ? h("div", { role: "status" }, h("p", null, "Export state: " + receipt.state + "."),
             h("p", { className: "text-xs break-all" }, "Export identifier: " + snapshot.identifier + ". Signature: " + snapshot.signature),
-            h("button", { type: "button", disabled: busy, onClick: function () { return run(download); } }, "Download portable memory")) : null) : null));
+            h("button", { type: "button", disabled: busy, onClick: function () { return run(download); } }, "Download portable memory"),
+            plan.ready_for_return && receipt.state === "exported" ? h("div", { className: "space-y-2" },
+              h("p", null, "Return selects built-in Hermes memory, replaces the LifeOS prompt, stops Pulse, and restarts Hermes. Native data and the complete export remain retained."),
+              h("label", null, "Replacement Hermes prompt", h("textarea", { value: prompt, disabled: busy,
+                className: "block w-full rounded border border-border bg-background p-2",
+                onChange: function (event) { setPrompt(event.target.value); } })),
+              h("button", { type: "button", disabled: busy || !prompt.trim(), onClick: function () { return run(async function () {
+                const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
+                  method: "POST", headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ kind: "return", ...binding(), plan_signature: plan.signature, prompt: prompt }) });
+                setMessage("Provider return review prepared. Workflow: " + result.identifier + ". Open LifeOS releases to review and apply it.");
+              }); } }, "Prepare return to built-in Hermes"),
+              h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null) : null) : null));
   }
 
   function MemoryPreferences() {

@@ -1,0 +1,50 @@
+TAP version 13
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 1 - import shows source provenance and never publishes before plan approval
+  ---
+  duration_ms: 8.125612
+  type: 'test'
+  ...
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 2 - an authorization refusal clears private review text and approval controls
+  ---
+  duration_ms: 3.045436
+  type: 'test'
+  ...
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 3 - reverse export shows capacity and retains every item until the owner chooses
+  ---
+  duration_ms: 1.835611
+  type: 'test'
+  ...
+# Subtest: published import queues ownership review without applying the cutover
+not ok 4 - published import queues ownership review without applying the cutover
+  ---
+  duration_ms: 6.098474
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_portability_ui.cjs:103:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(button)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_portability_ui.cjs:119:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 64.092187

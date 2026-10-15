@@ -7,6 +7,7 @@ import sys
 import types
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 directory = Path(__file__).resolve().parents[1]
@@ -20,6 +21,7 @@ preparation = importlib.import_module(namespace_name + '.release_preparation')
 worker = importlib.import_module(namespace_name + '.release_worker')
 stage = importlib.import_module(namespace_name + '.release_stage')
 services = importlib.import_module(namespace_name + '.release_services')
+memory_workflow = importlib.import_module(namespace_name + '.memory_workflow')
 
 
 def profile():
@@ -57,6 +59,50 @@ def owner(request: Request):
 
 
 router = APIRouter(dependencies=[Depends(owner)])
+
+
+@router.get('/memory-workflows')
+def memory_workflows(account: str = Depends(owner)):
+    try:
+        return JSONResponse(memory_workflow.status(profile(),owner=account),headers={'Cache-Control':'no-store'})
+    except (ValueError,OSError,RuntimeError) as error:
+        raise HTTPException(status_code=409,detail='Memory workflow status is unavailable under this profile') from error
+
+
+@router.post('/memory-workflows',status_code=202)
+async def prepare_memory_workflow(request: Request, account: str = Depends(owner)):
+    data=bytearray()
+    async for chunk in request.stream():
+        if len(data)+len(chunk)>384*1024:
+            raise HTTPException(status_code=413,detail='Use a bounded reviewed memory workflow')
+        data.extend(chunk)
+    if request.query_params:raise HTTPException(status_code=400,detail='Use the reviewed memory workflow fields')
+    try:selection=memory_workflow.selection(commands._json(data))
+    except ValueError as error:raise HTTPException(status_code=400,detail=str(error)) from error
+    try:
+        return await run_in_threadpool(memory_workflow.queue,profile(),selection,owner=account,launch=memory_workflow.launch)
+    except PermissionError as error:
+        raise HTTPException(status_code=403,detail='The installation owner must authorize this memory workflow') from error
+    except (ValueError,OSError,RuntimeError) as error:
+        raise HTTPException(status_code=409,detail='Complete or recover the pending memory operation first') from error
+
+
+@router.post('/memory-workflows/{identifier}/{action}',status_code=202)
+async def apply_memory_workflow(identifier: str, action: str, request: Request, account: str = Depends(owner)):
+    body=await request.body()
+    try:value=commands._json(body) if len(body)<=1024 else None
+    except ValueError:value=None
+    if (action not in {'apply','recover','rollback'} or not isinstance(value,dict) or set(value)!={'signature'}
+            or not isinstance(value['signature'],str) or memory_workflow.SIGNATURE.fullmatch(value['signature']) is None
+            or memory_workflow.IDENTIFIER.fullmatch(identifier) is None or request.query_params):
+        raise HTTPException(status_code=400,detail='Use the server-issued workflow identifier and exact reviewed signature')
+    try:
+        return await run_in_threadpool(memory_workflow.admit,profile(),identifier,action,value['signature'],
+            owner=account,launch=memory_workflow.launch)
+    except PermissionError as error:
+        raise HTTPException(status_code=403,detail='The installation owner must authorize memory recovery') from error
+    except (ValueError,OSError,RuntimeError) as error:
+        raise HTTPException(status_code=409,detail='The memory workflow changed or is still running') from error
 
 
 @router.get('/installation')

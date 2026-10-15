@@ -1,0 +1,223 @@
+{
+  "alias_map_and_disabled": {
+    "before": {
+      "unrelated_disabled": [
+        "unrelated-disabled"
+      ],
+      "unrelated_entries": {
+        "lifeos": {
+          "enabled": true,
+          "custom": "keep-lifeos"
+        },
+        "lifeos-hook-bridge": {
+          "enabled": true,
+          "custom": "keep-bridge"
+        },
+        "other": {
+          "enabled": true,
+          "custom": "keep-other"
+        }
+      },
+      "plugins": {
+        "enabled": [
+          "lifeos",
+          "lifeos-hook-bridge",
+          "other"
+        ],
+        "disabled": [
+          "unrelated-disabled"
+        ],
+        "entries": {
+          "lifeos": {
+            "enabled": true,
+            "custom": "keep-lifeos"
+          },
+          "lifeos-hook-bridge": {
+            "enabled": true,
+            "custom": "keep-bridge"
+          },
+          "other": {
+            "enabled": true,
+            "custom": "keep-other"
+          }
+        }
+      },
+      "memory": {
+        "provider": "lifeos-hook-bridge"
+      }
+    },
+    "after": {
+      "unrelated_disabled": [
+        "unrelated-disabled"
+      ],
+      "unrelated_entries": {
+        "lifeos": {
+          "enabled": true,
+          "custom": "keep-lifeos"
+        },
+        "lifeos-hook-bridge": {
+          "enabled": true,
+          "custom": "keep-bridge"
+        },
+        "other": {
+          "enabled": true,
+          "custom": "keep-other"
+        }
+      },
+      "plugins": {
+        "enabled": [
+          "other"
+        ],
+        "disabled": [
+          "unrelated-disabled",
+          "lifeos",
+          "lifeos-hook-bridge"
+        ],
+        "entries": {
+          "lifeos": {
+            "enabled": false,
+            "custom": "keep-lifeos"
+          },
+          "lifeos-hook-bridge": {
+            "enabled": false,
+            "custom": "keep-bridge"
+          },
+          "other": {
+            "enabled": true,
+            "custom": "keep-other"
+          }
+        }
+      },
+      "memory": {
+        "provider": "builtin",
+        "memory_enabled": true,
+        "user_profile_enabled": true
+      },
+      "skills": {}
+    }
+  },
+  "merged_entry": {
+    "before": {
+      "unrelated_entry": {
+        "enabled": true,
+        "custom": "keep"
+      },
+      "plugins": {
+        "entries": {
+          "lifeos": {
+            "enabled": true,
+            "custom": "keep"
+          },
+          "other": {
+            "enabled": true,
+            "custom": "keep"
+          }
+        }
+      },
+      "memory": {
+        "provider": "lifeos-hook-bridge"
+      }
+    },
+    "after": {
+      "unrelated_entry": {
+        "enabled": true,
+        "custom": "keep"
+      },
+      "plugins": {
+        "entries": {
+          "lifeos": {
+            "enabled": false,
+            "custom": "keep"
+          },
+          "other": {
+            "enabled": true,
+            "custom": "keep"
+          }
+        },
+        "enabled": [],
+        "disabled": [
+          "lifeos",
+          "lifeos-hook-bridge"
+        ]
+      },
+      "memory": {
+        "provider": "builtin",
+        "memory_enabled": true,
+        "user_profile_enabled": true
+      },
+      "skills": {}
+    }
+  },
+  "first_output_edit": {
+    "edit_injected": true,
+    "preserved": true,
+    "success_receipt": false
+  },
+  "many_origins": {
+    "receipt_count": 20,
+    "origin_bytes": 23245,
+    "plan_refused": true,
+    "no_plan_or_bundle_published": true
+  },
+  "imported_fact_provenance": {
+    "import_receipt_source": {
+      "digest": "a70f9a85bbce42a0fde25ff18fe0f2e222a4bf69d61efa5f8352ae93fbacc74f",
+      "kind": "hermes-import",
+      "occurrence": "99716abffd38be2fb853f6edcabf687dc05f49ea10054c30d42719b6b8ee9485",
+      "origin": {
+        "digest": "676c5b1534ecd7ac0792c654e44c8fe5eb5f4ee4c4f80450b92680fed4f166c2",
+        "kind": "hermes-files",
+        "label": "Synthetic source system identity",
+        "path": "/tmp/native-memory-aq3rd5np/.local/state/lifeos-hook-bridge/imports/605a802261404a68cad6c67e/sources/b84a339fd9cc4ecea6c7d253c9b63840"
+      },
+      "original_author": "unknown",
+      "original_date": "unknown",
+      "path": "/tmp/native-memory-aq3rd5np/.local/state/lifeos-hook-bridge/imports/605a802261404a68cad6c67e/sources/b84a339fd9cc4ecea6c7d253c9b63840/MEMORY.md",
+      "session": ""
+    },
+    "export_item_origin": {
+      "kind": "hermes-import",
+      "session": "",
+      "writer": "dashboard:owner",
+      "record_updated": "2026-10-15T13:21:52.020267+00:00",
+      "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-upstream-provenance.md",
+      "receipts": [
+        {
+          "reference": {
+            "id": "7c6a708c16214880b66fa881a8cf016f",
+            "revision": 1
+          },
+          "source": {
+            "digest": "a70f9a85bbce42a0fde25ff18fe0f2e222a4bf69d61efa5f8352ae93fbacc74f",
+            "kind": "hermes-import",
+            "occurrence": "99716abffd38be2fb853f6edcabf687dc05f49ea10054c30d42719b6b8ee9485",
+            "origin": {
+              "digest": "676c5b1534ecd7ac0792c654e44c8fe5eb5f4ee4c4f80450b92680fed4f166c2",
+              "kind": "hermes-files",
+              "label": "Synthetic source system identity",
+              "path": "/tmp/native-memory-aq3rd5np/.local/state/lifeos-hook-bridge/imports/605a802261404a68cad6c67e/sources/b84a339fd9cc4ecea6c7d253c9b63840"
+            },
+            "original_author": "unknown",
+            "original_date": "unknown",
+            "path": "/tmp/native-memory-aq3rd5np/.local/state/lifeos-hook-bridge/imports/605a802261404a68cad6c67e/sources/b84a339fd9cc4ecea6c7d253c9b63840/MEMORY.md",
+            "session": ""
+          }
+        }
+      ],
+      "original_author": "unknown",
+      "original_date": "unknown"
+    },
+    "original_source_label_present_in_export": true,
+    "upstream_digest_present_in_export": true
+  },
+  "large_bundle": {
+    "download_bytes": 1232037,
+    "original_uploaded_bytes": 1223116,
+    "sha256": "267aec77f6da69f7a63b1761bc945ca73e7abb7bbd0f2951522e30c68ef232de",
+    "item_count": 21,
+    "snapshot_exact": true,
+    "inspected_item_count": 21,
+    "planned_item_count": 21,
+    "provenance_exact": true
+  }
+}
