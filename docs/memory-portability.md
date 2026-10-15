@@ -45,4 +45,6 @@ The owner explicitly acknowledges Discord disablement before preparation. Stock 
 
 The first standalone recovery command uses the existing password-authenticated dashboard owner. The helper verifies the retained code maps before it asks for authentication. It survives active manager removal and can resume removal or restore software. Software restoration keeps later built-in memory and does not restore historical LifeOS ownership. The owner must save the prepared command before application because the integration page disappears after successful removal.
 
+The host must satisfy the stock Hermes tool prerequisites before removal preparation. Ubuntu 24.04 needs the `libatomic1` system package for the managed Node runtime. An administrator installs this prerequisite. An unprivileged background worker cannot complete an interactive `sudo` request. Preparation refuses before software removal if a required stock tool cannot start.
+
 The implementation remains unreleased. Local component controls do not establish installed acceptance, reboot acceptance, a real model turn, or complete release qualification.

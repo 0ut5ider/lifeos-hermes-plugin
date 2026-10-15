@@ -68,7 +68,7 @@ def bootstrap(archive_sha256):
     archive=folder/'stock-bootstrap.tgz'
     if hashlib.sha256(archive.read_bytes()).hexdigest()!=archive_sha256:raise RuntimeError('The bootstrap archive differs')
     environment={**os.environ,'DEBIAN_FRONTEND':'noninteractive'}
-    for label,command in [('apt-update',['apt-get','update']),('apt-install',['apt-get','install','-y','ca-certificates','git','curl','unzip','xz-utils','dbus-user-session','sudo'])]:
+    for label,command in [('apt-update',['apt-get','update']),('apt-install',['apt-get','install','-y','ca-certificates','git','curl','unzip','xz-utils','dbus-user-session','sudo','libatomic1'])]:
         with (folder/(label+'.stdout')).open('w') as out,(folder/(label+'.stderr')).open('w') as err:
             subprocess.run(command,env=environment,stdout=out,stderr=err,check=True,timeout=600)
     try:owner=pwd.getpwnam('lifeos-hermes')
