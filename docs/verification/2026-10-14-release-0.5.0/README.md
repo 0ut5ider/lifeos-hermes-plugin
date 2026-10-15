@@ -1,8 +1,8 @@
-# Complete 0.5.0 qualification
+# Complete 0.5.0 release
 
 Adrian authorizes completion of the next complete release after the owner-rescheduled 0.4.3 acceptance. The candidate includes the governed Pulse core-file editor, all PR25 browser refusal corrections, and the measured observer clock correction from PR26. The candidate retains the current Hermes and LifeOS bases, frozen dependencies, and private model mapping.
 
-The candidate remains unpublished until the exact archive passes integration and native tests, isolated installation and update, rollback, interruption recovery, reboot, and disconnected whole-guest recovery. Development acceptance precedes daily promotion. Existing personal data and user configuration remain intact. Editor activation requires current owner admission and installed verification.
+The exact archive passes integration and native tests, isolated installation and update, rollback, interruption recovery, reboot, and disconnected whole-guest recovery. Development acceptance precedes publication and daily promotion. The release is now public, and both servers select the same exact package. Daily preservation and governed editor activation pass. The final daily protected backup and disconnected restore pass. The owned rehearsal guests and storage are removed. Supplementary evidence publication awaits independent review. Earlier paragraphs below retain their checkpoint state.
 
 The prior editor archive and release assets remain historical immutable checkpoints. No prior certificate qualifies this candidate. The October 14 evening observation proves the owner-rescheduled automatic run and its single delivery. It does not prove execution at 07:00.
 
@@ -58,3 +58,41 @@ The supplementary helper now requires exact baseline digest keys and valid basel
 The complete current-state certifier passes all 41 controls. Its eight added controls refuse altered current preservation, incomplete public skill admission, failed remount or restart, personal-context review, and restored authority over the later owner mount. The primary also reproduces sixteen independent current-state guard cases. Final independent closure precedes the real release certificate.
 
 The final independent closure is clear. It reproduces all 41 certificate controls and sixteen additional current-state guards. The primary verifies the reviewed source hashes and creates the real qualification certificate with SHA-256 `c8a0ac35fa6f084d417951fd7538bee8f9d330ff101a9f71e3855b5da8a2dd20`. The certificate remains immutable. Publication, public replay, and daily promotion are separate later gates.
+
+## Public installation and daily activation
+
+PR27 merges as `ebf5531c`. The public latest stable release is `v0.5.0`, program commit `04efe633`. Publication preserves all 51 prior release assets. The three exact initial assets remain unchanged. The initial qualification certificate keeps its original checkpoint scope.
+
+The manager-free public guest starts with 18,309 verified stock source and dashboard files. The native web form installs all 21 manager files from the default GitHub URL without an explicit reference. Install LifeOS selects the public latest stable archive with a blank version field. Actual owner review and application return HTTP 200. The installed program verifier checks the exact archive and public certificate, all eleven fresh program groups, and preserved model selection. Gateway and Pulse remain inactive pending separate new-owner setup.
+
+The original browser observer retains its interrupted `queued-apply` observation. A fresh owner browser session and a separate read-only completion observer both read `applied` for the same operation. No installation or application repeats. The exact original live polling cause is unknown. Local controls close expired-session renewal, wrong-owner refusal, and complete stock provenance gaps. The independent review is clear. The supplementary immutable `PUBLIC-LATEST-ACCEPTANCE.json` asset preserves all 54 existing assets.
+
+Daily receives a protected pre-update checkpoint. The native Plugins form replaces the older manager with all 21 exact public files. The response is not retained; the receipt states that limit. The dashboard restarts before complete release preparation. The actual Update plugin control, with a blank version, prepares operation `b9e873b251604202a58442b502a3c2b2`. Actual owner review and application return HTTP 200. The detached worker applies the qualified package.
+
+Daily verification passes all 221 sealed program groups, exact selected identity, model tiers, credential bytes, memory configuration, three service HOME settings, and the existing synthetic reference. Both older intentionally forgotten markers stay absent. Authenticated owner review admits 56 exact public skills and the public constitution. Prompt preview includes all 56 skills and the launcher. No personal source enters that approval.
+
+Actual owner remounting commits. The earlier release operation then correctly reports restoration unavailable. The activation operator changes only `modules.hermes` from false to true in the existing Pulse user configuration. It retains a private previous copy. The existing morning job remains enabled at `0 7 * * *`. Owner metadata exposes 24 declared files, anonymous access returns 401, and the sealed credential route returns 403. No personal core file is read or edited. Installed save, source-conflict, and browser behavior remain exact-package rehearsal evidence.
+
+The final daily backup and disconnected recovery are the remaining deployment gates. Their actual completion record will follow. No new automatic 07:00 observation or substitute Discord delivery has run for this release.
+
+## Final daily recovery verifier boundary
+
+The first final daily attempt stops before artifact capture and backup. Exactly one of 221 targets differs: the VersionDrift baseline generated during release mounting. The later owner mount records seven outputs and leaves that baseline unchanged. Failure cleanup resumes all three source services. The safe initial failure receipt preserves this scope.
+
+The evidence operator derives a complete 1,742-file baseline catalog from the immutable public archive. It verifies the five applicable frozen locks, native identity, exact paths, private file metadata, canonical bytes, and bounded integer timestamp. It reconstructs one expected baseline fingerprint. It keeps the other 220 targets, retained before-images, and all seven current owner outputs strict. The timestamp bound does not prove the exact original timestamp. The source checkpoint binds the proven digest for exact restored comparison. No product archive, memory policy, or old mount journal changes.
+
+The retry validates and reuses the three actual synthetic Atlas preparation cases. It does not prepare them again or recover them on the source. Actual backup and disconnected restoration remain pending at this checkpoint.
+
+## Completed daily protected recovery and cleanup
+
+The actual retry validates the existing synthetic Atlas cases without preparing or recovering them on the source. Current source capture verifies all 221 selected targets, all seven current owner mount outputs, and the independently reconstructed 1,742-file generated baseline. The complete runtime capture records 64,567 artifacts, 58,080 regular files, and nine runtime roots. Its private map remains on the guest.
+
+The protected archive is `PBS-01:backup/ct/102/2026-10-15T03:19:34Z`. Native metadata confirms pruning protection. All three daily services resume before restoration. A fresh live check verifies the exact package, private model tiers, credential bytes, memory configuration, and service HOME settings. The editor remains enabled and the existing morning job remains enabled at `0 7 * * *`.
+
+The actual restore uses CT110 with no network interface and with all three application services masked before boot. Its complete runtime map matches the captured source map. All 221 selected targets and seven current owner outputs pass. The source and restored current-mount checkpoint digest is `a5d55d8b6059acc2aee53e846e0715d19a28b280e467d5ad147c7954126a89db`. The generated baseline digest is bound inside that exact checkpoint. The proof retains its bounded timestamp scope and does not claim exact original timestamp preservation. The old release restore remains unavailable.
+
+All three Atlas cases pass: baseline recovery, interrupted-publication recovery, and later-edit refusal. The actual restore guest is removed. The reviewed cleanup operator then removes only CT111, CT112, CT113, and their empty owned test storage. Native inventory confirms unchanged states for development, daily, CT100, CT106, and processing VM801. The protected archive remains intact.
+
+The independent baseline and retry review clears 67 local controls and an exact public catalog rebuild. The cleanup review clears 29 local controls. The primary reproduces these controls. They verify operator boundaries and do not replace the actual backup and restore receipts. The initial failed attempt remains preserved. The immutable product archive and initial certificate remain unchanged.
+
+`DEPLOYMENT-ACCEPTANCE.json` supplements the initial certificate with the actual installation, daily activation, final backup, restore, and cleanup receipts. Its certifier checks actual safe receipt data and corruption controls. Publication follows independent review of this candidate receipt. No automatic 07:00 wall-clock observation, manual morning job, or substitute Discord delivery runs in this workflow.

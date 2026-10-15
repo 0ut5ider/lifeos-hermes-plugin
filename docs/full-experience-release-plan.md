@@ -2,7 +2,16 @@
 
 Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest is container 102 at `192.168.8.253`.
 
-## Current release and next work (October 14)
+## Current release and next work (October 14, 0.5.0)
+
+Development `.252` and daily `.253` now select the exact published 0.5.0 package at program commit `04efe633`. Qualification passes 821 integration tests, 716 native tests, isolated lifecycle and recovery checks, actual private-model memory effects, and focused independent reviews. Public default GitHub URL installation passes through the native Hermes web form and Install LifeOS.
+
+The daily Update plugin control prepares the complete integration. Actual owner review and application pass. All 221 sealed program groups, private model tiers, configuration bytes, service HOME bindings, and synthetic lasting memory survive. Current owner source review admits all 56 public skills and the constitution. The governed Pulse editor is active with owner metadata, anonymous refusal, and sealed credential refusal verified. The existing morning schedule remains `0 7 * * *`. The protected final daily backup and disconnected restore pass. The restore verifies 64,567 runtime artifacts, 221 selected targets, seven current owner outputs, and three Atlas cases. The owned rehearsal guests and test storage are removed. Supplementary evidence publication awaits independent review. See the [0.5.0 release record](verification/2026-10-14-release-0.5.0/README.md).
+
+Voice, Content media processing, import, and reverse migration remain deferred. The next subsection preserves the earlier 0.4.3 checkpoint.
+
+## Earlier release checkpoint (October 14, 0.4.3)
+
 
 Daily `.253` and development `.252` run qualified release 0.4.3 at program commit `a1abb579558edcf29f7cd04ecfd998995d48db54`. The exact public package passes both deployment gates. All three services, their HOME bindings, the selected private model and tier mapping, credential bytes, and memory configuration survive promotion. Actual Cerebo memory save and recall across the update pass. Governed cleanup removes only the synthetic acceptance fact and leaves a fresh daily session. See the [current release evidence](verification/2026-10-14-release-0.4.3/README.md).
 
