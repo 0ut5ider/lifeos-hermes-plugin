@@ -101,3 +101,35 @@ class RemovalPublication:
                 self._owner(account);self.services.resume(self.plan['service_signature'],restored=True)
                 self._state('rolled_back')
             return self._receipt('rolled_back')
+
+    def verify(self, probe, *, account):
+        if not callable(probe):raise ValueError('Removal requires an actual fresh stock agent verifier')
+        lock=self.source.memory_module('installation_lock').installation_lock
+        program_lock=self.source.memory_module('program_lock')
+        with lock(self.profile,lease=self.lease),program_lock.exclusive(self.profile,600):
+            self._owner(account)
+            if self._load() not in {'verification_required','verified'}:
+                raise ReleaseRejected('Finish software publication and service restart before final verification')
+            self.programs.check_applied();self.services.verify(self.plan['service_signature'])
+            read=self.source.memory_module('mount_transaction')._read
+            names=('config.yaml','SOUL.md','lifeos-memory.json','memories/MEMORY.md','memories/USER.md')
+            captured={name:read(self.profile/name) for name in names}
+            expected={name:captured['memories/'+name][0].decode() for name in ('MEMORY.md','USER.md')}
+            with barrier(self.importer.memory) as connection:
+                if self.importer._target_signature(connection)!=self.plan['native_signature']:
+                    raise ReleaseRejected('Native facts change before final software removal verification')
+                proof=probe(expected)
+            if (not isinstance(proof,dict) or proof.get('format')!=1 or proof.get('provider')!='builtin'
+                    or proof.get('fresh_agent_verified') is not True or proof.get('model_turn_executed') is not False
+                    or proof.get('profile')!=str(self.profile)
+                    or proof.get('files')!={name:metadata for name,(_,metadata) in captured.items()}
+                    or not isinstance(proof.get('active_plugins'),list)
+                    or {'lifeos','lifeos-hook-bridge','lifeos-release-manager'} & set(proof['active_plugins'])
+                    or proof.get('native_providers')):
+                raise ReleaseRejected('The fresh stock agent does not prove complete removal and retained built-in memory')
+            if any(read(self.profile/name)!=captured[name] for name in names):
+                raise ReleaseRejected('The retained Hermes files change during final removal verification')
+            self._owner(account);self.programs.check_applied();self.services.verify(self.plan['service_signature'])
+            publish(self.stage/'fresh-agent-verification.json',json.dumps(proof,sort_keys=True).encode())
+            self._state('verified')
+            return {**self._receipt('verified'),'verification':proof}

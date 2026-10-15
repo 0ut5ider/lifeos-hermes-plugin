@@ -211,3 +211,14 @@ class ReleasePreparationTests(unittest.TestCase):
             publish(job / 'request.json', json.dumps({'profile': str(profile), 'identifier': job.name,
                 'version': '0.4.2-rc.1', 'commit': 'b' * 40}).encode())
             self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
+
+    def test_selected_software_removal_blocks_synchronous_preparation_before_download(self):
+        from optional.lifeos_release_manager.cli import prepare
+        with tempfile.TemporaryDirectory() as directory:
+            profile=Path(directory)
+            publish(profile/'.lifeos-removal.json',b'{"format":1,"workflow":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","signature":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}')
+            class NoDownload:
+                def download(self,directory,version):raise AssertionError('Removal overlap reaches a release download')
+            with self.assertRaisesRegex(ValueError,'removal'):
+                prepare(profile,catalog=NoDownload())
+            self.assertFalse((profile/'.lifeos-releases').exists())

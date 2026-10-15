@@ -96,3 +96,20 @@ RemovalPublication(Path(settings['profile']),settings['signature']).apply(accoun
         with self.assertRaises(ValueError):self.operation().apply(account='dashboard:owner')
         self.assertEqual({role:self.service.fixture.properties(role)['MainPID'] for role in self.service.fixture.units},pids)
         self.assertTrue(self.policy.configuration.path.exists())
+
+    def test_removed_software_verifies_through_actual_fresh_stock_constructor(self):
+        runtime=Path(os.environ.get('LIFEOS_STOCK_RUNTIME','/home/outsider/.cache/lifeos-memory-portability-20261015/stock-full-9b204dad/runtime'))
+        if not (runtime/'runtime.json').is_file():self.skipTest('Constructed stock runtime is required')
+        publish(self.profile/'config.yaml',b'model: {default: synthetic-model, provider: custom, base_url: "http://127.0.0.1:9/v1", api_key: "synthetic-test-key"}\nmemory: {memory_enabled: true, user_profile_enabled: true}\nplugins: {enabled: []}\nplatforms: {discord: {enabled: false}}\n')
+        publish(self.profile/'memories/USER.md',b'Synthetic reviewed user entry.')
+        publish(self.profile/'SOUL.md',b'Synthetic ordinary Hermes prompt.')
+        self.operation().apply(account='dashboard:owner')
+        from optional.lifeos_release_manager.memory_workflow import _probe
+        source=self.policy.stage/'recovery-bridge'
+        from optional.lifeos_release_manager.release_stage import load_bridge
+        loaded=load_bridge(source)
+        result=self.operation().verify(lambda expected:_probe(self.profile,loaded,expected,
+            runtime=json.loads((runtime/'runtime.json').read_bytes())),account='dashboard:owner')
+        self.assertEqual(result['state'],'verified');self.assertTrue(result['application_verified'])
+        self.assertNotIn('lifeos-release-manager',result['verification']['active_plugins'])
+        self.assertFalse(result['verification']['model_turn_executed'])

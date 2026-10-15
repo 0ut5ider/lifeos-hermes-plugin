@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: an earlier successful poll cannot restore private state after an authorization refusal
+ok 1 - an earlier successful poll cannot restore private state after an authorization refusal
+  ---
+  duration_ms: 5.086539
+  type: 'test'
+  ...
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 2 - import shows source provenance and never publishes before plan approval
+  ---
+  duration_ms: 9.529216
+  type: 'test'
+  ...
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 3 - an authorization refusal clears private review text and approval controls
+  ---
+  duration_ms: 3.388611
+  type: 'test'
+  ...
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 4 - reverse export shows capacity and retains every item until the owner chooses
+  ---
+  duration_ms: 2.142517
+  type: 'test'
+  ...
+# Subtest: published import queues ownership review without applying the cutover
+ok 5 - published import queues ownership review without applying the cutover
+  ---
+  duration_ms: 2.80761
+  type: 'test'
+  ...
+# Subtest: complete removal requires explicit Discord acknowledgment and queues the exact verified return
+ok 6 - complete removal requires explicit Discord acknowledgment and queues the exact verified return
+  ---
+  duration_ms: 5.913251
+  type: 'test'
+  ...
+# Subtest: a ready removal has distinct software application and recovery instructions
+ok 7 - a ready removal has distinct software application and recovery instructions
+  ---
+  duration_ms: 1.807778
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 68.874024

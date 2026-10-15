@@ -30,3 +30,13 @@ Complete removal means that Hermes no longer loads the bridge, its hooks, prompt
 6. Obtain an independent review, resolve measured findings, and qualify one complete release before daily deployment.
 
 The current implementation state and reproducible test receipts live in `verification/2026-10-15-memory-portability/`. A passing primitive test does not establish a complete release gate.
+
+## First supported complete removal
+
+The removal action supports one managed default profile and its account native home. Preparation requires a verified provider-return operation and the same current native export. Later built-in Hermes memory remains intact. New native facts require a new export before removal. Preparation refuses changed software, another named profile, or another admitted consumer of the selected native programs or Bun command.
+
+The owner explicitly acknowledges Discord disablement before preparation. Stock Hermes does not include the integration's private-channel restrictions. The operation retains the Discord credential and disables its platform configuration. It preserves unrelated model and provider settings.
+
+The first standalone recovery command uses the existing password-authenticated dashboard owner. The helper verifies the retained code maps before it asks for authentication. It survives active manager removal and can resume removal or restore software. Software restoration keeps later built-in memory and does not restore historical LifeOS ownership. The owner must save the prepared command before application because the integration page disappears after successful removal.
+
+The implementation remains unreleased. Local component controls do not establish installed acceptance, reboot acceptance, a real model turn, or complete release qualification.

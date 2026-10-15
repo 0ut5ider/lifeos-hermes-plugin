@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from optional.lifeos_release_manager.release_programs import ProgramTransaction, ProgramConflict
+from optional.lifeos_release_manager.release_programs import ProgramTransaction, ProgramConflict, fingerprint
 
 
 class ProgramTransactionTests(unittest.TestCase):
@@ -379,3 +379,25 @@ class ProgramTransactionTests(unittest.TestCase):
             (incoming / '.bin/external').symlink_to('/etc/passwd')
             with self.assertRaises(ProgramConflict):
                 ProgramTransaction(root / 'external').prepare(directories={}, files={}, dependencies={current: incoming})
+
+
+class ReviewedInputTests(unittest.TestCase):
+    def test_changed_transformation_input_refuses_before_recording_a_plan(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);target=root/'config.yaml';target.write_bytes(b'Synthetic initial input')
+            expected={target:fingerprint(target)}
+            generated=root/'generated';generated.write_bytes(b'Synthetic transformed output')
+            target.write_bytes(b'Synthetic later owner edit')
+            transaction=ProgramTransaction(root/'snapshot')
+            with self.assertRaises(ProgramConflict):
+                transaction.prepare(directories={},files={target:generated},expected_before=expected)
+            self.assertEqual(target.read_bytes(),b'Synthetic later owner edit')
+            self.assertFalse(transaction.journal.exists())
+
+    def test_exact_transformation_input_admits_the_plan(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);target=root/'config.yaml';target.write_bytes(b'Synthetic initial input')
+            expected={target:fingerprint(target)};generated=root/'generated';generated.write_bytes(b'Synthetic transformed output')
+            transaction=ProgramTransaction(root/'snapshot')
+            transaction.prepare(directories={},files={target:generated},expected_before=expected)
+            transaction.apply();self.assertEqual(target.read_bytes(),generated.read_bytes())

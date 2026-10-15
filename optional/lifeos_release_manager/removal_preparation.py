@@ -46,19 +46,36 @@ def software(profile, installed, generation, native, runtime, generated, *, work
     directories={profile/'plugins'/name:None for name in ('lifeos','lifeos-hook-bridge','lifeos-release-manager')}
     files={**native['files'],pulse:None,generation['bun']:None,
         **{profile/name:None for name in ('lifeos-memory.json','lifeos-installation.json','integration-release.json')}}
+    from .release_programs import fingerprint
+    expected={path:fingerprint(path) for path in (*directories,*files,*native['dependencies'],
+        installed/'settings.json',profile/'config.yaml',profile/'.env',*generation['launchers'])}
+    expected.update(native.get('before',{}));expected.update(generation['launchers'])
+    if 'bun_identity' in generation:expected[generation['bun']]=generation['bun_identity']
     publish(generated/'settings.json',native['settings']);files[installed/'settings.json']=generated/'settings.json'
-    publish(generated/'config.yaml',configuration((profile/'config.yaml').read_bytes(),installed))
+    publish(generated/'config.yaml',configuration(_input(profile/'config.yaml',expected),installed))
     files[profile/'config.yaml']=generated/'config.yaml'
     path=profile/'.env'
     if path.exists() or path.is_symlink():
-        publish(generated/'environment',environment(path.read_bytes(),profile,workspace))
+        publish(generated/'environment',environment(_input(path,expected),profile,workspace))
         files[path]=generated/'environment'
     for path in generation['launchers']:
         name=path.name if path.name in {'hermes','hermes-agent','hermes-acp'} else 'hermes'
         target=runtime/'bin'/name
         publish(generated/name,('#!/bin/sh\nexec '+shlex.quote(str(target))+' "$@"\n').encode(),0o700)
         files[path]=generated/name
-    return directories,files,native['dependencies']
+    if profile/'.env' not in files:expected.pop(profile/'.env')
+    return directories,files,native['dependencies'],expected
+
+
+def _input(path, expected):
+    import hashlib
+    from .release_programs import fingerprint
+    data=path.read_bytes()
+    identity=expected[path]
+    if (identity is None or identity['type']!='file' or hashlib.sha256(data).hexdigest()!=identity['sha256']
+            or fingerprint(path)!=identity):
+        raise ReleaseRejected('A current removal input changes during its transformation')
+    return data
 
 
 def _encoded(value):
@@ -127,7 +144,8 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         binding=returned(profile,selected['identifier'],selected['signature'],owner=owner,
             source=source,configuration=configuration,installation_lease=lease)
         _consumers(profile,installed,services)
-        removal_ownership.guard(profile,installed,bridge=source)
+        guard_identity=removal_ownership.guard(profile,installed,bridge=source)
+        pulse_identity=fingerprint(pulse)
         if removal_ownership.pulse(profile,installed)!=pulse:
             raise ReleaseRejected('The current Pulse ownership changes during preparation')
         native=removal_inventory.native(installed,package/'lifeos/LifeOS/install',
@@ -139,10 +157,14 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             data,metadata=mount._read(profile/name)
             if data is not None and metadata['mode'] & 0o077:
                 raise ReleaseRejected('The current configuration and environment require private owner permissions')
-        directories,files,dependencies=software(profile,installed,generation,native,runtime_root,generated,
+        directories,files,dependencies,expected=software(profile,installed,generation,native,runtime_root,generated,
             workspace=workspace,pulse=pulse)
         programs=ProgramTransaction(stage/'programs')
-        programs.prepare(directories=directories,files=files,dependencies=dependencies)
+        expected[profile/'plugins/lifeos']=guard_identity;expected[pulse]=pulse_identity
+        for name in ('lifeos-hook-bridge','lifeos-release-manager'):
+            retained=stage/('recovery-bridge' if name=='lifeos-hook-bridge' else 'recovery-manager')
+            expected[profile/'plugins'/name]=fingerprint(retained)
+        programs.prepare(directories=directories,files=files,dependencies=dependencies,expected_before=expected)
         service_signature=RemovalServices(services,stage/'services.json').prepare(removed=[pulse])
         policy=configuration.load();configuration.check_owner(policy,owner)
         encoded_policy=_encoded(policy);publish(stage/'owner-policy.json',encoded_policy)
@@ -150,6 +172,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             'workspace':str(workspace),'bridge_files':generation['bridge_files'],'manager_files':generation['manager_files'],
             'owner_policy_sha256':hashlib.sha256(encoded_policy).hexdigest(),'program_entries_sha256':programs.entries_digest(),
             'service_signature':service_signature,'stock_runtime':runtime,'stock_runtime_source':runtime_source_fingerprint(runtime_root/'hermes'),
+            'stock_runtime_manifest_sha256':sha(runtime_root/'manifest.json'),
             'generation':generation['job'].name,'disable_discord':True,**binding}
         recovery=_recovery_command(profile,job,runtime)
         publish(stage/'recover',recovery,0o700)

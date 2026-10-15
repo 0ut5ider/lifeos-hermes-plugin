@@ -21,10 +21,11 @@ ACTIVE={'queued','preparing','applying','recovering','rolling_back','interrupted
 
 
 def selection(value):
-    if not isinstance(value,dict) or value.get('kind') not in ('activation','return'):
-        raise ValueError('Choose an import activation or reviewed provider return')
-    fields={'kind','identifier','snapshot_signature','plan_signature'} if value['kind']=='activation' else {
-        'kind','identifier','signature','plan_signature','prompt'}
+    if not isinstance(value,dict) or value.get('kind') not in ('activation','return','removal'):
+        raise ValueError('Choose an import activation, reviewed provider return, or complete removal')
+    fields={'activation':{'kind','identifier','snapshot_signature','plan_signature'},
+        'return':{'kind','identifier','signature','plan_signature','prompt'},
+        'removal':{'kind','identifier','signature','disable_discord'}}[value['kind']]
     if set(value)!=fields or not isinstance(value['identifier'],str) or IDENTIFIER.fullmatch(value['identifier']) is None:
         raise ValueError('Use the server-issued transfer identifier and exact reviewed signatures')
     for key in fields & {'snapshot_signature','plan_signature','signature'}:
@@ -33,6 +34,8 @@ def selection(value):
     if value['kind']=='return' and (not isinstance(value['prompt'],str) or not value['prompt'].strip()
             or len(value['prompt'].encode())>256*1024 or '\x00' in value['prompt']):
         raise ValueError('Review a bounded replacement Hermes prompt')
+    if value['kind']=='removal' and value['disable_discord'] is not True:
+        raise ValueError('Complete removal requires explicit review of Discord disablement')
     return value
 
 
@@ -41,10 +44,28 @@ def _encoded(value):
 
 
 def _source(profile):
+    marker=Path(profile)/'.lifeos-removal.json'
+    if marker.exists() or marker.is_symlink():
+        from .removal_state import retained
+        source,configuration,_,_=retained(profile)
+        return source,configuration
     source=Path(profile)/'plugins/lifeos-hook-bridge'
     module=load_bridge(source)
     configuration=module.memory_module('memory_service').MemoryConfiguration(Path(profile)/'lifeos-memory.json')
     return module,configuration
+
+
+def _bridge_identity(source):
+    return fingerprint(Path(source.__file__).parent)
+
+
+def _removal_binding(profile, identifier, kind):
+    marker=Path(profile)/'.lifeos-removal.json'
+    if marker.exists() or marker.is_symlink():
+        from .removal_state import retained
+        _,_,job,_=retained(profile)
+        if identifier!=job.name or kind!='removal':
+            raise RuntimeError('Complete or recover the selected software removal first')
 
 
 def _state(job, state):
@@ -97,6 +118,7 @@ def queue(profile, value, *, owner, launch):
     source,configuration=_source(profile)
     configuration.check_owner(configuration.load(),owner)
     with source.memory_module('installation_lock').installation_lock(profile):
+        _removal_binding(profile,None,value['kind'])
         if any(operation['state'] in ACTIVE for operation in status(profile,owner=owner)['operations']):
             raise RuntimeError('Complete or recover the pending memory workflow first')
         root=profile/'.lifeos-portability';root.mkdir(mode=0o700,exist_ok=True)
@@ -117,7 +139,8 @@ def admit(profile, identifier, action, signature, *, owner, launch):
     with source.memory_module('installation_lock').installation_lock(profile):
         job,request=_job(profile,identifier)
         configuration.check_owner(configuration.load(),owner)
-        if request['owner']!=owner or fingerprint(profile/'plugins/lifeos-hook-bridge')!=request['bridge']:
+        _removal_binding(profile,identifier,request['selection']['kind'])
+        if request['owner']!=owner or _bridge_identity(source)!=request['bridge']:
             raise PermissionError('The memory workflow owner or reviewed program source changes')
         current=read_private(job/'status.json')['state']
         if action=='prepare':
@@ -156,9 +179,17 @@ def admit(profile, identifier, action, signature, *, owner, launch):
 def launch(job, unit, action):
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
+    worker=Path(__file__).with_name('memory_workflow_worker.py')
+    python=sys.executable
+    request=read_private(job/'request.json')
+    if request['selection']['kind']=='removal' and (job/'review.json').exists():
+        from .removal_workflow import launch_sources
+        review=read_private(job/'review.json')
+        worker,runtime=launch_sources(job.parent.parent,job,review['signature'])
+        host=Path(runtime['source']);python=runtime['python']
     code="worker=sys.argv.pop(1)\nsys.argv[0]=worker\nrunpy.run_path(worker,run_name='__main__')\n"
-    command=_launchers.runtime_command(host,[str(Path(__file__).with_name('memory_workflow_worker.py')),str(job),action],
-        code=code,python=sys.executable)
+    command=_launchers.runtime_command(host,[str(worker),str(job),action],
+        code=code,python=python)
     profile=job.parent.parent
     environment={'HOME':str(account_home(profile)),'HERMES_HOME':str(profile),'PATH':os.environ.get('PATH',os.defpath),
         'PYTHONDONTWRITEBYTECODE':'1'}
@@ -167,7 +198,7 @@ def launch(job, unit, action):
     if result.returncode:raise RuntimeError('The owner service manager cannot start the memory workflow')
 
 
-def _probe(profile, source, expected):
+def _probe(profile, source, expected, *, runtime=None):
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
     code=('import importlib,json,types\n'
@@ -175,14 +206,21 @@ def _probe(profile, source, expected):
         'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
         'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
         'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
-    command=_launchers.runtime_command(host,[str(profile/'plugins/lifeos-hook-bridge')],code=code,python=sys.executable)
-    result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120)
+    host=host if runtime is None else Path(runtime['source'])
+    python=sys.executable if runtime is None else runtime['python']
+    command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
+    environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
+    result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
     if result.returncode or result.stderr:raise RuntimeError('The actual fresh Hermes agent does not verify the reviewed memory')
     return json.loads(result.stdout)
 
 
 def _cancel_preparation(source, configuration, job, request, lease):
     owner=request['owner'];selected=request['selection'];profile=configuration.path.parent.absolute()
+    if selected['kind']=='removal':
+        marker=profile/'.lifeos-removal.json'
+        if marker.exists() or marker.is_symlink():raise RuntimeError('Recover the admitted software removal')
+        return {'state':'cancelled','application_verified':False,'native_data_retained':True}
     if selected['kind']=='activation':
         activation=source.memory_module('memory_activation').MemoryActivation(configuration,
             installation_lease=lease,operation_id=job.name)
@@ -221,7 +259,8 @@ def execute(profile, identifier, action):
     lock=source.memory_module('installation_lock').installation_lock
     with lock(profile,wait=True) as lease:
         job,request=_job(profile,identifier)
-        if fingerprint(profile/'plugins/lifeos-hook-bridge')!=request['bridge']:
+        _removal_binding(profile,identifier,request['selection']['kind'])
+        if _bridge_identity(source)!=request['bridge']:
             raise PermissionError('The reviewed memory workflow code changes before execution')
         admission=read_private(job/'admission.json')
         review=None if action=='prepare' else _review(job,request)
@@ -233,9 +272,13 @@ def execute(profile, identifier, action):
         try:
             selected=request['selection'];owner=request['owner']
             paths=source.memory_module('memory_import_sources')
-            snapshot=paths.directory(profile,selected['identifier'])
+            snapshot=paths.directory(profile,selected['identifier']) if selected['kind']!='removal' else None
             if review is not None and review['state']=='preparation':
                 result=_cancel_preparation(source,configuration,job,request,lease)
+            elif selected['kind']=='removal':
+                from .removal_workflow import execute as remove
+                result=remove(profile,job,selected,action,signature,owner=owner,source=source,
+                    configuration=configuration,installation_lease=lease)
             elif selected['kind']=='activation':
                 activation=source.memory_module('memory_activation').MemoryActivation(configuration,
                     installation_lease=lease,operation_id=identifier)

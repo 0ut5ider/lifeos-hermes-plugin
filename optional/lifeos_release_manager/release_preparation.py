@@ -47,6 +47,9 @@ def selection(value):
 @contextmanager
 def preparation_admission(profile):
     profile = profile_directory(profile)
+    marker=profile/'.lifeos-removal.json'
+    if marker.exists() or marker.is_symlink():
+        raise ReleaseRejected('Recover or roll back the selected software removal before release preparation')
     state = profile / '.lifeos-releases'
     state.mkdir(mode=0o700, exist_ok=True)
     info = state.lstat()

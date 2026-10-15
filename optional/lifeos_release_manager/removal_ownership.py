@@ -33,8 +33,9 @@ def guard(profile, installed, *, bridge):
         files[str(target.relative_to(root))]=expected['digest']
     if set(files)!={'__init__.py','guard.py','plugin.yaml','policy.json'}:
         raise ReleaseRejected('The native mount does not prove every guard file')
-    validate_files(root,files)
-    return fingerprint(root)
+    identity=fingerprint(root);validate_files(root,files)
+    if fingerprint(root)!=identity:raise ReleaseRejected('The native guard changes during its exact inventory')
+    return identity
 
 
 def pulse(profile, installed):

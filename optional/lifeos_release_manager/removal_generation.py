@@ -76,4 +76,4 @@ def selected(profile, installed, *, bridge):
     if fingerprint(bun)!=fingerprint(Path(request['runtime']['bun'])):
         raise ReleaseRejected('The account Bun command differs from its integration-owned program')
     return {'home':home,'job':job,'request':request,'package':package,'manifest':manifest,
-        'bridge_files':bridge_files,'manager_files':manifest['manager_files'],'launchers':launchers,'bun':bun}
+        'bridge_files':bridge_files,'manager_files':manifest['manager_files'],'launchers':launchers,'bun':bun,'bun_identity':fingerprint(Path(request['runtime']['bun']))}

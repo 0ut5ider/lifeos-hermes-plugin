@@ -21,12 +21,14 @@ def native(installed, source, reference, *, bridge):
             raise ReleaseRejected('Removal requires physical qualified native program directories')
     planner=bridge.memory_module('update_plan')
     expected=planner.deployed_system_files(source,reference)
-    files={}
+    files={};before={}
     for name,digest in expected.items():
         target=installed/name
         if (target.resolve()!=target or not target.is_file() or sha(target)!=digest):
             raise ReleaseRejected('A native program differs from the qualified removal source: '+name)
-        fingerprint(target);files[target]=None
+        identity=fingerprint(target)
+        if identity['sha256']!=digest:raise ReleaseRejected('A native program changes during removal admission')
+        before[target]=identity;files[target]=None
     dependencies={}
     roots=bridge.memory_module('update_dependencies')._package_roots(reference)
     for root in sorted(roots):
@@ -35,19 +37,19 @@ def native(installed, source, reference, *, bridge):
             if original.is_file():
                 if fingerprint(target)!=fingerprint(original):
                     raise ReleaseRejected('A native package differs from its qualified removal source')
-                files[target]=None
+                before[target]=fingerprint(original);files[target]=None
             elif target.exists() or target.is_symlink():
                 raise ReleaseRejected('An unreviewed native package collides with complete removal')
         target=installed/root/'node_modules';original=reference/root/'node_modules'
         if fingerprint(target,allow_links=True)!=fingerprint(original,allow_links=True):
             raise ReleaseRejected('A native dependency differs from its qualified removal source')
-        if original.exists():dependencies[target]=None
+        if original.exists():before[target]=fingerprint(original,allow_links=True);dependencies[target]=None
     for name in ('CLAUDE.md',):
         target=installed/name;original=reference/name
         if original.is_file():
             if fingerprint(target)!=fingerprint(original):
                 raise ReleaseRejected('The native instructions change before removal')
-            files[target]=None
+            before[target]=fingerprint(original);files[target]=None
     retained={installed/name for name in ('LIFEOS/USER','LIFEOS/MEMORY','LIFEOS/PULSE/state')}
     generated={installed/name for name in bridge.memory_module('version_drift').GENERATED_FILES}
     for name in ('hooks','skills','agents','commands','test','LIFEOS'):
@@ -63,8 +65,10 @@ def native(installed, source, reference, *, bridge):
                 if path.is_symlink():raise ReleaseRejected('An unreviewed native program link blocks removal')
                 if path.is_file() and path.suffix!='.pyc' and path not in files and path not in generated:
                     raise ReleaseRejected('An unreviewed native program blocks complete removal')
-    current=json.loads((installed/'settings.json').read_bytes())
+    data,identity=bridge.memory_module('mount_transaction')._read(installed/'settings.json')
+    current=json.loads(data)
+    before[installed/'settings.json']={'type':'file','mode':identity['mode'],'sha256':identity['digest']}
     owned=json.loads((source/'hooks/hooks.json').read_bytes())['hooks']
     settings,receipt=bridge.memory_module('update_hooks').replace_owned_hooks(current,owned,{})
     return {'files':files,'dependencies':dependencies,'settings':(json.dumps(settings,indent=2)+'\n').encode(),
-        'hook_receipt':receipt}
+        'hook_receipt':receipt,'before':before}

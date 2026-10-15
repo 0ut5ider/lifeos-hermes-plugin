@@ -168,13 +168,16 @@ class ProgramTransaction:
             if fingerprint(self.snapshot / ('before-' + str(index)), allow_links=entry['allow_links']) != entry['before']:
                 raise ProgramConflict('The retained program differs from its recorded identity')
 
-    def prepare(self, *, directories, files, dependencies=None, checkpoint=lambda point: None):
+    def prepare(self, *, directories, files, dependencies=None, expected_before=None, checkpoint=lambda point: None):
         dependencies = {} if dependencies is None else dependencies
         targets = [Path(path).absolute() for path in (*directories, *files, *dependencies)]
         if (len(targets) != len(set(targets)) or any(left.is_relative_to(right)
                 for left in targets for right in targets if left != right)
                 or any(self.snapshot.is_relative_to(target) for target in targets)):
             raise ProgramConflict('Program transaction targets must not overlap')
+        expected_before = {} if expected_before is None else {str(Path(path).absolute()): value for path, value in expected_before.items()}
+        if not set(expected_before) <= {str(path) for path in targets}:
+            raise ProgramConflict('Reviewed input identities must select publication targets')
         entries = []
         for kind, sources, allow_links in (('directory', directories, False), ('file', files, False),
                                            ('directory', dependencies, True)):
@@ -183,6 +186,8 @@ class ProgramTransaction:
                 incoming = None if incoming is None else Path(incoming).absolute()
                 before = fingerprint(target, allow_links=allow_links)
                 after = None if incoming is None else fingerprint(incoming, allow_links=allow_links)
+                if str(target) in expected_before and before != expected_before[str(target)]:
+                    raise ProgramConflict('An input changes after its selected transformation')
                 if (incoming is not None and (after is None or after['type'] != kind)
                         or before is not None and before['type'] != kind):
                     raise ProgramConflict('Program transaction targets require matching artifact types')

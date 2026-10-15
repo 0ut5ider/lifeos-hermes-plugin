@@ -40,7 +40,14 @@ def owner(request: Request):
             raise HTTPException(status_code=403, detail='Use the installed dashboard origin')
     account = 'dashboard:' + session.provider + ':' + session.user_id
     selected = profile()
-    if (selected / 'lifeos-memory.json').exists():
+    marker=selected/'.lifeos-removal.json'
+    if marker.exists() or marker.is_symlink():
+        try:
+            source,configuration=memory_workflow._source(selected)
+            configuration.check_owner(configuration.load(),account)
+        except (ValueError,OSError,RuntimeError,PermissionError,ImportError) as error:
+            raise HTTPException(status_code=403,detail='The removal owner must authorize this recovery') from error
+    elif (selected / 'lifeos-memory.json').exists():
         try:
             active = selected / 'plugins/lifeos-hook-bridge'
             if active.is_dir():

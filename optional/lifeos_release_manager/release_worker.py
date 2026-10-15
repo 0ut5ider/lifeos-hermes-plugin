@@ -64,6 +64,9 @@ def admit_operation(job, request, action, *, authorization=None):
     current = recovery_bridge(job, profile)
     lock = current.memory_module('installation_lock').installation_lock
     with operation_lock(job), lock(profile) as lease:
+        marker=profile/'.lifeos-removal.json'
+        if marker.exists() or marker.is_symlink():
+            raise ReleaseRejected('Recover the selected software removal before another release action')
         if read_private(job / 'request.json') != request:
             raise ReleaseRejected('The operation changes after owner review')
         for sibling in job.parent.iterdir():
@@ -327,6 +330,9 @@ def _execute(job, action, *, checkpoint=lambda point: None):
     lock = current.memory_module('installation_lock').installation_lock
     program_lock = current.memory_module('program_lock')
     with lock(profile, wait=True) as lease, program_lock.exclusive(profile, timeout=600):
+        marker=profile/'.lifeos-removal.json'
+        if marker.exists() or marker.is_symlink():
+            raise ReleaseRejected('Recover the selected software removal before another release worker')
         request = read_private(job / 'request.json')
         validate_admission(job, request, action)
         plan = validate_plan(job, request)

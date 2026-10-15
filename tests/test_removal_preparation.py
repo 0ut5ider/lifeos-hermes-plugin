@@ -104,7 +104,7 @@ class RemovalSoftwarePlanTests(unittest.TestCase):
             workspace=self.workspace,pulse=self.pulse)
 
     def test_fixed_plan_keeps_data_and_prompt_and_uses_stock_launchers(self):
-        directories,files,dependencies=self.plan()
+        directories,files,dependencies,expected=self.plan()
         self.assertEqual(set(directories),{self.profile/'plugins'/name for name in ('lifeos','lifeos-hook-bridge','lifeos-release-manager')})
         self.assertTrue(all(source is None for source in directories.values()))
         self.assertNotIn(self.profile/'SOUL.md',files);self.assertNotIn(self.profile/'memories/MEMORY.md',files)

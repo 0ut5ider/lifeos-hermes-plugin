@@ -11,6 +11,7 @@
     const [operations, setOperations] = SDK.hooks.useState([]);
     const [busy, setBusy] = SDK.hooks.useState(false);
     const [message, setMessage] = SDK.hooks.useState("");
+    const [removal, setRemoval] = SDK.hooks.useState({});
     const requests = SDK.hooks.useRef(0);
     const mounted = SDK.hooks.useRef(true);
     async function refresh() {
@@ -46,9 +47,23 @@
       }
       finally { if (mounted.current) setBusy(false); }
     }
+    async function prepareRemoval(operation) {
+      ++requests.current;
+      setBusy(true); setMessage("");
+      try {
+        await SDK.fetchJSON(base, {method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({kind: "removal", identifier: operation.identifier,
+            signature: operation.review.signature, disable_discord: true})});
+        setMessage("Removal preparation started. Review the prepared software changes before application.");
+        await refresh();
+      } catch (error) {
+        ++requests.current;
+        if (mounted.current) { setOperations([]); setRemoval({}); setMessage(error.message); }
+      } finally { if (mounted.current) setBusy(false); }
+    }
     return h("section", {className: "space-y-3 rounded border border-border p-4"},
       h("h2", {className: "text-lg font-semibold"}, "Memory ownership workflows"),
-      h("p", null, "Prepare an import activation or provider return from the LifeOS memory page. Review the operation here before it changes your provider."),
+      h("p", null, "Prepare an import activation or provider return from the LifeOS memory page. After a verified return, you can prepare complete LifeOS software removal."),
       h("a", {href: "/lifeos-bridge", className: "underline"}, "Open LifeOS memory controls"),
       h("button", {type: "button", disabled: busy, onClick: refresh}, "Refresh memory workflows"),
       operations.map(function (operation) {
@@ -61,14 +76,30 @@
           operation.state === "ready" ? h("div", null,
             h("p", null, operation.kind === "activation" ?
               "This operation selects LifeOS memory and restarts Hermes services. The original Hermes memory files stay retained." :
+              operation.kind === "removal" ?
+              "This operation removes the integration software and selects stock Hermes. It retains built-in memory, native data, exports, and recovery records. Discord stays disabled." :
               "This operation selects the reviewed built-in memory, stops and disables Pulse, and restarts Hermes. It retains native data and exports."),
+            operation.kind === "removal" ? h("div", null,
+              h("p", null, "Stock Hermes commit: " + operation.review.stock_commit),
+              h("p", null, "Copy this recovery command before you continue. This integration page closes after removal succeeds."),
+              h("code", {className: "break-all"}, operation.review.recovery_command),
+              h("p", null, "Run the command with recover or rollback. Recovery requires your dashboard owner username and password.")) : null,
             h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "apply"); }},
-              operation.kind === "activation" ? "Activate reviewed LifeOS ownership" : "Apply reviewed provider return")) : null,
+              operation.kind === "activation" ? "Activate reviewed LifeOS ownership" :
+              operation.kind === "removal" ? "Remove reviewed LifeOS software" : "Apply reviewed provider return")) : null,
+          operation.kind === "return" && operation.state === "verified" && operation.receipt?.application_verified === true ?
+            h("div", {className: "space-y-2"},
+              h("p", null, "Optional: remove LifeOS software after this verified return. Preparation keeps your data and current Hermes memory."),
+              h("label", null, h("input", {type: "checkbox", checked: Boolean(removal[operation.identifier]), disabled: busy,
+                onChange: function (event) { setRemoval({...removal, [operation.identifier]: event.target.checked}); }}),
+                " I understand that removal disables Discord. Stock Hermes does not include the integration's private-channel restrictions."),
+              h("button", {type: "button", disabled: busy || !removal[operation.identifier],
+                onClick: function () { return prepareRemoval(operation); }}, "Prepare complete LifeOS removal")) : null,
           ["queued", "interrupted"].includes(operation.state) ? h("button", {type: "button", disabled: busy,
             onClick: function () { return act(operation, "recover"); }}, "Recover memory workflow") : null,
           ["configured", "verified", "verification_required", "interrupted"].includes(operation.state) ?
             h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "rollback"); }},
-              "Restore previous provider settings") : null);
+              operation.kind === "removal" ? "Restore integration software" : "Restore previous provider settings") : null);
       }), message ? h("p", {role: "status"}, message) : null);
   }
 
