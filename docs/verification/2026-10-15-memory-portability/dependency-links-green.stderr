@@ -1,0 +1,29 @@
+test_contained_dependency_links_support_actual_removal_and_restore (test_removal_preparation.RemovalSoftwarePlanTests.test_contained_dependency_links_support_actual_removal_and_restore) ... ERROR
+test_dependency_edit_after_native_inventory_preserves_later_bytes (test_removal_preparation.RemovalSoftwarePlanTests.test_dependency_edit_after_native_inventory_preserves_later_bytes) ... ok
+test_dependency_links_outside_selected_tree_still_refuse (test_removal_preparation.RemovalSoftwarePlanTests.test_dependency_links_outside_selected_tree_still_refuse) ... ok
+test_fixed_plan_keeps_data_and_prompt_and_uses_stock_launchers (test_removal_preparation.RemovalSoftwarePlanTests.test_fixed_plan_keeps_data_and_prompt_and_uses_stock_launchers) ... ok
+test_preparation_requires_explicit_discord_disable_before_any_staging (test_removal_preparation.RemovalSoftwarePlanTests.test_preparation_requires_explicit_discord_disable_before_any_staging) ... ok
+
+======================================================================
+ERROR: test_contained_dependency_links_support_actual_removal_and_restore (test_removal_preparation.RemovalSoftwarePlanTests.test_contained_dependency_links_support_actual_removal_and_restore)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_preparation.py", line 139, in test_contained_dependency_links_support_actual_removal_and_restore
+    tx.apply();self.assertFalse(root.exists());self.assertEqual(memory.read_bytes(),retained)
+    ~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_programs.py", line 252, in apply
+    publish(target, incoming.read_bytes(), entry['after']['mode'])
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_programs.py", line 23, in publish
+    descriptor, name = tempfile.mkstemp(prefix='.release-', dir=path.parent)
+                       ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/tempfile.py", line 354, in mkstemp
+    return _mkstemp_inner(dir, prefix, suffix, flags, output_type)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/tempfile.py", line 255, in _mkstemp_inner
+    fd = _os.open(file, flags, 0o600)
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpt43xunfs/.local/bin/.release-qgdtymcd'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.052s
+
+FAILED (errors=1)

@@ -47,7 +47,7 @@ def software(profile, installed, generation, native, runtime, generated, *, work
     files={**native['files'],pulse:None,generation['bun']:None,
         **{profile/name:None for name in ('lifeos-memory.json','lifeos-installation.json','integration-release.json')}}
     from .release_programs import fingerprint
-    expected={path:fingerprint(path) for path in (*directories,*files,*native['dependencies'],
+    expected={path:fingerprint(path,allow_links=path in native['dependencies']) for path in (*directories,*files,*native['dependencies'],
         installed/'settings.json',profile/'config.yaml',profile/'.env',*generation['launchers'])}
     expected.update(native.get('before',{}));expected.update(generation['launchers'])
     if 'bun_identity' in generation:expected[generation['bun']]=generation['bun_identity']

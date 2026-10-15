@@ -118,6 +118,47 @@ class RemovalSoftwarePlanTests(unittest.TestCase):
         self.assertEqual((self.profile/'SOUL.md').read_bytes(),b'Synthetic reviewed prompt')
         self.assertEqual((self.workspace/'owner.txt').read_bytes(),b'Synthetic owner work')
 
+    def dependency(self):
+        from optional.lifeos_release_manager.release_programs import fingerprint
+        root=self.installed/'node_modules';(root/'package').mkdir(parents=True)
+        publish(root/'package/tool.js',b'// Synthetic dependency command\n')
+        (root/'.bin').mkdir();(root/'.bin/tool').symlink_to('../package/tool.js')
+        self.native['dependencies']={root:None}
+        self.native['before']={root:fingerprint(root,allow_links=True)}
+        return root
+
+    def test_contained_dependency_links_support_actual_removal_and_restore(self):
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction,fingerprint
+        root=self.dependency();before=fingerprint(root,allow_links=True)
+        (self.home/'.local/bin').mkdir(parents=True,mode=0o700)
+        memory=self.profile/'memories/MEMORY.md';retained=memory.read_bytes()
+        (self.profile/'plugins').mkdir(mode=0o700)
+        directories,files,dependencies,expected=self.plan()
+        self.assertEqual(expected[root],before)
+        tx=ProgramTransaction(self.home/'dependency-transaction')
+        tx.prepare(directories=directories,files=files,dependencies=dependencies,expected_before=expected)
+        tx.apply();self.assertFalse(root.exists());self.assertEqual(memory.read_bytes(),retained)
+        tx.restore();self.assertEqual(fingerprint(root,allow_links=True),before)
+        self.assertTrue((root/'.bin/tool').is_symlink());self.assertEqual(memory.read_bytes(),retained)
+
+    def test_dependency_links_outside_selected_tree_still_refuse(self):
+        root=self.dependency();link=root/'.bin/tool';link.unlink()
+        link.symlink_to(self.workspace/'owner.txt')
+        with self.assertRaisesRegex(ValueError,'Dependency links must stay inside'):
+            self.plan()
+        self.assertEqual((self.workspace/'owner.txt').read_bytes(),b'Synthetic owner work')
+        self.assertFalse((self.generated/'config.yaml').exists())
+
+    def test_dependency_edit_after_native_inventory_preserves_later_bytes(self):
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        root=self.dependency();path=root/'package/tool.js';later=b'// Synthetic later dependency edit\n'
+        path.write_bytes(later);(self.profile/'plugins').mkdir(mode=0o700)
+        directories,files,dependencies,expected=self.plan()
+        tx=ProgramTransaction(self.home/'dependency-conflict')
+        with self.assertRaisesRegex(ValueError,'input changes'):
+            tx.prepare(directories=directories,files=files,dependencies=dependencies,expected_before=expected)
+        self.assertEqual(path.read_bytes(),later);self.assertFalse(tx.journal.exists())
+
     def test_preparation_requires_explicit_discord_disable_before_any_staging(self):
         from optional.lifeos_release_manager import removal_preparation
         job=self.profile/'.lifeos-portability'/('f'*32)
