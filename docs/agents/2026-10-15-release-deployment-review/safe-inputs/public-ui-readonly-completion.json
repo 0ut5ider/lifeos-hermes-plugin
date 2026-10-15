@@ -1,0 +1,52 @@
+{
+  "status": "UI_APPLIED",
+  "guest": 113,
+  "address": "192.168.8.244",
+  "synthetic_owner_only": true,
+  "production_guest_changed": false,
+  "actions": [
+    {
+      "action": "native-web-github-install",
+      "http_status": 200,
+      "identifier": "https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager",
+      "ref": null,
+      "force": false,
+      "plugin_name": "lifeos-release-manager",
+      "enabled": true
+    },
+    {
+      "action": "install-lifeos-latest-stable",
+      "http_status": 202,
+      "intent": "install",
+      "version_field_blank": true,
+      "identifier": "568cd8927be849e7a92f0d048999d070"
+    },
+    {
+      "action": "owner-ui-review",
+      "http_status": 200,
+      "version": "0.5.0",
+      "commit": "04efe633296eb2b1a1d95561ca6d3e9516cd47dc",
+      "package_sha256": "a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813",
+      "fresh": true
+    },
+    {
+      "action": "owner-ui-apply",
+      "http_status": 200,
+      "identifier": "568cd8927be849e7a92f0d048999d070"
+    }
+  ],
+  "browser_fallback_reason": "Two collaborative browser click timeouts; no install request or manager directory existed.",
+  "browser_version": "141.0.7390.37",
+  "authenticated_owner_verified": true,
+  "operation": "568cd8927be849e7a92f0d048999d070",
+  "read_only_completion": true,
+  "original_observer_completed": false,
+  "duplicate_apply_performed": false,
+  "last_operation_http_status": 200,
+  "operation_state": "applied",
+  "actual_ui_actions_verified": true,
+  "public_catalog_used": true,
+  "package_commit": "04efe633296eb2b1a1d95561ca6d3e9516cd47dc",
+  "archive_sha256": "a6dd0e11b8fb1b5ae30345be20c955db02728839f7bc907f60a70944ad392813",
+  "installed_program_identity_verified": false
+}

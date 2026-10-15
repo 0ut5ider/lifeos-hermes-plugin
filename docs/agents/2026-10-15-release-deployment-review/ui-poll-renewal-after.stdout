@@ -1,0 +1,112 @@
+{
+  "status": "PASS",
+  "cases": 3,
+  "results": [
+    {
+      "case": "expired-owner-renewal",
+      "expected_result_verified": true,
+      "owner_renewals": 1,
+      "polls": 2,
+      "failure": null,
+      "calls": [
+        {
+          "action": "get-operation",
+          "url": "http://local-negative-test/api/plugins/lifeos-release-manager/operations"
+        },
+        {
+          "action": "renew-owner"
+        },
+        {
+          "action": "get-operation",
+          "url": "http://local-negative-test/api/plugins/lifeos-release-manager/operations"
+        }
+      ],
+      "saved_metadata": [
+        {
+          "operation_state": "queued-apply",
+          "last_operation_http_status": 401
+        },
+        {
+          "operation_state": "queued-apply",
+          "last_operation_http_status": 401,
+          "owner_session_renewals": 1
+        },
+        {
+          "operation_state": "queued-apply",
+          "last_operation_http_status": 200,
+          "owner_session_renewals": 1
+        },
+        {
+          "operation_state": "applied",
+          "last_operation_http_status": 200,
+          "owner_session_renewals": 1
+        }
+      ],
+      "install_or_apply_request_sent": false,
+      "browser_used": false
+    },
+    {
+      "case": "temporary-server-restart",
+      "expected_result_verified": true,
+      "owner_renewals": 0,
+      "polls": 2,
+      "failure": null,
+      "calls": [
+        {
+          "action": "get-operation",
+          "url": "http://local-negative-test/api/plugins/lifeos-release-manager/operations"
+        },
+        {
+          "action": "bounded-retry"
+        },
+        {
+          "action": "get-operation",
+          "url": "http://local-negative-test/api/plugins/lifeos-release-manager/operations"
+        }
+      ],
+      "saved_metadata": [
+        {
+          "operation_state": "queued-apply",
+          "last_operation_http_status": 503
+        },
+        {
+          "operation_state": "queued-apply",
+          "last_operation_http_status": 200
+        },
+        {
+          "operation_state": "applied",
+          "last_operation_http_status": 200
+        }
+      ],
+      "install_or_apply_request_sent": false,
+      "browser_used": false
+    },
+    {
+      "case": "terminal-operation-failure",
+      "expected_result_verified": true,
+      "owner_renewals": 0,
+      "polls": 1,
+      "failure": "The actual native operation refuses: rejected",
+      "calls": [
+        {
+          "action": "get-operation",
+          "url": "http://local-negative-test/api/plugins/lifeos-release-manager/operations"
+        }
+      ],
+      "saved_metadata": [
+        {
+          "operation_state": "queued-apply",
+          "last_operation_http_status": 200
+        },
+        {
+          "operation_state": "rejected",
+          "last_operation_http_status": 200
+        }
+      ],
+      "install_or_apply_request_sent": false,
+      "browser_used": false
+    }
+  ],
+  "remote_commands_run": false,
+  "guest_completion_receipt_written": false
+}

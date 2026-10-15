@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "cases": 10,
+  "actual_helper_present": true,
+  "results": [
+    {
+      "case": "actual-stock-provenance",
+      "accepted": true,
+      "expected_result_verified": true
+    },
+    {
+      "case": "baseline-wrong-hermes-commit",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "baseline-wrong-source-archive",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "source-proof-failed",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "source-proof-wrong-commit",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "source-proof-wrong-archive",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "source-proof-incomplete-file-set",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "source-proof-wrong-dashboard",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "source-proof-wrong-guest",
+      "accepted": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "legacy-limited-source-proof",
+      "accepted": false,
+      "expected_result_verified": true
+    }
+  ],
+  "scope": "Actual pure helper when present; existing actual baseline guard statements for fail-first baseline otherwise.",
+  "real_safe_input_metadata_used": true,
+  "remote_commands_run": false,
+  "guest_completion_receipt_written": false
+}

@@ -1,0 +1,32 @@
+{
+  "cases": 3,
+  "results": [
+    {
+      "case": "expired-owner-session-after-restart",
+      "http_status": 401,
+      "reported_operation_state": "queued-apply",
+      "reauthentication_attempted": false,
+      "last_http_status_recorded": false,
+      "failure": "The native operation status does not return",
+      "browser_used": false,
+      "remote_commands_run": false
+    },
+    {
+      "case": "wrong-prior-source-archive",
+      "metadata_change_rejected": false,
+      "prior_source_proof_read": false,
+      "guest_acceptance_receipt_written": false,
+      "scope": "Actual existing stock baseline assertions only; all other baseline values stay unchanged."
+    },
+    {
+      "case": "wrong-prior-hermes-commit",
+      "metadata_change_rejected": false,
+      "prior_source_proof_read": false,
+      "guest_acceptance_receipt_written": false,
+      "scope": "Actual existing stock baseline assertions only; all other baseline values stay unchanged."
+    }
+  ],
+  "remote_commands_run": false,
+  "credentials_read": false,
+  "guest_receipt_written": false
+}

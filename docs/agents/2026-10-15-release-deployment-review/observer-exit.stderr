@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-release-deployment-review/probe_observer_exit.py", line 10, in <module>
+    observe=next(node for node in ast.walk(outer) if isinstance(node,ast.If) and isinstance(node.test,ast.Name) and node.test.id=='observe_only')
+StopIteration
