@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "cases": 18,
+  "results": [
+    {
+      "case": "unchanged-safe-baseline",
+      "status": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "changed-prior-release",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "changed-model-selection",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "changed-credential-digest",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "changed-memory-configuration-digest",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "changed-service-home",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "inactive-service",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "snapshot-state-restored",
+      "status": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "snapshot-state-applied",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "snapshot-state-applying",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "restored-file",
+      "status": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "changed-bytes",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "changed-mode",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "removed-file",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "replaced-by-symlink",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "unexpected-new-file",
+      "status": "PASS",
+      "accepted": false
+    },
+    {
+      "case": "absent-prior-file",
+      "status": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "aliased-parent",
+      "status": "PASS",
+      "accepted": false
+    }
+  ],
+  "actual_native_fingerprint_function_used": true,
+  "actual_rollback_guard_statements_used": true,
+  "remote_commands_run": false,
+  "completion_receipt_written": false,
+  "limit": "Local guard and filesystem tests only. The actual guest restoration receipt remains separate evidence."
+}
