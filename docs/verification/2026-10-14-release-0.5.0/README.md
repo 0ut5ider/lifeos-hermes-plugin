@@ -28,3 +28,11 @@ The final rehearsal passes an actual disconnected whole-guest restore from Proxm
 ## Qualification review corrections
 
 The focused qualification review found two P2 issues. The primary reproduced both issues before changing the operators. The certifier now requires rehearsal guest 111 and explicit preservation of production in fresh, reboot, and whole-guest summaries. The backup operators establish recovery before draining services. Cleanup checks the native service transaction and preserves the original failure if cleanup also fails. Seven local controls pass. These controls use receipt mutations and control-flow fault injection. They do not replace actual guest execution. Independent closure review remains pending.
+
+## Preparation review and public stock baseline
+
+The qualification closure is clear. The primary reproduces all eight certifier cases and fourteen backup cleanup cases. The preparation operator review is also clear, and the primary reproduces its nineteen local controls. The development checkpoint remains the gate before the exact native manager bootstrap and complete preparation. The development source uses approximately 159 GiB of compressed storage and 290 GiB of logical data.
+
+The separate public replay fixture is CT113 at 192.168.8.244. Its actual stock source matches all 18,243 regular source files in the verified unpatched archive. It has neither LifeOS nor a release manager installed. This fixture proof does not establish public installation acceptance.
+
+The daily preservation baseline uses one new synthetic fact. Actual owner tools confirm both older intentionally forgotten synthetic facts remain absent. The post-promotion check requires the new exact reference to survive and both old facts to stay absent. No personal data is imported or reset.
