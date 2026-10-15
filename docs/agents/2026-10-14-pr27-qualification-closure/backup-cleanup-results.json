@@ -1,0 +1,251 @@
+{
+  "status": "PASS",
+  "cases": 14,
+  "results": [
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "pre-drain",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [],
+      "original_error": "injected-pre-drain-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "drain",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "drain-development",
+        "recover-development-services"
+      ],
+      "original_error": "injected-drain-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "drain",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "drain-development",
+        "recover-development-services"
+      ],
+      "original_error": "injected-drain-failure",
+      "notes": [
+        "Development service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "backup",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "drain-development",
+        "backup-development",
+        "recover-development-services"
+      ],
+      "original_error": "injected-backup-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "backup",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "drain-development",
+        "backup-development",
+        "recover-development-services"
+      ],
+      "original_error": "injected-backup-failure",
+      "notes": [
+        "Development service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "resume",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "drain-development",
+        "backup-development",
+        "archives",
+        "resume-development",
+        "recover-development-services"
+      ],
+      "original_error": "injected-resume-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_development.py",
+      "failure_stage": "resume",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "drain-development",
+        "backup-development",
+        "archives",
+        "resume-development",
+        "recover-development-services"
+      ],
+      "original_error": "injected-resume-failure",
+      "notes": [
+        "Development service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "pre-drain",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "inventory"
+      ],
+      "original_error": "injected-pre-drain-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "drain",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "inventory",
+        "drain-source",
+        "recover-source-services"
+      ],
+      "original_error": "injected-drain-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "drain",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "inventory",
+        "drain-source",
+        "recover-source-services"
+      ],
+      "original_error": "injected-drain-failure",
+      "notes": [
+        "Source service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "backup",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "inventory",
+        "drain-source",
+        "capture-program-artifacts",
+        "backup-source",
+        "recover-source-services"
+      ],
+      "original_error": "injected-backup-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "backup",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "inventory",
+        "drain-source",
+        "capture-program-artifacts",
+        "backup-source",
+        "recover-source-services"
+      ],
+      "original_error": "injected-backup-failure",
+      "notes": [
+        "Source service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "resume",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "inventory",
+        "drain-source",
+        "capture-program-artifacts",
+        "backup-source",
+        "archives",
+        "resume-source",
+        "recover-source-services"
+      ],
+      "original_error": "injected-resume-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "proxmox_rehearsal_restore.py",
+      "failure_stage": "resume",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "inventory",
+        "drain-source",
+        "capture-program-artifacts",
+        "backup-source",
+        "archives",
+        "resume-source",
+        "recover-source-services"
+      ],
+      "original_error": "injected-resume-failure",
+      "notes": [
+        "Source service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    }
+  ],
+  "control_flow_fault_injection_only": true
+}
