@@ -93,7 +93,13 @@ class MemoryReturn:
             for name,content in export_plan['files'].items():
                 actual,_=_read(destination/'hermes'/name,private=True)
                 if actual!=content.encode():raise MemoryUnavailable('The reviewed Hermes export changes before return')
-            config,_=read_target(self.profile/'config.yaml')
+            inputs={name:read_target(self.profile/name) for name in NAMES}
+            self.exporter._current(captured,account)
+            config=inputs['config.yaml'][0]
+            try:policy=json.loads(inputs['lifeos-memory.json'][0])
+            except (ValueError,TypeError,UnicodeError) as error:
+                raise MemoryConflict('The current memory policy changes during return preparation') from error
+            if policy!=selected:raise MemoryConflict('The current memory policy changes during return preparation')
             native={**selected,'ownership_enabled':False,'sharing_enabled':False}
             self.configuration.validate(native)
             outputs={'config.yaml':self._configuration(config),'lifeos-memory.json':_encoded(native),'SOUL.md':prompt.encode(),
@@ -107,11 +113,13 @@ class MemoryReturn:
                 'export_plan_signature':export_plan_signature}))
             targets=[]
             for index,name in enumerate(NAMES):
-                before,metadata=read_target(self.profile/name)
+                before,metadata=inputs[name]
                 if before is not None:publish(state/'before'/str(index),before)
                 after=outputs[name]
                 publish(state/'after'/str(index),after)
                 targets.append({'name':name,'copy':index,'before':metadata,'after':{'digest':_digest(after),'mode':0o600}})
+            if any(read_target(self.profile/name)!=inputs[name] for name in NAMES):
+                raise MemoryConflict('The current Hermes files change during return preparation')
             plan={'version':1,'profile':str(self.profile),'root':str(self.importer.installed),'principal':self.importer.principal,
                 'operation_id':self.operation_id,
                 'writer':account,'export_signature':export_signature,'export_plan_signature':export_plan_signature,

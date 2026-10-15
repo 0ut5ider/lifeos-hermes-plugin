@@ -1,0 +1,29 @@
+test_config_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_config_edit_after_transform_is_preserved) ... FAIL
+test_policy_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_policy_edit_after_transform_is_preserved) ... FAIL
+
+======================================================================
+FAIL: test_config_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_config_edit_after_transform_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 43, in test_config_edit_after_transform_is_preserved
+    self.assertEqual(YAML(typ='safe').load(target.read_bytes()).get('synthetic_later_owner_setting'),'keep',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'Return publication loses the later unrelated owner setting')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'keep' : Return publication loses the later unrelated owner setting
+
+======================================================================
+FAIL: test_policy_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_policy_edit_after_transform_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 50, in test_policy_edit_after_transform_is_preserved
+    self.assertEqual(json.loads(target.read_bytes())['accounts'].get('synthetic:later-owner-account'),'owner',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'Return publication loses the later unrelated identity grant')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'owner' : Return publication loses the later unrelated identity grant
+
+----------------------------------------------------------------------
+Ran 2 tests in 9.483s
+
+FAILED (failures=2)

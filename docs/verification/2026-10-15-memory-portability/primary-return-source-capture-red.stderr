@@ -1,0 +1,17 @@
+test_builtin_source_edit_before_input_capture_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.PreCaptureSourceControls.test_builtin_source_edit_before_input_capture_is_preserved) ... FAIL
+
+======================================================================
+FAIL: test_builtin_source_edit_before_input_capture_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.PreCaptureSourceControls.test_builtin_source_edit_before_input_capture_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 76, in test_builtin_source_edit_before_input_capture_is_preserved
+    self.assertIn(b'Synthetic later builtin fact before return capture.',target.read_bytes(),
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'A source entry written after the export current check is silently replaced by the older export')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'Synthetic later builtin fact before return capture.' not found in b'Synthetic preserved Hermes entry.\n\xc2\xa7\nSynthetic newer LifeOS fact.' : A source entry written after the export current check is silently replaced by the older export
+
+----------------------------------------------------------------------
+Ran 1 test in 18.979s
+
+FAILED (failures=1)

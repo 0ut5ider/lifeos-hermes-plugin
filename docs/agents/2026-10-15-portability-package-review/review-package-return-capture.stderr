@@ -1,0 +1,31 @@
+test_config_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_config_edit_after_transform_is_preserved) ... FAIL
+test_policy_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_policy_edit_after_transform_is_preserved) ... FAIL
+
+======================================================================
+FAIL: test_config_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_config_edit_after_transform_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 41, in test_config_edit_after_transform_is_preserved
+    self.apply_after_edit(target,target.read_bytes()+b'synthetic_later_owner_setting: keep\n')
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 37, in apply_after_edit
+    self.assertEqual(target.read_bytes(),later,'Return publication loses a later edit admitted after its transformation input was read')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'mod[56 chars]der: builtin\n  memory_enabled: true\n  user_p[210 chars]er\n' != b'mod[56 chars]der: lifeos-hook-bridge\n  memory_enabled: fal[236 chars]ep\n' : Return publication loses a later edit admitted after its transformation input was read
+
+======================================================================
+FAIL: test_policy_edit_after_transform_is_preserved (docs.agents.2026-10-15-portability-package-review.package_probes.ReturnCaptureControls.test_policy_edit_after_transform_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 46, in test_policy_edit_after_transform_is_preserved
+    self.apply_after_edit(target,(json.dumps(selected,indent=2)+'\n').encode())
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-package-review/package_probes.py", line 37, in apply_after_edit
+    self.assertEqual(target.read_bytes(),later,'Return publication loses a later edit admitted after its transformation input was read')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{\n  "accounts": {\n    "dashboard:owner": "own[202 chars]n}\n' != b'{\n  "version": 1,\n  "root": "/tmp/native-memo[248 chars]n}\n' : Return publication loses a later edit admitted after its transformation input was read
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.339s
+
+FAILED (failures=2)

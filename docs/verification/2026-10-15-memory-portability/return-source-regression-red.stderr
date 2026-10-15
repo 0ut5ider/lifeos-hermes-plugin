@@ -1,0 +1,18 @@
+test_prepare_refuses_builtin_edit_between_source_check_and_input_capture (test_memory_return.MemoryReturnTests.test_prepare_refuses_builtin_edit_between_source_check_and_input_capture) ... FAIL
+
+======================================================================
+FAIL: test_prepare_refuses_builtin_edit_between_source_check_and_input_capture (test_memory_return.MemoryReturnTests.test_prepare_refuses_builtin_edit_between_source_check_and_input_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 112, in test_prepare_refuses_builtin_edit_between_source_check_and_input_capture
+    self.changed_during_prepare(target,target.read_bytes()+b'\n\xc2\xa7\nSynthetic later builtin fact.',boundary='_current')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 92, in changed_during_prepare
+    with self.assertRaises(MemoryUnavailable):self.prepare()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 2.075s
+
+FAILED (failures=1)

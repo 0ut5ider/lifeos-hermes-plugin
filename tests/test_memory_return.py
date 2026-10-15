@@ -79,6 +79,38 @@ memory:
         self.assertIn(b'owner_later: keep',(self.profile/'config.yaml').read_bytes())
         self.assertTrue(self.configuration.load()['ownership_enabled'])
 
+    def changed_during_prepare(self,target,later,*,boundary='_configuration'):
+        edited=False
+        def trace(frame,event,arg):
+            nonlocal edited
+            if (not edited and event=='return' and frame.f_code.co_name==boundary
+                    and frame.f_code.co_filename.endswith('/memory_return.py' if boundary=='_configuration' else '/memory_export.py')):
+                target.write_bytes(later);edited=True
+            return trace
+        sys.settrace(trace)
+        try:
+            with self.assertRaises(MemoryUnavailable):self.prepare()
+        finally:sys.settrace(None)
+        self.assertTrue(edited)
+        self.assertEqual(target.read_bytes(),later)
+        self.assertFalse((self.fixture.snapshot/'return').exists())
+
+    def test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit(self):
+        target=self.profile/'config.yaml'
+        self.changed_during_prepare(target,target.read_bytes()+b'synthetic_later_owner_setting: keep\n')
+
+    def test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant(self):
+        selected=self.configuration.load();selected['accounts']['synthetic:later-owner-account']='owner'
+        self.changed_during_prepare(self.configuration.path,(json.dumps(selected,indent=2)+'\n').encode())
+
+    def test_prepare_refuses_policy_change_between_selection_and_input_capture(self):
+        selected=self.configuration.load();selected['accounts']['synthetic:later-owner-account']='owner'
+        self.changed_during_prepare(self.configuration.path,(json.dumps(selected,indent=2)+'\n').encode(),boundary='_current')
+
+    def test_prepare_refuses_builtin_edit_between_source_check_and_input_capture(self):
+        target=self.profile/'memories/MEMORY.md'
+        self.changed_during_prepare(target,target.read_bytes()+b'\n\xc2\xa7\nSynthetic later builtin fact.',boundary='_current')
+
     def test_return_rollback_restores_exact_bytes_and_refuses_later_builtin_facts(self):
         prepared=self.prepare()
         operation=self.operation(verify_writers=lambda:None)

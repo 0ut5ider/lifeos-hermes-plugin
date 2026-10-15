@@ -1,0 +1,44 @@
+test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit (test_memory_return.MemoryReturnTests.test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit) ... FAIL
+test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant (test_memory_return.MemoryReturnTests.test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant) ... FAIL
+test_prepare_refuses_policy_change_between_selection_and_input_capture (test_memory_return.MemoryReturnTests.test_prepare_refuses_policy_change_between_selection_and_input_capture) ... FAIL
+
+======================================================================
+FAIL: test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit (test_memory_return.MemoryReturnTests.test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 100, in test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit
+    self.changed_during_prepare(target,target.read_bytes()+b'synthetic_later_owner_setting: keep\n')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 92, in changed_during_prepare
+    with self.assertRaises(MemoryUnavailable):self.prepare()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant (test_memory_return.MemoryReturnTests.test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 104, in test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant
+    self.changed_during_prepare(self.configuration.path,(json.dumps(selected,indent=2)+'\n').encode())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 92, in changed_during_prepare
+    with self.assertRaises(MemoryUnavailable):self.prepare()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_prepare_refuses_policy_change_between_selection_and_input_capture (test_memory_return.MemoryReturnTests.test_prepare_refuses_policy_change_between_selection_and_input_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 108, in test_prepare_refuses_policy_change_between_selection_and_input_capture
+    self.changed_during_prepare(self.configuration.path,(json.dumps(selected,indent=2)+'\n').encode(),boundary='_current')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_return.py", line 92, in changed_during_prepare
+    with self.assertRaises(MemoryUnavailable):self.prepare()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 10.641s
+
+FAILED (failures=3)
