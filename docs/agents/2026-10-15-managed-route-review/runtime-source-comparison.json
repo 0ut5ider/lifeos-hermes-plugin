@@ -1,0 +1,54 @@
+{
+  "package_program_commit": "e813806fb30d87978148832c2692a425a64d5ce9",
+  "route_helper_matches_candidate": true,
+  "route_helper_sha256": "11cfab69071485531621cca7a05d303c2b73fd984141a36983dd137636e94e9c",
+  "runtime_manifest": {
+    "schema": 1,
+    "target": "linux-x64",
+    "repo": "hermes",
+    "venv": "python-environment",
+    "store": "dependency-profile/tools",
+    "launchers": [
+      "hermes",
+      "hermes-agent",
+      "hermes-acp"
+    ],
+    "runtime": {
+      "repoDir": "hermes",
+      "toolsDir": "dependency-profile/tools",
+      "storePython": "dependency-profile/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+      "sitePackages": "python-environment/lib/python3.14/site-packages",
+      "commands": {
+        "hermes": "bin/hermes",
+        "hermes-agent": "bin/hermes-agent",
+        "hermes-acp": "bin/hermes-acp"
+      }
+    }
+  },
+  "hermes_helpers": [
+    {
+      "path": "hermes_cli/_launchers.py",
+      "candidate_sha256": "9cf612547558a28a7840544a44c5f5ab866ee527a05f96000aefdf51cd7fcbcd",
+      "local_managed_runtime_sha256": "9cf612547558a28a7840544a44c5f5ab866ee527a05f96000aefdf51cd7fcbcd",
+      "matches": true
+    },
+    {
+      "path": "hermes_bootstrap.py",
+      "candidate_sha256": "f242036b2d35b92283b9a7e97c7059e537607fc4b02026f657a6d00cb4683f69",
+      "local_managed_runtime_sha256": "f242036b2d35b92283b9a7e97c7059e537607fc4b02026f657a6d00cb4683f69",
+      "matches": true
+    },
+    {
+      "path": "pm/environments.py",
+      "candidate_sha256": "ac5a9f09bc622a60aa616880be0906b07bec95bb8ad934924e931aa28dc8b777",
+      "local_managed_runtime_sha256": "ac5a9f09bc622a60aa616880be0906b07bec95bb8ad934924e931aa28dc8b777",
+      "matches": true
+    },
+    {
+      "path": "hermes_cli/venv_sync.py",
+      "candidate_sha256": "6de0d12b3de57f4425279589be5d2f39e02e2bec98ba04ef8169e1e9d2b982e9",
+      "local_managed_runtime_sha256": "6de0d12b3de57f4425279589be5d2f39e02e2bec98ba04ef8169e1e9d2b982e9",
+      "matches": true
+    }
+  ]
+}
