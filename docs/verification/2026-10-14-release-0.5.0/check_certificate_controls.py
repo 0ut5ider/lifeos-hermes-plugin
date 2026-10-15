@@ -44,6 +44,14 @@ cases=[
  ('wrong-development-version','development-verification.json',lambda row:row['active_identity'].update(version='0.4.3')),
  ('development-loses-memory-config','development-verification.json',lambda row:row.update(memory_configuration_bytes_preserved=False)),
  ('owner-turn-reuses-session','development-owner-turn-verification.json',lambda row:row.update(sessions=[row['sessions'][0],row['sessions'][0]])),
+ ('current-admission-wrong-commit','development-post-admission-verification.json',lambda row:row['active_identity'].update(commit='0'*40)),
+ ('current-admission-loses-model','development-post-admission-verification.json',lambda row:row.update(model_and_tiers_preserved=False)),
+ ('skill-package-digests-absent','development-native-skill-review.json',lambda row:row.update(package_skill_digests_verified=0)),
+ ('skill-admission-incomplete','development-native-skill-review.json',lambda row:row.update(after_admitted_skill_count=1)),
+ ('skill-remount-fails','development-native-skill-review.json',lambda row:row.update(actual_remount_http_status=409)),
+ ('skill-review-includes-personal-context','development-native-skill-review.json',lambda row:row.update(personal_sources_reviewed=1)),
+ ('owner-remount-old-restore-available','development-post-remount-restore-availability.json',lambda row:row.update(restore_available=True)),
+ ('skill-remount-restart-pending','development-native-skill-review.json',lambda row:row.update(gateway_restart_pending=True)),
 ]
 results=[]
 with tempfile.TemporaryDirectory(prefix='lifeos-050-certificate-controls-') as temporary:

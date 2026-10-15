@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "cases": 8,
+  "results": [
+    {
+      "case": "interspersed-known-refusals",
+      "status": "PASS",
+      "accepted": true,
+      "successful_searches": 2,
+      "argument_refusals": 2
+    },
+    {
+      "case": "three-exact-successes",
+      "status": "PASS",
+      "accepted": true,
+      "successful_searches": 3,
+      "argument_refusals": 0
+    },
+    {
+      "case": "two-matches-before-last-success",
+      "status": "PASS",
+      "accepted": false,
+      "successful_searches": 0,
+      "argument_refusals": 0
+    },
+    {
+      "case": "two-matches-last",
+      "status": "PASS",
+      "accepted": false,
+      "successful_searches": 1,
+      "argument_refusals": 0
+    },
+    {
+      "case": "no-matches-before-last-success",
+      "status": "PASS",
+      "accepted": false,
+      "successful_searches": 0,
+      "argument_refusals": 0
+    },
+    {
+      "case": "no-matches-last",
+      "status": "PASS",
+      "accepted": false,
+      "successful_searches": 1,
+      "argument_refusals": 0
+    },
+    {
+      "case": "only-argument-refusals",
+      "status": "PASS",
+      "accepted": false,
+      "successful_searches": null,
+      "argument_refusals": null
+    },
+    {
+      "case": "nonexact-refusal-shape",
+      "status": "PASS",
+      "accepted": false,
+      "successful_searches": 0,
+      "argument_refusals": 0
+    }
+  ],
+  "guest_completion_receipt_written": false,
+  "remote_commands_run": false,
+  "raw_conversation_read": false
+}
