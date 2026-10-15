@@ -3,6 +3,7 @@
 import argparse,hashlib,importlib,json,os,subprocess,sys,tomllib,types
 from pathlib import Path
 from ruamel.yaml import YAML
+from prove_daily_baseline import baseline_override
 
 parser=argparse.ArgumentParser();parser.add_argument('action',choices=('capture','verify'));parser.add_argument('operation')
 args=parser.parse_args();identifier=args.operation
@@ -27,12 +28,16 @@ baseline_path=current.memory_module('version_drift').default_baseline_path(Path(
 mount=current.memory_module('mount_transaction').MountTransaction(Path(request['installed']),profile,baseline_path)
 mount.check_completed()
 manifest=mount._manifest();assert manifest['state']=='committed'
+expected_mount_targets={str(profile/name) for name in current.memory_module('mount_transaction').FILES}
+assert len(manifest['entries'])==7 and {entry['target'] for entry in manifest['entries']}==expected_mount_targets
 assert manifest['binding'] is None and manifest['retain_for_rollback'] is False
 assert worker.restore_available(job,request,plan) is False
 journal_digest=hashlib.sha256(mount.journal.read_bytes()).hexdigest()
 overrides={entry['target']:{'type':'file','mode':entry['after']['mode'],'sha256':entry['after']['digest']} for entry in manifest['entries']}
 transaction=importlib.import_module(namespace.__name__+'.release_programs').ProgramTransaction(
  job/'program-snapshot',expected_entries_sha256=plan['program_entries_sha256'])
+baseline_target,baseline_expected=baseline_override(job,request,transaction,overrides)
+overrides[baseline_target]=baseline_expected
 transaction.check_applied(overrides=overrides)
 before=json.loads((stage/'daily-prepromotion-baseline.json').read_bytes())
 assert before['status']=='PASS' and before['server']=='daily'
@@ -60,6 +65,7 @@ for name in ('hermes-dashboard.service','hermes-gateway.service','com.lifeos.pul
  assert path.is_file() and not path.is_symlink()
  unit_digests[name]=hashlib.sha256(path.read_bytes()).hexdigest()
 checkpoint={'operation':identifier,'program_commit':request['commit'],'archive_sha256':request['package_sha256'],
+ 'generated_baseline_sha256':baseline_expected['sha256'],
  'current_owner_mount_journal_sha256':journal_digest,'profile_configuration_sha256':hashlib.sha256((profile/'config.yaml').read_bytes()).hexdigest(),
  'pulse_user_configuration_sha256':user_digest,'service_unit_sha256':unit_digests}
 path=stage/'daily-current-mount-checkpoint.json'
@@ -76,5 +82,7 @@ print(json.dumps({'status':'PASS','action':args.action,'operation':identifier,'v
  'prior_release_restore_available':False,'owner_memory_configuration_verified':True,'credential_file_bytes_preserved':True,
  'model_and_tiers_preserved':True,'pulse_editor_enabled':True,'normal_morning_schedule':'0 7 * * *',
  'retained_public_archive_and_certificate_verified':True,
+ 'generated_baseline_public_programs_verified':1742,
+ 'generated_baseline_timestamp_scope':'Strict integer bounded by public publication and original apply intent metadata. Exact historical timestamp preservation is not claimed.',
  'application_services_masked':args.action=='verify','personal_records_read':False,'personal_data_imported_or_reset':False,
  'scope':'Current owner mount, selected program targets, and machine configuration. The earlier release journal is not rebound.'},indent=2))

@@ -9,6 +9,7 @@ import subprocess
 import shutil
 import sys
 import time
+from prepared_atlas_evidence import verify_preparation
 
 os.umask(0o077)
 parser=argparse.ArgumentParser()
@@ -16,8 +17,10 @@ parser.add_argument('--resume-backup',action='store_true')
 parser.add_argument('--out',type=Path,default=Path('/root/lifeos-release-0.5.0/daily-whole-guest-restore'))
 parser.add_argument('--backup-evidence',type=Path)
 parser.add_argument('--verifier',type=Path)
+parser.add_argument('--prepared-atlas-evidence',type=Path)
 args=parser.parse_args()
 out=args.out
+assert not (args.resume_backup and args.prepared_atlas_evidence)
 if args.resume_backup:
     backup_evidence=args.backup_evidence or out
     assert (backup_evidence/'archives.stdout').is_file()
@@ -71,8 +74,30 @@ try:
     if not args.resume_backup:
         ready=json.loads(source("from pathlib import Path;import json;print((Path('/home/lifeos-hermes/releases/qualification-0.5.0')/'daily-editor-activation.json').read_text())",'editor-checkpoint'))
         assert ready['status']=='PASS' and ready['operation']==identifier and ready['only_modules_hermes_changed'] is True
-        run(['pct','exec','102','--','runuser','-u','lifeos-hermes','--',python,'-B',
-            '/home/lifeos-hermes/releases/qualification-0.5.0/history_guest_recovery.py','prepare',package],'prepare-synthetic-atlas')
+        if args.prepared_atlas_evidence:
+            preparation=verify_preparation(args.prepared_atlas_evidence,python,identifier)
+            checked=json.loads(source('''import hashlib,json,stat
+from pathlib import Path
+folder=Path('/home/lifeos-hermes/deployment/history-recovery-0.5.0-04efe633')
+report=json.loads((folder/'prepare.json').read_bytes())
+assert json.dumps(report,sort_keys=True)==json.dumps(EXPECTED,sort_keys=True)
+for row in report['cases']:
+ selected=folder/row['case'];home=selected/'home'
+ prepared=json.loads((selected/'prepared.json').read_bytes())
+ assert prepared['case']==row['case'] and Path(prepared['home'])==home
+ assert len(prepared['captured'])==row['files']
+ for name,entry in prepared['captured'].items():
+  path=Path(name);assert path.is_relative_to(home) and path.resolve()==path
+  info=path.lstat();assert stat.S_ISREG(info.st_mode)
+  assert hashlib.sha256(path.read_bytes()).hexdigest()==entry['sha256']
+  assert stat.S_IMODE(info.st_mode)==entry['mode']
+print(json.dumps(report))
+'''.replace('EXPECTED',repr(preparation['report'])),'check-existing-synthetic-atlas'))
+            assert json.dumps(checked,sort_keys=True)==json.dumps(preparation['report'],sort_keys=True)
+            (out/'reused-atlas-preparation.json').write_text(json.dumps(preparation,indent=2)+'\n')
+        else:
+            run(['pct','exec','102','--','runuser','-u','lifeos-hermes','--',python,'-B',
+                '/home/lifeos-hermes/releases/qualification-0.5.0/history_guest_recovery.py','prepare',package],'prepare-synthetic-atlas')
     if args.resume_backup:
         archives=json.loads((backup_evidence/'archives.stdout').read_text())
         archive=max(archives,key=lambda row:row['ctime'])['volid']
