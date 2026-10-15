@@ -134,7 +134,7 @@ try:
     coverage=json.loads(run(['pct','exec',str(vmid),'--','runuser','-u','lifeos-hermes','--',python,'-B','/home/lifeos-hermes/releases/qualification-0.6.0/verify_restored_programs.py',os.environ['LIFEOS_STABLE_OPERATION']], 'verify-stable-programs'))
     assert coverage['status']=='PASS' and coverage['version']==report['version']
     assert coverage['operation']==os.environ['LIFEOS_STABLE_OPERATION']
-    coverage.update(backup_archive=archive,source_guest=111,restored_guest=vmid)
+    coverage.update(backup_archive=archive,source_guest=102,restored_guest=vmid)
     (out/'stable-program-coverage.json').write_text(json.dumps(coverage,indent=2)+'\n')
     (out/'verification.json').write_text(json.dumps({'status':'PASS','archive':archive,'source_guest':102,'restored_guest':vmid,
         'version':coverage['version'],'program_commit':coverage['program_commit'],'archive_sha256':coverage['archive_sha256'],
