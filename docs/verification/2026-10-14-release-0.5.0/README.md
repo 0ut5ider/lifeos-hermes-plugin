@@ -36,3 +36,11 @@ The qualification closure is clear. The primary reproduces all eight certifier c
 The separate public replay fixture is CT113 at 192.168.8.244. Its actual stock source matches all 18,243 regular source files in the verified unpatched archive. It has neither LifeOS nor a release manager installed. This fixture proof does not establish public installation acceptance.
 
 The daily preservation baseline uses one new synthetic fact. Actual owner tools confirm both older intentionally forgotten synthetic facts remain absent. The post-promotion check requires the new exact reference to survive and both old facts to stay absent. No personal data is imported or reset.
+
+## Stock provenance and development retry
+
+The final stock review finds that the initial verifier ignores extra runtime files. The primary reproduces the executable startup module case. The corrected verifier admits exact source and dashboard archives and compares the complete runtime file set. Six actual-archive controls pass. The independent closure adds startup execution, directory-link, and FIFO controls. The primary reproduces all three additional controls. The real public fixture verifies all 18,309 files. Public installation remains pending.
+
+The first development owner application rolls back during native mount preparation. All 222 program targets return to their recorded prior identities. The prior 0.4.3 release, model mapping, credential bytes, memory configuration, and all three service HOME settings pass verification. The saved failure has no native stderr, so its exact error remains unknown.
+
+The authenticated owner prompt preview has no launcher name before a source-review refresh. Both current identity sources pass the installed retirement policy. The authenticated owner endpoint refreshes those two reviews, and the prompt preview then has a launcher name. No identity bytes or personal records change. A new exact-package preparation tests this measured mount prerequisite. Neither the review refresh nor the rollback qualifies development acceptance.

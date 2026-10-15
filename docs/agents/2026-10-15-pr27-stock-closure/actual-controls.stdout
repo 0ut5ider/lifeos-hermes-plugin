@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "cases": 6,
+  "results": [
+    {
+      "case": "exact-archives",
+      "expected_result_verified": true,
+      "rejected": false
+    },
+    {
+      "case": "extra-startup-source",
+      "expected_result_verified": true,
+      "rejected": true
+    },
+    {
+      "case": "extra-symlink",
+      "expected_result_verified": true,
+      "rejected": true
+    },
+    {
+      "case": "extra-bytecode",
+      "expected_result_verified": true,
+      "rejected": true
+    },
+    {
+      "case": "altered-source",
+      "expected_result_verified": true,
+      "rejected": true
+    },
+    {
+      "case": "altered-dashboard",
+      "expected_result_verified": true,
+      "rejected": true
+    }
+  ],
+  "guest_completion_receipt_written": false,
+  "remote_commands_run": false
+}

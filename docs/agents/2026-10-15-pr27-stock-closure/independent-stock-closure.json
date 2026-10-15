@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "cases": 3,
+  "results": [
+    {
+      "case": "original-startup-module",
+      "status": "PASS",
+      "extra_source_rejected": true,
+      "refusal": {
+        "line": 41,
+        "statement": "assert actual==expected"
+      },
+      "original_startup_effect_reproduced": true,
+      "source_files_verified": 18243,
+      "frontend_files_verified": 66,
+      "completion_receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "case": "extra-directory-symlink",
+      "status": "PASS",
+      "extra_source_rejected": true,
+      "refusal": {
+        "line": 41,
+        "statement": "assert actual==expected"
+      },
+      "original_startup_effect_reproduced": false,
+      "source_files_verified": 18243,
+      "frontend_files_verified": 66,
+      "completion_receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "case": "extra-fifo",
+      "status": "PASS",
+      "extra_source_rejected": true,
+      "refusal": {
+        "line": 39,
+        "statement": "assert stat.S_ISREG(mode) or stat.S_ISLNK(mode)"
+      },
+      "original_startup_effect_reproduced": false,
+      "source_files_verified": 18243,
+      "frontend_files_verified": 66,
+      "completion_receipt_written": false,
+      "remote_commands_run": false
+    }
+  ],
+  "actual_archives_used": true
+}
