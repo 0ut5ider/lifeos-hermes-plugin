@@ -4,6 +4,16 @@ import json
 from pathlib import Path
 
 
+def prepare_stock_tools(job):
+    from pm import prepare_tools
+    from pm.install import _lockfile
+    from pm.registry import tool_roots
+    from pm.store import current_target
+    names=tool_roots(_lockfile().names())
+    prepare_tools(names,out=Path(job)/'dependency-profile/tools',target=current_target())
+    return names
+
+
 def assemble_runtime(job, source, package, web, profile, *, integration=True):
     from pm import stage_manager_runtime
     from pm.environments import site_packages
@@ -18,6 +28,7 @@ def assemble_runtime(job, source, package, web, profile, *, integration=True):
 
     job, source, package, web, profile = map(Path, (job, source, package, web, profile))
     store = job / 'dependency-profile/tools'
+    if not integration:prepare_stock_tools(job)
     facts = Facts(store / 'facts.json', strict=True)
     fact = facts.get('python')
     if fact is None:

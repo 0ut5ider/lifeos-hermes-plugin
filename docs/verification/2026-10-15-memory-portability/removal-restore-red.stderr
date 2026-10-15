@@ -1,0 +1,15 @@
+test_restore_preserves_a_later_edit_between_publications (test_release_programs.ProgramTransactionTests.test_restore_preserves_a_later_edit_between_publications) ... FAIL
+
+======================================================================
+FAIL: test_restore_preserves_a_later_edit_between_publications (test_release_programs.ProgramTransactionTests.test_restore_preserves_a_later_edit_between_publications)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_programs.py", line 23, in test_restore_preserves_a_later_edit_between_publications
+    with self.assertRaises(ProgramConflict):tx.restore()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: ProgramConflict not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.022s
+
+FAILED (failures=1)
