@@ -47,6 +47,21 @@ def service_manager_fixture():
 
 
 class ProfileServicesTests(unittest.TestCase):
+    def test_return_resumes_hermes_roles_and_keeps_pulse_stopped_on_later_drains(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        services=ProfileServices(self.profile,self.installed,units=self.units)
+        services.drain(signature=services.preview()['signature'])
+        result=services.resume(roles=('dashboard','gateway'))
+        self.assertEqual(result['services_started'],['dashboard','gateway'])
+        self.assertEqual(self.properties('pulse')['MainPID'],'0')
+        self.assertNotEqual(self.properties('gateway')['MainPID'],'0')
+        self.assertNotEqual(self.properties('dashboard')['MainPID'],'0')
+        self.assertEqual(services.status()['state'],'active')
+        services.drain(signature=services.preview()['signature'])
+        result=services.resume()
+        self.assertEqual(result['services_started'],['dashboard','gateway'])
+        self.assertEqual(self.properties('pulse')['MainPID'],'0')
+
     def test_fresh_drain_resumes_after_unchanged_definition_publication(self):
         from lifeos_hook_bridge.profile_services import ProfileServices
         from optional.lifeos_release_manager.release_programs import ProgramTransaction

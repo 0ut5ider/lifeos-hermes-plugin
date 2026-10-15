@@ -273,15 +273,25 @@ class ProfileServices:
                 self._empty(document, role)
             return {'state': 'stopped', 'owner_turn_verified': False}
 
-    def resume(self):
+    def resume(self, *, roles=None):
+        if (roles is not None and (not isinstance(roles,(tuple,list)) or len(roles)!=len(set(roles))
+                or any(not isinstance(role,str) or role not in self.units for role in roles))):
+            raise ValueError('Resume only distinct roles from the bound profile services')
         with self._lock():
             document = self._load()
             if document is None:
                 raise MemoryUnavailable('The selected profile services have no recovery state')
             if document['state'] == 'stopping':
                 self._drain(document)
+            if roles is not None and document['state'] not in {'stopped','starting'}:
+                raise MemoryUnavailable('Selecting resumed roles requires a completed profile service drain')
             for role in self.start_order:
                 self._check_definition(document, role)
+            if roles is not None:
+                for role in self.start_order:
+                    if role not in roles:
+                        self._empty(document,role)
+                        document['services'][role]['active']=False
             document['state'] = 'starting'
             self._publish(document)
             started = []
