@@ -1,6 +1,6 @@
 {
   "version": "0.5.0",
-  "status": "EXACT_ARCHIVE_QUALIFICATION_IN_PROGRESS",
+  "status": "RECOVERY_AND_EDITOR_PASS_RESTORE_RUNNING",
   "published": false,
   "production_qualified": false,
   "development_version": "0.4.3",
@@ -8,8 +8,8 @@
   "gates": {
     "exact_archive_integration": "PASS 821 tests; archive source map matches before and after",
     "exact_archive_native": "PASS",
-    "isolated_install_update": "pending",
-    "rollback_interruption_reboot": "pending",
+    "isolated_install_update": "PASS native install endpoint, complete fresh install, inherited update",
+    "rollback_interruption_reboot": "PASS",
     "disconnected_restore": "pending",
     "development_acceptance": "pending",
     "focused_review": "CLEAR source review; release qualification remains pending",
@@ -44,5 +44,9 @@
   "bootstrap_prerequisite": "The 0.4.3 installed manager requires the exact manager bootstrap before complete owner-reviewed package application.",
   "integration_tests": 821,
   "integration_status": "PASS",
-  "stock_first_install": "PASS authenticated complete install; exact selected identity; optional writers inactive"
+  "stock_first_install": "PASS authenticated complete install; exact selected identity; optional writers inactive",
+  "interrupted_native_update": "PASS actual worker exit 73 with native mount required; authenticated owner grant recovers prior programs and synthetic memory",
+  "reboot": "PASS final exact archive selected; services and synthetic memory preserved",
+  "installed_editor": "PASS owner read/save/private mode/stale 409/sealed 403/actual remount",
+  "compiled_browser": "PASS UI save and remount, stale 409 preserves concurrent edit, logout 401 clears draft and Save controls"
 }

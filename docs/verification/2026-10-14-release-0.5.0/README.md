@@ -17,3 +17,10 @@ The older installed manager repeats review with its older planner. The transitio
 The separate fresh guest starts unpatched Hermes at the pinned base with no LifeOS or release manager. Its authenticated native dashboard installation endpoint installs the exact manager. Complete first-install preparation and authenticated application pass. The selected package identity and model mapping match. The dashboard resumes, while gateway and Pulse remain inactive until setup. Browser interaction and configured editor acceptance remain separate gates.
 
 The independent PR27 review reports no actionable finding at the pinned program commit. The primary agent reproduces all 63 targeted tests and all 13 additional archive, race, bounds, and actual publication-plan probes. The review does not qualify unfinished guest recovery or deployment gates.
+
+
+The inherited-profile update, rollback, worker-exit recovery, and final reboot pass. The worker exits with status 73 after program publication and before native mounting. Recovery uses the real authenticated owner's bound grant. Both synthetic memory references remain available.
+
+The fresh installed editor passes owner read and save, mode 0600, stale save refusal with 409, sealed read refusal with 403, and actual remounting. The compiled browser also saves and remounts through the visible controls. A concurrent edit produces 409 and preserves the later owner bytes. Logout produces 401, clears the draft, and removes Save. The test fixture initially omitted its fixed `pulse_http` configuration. Direct dashboard access returns 200 while the unconfigured connector returns 503. Completing that authenticated fixture setup restores the governed path without a product change.
+
+The final rehearsal is undergoing an actual disconnected whole-guest restore from Proxmox Backup Server. Development and daily servers still select 0.4.3.

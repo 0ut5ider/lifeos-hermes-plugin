@@ -309,11 +309,14 @@ hermes lifeos-release status
 hermes lifeos-release prepare --name Adrian --assistant Cerebo
 ```
 
-An existing development-era standalone manager can create an incomplete plan for a published worker.
+An older installed manager can create an incomplete plan or refuse an omitted native program.
 Install the manager from the selected release before the first complete published update.
 Use `--force --enable` with the native install command when that development manager already exists.
 Restart the Hermes dashboard after replacement so it loads the selected manager.
-The current 0.4.1 release tag commit is `6c13407f33e5d7c2a982c1618b1a26dd0511f855`.
+The current qualified 0.4.3 release commit is `a1abb579558edcf29f7cd04ecfd998995d48db54`.
+The 0.5.0 candidate verifies omitted native programs against the exact retained accepted archive.
+The 0.4.3 manager requires the selected manager replacement before complete 0.5.0 preparation and owner review.
+The 0.5.0 candidate remains unavailable for production until its release qualification completes.
 
 Preparation returns an operation identifier, version, commit, and package hash. It preserves the active installation.
 The qualified candidate creates its program plan before preparation reports ready. The worker checks that plan against its required targets before publication.
@@ -340,7 +343,7 @@ Installation keeps the model and tier mapping and does not activate lasting memo
 The Linux first-installation path requires an owner user service for the Hermes dashboard.
 First installation also requires a qualified package with the first-install service interface.
 Historical packages without that interface refuse before native publication. Existing installation updates keep their three-service interface.
-During the isolated prerelease tests, select the exact test release version. Release 0.4.1 remains the latest stable package.
+During the isolated prerelease tests, select the exact test release version. Release 0.4.3 remains the latest stable package.
 The home, profile, and native installation paths must be physical paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces.
 That service must use the account's `~/.local/bin/hermes` launcher and the account home as its working directory.
 The service must declare the selected physical profile in `HERMES_HOME` without an environment file.
