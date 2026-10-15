@@ -2,6 +2,8 @@
 
 **Published stable release:** `0.5.0`, program commit `04efe633`, on development `.252` and daily `.253`. The [release record](docs/verification/2026-10-14-release-0.5.0/README.md) binds the exact package, qualification, public installation, and daily activation evidence. The package adds the governed Pulse core-file editor, corrects observer timestamp comparison, and verifies omitted native baseline entries against the accepted archive.
 
+**Unpublished candidate:** `0.6.0` adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [portability contract](docs/memory-portability.md) defines data retention and recovery. The [qualification record](docs/verification/2026-10-15-memory-portability/README.md) reports measured results and remaining gates. Development and daily remain on qualified `0.5.0`.
+
 The actual public Hermes web form installs the manager from the default GitHub URL. Install LifeOS then selects and installs the latest stable complete package after owner review. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/PUBLIC-LATEST-ACCEPTANCE.json) records that test. Daily `.253` applies the same package through Update plugin and owner review. Its protected complete backup and disconnected recovery pass. The [published deployment receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.5.0/DEPLOYMENT-ACCEPTANCE.json) binds these completed checks.
 
 The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
