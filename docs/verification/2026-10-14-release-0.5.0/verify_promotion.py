@@ -14,6 +14,21 @@ import types
 import httpx
 from ruamel.yaml import YAML
 
+def verify_daily_memory(baseline, recalled):
+    assert baseline['status'] == 'PASS' and baseline['server'] == 'daily'
+    assert baseline['synthetic_query'] == 'STABLE-050-DAILY-04EFE633'
+    assert baseline['actual_owner_save_and_search_verified'] is True
+    assert baseline['authenticated_owner_verified'] is True and baseline['prior_forgotten_facts_absent'] is True
+    assert baseline['personal_data_imported_or_reset'] is False
+    reference = baseline['reference']
+    assert set(reference) == {'id', 'revision'} and len(reference['id']) == 32
+    assert set(reference['id']) <= set('0123456789abcdef')
+    assert type(reference['revision']) is int and reference['revision'] > 0
+    assert recalled['status'] == 'ok' and len(recalled['results']) == 1
+    assert recalled['results'][0]['reference'] == reference
+    return reference
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('server', choices=('daily', 'development'))
 parser.add_argument('operation')
@@ -95,15 +110,19 @@ if args.server == 'daily':
         assert me['provider'] == 'basic' and me['user_id'] == 'adrian'
         response = client.post('/api/plugins/lifeos-hook-bridge/memory/review',
             headers={'X-Hermes-Profile': 'default'}, json={'tool': 'lifeos_memory_search',
-                'arguments': {'query': 'D253-042-PROMOTION-1014'}})
+                'arguments': {'query': 'STABLE-050-DAILY-04EFE633'}})
         recalled = response.json()
-        assert response.status_code == 200 and recalled['status'] == 'ok' and len(recalled['results']) == 1
-        reference = recalled['results'][0]['reference']
-        assert reference == {'id': '8565b850a9ce45a18f4c0540e398b5ee', 'revision': 1}
+        assert response.status_code == 200
+        memory_baseline = json.loads((home / 'releases/qualification-0.5.0/daily-memory-baseline.json').read_bytes())
+        reference = verify_daily_memory(memory_baseline, recalled)
         prior = client.post('/api/plugins/lifeos-hook-bridge/memory/review',
             headers={'X-Hermes-Profile': 'default'}, json={'tool': 'lifeos_memory_search',
                 'arguments': {'query': 'D253-CEREBO-1011'}})
-        assert prior.status_code == 200 and prior.json()['status'] == 'ok' and not prior.json()['results']
+        assert prior.status_code == 200 and prior.json() == {'status': 'ok', 'results': []}
+        forgotten = client.post('/api/plugins/lifeos-hook-bridge/memory/review',
+            headers={'X-Hermes-Profile': 'default'}, json={'tool': 'lifeos_memory_search',
+                'arguments': {'query': 'D253-042-PROMOTION-1014'}})
+        assert forgotten.status_code == 200 and forgotten.json() == {'status': 'ok', 'results': []}
         report.update(authenticated_owner_verified=True, synthetic_memory_reference=reference,
             synthetic_memory_preserved=True, prior_forgotten_fact_stays_absent=True)
 print(json.dumps(report, indent=2))
