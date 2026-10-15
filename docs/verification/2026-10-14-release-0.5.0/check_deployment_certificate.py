@@ -1,11 +1,28 @@
 # ABOUTME: Mutates actual safe deployment receipts to check immutable certificate refusal gates.
 # ABOUTME: Keeps corrupted variants in memory and never writes a guest completion receipt.
-import copy,json
+import copy,hashlib,json
 from pathlib import Path
 from certify_deployment import load,certify
 
 values,hashes=load(Path(__file__).parent)
-assert certify(values,hashes)['status']=='PASS'
+report=certify(values,hashes)
+assert report['status']=='PASS'
+assert (Path(__file__).with_name('DEPLOYMENT-ACCEPTANCE.json')).read_bytes()==(json.dumps(report,indent=2)+'\n').encode()
+reads={};folder=Path(__file__).parent;selected='daily-verification.json'
+original=(folder/selected).read_bytes();changed=json.loads(original);changed['personal_data_imported_or_reset']=True
+changed=(json.dumps(changed,indent=2)+'\n').encode()
+class Receipt:
+ def __init__(self,name):self.name=name
+ def read_bytes(self):
+  reads[self.name]=reads.get(self.name,0)+1
+  return changed if self.name==selected and reads[self.name]>1 else (folder/self.name).read_bytes()
+class Folder:
+ def __truediv__(self,name):return Receipt(name)
+read_values,read_hashes=load(Folder())
+assert all(count==1 for count in reads.values())
+assert read_values[selected]['personal_data_imported_or_reset'] is False
+assert read_hashes[selected]==hashlib.sha256(original).hexdigest()
+assert certify(read_values,read_hashes)==report
 cases=[]
 def mutate(name,path,value):
  variant=copy.deepcopy(values);target=variant[name]
@@ -47,4 +64,4 @@ for name,variant,digests in cases:
  try:certify(variant,digests)
  except (AssertionError,KeyError,ValueError,TypeError):pass
  else:raise AssertionError('Invalid deployment evidence accepted: '+name)
-print(json.dumps({'status':'PASS','positive':1,'refusals':len(cases),'actual_safe_receipts_used':True,'remote_calls':False,'mutated_receipts_written':False},indent=2))
+print(json.dumps({'status':'PASS','positive':2,'refusals':len(cases),'actual_safe_receipts_used':True,'remote_calls':False,'mutated_receipts_written':False},indent=2))

@@ -14,9 +14,48 @@ NAMES=('daily-manager-bootstrap.json','daily-ui-owner-apply.json','PUBLIC-LATEST
  'daily-atlas-restored.json','daily-final-recovery-operations.json','release-test-cleanup.json')
 
 def load(folder):
- values={name:json.loads((folder/name).read_bytes()) for name in NAMES}
- hashes={name:hashlib.sha256((folder/name).read_bytes()).hexdigest() for name in (*NAMES,'RELEASE-CERTIFICATE.json')}
+ raw={name:(folder/name).read_bytes() for name in (*NAMES,'RELEASE-CERTIFICATE.json')}
+ values={name:json.loads(raw[name]) for name in NAMES}
+ hashes={name:hashlib.sha256(content).hexdigest() for name,content in raw.items()}
  return values,hashes
+
+def recovery_commands(archive):
+ profile='/home/lifeos-hermes/.hermes';job=profile+'/.lifeos-releases/'+OPERATION
+ stage='/home/lifeos-hermes/releases/qualification-0.5.0/'
+ def execute(guest,*tail):
+  return ['pct','exec',str(guest),'--','runuser','-u','lifeos-hermes','--',job+'/python-environment/bin/python','-B',*tail]
+ inventory=['pvesh','get','/cluster/resources','--type','vm','--output-format','json']
+ content='/nodes/pve-tr1950x/storage/PBS-01/content'
+ return [('inventory',inventory),('editor-checkpoint',execute(102,'-')),('check-existing-synthetic-atlas',execute(102,'-')),
+  ('drain-source',execute(102,'-')),('capture-current-owner-mount',execute(102,stage+'verify_daily_restored_programs.py','capture',OPERATION)),
+  ('capture-program-artifacts',execute(102,stage+'program_artifact_receipt.py','capture',OPERATION)),
+  ('backup-source',['vzdump','102','--storage','PBS-01','--mode','snapshot','--notes-template','LifeOS 0.5.0 daily complete release recovery']),
+  ('archives',['pvesh','get',content,'--content','backup','--vmid','102','--output-format','json']),
+  ('resume-source',execute(102,'-')),('protect-archive',['pvesh','set',content+'/'+archive,'--protected','1']),
+  ('verify-protection',['pvesh','get',content+'/'+archive,'--output-format','json']),
+  ('restore',['pct','restore','110',archive,'--storage','lifeos-050-tests','--rootfs','lifeos-050-tests:120',
+   '--unprivileged','1','--onboot','0','--hostname','lifeos-050-daily-recovery']),
+  ('restored-config-before-disconnect',['pct','config','110']),('disconnect-net0',['pct','set','110','--delete','net0']),
+  ('disable-automatic-start',['pct','set','110','--onboot','0','--tags','disposable;lifeos-050-daily-recovery']),
+  ('verify-disconnected-before-boot',['pct','config','110']),('mount',['pct','mount','110']),('unmount',['pct','unmount','110']),
+  ('boot-isolated',['pct','start','110']),('restored-config',['pct','config','110']),
+  ('network',['pct','exec','110','--','ip','-brief','address']),
+  ('verify-history',execute(110,stage+'history_guest_recovery.py','verify',job+'/package')),
+  ('verify-program-artifacts',execute(110,stage+'program_artifact_receipt.py','verify',OPERATION)),
+  ('verify-stable-programs',execute(110,stage+'verify_daily_restored_programs.py','verify',OPERATION)),
+  ('shutdown-restore',['pct','shutdown','110','--timeout','90']),('cleanup-config',['pct','config','110']),
+  ('destroy-disposable',['pct','destroy','110','--purge','1'])]
+
+def cleanup_commands(archive):
+ inventory=['pvesh','get','/cluster/resources','--type','vm','--output-format','json']
+ storage=['pvesh','get','/storage/lifeos-050-tests','--output-format','json']
+ commands=[['pvesh','get','/nodes/pve-tr1950x/storage/PBS-01/content/'+archive,'--output-format','json'],inventory,storage]
+ commands.extend(['pct','config',str(guest)] for guest in (111,112,113))
+ for guest in (111,112,113):
+  commands.extend([['pct','shutdown',str(guest),'--timeout','90'],['pct','status',str(guest)],
+   ['pct','config',str(guest)],['pct','destroy',str(guest),'--purge','1']])
+ return commands+[inventory,storage,['pvesh','get','/nodes/pve-tr1950x/storage/lifeos-050-tests/content','--output-format','json'],
+  ['pvesm','remove','lifeos-050-tests']]
 
 def certify(values,hashes):
  assert hashes['RELEASE-CERTIFICATE.json']=='c8a0ac35fa6f084d417951fd7538bee8f9d330ff101a9f71e3855b5da8a2dd20'
@@ -32,6 +71,8 @@ def certify(values,hashes):
   assert row['operation']==OPERATION
  def truths(name,keys):
   for key in keys:assert values[name][key] is True,(name,key)
+ for name in ('daily-manager-bootstrap.json','daily-ui-owner-apply.json','daily-verification.json','daily-native-skill-review.json','daily-editor-activation.json','daily-post-admission-verification.json','daily-post-backup-health.json'):
+  assert values[name]['server']=='daily',name
  bootstrap=values['daily-manager-bootstrap.json']
  assert bootstrap['manager_files_verified']==21 and bootstrap['program_commit']==COMMIT and bootstrap['ref'] is None
  assert bootstrap['configuration_file_bytes_preserved'] is True and bootstrap['dashboard_restarted_after_bootstrap'] is True
@@ -57,7 +98,7 @@ def certify(values,hashes):
  truths('daily-verification.json',('model_and_tiers_preserved','credential_file_bytes_preserved',
   'memory_configuration_bytes_preserved','synthetic_memory_preserved','prior_forgotten_fact_stays_absent'))
  assert applied['personal_data_imported_or_reset'] is False and applied['personal_records_read'] is False
- admission=values['daily-native-skill-review.json'];assert admission['operation']==OPERATION
+ admission=values['daily-native-skill-review.json'];selected(dict(admission,version=VERSION))
  assert admission['after_admitted_skill_count']==56 and admission['after_omitted_program_skills']==0
  assert admission['reviewed_sources']==57 and admission['personal_sources_reviewed']==0
  assert admission['review_status']=='committed' and admission['review_http_status']==200 and admission['launcher_present'] is True
@@ -97,6 +138,16 @@ def certify(values,hashes):
  captured=values['daily-current-program-capture.json'];selected(captured)
  assert captured['current_mount_checkpoint_sha256']==programs['current_mount_checkpoint_sha256']
  assert captured['program_targets']==221 and captured['native_mount_targets']==7
+ scope='Strict integer bounded by public publication and original apply intent metadata. Exact historical timestamp preservation is not claimed.'
+ for row,action,masked in ((captured,'capture',False),(programs,'verify',True)):
+  assert row['action']==action and row['generated_baseline_public_programs_verified']==1742
+  assert row['generated_baseline_timestamp_scope']==scope and row['application_services_masked'] is masked
+  assert row['current_owner_mount_verified'] is True and row['prior_release_restore_available'] is False
+  assert row['retained_public_archive_and_certificate_verified'] is True
+  assert row['credential_file_bytes_preserved'] is True and row['owner_memory_configuration_verified'] is True
+  assert row['model_and_tiers_preserved'] is True and row['pulse_editor_enabled'] is True
+  assert row['normal_morning_schedule']=='0 7 * * *' and row['native_mount_required'] is True
+  assert row['personal_records_read'] is False and row['personal_data_imported_or_reset'] is False
  artifacts=values['daily-complete-runtime-artifacts.json'];selected(dict(artifacts,version=VERSION))
  captured_artifacts=values['daily-runtime-artifact-capture.json']
  assert {key:value for key,value in artifacts.items() if key!='action'}=={key:value for key,value in captured_artifacts.items() if key!='action'}
@@ -106,22 +157,16 @@ def certify(values,hashes):
  assert set(artifacts['runtime_roots'])=={'bin','compiled-dashboard','dependency-profile','hermes','package','pm-runtime','python-environment','tools','worker'}
  operations=values['daily-final-recovery-operations.json']
  assert all(type(row['exit_code']) is int and row['exit_code']==0 for row in operations)
- required=('inventory','editor-checkpoint','check-existing-synthetic-atlas','drain-source','capture-current-owner-mount',
-  'capture-program-artifacts','backup-source','archives','resume-source','protect-archive','verify-protection','restore',
-  'restored-config-before-disconnect','disable-automatic-start','verify-disconnected-before-boot','mount','unmount',
-  'boot-isolated','restored-config','network','verify-history','verify-program-artifacts','verify-stable-programs',
-  'shutdown-restore','cleanup-config','destroy-disposable')
- for name in required:assert len([row for row in operations if row['label']==name])==1,name
- removal=next(row for row in operations if row['label']=='destroy-disposable')
- assert removal['command']==['pct','destroy','110','--purge','1']
+ assert [(row['label'],row['command']) for row in operations]==recovery_commands(archive)
  cleanup=values['release-test-cleanup.json']
  assert cleanup['owned_guests_removed']==[111,112,113] and cleanup['restore_guest_already_removed']==110
  assert cleanup['owned_storage_removed'] is True and cleanup['protected_archive_preserved']==archive
  assert all(type(row['exit_code']) is int and row['exit_code']==0 for row in cleanup['operations'])
- deletes=[row['command'] for row in cleanup['operations'] if row['command'][:2]==['pct','destroy']]
- assert deletes==[['pct','destroy',str(guest),'--purge','1'] for guest in (111,112,113)]
- assert {'101','102','801'}<=set(cleanup['other_guests_preserved'])
- assert all(cleanup['other_guests_preserved'][key]['status']=='running' for key in ('101','102','801'))
+ assert [row['command'] for row in cleanup['operations']]==cleanup_commands(archive)
+ expected_guests={'100':{'type':'lxc','name':'lifeos-install-probe','status':'running'},
+  '101':{'type':'lxc','name':'lifeos-dev','status':'running'},'102':{'type':'lxc','name':'lifeos-daily','status':'running'},
+  '106':{'type':'lxc','name':'lifeos-ui-test-public','status':'stopped'},'801':{'type':'qemu','name':'processing','status':'running'}}
+ assert cleanup['other_guests_preserved']==expected_guests
  return {'format':1,'status':'PASS','version':VERSION,'program_commit':COMMIT,'package_sha256':ARCHIVE,
   'development_and_daily_same_exact_package':True,'daily_operation':OPERATION,
   'public_default_url_installation_verified':True,'daily_native_update_plugin_action_verified':True,

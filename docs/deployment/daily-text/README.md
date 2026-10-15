@@ -8,7 +8,7 @@ Audio and video processing move to the later voice release. Do not start the Con
 
 The current 0.5.0 release enables the governed Pulse core-file editor after exact-package qualification and current owner source admission. Use the actual Hermes dashboard for integration administration. The Pulse editor requires the authenticated owner for eligible reads, writes, and remounts. It keeps credential routes sealed. The [0.5.0 release record](../../verification/2026-10-14-release-0.5.0/README.md) records the installed and browser tests and actual daily activation. Adrian's October 10 decision to disable the editor describes the first-release checkpoint.
 
-Complete the governed Pulse editor in a later tested release. The [project to-do list](../../../TODO.md) retains its required read, write, remount, revocation, and recovery checks.
+Release 0.5.0 completes the governed editor checks for reads, writes, remounts, revocation, and recovery. The [project to-do list](../../../TODO.md) records the remaining voice, media, import, and reverse migration work.
 
 The operator deployment must perform these actions:
 
