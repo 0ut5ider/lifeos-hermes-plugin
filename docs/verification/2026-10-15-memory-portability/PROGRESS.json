@@ -79,14 +79,14 @@
     "installed_replay": "PASS_PREPARATION: actual corrected installed review reachesready with1863targets. Complete removal verification remainspending."
   },
   "native_archive_tests": {
-    "checkpoint": "52db5dfd",
+    "checkpoint": "b35cf86e",
     "tests": 716,
     "files": 38,
     "status": "PASS_CLEAN",
     "archived_sources_unchanged": true,
-    "elapsed_seconds": 75.88417005501105,
+    "elapsed_seconds": 80.39272931400046,
     "daily_changed": false,
-    "qualifies_later_return_fix": false
+    "qualifies_later_return_fix": true
   },
   "fixture_output_isolation": "Actual service control changes a tracked checkout diagnostic. Correction writes its temporary fixture directory. Dedicated isolation control and three actual service controls PASS; exact final archive rerun pending.",
   "removal_execution_source": {
@@ -107,7 +107,7 @@
     "review": "CLEAR_COMPONENTS:15 independent tests,15 input cases and30 real stock child processes. Primary repeats4 independent controls cleanly and checks matching source hashes."
   },
   "ui_archive_tests": {
-    "checkpoint": "10ac6013",
+    "checkpoint": "b35cf86e",
     "tests": 33,
     "status": "PASS_CLEAN",
     "test_sources_unchanged": true
@@ -123,9 +123,14 @@
   },
   "current_archive_integration": {
     "checkpoint": "52db5dfd",
-    "status": "RUNNING",
+    "status": "PASS_CLEAN",
     "archive_sha256": "c7c6c43ad7c4826e5d18fd495f375589e46a980ecbd758153c9e26dba92ee872",
-    "archive_bytes": 288174707
+    "archive_bytes": 288174707,
+    "tests": 991,
+    "modules": 98,
+    "elapsed_seconds": 1579.2331749269943,
+    "files_match_before_and_after": true,
+    "qualifies_later_return_fix": false
   },
   "portable_bundle_replay": "PASS_INSTALLED: actual original48917byte download uploaded in browser, all6 items required, same4 referencesrev1, no duplicates.",
   "removal_cycle_backup": {
@@ -154,11 +159,28 @@
     "builtin_return_recall": "PENDING"
   },
   "return_capture_review": {
-    "status": "PASS_COMPONENTS_REVIEW_PENDING",
+    "status": "CLEAR_COMPONENTS",
     "finding": "P2: configuration transformation before before-image capture can lose a setting or owner grant. A built-in source edit after the first source check can be replaced by the reviewed older export.",
     "primary_reproduced": true,
     "correction": "Capture return inputs before transformation, check current export after capture, bind captured policy, and check all captured files before finalizing the review.",
     "installed_replay": "PENDING",
-    "primary_tests": 16
+    "primary_tests": 16,
+    "review_commit": "b35cf86ef032ab81ac4306d48951b94615aca5a4",
+    "independent_tests": 55,
+    "primary_independent_repeat": "PASS_CLEAN:55 tests,120.379seconds; all43 package source hashes and39 closure artifact hashes match."
+  },
+  "checkpoint_preparation_operator": {
+    "first_attempt": "FAIL_SAFE",
+    "reason": "The operator uses Ubuntu Python without ruamel.yaml. Read-only actual validate_package reproduces ModuleNotFoundError for ruamel in release_version.py. No active change.",
+    "retry": "Use the existing installed Hermes venv, as the normal manager does.",
+    "product_change_required": false
+  },
+  "current_corrected_candidate": {
+    "checkpoint": "b35cf86ef032ab81ac4306d48951b94615aca5a4",
+    "archive_sha256": "d51eb1a5d5c175f3a0ef04871e29f443b4c07707e75899fba686934302161a82",
+    "archive_bytes": 288162161,
+    "operation": "15bcc1ca30614051a6a02f4ed5093401",
+    "state": "queued-apply",
+    "production_qualified": false
   }
 }
