@@ -7,12 +7,14 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 from .installation_lock import installation_lock
 from .memory_access import MemoryUnavailable
+from .memory_access import NativeMemory
 from .memory_backup import _directory, _read
 from .memory_administration import _connector
 from .memory_transaction import publish
@@ -34,6 +36,21 @@ def _encoded(document):
 
 def _signature(value):
     return isinstance(value, str) and re.fullmatch('[0-9a-f]{64}', value) is not None
+
+
+def connector_target(configuration):
+    root=Path(configuration['root']).absolute()
+    NativeMemory(root)._boundary()
+    directory=root.parent/'.config/LIFEOS/USER/CONFIG'
+    _directory(directory)
+    return directory/'memory-access.json'
+
+
+def _check_connector(configuration, selected, digest):
+    connector,_=_read(connector_target(selected),private=True)
+    if _digest(connector)!=digest:
+        raise MemoryUnavailable('The reviewed native memory connector changes during ownership setup')
+    _connector(configuration,selected)
 
 
 class OwnershipTransaction:
@@ -106,17 +123,26 @@ class OwnershipTransaction:
             raise MemoryUnavailable('Ownership setup requires the reviewed profile backup signature')
         backup = Path(backup).absolute()
         manifest = inspect(self.configuration, backup, backup_signature, account=account)
-        _connector(self.configuration, configuration)
-        connector, _ = _read(Path(configuration['root']) / 'LIFEOS/USER/CONFIG/memory-access.json', private=True)
         native_data, _ = _read(backup / 'native/manifest.json', private=True)
         if _digest(native_data) != manifest['native_signature']:
             raise MemoryUnavailable('The ownership native backup manifest changes after verification')
         native = json.loads(native_data)
         captured_connector = next((entry for entry in native['files'] if entry['path'] == 'CONFIG/memory-access.json'), None)
-        if captured_connector is None or captured_connector['digest'] != _digest(connector):
-            raise MemoryUnavailable('Ownership setup requires the current reviewed native memory connector')
+        target=connector_target(configuration)
+        current,_=read_target(target)
+        if captured_connector is None:
+            if current is not None:
+                raise MemoryUnavailable('Ownership setup preserves a later native memory connector')
+            connector=_encoded({'version':1,'command':[sys.executable,str(Path(__file__).with_name('memory_rpc.py').absolute()),
+                '--configuration',str(self.configuration.path.absolute())]})
+        else:
+            _connector(self.configuration, configuration)
+            connector, _ = _read(target, private=True)
+            if captured_connector['digest'] != _digest(connector):
+                raise MemoryUnavailable('Ownership setup requires the current reviewed native memory connector')
         captured = {entry['path']: entry for entry in manifest['files']}
         targets = {}
+        targets['connector']=connector if captured_connector is None else None
         entries = []
         for name in NAMES:
             data, metadata = read_target(self.profile / name)
@@ -185,13 +211,16 @@ class OwnershipTransaction:
             self._check_targets(document, ('before',))
             document['state'] = 'applying'
             publish(self.journal, _encoded(document))
+            if targets['connector'] is not None:
+                target=connector_target(configuration)
+                if read_target(target)!=(None,None):
+                    raise MemoryUnavailable('Ownership setup preserves a later native memory connector')
+                if self.verify_writers is not None:self.verify_writers()
+                publish(target,targets['connector'])
             # The built-in stores are disabled before the native provider becomes available.
             for index, entry in enumerate(document['entries']):
                 inspect(self.configuration, Path(plan['backup']), backup_signature, account=account)
-                _connector(self.configuration, configuration)
-                connector, _ = _read(Path(configuration['root']) / 'LIFEOS/USER/CONFIG/memory-access.json', private=True)
-                if _digest(connector) != plan['connector_digest']:
-                    raise MemoryUnavailable('The reviewed native memory connector changes during ownership setup')
+                _check_connector(self.configuration,configuration,plan['connector_digest'])
                 self._check_targets({'entries': document['entries'][:index]}, ('after',))
                 _, metadata = read_target(self.profile / entry['name'])
                 if metadata != entry['before']:
@@ -200,6 +229,7 @@ class OwnershipTransaction:
                     self.verify_writers()
                 publish(self.profile / entry['name'], targets[entry['name']])
             self._check_targets(document, ('after',))
+            _check_connector(self.configuration,configuration,plan['connector_digest'])
             document['state'] = 'committed'
             publish(self.journal, _encoded(document))
             return {'state': 'committed', 'signature': signature, 'restart_required': True, 'service_verified': False}
@@ -221,6 +251,14 @@ class OwnershipTransaction:
                 self._check_targets(document, ('before',))
                 return {'state': 'rolled_back', 'restart_required': True, 'service_verified': False}
             manifest = inspect(self.configuration, Path(document['backup']), document['backup_signature'], account=account)
+            native_data,_=_read(Path(document['backup'])/'native/manifest.json',private=True)
+            if _digest(native_data)!=manifest['native_signature']:
+                raise MemoryUnavailable('The ownership native backup manifest changes after verification')
+            missing_connector=not any(item['path']=='CONFIG/memory-access.json' for item in json.loads(native_data)['files'])
+            target=connector_target(configuration)
+            connector_after={'digest':document['connector_digest'],'mode':0o600}
+            if missing_connector and read_target(target)[1] not in (None,connector_after):
+                raise MemoryUnavailable('Ownership recovery preserves a later native memory connector')
             copies = []
             for entry in document['entries']:
                 original = next((item for item in manifest['files'] if item['path'] == entry['name']), None)
@@ -246,6 +284,11 @@ class OwnershipTransaction:
                 with (self.profile / entry['name']).open('rb') as stream:
                     os.fsync(stream.fileno())
                 _sync_directory(self.profile)
+            if missing_connector:
+                if read_target(target)[1] not in (None,connector_after):
+                    raise MemoryUnavailable('Ownership recovery preserves a later native memory connector')
+                if self.verify_writers is not None:self.verify_writers()
+                target.unlink(missing_ok=True);_sync_directory(target.parent)
             self._check_targets(document, ('before',))
             document['state'] = 'rolled_back'
             publish(self.journal, _encoded(document))

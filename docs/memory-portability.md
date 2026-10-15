@@ -4,6 +4,8 @@ Date: 2026-10-15. Status: implementation and qualification in progress.
 
 Adrian authorizes all six implementation stages and complete LifeOS software removal as an owner option. He also authorizes useful source content from `.213` and `.211`. Source stores remain intact. Personal source bytes and item reviews remain private and do not enter Git or public verification receipts. Shared `.211` records require the memory connector. A connector failure does not permit filesystem access to its records.
 
+A fresh dashboard owner claim can lack the native memory connector. Ownership preparation binds a generated connector to the reviewed backup without publishing it. The separate ownership apply installs the connector under the writer barrier. Recovery restores its original absence only if its exact generated identity remains unchanged. Existing connector edits require another review.
+
 ## Supported operations
 
 1. Import reviewed built-in Hermes memory into a prepared or active LifeOS store.

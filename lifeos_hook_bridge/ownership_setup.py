@@ -10,7 +10,7 @@ from .installation_lock import installation_lock
 from .memory_access import MemoryUnavailable
 from .memory_administration import _connector
 from .memory_backup import _directory, _read
-from .memory_ownership import OwnershipTransaction
+from .memory_ownership import OwnershipTransaction,connector_target
 from .memory_transaction import publish
 from .profile_backup import create, inspect
 from .profile_services import ProfileServices
@@ -122,7 +122,8 @@ class OwnershipSetup:
                 raise MemoryUnavailable('Fresh ownership setup requires ownership and sharing to be disabled')
             if ownership.status(account=account)['state'] not in {'none', 'rolled_back'}:
                 raise MemoryUnavailable('Recover the existing ownership configuration before setup')
-            _connector(self.configuration, selected)
+            connector=connector_target(selected)
+            if connector.exists() or connector.is_symlink():_connector(self.configuration, selected)
             if self.verify_ready is not None:
                 self.verify_ready()
             review = services.preview()
