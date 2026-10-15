@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-daily-complete-restore-review/check_restore_invocation.py", line 14, in <module>
+    command=next(n.value for n in ast.walk(ast.parse(operator.read_text())) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='run' and len(n.args)>1 and isinstance(n.args[1],ast.Constant) and n.args[1].value=='verify-stable-programs')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-daily-complete-restore-review/check_restore_invocation.py", line 14, in <genexpr>
+    command=next(n.value for n in ast.walk(ast.parse(operator.read_text())) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='run' and len(n.args)>1 and isinstance(n.args[1],ast.Constant) and n.args[1].value=='verify-stable-programs')
+                 ^^^^^^^
+AttributeError: 'Call' object has no attribute 'value'

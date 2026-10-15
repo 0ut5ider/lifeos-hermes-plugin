@@ -1,0 +1,128 @@
+{
+  "status": "FAIL",
+  "cases": [
+    {
+      "case": "backup-wrong-source",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "restore-wrong-destination",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "resume-wrong-source",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "verify-programs-wrong-guest",
+      "receipt": "daily-final-recovery-operations.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "cleanup-shutdown-unowned-daily",
+      "receipt": "release-test-cleanup.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "cleanup-removes-unowned-storage",
+      "receipt": "release-test-cleanup.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "cleanup-drops-preserved-100",
+      "receipt": "release-test-cleanup.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "cleanup-drops-preserved-106",
+      "receipt": "release-test-cleanup.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "admission-wrong-program-commit",
+      "receipt": "daily-native-skill-review.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "admission-wrong-package",
+      "receipt": "daily-native-skill-review.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "admission-wrong-server",
+      "receipt": "daily-native-skill-review.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "preservation-wrong-server",
+      "receipt": "daily-post-admission-verification.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "capture-is-verify",
+      "receipt": "daily-current-program-capture.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "restored-is-capture",
+      "receipt": "daily-current-programs-restored.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "capture-missing-baseline-proof",
+      "receipt": "daily-current-program-capture.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "restored-claims-exact-old-timestamp",
+      "receipt": "daily-current-programs-restored.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    },
+    {
+      "case": "capture-missing-timestamp-scope",
+      "receipt": "daily-current-program-capture.json",
+      "accepted": true,
+      "error_type": null,
+      "desired_refusal_verified": false
+    }
+  ],
+  "actual_safe_inputs_used": true,
+  "remote_calls": false,
+  "mutated_guest_receipts_written": false,
+  "release_certificate_written": false
+}

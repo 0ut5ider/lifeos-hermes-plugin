@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "unchanged-release",
+      "accepted": true,
+      "error": null,
+      "expected_behavior_verified": true,
+      "scope": "Actual checker and fingerprints, synthetic _load boundary and actual synthetic files only"
+    },
+    {
+      "case": "direct-file-owner-mount",
+      "accepted": true,
+      "error": null,
+      "expected_behavior_verified": true,
+      "scope": "Actual checker and fingerprints, synthetic _load boundary and actual synthetic files only"
+    },
+    {
+      "case": "nested-file-override-is-not-directory-override",
+      "accepted": false,
+      "error": "Program recovery preserves a later artifact edit",
+      "expected_behavior_verified": true,
+      "scope": "Actual checker and fingerprints, synthetic _load boundary and actual synthetic files only"
+    },
+    {
+      "case": "unrelated-directory-edit-refuses",
+      "accepted": false,
+      "error": "Program recovery preserves a later artifact edit",
+      "expected_behavior_verified": true,
+      "scope": "Actual checker and fingerprints, synthetic _load boundary and actual synthetic files only"
+    },
+    {
+      "case": "retained-before-edit-refuses",
+      "accepted": false,
+      "error": "The retained program differs from its recorded identity",
+      "expected_behavior_verified": true,
+      "scope": "Actual checker and fingerprints, synthetic _load boundary and actual synthetic files only"
+    },
+    {
+      "case": "blind-current-directory-override-accepts-unrelated-edit",
+      "accepted": true,
+      "error": null,
+      "expected_behavior_verified": true,
+      "scope": "Actual checker and fingerprints, synthetic _load boundary and actual synthetic files only"
+    }
+  ],
+  "product_checker_sha256": "238f912b7c1a0619f570384a33e971218b34a192ae00c4b3480b4187e6e86de4",
+  "remote_calls": false,
+  "live_journals_read": false,
+  "guest_receipts_written": false
+}

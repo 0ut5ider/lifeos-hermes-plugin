@@ -1,0 +1,30 @@
+{
+  "case": "wrong-owner-after-renewal",
+  "wrong_identity_refusal_swallowed": true,
+  "returned_state": "applied",
+  "error": null,
+  "calls": [
+    {
+      "action": "get",
+      "path": "operations"
+    },
+    {
+      "action": "owner-login-navigation"
+    },
+    {
+      "action": "get",
+      "path": "me"
+    },
+    {
+      "action": "bounded-retry"
+    },
+    {
+      "action": "get",
+      "path": "operations"
+    }
+  ],
+  "http_boundary_injected_only": true,
+  "browser_used": false,
+  "remote_commands_run": false,
+  "guest_completion_receipt_written": false
+}

@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "server": "daily",
+  "pulse_editor_enabled": true,
+  "pulse_user_configuration_sha256": "d267514e5e10a4c6191a4c80bba5e9681cbdd68f82a22700e039f561c8b010ff",
+  "normal_morning_job_enabled": true,
+  "normal_morning_schedule": "0 7 * * *",
+  "services": {
+    "hermes-dashboard.service": {
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "hermes-gateway.service": {
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "com.lifeos.pulse.service": {
+      "ActiveState": "active",
+      "SubState": "running"
+    }
+  },
+  "original_0700_wall_clock_observed": false,
+  "manual_job_run": false,
+  "personal_records_read": false
+}

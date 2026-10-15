@@ -6,9 +6,9 @@ Adrian selects private-channel setup after creation of the daily guest. Shiny He
 
 Audio and video processing move to the later voice release. Do not start the Content media runner for this text release. Main Pulse retains the governed Content board and its admitted board actions. A native run request records intent; it does not establish working extraction, transcription, or production.
 
-Use the actual Hermes dashboard for administration. The first-release profile disables the native Pulse Hermes core-file editor. Its legacy status and file routes do not have governed owner adapters. Adrian confirms this launch selection on October 10. It preserves the main Pulse personal dashboards and the governed gateway health readers. Do not enable the editor until its read and write routes pass current owner admission and publication checks.
+The current 0.5.0 release enables the governed Pulse core-file editor after exact-package qualification and current owner source admission. Use the actual Hermes dashboard for integration administration. The Pulse editor requires the authenticated owner for eligible reads, writes, and remounts. It keeps credential routes sealed. The [0.5.0 release record](../../verification/2026-10-14-release-0.5.0/README.md) records the installed and browser tests and actual daily activation. Adrian's October 10 decision to disable the editor describes the first-release checkpoint.
 
-Complete the governed Pulse editor in a later tested release. The [project to-do list](../../../TODO.md) retains its required read, write, remount, revocation, and recovery checks.
+Release 0.5.0 completes the governed editor checks for reads, writes, remounts, revocation, and recovery. The [project to-do list](../../../TODO.md) records the remaining voice, media, import, and reverse migration work.
 
 The operator deployment must perform these actions:
 

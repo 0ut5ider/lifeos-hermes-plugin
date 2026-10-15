@@ -1,0 +1,244 @@
+{
+  "status": "PASS",
+  "owned_guests_removed": [
+    111,
+    112,
+    113
+  ],
+  "restore_guest_already_removed": 110,
+  "owned_storage_removed": true,
+  "protected_archive_preserved": "PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+  "other_guests_preserved": {
+    "100": {
+      "type": "lxc",
+      "name": "lifeos-install-probe",
+      "status": "running"
+    },
+    "101": {
+      "type": "lxc",
+      "name": "lifeos-dev",
+      "status": "running"
+    },
+    "102": {
+      "type": "lxc",
+      "name": "lifeos-daily",
+      "status": "running"
+    },
+    "106": {
+      "type": "lxc",
+      "name": "lifeos-ui-test-public",
+      "status": "stopped"
+    },
+    "801": {
+      "type": "qemu",
+      "name": "processing",
+      "status": "running"
+    }
+  },
+  "operations": [
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content/PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/cluster/resources",
+        "--type",
+        "vm",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/storage/lifeos-050-tests",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "111"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "112"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "113"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "shutdown",
+        "111",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "status",
+        "111"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "111"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "destroy",
+        "111",
+        "--purge",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "shutdown",
+        "112",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "status",
+        "112"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "112"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "destroy",
+        "112",
+        "--purge",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "shutdown",
+        "113",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "status",
+        "113"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "config",
+        "113"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "destroy",
+        "113",
+        "--purge",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/cluster/resources",
+        "--type",
+        "vm",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/storage/lifeos-050-tests",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/lifeos-050-tests/content",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesm",
+        "remove",
+        "lifeos-050-tests"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

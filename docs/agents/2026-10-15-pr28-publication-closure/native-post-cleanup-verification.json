@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "protected_archive": "PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+  "native_pruning_protection_verified": true,
+  "owned_guests_absent": [
+    110,
+    111,
+    112,
+    113
+  ],
+  "owned_storage_registration_absent": true,
+  "owned_storage_directory_absent": true,
+  "preserved_guests": {
+    "100": {
+      "type": "lxc",
+      "name": "lifeos-install-probe",
+      "status": "running"
+    },
+    "101": {
+      "type": "lxc",
+      "name": "lifeos-dev",
+      "status": "running"
+    },
+    "102": {
+      "type": "lxc",
+      "name": "lifeos-daily",
+      "status": "running"
+    },
+    "106": {
+      "type": "lxc",
+      "name": "lifeos-ui-test-public",
+      "status": "stopped"
+    },
+    "801": {
+      "type": "qemu",
+      "name": "processing",
+      "status": "running"
+    }
+  }
+}

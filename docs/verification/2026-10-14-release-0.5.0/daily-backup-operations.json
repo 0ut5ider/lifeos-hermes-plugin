@@ -1,0 +1,69 @@
+[
+  {
+    "label": "drain-daily",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/52af3122ef614ac49ef55b692e392f0c/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.142443808988901
+  },
+  {
+    "label": "backup-daily",
+    "command": [
+      "vzdump",
+      "102",
+      "--storage",
+      "PBS-01",
+      "--mode",
+      "snapshot",
+      "--notes-template",
+      "LifeOS 0.4.3 before complete 0.5.0 transition"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 234.5788647300069
+  },
+  {
+    "label": "archives",
+    "command": [
+      "pvesh",
+      "get",
+      "/nodes/pve-tr1950x/storage/PBS-01/content",
+      "--content",
+      "backup",
+      "--vmid",
+      "102",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.388321050995728
+  },
+  {
+    "label": "resume-daily",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/52af3122ef614ac49ef55b692e392f0c/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.2975831420044415
+  }
+]

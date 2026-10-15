@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "all-seven",
+      "native_manifest_accepts": true,
+      "previous_caller_guard_shape_accepts": true,
+      "current_caller_accepts": true,
+      "expected_result_verified": true
+    },
+    {
+      "case": "missing-output",
+      "native_manifest_accepts": true,
+      "previous_caller_guard_shape_accepts": true,
+      "current_caller_accepts": false,
+      "expected_result_verified": true
+    },
+    {
+      "case": "extra-baseline",
+      "native_manifest_accepts": true,
+      "previous_caller_guard_shape_accepts": true,
+      "current_caller_accepts": false,
+      "expected_result_verified": true
+    }
+  ],
+  "scope": "Native manifest parser plus exact current evidence guards. Previous guard shape excludes only the newly added target coverage assertion. Synthetic files only.",
+  "remote_calls": false
+}

@@ -1,0 +1,32 @@
+{
+  "report": {
+    "status": "PASS",
+    "action": "prepare",
+    "version": "0.5.0",
+    "cases": [
+      {
+        "case": "baseline",
+        "files": 51,
+        "archives": 1,
+        "journal_present": false
+      },
+      {
+        "case": "interrupted",
+        "files": 55,
+        "archives": 2,
+        "journal_present": true
+      },
+      {
+        "case": "later-edit",
+        "files": 55,
+        "archives": 2,
+        "journal_present": true
+      }
+    ],
+    "personal_data_used": false,
+    "live_store_modified": false
+  },
+  "receipt_sha256": "d6071eedad507e18a4d87a80124a26ab288f3f6e322d5bd02f5b8c80748db2fc",
+  "evidence_directory": "/root/lifeos-release-0.5.0/daily-whole-guest-restore",
+  "operation": "b9e873b251604202a58442b502a3c2b2"
+}

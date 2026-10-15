@@ -1,0 +1,123 @@
+{
+  "status": "PASS",
+  "cases": 7,
+  "results": [
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "pre-drain",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [],
+      "original_error": "injected-pre-drain-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "drain",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "drain-daily",
+        "recover-daily-services"
+      ],
+      "original_error": "injected-drain-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "drain",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "drain-daily",
+        "recover-daily-services"
+      ],
+      "original_error": "injected-drain-failure",
+      "notes": [
+        "Daily service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "backup",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "drain-daily",
+        "backup-daily",
+        "recover-daily-services"
+      ],
+      "original_error": "injected-backup-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "backup",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "drain-daily",
+        "backup-daily",
+        "recover-daily-services"
+      ],
+      "original_error": "injected-backup-failure",
+      "notes": [
+        "Daily service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "resume",
+      "cleanup_fails": false,
+      "status": "PASS",
+      "calls": [
+        "drain-daily",
+        "backup-daily",
+        "archives",
+        "resume-daily",
+        "recover-daily-services"
+      ],
+      "original_error": "injected-resume-failure",
+      "notes": [],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    },
+    {
+      "operator": "protect_daily.py",
+      "failure_stage": "resume",
+      "cleanup_fails": true,
+      "status": "PASS",
+      "calls": [
+        "drain-daily",
+        "backup-daily",
+        "archives",
+        "resume-daily",
+        "recover-daily-services"
+      ],
+      "original_error": "injected-resume-failure",
+      "notes": [
+        "Daily service recovery also fails: RuntimeError"
+      ],
+      "failure_marker_in_memory": true,
+      "receipt_written": false,
+      "remote_commands_run": false
+    }
+  ],
+  "control_flow_fault_injection_only": true
+}

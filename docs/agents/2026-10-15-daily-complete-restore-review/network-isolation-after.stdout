@@ -1,0 +1,307 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "single-interface",
+      "status": "PASS",
+      "refused": false,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "restored-config-before-disconnect",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        },
+        {
+          "label": "disconnect-net0",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0"
+          ]
+        },
+        {
+          "label": "disable-automatic-start",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        },
+        {
+          "label": "verify-disconnected-before-boot",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "two-interfaces",
+      "status": "PASS",
+      "refused": false,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "restored-config-before-disconnect",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        },
+        {
+          "label": "disconnect-net0",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0"
+          ]
+        },
+        {
+          "label": "disconnect-net1",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net1"
+          ]
+        },
+        {
+          "label": "disable-automatic-start",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        },
+        {
+          "label": "verify-disconnected-before-boot",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "already-disconnected",
+      "status": "PASS",
+      "refused": false,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "restored-config-before-disconnect",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        },
+        {
+          "label": "disable-automatic-start",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        },
+        {
+          "label": "verify-disconnected-before-boot",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "stubborn-interface",
+      "status": "PASS",
+      "refused": true,
+      "remaining_interfaces": [
+        "net1: name=eth1,bridge=vmbr1"
+      ],
+      "calls": [
+        {
+          "label": "restored-config-before-disconnect",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        },
+        {
+          "label": "disconnect-net0",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0"
+          ]
+        },
+        {
+          "label": "disconnect-net1",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net1"
+          ]
+        },
+        {
+          "label": "disable-automatic-start",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        },
+        {
+          "label": "verify-disconnected-before-boot",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "raw-lxc-interface",
+      "status": "PASS",
+      "refused": true,
+      "remaining_interfaces": [
+        "lxc.net.0.type: veth"
+      ],
+      "calls": [
+        {
+          "label": "restored-config-before-disconnect",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        },
+        {
+          "label": "disconnect-net0",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0"
+          ]
+        },
+        {
+          "label": "disable-automatic-start",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        },
+        {
+          "label": "verify-disconnected-before-boot",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    },
+    {
+      "case": "privileged-guest",
+      "status": "PASS",
+      "refused": true,
+      "remaining_interfaces": [],
+      "calls": [
+        {
+          "label": "restored-config-before-disconnect",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        },
+        {
+          "label": "disconnect-net0",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--delete",
+            "net0"
+          ]
+        },
+        {
+          "label": "disable-automatic-start",
+          "command": [
+            "pct",
+            "set",
+            "110",
+            "--onboot",
+            "0",
+            "--tags",
+            "disposable;lifeos-050-daily-recovery"
+          ]
+        },
+        {
+          "label": "verify-disconnected-before-boot",
+          "command": [
+            "pct",
+            "config",
+            "110"
+          ]
+        }
+      ],
+      "remote_calls": false,
+      "guest_booted": false
+    }
+  ]
+}

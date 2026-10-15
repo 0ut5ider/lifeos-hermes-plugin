@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "source": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-14-release-0.5.0/activate_daily_editor.py",
+  "cases": [
+    {
+      "case": "partial-stop-failure",
+      "calls": [
+        "stop",
+        "start"
+      ],
+      "error_type": "OriginalFailure",
+      "error": "Partial stop failure",
+      "expected_cleanup_and_original_failure": true,
+      "notes": [],
+      "remote_calls": false,
+      "config_read": false,
+      "file_write": false
+    },
+    {
+      "case": "write-failure-start-succeeds",
+      "calls": [
+        "stop",
+        "start"
+      ],
+      "error_type": "OriginalFailure",
+      "error": "Configuration publication failure",
+      "expected_cleanup_and_original_failure": true,
+      "notes": [],
+      "remote_calls": false,
+      "config_read": false,
+      "file_write": false
+    },
+    {
+      "case": "write-failure-start-fails",
+      "calls": [
+        "stop",
+        "start"
+      ],
+      "error_type": "OriginalFailure",
+      "error": "Configuration publication failure",
+      "expected_cleanup_and_original_failure": true,
+      "notes": [
+        "Pulse restart also fails: CleanupFailure"
+      ],
+      "remote_calls": false,
+      "config_read": false,
+      "file_write": false
+    }
+  ]
+}

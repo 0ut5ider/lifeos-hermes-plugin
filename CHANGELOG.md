@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0 (qualified, publication pending)
+## 0.5.0 (2026-10-14)
 
 - Verify omitted native program baseline entries against the exact accepted archive before release updates.
 - Preserve later edits and refuse changed, missing, or redirected accepted archives.
@@ -12,8 +12,12 @@
 - Govern native health, guard-log analysis, mount checks, and remount requests.
 - Hide cached core files when the overview fails or a core request refuses current owner access.
 - Preserve drafts for source conflicts and require fresh reads after owner access resumes.
-- Verify the governed editor in the installed candidate. Preserve the daily 0.4.3 profile until qualified promotion.
+- Verify the installed editor. Deploy the complete package to development and daily profiles after qualification.
+- Preserve daily model tiers, native HOME, configuration, and lasting memory.
+- Enable the daily governed editor after current owner source admission.
+- Verify public installation from the default GitHub URL and complete updates through Update plugin.
 - Qualify the exact package with 821 integration tests, 716 native tests, and actual recovery and development acceptance.
+- Verify the protected final daily restore across 64,567 runtime artifacts, 221 selected targets, seven current owner outputs, and three Atlas cases.
 
 ## 0.4.3 (2026-10-14)
 

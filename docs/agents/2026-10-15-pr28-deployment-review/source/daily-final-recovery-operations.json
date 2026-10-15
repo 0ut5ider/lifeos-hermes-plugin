@@ -1,0 +1,398 @@
+[
+  {
+    "label": "inventory",
+    "command": [
+      "pvesh",
+      "get",
+      "/cluster/resources",
+      "--type",
+      "vm",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.1068989250052255
+  },
+  {
+    "label": "editor-checkpoint",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.900933717013686
+  },
+  {
+    "label": "check-existing-synthetic-atlas",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9452996290056035
+  },
+  {
+    "label": "drain-source",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.775231228006305
+  },
+  {
+    "label": "capture-current-owner-mount",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-0.5.0/verify_daily_restored_programs.py",
+      "capture",
+      "b9e873b251604202a58442b502a3c2b2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 80.35467724299815
+  },
+  {
+    "label": "capture-program-artifacts",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-0.5.0/program_artifact_receipt.py",
+      "capture",
+      "b9e873b251604202a58442b502a3c2b2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 20.25823444299749
+  },
+  {
+    "label": "backup-source",
+    "command": [
+      "vzdump",
+      "102",
+      "--storage",
+      "PBS-01",
+      "--mode",
+      "snapshot",
+      "--notes-template",
+      "LifeOS 0.5.0 daily complete release recovery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 298.5127520090027
+  },
+  {
+    "label": "archives",
+    "command": [
+      "pvesh",
+      "get",
+      "/nodes/pve-tr1950x/storage/PBS-01/content",
+      "--content",
+      "backup",
+      "--vmid",
+      "102",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.4401766789960675
+  },
+  {
+    "label": "resume-source",
+    "command": [
+      "pct",
+      "exec",
+      "102",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.25867734500207
+  },
+  {
+    "label": "protect-archive",
+    "command": [
+      "pvesh",
+      "set",
+      "/nodes/pve-tr1950x/storage/PBS-01/content/PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+      "--protected",
+      "1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.2047722270071972
+  },
+  {
+    "label": "verify-protection",
+    "command": [
+      "pvesh",
+      "get",
+      "/nodes/pve-tr1950x/storage/PBS-01/content/PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+      "--output-format",
+      "json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.318413511995459
+  },
+  {
+    "label": "restore",
+    "command": [
+      "pct",
+      "restore",
+      "110",
+      "PBS-01:backup/ct/102/2026-10-15T03:19:34Z",
+      "--storage",
+      "lifeos-050-tests",
+      "--rootfs",
+      "lifeos-050-tests:120",
+      "--unprivileged",
+      "1",
+      "--onboot",
+      "0",
+      "--hostname",
+      "lifeos-050-daily-recovery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 340.99951543900534
+  },
+  {
+    "label": "restored-config-before-disconnect",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.026256288998411
+  },
+  {
+    "label": "disconnect-net0",
+    "command": [
+      "pct",
+      "set",
+      "110",
+      "--delete",
+      "net0"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8956485980015714
+  },
+  {
+    "label": "disable-automatic-start",
+    "command": [
+      "pct",
+      "set",
+      "110",
+      "--onboot",
+      "0",
+      "--tags",
+      "disposable;lifeos-050-daily-recovery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8770292560075177
+  },
+  {
+    "label": "verify-disconnected-before-boot",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8336476750118891
+  },
+  {
+    "label": "mount",
+    "command": [
+      "pct",
+      "mount",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9729505779978354
+  },
+  {
+    "label": "unmount",
+    "command": [
+      "pct",
+      "unmount",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9081977119931253
+  },
+  {
+    "label": "boot-isolated",
+    "command": [
+      "pct",
+      "start",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.1852579260012135
+  },
+  {
+    "label": "restored-config",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9176650549925398
+  },
+  {
+    "label": "network",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "ip",
+      "-brief",
+      "address"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9010330379969673
+  },
+  {
+    "label": "verify-history",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-0.5.0/history_guest_recovery.py",
+      "verify",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/package"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.488066682999488
+  },
+  {
+    "label": "verify-program-artifacts",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-0.5.0/program_artifact_receipt.py",
+      "verify",
+      "b9e873b251604202a58442b502a3c2b2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 11.909118180992664
+  },
+  {
+    "label": "verify-stable-programs",
+    "command": [
+      "pct",
+      "exec",
+      "110",
+      "--",
+      "runuser",
+      "-u",
+      "lifeos-hermes",
+      "--",
+      "/home/lifeos-hermes/.hermes/.lifeos-releases/b9e873b251604202a58442b502a3c2b2/python-environment/bin/python",
+      "-B",
+      "/home/lifeos-hermes/releases/qualification-0.5.0/verify_daily_restored_programs.py",
+      "verify",
+      "b9e873b251604202a58442b502a3c2b2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 42.041960305999964
+  },
+  {
+    "label": "shutdown-restore",
+    "command": [
+      "pct",
+      "shutdown",
+      "110",
+      "--timeout",
+      "90"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 5.3388426599995
+  },
+  {
+    "label": "cleanup-config",
+    "command": [
+      "pct",
+      "config",
+      "110"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.8476643680041889
+  },
+  {
+    "label": "destroy-disposable",
+    "command": [
+      "pct",
+      "destroy",
+      "110",
+      "--purge",
+      "1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9214324450003915
+  }
+]

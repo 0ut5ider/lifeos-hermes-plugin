@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-release-cleanup-review/check_cleanup_boundaries.py", line 56, in <module>
+    with contextlib.redirect_stdout(io.StringIO()):ns['main']()
+                                                   ~~~~~~~~~~^^
+  File "<actual-cleanup-operator>", line 38, in main
+  File "<actual-cleanup-operator>", line 20, in run
+AttributeError: 'Output' object has no attribute 'with_suffix'

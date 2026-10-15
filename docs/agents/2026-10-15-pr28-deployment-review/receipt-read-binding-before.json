@@ -1,0 +1,30 @@
+{
+  "case": "receipt-changes-between-parse-and-hash",
+  "certificate_accepts": true,
+  "parsed_import_flag": false,
+  "hashed_receipt_import_flag": true,
+  "binds_changed_unvalidated_bytes": true,
+  "reads": {
+    "daily-manager-bootstrap.json": 2,
+    "daily-ui-owner-apply.json": 2,
+    "PUBLIC-LATEST-ACCEPTANCE.json": 2,
+    "current-server-identities.json": 2,
+    "daily-verification.json": 2,
+    "daily-native-skill-review.json": 2,
+    "daily-editor-activation.json": 2,
+    "daily-post-admission-verification.json": 2,
+    "daily-post-backup-health.json": 2,
+    "daily-complete-restore.json": 2,
+    "daily-current-programs-restored.json": 2,
+    "daily-current-program-capture.json": 2,
+    "daily-complete-runtime-artifacts.json": 2,
+    "daily-runtime-artifact-capture.json": 2,
+    "daily-atlas-restored.json": 2,
+    "daily-final-recovery-operations.json": 2,
+    "release-test-cleanup.json": 2,
+    "RELEASE-CERTIFICATE.json": 1
+  },
+  "remote_calls": false,
+  "actual_receipts_modified": false,
+  "release_certificate_written": false
+}
