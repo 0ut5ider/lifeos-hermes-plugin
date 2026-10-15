@@ -7,23 +7,35 @@ from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint
 
 
+DIRECTORIES=('bin','hermes','python-environment','dependency-profile/tools','pm-runtime','bytecode')
+EXCLUDED={'python-environment':frozenset({'.lock'}),'hermes':frozenset({'.hermes','.bytecode-fingerprint'})}
+
+
+def _covered(target, root):
+    for name in DIRECTORIES:
+        directory=root/name
+        if target.is_relative_to(directory):
+            relative=target.relative_to(directory)
+            return not relative.parts or relative.parts[0] not in EXCLUDED.get(name,())
+    return False
+
+
 def identity(root):
     root=Path(root).absolute()
     if root.resolve()!=root or not root.is_dir():
         raise ReleaseRejected('The stock executable runtime requires its physical prepared directory')
     result={}
-    for name in ('bin','hermes','python-environment','dependency-profile/tools','pm-runtime','bytecode',
-            'enabled-features.json','manifest.json','runtime.json'):
+    for name in (*DIRECTORIES,'enabled-features.json','manifest.json','runtime.json'):
         path=root/name;links={}
         if path.is_dir():
             for parent,directories,files in os.walk(path,followlinks=False):
                 for item in (*directories,*files):
                     child=Path(parent)/item
                     if not child.is_symlink():continue
-                    if not child.resolve(strict=True).is_relative_to(root):
-                        raise ReleaseRejected('The stock executable runtime contains an external dependency link')
+                    if not _covered(child.resolve(strict=True),root):
+                        raise ReleaseRejected('The stock executable runtime contains an unbound dependency link')
                     links[str(child.relative_to(path))]=os.readlink(child)
-        excluded={'python-environment':frozenset({'.lock'}),'hermes':frozenset({'.hermes','.bytecode-fingerprint'})}.get(name,())
+        excluded=EXCLUDED.get(name,())
         selected=fingerprint(path,allow_links=True,external_links=links,excluded_root_entries=excluded,include_bytecode=True)
         if selected is None and name!='bytecode':
             raise ReleaseRejected('The stock executable runtime loses a required artifact')

@@ -1,0 +1,15 @@
+test_contained_interpreter_link_cannot_select_unbound_target_bytes (docs.agents.2026-10-15-removal-cache-review.link_target_probe.LinkTargetReview.test_contained_interpreter_link_cannot_select_unbound_target_bytes) ... FAIL
+
+======================================================================
+FAIL: test_contained_interpreter_link_cannot_select_unbound_target_bytes (docs.agents.2026-10-15-removal-cache-review.link_target_probe.LinkTargetReview.test_contained_interpreter_link_cannot_select_unbound_target_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-cache-review/link_target_probe.py", line 32, in test_contained_interpreter_link_cannot_select_unbound_target_bytes
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'contained_target': True, 'execution_identity_unchanged': True, 'changed_interpreter_admitted': True, 'selected_command_exit': 94}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.082s
+
+FAILED (failures=1)

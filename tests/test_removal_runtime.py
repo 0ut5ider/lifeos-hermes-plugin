@@ -48,6 +48,20 @@ class RemovalRuntimeTests(unittest.TestCase):
         plan=self.plan();path=self.root/'python-environment/bin/python';path.unlink();path.symlink_to('/usr/bin/python3')
         with self.assertRaises(ValueError):_stock(self.job,plan)
 
+    def test_contained_links_must_target_hashed_execution_components(self):
+        for name in ('tools/private-python','hermes/.hermes/private-python','python-environment/.lock'):
+            with self.subTest(name=name):
+                target=self.root/name;target.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+                publish(target,b'#!/bin/sh\nexit 94\n',0o700)
+                path=self.root/'python-environment/bin/python';path.unlink();path.symlink_to(target)
+                with self.assertRaises(ValueError):self.plan()
+
+    def test_directory_link_cannot_hide_unbound_executable_files(self):
+        target=self.root/'hermes/.hermes/unbound';target.mkdir(parents=True)
+        publish(target/'synthetic.py',b'Synthetic unbound executable')
+        (self.root/'python-environment/lib/hidden').symlink_to(target,target_is_directory=True)
+        with self.assertRaises(ValueError):self.plan()
+
     def test_later_bytecode_changes_executable_review(self):
         plan=self.plan();publish(self.root/'python-environment/lib/site-packages/synthetic.pyc',b'Synthetic cache')
         with self.assertRaises(ValueError):_stock(self.job,plan)
