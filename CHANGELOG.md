@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 (unreleased)
+## 0.6.0 (2026-10-15)
 
 - Add owner-reviewed import from Hermes memory and portable LifeOS bundles.
 - Preserve source occurrences, original bytes, references, and import provenance.
@@ -14,7 +14,8 @@
 - Bind stock runtime execution, retained recovery sources, and software ownership.
 - Normalize the retained environment before removal review with the pinned Hermes formatter.
 - Exclude portability runtime workspaces from data-only backups. Full guest backups retain them.
-- Keep release qualification and installed removal acceptance in progress.
+- Qualify the exact package with installed removal, interrupted recovery, and disconnected whole-guest restore.
+- Verify the default GitHub manager installation, latest stable package, preserved model choices, and an actual model reply.
 
 ## 0.5.0 (2026-10-14)
 
