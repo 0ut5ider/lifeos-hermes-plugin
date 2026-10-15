@@ -181,6 +181,7 @@ def launch(job, unit, action):
     host=Path(_launchers.__file__).resolve().parents[1]
     worker=Path(__file__).with_name('memory_workflow_worker.py')
     python=sys.executable
+    runtime=None
     request=read_private(job/'request.json')
     if request['selection']['kind']=='removal' and (job/'review.json').exists():
         from .removal_workflow import launch_sources
@@ -190,6 +191,9 @@ def launch(job, unit, action):
     code="worker=sys.argv.pop(1)\nsys.argv[0]=worker\nrunpy.run_path(worker,run_name='__main__')\n"
     command=_launchers.runtime_command(host,[str(worker),str(job),action],
         code=code,python=python)
+    if runtime is not None:
+        from .removal_runtime import command as stock_command
+        command=stock_command(command,runtime)
     profile=job.parent.parent
     environment={'HOME':str(account_home(profile)),'HERMES_HOME':str(profile),'PATH':os.environ.get('PATH',os.defpath),
         'PYTHONDONTWRITEBYTECODE':'1'}
@@ -209,6 +213,9 @@ def _probe(profile, source, expected, *, runtime=None):
     host=host if runtime is None else Path(runtime['source'])
     python=sys.executable if runtime is None else runtime['python']
     command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
+    if runtime is not None:
+        from .removal_runtime import command as stock_command
+        command=stock_command(command,runtime)
     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
     result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
     if result.returncode or result.stderr:raise RuntimeError('The actual fresh Hermes agent does not verify the reviewed memory')

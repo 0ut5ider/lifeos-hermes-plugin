@@ -105,7 +105,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
     from . import removal_generation,removal_inventory,removal_ownership
     from .removal_recovery import basic_settings
     from .removal_services import RemovalServices
-    from .removal_runtime import identity as runtime_identity
+    from .removal_runtime import identity as runtime_identity,launchers
     if selected.get('disable_discord') is not True:
         raise ReleaseRejected('Complete removal requires explicit review of Discord disablement')
     profile=profile_directory(profile);job=_directory(job)
@@ -137,6 +137,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         stage=job/'removal';stage.mkdir(mode=0o700)
         runtime_root=job/'stock-runtime';runtime_root.mkdir(mode=0o700)
         runtime=prepare_runtime(runtime_root,package,dashboard,profile,stock=True)
+        launchers(runtime_root)
         for name,files,origin in (('recovery-bridge',generation['bridge_files'],profile/'plugins/lifeos-hook-bridge'),
                 ('recovery-manager',generation['manager_files'],profile/'plugins/lifeos-release-manager')):
             validate_files(origin,files)
@@ -200,4 +201,6 @@ def _recovery_command(profile, job, runtime):
         'runpy.run_path(selected["worker"],run_name="__main__")\n')
     command=_launchers.runtime_command(Path(runtime['source']),[str(profile),job.name],
         code=code,python=runtime['python'])
+    from .removal_runtime import command as stock_command
+    command=stock_command(command,runtime)
     return ('#!/bin/sh\nexec '+shlex.join(command)+' "$@"\n').encode()

@@ -1,6 +1,10 @@
 # ABOUTME: Checks the exact executable closure selected for complete LifeOS removal.
 # ABOUTME: Preserves reviewed commands and refuses later interpreter, dependency, and launcher edits.
 from pathlib import Path
+import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -44,7 +48,28 @@ class RemovalRuntimeTests(unittest.TestCase):
         plan=self.plan();path=self.root/'python-environment/bin/python';path.unlink();path.symlink_to('/usr/bin/python3')
         with self.assertRaises(ValueError):_stock(self.job,plan)
 
-    def test_bytecode_does_not_change_executable_review(self):
+    def test_later_bytecode_changes_executable_review(self):
         plan=self.plan();publish(self.root/'python-environment/lib/site-packages/synthetic.pyc',b'Synthetic cache')
+        with self.assertRaises(ValueError):_stock(self.job,plan)
+
+    def test_non_executable_environment_lock_does_not_change_review(self):
+        plan=self.plan()
         publish(self.root/'python-environment/.lock',b'',0o666)
         self.assertEqual(_stock(self.job,plan),self.runtime)
+
+    def test_stock_child_ignores_adjacent_cache_and_writes_no_cache(self):
+        import importlib.util
+        import importlib._bootstrap_external
+        from optional.lifeos_release_manager.removal_runtime import command
+        source=self.root/'hermes/synthetic.py';source.write_text("VALUE='reviewed-source'\n")
+        cache=Path(importlib.util.cache_from_source(str(source)));cache.parent.mkdir(mode=0o700)
+        metadata=source.stat()
+        cache.write_bytes(importlib._bootstrap_external._code_to_timestamp_pyc(
+            compile("VALUE='unreviewed-cache'\n",str(source),'exec'),
+            mtime=int(metadata.st_mtime),source_size=metadata.st_size))
+        run=[sys.executable,'-I','-c','import json,sys;sys.path.insert(0,sys.argv[1]);import synthetic;print(json.dumps(synthetic.VALUE))',str(source.parent)]
+        result=subprocess.run(command(run,self.runtime),capture_output=True,text=True,timeout=15,
+            env=dict(os.environ,PYTHONPYCACHEPREFIX=str(cache.parent)))
+        self.assertEqual(result.returncode,0,result.stderr);self.assertEqual(result.stderr,'')
+        self.assertEqual(json.loads(result.stdout),'reviewed-source')
+        self.assertFalse((self.root/'bytecode').exists())

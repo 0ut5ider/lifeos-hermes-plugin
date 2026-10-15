@@ -2,6 +2,7 @@
 # ABOUTME: Inspects bounded owner metadata and exports no command text, environment, or credentials.
 import os
 from pathlib import Path
+import re
 import stat
 import subprocess
 
@@ -18,6 +19,11 @@ def _expanded(data, profile):
     for prefix in (b'${HOME}',b'$HOME',b'%h',b'~'):
         data=data.replace(prefix+b'/',home+b'/')
     return data
+
+
+def _consumes(data, profile, tokens):
+    data=_expanded(data,profile)
+    return any(token in data for token in tokens) or re.search(rb'(?<![A-Za-z0-9_./-])bun(?![A-Za-z0-9_.-])',data)
 
 
 def _manager(*arguments):
@@ -76,7 +82,7 @@ def unit_files(profile, installed, *, known):
             definitions=_paths(values.get('FragmentPath',''))+_paths(values.get('DropInPaths',''))
             paths.extend(definitions)
             if definitions and all(path in known or path.resolve() in known for path in definitions):continue
-            if any(token in _expanded(block.encode(),profile) for token in tokens):
+            if _consumes(block.encode(),profile,tokens):
                 raise ReleaseRejected('Another loaded account service uses the reviewed integration programs or profile')
     visited=set()
     for path in paths:
@@ -100,7 +106,7 @@ def unit_files(profile, installed, *, known):
         if (len(data)>1024*1024 or stamp(before)!=stamp(after) or stamp(after)!=stamp(physical.stat())
                 or path.resolve()!=physical):
             raise ReleaseRejected('An account service definition changes during inspection')
-        if any(token in _expanded(data,profile) for token in tokens):
+        if _consumes(data,profile,tokens):
             raise ReleaseRejected('Another account service uses the reviewed integration programs or profile')
 
 

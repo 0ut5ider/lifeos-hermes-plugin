@@ -12,7 +12,7 @@ def identity(root):
     if root.resolve()!=root or not root.is_dir():
         raise ReleaseRejected('The stock executable runtime requires its physical prepared directory')
     result={}
-    for name in ('bin','python-environment','dependency-profile/tools','pm-runtime',
+    for name in ('bin','hermes','python-environment','dependency-profile/tools','pm-runtime','bytecode',
             'enabled-features.json','manifest.json','runtime.json'):
         path=root/name;links={}
         if path.is_dir():
@@ -23,9 +23,25 @@ def identity(root):
                     if not child.resolve(strict=True).is_relative_to(root):
                         raise ReleaseRejected('The stock executable runtime contains an external dependency link')
                     links[str(child.relative_to(path))]=os.readlink(child)
-        excluded=frozenset({'.lock'}) if name=='python-environment' else ()
-        selected=fingerprint(path,allow_links=True,external_links=links,excluded_root_entries=excluded)
-        if selected is None:
+        excluded={'python-environment':frozenset({'.lock'}),'hermes':frozenset({'.hermes','.bytecode-fingerprint'})}.get(name,())
+        selected=fingerprint(path,allow_links=True,external_links=links,excluded_root_entries=excluded,include_bytecode=True)
+        if selected is None and name!='bytecode':
             raise ReleaseRejected('The stock executable runtime loses a required artifact')
         result[name]=selected
     return result
+
+
+def command(command, runtime):
+    root=Path(runtime['source']).parent
+    return [command[0],'-B','-X','pycache_prefix='+str(root/'bytecode'),*command[1:]]
+
+
+def launchers(root):
+    from .release_programs import publish
+    before='export PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-${XDG_CACHE_HOME:-$HOME/.cache}/hermes-pycache}"'
+    after='export PYTHONPYCACHEPREFIX="$root/bytecode"\nexport PYTHONDONTWRITEBYTECODE=1'
+    for name in ('hermes','hermes-agent','hermes-acp'):
+        path=Path(root)/'bin'/name;data=path.read_text()
+        if data.count(before)!=1:
+            raise ReleaseRejected('The prepared stock launcher has an unsupported bytecode selection')
+        publish(path,data.replace(before,after).encode(),path.stat().st_mode & 0o777)

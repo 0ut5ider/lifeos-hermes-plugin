@@ -42,7 +42,7 @@ def sync_directory(path):
         os.close(descriptor)
 
 
-def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_links=None):
+def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_links=None, include_bytecode=False):
     path = Path(path).absolute()
     if path.parent.resolve() != path.parent:
         raise ProgramConflict('A program artifact changes its physical directory')
@@ -62,11 +62,11 @@ def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_l
         if Path(parent) == path:
             directories[:] = [name for name in directories if name not in excluded_root_entries]
             files = [name for name in files if name not in excluded_root_entries]
-        directories[:] = sorted(name for name in directories if name != '__pycache__')
+        directories[:] = sorted(name for name in directories if include_bytecode or name != '__pycache__')
         names = sorted((*directories, *files)) if external_links else (*directories, *sorted(files))
         for name in names:
             child = Path(parent) / name
-            if child.suffix == '.pyc':
+            if child.suffix == '.pyc' and not include_bytecode:
                 continue
             child_info = child.lstat()
             if stat.S_ISLNK(child_info.st_mode) and allow_links:
