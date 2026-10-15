@@ -1,0 +1,100 @@
+test_conflicting_local_identity_is_not_replaced (test_memory_owner_access.MemoryOwnerAccessTests.test_conflicting_local_identity_is_not_replaced) ... ERROR
+test_model_route_change_invalidates_review_without_owner_publication (test_memory_owner_access.MemoryOwnerAccessTests.test_model_route_change_invalidates_review_without_owner_publication) ... ERROR
+test_restricted_local_grant_is_not_expanded (test_memory_owner_access.MemoryOwnerAccessTests.test_restricted_local_grant_is_not_expanded) ... ERROR
+test_review_discloses_and_apply_admits_only_current_local_owner_route (test_memory_owner_access.MemoryOwnerAccessTests.test_review_discloses_and_apply_admits_only_current_local_owner_route) ... ERROR
+
+======================================================================
+ERROR: test_conflicting_local_identity_is_not_replaced (test_memory_owner_access.MemoryOwnerAccessTests.test_conflicting_local_identity_is_not_replaced)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 51, in test_conflicting_local_identity_is_not_replaced
+    with self.assertRaises(MemoryUnavailable):self.review()
+                                              ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 27, in review
+    return self.fixture.preview()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ownership.py", line 60, in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        account='dashboard:owner')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 213, in preview
+    plan, _,local_owner_access = self._plan(configuration, backup, backup_signature, account)
+                                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 198, in _plan
+    selected,local_owner_access=reviewed(configuration,self.profile,original_hermes)
+                                                                    ^^^^^^^^^^^^^^^
+NameError: name 'original_hermes' is not defined
+
+======================================================================
+ERROR: test_model_route_change_invalidates_review_without_owner_publication (test_memory_owner_access.MemoryOwnerAccessTests.test_model_route_change_invalidates_review_without_owner_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 63, in test_model_route_change_invalidates_review_without_owner_publication
+    reviewed=self.review();before=self.configuration.path.read_bytes()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 27, in review
+    return self.fixture.preview()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ownership.py", line 60, in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        account='dashboard:owner')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 213, in preview
+    plan, _,local_owner_access = self._plan(configuration, backup, backup_signature, account)
+                                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 198, in _plan
+    selected,local_owner_access=reviewed(configuration,self.profile,original_hermes)
+                                                                    ^^^^^^^^^^^^^^^
+NameError: name 'original_hermes' is not defined
+
+======================================================================
+ERROR: test_restricted_local_grant_is_not_expanded (test_memory_owner_access.MemoryOwnerAccessTests.test_restricted_local_grant_is_not_expanded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 59, in test_restricted_local_grant_is_not_expanded
+    with self.assertRaises(MemoryUnavailable):self.review()
+                                              ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 27, in review
+    return self.fixture.preview()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ownership.py", line 60, in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        account='dashboard:owner')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 213, in preview
+    plan, _,local_owner_access = self._plan(configuration, backup, backup_signature, account)
+                                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 198, in _plan
+    selected,local_owner_access=reviewed(configuration,self.profile,original_hermes)
+                                                                    ^^^^^^^^^^^^^^^
+NameError: name 'original_hermes' is not defined
+
+======================================================================
+ERROR: test_review_discloses_and_apply_admits_only_current_local_owner_route (test_memory_owner_access.MemoryOwnerAccessTests.test_review_discloses_and_apply_admits_only_current_local_owner_route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 39, in test_review_discloses_and_apply_admits_only_current_local_owner_route
+    before=self.configuration.path.read_bytes();review=self.review()
+                                                       ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_owner_access.py", line 27, in review
+    return self.fixture.preview()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ownership.py", line 60, in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        account='dashboard:owner')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 213, in preview
+    plan, _,local_owner_access = self._plan(configuration, backup, backup_signature, account)
+                                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 198, in _plan
+    selected,local_owner_access=reviewed(configuration,self.profile,original_hermes)
+                                                                    ^^^^^^^^^^^^^^^
+NameError: name 'original_hermes' is not defined
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.182s
+
+FAILED (errors=4)

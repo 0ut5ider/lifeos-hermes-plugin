@@ -1,0 +1,8 @@
+{
+  "status": "FAIL_SAFE",
+  "guest": 112,
+  "cause": "pct listsnapshot does not support --output-format on this Proxmox host. The read-only snapshot query fails before any shutdown or rollback.",
+  "measured_error": "Unknown option: output-format; 400 unable to parse option",
+  "correction": "Use the native pvesh snapshot metadata endpoint.",
+  "product_change_required": false
+}

@@ -1,0 +1,15 @@
+test_changed_staged_directory_refuses_before_publication (docs.agents.2026-10-15-removal-components-review.component_probes.PublicationReview.test_changed_staged_directory_refuses_before_publication) ... FAIL
+
+======================================================================
+FAIL: test_changed_staged_directory_refuses_before_publication (docs.agents.2026-10-15-removal-components-review.component_probes.PublicationReview.test_changed_staged_directory_refuses_before_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-components-review/component_probes.py", line 73, in test_changed_staged_directory_refuses_before_publication
+    self.assertFalse(observed['unreviewed_candidate_published'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+FAILED (failures=1)

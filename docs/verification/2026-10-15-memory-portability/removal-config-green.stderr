@@ -1,0 +1,23 @@
+test_environment_removes_only_the_exact_owned_block (test_removal_configuration.RemovalConfigurationTests.test_environment_removes_only_the_exact_owned_block) ... ok
+test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) ... ok
+test_removal_preserves_current_settings_and_detaches_aliases (test_removal_configuration.RemovalConfigurationTests.test_removal_preserves_current_settings_and_detaches_aliases) ... ok
+test_stock_gateway_keeps_discord_disabled_with_env_token (test_removal_configuration.RemovalConfigurationTests.test_stock_gateway_keeps_discord_disabled_with_env_token) ... FAIL
+
+======================================================================
+FAIL: test_stock_gateway_keeps_discord_disabled_with_env_token (test_removal_configuration.RemovalConfigurationTests.test_stock_gateway_keeps_discord_disabled_with_env_token)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 79, in test_stock_gateway_keeps_discord_disabled_with_env_token
+    self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+    assert Platform.DISCORD not in config.connected_platforms
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'GatewayConfig' object has no attribute 'connected_platforms'. Did you mean: 'get_connected_platforms'?
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.745s
+
+FAILED (failures=1)

@@ -1,0 +1,57 @@
+test_contained_dependency_links_support_actual_removal_and_restore (test_removal_preparation.RemovalSoftwarePlanTests.test_contained_dependency_links_support_actual_removal_and_restore) ... ERROR
+test_dependency_edit_after_native_inventory_preserves_later_bytes (test_removal_preparation.RemovalSoftwarePlanTests.test_dependency_edit_after_native_inventory_preserves_later_bytes) ... ERROR
+test_dependency_links_outside_selected_tree_still_refuse (test_removal_preparation.RemovalSoftwarePlanTests.test_dependency_links_outside_selected_tree_still_refuse) ... FAIL
+test_fixed_plan_keeps_data_and_prompt_and_uses_stock_launchers (test_removal_preparation.RemovalSoftwarePlanTests.test_fixed_plan_keeps_data_and_prompt_and_uses_stock_launchers) ... ok
+test_preparation_requires_explicit_discord_disable_before_any_staging (test_removal_preparation.RemovalSoftwarePlanTests.test_preparation_requires_explicit_discord_disable_before_any_staging) ... ok
+
+======================================================================
+ERROR: test_contained_dependency_links_support_actual_removal_and_restore (test_removal_preparation.RemovalSoftwarePlanTests.test_contained_dependency_links_support_actual_removal_and_restore)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_preparation.py", line 135, in test_contained_dependency_links_support_actual_removal_and_restore
+    directories,files,dependencies,expected=self.plan()
+                                            ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_preparation.py", line 103, in plan
+    return software(self.profile,self.installed,self.generation,self.native,self.runtime,self.generated,
+        workspace=self.workspace,pulse=self.pulse)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_preparation.py", line 50, in software
+    expected={path:fingerprint(path) for path in (*directories,*files,*native['dependencies'],
+                   ~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_programs.py", line 83, in fingerprint
+    raise ProgramConflict('Program trees require regular owner artifacts without shared write access')
+optional.lifeos_release_manager.release_programs.ProgramConflict: Program trees require regular owner artifacts without shared write access
+
+======================================================================
+ERROR: test_dependency_edit_after_native_inventory_preserves_later_bytes (test_removal_preparation.RemovalSoftwarePlanTests.test_dependency_edit_after_native_inventory_preserves_later_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_preparation.py", line 155, in test_dependency_edit_after_native_inventory_preserves_later_bytes
+    directories,files,dependencies,expected=self.plan()
+                                            ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_preparation.py", line 103, in plan
+    return software(self.profile,self.installed,self.generation,self.native,self.runtime,self.generated,
+        workspace=self.workspace,pulse=self.pulse)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_preparation.py", line 50, in software
+    expected={path:fingerprint(path) for path in (*directories,*files,*native['dependencies'],
+                   ~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/release_programs.py", line 83, in fingerprint
+    raise ProgramConflict('Program trees require regular owner artifacts without shared write access')
+optional.lifeos_release_manager.release_programs.ProgramConflict: Program trees require regular owner artifacts without shared write access
+
+======================================================================
+FAIL: test_dependency_links_outside_selected_tree_still_refuse (test_removal_preparation.RemovalSoftwarePlanTests.test_dependency_links_outside_selected_tree_still_refuse)
+----------------------------------------------------------------------
+optional.lifeos_release_manager.release_programs.ProgramConflict: Program trees require regular owner artifacts without shared write access
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_preparation.py", line 146, in test_dependency_links_outside_selected_tree_still_refuse
+    with self.assertRaisesRegex(ValueError,'Dependency links must stay inside'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Dependency links must stay inside" does not match "Program trees require regular owner artifacts without shared write access"
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.033s
+
+FAILED (failures=1, errors=2)

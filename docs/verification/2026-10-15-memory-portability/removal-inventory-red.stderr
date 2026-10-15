@@ -1,0 +1,78 @@
+test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) ... 
+  test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) (name='hooks/Tool.hook.ts') ... ERROR
+  test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) (name='node_modules/package/index.js') ... ERROR
+  test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) (name='CLAUDE.md') ... ERROR
+test_native_plan_removes_qualified_programs_and_keeps_foreign_hooks_and_data (test_removal_inventory.RemovalInventoryTests.test_native_plan_removes_qualified_programs_and_keeps_foreign_hooks_and_data) ... ERROR
+test_plugin_directory_requires_exact_current_manifest (test_removal_inventory.RemovalInventoryTests.test_plugin_directory_requires_exact_current_manifest) ... ERROR
+test_unreviewed_hook_and_linked_source_refuse (test_removal_inventory.RemovalInventoryTests.test_unreviewed_hook_and_linked_source_refuse) ... ERROR
+
+======================================================================
+ERROR: test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) (name='hooks/Tool.hook.ts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 62, in test_edited_program_or_dependency_refuses_before_plan
+    with self.subTest(name=name),self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference)
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 36, in operation
+    from optional.lifeos_release_manager import removal_inventory
+ImportError: cannot import name 'removal_inventory' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) (name='node_modules/package/index.js')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 62, in test_edited_program_or_dependency_refuses_before_plan
+    with self.subTest(name=name),self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference)
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 36, in operation
+    from optional.lifeos_release_manager import removal_inventory
+ImportError: cannot import name 'removal_inventory' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_edited_program_or_dependency_refuses_before_plan (test_removal_inventory.RemovalInventoryTests.test_edited_program_or_dependency_refuses_before_plan) (name='CLAUDE.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 62, in test_edited_program_or_dependency_refuses_before_plan
+    with self.subTest(name=name),self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference)
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 36, in operation
+    from optional.lifeos_release_manager import removal_inventory
+ImportError: cannot import name 'removal_inventory' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_native_plan_removes_qualified_programs_and_keeps_foreign_hooks_and_data (test_removal_inventory.RemovalInventoryTests.test_native_plan_removes_qualified_programs_and_keeps_foreign_hooks_and_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 41, in test_native_plan_removes_qualified_programs_and_keeps_foreign_hooks_and_data
+    plan=self.operation().native(self.installed,self.source,self.reference)
+         ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 36, in operation
+    from optional.lifeos_release_manager import removal_inventory
+ImportError: cannot import name 'removal_inventory' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_plugin_directory_requires_exact_current_manifest (test_removal_inventory.RemovalInventoryTests.test_plugin_directory_requires_exact_current_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 75, in test_plugin_directory_requires_exact_current_manifest
+    self.operation().plugin(root,files)
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 36, in operation
+    from optional.lifeos_release_manager import removal_inventory
+ImportError: cannot import name 'removal_inventory' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_unreviewed_hook_and_linked_source_refuse (test_removal_inventory.RemovalInventoryTests.test_unreviewed_hook_and_linked_source_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 67, in test_unreviewed_hook_and_linked_source_refuse
+    with self.assertRaises(ValueError):self.operation().native(self.installed,self.source,self.reference)
+                                       ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_inventory.py", line 36, in operation
+    from optional.lifeos_release_manager import removal_inventory
+ImportError: cannot import name 'removal_inventory' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.013s
+
+FAILED (errors=6)

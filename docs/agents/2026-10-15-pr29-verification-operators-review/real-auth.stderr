@@ -1,0 +1,15 @@
+test_valid_normal_rollback_receipt_cannot_replace_fault_recover (__main__.RealReceiptControl.test_valid_normal_rollback_receipt_cannot_replace_fault_recover) ... FAIL
+
+======================================================================
+FAIL: test_valid_normal_rollback_receipt_cannot_replace_fault_recover (__main__.RealReceiptControl.test_valid_normal_rollback_receipt_cannot_replace_fault_recover)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-pr29-verification-operators-review/probe_real_auth_receipt.py", line 15, in test_valid_normal_rollback_receipt_cannot_replace_fault_recover
+    with self.assertRaises(ValueError,msg='A genuine normal rollback receipt cannot prove interrupted recover admission'):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised : A genuine normal rollback receipt cannot prove interrupted recover admission
+
+----------------------------------------------------------------------
+Ran 1 test in 3.282s
+
+FAILED (failures=1)

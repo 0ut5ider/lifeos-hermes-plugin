@@ -115,14 +115,18 @@ def _connector(configuration, config):
         raise MemoryUnavailable('Administrative mounting requires the installed profile memory connector')
 
 
-def issue(configuration, account, *, ttl=600, binding=None):
+def issue(configuration, account, *, ttl=600, binding=None, purpose=None):
     if not isinstance(account, str) or not account.startswith('dashboard:'):
         raise PermissionError('An authenticated installation owner must authorize mounting')
     config = configuration.load()
     configuration.check_owner(config, account)
     if type(ttl) is not int or not 0 < ttl <= MAX_TTL or binding is not None and not isinstance(binding, dict):
         raise ValueError('Choose a bounded administrative authorization lifetime and job binding')
-    purpose = 'recover' if binding is not None and binding.get('action') == 'recover' else 'mount'
+    inferred = 'recover' if binding is not None and binding.get('action') == 'recover' else 'mount'
+    if purpose is None:
+        purpose = inferred
+    elif purpose != 'transition' or binding is None:
+        raise ValueError('Explicit transition authority requires an exact operation binding')
     if purpose == 'mount':
         _connector(configuration, config)
     created = int(time.time())
@@ -140,8 +144,8 @@ def issue(configuration, account, *, ttl=600, binding=None):
 
 
 def validate(configuration, authorization, *, binding=None, check_binding=False, purpose='mount'):
-    if purpose not in ('mount', 'recover'):
-        raise ValueError('Choose a mount or recovery authorization')
+    if purpose not in ('mount', 'recover', 'transition'):
+        raise ValueError('Choose a mount, recovery, or provider transition authorization')
     path = Path(authorization).absolute()
     if path.parent != _directory(configuration) or re.fullmatch(r'[0-9a-f]{32}\.json', path.name) is None:
         raise PermissionError('This authorization belongs to another administrative profile')

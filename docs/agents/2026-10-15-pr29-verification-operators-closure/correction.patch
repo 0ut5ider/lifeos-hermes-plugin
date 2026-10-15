@@ -1,0 +1,147 @@
+--- initial/certify_release.py
++++ corrected/certify_release.py
+@@ -12,6 +12,9 @@
+ FAULT='ab99723289884679b706440c7005fa5c'
+ NORMAL='16403c963170432a822bc9e9a60ab649'
+ PLUGINS={'lifeos','lifeos-hook-bridge','lifeos-release-manager'}
++OPERATORS={'verify_restored_removal.py','restore_removed_guest.py','verify_fresh_candidate.py',
++    'configure_fresh_release_model.py','provision_release_guest.py','bootstrap_release_guest.py',
++    'prepare_fresh_release_candidate.py','certify_release.py','test_release_certificate.py'}
+ 
+ 
+ def require(condition,message):
+@@ -29,6 +32,37 @@
+     require(all(active.get(key)==value for key,value in IDENTITY.items()),'The active package differs')
+     require(active.get('verification')=='verified' and active.get('modified_files')==[],
+         'The active source verification is incomplete')
++
++
++def effects(value,names):
++    require(all(value.get(name) is True for name in names),'A required actual effect does not pass')
++
++
++def authentication(value,workflow,action):
++    require(value.get('workflow')==workflow and value.get('action')==action,
++        'The retained authentication belongs to another workflow or action')
++    effects(value,('actual_terminal','username_prompt','password_prompt','password_echo_disabled',
++        'admitted','builtin_memory_unchanged'))
++    require(value['wrong_password'] is False and value['exit_code']==0,
++        'The retained owner authentication does not succeed')
++    require(value['before_sha256']==value['after_sha256'],'Memory changes during owner authentication')
++
++
++def review_closure(folder):
++    value=json.loads((folder/'operator-review-closure.json').read_bytes())
++    require(value['status']=='CLEAR','The verification operator review is not clear')
++    root=Path(__file__).resolve().parents[3]
++    report=(root/value['report']).resolve()
++    require(report.is_relative_to(root/'docs/agents') and report.suffix=='.md',
++        'The independent review report is outside the project review records')
++    require(digest(report)==value['report_sha256'] and 'Review status: CLEAR' in report.read_text().splitlines(),
++        'The independent review report does not match its clear closure')
++    prefix='docs/verification/2026-10-15-memory-portability/'
++    require(set(value['source_sha256'])=={prefix+name for name in OPERATORS},
++        'The review does not cover every verification operator')
++    require(all(digest(root/name)==expected for name,expected in value['source_sha256'].items()),
++        'An operator changes after the independent review')
++    return value
+ 
+ 
+ def removed(value,workflow):
+@@ -112,14 +146,15 @@
+     require(injected['workflow']==FAULT and injected['signal_sent'] is True and injected['exact_main_pid_bound'] is True
+         and injected['pidfd_used'] is True and injected['all_active_plugins_absent'] is True,
+         'The actual removal interruption is not bound')
+-    for name in ('installed-060-recovery-authentication.json','installed-normal-rollback-authentication.json'):
++    for name,workflow,action in (('installed-060-recovery-authentication.json',FAULT,'recover'),
++            ('installed-normal-rollback-authentication.json',NORMAL,'rollback')):
+         value=passed(name)
+-        require(value['admitted'] is True and value['wrong_password'] is False
+-            and value['password_echo_disabled'] is True and value['builtin_memory_unchanged'] is True,
+-            'Retained owner authentication is incomplete')
++        authentication(value,workflow,action)
+     refused=passed('installed-stock-wrong-password-refusal.json')
+     require(refused['admitted'] is False and refused['wrong_password'] is True and refused['exit_code']==1,
+         'The wrong-password control does not refuse')
++    require(refused['workflow']==NORMAL and refused['action']=='rollback','The password refusal uses another action')
++    effects(refused,('actual_terminal','password_echo_disabled','builtin_memory_unchanged'))
+     before=load('installed-stock-before-reboot.json');after=passed('installed-stock-after-reboot.json')
+     require(before['boot_id']!=after['boot_id'] and before['builtin_files']==after['builtin_files'],
+         'The reboot or retained memory proof differs')
+@@ -138,11 +173,25 @@
+             'The actual fresh model turn does not pass')
+         sessions.append(value['session_id'])
+     require(len(sessions)==len(set(sessions)),'The model turns reuse a session')
++    effects(load('installed-stock-later-learning.json'),('actual_tool_success','later_fact_published',
++        'prior_memory_preserved','exact_tool_selection'))
++    for name in ('installed-stock-builtin-recall.json','installed-stock-postboot-later-recall.json',
++            'installed-postrollback-later-recall.json'):
++        value=load(name)
++        effects(value,('marker_matched','expected_tool_selection','configured_route_used'))
++        require(value['actual_search']['verified'] is True and value['tool_names']==[],
++            'The actual stock recall proof differs')
++    native_return=load('installed-new-native-fact-builtin-recall.json')
++    effects(native_return,('actual_proof',));require(native_return['tool_names']==[],
++        'The native fact return uses an unexpected tool')
+     learned=load('installed-new-native-learning.json');recalled=load('installed-new-native-recall.json')
+     require(learned['actual_tool_status']=='committed' and learned['reference'] in recalled['actual_search']['references']
+         and recalled['actual_proof'] is True,'New native learning is not recalled')
+-    require(load('installed-imported-fact-pass.json')['original_source_digest_matches'] is True,
+-        'The imported source digest differs')
++    effects(learned,('actual_proof','exact_arguments'))
++    require(learned['tool_names']==['lifeos_memory_remember'] and recalled['tool_names']==['lifeos_memory_search']
++        and recalled['actual_search']['verified'] is True,'The native learning tool proof differs')
++    effects(load('installed-imported-fact-pass.json'),('original_source_digest_matches','exact_tool_selection',
++        'actual_tool_ok','exact_reference'))
+     returned=load('installed-corrected-provider-return.json')
+     require(returned['workflow_status']['state']=='verified' and returned['workflow_receipt']['application_verified'] is True,
+         'The provider return is incomplete')
+@@ -170,6 +219,8 @@
+     require(text('cold-restore-process.done').strip()=='0','The cold restore does not complete')
+     require(digest(dashboard)=='e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec',
+         'The qualified Hermes dashboard asset differs')
++    closure=review_closure(folder)
++    used['operator-review-closure.json']=digest(folder/'operator-review-closure.json')
+     return {'format':1,'status':'QUALIFIED','production_qualified':True,'version':'0.6.0',
+         'program_commit':COMMIT,'archive_sha256':SHA,'archive_bytes':288167820,
+         'hermes_dashboard_sha256':digest(dashboard),'hermes_base':build['hermes_base'],
+@@ -178,6 +229,7 @@
+         'ui_component_tests':33,'qualification_receipt_sha256':used,
+         'qualification_scope':'Exact archive regression, fresh candidate installation, authenticated update, memory import and return, complete removal, actual stock model learning, reboot, worker-exit recovery, and disconnected whole-guest restore with authenticated software rollback',
+         'historical_checks':'The normal removal, stock model, reboot, and normal rollback use b35cf86e. All bridge and manager runtime files match c86b5887, except four version declarations. Earlier source import and portable replay retain their named checkpoints.',
++        'verification_operator_review':closure,
+         'complete_software_removal_data_erasure':False,'shared_211_import_verified':False,
+         'development_promotion_verified':False,'daily_promotion_verified':False,
+         'public_default_url_replay_for_060':'Pending public publication',
+--- initial/test_release_certificate.py
++++ corrected/test_release_certificate.py
+@@ -2,6 +2,7 @@
+ # ABOUTME: Uses copied safe receipts and actual package identities without running a guest or model.
+ import importlib.util
+ from pathlib import Path
++import tempfile
+ import unittest
+ 
+ path=Path(__file__).with_name('certify_release.py')
+@@ -40,5 +41,21 @@
+     def test_optimized_python_is_not_required_for_checks(self):
+         with self.assertRaises(ValueError):module.require(False,'measured refusal')
+ 
++    def test_learning_requires_actual_effects(self):
++        value={'actual_tool_success':False,'later_fact_published':False,'prior_memory_preserved':False}
++        with self.assertRaises(ValueError):module.effects(value,tuple(value))
++
++    def test_recall_requires_the_marker_and_tool_selection(self):
++        value={'marker_matched':False,'expected_tool_selection':False}
++        with self.assertRaises(ValueError):module.effects(value,tuple(value))
++
++    def test_authentication_requires_the_expected_workflow_and_action(self):
++        value={'workflow':module.NORMAL,'action':'rollback'}
++        with self.assertRaises(ValueError):module.authentication(value,module.FAULT,'recover')
++
++    def test_missing_review_closure_refuses(self):
++        with tempfile.TemporaryDirectory() as directory:
++            with self.assertRaises(FileNotFoundError):module.review_closure(Path(directory))
++
+ 
+ if __name__=='__main__':unittest.main()

@@ -1,0 +1,37 @@
+test_bounding_fixture_reaches_validator_return_without_writing_certificate (__main__.BindingControls.test_bounding_fixture_reaches_validator_return_without_writing_certificate) ... ok
+test_later_learning_failure_requires_refusal (__main__.BindingControls.test_later_learning_failure_requires_refusal) ... FAIL
+test_missing_cold_receipt_refuses (__main__.BindingControls.test_missing_cold_receipt_refuses) ... ok
+test_other_workflow_and_action_authentication_requires_refusal (__main__.BindingControls.test_other_workflow_and_action_authentication_requires_refusal) ... FAIL
+test_stock_recall_mismatch_requires_refusal (__main__.BindingControls.test_stock_recall_mismatch_requires_refusal) ... FAIL
+
+======================================================================
+FAIL: test_later_learning_failure_requires_refusal (__main__.BindingControls.test_later_learning_failure_requires_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-pr29-verification-operators-review/probe_certification.py", line 59, in test_later_learning_failure_requires_refusal
+    with self.assertRaises(ValueError,msg='QUALIFIED must not accept explicit failure of required later learning'):self.cert()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised : QUALIFIED must not accept explicit failure of required later learning
+
+======================================================================
+FAIL: test_other_workflow_and_action_authentication_requires_refusal (__main__.BindingControls.test_other_workflow_and_action_authentication_requires_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-pr29-verification-operators-review/probe_certification.py", line 69, in test_other_workflow_and_action_authentication_requires_refusal
+    with self.assertRaises(ValueError,msg='QUALIFIED must bind recover authentication to the interrupted workflow'):self.cert()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised : QUALIFIED must bind recover authentication to the interrupted workflow
+
+======================================================================
+FAIL: test_stock_recall_mismatch_requires_refusal (__main__.BindingControls.test_stock_recall_mismatch_requires_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-pr29-verification-operators-review/probe_certification.py", line 64, in test_stock_recall_mismatch_requires_refusal
+    with self.assertRaises(ValueError,msg='QUALIFIED must not accept explicit failure of postboot recall'):self.cert()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised : QUALIFIED must not accept explicit failure of postboot recall
+
+----------------------------------------------------------------------
+Ran 5 tests in 13.844s
+
+FAILED (failures=3)

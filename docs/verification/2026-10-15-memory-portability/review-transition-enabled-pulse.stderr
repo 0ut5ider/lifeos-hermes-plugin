@@ -1,0 +1,15 @@
+test_enabled_runtime_pulse_returns_and_rolls_back (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_enabled_runtime_pulse_returns_and_rolls_back) ... FAIL
+
+======================================================================
+FAIL: test_enabled_runtime_pulse_returns_and_rolls_back (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_enabled_runtime_pulse_returns_and_rolls_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 65, in test_enabled_runtime_pulse_returns_and_rolls_back
+    self.assertNotIn('error',observed)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' unexpectedly found in {'initial_enablement': 'enabled-runtime', 'error': 'Pulse requires a supported current service enablement state'}
+
+----------------------------------------------------------------------
+Ran 1 test in 3.433s
+
+FAILED (failures=1)

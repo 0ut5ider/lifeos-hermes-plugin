@@ -1,0 +1,22 @@
+test_environment_refuses_invalid_utf8_before_owner_review (test_removal_configuration.RemovalConfigurationTests.test_environment_refuses_invalid_utf8_before_owner_review) ... ok
+test_environment_removes_only_the_exact_owned_block (test_removal_configuration.RemovalConfigurationTests.test_environment_removes_only_the_exact_owned_block) ... ok
+test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) ... ok
+test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) ... ok
+test_removal_preserves_current_settings_and_detaches_aliases (test_removal_configuration.RemovalConfigurationTests.test_removal_preserves_current_settings_and_detaches_aliases) ... ok
+test_stock_gateway_keeps_discord_disabled_with_env_token (test_removal_configuration.RemovalConfigurationTests.test_stock_gateway_keeps_discord_disabled_with_env_token) ... ok
+test_removal_software_plan (unittest.loader._FailedTest.test_removal_software_plan) ... ERROR
+
+======================================================================
+ERROR: test_removal_software_plan (unittest.loader._FailedTest.test_removal_software_plan)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_removal_software_plan
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test_removal_software_plan'
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 7.304s
+
+FAILED (errors=1)

@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: memory status explains reviewed activation without engineering gates
+ok 1 - memory status explains reviewed activation without engineering gates
+  ---
+  duration_ms: 9.494329
+  type: 'test'
+  ...
+# Subtest: agent correction guidance requires active memory ownership
+ok 2 - agent correction guidance requires active memory ownership
+  ---
+  duration_ms: 1.862653
+  type: 'test'
+  ...
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 3 - pending changes show their target and exact revision for manual decisions
+  ---
+  duration_ms: 3.0738
+  type: 'test'
+  ...
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 4 - conflicted proposal remains visible and edit decisions send the owner draft
+  ---
+  duration_ms: 1.931314
+  type: 'test'
+  ...
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 5 - valid minimal revoked grants do not break the preferences page
+  ---
+  duration_ms: 1.058485
+  type: 'test'
+  ...
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 6 - owner search displays references and new connections default to read-only project access
+  ---
+  duration_ms: 1.502233
+  type: 'test'
+  ...
+# Subtest: connection form is replaced by an installation note without the sharing component
+ok 7 - connection form is replaced by an installation note without the sharing component
+  ---
+  duration_ms: 1.250111
+  type: 'test'
+  ...
+# Subtest: a disabled connection with a remaining SSH entry offers removal only with the component
+ok 8 - a disabled connection with a remaining SSH entry offers removal only with the component
+  ---
+  duration_ms: 1.807647
+  type: 'test'
+  ...
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 9 - source adoption previews historical records and sends exact project assignments
+  ---
+  duration_ms: 1.921184
+  type: 'test'
+  ...
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 10 - source adoption retains a conflicted preview and reuses its request identifier
+  ---
+  duration_ms: 1.650777
+  type: 'test'
+  ...
+# Subtest: an unconfigured installation offers the owner claim and shows the claimed state
+ok 11 - an unconfigured installation offers the owner claim and shows the claimed state
+  ---
+  duration_ms: 1.969567
+  type: 'test'
+  ...
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 12 - import shows source provenance and never publishes before plan approval
+  ---
+  duration_ms: 9.171482
+  type: 'test'
+  ...
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 13 - an authorization refusal clears private review text and approval controls
+  ---
+  duration_ms: 2.378188
+  type: 'test'
+  ...
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 14 - reverse export shows capacity and retains every item until the owner chooses
+  ---
+  duration_ms: 1.783111
+  type: 'test'
+  ...
+# Subtest: published import queues ownership review without applying the cutover
+ok 15 - published import queues ownership review without applying the cutover
+  ---
+  duration_ms: 2.226129
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71.220491

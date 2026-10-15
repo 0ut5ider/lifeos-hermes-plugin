@@ -1,0 +1,89 @@
+{
+  "bundle_total": {
+    "item_content_max": 29991,
+    "item_content_total": 599838,
+    "export_state": "exported",
+    "bundle_bytes": 1231507,
+    "import_error": "The portable source exceeds its import byte limit"
+  },
+  "later_output": {
+    "edit_injected": true,
+    "state": "exported",
+    "actual": "",
+    "expected": "Synthetic later owner edit."
+  },
+  "retained_export": {
+    "source_bytes": 70027,
+    "export_state": "exported",
+    "bundle_bytes": 144214,
+    "import_error": "A portable source fact has invalid content or provenance"
+  },
+  "aliases": {
+    "before": {
+      "model": "synthetic-model",
+      "other_selection": [
+        "lifeos",
+        "other"
+      ],
+      "other_entry": {
+        "enabled": true,
+        "custom": "keep"
+      },
+      "plugins": {
+        "enabled": [
+          "lifeos",
+          "other"
+        ],
+        "entries": {
+          "lifeos": {
+            "enabled": true,
+            "custom": "keep"
+          },
+          "other": {
+            "enabled": true,
+            "custom": "keep"
+          }
+        }
+      },
+      "memory": {
+        "provider": "lifeos-hook-bridge"
+      }
+    },
+    "after": {
+      "model": "synthetic-model",
+      "other_selection": [
+        "other"
+      ],
+      "other_entry": {
+        "enabled": false,
+        "custom": "keep"
+      },
+      "plugins": {
+        "enabled": [
+          "other"
+        ],
+        "entries": {
+          "lifeos": {
+            "enabled": false,
+            "custom": "keep"
+          },
+          "other": {
+            "enabled": false,
+            "custom": "keep"
+          }
+        },
+        "disabled": [
+          "lifeos",
+          "lifeos-hook-bridge"
+        ]
+      },
+      "memory": {
+        "provider": "builtin",
+        "memory_enabled": true,
+        "user_profile_enabled": true
+      },
+      "skills": {}
+    },
+    "output": "model: synthetic-model\nother_selection: &shared [other]\nother_entry: &entry {enabled: false, custom: keep}\nplugins:\n  enabled: *shared\n  entries:\n    lifeos: *entry\n    other: *entry\n  disabled:\n  - lifeos\n  - lifeos-hook-bridge\nmemory:\n  provider: builtin\n  memory_enabled: true\n  user_profile_enabled: true\nskills: {}\n"
+  }
+}

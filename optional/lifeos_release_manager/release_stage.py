@@ -145,6 +145,11 @@ def validate_package(package, certificate):
         if (not isinstance(digest, str) or DIGEST.fullmatch(digest) is None
                 or hashlib.sha256(read_manifest(package / name)).hexdigest() != digest):
             raise ReleaseRejected('A native source manifest differs from its authenticated program map')
+    if 'stock_hermes' in manifest:
+        from .stock_hermes import validate_archive
+        stock=validate_archive(package/'stock-hermes.tgz',manifest['stock_hermes'])
+        if stock['commit']!=certificate.get('hermes_base'):
+            raise ReleaseRejected('The stock source does not match the qualified Hermes base')
     validate_files(package / 'python-runtime', manifest['python_runtime_files'], forbid_bytecode=True)
     if not {'pyproject.toml', 'uv.lock'} <= set(manifest['python_runtime_files']):
         raise ReleaseRejected('The release lacks a frozen dependency closure')
@@ -186,7 +191,7 @@ def run_stage(command, job, label, *, environment, cwd=None, timeout=1800):
         raise ReleaseRejected('Release preparation fails at ' + label + '. The active installation is unchanged.')
 
 
-def prepare_runtime(job, package, dashboard, profile):
+def prepare_runtime(job, package, dashboard, profile, *, stock=False):
     job, package = _directory(job), _directory(package)
     helpers = load_bridge(package / 'lifeos_hook_bridge')
     dependencies = _json((package / 'lifeos_hook_bridge/dependency_locks/catalog.json').read_bytes())
@@ -206,7 +211,16 @@ def prepare_runtime(job, package, dashboard, profile):
     if not python.is_file():
         raise ReleaseRejected('The prepared Python environment has no interpreter')
     runtime = job / 'hermes'
-    shutil.copytree(package / 'hermes', runtime, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+    if stock:
+        from .stock_hermes import prepare_source
+        manifest=_json(read_manifest(package/'DAILY-CANDIDATE.json'))
+        if 'stock_hermes' not in manifest:
+            raise ReleaseRejected('This package has no qualified stock Hermes removal source')
+        record=prepare_source(package/'stock-hermes.tgz',job/'stock-source',manifest['stock_hermes'])
+        publish(job/'stock-source.json',(json.dumps(record,sort_keys=True)+'\n').encode())
+        shutil.copytree(job/'stock-source',runtime)
+    else:
+        shutil.copytree(package / 'hermes', runtime, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     compiled = job / 'compiled-dashboard'
     extract_package(dashboard, compiled)
     expected = compiled / 'hermes_cli/web_dist'
@@ -218,9 +232,14 @@ def prepare_runtime(job, package, dashboard, profile):
     script = ('import importlib.util,sys\nfrom pathlib import Path\n'
         'spec=importlib.util.spec_from_file_location("lifeos_release_payload",sys.argv[1])\n'
         'module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n'
-        'module.assemble_runtime(*map(Path,sys.argv[2:]))\n')
+        'module.assemble_runtime(*map(Path,sys.argv[2:7]),integration=sys.argv[7]=="integration")\n')
     run_stage([python, '-B', '-c', script, package / 'optional/lifeos_release_manager/release_payload.py',
-        job, runtime, package, expected, profile], job, 'launcher', environment=environment)
+        job, runtime, package, expected, profile, 'stock' if stock else 'integration'], job, 'launcher', environment=environment)
+    if stock:
+        result={'python':str(python),'hermes':str(commands/'hermes'),'source':str(runtime),
+            'stock_source':record,'integration':False}
+        publish(job/'runtime.json',(json.dumps(result,sort_keys=True)+'\n').encode())
+        return result
     reference = job / 'reference-home'
     reference.mkdir(mode=0o700)
     script = ('import importlib.util,sys\nfrom pathlib import Path\n'

@@ -1,0 +1,52 @@
+{
+  "workflow": "a4c74ea2a4694edfbffd890f37fd7161",
+  "daily_changed": false,
+  "read_only": true,
+  "workflow_status": {
+    "state": "verified"
+  },
+  "workflow_receipt": {
+    "state": "verified",
+    "signature": "acf014faa7180e8c55c3fd570750af35aa2039775f85da07cc54bb35ffccfc26",
+    "application_verified": true,
+    "native_data_retained": true
+  },
+  "builtin_files": {
+    "MEMORY.md": {
+      "bytes": 694,
+      "sha256": "ca4527483563334c49db094593a99b7f585274a8882e38593747e38653f31708"
+    },
+    "USER.md": {
+      "bytes": 267,
+      "sha256": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    }
+  },
+  "active_software_present": {
+    "lifeos": true,
+    "lifeos-hook-bridge": true,
+    "lifeos-release-manager": true
+  },
+  "native_configuration_present": true,
+  "removal_marker_present": false,
+  "recovery_helper_present": false,
+  "services": {
+    "hermes-gateway.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "hermes-dashboard.service": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    }
+  }
+}

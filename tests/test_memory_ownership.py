@@ -36,6 +36,8 @@ class MemoryOwnershipTests(unittest.TestCase):
         self.configuration.update(lambda value: value.update(ownership_enabled=False,
             accounts={**value['accounts'], 'dashboard:owner': 'owner'}))
         self.profile = self.fixture.profile
+        path=self.profile/'config.yaml'
+        path.write_text(path.read_text()+'model: {default: synthetic-model, provider: custom, base_url: "http://127.0.0.1:9/v1", api_key: synthetic-key}\n')
         self.original = {name: (self.profile / name).read_bytes()
             for name in ('config.yaml', 'lifeos-memory.json')}
         self.connector = install_connector(self.configuration)
@@ -268,6 +270,7 @@ OwnershipTransaction(configuration).rollback(account='dashboard:owner')
     def test_current_backup_review_preserves_other_yaml_settings_and_comments(self):
         config = self.profile / 'config.yaml'
         config.write_text('# Synthetic operator comment\nmodel:\n  default: synthetic-model\n'
+            '  provider: custom\n  base_url: http://127.0.0.1:9/v1\n  api_key: synthetic-key\n'
             'memory:\n  memory_enabled: true\n  user_profile_enabled: true\n'
             '  synthetic_option: "keep this setting" # Synthetic inline comment\n')
         original = config.read_bytes()
@@ -279,7 +282,8 @@ OwnershipTransaction(configuration).rollback(account='dashboard:owner')
         self.assertIn('# Synthetic operator comment', current)
         self.assertIn('# Synthetic inline comment', current)
         self.assertIn('"keep this setting"', current)
-        self.assertEqual(YAML(typ='safe').load(current)['model'], {'default': 'synthetic-model'})
+        self.assertEqual(YAML(typ='safe').load(current)['model'], {'default': 'synthetic-model',
+            'provider':'custom','base_url':'http://127.0.0.1:9/v1','api_key':'synthetic-key'})
         transaction.rollback(account='dashboard:owner')
         self.assertEqual(config.read_bytes(), original)
 

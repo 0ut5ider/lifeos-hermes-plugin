@@ -1,0 +1,48 @@
+def migrate_config(interactive: bool = True, quiet: bool = False) -> dict[str, Any]:
+    """Migrate config to latest version, prompting for new required fields."""
+    results = {"env_added": [], "config_added": [], "warnings": []}
+
+    # Validate config.yaml before any migration side effect: sanitize_env_file() rewrites .env,
+    # which must not happen when the migration will be refused for malformed YAML.
+    stamp, latest_ver = read_config_version_stamp(raise_on_parse_error=True)
+    current_ver = 0 if stamp is None else stamp
+
+    try:
+        fixes = sanitize_env_file()
+        if fixes and not quiet:
+            print(f"  ✓ Normalized .env line formatting ({fixes} line(s) changed)")
+    except Exception:
+        pass  # best-effort; never block migration on sanitize failure
+
+    # Auto-migration support floor (v12): an EXPLICIT on-disk ``_config_version`` below the
+    # floor is NOT migrated and NOT rewritten — surface a message and leave the file untouched
+    # (deep-merge supplies defaults at read time). A config with NO version key is not an
+
+def _sanitize_env_lines(lines: list) -> list:
+    """Normalize .env line endings/whitespace without changing assignment semantics.
+    Content after the first ``=`` is opaque value data: a known variable name embedded in a value
+    must never be reinterpreted as another assignment, so concatenated lines stay on one line."""
+    sanitized: list[str] = []
+    for line in lines:
+        raw = line.rstrip("\r\n")
+        stripped = raw.strip()
+        # Blank lines and comments are preserved verbatim.
+        sanitized.append((raw if not stripped or stripped.startswith("#") else stripped) + "\n")
+    return sanitized
+
+def sanitize_env_file() -> int:
+    """Rewrite ~/.hermes/.env with normalized line formatting; returns the number of changed lines."""
+    env_path = get_env_path()
+    if not env_path.exists():
+        return 0
+    with _env_write_lock(env_path):
+        with open(env_path, encoding="utf-8-sig", errors="replace") as f:
+            original_lines = f.readlines()
+        sanitized = _sanitize_env_lines(original_lines)
+        if sanitized == original_lines:
+            return 0
+        fixes = abs(len(sanitized) - len(original_lines)) or sum(
+            1 for a, b in zip(original_lines, sanitized) if a != b)
+        _write_env_lines(env_path, sanitized, preserve_mode=False)
+    invalidate_env_cache()
+    return fixes

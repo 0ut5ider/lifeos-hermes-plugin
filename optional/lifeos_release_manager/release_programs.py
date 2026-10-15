@@ -42,7 +42,7 @@ def sync_directory(path):
         os.close(descriptor)
 
 
-def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_links=None):
+def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_links=None, include_bytecode=False):
     path = Path(path).absolute()
     if path.parent.resolve() != path.parent:
         raise ProgramConflict('A program artifact changes its physical directory')
@@ -62,11 +62,11 @@ def fingerprint(path, *, allow_links=False, excluded_root_entries=(), external_l
         if Path(parent) == path:
             directories[:] = [name for name in directories if name not in excluded_root_entries]
             files = [name for name in files if name not in excluded_root_entries]
-        directories[:] = sorted(name for name in directories if name != '__pycache__')
+        directories[:] = sorted(name for name in directories if include_bytecode or name != '__pycache__')
         names = sorted((*directories, *files)) if external_links else (*directories, *sorted(files))
         for name in names:
             child = Path(parent) / name
-            if child.suffix == '.pyc':
+            if child.suffix == '.pyc' and not include_bytecode:
                 continue
             child_info = child.lstat()
             if stat.S_ISLNK(child_info.st_mode) and allow_links:
@@ -168,13 +168,16 @@ class ProgramTransaction:
             if fingerprint(self.snapshot / ('before-' + str(index)), allow_links=entry['allow_links']) != entry['before']:
                 raise ProgramConflict('The retained program differs from its recorded identity')
 
-    def prepare(self, *, directories, files, dependencies=None, checkpoint=lambda point: None):
+    def prepare(self, *, directories, files, dependencies=None, expected_before=None, checkpoint=lambda point: None):
         dependencies = {} if dependencies is None else dependencies
         targets = [Path(path).absolute() for path in (*directories, *files, *dependencies)]
         if (len(targets) != len(set(targets)) or any(left.is_relative_to(right)
                 for left in targets for right in targets if left != right)
                 or any(self.snapshot.is_relative_to(target) for target in targets)):
             raise ProgramConflict('Program transaction targets must not overlap')
+        expected_before = {} if expected_before is None else {str(Path(path).absolute()): value for path, value in expected_before.items()}
+        if not set(expected_before) <= {str(path) for path in targets}:
+            raise ProgramConflict('Reviewed input identities must select publication targets')
         entries = []
         for kind, sources, allow_links in (('directory', directories, False), ('file', files, False),
                                            ('directory', dependencies, True)):
@@ -183,6 +186,8 @@ class ProgramTransaction:
                 incoming = None if incoming is None else Path(incoming).absolute()
                 before = fingerprint(target, allow_links=allow_links)
                 after = None if incoming is None else fingerprint(incoming, allow_links=allow_links)
+                if str(target) in expected_before and before != expected_before[str(target)]:
+                    raise ProgramConflict('An input changes after its selected transformation')
                 if (incoming is not None and (after is None or after['type'] != kind)
                         or before is not None and before['type'] != kind):
                     raise ProgramConflict('Program transaction targets require matching artifact types')
@@ -223,6 +228,7 @@ class ProgramTransaction:
         self._record(value)
         for index, entry in enumerate(value['entries']):
             target, incoming = Path(entry['target']), self.snapshot / ('incoming-' + str(index))
+            self._check_publication(index,entry,resume=False)
             if entry['kind'] == 'file' and entry['before'] == entry['after']:
                 continue
             if entry['kind'] == 'directory':
@@ -231,6 +237,9 @@ class ProgramTransaction:
                     sync_directory(target.parent)
                     sync_directory(self.snapshot)
                 checkpoint('directory-retained')
+                self._check_publication(index,entry,resume=True)
+                if fingerprint(target,allow_links=entry['allow_links']) is not None:
+                    raise ProgramConflict('Program publication preserves a later artifact edit')
                 if entry['after'] is not None:
                     os.replace(incoming, target)
                 sync_directory(target.parent)
@@ -242,6 +251,8 @@ class ProgramTransaction:
                 else:
                     publish(target, incoming.read_bytes(), entry['after']['mode'])
             checkpoint('artifact-published')
+        self._check_targets(value,'after')
+        self._check_retained(value)
         value['state'] = 'applied'
         self._record(value)
 
@@ -250,11 +261,33 @@ class ProgramTransaction:
         if value['state'] != 'prepared':
             raise ProgramConflict('The program transaction is not prepared')
         for index, entry in enumerate(value['entries']):
-            source_state = None if entry['source'] is None else fingerprint(entry['source'], allow_links=entry['allow_links'])
-            if (source_state != entry['after']
-                    or fingerprint(self.snapshot / ('incoming-' + str(index)), allow_links=entry['allow_links']) != entry['after']
-                    or fingerprint(entry['target'], allow_links=entry['allow_links']) != entry['before']):
-                raise ProgramConflict('A program target or source changes after preparation')
+            self._check_publication(index,entry,resume=False)
+
+    def _check_publication(self, index, entry, *, resume):
+        current=fingerprint(entry['target'],allow_links=entry['allow_links'])
+        retained=fingerprint(self.snapshot/('before-'+str(index)),allow_links=entry['allow_links'])
+        if resume and current==entry['after']:
+            if current!=entry['before'] and entry['before'] is not None and retained!=entry['before']:
+                raise ProgramConflict('Program recovery requires its retained prior artifact')
+            return
+        absent_swap=resume and current is None and entry['kind']=='directory' and retained==entry['before'] and retained is not None
+        source=None if entry['source'] is None else fingerprint(entry['source'],allow_links=entry['allow_links'])
+        incoming=fingerprint(self.snapshot/('incoming-'+str(index)),allow_links=entry['allow_links'])
+        if (current!=entry['before'] and not absent_swap or source!=entry['after'] or incoming!=entry['after']
+                or entry['kind']=='file' and retained!=entry['before']
+                or entry['kind']=='directory' and retained not in (None,entry['before'])):
+            raise ProgramConflict('A program target or source changes after preparation')
+
+    @staticmethod
+    def _check_targets(value, side):
+        for entry in value['entries']:
+            if fingerprint(entry['target'],allow_links=entry['allow_links'])!=entry[side]:
+                raise ProgramConflict('Program publication preserves a later artifact edit')
+
+    def _check_retained(self, value):
+        for index,entry in enumerate(value['entries']):
+            if fingerprint(self.snapshot/('before-'+str(index)),allow_links=entry['allow_links'])!=entry['before']:
+                raise ProgramConflict('The retained program differs from its recorded identity')
 
     def resume(self, *, checkpoint=lambda point: None):
         value = self._load()
@@ -282,6 +315,7 @@ class ProgramTransaction:
         self._record(value)
         for index, entry in enumerate(value['entries']):
             target, incoming = Path(entry['target']), self.snapshot / ('incoming-' + str(index))
+            self._check_publication(index,entry,resume=True)
             if fingerprint(target, allow_links=entry['allow_links']) == entry['after']:
                 continue
             if entry['kind'] == 'directory':
@@ -290,6 +324,9 @@ class ProgramTransaction:
                     sync_directory(target.parent)
                     sync_directory(self.snapshot)
                 checkpoint('directory-retained')
+                self._check_publication(index,entry,resume=True)
+                if fingerprint(target,allow_links=entry['allow_links']) is not None:
+                    raise ProgramConflict('Program publication preserves a later artifact edit')
                 if entry['after'] is not None:
                     os.replace(incoming, target)
                 sync_directory(target.parent)
@@ -300,6 +337,8 @@ class ProgramTransaction:
             else:
                 publish(target, incoming.read_bytes(), entry['after']['mode'])
             checkpoint('artifact-published')
+        self._check_targets(value,'after')
+        self._check_retained(value)
         value['state'] = 'applied'
         self._record(value)
 
@@ -309,20 +348,23 @@ class ProgramTransaction:
         if value['state'] not in {'prepared', 'applying', 'applied', 'restoring', 'restored'}:
             raise ProgramConflict('The program transaction cannot restore this state')
         for index, entry in enumerate(value['entries']):
-            current = fingerprint(entry['target'], allow_links=entry['allow_links'])
-            after = overrides.get(entry['target'], entry['after'])
-            if value['state'] == 'applied' and current != after:
-                raise ProgramConflict('Program recovery preserves a later artifact edit')
-            backup = self.snapshot / ('before-' + str(index))
-            retained = fingerprint(backup, allow_links=entry['allow_links'])
-            absent_swap = current is None and entry['kind'] == 'directory' and retained == entry['before'] and retained is not None
-            if current not in (entry['before'], entry['after'], after) and not absent_swap:
-                raise ProgramConflict('Program recovery preserves a later artifact edit')
-            if retained is not None and retained != entry['before']:
-                raise ProgramConflict('The retained program differs from its recorded identity')
-            if current != entry['before'] and entry['before'] is not None and retained != entry['before']:
-                raise ProgramConflict('Program recovery requires its retained prior artifact')
+            self._check_recovery_entry(value,index,entry,overrides)
         return value
+
+    def _check_recovery_entry(self, value, index, entry, overrides):
+        current = fingerprint(entry['target'], allow_links=entry['allow_links'])
+        after = overrides.get(entry['target'], entry['after'])
+        if value['state'] == 'applied' and current != after:
+            raise ProgramConflict('Program recovery preserves a later artifact edit')
+        backup = self.snapshot / ('before-' + str(index))
+        retained = fingerprint(backup, allow_links=entry['allow_links'])
+        absent_swap = current is None and entry['kind'] == 'directory' and retained == entry['before'] and retained is not None
+        if current not in (entry['before'], entry['after'], after) and not absent_swap:
+            raise ProgramConflict('Program recovery preserves a later artifact edit')
+        if retained is not None and retained != entry['before']:
+            raise ProgramConflict('The retained program differs from its recorded identity')
+        if current != entry['before'] and entry['before'] is not None and retained != entry['before']:
+            raise ProgramConflict('Program recovery requires its retained prior artifact')
 
     def restore(self):
         value = self.check_recovery()
@@ -330,11 +372,14 @@ class ProgramTransaction:
         self._record(value)
         for index, entry in reversed(list(enumerate(value['entries']))):
             target, backup = Path(entry['target']), self.snapshot / ('before-' + str(index))
+            self._check_recovery_entry(value,index,entry,{})
             if fingerprint(target, allow_links=entry['allow_links']) == entry['before']:
                 continue
             if entry['kind'] == 'directory':
                 if target.exists():
                     os.replace(target, self.snapshot / ('selected-' + str(index)))
+                if fingerprint(target,allow_links=entry['allow_links']) is not None:
+                    raise ProgramConflict('Program recovery preserves a later artifact edit')
                 if entry['before'] is not None:
                     os.replace(backup, target)
                 sync_directory(target.parent)
@@ -344,5 +389,6 @@ class ProgramTransaction:
                 sync_directory(target.parent)
             else:
                 publish(target, backup.read_bytes(), entry['before']['mode'])
+        self._check_targets(value,'before')
         value['state'] = 'restored'
         self._record(value)

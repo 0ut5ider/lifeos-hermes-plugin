@@ -1,0 +1,46 @@
+test_destructive_targeting_does_not_depend_on_assert (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_destructive_targeting_does_not_depend_on_assert) ... FAIL
+test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) ... 
+  test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) (option=[]) ... FAIL
+  test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) (option=['-O']) ... FAIL
+  test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) (option=['-OO']) ... FAIL
+
+======================================================================
+FAIL: test_destructive_targeting_does_not_depend_on_assert (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_destructive_targeting_does_not_depend_on_assert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/test_fault_injector.py", line 15, in test_destructive_targeting_does_not_depend_on_assert
+    self.assertFalse(any(isinstance(node, ast.Assert) for node in ast.walk(ast.parse(SCRIPT.read_text()))))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) (option=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/test_fault_injector.py", line 25, in test_non_root_refuses_before_guest_access_with_optimization
+    self.assertIn('RuntimeError: Run this disposable fault fixture as root', result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'RuntimeError: Run this disposable fault fixture as root' not found in 'Traceback (most recent call last):\n  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/interrupt_guest_removal.py", line 16, in <module>\n    assert os.getuid() == 0\n           ^^^^^^^^^^^^^^^^\nAssertionError\n'
+
+======================================================================
+FAIL: test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) (option=['-O'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/test_fault_injector.py", line 25, in test_non_root_refuses_before_guest_access_with_optimization
+    self.assertIn('RuntimeError: Run this disposable fault fixture as root', result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'RuntimeError: Run this disposable fault fixture as root' not found in 'Traceback (most recent call last):\n  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/interrupt_guest_removal.py", line 24, in <module>\n    review = json.loads((job / \'review.json\').read_bytes())\n                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 777, in read_bytes\n    with self.open(mode=\'rb\', buffering=0) as f:\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 771, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: \'/home/lifeos-hermes/.hermes/.lifeos-portability/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/review.json\'\n'
+
+======================================================================
+FAIL: test_non_root_refuses_before_guest_access_with_optimization (docs.verification.2026-10-15-memory-portability.test_fault_injector.FaultInjectorTests.test_non_root_refuses_before_guest_access_with_optimization) (option=['-OO'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/test_fault_injector.py", line 25, in test_non_root_refuses_before_guest_access_with_optimization
+    self.assertIn('RuntimeError: Run this disposable fault fixture as root', result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'RuntimeError: Run this disposable fault fixture as root' not found in 'Traceback (most recent call last):\n  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-15-memory-portability/interrupt_guest_removal.py", line 24, in <module>\n    review = json.loads((job / \'review.json\').read_bytes())\n                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 777, in read_bytes\n    with self.open(mode=\'rb\', buffering=0) as f:\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/pathlib/__init__.py", line 771, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: \'/home/lifeos-hermes/.hermes/.lifeos-portability/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/review.json\'\n'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.463s
+
+FAILED (failures=4)

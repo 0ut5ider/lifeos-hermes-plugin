@@ -1,0 +1,121 @@
+{
+  "workflow": "16403c963170432a822bc9e9a60ab649",
+  "daily_changed": false,
+  "read_only": true,
+  "workflow_status": {
+    "state": "verified"
+  },
+  "publication_status": {
+    "state": "verified",
+    "signature": "aa71ca19d3ffd5138c028c006559842482531bfa3580c4cd5d99e077518e490e"
+  },
+  "workflow_receipt": {
+    "state": "verified",
+    "signature": "aa71ca19d3ffd5138c028c006559842482531bfa3580c4cd5d99e077518e490e",
+    "application_verified": true,
+    "builtin_memory_retained": true,
+    "native_data_retained": true,
+    "stock_commit": "71d34bad1045610252eda02ee79549436896e784",
+    "stock_patches": 0,
+    "discord_disabled": true,
+    "recovery_command": "/home/lifeos-hermes/.hermes/.lifeos-portability/16403c963170432a822bc9e9a60ab649/removal/recover"
+  },
+  "fresh_constructor": {
+    "format": 1,
+    "provider": "builtin",
+    "fresh_agent_verified": true,
+    "model_turn_executed": false,
+    "active_plugins": [
+      "browser-browser-use",
+      "browser-browserbase",
+      "browser-firecrawl",
+      "basic",
+      "drain",
+      "nous",
+      "self-hosted",
+      "deepinfra",
+      "fal",
+      "krea",
+      "meta-ai-image-gen",
+      "openai",
+      "openai-codex",
+      "openrouter",
+      "xai",
+      "a2a-platform",
+      "buzz-platform",
+      "dingtalk-platform",
+      "discord-platform",
+      "email-platform",
+      "feishu-platform",
+      "google_chat-platform",
+      "irc-platform",
+      "line-platform",
+      "matrix-platform",
+      "mattermost-platform",
+      "ntfy-platform",
+      "photon-platform",
+      "raft-platform",
+      "simplex-platform",
+      "slack-platform",
+      "sms-platform",
+      "teams-platform",
+      "telegram-platform",
+      "wecom-platform",
+      "whatsapp-platform",
+      "deepinfra",
+      "fal",
+      "openrouter",
+      "xai",
+      "web-brave-free",
+      "web-ddgs",
+      "web-exa",
+      "web-firecrawl",
+      "web-keenable",
+      "web-openai-native",
+      "web-parallel",
+      "web-perplexity",
+      "web-searxng",
+      "web-tavily",
+      "web-xai"
+    ],
+    "native_providers": []
+  },
+  "builtin_files": {
+    "MEMORY.md": {
+      "bytes": 780,
+      "sha256": "85947afbbd323e608d2818f769097b51badbcb797f09fd04fb0392be99745435"
+    },
+    "USER.md": {
+      "bytes": 267,
+      "sha256": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    }
+  },
+  "active_software_present": {
+    "lifeos": false,
+    "lifeos-hook-bridge": false,
+    "lifeos-release-manager": false
+  },
+  "native_configuration_present": false,
+  "removal_marker_present": true,
+  "recovery_helper_present": true,
+  "services": {
+    "hermes-gateway.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "hermes-dashboard.service": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "LoadState": "not-found",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": ""
+    }
+  }
+}

@@ -1,0 +1,51 @@
+test_edit_to_later_output_is_preserved_during_export (docs.agents.2026-10-15-portability-primitives-review.review_probes.ExportReview.test_edit_to_later_output_is_preserved_during_export) ... FAIL
+test_retained_export_can_be_imported_as_a_portable_source (docs.agents.2026-10-15-portability-primitives-review.review_probes.ExportReview.test_retained_export_can_be_imported_as_a_portable_source) ... ERROR
+test_aliases_do_not_change_unrelated_settings (docs.agents.2026-10-15-portability-primitives-review.review_probes.ReturnConfigurationReview.test_aliases_do_not_change_unrelated_settings) ... FAIL
+
+======================================================================
+ERROR: test_retained_export_can_be_imported_as_a_portable_source (docs.agents.2026-10-15-portability-primitives-review.review_probes.ExportReview.test_retained_export_can_be_imported_as_a_portable_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-primitives-review/review_probes.py", line 54, in test_retained_export_can_be_imported_as_a_portable_source
+    try:upload_bundle(self.fixture.profile,{'label':'Synthetic round trip','bundle':bundle})
+        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import_sources.py", line 95, in upload_bundle
+    portable_chunks(data)
+    ~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import_sources.py", line 75, in portable_chunks
+    raise ValueError('A portable source fact has invalid content or provenance')
+ValueError: A portable source fact has invalid content or provenance
+
+======================================================================
+FAIL: test_edit_to_later_output_is_preserved_during_export (docs.agents.2026-10-15-portability-primitives-review.review_probes.ExportReview.test_edit_to_later_output_is_preserved_during_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-primitives-review/review_probes.py", line 80, in test_edit_to_later_output_is_preserved_during_export
+    self.assertEqual(later.read_bytes(),marker)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'' != b'Synthetic later owner edit.'
+
+======================================================================
+FAIL: test_aliases_do_not_change_unrelated_settings (docs.agents.2026-10-15-portability-primitives-review.review_probes.ReturnConfigurationReview.test_aliases_do_not_change_unrelated_settings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-primitives-review/review_probes.py", line 36, in test_aliases_do_not_change_unrelated_settings
+    self.assertEqual(after['other_selection'],before['other_selection'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['other'] != ['lifeos', 'other']
+
+First differing element 0:
+'other'
+'lifeos'
+
+Second list contains 1 additional elements.
+First extra element 1:
+'other'
+
+- ['other']
++ ['lifeos', 'other']
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.772s
+
+FAILED (failures=2, errors=1)

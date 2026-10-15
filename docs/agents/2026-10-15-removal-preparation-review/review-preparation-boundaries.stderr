@@ -1,0 +1,45 @@
+test_basename_argv_does_not_hide_an_owned_bun_process (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.ConsumerReview.test_basename_argv_does_not_hide_an_owned_bun_process) ... FAIL
+test_braced_home_in_foreign_hooks_refuses (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.ConsumerReview.test_braced_home_in_foreign_hooks_refuses) ... FAIL
+test_home_expansion_in_foreign_units_refuses (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.ConsumerReview.test_home_expansion_in_foreign_units_refuses) ... FAIL
+test_later_configuration_and_environment_edits_survive_preparation (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.CurrentStateReview.test_later_configuration_and_environment_edits_survive_preparation) ... FAIL
+
+======================================================================
+FAIL: test_basename_argv_does_not_hide_an_owned_bun_process (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.ConsumerReview.test_basename_argv_does_not_hide_an_owned_bun_process)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-preparation-review/preparation_probes.py", line 63, in test_basename_argv_does_not_hide_an_owned_bun_process
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'owned_executable_verified': True, 'admitted': True}
+
+======================================================================
+FAIL: test_braced_home_in_foreign_hooks_refuses (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.ConsumerReview.test_braced_home_in_foreign_hooks_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-preparation-review/preparation_probes.py", line 74, in test_braced_home_in_foreign_hooks_refuses
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'admitted': True}
+
+======================================================================
+FAIL: test_home_expansion_in_foreign_units_refuses (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.ConsumerReview.test_home_expansion_in_foreign_units_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-preparation-review/preparation_probes.py", line 49, in test_home_expansion_in_foreign_units_refuses
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'admitted': True}
+
+======================================================================
+FAIL: test_later_configuration_and_environment_edits_survive_preparation (docs.agents.2026-10-15-removal-preparation-review.preparation_probes.CurrentStateReview.test_later_configuration_and_environment_edits_survive_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-preparation-review/preparation_probes.py", line 34, in test_later_configuration_and_environment_edits_survive_preparation
+    self.assertTrue(observed['config_edit_retained']);self.assertTrue(observed['environment_edit_retained'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.082s
+
+FAILED (failures=4)

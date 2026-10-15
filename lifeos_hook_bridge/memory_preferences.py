@@ -280,10 +280,18 @@ class MemoryPreferences:
         config = self._configuration(account=account)
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))
 
-    def preview_import(self, *, account=None):
+    def preview_import(self, *, account=None, source_identifier=None):
         from .memory_import import MemoryImport
+        from .memory_import_sources import directory
         self._configuration(account=account)
-        return MemoryImport(self.configuration).preview(account=account)
+        source=None if source_identifier is None else directory(self.configuration.path.parent,source_identifier,source=True)
+        return MemoryImport(self.configuration,source_directory=source).preview(account=account)
+
+    def upload_import(self, request, *, account=None):
+        from .memory_import_sources import upload, upload_bundle
+        self._configuration(account=account)
+        method=upload_bundle if isinstance(request,dict) and ('bundle' in request or 'bundle_bytes' in request) else upload
+        return method(self.configuration.path.parent,request)
 
     def prepare_fresh(self, candidate, *, principal_name, assistant_name, account=None):
         from .fresh_store import FreshStore
@@ -311,17 +319,79 @@ class MemoryPreferences:
         return FreshStore(self.configuration).status(account=account)
 
     def prepare_import(self, request, *, account=None):
-        import hashlib
         from uuid import uuid4
         from .memory_import import MemoryImport
+        from .memory_import_sources import directory
+        from .memory_transaction import publish
+        from .memory_import import _encoded
         self._configuration(account=account)
-        if not isinstance(request, dict) or set(request) != {'signature'}:
+        if (not isinstance(request,dict) or set(request) not in ({'signature'},{'signature','source_identifier'})):
             raise ValueError('Provide the reviewed Hermes import signature')
-        profile = self.configuration.path.parent.absolute()
-        identity = hashlib.sha256(str(profile).encode()).hexdigest()[:24]
-        from .lifeos_installation import state_home
-        destination = state_home(profile) / '.local/state/lifeos-hook-bridge/imports' / identity / uuid4().hex
-        return MemoryImport(self.configuration).prepare(destination, request['signature'], account=account)
+        identifier = uuid4().hex
+        destination = self._import_snapshot(identifier)
+        source_identifier=request.get('source_identifier')
+        source=None if source_identifier is None else directory(self.configuration.path.parent,source_identifier,source=True)
+        result=MemoryImport(self.configuration,source_directory=source).prepare(destination,request['signature'],account=account)
+        publish(destination/'source-binding.json',_encoded({'source_identifier':source_identifier}))
+        return {'identifier':identifier, **result}
+
+    def _import_snapshot(self, identifier):
+        from .memory_import_sources import directory
+        return directory(self.configuration.path.parent,identifier)
+
+    def _import_operation(self, identifier):
+        import json
+        from .memory_backup import _directory, _read
+        from .memory_import import MemoryImport
+        from .memory_import_sources import directory
+        snapshot=self._import_snapshot(identifier)
+        _directory(snapshot,private=True)
+        data,_=_read(snapshot/'source-binding.json',private=True)
+        binding=json.loads(data)
+        if not isinstance(binding,dict) or set(binding)!={'source_identifier'}:
+            raise MemoryUnavailable('The import source binding has invalid metadata')
+        source=None if binding['source_identifier'] is None else directory(
+            self.configuration.path.parent,binding['source_identifier'],source=True)
+        return MemoryImport(self.configuration,source_directory=source)
+
+    def plan_import(self, request, *, account=None):
+        self._configuration(account=account)
+        return self._import_operation(request['identifier']).plan(self._import_snapshot(request['identifier']),
+            request['snapshot_signature'], request['decisions'], account=account)
+
+    def apply_import(self, request, *, account=None):
+        self._configuration(account=account)
+        return self._import_operation(request['identifier']).apply(self._import_snapshot(request['identifier']),
+            request['snapshot_signature'], request['plan_signature'], account=account)
+
+    def import_status(self, request, *, account=None):
+        self._configuration(account=account)
+        return self._import_operation(request['identifier']).status(self._import_snapshot(request['identifier']),
+            request['snapshot_signature'], account=account)
+
+    def preview_export(self, *, account=None):
+        from .memory_export import MemoryExport
+        self._configuration(account=account)
+        return MemoryExport(self.configuration).preview(account=account)
+
+    def prepare_export(self, request, *, account=None):
+        from uuid import uuid4
+        from .memory_export import MemoryExport
+        self._configuration(account=account)
+        identifier=uuid4().hex
+        result=MemoryExport(self.configuration).prepare(self._import_snapshot(identifier),request['signature'],account=account)
+        return {'identifier':identifier,**result}
+
+    def export_action(self, action, request, *, account=None):
+        from .memory_export import MemoryExport
+        self._configuration(account=account)
+        operation=MemoryExport(self.configuration)
+        destination=self._import_snapshot(request['identifier'])
+        if action=='plan':return operation.plan(destination,request['signature'],request['decisions'],account=account)
+        if action=='apply':return operation.apply(destination,request['signature'],request['plan_signature'],account=account)
+        if action=='status':return operation.status(destination,request['signature'],account=account)
+        if action=='download':return operation.download(destination,request['signature'],account=account)
+        raise ValueError('Choose a supported reverse export operation')
 
     def preview_sources(self, paths: list[str], *, account: str | None = None):
         from .memory_source_review import preview

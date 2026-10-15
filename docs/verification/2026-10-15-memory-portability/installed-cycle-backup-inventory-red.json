@@ -1,0 +1,29 @@
+{
+  "read_only": true,
+  "owner_authenticated": true,
+  "daily_changed": false,
+  "phase": "profile_inventory",
+  "native_records_read": false,
+  "profile_file_contents_read": false,
+  "status": "REFUSED",
+  "error_type": "MemoryUnavailable",
+  "reason": "The profile backup exceeds its source count limit",
+  "count_at_refusal": {
+    "entries": 99945,
+    "pending": 56,
+    "portability_workspace_entries": 99177,
+    "portability_workspace_pending": 48
+  },
+  "frames": [
+    {
+      "file": "probe_guest_cycle_backup.py",
+      "function": "<module>",
+      "line": 25
+    },
+    {
+      "file": "profile_backup.py",
+      "function": "_entries",
+      "line": 102
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+test_changed_archive_and_symlink_refuse_before_destination_creation (test_stock_hermes.StockHermesTests.test_changed_archive_and_symlink_refuse_before_destination_creation) ... ERROR
+test_git_archive_selects_the_exact_pinned_stock_commit (test_stock_hermes.StockHermesTests.test_git_archive_selects_the_exact_pinned_stock_commit) ... ERROR
+test_verified_stock_source_refuses_a_later_source_edit (test_stock_hermes.StockHermesTests.test_verified_stock_source_refuses_a_later_source_edit) ... ERROR
+
+======================================================================
+ERROR: test_changed_archive_and_symlink_refuse_before_destination_creation (test_stock_hermes.StockHermesTests.test_changed_archive_and_symlink_refuse_before_destination_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_stock_hermes.py", line 39, in test_changed_archive_and_symlink_refuse_before_destination_creation
+    with self.assertRaises(ValueError):self.module().prepare_source(self.archive,self.root/'changed',self.identity)
+                                       ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_stock_hermes.py", line 25, in module
+    from optional.lifeos_release_manager import stock_hermes
+ImportError: cannot import name 'stock_hermes' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_git_archive_selects_the_exact_pinned_stock_commit (test_stock_hermes.StockHermesTests.test_git_archive_selects_the_exact_pinned_stock_commit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_stock_hermes.py", line 50, in test_git_archive_selects_the_exact_pinned_stock_commit
+    identity=self.module().build_archive(source,archive,commit)
+             ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_stock_hermes.py", line 25, in module
+    from optional.lifeos_release_manager import stock_hermes
+ImportError: cannot import name 'stock_hermes' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_verified_stock_source_refuses_a_later_source_edit (test_stock_hermes.StockHermesTests.test_verified_stock_source_refuses_a_later_source_edit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_stock_hermes.py", line 30, in test_verified_stock_source_refuses_a_later_source_edit
+    record=self.module().prepare_source(self.archive,target,self.identity)
+           ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_stock_hermes.py", line 25, in module
+    from optional.lifeos_release_manager import stock_hermes
+ImportError: cannot import name 'stock_hermes' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+FAILED (errors=3)

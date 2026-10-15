@@ -1,0 +1,15 @@
+test_owner_plans_applies_and_inspects_import_without_path_overrides (test_memory_import_dashboard.MemoryImportDashboardTests.test_owner_plans_applies_and_inspects_import_without_path_overrides) ... FAIL
+
+======================================================================
+FAIL: test_owner_plans_applies_and_inspects_import_without_path_overrides (test_memory_import_dashboard.MemoryImportDashboardTests.test_owner_plans_applies_and_inspects_import_without_path_overrides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import_dashboard.py", line 29, in test_owner_plans_applies_and_inspects_import_without_path_overrides
+    self.assertIn('identifier',snapshot)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'identifier' not found in {'state': 'review', 'snapshot': '/tmp/native-memory-7lugnq6v/.local/state/lifeos-hook-bridge/imports/12d2f450b08f56641fd39013/8624a54dd0284b119cbaaa362ee2d6c1', 'snapshot_signature': 'f134faff5ba1e5d9b8d64aefb464a9965e0c9637e2ace56d6cde30c84f248944', 'review_signature': '27fe77094d506e9e43e4ed3ef932431061957175b7a2093d1e70910712b88bc4', 'ownership_enabled': False}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.861s
+
+FAILED (failures=1)

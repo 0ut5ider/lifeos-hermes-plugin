@@ -1,0 +1,29 @@
+test_actual_fresh_constructor_loads_exact_entries_and_emits_only_safe_proof (test_memory_transition_probe.MemoryTransitionProbeTests.test_actual_fresh_constructor_loads_exact_entries_and_emits_only_safe_proof) ... FAIL
+test_current_file_change_refuses_the_reviewed_proof (test_memory_transition_probe.MemoryTransitionProbeTests.test_current_file_change_refuses_the_reviewed_proof) ... FAIL
+
+======================================================================
+FAIL: test_actual_fresh_constructor_loads_exact_entries_and_emits_only_safe_proof (test_memory_transition_probe.MemoryTransitionProbeTests.test_actual_fresh_constructor_loads_exact_entries_and_emits_only_safe_proof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_transition_probe.py", line 35, in test_actual_fresh_constructor_loads_exact_entries_and_emits_only_safe_proof
+    result=self.probe();self.assertEqual(result.returncode,0,result.stderr)
+                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+    from lifeos_hook_bridge.memory_transition_probe import verify_builtin
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_transition_probe'
+
+
+======================================================================
+FAIL: test_current_file_change_refuses_the_reviewed_proof (test_memory_transition_probe.MemoryTransitionProbeTests.test_current_file_change_refuses_the_reviewed_proof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_transition_probe.py", line 50, in test_current_file_change_refuses_the_reviewed_proof
+    self.assertIn('does not match the reviewed export',result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'does not match the reviewed export' not found in 'Traceback (most recent call last):\n  File "<string>", line 2, in <module>\n    from lifeos_hook_bridge.memory_transition_probe import verify_builtin\nModuleNotFoundError: No module named \'lifeos_hook_bridge.memory_transition_probe\'\n'
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.014s
+
+FAILED (failures=2)

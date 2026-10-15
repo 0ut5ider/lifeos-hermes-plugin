@@ -1,0 +1,22 @@
+test_many_bounded_provenance_receipts_remain_importable (docs.agents.2026-10-15-portability-primitives-closure.closure_controls.ExportClosure.test_many_bounded_provenance_receipts_remain_importable) ... ERROR
+
+======================================================================
+ERROR: test_many_bounded_provenance_receipts_remain_importable (docs.agents.2026-10-15-portability-primitives-closure.closure_controls.ExportClosure.test_many_bounded_provenance_receipts_remain_importable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-primitives-closure/closure_controls.py", line 141, in test_many_bounded_provenance_receipts_remain_importable
+    review,saved,plan,raw=self.retained()
+                          ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-primitives-closure/closure_controls.py", line 73, in retained
+    plan=self.fixture.operation().plan(self.fixture.snapshot,saved['signature'],choices,account='dashboard:owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_export.py", line 178, in plan
+    portable_chunks(bundle)
+    ~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import_sources.py", line 75, in portable_chunks
+    raise ValueError('A portable source fact has invalid content or provenance')
+ValueError: A portable source fact has invalid content or provenance
+
+----------------------------------------------------------------------
+Ran 1 test in 7.749s
+
+FAILED (errors=1)

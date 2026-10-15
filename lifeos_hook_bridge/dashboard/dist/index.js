@@ -14,6 +14,304 @@
   const modelEndpoint = "/api/model/options?explicit_only=1";
   const tiers = ["haiku", "sonnet", "opus", "fable"];
 
+  function MemoryImportReview() {
+    const base = "/api/plugins/lifeos-hook-bridge/memory/import";
+    const [review, setReview] = SDK.hooks.useState(null);
+    const [snapshot, setSnapshot] = SDK.hooks.useState(null);
+    const [decisions, setDecisions] = SDK.hooks.useState({});
+    const [plan, setPlan] = SDK.hooks.useState(null);
+    const [publication, setPublication] = SDK.hooks.useState(null);
+    const [busy, setBusy] = SDK.hooks.useState(false);
+    const [message, setMessage] = SDK.hooks.useState("");
+    const [resumeId, setResumeId] = SDK.hooks.useState("");
+    const [resumeSignature, setResumeSignature] = SDK.hooks.useState("");
+    const [sourceLabel, setSourceLabel] = SDK.hooks.useState("");
+    const [uploads, setUploads] = SDK.hooks.useState({});
+    const [portableUpload, setPortableUpload] = SDK.hooks.useState("");
+
+    async function post(path, body) {
+      return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body) });
+    }
+    function binding() {
+      return { identifier: snapshot.identifier, snapshot_signature: snapshot.snapshot_signature };
+    }
+    async function run(operation) {
+      setBusy(true); setMessage("");
+      try { await operation(); }
+      catch (error) {
+        setReview(null); setSnapshot(null); setPlan(null); setPublication(null); setDecisions({});
+        setUploads({});
+        setPortableUpload("");
+        setMessage(error.message);
+      } finally { setBusy(false); }
+    }
+    function draft(identifier, field, value) {
+      setDecisions(function (current) { return { ...current, [identifier]: { ...current[identifier], [field]: value } }; });
+      setPlan(null); setPublication(null);
+    }
+    async function begin(sourceIdentifier) {
+      setReview(null); setSnapshot(null); setPlan(null); setPublication(null);
+      const source = sourceIdentifier ? { source_identifier: sourceIdentifier } : {};
+      const current = await post("/preview", source);
+      const saved = await post("/snapshot", { signature: current.signature, ...source });
+      const selected = {};
+      for (const source of current.sources) {
+        for (const item of source.chunks.filter(function (chunk) { return chunk.content; })) {
+          selected[item.id] = { id: item.id, action: "pending", required: true,
+            reason: "Awaiting owner review.", category: item.source_category ?? (source.path.endsWith("USER.md") ? "principal" : "project"),
+            content: item.content, title: "Imported Hermes memory", project: item.source_project ?? "" };
+        }
+      }
+      setDecisions(selected); setReview(current); setSnapshot(saved);
+      setResumeId(saved.identifier); setResumeSignature(saved.snapshot_signature);
+    }
+    async function prepare() {
+      const items = Object.values(decisions).map(function (item) {
+        if (item.action === "import") return { id: item.id, action: item.action, required: item.required,
+          category: item.category, content: item.content, title: item.title, project: item.project };
+        return { id: item.id, action: item.action, required: item.required, reason: item.reason };
+      });
+      setPlan(await post("/plan", { ...binding(), decisions: items }));
+    }
+    async function refresh() {
+      const request = snapshot ? binding() : { identifier: resumeId, snapshot_signature: resumeSignature };
+      const result = await post("/status", request);
+      setReview(result.review); setSnapshot({ ...request }); setPlan(result.plan); setPublication(result.publication);
+      if (!result.plan) setMessage("This saved review has no plan. Start a fresh review to choose the items.");
+    }
+    function field(item, key, label, multiline) {
+      const id = "import_" + item.id + "_" + key;
+      return h("label", { htmlFor: id, className: "block text-sm" }, label,
+        h(multiline ? "textarea" : "input", { id: id, value: item[key], disabled: busy || Boolean(plan),
+          className: "block w-full rounded border border-border bg-background p-2",
+          onChange: function (event) { draft(item.id, key, event.target.value); } }));
+    }
+    return h("details", { id: "memory_import" },
+      h("summary", { className: "cursor-pointer font-semibold" }, "Import Hermes memory"),
+      h("div", { className: "space-y-3 pt-3" },
+        h("p", null, "Review each entry before publication. Source files stay intact. Import does not switch your memory provider."),
+        h("button", { type: "button", disabled: busy, onClick: function () { return run(function () { return begin(); }); } }, "Review Hermes memory"),
+        h("details", null, h("summary", null, "Import files from another Hermes profile"),
+          h("p", null, "Choose original MEMORY.md or USER.md files. They are copied privately for review and do not replace this profile's files."),
+          h("label", null, "Source label", h("input", { value: sourceLabel, disabled: busy, maxLength: 256,
+            onChange: function (event) { setSourceLabel(event.target.value); } })),
+          ["MEMORY.md", "USER.md"].map(function (name) { return h("label", { key: name, className: "block" }, name,
+            h("input", { type: "file", accept: ".md,text/plain,text/markdown", disabled: busy,
+              onChange: function (event) {
+                const file = event.target.files[0];
+                return run(async function () {
+                  if (!file) { setUploads(function (current) { const next = { ...current }; delete next[name]; return next; }); return; }
+                  if (file.size > 1024 * 1024) throw new Error("Each source file must be at most 1 MiB.");
+                  const bytes = new Uint8Array(await file.arrayBuffer());
+                  let binary = "";
+                  for (const value of bytes) binary += String.fromCharCode(value);
+                  const encoded = window.btoa(binary);
+                  setUploads(function (current) { return { ...current, [name]: encoded }; });
+                });
+              } })); }),
+          h("button", { type: "button", disabled: busy || !sourceLabel.trim() || !Object.keys(uploads).length,
+            onClick: function () { return run(async function () {
+              const source = await post("/upload", { label: sourceLabel, files: uploads });
+              setUploads({}); await begin(source.identifier);
+            }); } }, "Upload files for review")),
+        h("details", null, h("summary", null, "Import a portable LifeOS bundle"),
+          h("p", null, "The review includes retained overflow. Excluded and known retired source items cannot be published through this import."),
+          h("label", null, "Portable memory JSON file", h("input", { type: "file", accept: ".json,application/json", disabled: busy,
+            onChange: function (event) {
+              const file = event.target.files[0];
+              return run(async function () {
+                if (!file) { setPortableUpload(""); return; }
+                if (file.size > 16 * 1024 * 1024) throw new Error("A portable bundle must be at most 16 MiB.");
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                let binary = "";
+                for (const value of bytes) binary += String.fromCharCode(value);
+                setPortableUpload(window.btoa(binary));
+              });
+            } })),
+          h("button", { type: "button", disabled: busy || !portableUpload,
+            onClick: function () { return run(async function () {
+              const source = await post("/upload", { label: "Uploaded portable LifeOS bundle", bundle_bytes: portableUpload });
+              setPortableUpload(""); await begin(source.identifier);
+            }); } }, "Upload portable bundle for review")),
+        h("details", null, h("summary", null, "Resume a saved import"),
+          h("label", null, "Import identifier", h("input", { value: resumeId, disabled: busy,
+            onChange: function (event) { setResumeId(event.target.value); setSnapshot(null); } })),
+          h("label", null, "Snapshot signature", h("input", { value: resumeSignature, disabled: busy,
+            onChange: function (event) { setResumeSignature(event.target.value); setSnapshot(null); } })),
+          h("button", { type: "button", disabled: busy || !resumeId || !resumeSignature,
+            onClick: function () { return run(refresh); } }, "Load saved import")),
+        message ? h("p", { role: "status" }, message) : null,
+        review ? h("div", { className: "space-y-3" },
+          h("p", null, "Target: " + review.installed + ". Principal: " + review.principal + "."),
+          h("p", null, "Source: " + (review.source_origin?.label ?? "Selected Hermes profile") + "."),
+          h("p", null, "Possible meaning conflicts require manual review. Exact duplicate and retirement checks do not detect every contradiction."),
+          h("details", null, h("summary", null, "Current readers"),
+            h("pre", { className: "whitespace-pre-wrap" }, JSON.stringify(review.readers, null, 2))),
+          h("p", { className: "text-xs break-all" }, "Import identifier: " + snapshot.identifier + ". Snapshot signature: " + snapshot.snapshot_signature),
+          review.sources.map(function (source) {
+            return h("div", { key: source.path, className: "space-y-2" }, h("h4", null, source.path + ": " + source.status),
+              source.chunks.filter(function (chunk) { return chunk.content; }).map(function (chunk) {
+                const item = decisions[chunk.id];
+                if (!item) return h("p", { key: chunk.id, className: "whitespace-pre-wrap" }, chunk.content);
+                return h("article", { key: chunk.id, className: "rounded border border-border p-3 space-y-2" },
+                  h("p", { className: "whitespace-pre-wrap" }, chunk.content),
+                  h("p", null, "Original author and date: unknown. Exact matches: " + chunk.exact_native_matches.length +
+                    ". Known retired claim: " + Boolean(chunk.retired_claim) + ". Source status: " + chunk.disposition + "."),
+                  chunk.source_reference ? h("p", null, "Source reference: " + chunk.source_reference.id +
+                    ", revision " + chunk.source_reference.revision + ". Source category: " + chunk.source_category + ".") : null,
+                  chunk.source_origin ? h("details", null, h("summary", null, "Source provenance"),
+                    h("pre", { className: "whitespace-pre-wrap" }, JSON.stringify(chunk.source_origin, null, 2))) : null,
+                  h("label", null, "Decision", h("select", { value: item.action, disabled: busy || Boolean(plan),
+                    onChange: function (event) { draft(item.id, "action", event.target.value); } },
+                    ["pending", "import", "exclude"].map(function (action) { return h("option", { key: action, value: action }, action); }))),
+                  h("label", null, h("input", { type: "checkbox", checked: item.required, disabled: busy || Boolean(plan),
+                    onChange: function (event) { draft(item.id, "required", event.target.checked); } }), " Required for complete import"),
+                  item.action === "import" ? h("div", null,
+                    h("label", null, "Category", h("select", { value: item.category, disabled: busy || Boolean(plan),
+                      onChange: function (event) { draft(item.id, "category", event.target.value); } },
+                      ["principal", "assistant", "project"].map(function (category) { return h("option", { key: category, value: category }, category); }))),
+                    field(item, "content", "Text to publish", true), field(item, "title", "Title", false),
+                    item.category === "project" ? field(item, "project", "Project", false) : null) : field(item, "reason", "Reason", false));
+              }));
+          }),
+          !plan && Object.keys(decisions).length ? h("button", { type: "button", disabled: busy,
+            onClick: function () { return run(prepare); } }, "Review publication plan") : null,
+          plan ? h("div", { className: "space-y-2" },
+            h("h4", null, "Publication plan"),
+            plan.items.map(function (item) { return h("article", { key: item.id, className: "rounded border border-border p-2" },
+              h("p", null, item.action + ": " + (item.content ?? item.reason)),
+              item.destination ? h("p", null, "Destination: " + item.destination) : null,
+              item.transformation ? h("p", { className: "whitespace-pre-wrap" }, "Published text: " + item.transformation.published) : null); }),
+            h("p", null, "Required held or excluded entries keep this import incomplete. No existing entry is evicted."),
+            h("button", { type: "button", disabled: busy, onClick: function () { return run(async function () {
+              setPublication(await post("/apply", { ...binding(), plan_signature: plan.signature }));
+            }); } }, "Apply reviewed import"),
+            h("button", { type: "button", disabled: busy, onClick: function () { return run(refresh); } }, "Check import status")) : null,
+          publication ? h("div", { role: "status" },
+            h("p", null, "Import state: " + publication.state + ". Required entries verified: " + publication.required_items_verified + "."),
+            publication.state === "published" && publication.required_items_verified && !review.ownership_enabled ?
+              h("div", { className: "space-y-2" },
+                h("p", null, "Prepare a separate ownership review to use LifeOS memory in new Hermes sessions. The preparation saves a private backup and restarts Hermes services."),
+                h("button", { type: "button", disabled: busy, onClick: function () { return run(async function () {
+                  const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ kind: "activation", ...binding(), plan_signature: plan.signature }) });
+                  setMessage("Ownership review started. Workflow: " + result.identifier + ". Open LifeOS releases to review the cutover.");
+                }); } }, "Prepare LifeOS ownership activation"),
+                h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null,
+            publication.reason ? h("p", null, publication.reason) : null,
+            publication.items.map(function (item) { return h("p", { key: item.id }, item.action + ": " +
+              (item.receipt?.reference ? item.receipt.reference.id + ", revision " + item.receipt.reference.revision : "No published reference") +
+              ". Current verification: " + item.verified + "."); })) : null) : null));
+  }
+
+  function MemoryExportReview() {
+    const base = "/api/plugins/lifeos-hook-bridge/memory/export";
+    const [review, setReview] = SDK.hooks.useState(null);
+    const [snapshot, setSnapshot] = SDK.hooks.useState(null);
+    const [decisions, setDecisions] = SDK.hooks.useState({});
+    const [plan, setPlan] = SDK.hooks.useState(null);
+    const [receipt, setReceipt] = SDK.hooks.useState(null);
+    const [busy, setBusy] = SDK.hooks.useState(false);
+    const [message, setMessage] = SDK.hooks.useState("");
+    const [prompt, setPrompt] = SDK.hooks.useState("");
+    async function post(path, body) {
+      return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    }
+    function binding() { return { identifier: snapshot.identifier, signature: snapshot.signature }; }
+    async function run(operation) {
+      setBusy(true); setMessage("");
+      try { await operation(); }
+      catch (error) { setReview(null); setSnapshot(null); setPlan(null); setReceipt(null); setDecisions({}); setMessage(error.message); }
+      finally { setBusy(false); }
+    }
+    async function begin() {
+      setReview(null); setPlan(null); setReceipt(null);
+      const current = await post("/preview", {});
+      const saved = await post("/snapshot", { signature: current.signature });
+      const selected = {};
+      for (const item of current.items) selected[item.id] = { id: item.id, action: "retain", required: true,
+        reason: "Awaiting owner review.", content: item.content, file: item.category === "principal" ? "USER.md" : "MEMORY.md" };
+      setReview(current); setSnapshot(saved); setDecisions(selected);
+    }
+    function draft(id, field, value) {
+      setDecisions(function (current) { return { ...current, [id]: { ...current[id], [field]: value } }; });
+      setPlan(null); setReceipt(null);
+    }
+    async function prepare() {
+      const selected = Object.values(decisions).map(function (item) {
+        return item.action === "export" ? { id: item.id, action: item.action, required: item.required, file: item.file, content: item.content } :
+          { id: item.id, action: item.action, required: item.required, reason: item.reason };
+      });
+      setPlan(await post("/plan", { ...binding(), decisions: selected }));
+    }
+    async function download() {
+      const response = await SDK.authedFetch(base + "/download", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(binding()) });
+      if (!response.ok) throw new Error("Export download is unavailable. Refresh the owner session and review the source state.");
+      const url = window.URL.createObjectURL(await response.blob());
+      try {
+        const link = window.document.createElement("a"); link.href = url; link.download = "lifeos-portable-memory.json";
+        window.document.body.appendChild(link); link.click(); link.remove();
+      } finally { window.URL.revokeObjectURL(url); }
+    }
+    return h("details", { id: "memory_export" }, h("summary", { className: "cursor-pointer font-semibold" }, "Export memory and return to Hermes"),
+      h("div", { className: "space-y-3 pt-3" },
+        h("p", null, "Export current facts and review the active Hermes entries. The bundle retains overflow. Export does not switch providers or remove LifeOS."),
+        h("button", { type: "button", disabled: busy, onClick: function () { return run(begin); } }, "Review reverse export"),
+        message ? h("p", { role: "status" }, message) : null,
+        review ? h("div", { className: "space-y-3" },
+          h("p", null, "Hermes limits: MEMORY.md " + review.settings.memory_char_limit + " characters; USER.md " + review.settings.user_char_limit + " characters."),
+          h("p", null, "Every item starts retained. Required items must be exported before provider return. Existing Hermes entries also require a decision."),
+          review.items.map(function (source) {
+            const item = decisions[source.id];
+            return h("article", { key: source.id, className: "rounded border border-border p-3 space-y-2" },
+              h("p", { className: "whitespace-pre-wrap" }, source.content),
+              h("p", null, source.category + (source.project ? ", project " + source.project : "") +
+                (source.reference ? ", reference " + source.reference.id + ", revision " + source.reference.revision : ". Preserved Hermes occurrence") + "."),
+              h("p", null, "Known retired claim: " + source.retired_claim + ". Quarantined: " + source.quarantined + "."),
+              h("label", null, "Decision", h("select", { value: item.action, disabled: busy || Boolean(plan),
+                onChange: function (event) { draft(item.id, "action", event.target.value); } },
+                ["retain", "export", "exclude"].map(function (action) { return h("option", { key: action, value: action }, action); }))),
+              h("label", null, h("input", { type: "checkbox", checked: item.required, disabled: busy || Boolean(plan),
+                onChange: function (event) { draft(item.id, "required", event.target.checked); } }), " Required for provider return"),
+              item.action === "export" ? h("div", null,
+                h("label", null, "Hermes file", h("select", { value: item.file, disabled: busy || Boolean(plan),
+                  onChange: function (event) { draft(item.id, "file", event.target.value); } },
+                  ["MEMORY.md", "USER.md"].map(function (file) { return h("option", { key: file, value: file }, file); }))),
+                h("label", null, "Text to export", h("textarea", { value: item.content, disabled: busy || Boolean(plan),
+                  className: "block w-full rounded border border-border bg-background p-2",
+                  onChange: function (event) { draft(item.id, "content", event.target.value); } }))) :
+                h("label", null, "Reason", h("input", { value: item.reason, disabled: busy || Boolean(plan),
+                  onChange: function (event) { draft(item.id, "reason", event.target.value); } })));
+          }),
+          !plan ? h("button", { type: "button", disabled: busy, onClick: function () { return run(prepare); } }, "Review export plan") : null,
+          plan ? h("div", { className: "space-y-2" },
+            Object.entries(plan.files).map(function (entry) { return h("div", { key: entry[0] },
+              h("p", null, entry[0] + ": " + Array.from(entry[1]).length + "/" + plan.limits[entry[0]] + " characters."),
+              h("pre", { className: "whitespace-pre-wrap" }, entry[1])); }),
+            h("p", null, "Ready for provider return: " + plan.ready_for_return + ". Retained items remain outside active Hermes recall."),
+            h("button", { type: "button", disabled: busy, onClick: function () { return run(async function () {
+              setReceipt(await post("/apply", { ...binding(), plan_signature: plan.signature }));
+            }); } }, "Create reviewed export")) : null,
+          receipt ? h("div", { role: "status" }, h("p", null, "Export state: " + receipt.state + "."),
+            h("p", { className: "text-xs break-all" }, "Export identifier: " + snapshot.identifier + ". Signature: " + snapshot.signature),
+            h("button", { type: "button", disabled: busy, onClick: function () { return run(download); } }, "Download portable memory"),
+            plan.ready_for_return && receipt.state === "exported" ? h("div", { className: "space-y-2" },
+              h("p", null, "Return selects built-in Hermes memory, replaces the LifeOS prompt, stops Pulse, and restarts Hermes. Native data and the complete export remain retained."),
+              h("label", null, "Replacement Hermes prompt", h("textarea", { value: prompt, disabled: busy,
+                className: "block w-full rounded border border-border bg-background p-2",
+                onChange: function (event) { setPrompt(event.target.value); } })),
+              h("button", { type: "button", disabled: busy || !prompt.trim(), onClick: function () { return run(async function () {
+                const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
+                  method: "POST", headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ kind: "return", ...binding(), plan_signature: plan.signature, prompt: prompt }) });
+                setMessage("Provider return review prepared. Workflow: " + result.identifier + ". Open LifeOS releases to review and apply it.");
+              }); } }, "Prepare return to built-in Hermes"),
+              h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null) : null) : null));
+  }
+
   function MemoryPreferences() {
     const memoryEndpoint = "/api/plugins/lifeos-hook-bridge/memory";
     const [memory, setMemory] = SDK.hooks.useState(null);
@@ -143,13 +441,14 @@
         className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Claim this LifeOS installation") : null,
       memory?.state === "unavailable" ? h("p", { role: "alert" }, "Memory is unavailable: " + memory.message) : null,
       configured ? h("p", null, "Native memory check: " + memory.native_health + ". Current indexed facts: " + (memory.active_facts ?? "unknown") + ".") : null,
-      h("p", { className: "text-sm" }, "Ownership setup is still in development. This page cannot switch your memory provider until the checks below pass."),
-      h("ul", { className: "list-disc pl-5 text-sm" }, Object.entries(memory?.remaining_gates ?? {}).map(function (entry) {
-        return h("li", { key: entry[0] }, entry[1]);
-      })),
+      configured ? h("p", { className: "text-sm" }, memory.ownership_enabled
+        ? "LifeOS owns lasting memory. Export current facts and review a return to switch to built-in Hermes memory."
+        : "After the required import entries are verified, prepare an ownership review. Open LifeOS releases to review and apply the provider switch.") : null,
       h("button", { type: "button", disabled: busy, onClick: refresh, className: "rounded border border-border px-3 py-2" }, "Check memory status"),
       message ? h("p", { role: "status", className: "text-sm" }, message) : null,
       configured ? h("div", { className: "space-y-3" },
+        h(MemoryImportReview),
+        h(MemoryExportReview),
         h("details", null,
           h("summary", { className: "cursor-pointer font-semibold" }, "Add existing LifeOS memory"),
           h("div", { className: "space-y-3 pt-3" },
@@ -207,7 +506,7 @@
         }),
         h("p", { className: "text-sm" }, memory.ownership_enabled
           ? "Ask your agent to correct or forget a fact using its reference. Forget removes ordinary recall; it does not erase conversation history, audits, or backups."
-          : "Agent corrections and forgetting are unavailable until LifeOS memory ownership is enabled. Ownership activation is not available in this version."),
+          : "Agent corrections and forgetting are unavailable until LifeOS memory ownership is enabled. Complete the reviewed import activation from LifeOS releases."),
         memory.proposal_review_available ? h("details", null,
           h("summary", { className: "cursor-pointer font-semibold" }, "Pending preference and rule changes"),
           h("div", { className: "space-y-3 pt-3" },

@@ -1,0 +1,29 @@
+test_activation_requires_published_import_and_current_required_references (test_memory_activation.MemoryActivationTests.test_activation_requires_published_import_and_current_required_references) ... ERROR
+test_activation_uses_real_backup_and_services_and_preserves_original_sources (test_memory_activation.MemoryActivationTests.test_activation_uses_real_backup_and_services_and_preserves_original_sources) ... ERROR
+
+======================================================================
+ERROR: test_activation_requires_published_import_and_current_required_references (test_memory_activation.MemoryActivationTests.test_activation_requires_published_import_and_current_required_references)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 23, in setUp
+    self.plan=self.importer.plan(self.snapshot,self.captured['snapshot_signature'],decisions,account='dashboard:owner')
+              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import.py", line 414, in plan
+    raise ValueError('The selected source or native import destination is not eligible for publication')
+ValueError: The selected source or native import destination is not eligible for publication
+
+======================================================================
+ERROR: test_activation_uses_real_backup_and_services_and_preserves_original_sources (test_memory_activation.MemoryActivationTests.test_activation_uses_real_backup_and_services_and_preserves_original_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 23, in setUp
+    self.plan=self.importer.plan(self.snapshot,self.captured['snapshot_signature'],decisions,account='dashboard:owner')
+              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import.py", line 414, in plan
+    raise ValueError('The selected source or native import destination is not eligible for publication')
+ValueError: The selected source or native import destination is not eligible for publication
+
+----------------------------------------------------------------------
+Ran 2 tests in 4.487s
+
+FAILED (errors=2)

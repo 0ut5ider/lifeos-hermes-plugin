@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "tests/test_memory_portability_ui.cjs",
+    "tests/test_memory_removal_ui.cjs",
+    "tests/test_memory_dashboard_ui.cjs",
+    "tests/test_release_ui.cjs"
+  ],
+  "exit_code": 0,
+  "tests_pass": 21,
+  "scope": "actual bundles with SDK component fixtures; not installed end-to-end"
+}

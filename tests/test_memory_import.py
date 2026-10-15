@@ -36,6 +36,58 @@ class MemoryImportTests(unittest.TestCase):
     def preview(self):
         return self.operation().preview(account='dashboard:owner')
 
+    def test_active_lifeos_profile_imports_preserved_sources_without_changing_provider(self):
+        self.configuration.update(lambda value:value.update(ownership_enabled=True))
+        (self.profile/'config.yaml').write_text('memory:\n  provider: lifeos-hook-bridge\n  memory_enabled: false\n  user_profile_enabled: false\n')
+        before=(self.profile/'config.yaml').read_bytes()
+        saved,plan=self.item_plan()
+        result=self.operation().apply(self.snapshot,saved['snapshot_signature'],plan['signature'],account='dashboard:owner')
+        self.assertEqual(result['state'],'published',result)
+        self.assertTrue(result['ownership_enabled'])
+        self.assertEqual((self.profile/'config.yaml').read_bytes(),before)
+        self.assertTrue(self.configuration.load()['ownership_enabled'])
+
+    def test_provider_and_ownership_disagreement_refuses_import(self):
+        (self.profile/'config.yaml').write_text('memory:\n  provider: lifeos-hook-bridge\n  memory_enabled: false\n  user_profile_enabled: false\n')
+        with self.assertRaises(MemoryUnavailable):
+            self.preview()
+        self.configuration.update(lambda value:value.update(ownership_enabled=True))
+        (self.profile/'config.yaml').write_text('memory:\n  provider: builtin\n')
+        with self.assertRaises(MemoryUnavailable):
+            self.preview()
+
+    def test_status_detects_correction_after_a_successful_import(self):
+        saved,plan=self.item_plan()
+        result=self.operation().apply(self.snapshot,saved['snapshot_signature'],plan['signature'],account='dashboard:owner')
+        self.assertEqual(result['state'],'published')
+        reference=result['items'][0]['receipt']['reference']
+        self.fixture.memory.correct(fixture.OWNER,reference,'Synthetic corrected HTTP marker.','after-import')
+        status=self.operation().status(self.snapshot,saved['snapshot_signature'],account='dashboard:owner')
+        self.assertEqual(status['publication']['state'],'conflict')
+        self.assertFalse(status['publication']['required_items_verified'])
+
+    def test_external_source_preserves_active_profile_files_and_binds_origin(self):
+        from lifeos_hook_bridge.memory_import import MemoryImport
+        source=self.fixture.home/'source-inbox'
+        source.mkdir(mode=0o700)
+        (source/'MEMORY.md').write_text('Synthetic imported external fact.')
+        (source/'source.json').write_text(json.dumps({'kind':'hermes-files','label':'Synthetic external Hermes'}))
+        for path in source.iterdir():path.chmod(0o600)
+        operation=MemoryImport(self.configuration,source_directory=source)
+        review=operation.preview(account='dashboard:owner')
+        saved=operation.prepare(self.snapshot,review['signature'],account='dashboard:owner')
+        chunk=review['sources'][0]['chunks'][0]
+        decisions=[{'id':chunk['id'],'action':'import','required':True,'category':'project','project':'lab',
+            'content':chunk['content'],'title':'Synthetic external'}]
+        plan=operation.plan(self.snapshot,saved['snapshot_signature'],decisions,account='dashboard:owner')
+        result=operation.apply(self.snapshot,saved['snapshot_signature'],plan['signature'],account='dashboard:owner')
+        self.assertEqual(result['state'],'published',result)
+        self.assertEqual((self.sources/'MEMORY.md').read_bytes(),self.raw)
+        self.assertEqual(review['source_origin']['label'],'Synthetic external Hermes')
+        self.assertEqual(result['items'][0]['receipt']['source']['origin']['label'],'Synthetic external Hermes')
+        with self.assertRaises(MemoryUnavailable):
+            self.operation().inspect(self.snapshot,saved['snapshot_signature'],account='dashboard:owner')
+
     def test_preview_accounts_for_every_byte_and_preserves_duplicate_occurrences(self):
         result=self.preview()
         source=result['sources'][0]

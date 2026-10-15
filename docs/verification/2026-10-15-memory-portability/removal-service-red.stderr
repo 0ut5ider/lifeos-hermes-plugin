@@ -1,0 +1,38 @@
+test_actual_removed_pulse_definition_keeps_only_hermes_services_active (test_removal_services.RemovalServicesTests.test_actual_removed_pulse_definition_keeps_only_hermes_services_active) ... ERROR
+test_enabled_or_active_pulse_refuses_preparation (test_removal_services.RemovalServicesTests.test_enabled_or_active_pulse_refuses_preparation) ... ERROR
+test_later_unit_edit_refuses_before_stopping (test_removal_services.RemovalServicesTests.test_later_unit_edit_refuses_before_stopping) ... ERROR
+
+======================================================================
+ERROR: test_actual_removed_pulse_definition_keeps_only_hermes_services_active (test_removal_services.RemovalServicesTests.test_actual_removed_pulse_definition_keeps_only_hermes_services_active)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 32, in test_actual_removed_pulse_definition_keeps_only_hermes_services_active
+    operation=self.operation();review=operation.prepare(removed=[self.installed_pulse])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 28, in operation
+    from optional.lifeos_release_manager.removal_services import RemovalServices
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_services'
+
+======================================================================
+ERROR: test_enabled_or_active_pulse_refuses_preparation (test_removal_services.RemovalServicesTests.test_enabled_or_active_pulse_refuses_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 59, in test_enabled_or_active_pulse_refuses_preparation
+    operation=self.operation()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 28, in operation
+    from optional.lifeos_release_manager.removal_services import RemovalServices
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_services'
+
+======================================================================
+ERROR: test_later_unit_edit_refuses_before_stopping (test_removal_services.RemovalServicesTests.test_later_unit_edit_refuses_before_stopping)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 49, in test_later_unit_edit_refuses_before_stopping
+    operation=self.operation();review=operation.prepare(removed=[self.installed_pulse])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_services.py", line 28, in operation
+    from optional.lifeos_release_manager.removal_services import RemovalServices
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_services'
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.932s
+
+FAILED (errors=3)

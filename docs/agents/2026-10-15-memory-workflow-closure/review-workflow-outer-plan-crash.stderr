@@ -1,0 +1,15 @@
+test_exit_after_outer_return_plan_does_not_lose_recovery_binding (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.WorkflowReview.test_exit_after_outer_return_plan_does_not_lose_recovery_binding) ... FAIL
+
+======================================================================
+FAIL: test_exit_after_outer_return_plan_does_not_lose_recovery_binding (docs.agents.2026-10-15-memory-workflow-closure.workflow_probes.WorkflowReview.test_exit_after_outer_return_plan_does_not_lose_recovery_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-closure/workflow_probes.py", line 138, in test_exit_after_outer_return_plan_does_not_lose_recovery_binding
+    self.assertNotEqual(inner,'ready','Workflow cancellation must recover the already prepared global transition')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ready' == 'ready' : Workflow cancellation must recover the already prepared global transition
+
+----------------------------------------------------------------------
+Ran 1 test in 3.381s
+
+FAILED (failures=1)

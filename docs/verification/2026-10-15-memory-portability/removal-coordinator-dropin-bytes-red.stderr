@@ -1,0 +1,15 @@
+test_later_override_bytes_are_not_hidden_by_restored_timestamps (test_removal_coordinator.RemovalCoordinatorTests.test_later_override_bytes_are_not_hidden_by_restored_timestamps) ... FAIL
+
+======================================================================
+FAIL: test_later_override_bytes_are_not_hidden_by_restored_timestamps (test_removal_coordinator.RemovalCoordinatorTests.test_later_override_bytes_are_not_hidden_by_restored_timestamps)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 96, in test_later_override_bytes_are_not_hidden_by_restored_timestamps
+    result=self.run_coordinator(edit_override=True);self.assertFalse(result['admitted'],result)
+                                                    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'admitted': True}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.648s
+
+FAILED (failures=1)

@@ -1,0 +1,39 @@
+test_extra_native_tool_refuses_unqualified_removal (docs.agents.2026-10-15-removal-components-review.component_probes.NativeInventoryReview.test_extra_native_tool_refuses_unqualified_removal) ... FAIL
+test_retained_directory_edit_refuses_candidate_publication (docs.agents.2026-10-15-removal-components-review.component_probes.PublicationReview.test_retained_directory_edit_refuses_candidate_publication) ... FAIL
+test_added_pulse_override_refuses_before_gateway_stop (docs.agents.2026-10-15-removal-components-review.component_probes.ServiceDefinitionReview.test_added_pulse_override_refuses_before_gateway_stop) ... FAIL
+
+======================================================================
+FAIL: test_extra_native_tool_refuses_unqualified_removal (docs.agents.2026-10-15-removal-components-review.component_probes.NativeInventoryReview.test_extra_native_tool_refuses_unqualified_removal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-components-review/component_probes.py", line 27, in test_extra_native_tool_refuses_unqualified_removal
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'owner_tool_preserved': True, 'admitted': True, 'owner_tool_selected_for_removal': False, 'native_dependency_trees_selected': 1}
+
+======================================================================
+FAIL: test_retained_directory_edit_refuses_candidate_publication (docs.agents.2026-10-15-removal-components-review.component_probes.PublicationReview.test_retained_directory_edit_refuses_candidate_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-components-review/component_probes.py", line 69, in test_retained_directory_edit_refuses_candidate_publication
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'apply_succeeded': True, 'candidate_published': True, 'journal_state': 'applied', 'completed_state_refusal': 'The retained program differs from its recorded identity'}
+
+======================================================================
+FAIL: test_added_pulse_override_refuses_before_gateway_stop (docs.agents.2026-10-15-removal-components-review.component_probes.ServiceDefinitionReview.test_added_pulse_override_refuses_before_gateway_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-components-review/component_probes.py", line 46, in test_added_pulse_override_refuses_before_gateway_stop
+    self.assertEqual(observed['after'],before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'gateway': '0', 'dashboard': '2730017', 'pulse': '0'} != {'gateway': '2730007', 'dashboard': '2730017', 'pulse': '0'}
+- {'dashboard': '2730017', 'gateway': '0', 'pulse': '0'}
++ {'dashboard': '2730017', 'gateway': '2730007', 'pulse': '0'}
+?                                      +++ +++
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.284s
+
+FAILED (failures=3)

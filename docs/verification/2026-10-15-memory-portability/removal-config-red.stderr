@@ -1,0 +1,89 @@
+test_environment_removes_only_the_exact_owned_block (test_removal_configuration.RemovalConfigurationTests.test_environment_removes_only_the_exact_owned_block) ... ERROR
+test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) ... 
+  test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'memory: {provider: lifeos-hook-bridge}\n') ... ERROR
+  test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'memory: &shared {provider: builtin}\nother: *shared\n') ... ERROR
+  test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'memory: {provider: builtin, memory_enabled: false}\n') ... ERROR
+  test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'plugins: {enabled: other}\n') ... ERROR
+test_removal_preserves_current_settings_and_detaches_aliases (test_removal_configuration.RemovalConfigurationTests.test_removal_preserves_current_settings_and_detaches_aliases) ... ERROR
+test_stock_gateway_keeps_discord_disabled_with_env_token (test_removal_configuration.RemovalConfigurationTests.test_stock_gateway_keeps_discord_disabled_with_env_token) ... ERROR
+
+======================================================================
+ERROR: test_environment_removes_only_the_exact_owned_block (test_removal_configuration.RemovalConfigurationTests.test_environment_removes_only_the_exact_owned_block)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 83, in test_environment_removes_only_the_exact_owned_block
+    operation=self.operation();profile=Path('/account/.hermes');workspace=Path('/account/workspace')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'memory: {provider: lifeos-hook-bridge}\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 57, in test_native_ownership_or_ambiguous_aliases_refuse
+    with self.subTest(data=data),self.assertRaises(ValueError):self.operation().configuration(data,Path('/account/.claude'))
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'memory: &shared {provider: builtin}\nother: *shared\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 57, in test_native_ownership_or_ambiguous_aliases_refuse
+    with self.subTest(data=data),self.assertRaises(ValueError):self.operation().configuration(data,Path('/account/.claude'))
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'memory: {provider: builtin, memory_enabled: false}\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 57, in test_native_ownership_or_ambiguous_aliases_refuse
+    with self.subTest(data=data),self.assertRaises(ValueError):self.operation().configuration(data,Path('/account/.claude'))
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) (data=b'plugins: {enabled: other}\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 57, in test_native_ownership_or_ambiguous_aliases_refuse
+    with self.subTest(data=data),self.assertRaises(ValueError):self.operation().configuration(data,Path('/account/.claude'))
+                                                               ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_removal_preserves_current_settings_and_detaches_aliases (test_removal_configuration.RemovalConfigurationTests.test_removal_preserves_current_settings_and_detaches_aliases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 38, in test_removal_preserves_current_settings_and_detaches_aliases
+    result=self.operation().configuration(data,Path('/account/.claude'))
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+======================================================================
+ERROR: test_stock_gateway_keeps_discord_disabled_with_env_token (test_removal_configuration.RemovalConfigurationTests.test_stock_gateway_keeps_discord_disabled_with_env_token)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 60, in test_stock_gateway_keeps_discord_disabled_with_env_token
+    result=self.operation().configuration(b'memory: {provider: builtin}\n',Path('/account/.claude'))
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 17, in operation
+    from optional.lifeos_release_manager import removal_configuration
+ImportError: cannot import name 'removal_configuration' from 'optional.lifeos_release_manager' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/__init__.py)
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (errors=7)

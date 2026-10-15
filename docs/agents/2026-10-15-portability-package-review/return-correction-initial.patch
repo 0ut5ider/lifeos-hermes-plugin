@@ -1,0 +1,72 @@
+diff --git a/lifeos_hook_bridge/memory_return.py b/lifeos_hook_bridge/memory_return.py
+index 92042b64..1147730d 100644
+--- a/lifeos_hook_bridge/memory_return.py
++++ b/lifeos_hook_bridge/memory_return.py
+@@ -93,7 +93,12 @@ class MemoryReturn:
+             for name,content in export_plan['files'].items():
+                 actual,_=_read(destination/'hermes'/name,private=True)
+                 if actual!=content.encode():raise MemoryUnavailable('The reviewed Hermes export changes before return')
+-            config,_=read_target(self.profile/'config.yaml')
++            inputs={name:read_target(self.profile/name) for name in NAMES}
++            config=inputs['config.yaml'][0]
++            try:policy=json.loads(inputs['lifeos-memory.json'][0])
++            except (ValueError,TypeError,UnicodeError) as error:
++                raise MemoryConflict('The current memory policy changes during return preparation') from error
++            if policy!=selected:raise MemoryConflict('The current memory policy changes during return preparation')
+             native={**selected,'ownership_enabled':False,'sharing_enabled':False}
+             self.configuration.validate(native)
+             outputs={'config.yaml':self._configuration(config),'lifeos-memory.json':_encoded(native),'SOUL.md':prompt.encode(),
+@@ -107,11 +112,13 @@ class MemoryReturn:
+                 'export_plan_signature':export_plan_signature}))
+             targets=[]
+             for index,name in enumerate(NAMES):
+-                before,metadata=read_target(self.profile/name)
++                before,metadata=inputs[name]
+                 if before is not None:publish(state/'before'/str(index),before)
+                 after=outputs[name]
+                 publish(state/'after'/str(index),after)
+                 targets.append({'name':name,'copy':index,'before':metadata,'after':{'digest':_digest(after),'mode':0o600}})
++            if any(read_target(self.profile/name)!=inputs[name] for name in NAMES):
++                raise MemoryConflict('The current Hermes files change during return preparation')
+             plan={'version':1,'profile':str(self.profile),'root':str(self.importer.installed),'principal':self.importer.principal,
+                 'operation_id':self.operation_id,
+                 'writer':account,'export_signature':export_signature,'export_plan_signature':export_plan_signature,
+diff --git a/tests/test_memory_return.py b/tests/test_memory_return.py
+index 953f753a..f235ce5b 100644
+--- a/tests/test_memory_return.py
++++ b/tests/test_memory_return.py
+@@ -79,6 +79,34 @@ memory:
+         self.assertIn(b'owner_later: keep',(self.profile/'config.yaml').read_bytes())
+         self.assertTrue(self.configuration.load()['ownership_enabled'])
+ 
++    def changed_during_prepare(self,target,later,*,boundary='_configuration'):
++        edited=False
++        def trace(frame,event,arg):
++            nonlocal edited
++            if (not edited and event=='return' and frame.f_code.co_name==boundary
++                    and frame.f_code.co_filename.endswith('/memory_return.py' if boundary=='_configuration' else '/memory_export.py')):
++                target.write_bytes(later);edited=True
++            return trace
++        sys.settrace(trace)
++        try:
++            with self.assertRaises(MemoryUnavailable):self.prepare()
++        finally:sys.settrace(None)
++        self.assertTrue(edited)
++        self.assertEqual(target.read_bytes(),later)
++        self.assertFalse((self.fixture.snapshot/'return').exists())
++
++    def test_prepare_refuses_config_edit_after_transformation_without_losing_the_edit(self):
++        target=self.profile/'config.yaml'
++        self.changed_during_prepare(target,target.read_bytes()+b'synthetic_later_owner_setting: keep\n')
++
++    def test_prepare_refuses_policy_edit_after_transformation_without_losing_the_grant(self):
++        selected=self.configuration.load();selected['accounts']['synthetic:later-owner-account']='owner'
++        self.changed_during_prepare(self.configuration.path,(json.dumps(selected,indent=2)+'\n').encode())
++
++    def test_prepare_refuses_policy_change_between_selection_and_input_capture(self):
++        selected=self.configuration.load();selected['accounts']['synthetic:later-owner-account']='owner'
++        self.changed_during_prepare(self.configuration.path,(json.dumps(selected,indent=2)+'\n').encode(),boundary='_current')
++
+     def test_return_rollback_restores_exact_bytes_and_refuses_later_builtin_facts(self):
+         prepared=self.prepare()
+         operation=self.operation(verify_writers=lambda:None)

@@ -4,7 +4,17 @@ import json
 from pathlib import Path
 
 
-def assemble_runtime(job, source, package, web, profile):
+def prepare_stock_tools(job):
+    from pm import prepare_tools
+    from pm.install import _lockfile
+    from pm.registry import tool_roots
+    from pm.store import current_target
+    names=tool_roots(_lockfile().names())
+    prepare_tools(names,out=Path(job)/'dependency-profile/tools',target=current_target())
+    return names
+
+
+def assemble_runtime(job, source, package, web, profile, *, integration=True):
     from pm import stage_manager_runtime
     from pm.environments import site_packages
     from pm.features import installed_extras, write_features
@@ -18,6 +28,7 @@ def assemble_runtime(job, source, package, web, profile):
 
     job, source, package, web, profile = map(Path, (job, source, package, web, profile))
     store = job / 'dependency-profile/tools'
+    if not integration:prepare_stock_tools(job)
     facts = Facts(store / 'facts.json', strict=True)
     fact = facts.get('python')
     if fact is None:
@@ -38,7 +49,7 @@ def assemble_runtime(job, source, package, web, profile):
         tools=store, pm_runtime=job / 'pm-runtime', features=job / 'enabled-features.json',
         frontends={'web': web})
     manifest = assemble(inputs, job)
-    members = {profile / 'plugins/lifeos-hook-bridge': package / 'lifeos_hook_bridge'}
+    members = {profile / 'plugins/lifeos-hook-bridge': package / 'lifeos_hook_bridge'} if integration else {}
     facts.record_state('venv', Venv(source).expected_stamp(features, plugin_dirs=members), features)
     if not (job / manifest['runtime']['commands']['hermes']).is_file():
         raise ValueError('Native assembly does not publish the required Hermes launcher')

@@ -40,10 +40,13 @@ async function panel(initial, reviewResponse, adoptionResponse) {
   return {render,calls};
 }
 
-test('memory status names incomplete gates and does not offer activation',async()=>{
-  const p=await panel({state:'not_configured',activation_ready:false,remaining_gates:{native_proposal_policy:'Native proposal approval'},connections:[]});
+test('memory status explains reviewed activation without engineering gates',async()=>{
+  const p=await panel({state:'prepared',activation_ready:false,remaining_gates:{native_proposal_policy:'Native proposal approval'},connections:[]});
   const view=p.render();
-  assert.ok(find(view,n=>n.type==='li'&&n.children.includes('Native proposal approval')));
+  assert.equal(find(view,n=>n.type==='li'&&n.children.includes('Native proposal approval')),null);
+  assert.ok(find(view,n=>n.type==='p'&&n.children.some(c=>typeof c==='string'&&
+    c.includes('Open LifeOS releases to review and apply the provider switch'))));
+  assert.equal(JSON.stringify(view).includes('Ownership setup is still in development'),false);
   assert.equal(find(view,n=>n.type==='button'&&n.children.includes('Enable LifeOS memory')),null);
   assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Check memory status')));
 });
@@ -56,6 +59,7 @@ test('agent correction guidance requires active memory ownership',async()=>{
     assert.equal(Boolean(guidance),ownership);
     if(!ownership)assert.ok(find(p.render(),n=>n.type==='p'&&n.children.some(c=>
       typeof c==='string'&&c.includes('Agent corrections and forgetting are unavailable'))));
+    assert.equal(JSON.stringify(p.render()).includes('Ownership activation is not available in this version'),false);
   }
 });
 

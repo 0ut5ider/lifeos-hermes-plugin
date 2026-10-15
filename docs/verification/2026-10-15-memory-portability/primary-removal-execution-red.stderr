@@ -1,0 +1,28 @@
+test_inactive_basename_bun_service_cannot_lose_selected_executable (docs.agents.2026-10-15-removal-execution-review.execution_probes.BasenameServiceReview.test_inactive_basename_bun_service_cannot_lose_selected_executable) ... FAIL
+test_changed_bytecode_cannot_change_the_admitted_program (docs.agents.2026-10-15-removal-execution-review.execution_probes.ExecutedBytecodeReview.test_changed_bytecode_cannot_change_the_admitted_program) ... FAIL
+test_bytecode_does_not_change_executable_review (test_removal_runtime.RemovalRuntimeTests.test_bytecode_does_not_change_executable_review) ... ok
+test_interpreter_link_cannot_leave_reviewed_runtime (test_removal_runtime.RemovalRuntimeTests.test_interpreter_link_cannot_leave_reviewed_runtime) ... ok
+test_later_executable_artifact_edits_refuse (test_removal_runtime.RemovalRuntimeTests.test_later_executable_artifact_edits_refuse) ... ok
+
+======================================================================
+FAIL: test_inactive_basename_bun_service_cannot_lose_selected_executable (docs.agents.2026-10-15-removal-execution-review.execution_probes.BasenameServiceReview.test_inactive_basename_bun_service_cannot_lose_selected_executable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-execution-review/execution_probes.py", line 73, in test_inactive_basename_bun_service_cannot_lose_selected_executable
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'inactive': True, 'selected_bun_executed': True, 'foreign_consumer_admitted': True}
+
+======================================================================
+FAIL: test_changed_bytecode_cannot_change_the_admitted_program (docs.agents.2026-10-15-removal-execution-review.execution_probes.ExecutedBytecodeReview.test_changed_bytecode_cannot_change_the_admitted_program)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-execution-review/execution_probes.py", line 45, in test_changed_bytecode_cannot_change_the_admitted_program
+    self.assertFalse(observed.get('changed_bytecode_admitted') and observed['executed_value']=='executed-unreviewed-cache')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.916s
+
+FAILED (failures=2)

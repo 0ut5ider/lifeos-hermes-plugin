@@ -1,0 +1,55 @@
+{
+  "workflow": "979933947547464185a71a935d7324a2",
+  "daily_changed": false,
+  "read_only": true,
+  "workflow_status": {
+    "state": "interrupted"
+  },
+  "builtin_files": {
+    "MEMORY.md": {
+      "bytes": 614,
+      "sha256": "2f01494c8ea26fbc74cd7144a14ec493b80c936461338d5d12b362802a114129"
+    },
+    "USER.md": {
+      "bytes": 267,
+      "sha256": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    }
+  },
+  "active_software_present": {
+    "lifeos": true,
+    "lifeos-hook-bridge": true,
+    "lifeos-release-manager": true
+  },
+  "native_configuration_present": true,
+  "removal_marker_present": false,
+  "recovery_helper_present": false,
+  "services": {
+    "hermes-gateway.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "hermes-dashboard.service": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    }
+  },
+  "installed_checkpoint": "4db55b096a8fe5248803dfce963483e9befa111d",
+  "read_only_reproduction": {
+    "phase": "software-input-fingerprints",
+    "dependency": "LIFEOS/PULSE/Observability/node_modules",
+    "error_type": "ProgramConflict",
+    "reason": "Program trees require regular owner artifacts without shared write access",
+    "active_software_removed": false,
+    "worker_trace_captured": false
+  }
+}

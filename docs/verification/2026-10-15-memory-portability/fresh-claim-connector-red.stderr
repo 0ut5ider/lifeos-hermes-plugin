@@ -1,0 +1,38 @@
+test_fresh_claim_prepares_missing_connector_without_selecting_it (test_memory_activation.MemoryActivationTests.test_fresh_claim_prepares_missing_connector_without_selecting_it) ... ERROR
+
+======================================================================
+ERROR: test_fresh_claim_prepares_missing_connector_without_selecting_it (test_memory_activation.MemoryActivationTests.test_fresh_claim_prepares_missing_connector_without_selecting_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 55, in _read
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-f32_kdt6/.claude/LIFEOS/USER/CONFIG/memory-access.json'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 64, in test_fresh_claim_prepares_missing_connector_without_selecting_it
+    path.unlink();self.publish();review=self.prepare()
+                                        ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 33, in prepare
+    return self.operation().prepare(self.snapshot,self.captured['snapshot_signature'],self.plan['signature'],
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.setup.backup.destination,account='dashboard:owner')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_activation.py", line 127, in prepare
+    return setup.prepare(Path(backup).absolute(),account=account)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/ownership_setup.py", line 125, in prepare
+    _connector(self.configuration, selected)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 107, in _connector
+    connector = json.loads(_read(root / 'LIFEOS/USER/CONFIG/memory-access.json', 16384))
+                           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 65, in _read
+    raise MemoryUnavailable('Administrative authorization is unavailable') from error
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Administrative authorization is unavailable
+
+----------------------------------------------------------------------
+Ran 1 test in 4.098s
+
+FAILED (errors=1)

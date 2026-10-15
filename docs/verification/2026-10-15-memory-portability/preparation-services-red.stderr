@@ -1,0 +1,15 @@
+test_failed_backup_preparation_resumes_original_services (test_memory_activation.MemoryActivationTests.test_failed_backup_preparation_resumes_original_services) ... FAIL
+
+======================================================================
+FAIL: test_failed_backup_preparation_resumes_original_services (test_memory_activation.MemoryActivationTests.test_failed_backup_preparation_resumes_original_services)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 129, in test_failed_backup_preparation_resumes_original_services
+    self.assertTrue(all(pid!='0' for pid in self.setup.pids().values()))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 4.345s
+
+FAILED (failures=1)

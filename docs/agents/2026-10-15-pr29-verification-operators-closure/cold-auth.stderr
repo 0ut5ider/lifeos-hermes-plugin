@@ -1,0 +1,15 @@
+test_genuine_fault_recover_auth_cannot_prove_cold_rollback (__main__.ColdAuthControl.test_genuine_fault_recover_auth_cannot_prove_cold_rollback) ... FAIL
+
+======================================================================
+FAIL: test_genuine_fault_recover_auth_cannot_prove_cold_rollback (__main__.ColdAuthControl.test_genuine_fault_recover_auth_cannot_prove_cold_rollback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-pr29-verification-operators-closure/cold_auth_control.py", line 15, in test_genuine_fault_recover_auth_cannot_prove_cold_rollback
+    with self.assertRaises(ValueError,msg='Fault recover admission cannot prove cold restored rollback authentication'):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised : Fault recover admission cannot prove cold restored rollback authentication
+
+----------------------------------------------------------------------
+Ran 1 test in 3.443s
+
+FAILED (failures=1)

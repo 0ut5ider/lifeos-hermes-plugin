@@ -1,0 +1,15 @@
+test_reference_changed_after_final_admission_does_not_activate (docs.agents.2026-10-15-memory-transition-review.review_probes.ActivationReview.test_reference_changed_after_final_admission_does_not_activate) ... FAIL
+
+======================================================================
+FAIL: test_reference_changed_after_final_admission_does_not_activate (docs.agents.2026-10-15-memory-transition-review.review_probes.ActivationReview.test_reference_changed_after_final_admission_does_not_activate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 128, in test_reference_changed_after_final_admission_does_not_activate
+    self.assertFalse(observed['ownership_enabled'],'Changed required references must not enable ownership')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : Changed required references must not enable ownership
+
+----------------------------------------------------------------------
+Ran 1 test in 5.678s
+
+FAILED (failures=1)

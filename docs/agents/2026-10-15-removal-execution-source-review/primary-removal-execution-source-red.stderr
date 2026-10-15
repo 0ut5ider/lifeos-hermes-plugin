@@ -1,0 +1,56 @@
+test_active_source_lease_cannot_cross_into_retained_publication (test_removal_execution_source.RemovalExecutionSourceTests.test_active_source_lease_cannot_cross_into_retained_publication) ... ok
+test_changed_retained_source_and_wrong_signature_refuse_before_a_lease (test_removal_execution_source.RemovalExecutionSourceTests.test_changed_retained_source_and_wrong_signature_refuse_before_a_lease) ... ERROR
+test_live_owner_revocation_still_overrides_retained_policy (test_removal_execution_source.RemovalExecutionSourceTests.test_live_owner_revocation_still_overrides_retained_policy) ... ERROR
+test_reviewed_first_apply_issues_retained_lease_and_publishes_with_real_services (test_removal_execution_source.RemovalExecutionSourceTests.test_reviewed_first_apply_issues_retained_lease_and_publishes_with_real_services) ... ERROR
+test_uncompleted_review_keeps_active_source_for_preparation_cancellation (test_removal_execution_source.RemovalExecutionSourceTests.test_uncompleted_review_keeps_active_source_for_preparation_cancellation) ... ERROR
+test_unknown_workflow_cannot_select_reviewed_retained_sources (test_removal_execution_source.RemovalExecutionSourceTests.test_unknown_workflow_cannot_select_reviewed_retained_sources) ... ERROR
+
+======================================================================
+ERROR: test_changed_retained_source_and_wrong_signature_refuse_before_a_lease (test_removal_execution_source.RemovalExecutionSourceTests.test_changed_retained_source_and_wrong_signature_refuse_before_a_lease)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_execution_source.py", line 70, in test_changed_retained_source_and_wrong_signature_refuse_before_a_lease
+    with self.assertRaises(ValueError):memory_workflow._source(self.profile,workflow=self.job.name)
+                                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _source() got an unexpected keyword argument 'workflow'
+
+======================================================================
+ERROR: test_live_owner_revocation_still_overrides_retained_policy (test_removal_execution_source.RemovalExecutionSourceTests.test_live_owner_revocation_still_overrides_retained_policy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_execution_source.py", line 78, in test_live_owner_revocation_still_overrides_retained_policy
+    _,configuration=memory_workflow._source(self.profile,workflow=self.job.name)
+                    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _source() got an unexpected keyword argument 'workflow'
+
+======================================================================
+ERROR: test_reviewed_first_apply_issues_retained_lease_and_publishes_with_real_services (test_removal_execution_source.RemovalExecutionSourceTests.test_reviewed_first_apply_issues_retained_lease_and_publishes_with_real_services)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_execution_source.py", line 50, in test_reviewed_first_apply_issues_retained_lease_and_publishes_with_real_services
+    source,configuration=memory_workflow._source(self.profile,workflow=self.job.name)
+                         ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _source() got an unexpected keyword argument 'workflow'
+
+======================================================================
+ERROR: test_uncompleted_review_keeps_active_source_for_preparation_cancellation (test_removal_execution_source.RemovalExecutionSourceTests.test_uncompleted_review_keeps_active_source_for_preparation_cancellation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_execution_source.py", line 64, in test_uncompleted_review_keeps_active_source_for_preparation_cancellation
+    source,_=memory_workflow._source(self.profile,workflow=self.job.name)
+             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _source() got an unexpected keyword argument 'workflow'
+
+======================================================================
+ERROR: test_unknown_workflow_cannot_select_reviewed_retained_sources (test_removal_execution_source.RemovalExecutionSourceTests.test_unknown_workflow_cannot_select_reviewed_retained_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_execution_source.py", line 82, in test_unknown_workflow_cannot_select_reviewed_retained_sources
+    with self.assertRaises(ValueError):memory_workflow._source(self.profile,workflow='b'*32)
+                                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _source() got an unexpected keyword argument 'workflow'
+
+----------------------------------------------------------------------
+Ran 6 tests in 15.176s
+
+FAILED (errors=5)

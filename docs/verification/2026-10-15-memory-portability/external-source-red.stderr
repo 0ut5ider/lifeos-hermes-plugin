@@ -1,0 +1,14 @@
+test_external_source_preserves_active_profile_files_and_binds_origin (test_memory_import.MemoryImportTests.test_external_source_preserves_active_profile_files_and_binds_origin) ... ERROR
+
+======================================================================
+ERROR: test_external_source_preserves_active_profile_files_and_binds_origin (test_memory_import.MemoryImportTests.test_external_source_preserves_active_profile_files_and_binds_origin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 76, in test_external_source_preserves_active_profile_files_and_binds_origin
+    operation=MemoryImport(self.configuration,source_directory=source)
+TypeError: MemoryImport.__init__() got an unexpected keyword argument 'source_directory'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.024s
+
+FAILED (errors=1)

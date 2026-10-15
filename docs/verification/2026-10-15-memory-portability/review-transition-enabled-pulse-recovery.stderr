@@ -1,0 +1,15 @@
+test_enabled_runtime_pulse_returns_and_rolls_back (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_enabled_runtime_pulse_returns_and_rolls_back) ... FAIL
+
+======================================================================
+FAIL: test_enabled_runtime_pulse_returns_and_rolls_back (docs.agents.2026-10-15-memory-transition-review.review_probes.TransitionReview.test_enabled_runtime_pulse_returns_and_rolls_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-transition-review/review_probes.py", line 74, in test_enabled_runtime_pulse_returns_and_rolls_back
+    self.assertNotIn('error',observed)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' unexpectedly found in {'initial_enablement': 'enabled-runtime', 'error': 'Pulse requires a supported current service enablement state', 'safe_metadata': {'exit': 0, 'stdout': 'LoadState=not-found\nActiveState=inactive\nFragmentPath=\nUnitFileState=\n', 'stderr': ''}, 'definition_file_preserved': True, 'transition_state': {'signature': '209df188020b9734a3f15accd93826ac118a2fbc33248e7dd79b214264b36696', 'state': 'configured', 'native_data_retained': True, 'application_verified': False, 'fresh_session_required': True, 'pulse_stopped': False}, 'rollback_error': 'The profile service has unreviewed program or process properties'}
+
+----------------------------------------------------------------------
+Ran 1 test in 8.294s
+
+FAILED (failures=1)

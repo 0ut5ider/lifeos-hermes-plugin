@@ -1,0 +1,17 @@
+test_fresh_dashboard_claim_activation_has_usable_local_owner_admission (docs.agents.2026-10-15-portability-cycle-review.cycle_controls.ClaimedOwnerAdmission.test_fresh_dashboard_claim_activation_has_usable_local_owner_admission) ... FAIL
+
+======================================================================
+FAIL: test_fresh_dashboard_claim_activation_has_usable_local_owner_admission (docs.agents.2026-10-15-portability-cycle-review.cycle_controls.ClaimedOwnerAdmission.test_fresh_dashboard_claim_activation_has_usable_local_owner_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-portability-cycle-review/cycle_controls.py", line 83, in test_fresh_dashboard_claim_activation_has_usable_local_owner_admission
+    self.assertEqual(scope.reason,'','Fresh dashboard owner activation has no usable approved local owner destination')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'The current account has no approved identity binding' != ''
+- The current account has no approved identity binding
+ : Fresh dashboard owner activation has no usable approved local owner destination
+
+----------------------------------------------------------------------
+Ran 1 test in 6.721s
+
+FAILED (failures=1)

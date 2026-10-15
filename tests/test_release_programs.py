@@ -4,10 +4,67 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from optional.lifeos_release_manager.release_programs import ProgramTransaction, ProgramConflict
+from optional.lifeos_release_manager.release_programs import ProgramTransaction, ProgramConflict, fingerprint
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_missing_or_changed_before_copy_refuses_before_apply(self):
+        for changed in (False,True):
+            with self.subTest(changed=changed),tempfile.TemporaryDirectory() as temp:
+                root=Path(temp);target=root/'target';source=root/'source'
+                target.write_text('Prior program');source.write_text('Selected program')
+                tx=ProgramTransaction(root/'snapshot');tx.prepare(directories={},files={target:source})
+                if changed:(tx.snapshot/'before-0').write_text('Changed retained copy')
+                else:(tx.snapshot/'before-0').unlink()
+                journal=tx.journal.read_bytes()
+                with self.assertRaises(ProgramConflict):tx.apply()
+                self.assertEqual(target.read_text(),'Prior program');self.assertEqual(tx.journal.read_bytes(),journal)
+
+    def test_restore_preserves_a_later_edit_between_publications(self):
+        import sys
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);first=root/'first';second=root/'second';source=root/'source'
+            first.write_text('Prior first');second.write_text('Prior second');source.write_text('Selected program')
+            tx=ProgramTransaction(root/'snapshot');tx.prepare(directories={},files={first:source,second:source});tx.apply()
+            def trace(frame,event,arg):
+                if event=='return' and frame.f_code.co_name=='publish' and frame.f_code.co_filename.endswith('/release_programs.py'):
+                    if Path(frame.f_locals.get('path','/'))==second:first.write_text('Later owner edit')
+                return trace
+            sys.settrace(trace)
+            try:
+                with self.assertRaises(ProgramConflict):tx.restore()
+            finally:sys.settrace(None)
+            self.assertEqual(second.read_text(),'Prior second')
+            self.assertEqual(first.read_text(),'Later owner edit')
+
+    def test_apply_and_resume_preserve_an_edit_between_publications(self):
+        for action in ('apply','resume'):
+            with self.subTest(action=action),tempfile.TemporaryDirectory() as temp:
+                root=Path(temp);first=root/'first';second=root/'second';source=root/'source'
+                first.write_text('Prior first');second.write_text('Prior second');source.write_text('Selected program')
+                tx=ProgramTransaction(root/'snapshot');tx.prepare(directories={},files={first:source,second:source})
+                count=0
+                def checkpoint(point):
+                    nonlocal count
+                    if point=='artifact-published':
+                        count+=1
+                        if count==1:second.write_text('Later owner edit')
+                with self.assertRaises(ProgramConflict):getattr(tx,action)(checkpoint=checkpoint)
+                self.assertEqual(first.read_text(),'Selected program')
+                self.assertEqual(second.read_text(),'Later owner edit')
+
+    def test_directory_replacement_preserves_a_later_empty_directory(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);target=root/'plugin';source=root/'candidate'
+            target.mkdir();(target/'program').write_text('Prior program')
+            source.mkdir();(source/'program').write_text('Selected program')
+            tx=ProgramTransaction(root/'snapshot');tx.prepare(directories={target:source},files={})
+            def checkpoint(point):
+                if point=='directory-retained':target.mkdir()
+            with self.assertRaises(ProgramConflict):tx.apply(checkpoint=checkpoint)
+            self.assertTrue(target.is_dir());self.assertEqual(list(target.iterdir()),[])
+            self.assertEqual((tx.snapshot/'before-0/program').read_text(),'Prior program')
+
     def test_apply_preserves_the_inode_of_an_unchanged_file(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -322,3 +379,25 @@ class ProgramTransactionTests(unittest.TestCase):
             (incoming / '.bin/external').symlink_to('/etc/passwd')
             with self.assertRaises(ProgramConflict):
                 ProgramTransaction(root / 'external').prepare(directories={}, files={}, dependencies={current: incoming})
+
+
+class ReviewedInputTests(unittest.TestCase):
+    def test_changed_transformation_input_refuses_before_recording_a_plan(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);target=root/'config.yaml';target.write_bytes(b'Synthetic initial input')
+            expected={target:fingerprint(target)}
+            generated=root/'generated';generated.write_bytes(b'Synthetic transformed output')
+            target.write_bytes(b'Synthetic later owner edit')
+            transaction=ProgramTransaction(root/'snapshot')
+            with self.assertRaises(ProgramConflict):
+                transaction.prepare(directories={},files={target:generated},expected_before=expected)
+            self.assertEqual(target.read_bytes(),b'Synthetic later owner edit')
+            self.assertFalse(transaction.journal.exists())
+
+    def test_exact_transformation_input_admits_the_plan(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);target=root/'config.yaml';target.write_bytes(b'Synthetic initial input')
+            expected={target:fingerprint(target)};generated=root/'generated';generated.write_bytes(b'Synthetic transformed output')
+            transaction=ProgramTransaction(root/'snapshot')
+            transaction.prepare(directories={},files={target:generated},expected_before=expected)
+            transaction.apply();self.assertEqual(target.read_bytes(),generated.read_bytes())

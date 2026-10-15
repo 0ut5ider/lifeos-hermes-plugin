@@ -1,0 +1,41 @@
+test_changed_source_policy_and_marker_refuse (test_removal_state.RemovalStateTests.test_changed_source_policy_and_marker_refuse) ... ERROR
+test_live_owner_revocation_wins_over_retained_authority (test_removal_state.RemovalStateTests.test_live_owner_revocation_wins_over_retained_authority) ... ERROR
+test_missing_active_configuration_retains_exact_owner_for_recovery_only (test_removal_state.RemovalStateTests.test_missing_active_configuration_retains_exact_owner_for_recovery_only) ... ERROR
+
+======================================================================
+ERROR: test_changed_source_policy_and_marker_refuse (test_removal_state.RemovalStateTests.test_changed_source_policy_and_marker_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_state.py", line 56, in test_changed_source_policy_and_marker_refuse
+    with self.assertRaises(ValueError):self.operation()(self.profile)
+                                       ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_state.py", line 34, in operation
+    from optional.lifeos_release_manager.removal_state import retained
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_state'
+
+======================================================================
+ERROR: test_live_owner_revocation_wins_over_retained_authority (test_removal_state.RemovalStateTests.test_live_owner_revocation_wins_over_retained_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_state.py", line 50, in test_live_owner_revocation_wins_over_retained_authority
+    _,configuration,_,_=self.operation()(self.profile)
+                        ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_state.py", line 34, in operation
+    from optional.lifeos_release_manager.removal_state import retained
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_state'
+
+======================================================================
+ERROR: test_missing_active_configuration_retains_exact_owner_for_recovery_only (test_removal_state.RemovalStateTests.test_missing_active_configuration_retains_exact_owner_for_recovery_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_state.py", line 39, in test_missing_active_configuration_retains_exact_owner_for_recovery_only
+    source,configuration,job,plan=self.operation()(self.profile)
+                                  ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_state.py", line 34, in operation
+    from optional.lifeos_release_manager.removal_state import retained
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_state'
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.424s
+
+FAILED (errors=3)

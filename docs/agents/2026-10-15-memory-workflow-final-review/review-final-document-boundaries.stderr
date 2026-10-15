@@ -1,0 +1,45 @@
+test_inner_copies_before_plan_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_inner_copies_before_plan_can_recover) ... FAIL
+test_inner_plan_before_operation_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_inner_plan_before_operation_can_recover) ... FAIL
+test_outer_plan_before_operation_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_outer_plan_before_operation_can_recover) ... FAIL
+test_queue_request_before_status_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_queue_request_before_status_can_recover) ... FAIL
+
+======================================================================
+FAIL: test_inner_copies_before_plan_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_inner_copies_before_plan_can_recover)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-final-review/write_boundaries.py", line 91, in test_inner_copies_before_plan_can_recover
+    result=self.crash('inner_copy');self.assertNotIn('reprepare',result['errors'])
+                                    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'reprepare' unexpectedly found in {'recover_1': 'The memory workflow state does not admit this action', 'reprepare': 'Use the existing return review or prepare a new export'}
+
+======================================================================
+FAIL: test_inner_plan_before_operation_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_inner_plan_before_operation_can_recover)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-final-review/write_boundaries.py", line 94, in test_inner_plan_before_operation_can_recover
+    result=self.crash('inner_plan');self.assertEqual(result['recover_0']['exit'],0)
+                                    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_outer_plan_before_operation_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_outer_plan_before_operation_can_recover)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-final-review/write_boundaries.py", line 97, in test_outer_plan_before_operation_can_recover
+    result=self.crash('outer_plan');self.assertEqual(result['recover_0']['exit'],0)
+                                    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_queue_request_before_status_can_recover (docs.agents.2026-10-15-memory-workflow-final-review.write_boundaries.WriteBoundaryReview.test_queue_request_before_status_can_recover)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-memory-workflow-final-review/write_boundaries.py", line 88, in test_queue_request_before_status_can_recover
+    result=self.crash('queue_request');self.assertNotIn('status',result['errors'])
+                                       ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'status' unexpectedly found in {'status': "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-za6vl83c/hermes/.lifeos-portability/77ba569741c84f58a670c13142e0b70f/status.json'", 'queue': "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-za6vl83c/hermes/.lifeos-portability/77ba569741c84f58a670c13142e0b70f/status.json'"}
+
+----------------------------------------------------------------------
+Ran 4 tests in 17.429s
+
+FAILED (failures=4)

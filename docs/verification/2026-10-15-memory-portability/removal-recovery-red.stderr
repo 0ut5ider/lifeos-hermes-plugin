@@ -1,0 +1,41 @@
+test_actual_owner_password_returns_the_same_dashboard_identity (test_removal_recovery.RemovalRecoveryTests.test_actual_owner_password_returns_the_same_dashboard_identity) ... ERROR
+test_changed_or_public_configuration_refuses_before_authentication (test_removal_recovery.RemovalRecoveryTests.test_changed_or_public_configuration_refuses_before_authentication) ... ERROR
+test_wrong_password_or_other_installation_owner_cannot_authorize (test_removal_recovery.RemovalRecoveryTests.test_wrong_password_or_other_installation_owner_cannot_authorize) ... ERROR
+
+======================================================================
+ERROR: test_actual_owner_password_returns_the_same_dashboard_identity (test_removal_recovery.RemovalRecoveryTests.test_actual_owner_password_returns_the_same_dashboard_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_recovery.py", line 26, in test_actual_owner_password_returns_the_same_dashboard_identity
+    result=self.operation()(self.profile,'synthetic-owner','synthetic-test-password','dashboard:basic:synthetic-owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_recovery.py", line 22, in operation
+    from optional.lifeos_release_manager.removal_recovery import authenticate
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_recovery'
+
+======================================================================
+ERROR: test_changed_or_public_configuration_refuses_before_authentication (test_removal_recovery.RemovalRecoveryTests.test_changed_or_public_configuration_refuses_before_authentication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_recovery.py", line 39, in test_changed_or_public_configuration_refuses_before_authentication
+    with self.assertRaises(ValueError):self.operation()(self.profile,'synthetic-owner','synthetic-test-password','dashboard:basic:synthetic-owner')
+                                       ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_recovery.py", line 22, in operation
+    from optional.lifeos_release_manager.removal_recovery import authenticate
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_recovery'
+
+======================================================================
+ERROR: test_wrong_password_or_other_installation_owner_cannot_authorize (test_removal_recovery.RemovalRecoveryTests.test_wrong_password_or_other_installation_owner_cannot_authorize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_recovery.py", line 31, in test_wrong_password_or_other_installation_owner_cannot_authorize
+    self.operation()(self.profile,'synthetic-owner','synthetic-wrong-password','dashboard:basic:synthetic-owner')
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_recovery.py", line 22, in operation
+    from optional.lifeos_release_manager.removal_recovery import authenticate
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_recovery'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.100s
+
+FAILED (errors=3)

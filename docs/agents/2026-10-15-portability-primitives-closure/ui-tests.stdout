@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 1 - import shows source provenance and never publishes before plan approval
+  ---
+  duration_ms: 8.385519
+  type: 'test'
+  ...
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 2 - an authorization refusal clears private review text and approval controls
+  ---
+  duration_ms: 2.648586
+  type: 'test'
+  ...
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 3 - reverse export shows capacity and retains every item until the owner chooses
+  ---
+  duration_ms: 2.457912
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 64.636467

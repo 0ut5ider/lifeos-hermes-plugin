@@ -1,0 +1,20 @@
+{
+  "baseline": "8df5cf5b9e5558333c12ce0f2867551c357a42fe",
+  "reviewed_tip": "01d67f911ab41bca8e5eaf99d0f040b69af04dfb",
+  "product_checkpoint": "52db5dfd497ef3eed3e35e211b177026e247824c",
+  "disposition": "CORRECTION_REQUIRED",
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P2",
+      "target": "lifeos_hook_bridge/memory_return.py:MemoryReturn.prepare",
+      "targeted_original_regressions_failed": 2,
+      "remaining_source_capture_regressions_failed": 1,
+      "initial_capture_first_correction": "partial; final source binding still pending"
+    }
+  ],
+  "passing_python_controls": 121,
+  "passing_sdk_controls": 21,
+  "archive_qualified": false,
+  "installed_acceptance_verified": false
+}

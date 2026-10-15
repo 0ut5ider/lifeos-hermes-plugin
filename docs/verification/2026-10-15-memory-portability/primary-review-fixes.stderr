@@ -1,0 +1,23 @@
+test_shared_nested_yaml_values_do_not_change_unrelated_selections_or_plugins (test_memory_return.MemoryReturnTests.test_shared_nested_yaml_values_do_not_change_unrelated_selections_or_plugins) ... ok
+test_portable_round_trip_retains_large_original_hermes_occurrences (test_memory_export.MemoryExportTests.test_portable_round_trip_retains_large_original_hermes_occurrences) ... ok
+test_later_edit_to_second_output_is_preserved_during_publication (test_memory_export.MemoryExportTests.test_later_edit_to_second_output_is_preserved_during_publication) ... ERROR
+test_accepted_bundle_total_fits_portable_upload (docs.verification.2026-10-15-memory-portability.primary_review_probes.ExportReview.test_accepted_bundle_total_fits_portable_upload) ... ok
+
+======================================================================
+ERROR: test_later_edit_to_second_output_is_preserved_during_publication (test_memory_export.MemoryExportTests.test_later_edit_to_second_output_is_preserved_during_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_export.py", line 151, in test_later_edit_to_second_output_is_preserved_during_publication
+    self.operation().apply(self.snapshot,saved['signature'],plan['signature'],account='dashboard:owner')
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_export.py", line 210, in apply
+    actual=_read(path,private=True) if path.exists() or path.is_symlink() else (None,None)
+           ~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_backup.py", line 48, in _read
+    raise MemoryUnavailable('Backup files require bounded regular owner files and permitted permissions')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Backup files require bounded regular owner files and permitted permissions
+
+----------------------------------------------------------------------
+Ran 4 tests in 7.773s
+
+FAILED (errors=1)

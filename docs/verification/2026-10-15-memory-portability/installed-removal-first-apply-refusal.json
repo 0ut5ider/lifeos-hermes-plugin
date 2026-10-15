@@ -1,0 +1,61 @@
+{
+  "workflow": "4bf8386002c3402a8f0ffb933fb8484c",
+  "daily_changed": false,
+  "read_only": true,
+  "workflow_status": {
+    "state": "interrupted"
+  },
+  "publication_status": {
+    "state": "ready",
+    "signature": "1623c1663530c78ba46cea52121c6f62563e03f56728a8eb5f159177b3a02cb2"
+  },
+  "workflow_receipt": {
+    "state": "ready",
+    "signature": "1623c1663530c78ba46cea52121c6f62563e03f56728a8eb5f159177b3a02cb2",
+    "application_verified": false,
+    "builtin_memory_retained": true,
+    "native_data_retained": true,
+    "stock_commit": "71d34bad1045610252eda02ee79549436896e784",
+    "stock_patches": 0,
+    "discord_disabled": true,
+    "recovery_command": "/home/lifeos-hermes/.hermes/.lifeos-portability/4bf8386002c3402a8f0ffb933fb8484c/removal/recover"
+  },
+  "builtin_files": {
+    "MEMORY.md": {
+      "bytes": 614,
+      "sha256": "2f01494c8ea26fbc74cd7144a14ec493b80c936461338d5d12b362802a114129"
+    },
+    "USER.md": {
+      "bytes": 267,
+      "sha256": "7d9e0df1fd2bcba72f3bdcb2b73782bcf15318ed79c923c2e999014710f0c2db"
+    }
+  },
+  "active_software_present": {
+    "lifeos": true,
+    "lifeos-hook-bridge": true,
+    "lifeos-release-manager": true
+  },
+  "native_configuration_present": true,
+  "removal_marker_present": true,
+  "recovery_helper_present": true,
+  "services": {
+    "hermes-gateway.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "hermes-dashboard.service": {
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "enabled"
+    },
+    "com.lifeos.pulse.service": {
+      "LoadState": "loaded",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    }
+  }
+}

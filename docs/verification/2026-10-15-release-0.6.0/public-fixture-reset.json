@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "guest": 112,
+  "hostname": "lifeos-portability-release-test",
+  "pristine_snapshot": "portability-pristine-20261015",
+  "only_owned_synthetic_fixture_reset": true,
+  "production_changed": false,
+  "operations": [
+    {
+      "command": [
+        "pct",
+        "shutdown",
+        "112",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "rollback",
+        "112",
+        "portability-pristine-20261015"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "start",
+        "112"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

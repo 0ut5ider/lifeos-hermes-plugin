@@ -1,0 +1,41 @@
+test_activation_requires_published_import_and_current_required_references (test_memory_activation.MemoryActivationTests.test_activation_requires_published_import_and_current_required_references) ... ERROR
+test_activation_uses_real_backup_and_services_and_preserves_original_sources (test_memory_activation.MemoryActivationTests.test_activation_uses_real_backup_and_services_and_preserves_original_sources) ... ERROR
+test_a_second_setup_can_recover_before_replacing_the_previous_return_journal (test_ownership_setup.OwnershipSetupTests.test_a_second_setup_can_recover_before_replacing_the_previous_return_journal) ... ok
+test_changed_journal_metadata_refuses_without_configuration_or_service_effects (test_ownership_setup.OwnershipSetupTests.test_changed_journal_metadata_refuses_without_configuration_or_service_effects) ... ok
+test_changed_review_refuses_before_any_service_stops (test_ownership_setup.OwnershipSetupTests.test_changed_review_refuses_before_any_service_stops) ... ok
+test_changed_service_definition_refuses_review_before_any_stop (test_ownership_setup.OwnershipSetupTests.test_changed_service_definition_refuses_review_before_any_stop) ... ok
+test_completed_rollback_with_failed_restart_recovers_after_a_later_edit (test_ownership_setup.OwnershipSetupTests.test_completed_rollback_with_failed_restart_recovers_after_a_later_edit) ... ok
+test_external_writer_restart_between_configuration_writes_prevents_native_ownership (test_ownership_setup.OwnershipSetupTests.test_external_writer_restart_between_configuration_writes_prevents_native_ownership) ... ok
+test_interrupted_backup_setup_restart_and_return_restore_the_original_owner (test_ownership_setup.OwnershipSetupTests.test_interrupted_backup_setup_restart_and_return_restore_the_original_owner) ... ok
+test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return) ... ok
+test_process_exit_after_first_configuration_write_recovers_before_restart (test_ownership_setup.OwnershipSetupTests.test_process_exit_after_first_configuration_write_recovers_before_restart) ... ok
+test_return_preserves_later_configuration_edits_and_keeps_services_drained (test_ownership_setup.OwnershipSetupTests.test_return_preserves_later_configuration_edits_and_keeps_services_drained) ... ok
+test_reviewed_setup_and_return_preserve_later_facts_and_forgets (test_ownership_setup.OwnershipSetupTests.test_reviewed_setup_and_return_preserve_later_facts_and_forgets) ... ok
+test_unqualified_or_other_accounts_cannot_prepare_or_apply_or_recover (test_ownership_setup.OwnershipSetupTests.test_unqualified_or_other_accounts_cannot_prepare_or_apply_or_recover) ... ok
+
+======================================================================
+ERROR: test_activation_requires_published_import_and_current_required_references (test_memory_activation.MemoryActivationTests.test_activation_requires_published_import_and_current_required_references)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 23, in setUp
+    self.plan=self.importer.plan(self.snapshot,self.captured['snapshot_signature'],decisions,account='dashboard:owner')
+              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import.py", line 414, in plan
+    raise ValueError('The selected source or native import destination is not eligible for publication')
+ValueError: The selected source or native import destination is not eligible for publication
+
+======================================================================
+ERROR: test_activation_uses_real_backup_and_services_and_preserves_original_sources (test_memory_activation.MemoryActivationTests.test_activation_uses_real_backup_and_services_and_preserves_original_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_activation.py", line 23, in setUp
+    self.plan=self.importer.plan(self.snapshot,self.captured['snapshot_signature'],decisions,account='dashboard:owner')
+              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_import.py", line 414, in plan
+    raise ValueError('The selected source or native import destination is not eligible for publication')
+ValueError: The selected source or native import destination is not eligible for publication
+
+----------------------------------------------------------------------
+Ran 14 tests in 60.486s
+
+FAILED (errors=2)

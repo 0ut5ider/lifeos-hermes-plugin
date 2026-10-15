@@ -83,6 +83,19 @@ class MemoryAdministrationTests(unittest.TestCase):
             with self.subTest(operation=operation):
                 self.assertFalse(self.rpc(grant, operation, arguments)['ok'])
 
+    def test_provider_transition_grant_cannot_authorize_native_mounting(self):
+        binding={'action':'return','signature':'a'*64}
+        grant=self.issue(purpose='transition',binding=binding)
+        self.addCleanup(self.admin().revoke,self.configuration,grant)
+        config,scope=self.admin().validate(self.configuration,grant,binding=binding,check_binding=True,purpose='transition')
+        self.assertEqual(scope.read,())
+        self.assertEqual(scope.write,())
+        self.assertEqual(config['root'],str(self.root))
+        with self.assertRaises(PermissionError):self.admin().mount_environment(self.root,self.profile,grant,binding=binding)
+        self.assertFalse(self.rpc(grant)['ok'])
+        with self.assertRaises(PermissionError):
+            self.admin().validate(self.configuration,grant,binding={'action':'other'},check_binding=True,purpose='transition')
+
     def test_forged_expired_and_revoked_grants_refuse_without_context_fallback(self):
         valid_context = json.dumps(__import__('dataclasses').asdict(self.fixture.fixture.context))
         grant = self.issue()

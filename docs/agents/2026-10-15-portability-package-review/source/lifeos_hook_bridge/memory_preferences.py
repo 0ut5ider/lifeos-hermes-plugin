@@ -1,0 +1,585 @@
+# ABOUTME: Reports native memory health and exposes authenticated owner review controls.
+# ABOUTME: Manages optional client grants without claiming that unfinished ownership gates have passed.
+from __future__ import annotations
+
+from dataclasses import replace
+import hashlib
+import os
+from pathlib import Path
+import sqlite3
+import stat
+import subprocess
+import sys
+import types
+from typing import Any
+
+from .memory_access import NativeMemory, MemoryUnavailable
+from .memory_policy import CATEGORIES, MemoryPolicy, MemoryScope
+from .memory_service import MemoryConfiguration, MemoryService
+
+
+REMAINING_GATES = {
+    'native_proposal_policy': 'Native proposals, approval, and retained source coverage',
+    'restricted_prompts': 'Restricted audiences, scheduled calls, and rendered LifeOS identity context',
+    'session_lifecycle': 'Child agents, compression, and resumed conversations',
+    'ownership_transaction': 'Fresh setup, backup, restore, update, and ownership rollback',
+    'release_review': 'Complete release tests and independent review',
+}
+
+
+SHARING_COMPONENT_SHA256 = '677cc5909520029dba91009161d615f5f699286f8d2b96f9e80cbd9a28e70515'
+
+
+def load_sharing_component(directory: Path):
+    directory = Path(directory).absolute()
+    source = directory / 'memory_sharing.py'
+    try:
+        parent, folder = directory.parent.stat(), directory.lstat()
+        descriptor = os.open(source, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    except FileNotFoundError as error:
+        raise MemoryUnavailable('SSH memory connections require the optional sharing component') from error
+    except OSError as error:
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access') from error
+    try:
+        with os.fdopen(descriptor, 'rb') as stream:
+            program = os.fstat(stream.fileno())
+            data = stream.read()
+    except OSError as error:
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access') from error
+    if (not stat.S_ISDIR(folder.st_mode) or not stat.S_ISREG(program.st_mode)
+            or any(info.st_uid != os.getuid() or info.st_mode & 0o022 for info in (parent, folder, program))):
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access')
+    if hashlib.sha256(data).hexdigest() != SHARING_COMPONENT_SHA256:
+        raise MemoryUnavailable('The installed sharing component differs from the reviewed release')
+    # The verified bytes run directly. The standard source loader would read the file again
+    # and would prefer an unverified bytecode file beside the source.
+    name = __package__ + '.memory_sharing'
+    module = types.ModuleType(name)
+    module.__package__, module.__file__ = __package__, str(source)
+    sys.modules[name] = module
+    try:
+        exec(compile(data, str(source), 'exec', dont_inherit=True), module.__dict__)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
+    return module
+
+
+class MemoryPreferences:
+    def __init__(self, configuration: Path, installed_root: Path, interpreter: Path, program: Path,
+                 *, sharing_component: Path | None = None, sharing_options: dict[str, Any] | None = None):
+        self.configuration = MemoryConfiguration(configuration)
+        self.root = installed_root.absolute()
+        self.sharing_component = Path(sharing_component or Path(configuration).parent / 'lifeos-memory-sharing')
+        self._sharing = (Path(configuration), interpreter, program, dict(sharing_options or {}))
+        if any(not path.is_absolute() for path in (Path(configuration), interpreter, program)):
+            raise ValueError('Memory connection paths must be absolute')
+
+    @property
+    def connections(self):
+        configuration, interpreter, program, options = self._sharing
+        return load_sharing_component(self.sharing_component).MemorySharing(
+            configuration, interpreter, program, installed_root=self.root, **options)
+
+    def connection_enrollment_available(self) -> bool:
+        try:
+            load_sharing_component(self.sharing_component)
+        except MemoryUnavailable:
+            return False
+        return True
+
+    def _configuration(self, *, account: str | None = None):
+        config = self.configuration.load()
+        if Path(config['root']).absolute() != self.root:
+            raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+        self.configuration.check_owner(config, account)
+        return config
+
+    def status(self, *, account: str | None = None) -> dict[str, Any]:
+        result = {'state':'not_configured', 'ownership_enabled':False, 'sharing_enabled':False,
+                  'activation_ready':False, 'remaining_gates':REMAINING_GATES,
+                  'automatic_review':'Native LifeOS hooks', 'proposal_review_available':False,
+                  'native_health':'not_checked', 'active_facts':None, 'connections':[],
+                  'connection_enrollment_available':self.connection_enrollment_available()}
+        if not self.configuration.path.exists() and not self.configuration.path.is_symlink():
+            return result
+        try:
+            config = self._configuration(account=account)
+            result.update(state='configured' if config.get('ownership_enabled', False) else 'prepared',
+                          ownership_enabled=config.get('ownership_enabled', False),
+                          sharing_enabled=config.get('sharing_enabled', False),
+                          connections=[dict(client=identifier, **grant) for identifier, grant in config.get('clients', {}).items()])
+            memory = NativeMemory(self.root)
+            with memory._transaction() as connection:
+                result['active_facts'] = connection.execute("SELECT COUNT(*) FROM records WHERE status='active'").fetchone()[0]
+            memory._native('rank', query='memory health', corpus=[], limit=1)
+            result['native_health'] = 'ok'
+            if (self.root / 'LIFEOS/PULSE/lib/memory-proposals.ts').is_file():
+                result['proposal_review_available'] = memory._native('proposal_capabilities').get('available') is True
+        except PermissionError:
+            raise
+        except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired) as error:
+            result.update(state='unavailable', native_health='unavailable', message=str(error))
+        return result
+
+    def claim(self, *, account: str) -> dict[str, Any]:
+        """Bind an unconfigured installation to the authenticated dashboard account."""
+        if not isinstance(account, str) or not account.startswith('dashboard:'):
+            raise PermissionError('An authenticated dashboard account must claim the installation')
+        if not (self.root / 'LIFEOS/VERSION').is_file():
+            raise MemoryUnavailable('Install LifeOS before claiming the installation')
+        config = {'version': 1, 'root': str(self.root), 'principal': 'owner', 'ownership_enabled': False,
+                  'sharing_enabled': False, 'accounts': {account: 'owner'}, 'destinations': {}, 'clients': {}}
+        self.configuration.validate(config)
+        with self.configuration._lock():
+            if self.configuration.path.exists() or self.configuration.path.is_symlink():
+                raise MemoryUnavailable('This installation already has an owner')
+            self.configuration._publish(config)
+        return self.status(account=account)
+
+    @staticmethod
+    def _owner_scope(config: dict[str, Any]) -> MemoryScope:
+        return MemoryScope(config['principal'], 'dashboard:owner', tuple(sorted(CATEGORIES)),
+                           tuple(sorted(CATEGORIES)), ('*',), 'dashboard:owner', proposals=('review','approve'))
+
+    def review(self, name: str, arguments: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
+        config = self._configuration(account=account)
+        return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
+
+    def _response(self, config, result, *, account):
+        from .memory_http import installation_binding
+        if self._configuration(account=account) != config:
+            raise MemoryUnavailable('Current memory authority changes before the dashboard response')
+        return result, installation_binding(config, self.configuration.path)
+
+    def pulse_snapshot(self, view: str, *, account: str | None = None):
+        return self.pulse_response(view,account=account)[0]
+
+    def pulse_runtime_response(self, observation=None, *, account=None):
+        from .memory_sources import authorize
+        from .memory_pulse_health import admit
+        config = self._configuration(account=account)
+        scope = self._owner_scope(config)
+        authorize(scope)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Current owner authority changes during Pulse health delivery')
+        result = {'status': 200, 'body': {'admitted': True}} if observation is None else admit(
+            NativeMemory(self.root), scope, observation, check_current=check_current)
+        return self._response(config, result, account=account)
+
+    def conduit_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def local_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def atlas_job_response(self, *, account):
+        return self._owner_job_response(account=account)
+
+    def content_action_response(self, target, observation, *, account):
+        from .memory_content_action import action
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Content action authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = action(NativeMemory(self.root), scope, target, observation, check_current=check_current)
+        return self._response(config, result, account=account)
+
+    def edit_algorithm(self, target, body, *, account):
+        from .memory_algorithm_edit import edit
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Algorithm edit authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = edit(NativeMemory(self.root), scope, target, body, check_current=check_current)
+        return self._response(config, result, account=account)
+
+    def algorithm_job_response(self, *, account):
+        from .memory_algorithm_summary import synthesis
+        prepared, _ = self._owner_job_response(account=account)
+        config = self._configuration(account=account)
+        if prepared['configuration_revision'] != MemoryPolicy(config).revision:
+            raise MemoryUnavailable('Algorithm job authority changes before source preparation')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('Algorithm job authority changes during source preparation')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        result = synthesis(NativeMemory(self.root), scope, 'algorithm_summary_prepare', {}, check_current=check_current)
+        return self._response(config, {**prepared, 'chain_hash': result['plan']['hash']}, account=account)
+
+    def _owner_job_response(self, *, account):
+        config = self._configuration(account=account)
+        if not config.get('ownership_enabled', False):
+            raise MemoryUnavailable('Native jobs require activated owner memory')
+        author = str(os.getuid())
+        destination = str(self.configuration.path.parent)
+        grant = config.get('destinations', {}).get('terminal:' + destination, {})
+        if (config.get('accounts', {}).get('terminal:' + author) != config['principal']
+                or grant.get('visibility') != 'private' or grant.get('participants') != [config['principal']]
+                or not CATEGORIES <= set(grant.get('read', [])) or not CATEGORIES <= set(grant.get('write', []))
+                or '*' not in grant.get('projects', []) or not grant.get('model_routes')):
+            raise MemoryUnavailable('Native jobs require the selected local owner grant')
+        result = {'configuration_revision': MemoryPolicy(config).revision}
+        return self._response(config, result, account=account)
+
+    def pulse_response(self, view: str, *, account: str | None = None):
+        from .memory_pulse import snapshot
+        config = self._configuration(account=account)
+        from .memory_freshness import HTTP_VIEWS
+        if isinstance(view, str) and view in HTTP_VIEWS:
+            from .memory_freshness import view as freshness_view
+
+            def check_current():
+                if self._configuration(account=account) != config:
+                    raise MemoryUnavailable('The memory configuration changed during freshness rendering')
+
+            return self._response(config, freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
+                                   check_current=check_current), account=account)
+        if view == 'graph':
+            from .memory_graph import view as graph_view
+
+            def check_current():
+                if self._configuration(account=account) != config:
+                    raise MemoryUnavailable('The memory configuration changed during graph rendering')
+
+            return self._response(config, graph_view(NativeMemory(self.root), self._owner_scope(config),
+                                                    check_current=check_current), account=account)
+        return self._response(config, snapshot(NativeMemory(self.root), self._owner_scope(config), view),
+                              account=account)
+
+    def preview_prompt(self, *, keep_output_format: bool = False, account: str | None = None):
+        from .memory_prompt import preview
+        config = self._configuration(account=account)
+        return preview(NativeMemory(self.root), self._owner_scope(config), self.configuration.path.parent,
+                       keep_output_format=keep_output_format)
+
+    def authorize_mount(self, *, account=None, ttl=600, binding=None):
+        from .memory_administration import issue
+        self._configuration(account=account)
+        return issue(self.configuration, account, ttl=ttl, binding=binding)
+
+    def revoke_mount(self, authorization):
+        from .memory_administration import revoke
+        revoke(self.configuration, authorization)
+
+    def publish_prompt(self, request: dict[str, Any], *, account: str | None = None):
+        from .memory_prompt import publish_prompt
+        if not isinstance(request, dict) or set(request) != {'signature', 'previous_digest', 'keep_output_format'}:
+            raise ValueError('Provide the reviewed prompt snapshot, installed prompt digest, and output format choice')
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changed during prompt publication')
+        return publish_prompt(NativeMemory(self.root), self._owner_scope(config), self.configuration.path.parent,
+                              **request, check_current=check_current)
+
+    def preview_adoption(self, *, account: str | None = None) -> dict[str, Any]:
+        config = self._configuration(account=account)
+        return NativeMemory(self.root).preview_adoption(self._owner_scope(config))
+
+    def preview_import(self, *, account=None, source_identifier=None):
+        from .memory_import import MemoryImport
+        from .memory_import_sources import directory
+        self._configuration(account=account)
+        source=None if source_identifier is None else directory(self.configuration.path.parent,source_identifier,source=True)
+        return MemoryImport(self.configuration,source_directory=source).preview(account=account)
+
+    def upload_import(self, request, *, account=None):
+        from .memory_import_sources import upload, upload_bundle
+        self._configuration(account=account)
+        method=upload_bundle if isinstance(request,dict) and ('bundle' in request or 'bundle_bytes' in request) else upload
+        return method(self.configuration.path.parent,request)
+
+    def prepare_fresh(self, candidate, *, principal_name, assistant_name, account=None):
+        from .fresh_store import FreshStore
+        from .install_source import IncompatibleLifeOS
+        self._configuration(account=account)
+        try:
+            return FreshStore(self.configuration).prepare(candidate,principal_name=principal_name,
+                assistant_name=assistant_name,account=account)
+        except IncompatibleLifeOS as error:
+            raise MemoryUnavailable('Fresh store preparation requires a verified native candidate') from error
+
+    def fresh_home(self, identifier, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).review_home(identifier, account=account)
+
+    def remove_fresh(self, identifier, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).remove(identifier, account=account)
+
+    def fresh_status(self, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).status(account=account)
+
+    def prepare_import(self, request, *, account=None):
+        from uuid import uuid4
+        from .memory_import import MemoryImport
+        from .memory_import_sources import directory
+        from .memory_transaction import publish
+        from .memory_import import _encoded
+        self._configuration(account=account)
+        if (not isinstance(request,dict) or set(request) not in ({'signature'},{'signature','source_identifier'})):
+            raise ValueError('Provide the reviewed Hermes import signature')
+        identifier = uuid4().hex
+        destination = self._import_snapshot(identifier)
+        source_identifier=request.get('source_identifier')
+        source=None if source_identifier is None else directory(self.configuration.path.parent,source_identifier,source=True)
+        result=MemoryImport(self.configuration,source_directory=source).prepare(destination,request['signature'],account=account)
+        publish(destination/'source-binding.json',_encoded({'source_identifier':source_identifier}))
+        return {'identifier':identifier, **result}
+
+    def _import_snapshot(self, identifier):
+        from .memory_import_sources import directory
+        return directory(self.configuration.path.parent,identifier)
+
+    def _import_operation(self, identifier):
+        import json
+        from .memory_backup import _directory, _read
+        from .memory_import import MemoryImport
+        from .memory_import_sources import directory
+        snapshot=self._import_snapshot(identifier)
+        _directory(snapshot,private=True)
+        data,_=_read(snapshot/'source-binding.json',private=True)
+        binding=json.loads(data)
+        if not isinstance(binding,dict) or set(binding)!={'source_identifier'}:
+            raise MemoryUnavailable('The import source binding has invalid metadata')
+        source=None if binding['source_identifier'] is None else directory(
+            self.configuration.path.parent,binding['source_identifier'],source=True)
+        return MemoryImport(self.configuration,source_directory=source)
+
+    def plan_import(self, request, *, account=None):
+        self._configuration(account=account)
+        return self._import_operation(request['identifier']).plan(self._import_snapshot(request['identifier']),
+            request['snapshot_signature'], request['decisions'], account=account)
+
+    def apply_import(self, request, *, account=None):
+        self._configuration(account=account)
+        return self._import_operation(request['identifier']).apply(self._import_snapshot(request['identifier']),
+            request['snapshot_signature'], request['plan_signature'], account=account)
+
+    def import_status(self, request, *, account=None):
+        self._configuration(account=account)
+        return self._import_operation(request['identifier']).status(self._import_snapshot(request['identifier']),
+            request['snapshot_signature'], account=account)
+
+    def preview_export(self, *, account=None):
+        from .memory_export import MemoryExport
+        self._configuration(account=account)
+        return MemoryExport(self.configuration).preview(account=account)
+
+    def prepare_export(self, request, *, account=None):
+        from uuid import uuid4
+        from .memory_export import MemoryExport
+        self._configuration(account=account)
+        identifier=uuid4().hex
+        result=MemoryExport(self.configuration).prepare(self._import_snapshot(identifier),request['signature'],account=account)
+        return {'identifier':identifier,**result}
+
+    def export_action(self, action, request, *, account=None):
+        from .memory_export import MemoryExport
+        self._configuration(account=account)
+        operation=MemoryExport(self.configuration)
+        destination=self._import_snapshot(request['identifier'])
+        if action=='plan':return operation.plan(destination,request['signature'],request['decisions'],account=account)
+        if action=='apply':return operation.apply(destination,request['signature'],request['plan_signature'],account=account)
+        if action=='status':return operation.status(destination,request['signature'],account=account)
+        if action=='download':return operation.download(destination,request['signature'],account=account)
+        raise ValueError('Choose a supported reverse export operation')
+
+    def preview_sources(self, paths: list[str], *, account: str | None = None):
+        from .memory_source_review import preview
+        config = self._configuration(account=account)
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return preview(NativeMemory(self.root, profile=self.configuration.path.parent), scope, paths)
+
+    def approve_sources(self, request: dict[str, Any], *, account: str | None = None):
+        from .memory_source_review import approve
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'paths', 'signature'}:
+            raise ValueError('Provide the reviewed installed paths and source signature')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changed during source review')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return approve(NativeMemory(self.root, profile=self.configuration.path.parent), scope, **request, check_current=check_current)
+
+    def review_hypothesis(self, target, note, request_id, *, account=None):
+        from .memory_hypothesis_review import review
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during hypothesis review')
+        return self._response(config, review(NativeMemory(self.root), self._owner_scope(config),
+            target=target, note=note, request_id=request_id, check_current=check_current), account=account)
+
+    def review_upgrade(self, target, note, request_id, *, account=None):
+        from .memory_upgrade_queue import review
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during upgrade review')
+        return self._response(config, review(NativeMemory(self.root), self._owner_scope(config),
+            target=target, note=note, request_id=request_id, check_current=check_current), account=account)
+
+    def life_response(self, target, *, account=None):
+        from .memory_life import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during Life rendering')
+        return self._response(config, view(NativeMemory(self.root, profile=self.configuration.path.parent), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
+    def core_file_response(self, target, *, account=None):
+        from .memory_core_file import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The core file owner authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        memory = NativeMemory(self.root, profile=self.configuration.path.parent)
+        from .memory_core_lease import core_file_read_lease
+        with core_file_read_lease(memory):
+            result = view(memory, scope, target, check_current=check_current)
+            if target in ('/api/hermes', '/api/hermes/'):
+                from .memory_core_file import mount_probe
+                from .memory_administration import lease, mount_environment
+                with lease(self.configuration, account) as authorization:
+                    environment = mount_environment(self.root, self.configuration.path.parent, authorization)
+                    probe = mount_probe(memory, scope, environment, check_current=check_current)
+                after = view(memory, scope, target, check_current=check_current)
+                if after['body']['reference'] != result['body']['reference']:
+                    raise MemoryUnavailable('The core sources change during the mount probe')
+                result = after
+                result['body']['mount'] = probe
+            return self._response(config, result, account=account)
+
+    def edit_core_file(self, request, *, account=None):
+        from .memory_core_file import edit
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'identifier', 'content', 'reference', 'request_id'}:
+            raise ValueError('Provide the current core file reference and requested content')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The core file owner authority changes')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        from .memory_core_lease import core_file_lease
+        with core_file_lease(self.configuration.path.parent):
+            check_current()
+            return self._response(config, edit(NativeMemory(self.root, profile=self.configuration.path.parent),
+                scope, **request, check_current=check_current), account=account)
+
+    def telos_file_response(self, target, *, account=None):
+        from .memory_telos_file import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during TELOS reading')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, view(NativeMemory(self.root), scope, target,
+            check_current=check_current), account=account)
+
+    def edit_telos_file(self, request, *, account=None):
+        from .memory_telos_file import edit
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'name', 'content', 'reference', 'request_id'}:
+            raise ValueError('Provide the current TELOS file reference and requested content')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during TELOS saving')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return self._response(config, edit(NativeMemory(self.root), scope, **request,
+            check_current=check_current), account=account)
+
+    def tab_freshness_response(self, target, *, account=None):
+        from .memory_tab_freshness import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during tab freshness rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
+    def upgrade_response(self, target, *, account=None):
+        from .memory_upgrade_queue import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during upgrade rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+            check_current=check_current), account=account)
+
+    def hypothesis_response(self, target: str, *, account: str | None = None):
+        from .memory_hypothesis_queue import view
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during hypothesis rendering')
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target,
+                                          check_current=check_current), account=account)
+
+    def wiki_response(self, target: str, *, account: str | None = None):
+        from .memory_wiki import view
+        config = self._configuration(account=account)
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target),
+                              account=account)
+
+    def knowledge_response(self, target: str, *, account: str | None = None):
+        from .memory_knowledge import view
+        config = self._configuration(account=account)
+        return self._response(config, view(NativeMemory(self.root), self._owner_scope(config), target),
+                              account=account)
+
+    def adopt(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
+        if not isinstance(request,dict) or set(request) != {'signature','projects','request_id'}:
+            raise ValueError('Provide the reviewed source preview, project assignments, and request identifier')
+        config = self._configuration(account=account)
+        return NativeMemory(self.root).adopt(self._owner_scope(config),request['signature'],
+                                            request['projects'],request['request_id'])
+
+    def sharing(self, enabled: bool, *, account: str | None = None) -> dict[str, Any]:
+        if type(enabled) is not bool:
+            raise ValueError('Choose whether memory sharing is enabled')
+        self._configuration(account=account)
+        def change(config):
+            if Path(config['root']).absolute() != self.root:
+                raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+            self.configuration.check_owner(config, account)
+            config['sharing_enabled'] = enabled
+        self.configuration.update(change)
+        return {'sharing_enabled':enabled, 'records_deleted':False}
+
+    def enroll(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
+        required = {'client','public_key','projects','model_route'}
+        if not isinstance(request, dict) or not required <= set(request) or set(request)-required-{'read','write_project'}:
+            raise ValueError('Provide a connection name, public key, projects, and declared model route')
+        self._configuration(account=account)
+        return self.connections.enroll(request['client'],request['public_key'],projects=request['projects'],
+                                       model_route=request['model_route'],read=request.get('read'),
+                                       write_project=request.get('write_project',False), account=account)
+
+    def revoke(self, identifier: str, *, account: str | None = None) -> dict[str, Any]:
+        self._configuration(account=account)
+        if self.connection_enrollment_available():
+            result = self.connections.revoke(identifier, account=account)
+            self.configuration.update(lambda config: config.get('clients', {}).get(identifier, {}).pop(
+                'credential_entry_pending', None))
+            return result
+        def disable(config):
+            if Path(config['root']).absolute() != self.root:
+                raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+            self.configuration.check_owner(config, account)
+            grant = config.get('clients', {}).get(identifier)
+            if grant is None:
+                raise ValueError('This memory connection does not exist')
+            grant['enabled'] = False
+            grant['credential_entry_pending'] = True
+        self.configuration.update(disable)
+        return {'status':'revoked', 'client':identifier, 'records_deleted':False, 'credential_entry_removed':False}

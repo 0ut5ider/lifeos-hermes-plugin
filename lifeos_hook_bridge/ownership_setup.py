@@ -10,7 +10,7 @@ from .installation_lock import installation_lock
 from .memory_access import MemoryUnavailable
 from .memory_administration import _connector
 from .memory_backup import _directory, _read
-from .memory_ownership import OwnershipTransaction
+from .memory_ownership import OwnershipTransaction,connector_target
 from .memory_transaction import publish
 from .profile_backup import create, inspect
 from .profile_services import ProfileServices
@@ -28,8 +28,13 @@ def _signature(value):
 
 
 class OwnershipSetup:
-    def __init__(self, configuration, *, units=None):
+    def __init__(self, configuration, *, units=None, installation_lease=None, verify_ready=None, publication_barrier=None):
         self.configuration = configuration
+        self.installation_lease = installation_lease
+        if verify_ready is not None and not callable(verify_ready):
+            raise ValueError('Ownership setup requires a callable readiness check')
+        self.verify_ready = verify_ready
+        self.publication_barrier = publication_barrier
         self.profile = configuration.path.parent.absolute()
         if configuration.path.absolute() != self.profile / 'lifeos-memory.json':
             raise MemoryUnavailable('Ownership setup requires the fixed profile configuration')
@@ -53,13 +58,13 @@ class OwnershipSetup:
 
     @contextmanager
     def _lock(self, account):
-        with installation_lock(self.profile) as lease:
+        with installation_lock(self.profile, lease=self.installation_lease) as lease:
             self._owner(account)
             self.state.mkdir(mode=0o700, exist_ok=True)
             _directory(self.state, private=True)
             services = ProfileServices(self.profile, self.installed, units=self.units, installation_lease=lease)
             ownership = OwnershipTransaction(self.configuration, installation_lease=lease,
-                verify_writers=services.verify_stopped)
+                verify_writers=services.verify_stopped, publication_barrier=self.publication_barrier)
             yield lease, services, ownership
 
     def _publish(self, document):
@@ -117,27 +122,40 @@ class OwnershipSetup:
                 raise MemoryUnavailable('Fresh ownership setup requires ownership and sharing to be disabled')
             if ownership.status(account=account)['state'] not in {'none', 'rolled_back'}:
                 raise MemoryUnavailable('Recover the existing ownership configuration before setup')
-            _connector(self.configuration, selected)
+            connector=connector_target(selected)
+            if connector.exists() or connector.is_symlink():_connector(self.configuration, selected)
+            if self.verify_ready is not None:
+                self.verify_ready()
             review = services.preview()
             document = {'version': 1, 'profile': str(self.profile), 'installed': str(self.installed),
                 'installed_physical': str(self.physical_root), 'principal': self.principal,
                 'units': self.units, 'state': 'preparing', 'service_signature': review['signature'], 'plan': None}
             self._publish(document)
-            services.drain(signature=review['signature'])
-            services.verify_stopped()
-            snapshot = create(self.configuration, destination, account=account, installation_lease=lease)
-            services.verify_stopped()
-            preview = ownership.preview(Path(snapshot['snapshot']), snapshot['signature'], account=account)
-            plan = {'backup': snapshot['snapshot'], 'backup_signature': snapshot['signature'],
-                'ownership_signature': preview['signature']}
-            plan['signature'] = self._plan_signature(document, plan)
-            document['plan'] = plan
-            self._publish(document)
-            self._owner(account)
-            services.resume()
-            document['state'] = 'ready'
-            self._publish(document)
-            return self._receipt(document)
+            try:
+                services.drain(signature=review['signature'])
+                services.verify_stopped()
+                if self.verify_ready is not None:
+                    self.verify_ready()
+                snapshot = create(self.configuration, destination, account=account, installation_lease=lease)
+                services.verify_stopped()
+                preview = ownership.preview(Path(snapshot['snapshot']), snapshot['signature'], account=account)
+                plan = {'backup': snapshot['snapshot'], 'backup_signature': snapshot['signature'],
+                    'ownership_signature': preview['signature']}
+                plan['signature'] = self._plan_signature(document, plan)
+                document['plan'] = plan
+                self._publish(document)
+                self._owner(account)
+                services.resume()
+                document['state'] = 'ready'
+                self._publish(document)
+                return {**self._receipt(document),'local_owner_access':preview['local_owner_access']}
+            except Exception:
+                self._owner(account)
+                if ownership.status(account=account)['state'] not in {'none','rolled_back'}:
+                    raise MemoryUnavailable('The interrupted preparation requires authenticated ownership recovery')
+                if services.status()['state'] not in {'none','active'}:services.resume()
+                document['state']='cancelled';self._publish(document)
+                raise
 
     def apply(self, signature, *, account=None):
         with self._lock(account) as (_, services, ownership):
@@ -147,6 +165,8 @@ class OwnershipSetup:
             plan = document['plan']
             if not _signature(signature) or signature != plan['signature']:
                 raise MemoryUnavailable('Ownership setup requires the exact reviewed setup signature')
+            if self.verify_ready is not None:
+                self.verify_ready()
             preview = ownership.preview(Path(plan['backup']), plan['backup_signature'], account=account)
             if preview['signature'] != plan['ownership_signature']:
                 raise MemoryUnavailable('The reviewed ownership configuration changes before setup')
@@ -156,6 +176,8 @@ class OwnershipSetup:
             self._publish(document)
             services.drain(signature=document['service_signature'])
             services.verify_stopped()
+            if self.verify_ready is not None:
+                self.verify_ready()
             ownership.apply(Path(plan['backup']), plan['backup_signature'], plan['ownership_signature'], account=account)
             services.verify_stopped()
             self._owner(account)

@@ -74,6 +74,45 @@ class ReleaseStageTests(unittest.TestCase):
             self.assertEqual(validate_package(package, certificate)['head'], certificate['program_commit'])
             self.assertTrue(marker.exists())
 
+    def stock_package(self, root):
+        package,certificate,marker,archive=self.package(root)
+        source=package/'lifeos_hook_bridge/install_source.py'
+        source.write_text(source.read_text().replace('"base_commit": "hermes"','"base_commit": "'+'b'*40+'"'))
+        manifest=json.loads((package/'DAILY-CANDIDATE.json').read_bytes())
+        manifest['plugin_files']['lifeos_hook_bridge/install_source.py']=hashlib.sha256(source.read_bytes()).hexdigest()
+        stock=package/'stock-hermes.tgz'
+        with tarfile.open(stock,'w:gz') as output:
+            data=b'# Synthetic stock source\n';member=tarfile.TarInfo('run_agent.py');member.size=len(data)
+            output.addfile(member,io.BytesIO(data))
+        manifest['stock_hermes']={'format':1,'commit':'b'*40,'path':'stock-hermes.tgz',
+            'sha256':hashlib.sha256(stock.read_bytes()).hexdigest(),'bytes':stock.stat().st_size}
+        (package/'DAILY-CANDIDATE.json').write_text(json.dumps(manifest))
+        with tarfile.open(archive,'w:gz') as output:
+            for path in sorted(package.iterdir()):output.add(path,arcname=path.name)
+        certificate.update(hermes_base='b'*40,archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
+            archive_bytes=archive.stat().st_size)
+        return package,certificate,marker
+
+    def test_stock_archive_is_authenticated_before_candidate_execution(self):
+        for change in ('bytes','symlink','fifo'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temp:
+                package,certificate,marker=self.stock_package(Path(temp))
+                stock=package/'stock-hermes.tgz'
+                if change=='bytes':stock.write_bytes(stock.read_bytes()+b'changed')
+                elif change=='symlink':
+                    retained=stock.with_suffix('.retained');stock.rename(retained);stock.symlink_to(retained)
+                else:stock.unlink();os.mkfifo(stock)
+                with self.assertRaisesRegex(ReleaseRejected,'stock source archive'):
+                    validate_package(package,certificate)
+                self.assertFalse(marker.exists())
+
+    def test_exact_stock_archive_matches_qualified_base(self):
+        with tempfile.TemporaryDirectory() as temp:
+            package,certificate,marker=self.stock_package(Path(temp))
+            result=validate_package(package,certificate)
+            self.assertEqual(result['stock_hermes']['commit'],certificate['hermes_base'])
+            self.assertTrue(marker.exists())
+
     def test_extracted_manifest_requires_bounded_regular_owner_storage(self):
         for change in ('symlink', 'oversized', 'fifo'):
             with self.subTest(change=change), tempfile.TemporaryDirectory() as temp:

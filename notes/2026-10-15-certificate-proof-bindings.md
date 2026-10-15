@@ -1,0 +1,9 @@
+# Bind release evidence to its required effects and action
+
+2026-10-15, LifeOS 0.6.0 qualification. The first certificate driver accepts three invalid evidence cases. It returns QUALIFIED when a passing receipt contains explicit failures of later learning or postboot recall. It also accepts a genuine normal-rollback authentication receipt in the interrupted-recovery slot. The independent five-control run produces three failures. The primary reproduces all three.
+
+The driver checks PASS, model activity, and session separation, but omits decisive effects and authentication identity. The correction checks each required effect and the exact workflow and action. A later bounded check exposes the same omission inside the cold-restore summary: a genuine recover admission can substitute for the required rollback admission. The primary reproduces that failure and adds the missing binding.
+
+The final checker also binds a clear independent review report and all nine current operator hashes. Missing, stale, or incomplete review evidence refuses. Independent closure passes 21 tests and 37 separate proof-field or workflow/action mutations. The primary repeats all 21 tests and 37 mutations in 158.952 seconds. These validation fixtures remain explicitly synthetic. Actual cold verification separately passes native consistency, stock construction, password-authenticated software rollback, exact package identity, and unchanged memory hashes in a disconnected guest.
+
+The product archive does not change. The initial certificate records completed actual evidence and keeps public installation and production promotion as later gates. See the [review closure](../docs/agents/2026-10-15-pr29-verification-operators-closure/pr29-verification-operators-closure.md) and [cold receipt](../docs/verification/2026-10-15-memory-portability/cold-restore-verification.json).

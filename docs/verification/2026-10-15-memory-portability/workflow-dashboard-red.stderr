@@ -1,0 +1,114 @@
+test_actions_require_server_identifier_and_reviewed_signature (test_portability_dashboard.PortabilityDashboardTests.test_actions_require_server_identifier_and_reviewed_signature) ... FAIL
+test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) ... 
+  test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'return', 'snapshot': '/tmp/private'}) ... FAIL
+  test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'activation', 'account': 'dashboard:basic:owner'}) ... FAIL
+  test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'remove', 'command': 'true'}) ... FAIL
+  test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'return', 'identifier': '../escape'}) ... FAIL
+  test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': ['return']}) ... FAIL
+  test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection=[]) ... FAIL
+test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) ... FAIL
+test_status_requires_current_installation_owner (test_portability_dashboard.PortabilityDashboardTests.test_status_requires_current_installation_owner) ... FAIL
+
+======================================================================
+FAIL: test_actions_require_server_identifier_and_reviewed_signature (test_portability_dashboard.PortabilityDashboardTests.test_actions_require_server_identifier_and_reviewed_signature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 35, in test_actions_require_server_identifier_and_reviewed_signature
+    self.assertEqual(self.fixture.request(self.fixture.owner,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        path='/memory-workflows/'+identifier+'/'+action,method='POST',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=b'{"signature":"forged","account":"owner"}',origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'return', 'snapshot': '/tmp/private'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 26, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=json.dumps(selection).encode(),origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'activation', 'account': 'dashboard:basic:owner'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 26, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=json.dumps(selection).encode(),origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'remove', 'command': 'true'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 26, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=json.dumps(selection).encode(),origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': 'return', 'identifier': '../escape'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 26, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=json.dumps(selection).encode(),origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection={'kind': ['return']})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 26, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=json.dumps(selection).encode(),origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin) (selection=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 26, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=json.dumps(selection).encode(),origin=self.fixture.origin)[0],400)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400
+
+======================================================================
+FAIL: test_preparation_refuses_paths_accounts_and_foreign_origin (test_portability_dashboard.PortabilityDashboardTests.test_preparation_refuses_paths_accounts_and_foreign_origin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 28, in test_preparation_refuses_paths_accounts_and_foreign_origin
+    self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows',method='POST',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        body=b'{}',origin='https://other.invalid')[0],403)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 403
+
+======================================================================
+FAIL: test_status_requires_current_installation_owner (test_portability_dashboard.PortabilityDashboardTests.test_status_requires_current_installation_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_portability_dashboard.py", line 16, in test_status_requires_current_installation_owner
+    self.assertEqual(self.fixture.request(self.fixture.other,path='/memory-workflows')[0],403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 403
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.970s
+
+FAILED (failures=9)

@@ -1,0 +1,123 @@
+TAP version 13
+# Subtest: memory status explains reviewed activation without engineering gates
+not ok 1 - memory status explains reviewed activation without engineering gates
+  ---
+  duration_ms: 10.415663
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_ui.cjs:43:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + {
+    +   children: [
+    +     'Native proposal approval'
+    +   ],
+    +   props: {
+    +     key: 'native_proposal_policy'
+    +   },
+    +   type: 'li'
+    + }
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+    type: 'li'
+    props:
+      key: 'native_proposal_policy'
+    children:
+      0: 'Native proposal approval'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_ui.cjs:46:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: agent correction guidance requires active memory ownership
+not ok 2 - agent correction guidance requires active memory ownership
+  ---
+  duration_ms: 1.898451
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_ui.cjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_ui.cjs:62:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 3 - pending changes show their target and exact revision for manual decisions
+  ---
+  duration_ms: 2.89605
+  type: 'test'
+  ...
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 4 - conflicted proposal remains visible and edit decisions send the owner draft
+  ---
+  duration_ms: 2.005856
+  type: 'test'
+  ...
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 5 - valid minimal revoked grants do not break the preferences page
+  ---
+  duration_ms: 1.075868
+  type: 'test'
+  ...
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 6 - owner search displays references and new connections default to read-only project access
+  ---
+  duration_ms: 1.546278
+  type: 'test'
+  ...
+# Subtest: connection form is replaced by an installation note without the sharing component
+ok 7 - connection form is replaced by an installation note without the sharing component
+  ---
+  duration_ms: 1.096819
+  type: 'test'
+  ...
+# Subtest: a disabled connection with a remaining SSH entry offers removal only with the component
+ok 8 - a disabled connection with a remaining SSH entry offers removal only with the component
+  ---
+  duration_ms: 1.764965
+  type: 'test'
+  ...
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 9 - source adoption previews historical records and sends exact project assignments
+  ---
+  duration_ms: 2.030894
+  type: 'test'
+  ...
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 10 - source adoption retains a conflicted preview and reuses its request identifier
+  ---
+  duration_ms: 1.946653
+  type: 'test'
+  ...
+# Subtest: an unconfigured installation offers the owner claim and shows the claimed state
+ok 11 - an unconfigured installation offers the owner claim and shows the claimed state
+  ---
+  duration_ms: 2.454946
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 9
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 76.000385

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.0 (unreleased)
+
+- Add owner-reviewed import from Hermes memory and portable LifeOS bundles.
+- Preserve source occurrences, original bytes, references, and import provenance.
+- Require explicit item decisions and current owner, source, and destination checks.
+- Export governed facts into a retained bundle and bounded Hermes memory files.
+- Return to built-in Hermes through a reviewed service transition and recovery journal.
+- Refuse stale return reviews and preserve later settings, grants, and memory edits.
+- Add complete software removal after verified provider return and separate owner review.
+- Select qualified stock Hermes and retain personal data, exports, and recovery records.
+- Disable Discord during removal and retain password-authenticated standalone recovery.
+- Bind stock runtime execution, retained recovery sources, and software ownership.
+- Normalize the retained environment before removal review with the pinned Hermes formatter.
+- Exclude portability runtime workspaces from data-only backups. Full guest backups retain them.
+- Keep release qualification and installed removal acceptance in progress.
+
 ## 0.5.0 (2026-10-14)
 
 - Verify omitted native program baseline entries against the exact accepted archive before release updates.

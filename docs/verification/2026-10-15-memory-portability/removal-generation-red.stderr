@@ -1,0 +1,41 @@
+test_another_profile_refuses_account_wide_software_removal (test_removal_generation.RemovalGenerationTests.test_another_profile_refuses_account_wide_software_removal) ... ERROR
+test_named_profile_or_selected_external_home_refuses (test_removal_generation.RemovalGenerationTests.test_named_profile_or_selected_external_home_refuses) ... ERROR
+test_one_default_profile_is_admitted_without_changing_files (test_removal_generation.RemovalGenerationTests.test_one_default_profile_is_admitted_without_changing_files) ... ERROR
+
+======================================================================
+ERROR: test_another_profile_refuses_account_wide_software_removal (test_removal_generation.RemovalGenerationTests.test_another_profile_refuses_account_wide_software_removal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_generation.py", line 24, in test_another_profile_refuses_account_wide_software_removal
+    with self.assertRaises(ValueError):self.operation()(self.profile,self.installed)
+                                       ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_generation.py", line 15, in operation
+    from optional.lifeos_release_manager.removal_generation import account
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_generation'
+
+======================================================================
+ERROR: test_named_profile_or_selected_external_home_refuses (test_removal_generation.RemovalGenerationTests.test_named_profile_or_selected_external_home_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_generation.py", line 28, in test_named_profile_or_selected_external_home_refuses
+    with self.assertRaises(ValueError):self.operation()(self.profile,other)
+                                       ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_generation.py", line 15, in operation
+    from optional.lifeos_release_manager.removal_generation import account
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_generation'
+
+======================================================================
+ERROR: test_one_default_profile_is_admitted_without_changing_files (test_removal_generation.RemovalGenerationTests.test_one_default_profile_is_admitted_without_changing_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_generation.py", line 19, in test_one_default_profile_is_admitted_without_changing_files
+    self.assertEqual(self.operation()(self.profile,self.installed),self.home)
+                     ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_generation.py", line 15, in operation
+    from optional.lifeos_release_manager.removal_generation import account
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.removal_generation'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+FAILED (errors=3)
