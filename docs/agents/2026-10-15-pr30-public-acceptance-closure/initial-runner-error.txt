@@ -1,0 +1,8 @@
+Initial closure checker launch, before the reviewer corrected its temporary directory location:
+
+Traceback (most recent call last):
+  File "docs/agents/2026-10-15-pr30-public-acceptance-closure/check_public_acceptance_closure.py", line 37, in <module>
+    result = json.loads((output / 'original-controls-repeat/review-checks.json').read_bytes())
+FileNotFoundError: No such file or directory: 'docs/agents/2026-10-15-pr30-public-acceptance-closure/original-controls-repeat/review-checks.json'
+
+This is a reviewer-runner failure. It does not identify a failure in the release or its acceptance generator. The complete subsequent run records 76 of 76 passing checks.

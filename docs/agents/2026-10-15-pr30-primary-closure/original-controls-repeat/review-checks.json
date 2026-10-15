@@ -1,0 +1,387 @@
+{
+  "reviewed_head": "d0d79d67e294ba5c3e760febd5a0b7e313e8a99f",
+  "checks": [
+    {
+      "name": "reviewed_head",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "initial_certificate_preserved_from_base",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "initial_certificate_exact_qualified_hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no_product_diff",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "nine_receipt_bindings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all_38_manager_files_match_exact_qualified_program",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "public_11_groups_actual_model",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "post_model_hash_and_identity_binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fresh_model_mapping_binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "scanner_receipt_describes_refusal_and_explicit_confirmation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "scanner_reason_matches_actual_exact_cgroup_read",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "actual_deployment_receipt_keeps_both_servers_on_050",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "actual_publication_receipt_has_exact_initial_assets",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "positive_regeneration_exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "reject_scanner_confirmation_failed",
+      "passed": true,
+      "detail": {
+        "measured_returncode": 1,
+        "generated_status": null
+      }
+    },
+    {
+      "name": "reject_deployment_changed",
+      "passed": true,
+      "detail": {
+        "measured_returncode": 1,
+        "generated_status": null
+      }
+    },
+    {
+      "name": "reject_public_release_wrong_identity",
+      "passed": true,
+      "detail": {
+        "measured_returncode": 1,
+        "generated_status": null
+      }
+    },
+    {
+      "name": "reject_manager_wrong_source",
+      "passed": true,
+      "detail": {
+        "measured_returncode": 1,
+        "generated_status": null
+      }
+    },
+    {
+      "name": "reject_manager_wrong_file_hash",
+      "passed": true,
+      "detail": {
+        "measured_returncode": 1,
+        "generated_status": null
+      }
+    }
+  ],
+  "passed": 19,
+  "total": 19,
+  "manager_file_checks": {
+    "removal_configuration.py": {
+      "actual": "19677f2513c8041b0957ba251787c6dbc759b091b6ab4ed2a737ea22b8f1dfc6",
+      "expected": "19677f2513c8041b0957ba251787c6dbc759b091b6ab4ed2a737ea22b8f1dfc6",
+      "matches": true
+    },
+    "plugin.yaml": {
+      "actual": "bc05a0a05217309380dca6e181394960c6df250787b3ffa4744616cb7380b4ec",
+      "expected": "bc05a0a05217309380dca6e181394960c6df250787b3ffa4744616cb7380b4ec",
+      "matches": true
+    },
+    "removal_publication.py": {
+      "actual": "2c014c8fbf8412f4723960b86eec06ce692043190093db85d5ae2f4f9af3cb2f",
+      "expected": "2c014c8fbf8412f4723960b86eec06ce692043190093db85d5ae2f4f9af3cb2f",
+      "matches": true
+    },
+    "release_accounts.py": {
+      "actual": "02ba81daa41ce71f51f7048b3add94a1cfb4807a753f1c9fbe4bae0df89cd2ee",
+      "expected": "02ba81daa41ce71f51f7048b3add94a1cfb4807a753f1c9fbe4bae0df89cd2ee",
+      "matches": true
+    },
+    "release_plan.py": {
+      "actual": "8f8399dbc88296291d0c89f306f7dfb6373118dfa5e769c4c5be10498db2b397",
+      "expected": "8f8399dbc88296291d0c89f306f7dfb6373118dfa5e769c4c5be10498db2b397",
+      "matches": true
+    },
+    "removal_inventory.py": {
+      "actual": "498f8ceb07502e382b782e2489af639b20838e22ad520074c9bf24d64fcf4e2d",
+      "expected": "498f8ceb07502e382b782e2489af639b20838e22ad520074c9bf24d64fcf4e2d",
+      "matches": true
+    },
+    "removal_preparation.py": {
+      "actual": "28bfb409a1a8be07d8f41afc219e5f490985949888975564643f8496d4865863",
+      "expected": "28bfb409a1a8be07d8f41afc219e5f490985949888975564643f8496d4865863",
+      "matches": true
+    },
+    "release_preparation.py": {
+      "actual": "c04727d8f2e2b7701e3829016749bbdc746c7936824aa662cef7f01ed8e6f204",
+      "expected": "c04727d8f2e2b7701e3829016749bbdc746c7936824aa662cef7f01ed8e6f204",
+      "matches": true
+    },
+    "memory_workflow.py": {
+      "actual": "1054843511c3b06664c485ee98efeef81b7dbeb2324f6c354ffd31db95314cd0",
+      "expected": "1054843511c3b06664c485ee98efeef81b7dbeb2324f6c354ffd31db95314cd0",
+      "matches": true
+    },
+    "release_tools.py": {
+      "actual": "582c6ee4dce77cd38562b1aead31282fc1d180b50494ceba0063294aaea19e64",
+      "expected": "582c6ee4dce77cd38562b1aead31282fc1d180b50494ceba0063294aaea19e64",
+      "matches": true
+    },
+    "removal_runtime.py": {
+      "actual": "c2b2b733bcc226c0f0becc6a8f652b6129cc1ba766a124b4967e584eaaa49f95",
+      "expected": "c2b2b733bcc226c0f0becc6a8f652b6129cc1ba766a124b4967e584eaaa49f95",
+      "matches": true
+    },
+    "removal_state.py": {
+      "actual": "d34488f7b09e02a31a2e3d1d05c6b19420192e5881adc6d9253186cdcad6d7e6",
+      "expected": "d34488f7b09e02a31a2e3d1d05c6b19420192e5881adc6d9253186cdcad6d7e6",
+      "matches": true
+    },
+    "release_services.py": {
+      "actual": "b5303d5d89361e709054eab38309b62a8ee007c3f7e27a8fe061046a29f5c153",
+      "expected": "b5303d5d89361e709054eab38309b62a8ee007c3f7e27a8fe061046a29f5c153",
+      "matches": true
+    },
+    "removal_bootstrap.py": {
+      "actual": "6c6853e3e11667ff216e78f50e08acab8b684408651cc4377f58d0f951d085b7",
+      "expected": "6c6853e3e11667ff216e78f50e08acab8b684408651cc4377f58d0f951d085b7",
+      "matches": true
+    },
+    "release_worker.py": {
+      "actual": "395035b7bc88dc4b1ee4b91526418029e7328f09af42c802c9fd62b261f90c7c",
+      "expected": "395035b7bc88dc4b1ee4b91526418029e7328f09af42c802c9fd62b261f90c7c",
+      "matches": true
+    },
+    "release_initialization.py": {
+      "actual": "06a9b8271d68c89033bd7ffb49bc8e29f03395a58144b74c8ec746152fc38a6c",
+      "expected": "06a9b8271d68c89033bd7ffb49bc8e29f03395a58144b74c8ec746152fc38a6c",
+      "matches": true
+    },
+    "removal_recovery.py": {
+      "actual": "3d726f7ad9746ffa94cf19e08f075bae55353669b1f66d47b02a8babdf7c5ce7",
+      "expected": "3d726f7ad9746ffa94cf19e08f075bae55353669b1f66d47b02a8babdf7c5ce7",
+      "matches": true
+    },
+    "release_payload.py": {
+      "actual": "3046452897e9e18fe78bb3a557faf7d7f7f523f16a295eb29b7941a15d1ffa20",
+      "expected": "3046452897e9e18fe78bb3a557faf7d7f7f523f16a295eb29b7941a15d1ffa20",
+      "matches": true
+    },
+    "__init__.py": {
+      "actual": "a4995c8798ad90f25ad65704f26cab185a505430c54afff07c5392986ebedd7f",
+      "expected": "a4995c8798ad90f25ad65704f26cab185a505430c54afff07c5392986ebedd7f",
+      "matches": true
+    },
+    "release_catalog.py": {
+      "actual": "20281dd1b1fe5e84d6529ea681e6c6e6928c14867a18b531d04c573cfd19c866",
+      "expected": "20281dd1b1fe5e84d6529ea681e6c6e6928c14867a18b531d04c573cfd19c866",
+      "matches": true
+    },
+    "release-tools.json": {
+      "actual": "8454fb9ba40ed16456f5d1c119eca456751c7971ad8850269c1e4e8f9956c0df",
+      "expected": "8454fb9ba40ed16456f5d1c119eca456751c7971ad8850269c1e4e8f9956c0df",
+      "matches": true
+    },
+    "removal_services.py": {
+      "actual": "06f13e6bbacbb2a50fcd0eb2d0fd5212b503d9b92ddaa7bb07ff989a5f70f047",
+      "expected": "06f13e6bbacbb2a50fcd0eb2d0fd5212b503d9b92ddaa7bb07ff989a5f70f047",
+      "matches": true
+    },
+    "removal_consumers.py": {
+      "actual": "d1f6d51097c216cf4fc9d6f013d1c738e8d1467ae798fc34a7a33d6787bc8744",
+      "expected": "d1f6d51097c216cf4fc9d6f013d1c738e8d1467ae798fc34a7a33d6787bc8744",
+      "matches": true
+    },
+    "stock_hermes.py": {
+      "actual": "8af5eb7d2a451281c08adeb822a98bc82ff35bdcd3970772e72cbf37b1b56bdb",
+      "expected": "8af5eb7d2a451281c08adeb822a98bc82ff35bdcd3970772e72cbf37b1b56bdb",
+      "matches": true
+    },
+    "removal_ownership.py": {
+      "actual": "f365b2df75acb074106a7d8ae0bb4f83486a50f5821cea7ea21b6516f8a3c43f",
+      "expected": "f365b2df75acb074106a7d8ae0bb4f83486a50f5821cea7ea21b6516f8a3c43f",
+      "matches": true
+    },
+    "release_operation.py": {
+      "actual": "fe7448322e836d6b88f5e417047ec2c1f50ea05820378a75377a78bfe22969a8",
+      "expected": "fe7448322e836d6b88f5e417047ec2c1f50ea05820378a75377a78bfe22969a8",
+      "matches": true
+    },
+    "memory_workflow_worker.py": {
+      "actual": "a75dc83f4ca732b2e127bd79127c2504d38db3a8b148e42a0e5a72a92542238e",
+      "expected": "a75dc83f4ca732b2e127bd79127c2504d38db3a8b148e42a0e5a72a92542238e",
+      "matches": true
+    },
+    "release_stage.py": {
+      "actual": "e3a779ed846b6a641852846cf67f75e2cdde5c540b73b8cbcfdd7800fbfa68d2",
+      "expected": "e3a779ed846b6a641852846cf67f75e2cdde5c540b73b8cbcfdd7800fbfa68d2",
+      "matches": true
+    },
+    "release_baseline.py": {
+      "actual": "a20a6d14ba9cd1e561d7ae2213f1f77482a5c43a61fe0e2c6ab013d706690987",
+      "expected": "a20a6d14ba9cd1e561d7ae2213f1f77482a5c43a61fe0e2c6ab013d706690987",
+      "matches": true
+    },
+    "release_programs.py": {
+      "actual": "d78e487bc92dcaaaf3299b6de1ee0c307bae9a1065ecf56467407e26d925b45c",
+      "expected": "d78e487bc92dcaaaf3299b6de1ee0c307bae9a1065ecf56467407e26d925b45c",
+      "matches": true
+    },
+    "cli.py": {
+      "actual": "e840549d879930535c38132f2e928536f7046b292a8539b89f0cf1e7409ba03e",
+      "expected": "e840549d879930535c38132f2e928536f7046b292a8539b89f0cf1e7409ba03e",
+      "matches": true
+    },
+    "removal_generation.py": {
+      "actual": "92500e2cd0f7a71367b9266931b45fb498eb2a8c73ed0741e2d09af38d85a9ee",
+      "expected": "92500e2cd0f7a71367b9266931b45fb498eb2a8c73ed0741e2d09af38d85a9ee",
+      "matches": true
+    },
+    "removal_workflow.py": {
+      "actual": "04e5cb16f7dd27644042edef58c815ebc34be12440005ec36c94246eeb2643e2",
+      "expected": "04e5cb16f7dd27644042edef58c815ebc34be12440005ec36c94246eeb2643e2",
+      "matches": true
+    },
+    "removal_data.py": {
+      "actual": "18265a2a3683e93c950f838c0ee644de881d50113c79c0f81f087e1a5f9250e7",
+      "expected": "18265a2a3683e93c950f838c0ee644de881d50113c79c0f81f087e1a5f9250e7",
+      "matches": true
+    },
+    "dashboard/plugin_api.py": {
+      "actual": "0fd6c04741faf263d260c12bc4c944860815620c98ed25a4e32c431a1b6c75e3",
+      "expected": "0fd6c04741faf263d260c12bc4c944860815620c98ed25a4e32c431a1b6c75e3",
+      "matches": true
+    },
+    "dashboard/manifest.json": {
+      "actual": "5d8b3b04ea885494d2eeb019c543f226fe7ac8411eb6177a69c814853d6909e9",
+      "expected": "5d8b3b04ea885494d2eeb019c543f226fe7ac8411eb6177a69c814853d6909e9",
+      "matches": true
+    },
+    "skills/lifeos-release/SKILL.md": {
+      "actual": "df9b047c9227ac76571519ebb6d1f90d97722265fbe41272ea5affd2ecf46b34",
+      "expected": "df9b047c9227ac76571519ebb6d1f90d97722265fbe41272ea5affd2ecf46b34",
+      "matches": true
+    },
+    "dashboard/dist/index.js": {
+      "actual": "aa9e12ffb4dd7ee680cadb9bbb178ac986aaf0d10dba6a52e90a361166219830",
+      "expected": "aa9e12ffb4dd7ee680cadb9bbb178ac986aaf0d10dba6a52e90a361166219830",
+      "matches": true
+    }
+  },
+  "runs": [
+    {
+      "label": "positive_unchanged_receipts",
+      "returncode": 0,
+      "stdout": "{\"status\": \"PASS\", \"evidence_files\": 9}\n",
+      "stderr": "",
+      "generated_receipt": {
+        "format": 1,
+        "status": "PASS",
+        "version": "0.6.0",
+        "program_commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+        "package_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+        "public_default_github_url": "https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager",
+        "default_ref_used": true,
+        "latest_stable_selected_from_public_catalog": true,
+        "actual_native_ui_install_review_apply_verified": true,
+        "operation": "a8486ae6890a41ceaf29202cb5dce463",
+        "fresh_owner_browser_final_status": "applied",
+        "manager_files_verified": 38,
+        "sealed_program_groups_verified": 11,
+        "model_and_tiers_preserved": true,
+        "real_model_turn_on_public_fixture": true,
+        "post_model_integrity_verified": true,
+        "initial_certificate_unchanged": true,
+        "native_security_scan_confirmation_required": true,
+        "production_guest_changed": false,
+        "personal_records_exported": false,
+        "personal_data_imported_or_reset": false,
+        "scope": "Public latest installation and an actual model reply. Personal memory activation and production promotion remain separate owner actions.",
+        "evidence_sha256": {
+          "public-fixture-reset.json": "210b6bf22dec6ace28315228e2ea113610231cc3d177414e7562e3b9a73b1832",
+          "public-fresh-before-application.json": "22128a07704da903bbfd3f77faa3804e0aec6df14aab5afb4f5a4cb1cb4add12",
+          "public-manager-source-verification.json": "5d5e0fcb3b6eb055873c4f86aa5dbe9786dfe4dcbbc88ae4aa2bd364d58e169f",
+          "public-plugin-scan-confirmation.json": "6d69b8db3b1a00ec577ff5d8bb0ffa89d1d2cb3a2f35b3409f2393383a694ba3",
+          "public-fresh-verification.json": "ad76eb6afb1c1f6575e068a0bcdd83e81b486689a364f0ff18376acf08c28ef3",
+          "public-post-model-verification.json": "ca61d04bf744185518fab1e08de272b05e37f157619c5a2c47fca546441cd592",
+          "publication.json": "a88de961a44d932166e6b97ac46a07b7aba50f56bc1bd25723cddf6a78d626fb",
+          "deployed-checkpoint.json": "7eb77050a92bf1acfe0b518be97ccffd69254666dfeb57a1f94e46de338b49d6",
+          "RELEASE-CERTIFICATE.json": "e53fa1a02d52637fd9678d6978900c10d3003bb2059c78c689078bc0de3db770"
+        }
+      }
+    },
+    {
+      "label": "scanner_confirmation_failed",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr30-public-acceptance-fmpnozio/generate_public_acceptance.py\", line 61, in <module>\n    assert scan['status'] == 'PASS_WITH_EXPLICIT_NATIVE_CONFIRMATION'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "generated_receipt": null
+    },
+    {
+      "label": "deployment_changed",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr30-public-acceptance-1e0qjei6/generate_public_acceptance.py\", line 69, in <module>\n    assert deployment['status'] == 'PASS'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "generated_receipt": null
+    },
+    {
+      "label": "public_release_wrong_identity",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr30-public-acceptance-tpb2qepb/generate_public_acceptance.py\", line 79, in <module>\n    assert publication['status'] == 'PASS' and publication['tag'] == 'v0.6.0'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "generated_receipt": null
+    },
+    {
+      "label": "manager_wrong_source",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr30-public-acceptance-v2qxl5d1/generate_public_acceptance.py\", line 45, in <module>\n    assert manager['source'] == url\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "generated_receipt": null
+    },
+    {
+      "label": "manager_wrong_file_hash",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/pr30-public-acceptance-cagrfbt1/generate_public_acceptance.py\", line 43, in <module>\n    assert hashlib.sha256(json.dumps(manager['files'], sort_keys=True, separators=(',', ':')).encode()).hexdigest() == 'deff760a90277fdf8511ffa1a8415f000fce376f4ccd0a0db79c7df4fa2be1a1'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "generated_receipt": null
+    }
+  ]
+}

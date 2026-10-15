@@ -1,0 +1,188 @@
+{
+  "status": "PASS",
+  "operations": [
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/lxc",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/qemu",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content",
+        "--content",
+        "backup",
+        "--vmid",
+        "110",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/lxc/110/config",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/lxc/112/config",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "exec",
+        "112",
+        "--",
+        "python3",
+        "-c",
+        "import json,pathlib; p=pathlib.Path('/home/lifeos-hermes/install-input/fresh-public-post-model-verification.json'); r=json.loads(p.read_bytes()); assert r['status']=='PASS' and r['sealed_programs_verified_after_model'] is True and r['active_identity']['version']=='0.6.0'"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "shutdown",
+        "110",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/lxc/110/status/current",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "destroy",
+        "110",
+        "--purge",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "shutdown",
+        "112",
+        "--timeout",
+        "90"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/lxc/112/status/current",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pct",
+        "destroy",
+        "112",
+        "--purge",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/lxc",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/qemu",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pvesh",
+        "get",
+        "/nodes/pve-tr1950x/storage/PBS-01/content",
+        "--content",
+        "backup",
+        "--vmid",
+        "110",
+        "--output-format",
+        "json"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "production_changed": false,
+  "protected_archive_before": {
+    "archive": "PBS-01:backup/ct/110/2026-10-15T21:26:10Z",
+    "protected": true,
+    "size": 66409816464
+  },
+  "removed_guests": [
+    110,
+    112
+  ],
+  "all_other_guest_states_preserved": true,
+  "protected_archive_after": {
+    "archive": "PBS-01:backup/ct/110/2026-10-15T21:26:10Z",
+    "protected": true,
+    "size": 66409816464
+  },
+  "remaining_guest_states": {
+    "lxc:100": "running",
+    "lxc:102": "running",
+    "lxc:101": "running",
+    "lxc:106": "stopped",
+    "qemu:801": "running"
+  }
+}
