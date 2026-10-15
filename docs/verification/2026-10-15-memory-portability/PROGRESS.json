@@ -254,5 +254,22 @@
     "actual_model_round_trip": true,
     "post_model_program_maps_verified": true,
     "selected_model_and_tiers_preserved": true
+  },
+  "cold_whole_guest_restore": {
+    "state": "RESTORE_RUNNING",
+    "source_guest": 110,
+    "restored_guest": 111,
+    "archive": "PBS-01:backup/ct/110/2026-10-15T21:26:10Z",
+    "archive_protected_verified": true,
+    "backup_exit_code": 0,
+    "backup_elapsed_seconds": 622.4313276720059,
+    "production_changed": false
+  },
+  "verification_operator_review": {
+    "initial_finding": "C1 P2: missing decisive model effects, mixed authentication workflows/actions, and missing cold rollback authentication binding",
+    "primary_reproduced": true,
+    "corrections": "Decisive effect flags, exact workflow/action, embedded cold rollback authentication, and final clear report/source-hash admission",
+    "state": "FOCUSED_CLOSURE_RUNNING",
+    "product_archive_changed": false
   }
 }

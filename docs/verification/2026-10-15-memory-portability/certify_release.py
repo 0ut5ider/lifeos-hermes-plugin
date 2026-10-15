@@ -207,6 +207,9 @@ def certify(folder,build_path,dashboard):
         and cold['network_disconnected'] is True and cold['software_rollback_verified'] is True,
         'The cold whole-guest restore is incomplete')
     identity(cold['active_identity'])
+    require(isinstance(cold.get('retained_helper_authentication'),dict),
+        'The cold restored rollback authentication is absent')
+    authentication(cold['retained_helper_authentication'],FAULT,'rollback')
     require(cold['builtin_files']==current['builtin_files'] and cold['native_consistency']['native_consistency_signature_verified'] is True
         and cold['all_original_guest_states_preserved'] is True,'The cold restored data differs')
     require(digest(folder/'cold-restore-operations.json')==cold['operations_sha256'],
