@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import time
 
@@ -25,9 +26,13 @@ command = [python, '-W', 'error::ResourceWarning', '-m', 'unittest', '-v', *argu
 started = time.monotonic()
 with (folder / (arguments.label + '.stdout')).open('w') as stdout, (folder / (arguments.label + '.stderr')).open('w') as stderr:
     result = subprocess.run(command, cwd=repo, env=environment, stdout=stdout, stderr=stderr, timeout=7200)
-receipt = {'command': command, 'exit_code': result.returncode, 'elapsed_seconds': time.monotonic() - started,
+diagnostics=(folder/(arguments.label+'.stderr')).read_text()
+unclean=bool(re.search(r'^(?:Exception ignored|ResourceWarning:)',diagnostics,re.MULTILINE))
+code=result.returncode or int(unclean)
+receipt = {'command': command, 'exit_code': code, 'process_exit_code':result.returncode,
+    'unhandled_diagnostics':unclean,'elapsed_seconds': time.monotonic() - started,
     'native_source': str(native), 'hermes_source': str(package / 'hermes'), 'daily_changed': False}
 (folder / (arguments.label + '.json')).write_text(json.dumps(receipt, indent=2) + '\n')
-(folder / (arguments.label + '.done')).write_text(str(result.returncode) + '\n')
+(folder / (arguments.label + '.done')).write_text(str(code) + '\n')
 print(json.dumps(receipt))
-raise SystemExit(result.returncode)
+raise SystemExit(code)

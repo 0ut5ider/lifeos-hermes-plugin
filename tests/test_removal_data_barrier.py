@@ -1,6 +1,7 @@
 # ABOUTME: Verifies the removal-only retained data barrier without installed native tools.
 # ABOUTME: Uses actual SQLite and writer locks while forbidding schema changes and pending recovery.
 import json
+from contextlib import closing
 from pathlib import Path
 import shutil
 import sqlite3
@@ -34,7 +35,8 @@ class RemovalDataBarrierTests(unittest.TestCase):
             with self.barrier():pass
         self.assertEqual(json.loads(pending.read_text()),{'synthetic':'unresolved'})
         pending.unlink()
-        with sqlite3.connect(self.memory.database) as connection:connection.execute('PRAGMA user_version=99')
+        with closing(sqlite3.connect(self.memory.database)) as connection,connection:
+            connection.execute('PRAGMA user_version=99')
         before=self.memory.database.read_bytes()
         with self.assertRaises(ValueError):
             with self.barrier():pass
