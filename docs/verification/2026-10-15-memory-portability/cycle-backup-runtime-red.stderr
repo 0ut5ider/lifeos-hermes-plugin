@@ -1,0 +1,24 @@
+test_snapshot_records_portability_runtime_exclusion_without_hiding_owner_data (test_profile_backup.ProfileBackupTests.test_snapshot_records_portability_runtime_exclusion_without_hiding_owner_data) ... ERROR
+
+======================================================================
+ERROR: test_snapshot_records_portability_runtime_exclusion_without_hiding_owner_data (test_profile_backup.ProfileBackupTests.test_snapshot_records_portability_runtime_exclusion_without_hiding_owner_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 107, in test_snapshot_records_portability_runtime_exclusion_without_hiding_owner_data
+    result,manifest=self.snapshot()
+                    ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 49, in snapshot
+    result = create(self.configuration, self.destination)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 192, in create
+    databases = _databases(profile, user, stack)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 113, in _databases
+    data, _ = _read(path)
+              ~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_backup.py", line 48, in _read
+    raise MemoryUnavailable('Backup files require bounded regular owner files and permitted permissions')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Backup files require bounded regular owner files and permitted permissions
+
+----------------------------------------------------------------------
+Ran 1 test in 0.567s
+
+FAILED (errors=1)

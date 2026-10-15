@@ -95,6 +95,26 @@ class ProfileBackupTests(unittest.TestCase):
         self.assertEqual((runtime / 'status.json').read_text(), '{"state":"applied"}')
         self.assertIn('config.yaml', {item['path'] for item in manifest['files']})
 
+    def test_snapshot_records_portability_runtime_exclusion_without_hiding_owner_data(self):
+        runtime=self.profile/'.lifeos-portability'/('b'*32)/'removal/stock-runtime'
+        runtime.mkdir(parents=True,mode=0o700)
+        artifact=runtime/'qualified-program.tgz'
+        with artifact.open('wb') as stream:stream.truncate(64*1024*1024+1)
+        retained=(self.profile/'.lifeos-portability-notes/owner.md',
+            self.profile/'workspace/.lifeos-portability/owner.md')
+        for path in retained:
+            path.parent.mkdir(parents=True,mode=0o700);path.write_bytes(b'Synthetic retained owner data')
+        result,manifest=self.snapshot()
+        self.assertEqual(result['status'],'committed')
+        self.assertIn({'path':'.lifeos-portability','reason':'runtime'},manifest['excluded'])
+        paths={item['path'] for item in manifest['files']}
+        self.assertFalse(any(name.startswith('.lifeos-portability/') for name in paths))
+        self.assertEqual(artifact.stat().st_size,64*1024*1024+1)
+        for path in retained:
+            name=path.relative_to(self.profile).as_posix();self.assertIn(name,paths)
+            item=next(item for item in manifest['files'] if item['path']==name)
+            self.assertEqual((self.destination/'profile/files'/str(item['copy'])).read_bytes(),path.read_bytes())
+
     def test_snapshot_captures_committed_wal_history_without_changing_live_journal_mode(self):
         connection = sqlite3.connect(self.database)
         self.addCleanup(connection.close)

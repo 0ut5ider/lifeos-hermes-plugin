@@ -25,6 +25,7 @@ from .sqlite_snapshot import standalone
 # A full guest backup retains release workspaces and rollback artifacts.
 EXCLUDED_TOP_LEVEL = {
     '.lifeos-releases': 'runtime',
+    '.lifeos-portability': 'runtime',
     'installs': 'regenerable', 'tools': 'regenerable', 'cache': 'regenerable', 'image_cache': 'regenerable',
     'audio_cache': 'regenerable', 'logs': 'regenerable', 'hermes-agent': 'regenerable',
     'models_dev_cache.json': 'regenerable', 'models_dev_cache.etag': 'regenerable', 'profiles': 'other_profile',

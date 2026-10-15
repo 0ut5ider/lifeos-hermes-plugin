@@ -50,3 +50,5 @@ The host must satisfy the stock Hermes tool prerequisites before removal prepara
 The implementation remains unreleased. Local component controls do not establish installed acceptance, reboot acceptance, a real model turn, or complete release qualification.
 
 Removal preparation normalizes the retained environment with the pinned Hermes formatter before owner review. The review binds those exact bytes. Later environment edits still refuse publication and recovery. Invalid UTF-8 refuses before review.
+
+Data-only profile backups declare `.lifeos-releases` and `.lifeos-portability` as runtime exclusions. Full guest backups retain those workspaces, standalone recovery helpers, and software rollback copies. The exact top-level exclusion preserves similarly named owner folders and nested workspace files.
