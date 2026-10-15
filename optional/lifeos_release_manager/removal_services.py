@@ -132,6 +132,7 @@ class RemovalServices:
     def stop(self, signature):
         document=self._load(signature);self._files(document)
         self._run('daemon-reload')
+        for role in self.services.units:self._bound(document,role,reload_required=True)
         for role in self.services.stop_order:
             value=self._bound(document,role,reload_required=True)
             if value['ActiveState'] not in {'inactive','failed'} or value['MainPID']!='0':

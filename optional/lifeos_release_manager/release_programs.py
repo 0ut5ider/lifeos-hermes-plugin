@@ -232,6 +232,7 @@ class ProgramTransaction:
                     sync_directory(target.parent)
                     sync_directory(self.snapshot)
                 checkpoint('directory-retained')
+                self._check_publication(index,entry,resume=True)
                 if fingerprint(target,allow_links=entry['allow_links']) is not None:
                     raise ProgramConflict('Program publication preserves a later artifact edit')
                 if entry['after'] is not None:
@@ -246,6 +247,7 @@ class ProgramTransaction:
                     publish(target, incoming.read_bytes(), entry['after']['mode'])
             checkpoint('artifact-published')
         self._check_targets(value,'after')
+        self._check_retained(value)
         value['state'] = 'applied'
         self._record(value)
 
@@ -276,6 +278,11 @@ class ProgramTransaction:
         for entry in value['entries']:
             if fingerprint(entry['target'],allow_links=entry['allow_links'])!=entry[side]:
                 raise ProgramConflict('Program publication preserves a later artifact edit')
+
+    def _check_retained(self, value):
+        for index,entry in enumerate(value['entries']):
+            if fingerprint(self.snapshot/('before-'+str(index)),allow_links=entry['allow_links'])!=entry['before']:
+                raise ProgramConflict('The retained program differs from its recorded identity')
 
     def resume(self, *, checkpoint=lambda point: None):
         value = self._load()
@@ -312,6 +319,7 @@ class ProgramTransaction:
                     sync_directory(target.parent)
                     sync_directory(self.snapshot)
                 checkpoint('directory-retained')
+                self._check_publication(index,entry,resume=True)
                 if fingerprint(target,allow_links=entry['allow_links']) is not None:
                     raise ProgramConflict('Program publication preserves a later artifact edit')
                 if entry['after'] is not None:
@@ -325,6 +333,7 @@ class ProgramTransaction:
                 publish(target, incoming.read_bytes(), entry['after']['mode'])
             checkpoint('artifact-published')
         self._check_targets(value,'after')
+        self._check_retained(value)
         value['state'] = 'applied'
         self._record(value)
 

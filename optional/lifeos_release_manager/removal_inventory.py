@@ -48,17 +48,20 @@ def native(installed, source, reference, *, bridge):
             if fingerprint(target)!=fingerprint(original):
                 raise ReleaseRejected('The native instructions change before removal')
             files[target]=None
-    for name in ('hooks','skills','agents','commands','test'):
+    retained={installed/name for name in ('LIFEOS/USER','LIFEOS/MEMORY','LIFEOS/PULSE/state')}
+    generated={installed/name for name in bridge.memory_module('version_drift').GENERATED_FILES}
+    for name in ('hooks','skills','agents','commands','test','LIFEOS'):
         root=installed/name
         if not root.exists() and not root.is_symlink():continue
         if root.is_symlink() or not root.is_dir():raise ReleaseRejected('A native program directory changes its physical path')
         for directory,names,children in os.walk(root,followlinks=False):
             parent=Path(directory)
-            names[:]=[name for name in names if name!='__pycache__' and parent/name not in dependencies]
+            names[:]=[name for name in names if name!='__pycache__' and parent/name not in dependencies
+                and parent/name not in retained]
             for name in (*names,*children):
                 path=parent/name
                 if path.is_symlink():raise ReleaseRejected('An unreviewed native program link blocks removal')
-                if path.is_file() and path.suffix!='.pyc' and path not in files:
+                if path.is_file() and path.suffix!='.pyc' and path not in files and path not in generated:
                     raise ReleaseRejected('An unreviewed native program blocks complete removal')
     current=json.loads((installed/'settings.json').read_bytes())
     owned=json.loads((source/'hooks/hooks.json').read_bytes())['hooks']

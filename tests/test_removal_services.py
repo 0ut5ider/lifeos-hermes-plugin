@@ -8,7 +8,10 @@ import test_profile_services as fixture
 
 class RemovalServicesTests(unittest.TestCase):
     def setUp(self):
-        self.fixture=fixture.ProfileServicesTests();self.fixture.setUp();self.addCleanup(self.fixture.doCleanups)
+        self.fixture=fixture.ProfileServicesTests()
+        if hasattr(self,'fixture_home'):self.fixture.fixture_home=self.fixture_home
+        if hasattr(self,'fixture_profile'):self.fixture.fixture_profile=self.fixture_profile
+        self.fixture.setUp();self.addCleanup(self.fixture.doCleanups)
         self.home=self.fixture.home;self.profile=self.fixture.profile
         self.definitions={role:self.home/'units'/unit for role,unit in self.fixture.units.items()}
         root=Path.home()/'.config/systemd/user';root.mkdir(parents=True,exist_ok=True)

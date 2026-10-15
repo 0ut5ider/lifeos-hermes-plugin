@@ -42,6 +42,14 @@ class MemoryTransitionProbeTests(unittest.TestCase):
         for text in self.files.values():self.assertNotIn(text,result.stdout)
         self.assertFalse(any(request['path'].endswith('/chat/completions') for request in self.fixture.received))
 
+    def test_stock_default_empty_provider_uses_both_builtin_stores(self):
+        self.config['memory'].pop('provider')
+        (self.profile/'config.yaml').write_text(json.dumps(self.config))
+        result=self.probe();self.assertEqual(result.returncode,0,result.stderr)
+        proof=json.loads(result.stdout)
+        self.assertTrue(proof['fresh_agent_verified']);self.assertEqual(proof['provider'],'builtin')
+        self.assertEqual(proof['entry_counts'],{'MEMORY.md':1,'USER.md':1})
+
     def test_current_file_change_refuses_the_reviewed_proof(self):
         (self.profile/'memories/MEMORY.md').write_text('Synthetic later built-in fact.')
         result=self.probe()

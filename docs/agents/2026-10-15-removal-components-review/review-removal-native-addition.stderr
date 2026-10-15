@@ -1,0 +1,15 @@
+test_extra_native_tool_refuses_unqualified_removal (docs.agents.2026-10-15-removal-components-review.component_probes.NativeInventoryReview.test_extra_native_tool_refuses_unqualified_removal) ... FAIL
+
+======================================================================
+FAIL: test_extra_native_tool_refuses_unqualified_removal (docs.agents.2026-10-15-removal-components-review.component_probes.NativeInventoryReview.test_extra_native_tool_refuses_unqualified_removal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-15-removal-components-review/component_probes.py", line 33, in test_extra_native_tool_refuses_unqualified_removal
+    self.assertIn('refused',observed)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refused' not found in {'admitted': True, 'owner_tool_selected_for_removal': False, 'native_dependency_trees_selected': 1, 'owner_tool_preserved_after_removal': True, 'native_dependencies_removed': True}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+FAILED (failures=1)

@@ -35,7 +35,7 @@ def verify_builtin(expected):
             from run_agent import AIAgent
             config=load_config_readonly()
             memory=config.get('memory',{})
-            if (not isinstance(memory,dict) or memory.get('provider','builtin') not in (None,'builtin')
+            if (not isinstance(memory,dict) or memory.get('provider','builtin') not in (None,'','builtin')
                     or memory.get('memory_enabled',True) is not True
                     or memory.get('user_profile_enabled',True) is not True):
                 raise MemoryUnavailable('Both built-in stores must be selected before fresh-session verification')
