@@ -212,21 +212,21 @@ class OwnershipTransaction:
             document['state'] = 'applying'
             publish(self.journal, _encoded(document))
             if targets['connector'] is not None:
+                if self.verify_writers is not None:self.verify_writers()
                 target=connector_target(configuration)
                 if read_target(target)!=(None,None):
                     raise MemoryUnavailable('Ownership setup preserves a later native memory connector')
-                if self.verify_writers is not None:self.verify_writers()
                 publish(target,targets['connector'])
             # The built-in stores are disabled before the native provider becomes available.
             for index, entry in enumerate(document['entries']):
                 inspect(self.configuration, Path(plan['backup']), backup_signature, account=account)
+                if self.verify_writers is not None:
+                    self.verify_writers()
                 _check_connector(self.configuration,configuration,plan['connector_digest'])
                 self._check_targets({'entries': document['entries'][:index]}, ('after',))
                 _, metadata = read_target(self.profile / entry['name'])
                 if metadata != entry['before']:
                     raise MemoryUnavailable('Ownership setup preserves a configuration change during publication')
-                if self.verify_writers is not None:
-                    self.verify_writers()
                 publish(self.profile / entry['name'], targets[entry['name']])
             self._check_targets(document, ('after',))
             _check_connector(self.configuration,configuration,plan['connector_digest'])
@@ -276,18 +276,18 @@ class OwnershipTransaction:
             publish(self.journal, _encoded(document))
             # Revoke native ownership before either built-in store can resume.
             for entry, content in reversed(copies):
-                self._check_targets({'entries': [entry]}, acceptable, restoring=True)
                 if self.verify_writers is not None:
                     self.verify_writers()
+                self._check_targets({'entries': [entry]}, acceptable, restoring=True)
                 publish(self.profile / entry['name'], content)
                 (self.profile / entry['name']).chmod(entry['before']['mode'])
                 with (self.profile / entry['name']).open('rb') as stream:
                     os.fsync(stream.fileno())
                 _sync_directory(self.profile)
             if missing_connector:
+                if self.verify_writers is not None:self.verify_writers()
                 if read_target(target)[1] not in (None,connector_after):
                     raise MemoryUnavailable('Ownership recovery preserves a later native memory connector')
-                if self.verify_writers is not None:self.verify_writers()
                 target.unlink(missing_ok=True);_sync_directory(target.parent)
             self._check_targets(document, ('before',))
             document['state'] = 'rolled_back'
