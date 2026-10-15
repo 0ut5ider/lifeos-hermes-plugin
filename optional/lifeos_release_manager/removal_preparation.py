@@ -105,6 +105,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
     from . import removal_generation,removal_inventory,removal_ownership
     from .removal_recovery import basic_settings
     from .removal_services import RemovalServices
+    from .removal_runtime import identity as runtime_identity
     if selected.get('disable_discord') is not True:
         raise ReleaseRejected('Complete removal requires explicit review of Discord disablement')
     profile=profile_directory(profile);job=_directory(job)
@@ -173,6 +174,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             'owner_policy_sha256':hashlib.sha256(encoded_policy).hexdigest(),'program_entries_sha256':programs.entries_digest(),
             'service_signature':service_signature,'stock_runtime':runtime,'stock_runtime_source':runtime_source_fingerprint(runtime_root/'hermes'),
             'stock_runtime_manifest_sha256':sha(runtime_root/'manifest.json'),
+            'stock_runtime_execution':runtime_identity(runtime_root),
             'generation':generation['job'].name,'disable_discord':True,**binding}
         recovery=_recovery_command(profile,job,runtime)
         publish(stage/'recover',recovery,0o700)

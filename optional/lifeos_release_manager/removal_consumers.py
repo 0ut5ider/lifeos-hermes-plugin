@@ -2,6 +2,8 @@
 # ABOUTME: Inspects bounded owner metadata and exports no command text, environment, or credentials.
 import os
 from pathlib import Path
+import stat
+import subprocess
 
 from .release_catalog import ReleaseRejected
 
@@ -18,18 +20,87 @@ def _expanded(data, profile):
     return data
 
 
+def _manager(*arguments):
+    try:
+        result=subprocess.run(['systemctl','--user',*arguments],capture_output=True,text=True,timeout=45)
+    except (OSError,subprocess.TimeoutExpired) as error:
+        raise ReleaseRejected('The account service consumer metadata is unavailable') from error
+    if result.returncode or result.stderr or len(result.stdout)>4*1024*1024:
+        raise ReleaseRejected('The account service consumer metadata is unsupported')
+    return result.stdout
+
+
+def _paths(value):
+    if any(character in value for character in ('\\','"',"'")):
+        raise ReleaseRejected('Escaped account service paths require review')
+    paths=[Path(item) for item in value.split()]
+    if any(not path.is_absolute() or '..' in path.parts for path in paths):
+        raise ReleaseRejected('Account service definitions require absolute paths')
+    return paths
+
+
 def unit_files(profile, installed, *, known):
-    directory=Path(profile).parent/'.config/systemd/user'
-    if not directory.exists():return
-    if directory.resolve()!=directory or not directory.is_dir():
-        raise ReleaseRejected('Removal requires physical account service definitions')
+    directories=[Path(profile).parent/'.config/systemd/user',
+        *_paths(_manager('show','--property=UnitPath','--value'))]
     known={Path(path).absolute() for path in known};tokens=_tokens(profile,installed)+(str(profile).encode(),)
-    for path in directory.rglob('*'):
-        if path in known or path.resolve() in known or path.is_dir():continue
-        if not path.is_file() or path.stat().st_size>1024*1024:
-            raise ReleaseRejected('An account service has an unsupported definition')
-        data=_expanded(path.read_bytes(),profile)
-        if any(token in data for token in tokens):
+    paths=[];visited=set()
+    while directories:
+        directory=directories.pop()
+        if not directory.exists():continue
+        physical=directory.resolve(strict=True)
+        if physical in visited:continue
+        visited.add(physical)
+        metadata=physical.stat()
+        if not physical.is_dir() or metadata.st_uid not in {0,os.getuid()} or metadata.st_mode & 0o022:
+            raise ReleaseRejected('Account service paths require trusted physical directories')
+        for path in directory.iterdir():
+            if path.is_dir():directories.append(path)
+            else:paths.append(path)
+        if len(paths)+len(visited)>20000:
+            raise ReleaseRejected('The account service definition inventory exceeds its supported limit')
+    import json
+    units=json.loads(_manager('list-units','--all','--output=json','--no-pager'))
+    if not isinstance(units,list) or len(units)>4096:
+        raise ReleaseRejected('The loaded account service inventory exceeds its supported limit')
+    names=[item['unit'] for item in units]
+    if any(not isinstance(name,str) or '\x00' in name for name in names):
+        raise ReleaseRejected('The loaded account service inventory has unsupported names')
+    properties=('FragmentPath','DropInPaths','ExecStart','ExecStartPre','ExecStartPost','ExecStop',
+        'ExecStopPost','ExecReload','WorkingDirectory','EnvironmentFiles')
+    for offset in range(0,len(names),128):
+        output=_manager('show','--property='+','.join(properties),'--no-pager','--',*names[offset:offset+128])
+        for block in output.strip().split('\n\n'):
+            values=dict(line.split('=',1) for line in block.splitlines() if line)
+            if not set(values)<=set(properties):
+                raise ReleaseRejected('The loaded account service metadata has unsupported fields')
+            definitions=_paths(values.get('FragmentPath',''))+_paths(values.get('DropInPaths',''))
+            paths.extend(definitions)
+            if definitions and all(path in known or path.resolve() in known for path in definitions):continue
+            if any(token in _expanded(block.encode(),profile) for token in tokens):
+                raise ReleaseRejected('Another loaded account service uses the reviewed integration programs or profile')
+    visited=set()
+    for path in paths:
+        if not path.exists():
+            target=os.readlink(path) if path.is_symlink() else str(path)
+            if any(token in _expanded(target.encode(),profile) for token in tokens):
+                raise ReleaseRejected('An unavailable account service definition selects the reviewed programs or profile')
+            continue
+        physical=path.resolve(strict=True)
+        if physical==Path('/dev/null') or physical in visited:continue
+        visited.add(physical)
+        if path in known or physical in known:continue
+        descriptor=os.open(physical,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+        with os.fdopen(descriptor,'rb') as stream:
+            before=os.fstat(stream.fileno())
+            if (not stat.S_ISREG(before.st_mode) or before.st_uid not in {0,os.getuid()}
+                    or before.st_mode & 0o022 or before.st_size>1024*1024):
+                raise ReleaseRejected('An account service has an unsupported definition')
+            data=stream.read(1024*1024+1);after=os.fstat(stream.fileno())
+        stamp=lambda value:(value.st_dev,value.st_ino,value.st_size,value.st_mtime_ns,value.st_mode)
+        if (len(data)>1024*1024 or stamp(before)!=stamp(after) or stamp(after)!=stamp(physical.stat())
+                or path.resolve()!=physical):
+            raise ReleaseRejected('An account service definition changes during inspection')
+        if any(token in _expanded(data,profile) for token in tokens):
             raise ReleaseRejected('Another account service uses the reviewed integration programs or profile')
 
 

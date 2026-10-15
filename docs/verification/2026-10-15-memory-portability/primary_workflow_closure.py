@@ -52,7 +52,7 @@ from pathlib import Path
 from optional.lifeos_release_manager import memory_workflow as workflow
 settings=json.loads(sys.stdin.read())
 def trace(frame,event,arg):
- if event=='return' and frame.f_code.co_name=='_state' and frame.f_code.co_filename.endswith('/memory_workflow.py') and frame.f_locals.get('state')=='queued':
+ if event=='call' and frame.f_code.co_name=='admit' and frame.f_code.co_filename.endswith('/memory_workflow.py') and frame.f_locals.get('action')=='prepare':
   os._exit(73)
  return trace
 sys.settrace(trace)

@@ -24,11 +24,13 @@ def launch_sources(profile, job, signature):
 
 def _stock(job, plan):
     from .release_stage import runtime_source_fingerprint,sha
+    from .removal_runtime import identity
     root=job/'stock-runtime';runtime=plan.get('stock_runtime',{})
     for key,path in {'python':root/'python-environment/bin/python','source':root/'hermes','hermes':root/'bin/hermes'}.items():
         if runtime.get(key)!=str(path):raise ReleaseRejected('Removal changes its prepared stock runtime paths')
     if (runtime.get('integration') is not False or runtime_source_fingerprint(root/'hermes')!=plan.get('stock_runtime_source')
-            or sha(root/'manifest.json')!=plan.get('stock_runtime_manifest_sha256')):
+            or sha(root/'manifest.json')!=plan.get('stock_runtime_manifest_sha256')
+            or identity(root)!=plan.get('stock_runtime_execution')):
         raise ReleaseRejected('The prepared stock runtime differs from the exact owner review')
     return runtime
 

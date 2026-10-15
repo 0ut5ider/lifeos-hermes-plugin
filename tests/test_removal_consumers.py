@@ -7,6 +7,9 @@ import subprocess
 import tempfile
 import time
 import unittest
+from uuid import uuid4
+
+from test_profile_services import service_manager_fixture
 
 
 class RemovalConsumersTests(unittest.TestCase):
@@ -51,3 +54,23 @@ class RemovalConsumersTests(unittest.TestCase):
             with self.subTest(command=command),self.assertRaises(ValueError):self.operation().hooks(value,self.profile,self.installed)
         value={'hooks':{'SessionEnd':[{'hooks':[{'type':'command','command':'echo synthetic-foreign'}]}]}}
         self.operation().hooks(value,self.profile,self.installed)
+
+    def test_inactive_runtime_linked_foreign_service_refuses_without_changing_it(self):
+        with service_manager_fixture():
+            unit='lifeos-removal-consumer-'+uuid4().hex+'.service';definition=self.home/unit
+            data=('[Service]\nExecStart='+str(self.home/'.local/bin/bun')+' '+
+                str(self.installed/'LIFEOS/TOOLS/Owner.ts')+'\n')
+            definition.write_text(data)
+            def command(*arguments):
+                result=subprocess.run(['systemctl','--user',*arguments],capture_output=True,text=True,timeout=15)
+                self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+                self.assertEqual(result.stderr,'');return result.stdout
+            command('--quiet','link','--runtime',str(definition))
+            try:
+                command('daemon-reload')
+                self.assertEqual(command('show',unit,'--property=ActiveState','--value').strip(),'inactive')
+                with self.assertRaisesRegex(ValueError,'Another.*service'):
+                    self.operation().unit_files(self.profile,self.installed,known={self.owned})
+                self.assertEqual(definition.read_text(),data)
+            finally:
+                command('--quiet','disable','--runtime',unit);command('daemon-reload')
