@@ -1,0 +1,9 @@
+# 2026-10-15: A single newline blocks final removal verification
+
+The installed033 removal4bf publishes all1857 deletions, removes active LifeOS plugins, and resumes the stock dashboard. The journal reaches verification_required. A read-only diagnostic passes exact stock runtime identity, then fails ProgramTransaction.check_applied at the current artifact identity check. The sole changed target is .hermes/.env: prepared23bytes, current24bytes. Private comparison proves current equals prepared plus one LF; the environment key/value mapping is identical. Built-in MEMORY.md and USER.md digests remain unchanged.
+
+Pinned Hermes sanitize_env_file runs during startup. It normalizes final newlines and assignment whitespace. Removal preparation removed the integration block without applying that existing formatter. The review therefore bound bytes that stock startup immediately changed. The strict integrity refusal is correct. The correction normalizes the prepared bytes with the pinned Hermes formatter before owner review. It preserves exact later-edit refusal. Invalid UTF-8 refuses before review instead of letting stock replace bytes.
+
+The regression uses the actual unpatched pinned stock sanitizer against six private temporary environment inputs. Red: six tests with four failures (three startup rewrites and missing invalid-UTF8 refusal). The original installed operation needs a documented narrow operator repair before authenticated rollback because its immutable review contains the unnormalized bytes. That repair will not count as unaided recovery acceptance. A newly prepared operation from the corrected package must prove normal apply, stock verification, retained memory, and independent recovery.
+
+The shared memory connector still returns integrity_error. No raw fallback or memory-file repair is attempted. All observations concern disposableCT110; dev252 and daily253 remain unchanged.

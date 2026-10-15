@@ -1,0 +1,65 @@
+test_environment_refuses_invalid_utf8_before_owner_review (test_removal_configuration.RemovalConfigurationTests.test_environment_refuses_invalid_utf8_before_owner_review) ... FAIL
+test_environment_removes_only_the_exact_owned_block (test_removal_configuration.RemovalConfigurationTests.test_environment_removes_only_the_exact_owned_block) ... ok
+test_native_ownership_or_ambiguous_aliases_refuse (test_removal_configuration.RemovalConfigurationTests.test_native_ownership_or_ambiguous_aliases_refuse) ... ok
+test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) ... 
+  test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) (original=b'CUSTOM_API_KEY=synthetic') ... FAIL
+  test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) (original=b'  CUSTOM_API_KEY=synthetic  \n') ... FAIL
+  test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) (original=b' # Owner comment  \r\n\r\nCUSTOM_API_KEY=synthetic') ... FAIL
+test_removal_preserves_current_settings_and_detaches_aliases (test_removal_configuration.RemovalConfigurationTests.test_removal_preserves_current_settings_and_detaches_aliases) ... ok
+test_stock_gateway_keeps_discord_disabled_with_env_token (test_removal_configuration.RemovalConfigurationTests.test_stock_gateway_keeps_discord_disabled_with_env_token) ... ok
+
+======================================================================
+FAIL: test_environment_refuses_invalid_utf8_before_owner_review (test_removal_configuration.RemovalConfigurationTests.test_environment_refuses_invalid_utf8_before_owner_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 116, in test_environment_refuses_invalid_utf8_before_owner_review
+    with self.assertRaises(ValueError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) (original=b'CUSTOM_API_KEY=synthetic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 112, in test_prepared_environment_survives_actual_stock_startup_sanitizer
+    self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+    assert sanitize_env_file()==0
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+
+======================================================================
+FAIL: test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) (original=b'  CUSTOM_API_KEY=synthetic  \n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 112, in test_prepared_environment_survives_actual_stock_startup_sanitizer
+    self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+    assert sanitize_env_file()==0
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+
+======================================================================
+FAIL: test_prepared_environment_survives_actual_stock_startup_sanitizer (test_removal_configuration.RemovalConfigurationTests.test_prepared_environment_survives_actual_stock_startup_sanitizer) (original=b' # Owner comment  \r\n\r\nCUSTOM_API_KEY=synthetic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_configuration.py", line 112, in test_prepared_environment_survives_actual_stock_startup_sanitizer
+    self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+    assert sanitize_env_file()==0
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+
+----------------------------------------------------------------------
+Ran 6 tests in 5.357s
+
+FAILED (failures=4)

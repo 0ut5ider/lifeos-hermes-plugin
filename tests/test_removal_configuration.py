@@ -86,3 +86,32 @@ assert 'explicitly disabled' in capture.getvalue()
         self.assertEqual(operation.environment(data,profile,workspace),b'# Keep owner settings\nAPI_TOKEN=synthetic-token\nOTHER=keep\n')
         custom=b'HERMES_WRITE_SAFE_ROOT=/owner/custom\nOTHER=keep\n'
         self.assertEqual(operation.environment(custom,profile,workspace),custom)
+
+    def test_prepared_environment_survives_actual_stock_startup_sanitizer(self):
+        operation=self.operation()
+        cases=(b'CUSTOM_API_KEY=synthetic',b'CUSTOM_API_KEY=synthetic\r\n',
+            b'\xef\xbb\xbfCUSTOM_API_KEY=synthetic\n',b'  CUSTOM_API_KEY=synthetic  \n',
+            b' # Owner comment  \r\n\r\nCUSTOM_API_KEY=synthetic',b'')
+        for original in cases:
+            with self.subTest(original=original),tempfile.TemporaryDirectory() as folder:
+                profile=Path(folder);workspace=profile/'workspace'
+                prepared=operation.environment(original+operation.environment_block(profile,workspace),profile,workspace)
+                (profile/'.env').write_bytes(prepared)
+                code='''import sys
+from pathlib import Path
+from hermes_constants import set_hermes_home_override
+set_hermes_home_override(sys.argv[1])
+from hermes_cli.config import sanitize_env_file
+path=Path(sys.argv[1])/'.env';before=path.read_bytes()
+assert sanitize_env_file()==0
+assert path.read_bytes()==before
+'''
+                source='/home/outsider/.cache/lifeos-daily-promotion-20261014/upstream-hermes'
+                child=subprocess.run([sys.executable,'-B','-c',code,str(profile)],text=True,capture_output=True,
+                    env=dict(os.environ,PYTHONPATH=source,HERMES_HOME=str(profile),HOME=folder),timeout=30)
+                self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+                self.assertEqual(child.stdout+child.stderr,'')
+
+    def test_environment_refuses_invalid_utf8_before_owner_review(self):
+        with self.assertRaises(ValueError):
+            self.operation().environment(b'CUSTOM_API_KEY=synthetic\xff',Path('/account/.hermes'),Path('/account/workspace'))

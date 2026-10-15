@@ -74,4 +74,7 @@ def environment_block(profile, workspace):
 def environment(data, profile, workspace):
     block=environment_block(profile,workspace)
     if data.count(block)>1:raise ReleaseRejected('The owned environment block is ambiguous')
-    return data.replace(block,b'')
+    from hermes_cli.config import _sanitize_env_lines
+    try:lines=io.StringIO(data.replace(block,b'').decode('utf-8-sig'),newline=None).readlines()
+    except UnicodeError as error:raise ReleaseRejected('The current environment requires valid UTF-8 before removal') from error
+    return ''.join(_sanitize_env_lines(lines)).encode()

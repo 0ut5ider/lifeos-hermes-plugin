@@ -1,0 +1,27 @@
+{
+  "read_only": true,
+  "daily_changed": false,
+  "workflow": "4bf8386002c3402a8f0ffb933fb8484c",
+  "phase": "active_lease_borrowed_by_retained_publication",
+  "active_to_retained": "REFUSED",
+  "error_type": "RuntimeError",
+  "reason": "The installation operation requires an issued owner lease",
+  "frames": [
+    {
+      "file": "probe_guest_removal_lease.py",
+      "function": "<module>",
+      "line": 29
+    },
+    {
+      "file": "contextlib.py",
+      "function": "__enter__",
+      "line": 141
+    },
+    {
+      "file": "installation_lock.py",
+      "function": "installation_lock",
+      "line": 56
+    }
+  ],
+  "retained_to_retained": "PASS"
+}

@@ -1,0 +1,38 @@
+{
+  "workflow": "4bf8386002c3402a8f0ffb933fb8484c",
+  "read_only": true,
+  "model_turn_executed": false,
+  "daily_changed": false,
+  "checks": {
+    "stock_identity": "PASS"
+  },
+  "failed_phase": "program_targets",
+  "error_type": "ProgramConflict",
+  "frames": [
+    {
+      "file": "probe_guest_removal_verification.py",
+      "function": "<module>",
+      "line": 34
+    },
+    {
+      "file": "release_programs.py",
+      "function": "check_applied",
+      "line": 167
+    }
+  ],
+  "changed_program_targets": [
+    {
+      "target": "/home/lifeos-hermes/.hermes/.env",
+      "expected": {
+        "mode": 384,
+        "sha256": "2fc7a5b5a8eb988ad1b49e70bf95fc53d59152efe9d3d3afc9ba46340656404b",
+        "type": "file"
+      },
+      "actual": {
+        "type": "file",
+        "mode": 384,
+        "sha256": "b2f919c207b17ce385105458a79e1d9375158d1da843f167af150508bb0dc74e"
+      }
+    }
+  ]
+}
