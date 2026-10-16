@@ -1,0 +1,16 @@
+{
+  "status": "EXPECTED_OPERATOR_CORRECTION",
+  "operator_result_before_correction": "FAIL",
+  "error_type": "MountError",
+  "message": "A mount target changed. Recovery will preserve the later edit.",
+  "changed_target": "config.yaml",
+  "changed_configuration_keys": [
+    "plugins.entries.lifeos-hook-bridge.settings.lifeos_source_dir"
+  ],
+  "other_six_mount_targets_preserved": true,
+  "historical_mount_journal_preserved": true,
+  "retained_before_configuration_matches_preapply_baseline": true,
+  "cause": "The deployment operator requires the historical configuration instead of the reviewed new qualified source path.",
+  "product_package_modified": false,
+  "daily_application_paused_during_investigation": true
+}

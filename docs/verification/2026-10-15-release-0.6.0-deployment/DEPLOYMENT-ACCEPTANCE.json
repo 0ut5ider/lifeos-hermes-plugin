@@ -1,0 +1,131 @@
+{
+  "format": 1,
+  "status": "PASS",
+  "observation_kind": "owner-authorized-qualified-package-update",
+  "version": "0.6.0",
+  "program_commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+  "package_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+  "servers": {
+    "development": {
+      "address": "192.168.8.252",
+      "operation": "29cf5b400b4c48c783eb72d3774c838f",
+      "version": "0.6.0",
+      "prior_version": "0.5.0",
+      "authenticated_owner_review_and_apply": true,
+      "exact_selected_programs_verified": true,
+      "actual_private_model_reply": true,
+      "tool_calls": 0,
+      "discord_connected": true,
+      "services_active": true,
+      "home_bindings_preserved": true,
+      "model_tiers_preserved": true,
+      "credentials_preserved": true,
+      "memory_configuration_preserved": true,
+      "unrelated_configuration_preserved": true,
+      "qualified_release_source_updated": true,
+      "owner_mount_journal_preserved": true,
+      "dashboard_controls_verified": true,
+      "protected_preupdate_archive": "PBS-01:backup/ct/101/2026-10-15T23:16:32Z"
+    },
+    "daily": {
+      "address": "192.168.8.253",
+      "operation": "f25cd605ccef45db829b69dfbf5f8a66",
+      "version": "0.6.0",
+      "prior_version": "0.5.0",
+      "authenticated_owner_review_and_apply": true,
+      "exact_selected_programs_verified": true,
+      "actual_private_model_reply": true,
+      "tool_calls": 0,
+      "discord_connected": true,
+      "services_active": true,
+      "home_bindings_preserved": true,
+      "model_tiers_preserved": true,
+      "credentials_preserved": true,
+      "memory_configuration_preserved": true,
+      "unrelated_configuration_preserved": true,
+      "qualified_release_source_updated": true,
+      "owner_mount_journal_preserved": true,
+      "dashboard_controls_verified": true,
+      "protected_preupdate_archive": "PBS-01:backup/ct/102/2026-10-16T00:21:34Z"
+    }
+  },
+  "daily_existing_synthetic_memory_reference_preserved": true,
+  "forgotten_synthetic_facts_stay_absent": true,
+  "governed_pulse_editor_stays_enabled": true,
+  "normal_morning_schedule": "0 7 * * *",
+  "automatic_morning_execution_observed": false,
+  "daily_recovery": {
+    "status": "PASS",
+    "archive": "PBS-01:backup/ct/102/2026-10-16T00:37:52Z",
+    "source_guest": 102,
+    "restored_guest": 110,
+    "version": "0.6.0",
+    "program_commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+    "archive_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+    "operation": "f25cd605ccef45db829b69dfbf5f8a66",
+    "network_disconnected": true,
+    "application_services_masked": true,
+    "cases": [
+      {
+        "case": "baseline",
+        "status": "PASS",
+        "restored_files": 51,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "interrupted",
+        "status": "PASS",
+        "restored_files": 55,
+        "later_edit_refused": false,
+        "archive_and_live_group_verified": true
+      },
+      {
+        "case": "later-edit",
+        "status": "PASS",
+        "restored_files": 55,
+        "later_edit_refused": true,
+        "archive_and_live_group_verified": true
+      }
+    ],
+    "active_source_package_changed_by_restore": false,
+    "runtime_artifact_coverage": {
+      "status": "PASS",
+      "action": "verify",
+      "operation": "f25cd605ccef45db829b69dfbf5f8a66",
+      "program_commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+      "archive_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+      "artifacts": 64363,
+      "regular_files": 57939,
+      "bytes": 1728018582,
+      "private_map_sha256": "5a30180c127d0909fade65ecf313e7c1ce96aab44f245b25d891a2e07f96dc1d",
+      "runtime_roots": [
+        "bin",
+        "compiled-dashboard",
+        "dependency-profile",
+        "hermes",
+        "package",
+        "pm-runtime",
+        "python-environment",
+        "tools",
+        "worker"
+      ],
+      "private_map_exported": false
+    }
+  },
+  "cleanup": {
+    "status": "PASS",
+    "removed_guest": 110,
+    "all_original_guest_states_preserved": true,
+    "protected_archive_retained": "PBS-01:backup/ct/102/2026-10-16T00:37:52Z"
+  },
+  "initial_release_assets_verified_unchanged": 4,
+  "personal_data_imported_or_reset": false,
+  "provider_return_performed": false,
+  "software_removal_performed": false,
+  "personal_content_or_credentials_exported": false,
+  "limitations": [
+    "Native strict PID-file discovery disagrees with live gateway readiness; development dashboard discrepancy predates this update.",
+    "The shared .211 connector returns integrity_error. The daily installed governed synthetic-memory route passes."
+  ]
+}

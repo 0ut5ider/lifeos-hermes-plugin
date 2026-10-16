@@ -1,0 +1,27 @@
+{
+  "actions": [
+    {
+      "url": "/api/plugins/lifeos-release-manager/operations/f25cd605ccef45db829b69dfbf5f8a66/review",
+      "status": 200,
+      "body": {
+        "identifier": "f25cd605ccef45db829b69dfbf5f8a66",
+        "version": "0.6.0",
+        "commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
+        "package_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
+        "fresh": false,
+        "native_mount_required": false,
+        "restart_required": true,
+        "state": "ready"
+      }
+    },
+    {
+      "url": "/api/plugins/lifeos-release-manager/operations/f25cd605ccef45db829b69dfbf5f8a66/apply",
+      "status": 200,
+      "body": {
+        "identifier": "f25cd605ccef45db829b69dfbf5f8a66",
+        "state": "queued",
+        "action": "apply"
+      }
+    }
+  ]
+}
