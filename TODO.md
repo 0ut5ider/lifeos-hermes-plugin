@@ -29,3 +29,5 @@ Published release: 0.6.0. Development `.252` and daily `.253` remain on 0.5.0. T
 
 - [x] Reproduce the October 16 first-greeting refusal after scheduled Discord notices and stage a delivery-mirror correction. Preserve memory admission and existing admitted history. Daily chat recovers through the owner's native `/new`. See the [incident verification](docs/verification/2026-10-16-discord-admission/README.md).
 - [ ] Review, qualify, and deploy the notification admission fix as a complete patch release. Keep the immutable deployed 0.7.0 package until qualification.
+
+- [ ] Complete PR34 Opus 5.5 review, exact 0.7.1 package qualification, merge, and managed updates to development `.252` and daily `.253`. Verify notification-first foreground admission and preserve owner memory and configuration. Round 1 findings have source corrections; follow-up review remains pending.

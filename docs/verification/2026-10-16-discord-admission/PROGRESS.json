@@ -1,9 +1,9 @@
 {
-  "status": "STAGED_FIX_VERIFIED_DAILY_CHAT_RECOVERED",
+  "status": "ROUND_1_FINDINGS_FIXED_FOLLOWUP_REVIEW_PENDING",
   "production_version": "0.7.0",
   "production_code_changed": false,
   "new_release_published": false,
-  "independent_review_performed": false,
+  "independent_review_performed": true,
   "primary_source_review_performed": true,
   "bridge_main_run_passed": 116,
   "additional_edge_cases_passed": 2,
@@ -14,12 +14,19 @@
   "memory_admission_loosened": false,
   "raw_personal_records_read": false,
   "source_sha256": {
-    "lifeos_hook_bridge/discord_delivery.py": "1209c7eacaeadbe3675d4ae6356c5def79ac746be6c3cb1247d13360a81fb2e9",
+    "lifeos_hook_bridge/discord_delivery.py": "db99602cf25e034544fb476f4773d24f2a1722904ed883e9900c7799d5400e5e",
     "lifeos_hook_bridge/discord_audience.py": "7a666a3d803ea53731037b333121629663501b2025060b32d4d56f3016208295",
-    "lifeos_hook_bridge/patches/hermes-session-lifecycle.patch": "c4c2f1fb683944c63cd6555f67a37b776b0ab0dcd9333d8e8a00e32848904aac"
+    "lifeos_hook_bridge/patches/hermes-session-lifecycle.patch": "982232f64b73900a63f4bd9a6a71feca650ae42adf64a4392f2bfc1876c7165c"
   },
   "initial_wider_run": {
     "errors": 30,
     "reason": "The extracted test source lacks its root YAML dependency. Corrected fixture provisioning resolves the failures."
-  }
+  },
+  "staged_version": "0.7.1",
+  "review_round_1_findings": 4,
+  "review_round_1_findings_corrected_in_source": 4,
+  "primary_correction_bridge_passed": 138,
+  "heartbeat_baseline_expected_failures": 1,
+  "heartbeat_corrected_passed": 1,
+  "primary_correction_native_passed": 177
 }

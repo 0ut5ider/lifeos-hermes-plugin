@@ -1,0 +1,17 @@
+test_admitted_direct_message_keeps_mirror (test_review_dm_mirror.AdmittedDirectMessageMirrorReview.test_admitted_direct_message_keeps_mirror) ... FAIL
+
+======================================================================
+FAIL: test_admitted_direct_message_keeps_mirror (test_review_dm_mirror.AdmittedDirectMessageMirrorReview.test_admitted_direct_message_keeps_mirror)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-16-pr34-opus-review-round-1/test_review_dm_mirror.py", line 44, in test_admitted_direct_message_keeps_mirror
+    self.assertTrue(mirrored)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 0.370s
+
+FAILED (failures=1)
+admitted context SessionContext(transport='discord', author='20', destination='70', visibility='private', participants=('owner',), model_route='be94ca2b2472c15f327335802cd4e18acc5888fa2368e7268234e77e7e923c62', session_id='dm-session')
+admitted dm mirror False 0

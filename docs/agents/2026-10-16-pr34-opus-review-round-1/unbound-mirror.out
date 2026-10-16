@@ -1,0 +1,51 @@
+test_actual_standalone_notice_delivers_without_creating_unadmitted_history (test_review_unbound_mirror.UnboundMirrorReview.test_actual_standalone_notice_delivers_without_creating_unadmitted_history) ... ok
+test_admitted_conversation_keeps_the_native_delivery_mirror (test_review_unbound_mirror.UnboundMirrorReview.test_admitted_conversation_keeps_the_native_delivery_mirror) ... ok
+test_another_author_cannot_supply_the_destination_admission (test_review_unbound_mirror.UnboundMirrorReview.test_another_author_cannot_supply_the_destination_admission) ... ok
+test_another_native_session_cannot_borrow_an_admission (test_review_unbound_mirror.UnboundMirrorReview.test_another_native_session_cannot_borrow_an_admission) ... ok
+test_changed_audience_does_not_keep_mirroring (test_review_unbound_mirror.UnboundMirrorReview.test_changed_audience_does_not_keep_mirroring) ... ok
+test_no_delivery_policy_preserves_standard_hermes_mirroring (test_review_unbound_mirror.UnboundMirrorReview.test_no_delivery_policy_preserves_standard_hermes_mirroring) ... ok
+test_notice_before_first_human_turn_preserves_empty_history_and_admission (test_review_unbound_mirror.UnboundMirrorReview.test_notice_before_first_human_turn_preserves_empty_history_and_admission) ... ok
+test_notification_does_not_create_an_admission (test_review_unbound_mirror.UnboundMirrorReview.test_notification_does_not_create_an_admission) ... ok
+test_private_delivery_still_succeeds_without_a_foreground_admission (test_review_unbound_mirror.UnboundMirrorReview.test_private_delivery_still_succeeds_without_a_foreground_admission) ... ok
+test_returned_memory_ownership_preserves_standard_mirroring (test_review_unbound_mirror.UnboundMirrorReview.test_returned_memory_ownership_preserves_standard_mirroring) ... ok
+test_review_missing_memory_configuration (test_review_unbound_mirror.UnboundMirrorReview.test_review_missing_memory_configuration) ... FAIL
+test_review_returned_ownership_changed_audience (test_review_unbound_mirror.UnboundMirrorReview.test_review_returned_ownership_changed_audience) ... FAIL
+test_review_returned_ownership_unbound_destination (test_review_unbound_mirror.UnboundMirrorReview.test_review_returned_ownership_unbound_destination) ... FAIL
+test_revoked_scope_does_not_keep_mirroring (test_review_unbound_mirror.UnboundMirrorReview.test_revoked_scope_does_not_keep_mirroring) ... ok
+
+======================================================================
+FAIL: test_review_missing_memory_configuration (test_review_unbound_mirror.UnboundMirrorReview.test_review_missing_memory_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-16-pr34-opus-review-round-1/test_review_unbound_mirror.py", line 34, in test_review_missing_memory_configuration
+    self.assertTrue(mirrored)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_review_returned_ownership_changed_audience (test_review_unbound_mirror.UnboundMirrorReview.test_review_returned_ownership_changed_audience)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-16-pr34-opus-review-round-1/test_review_unbound_mirror.py", line 43, in test_review_returned_ownership_changed_audience
+    self.assertTrue(mirrored)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_review_returned_ownership_unbound_destination (test_review_unbound_mirror.UnboundMirrorReview.test_review_returned_ownership_unbound_destination)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-16-pr34-opus-review-round-1/test_review_unbound_mirror.py", line 25, in test_review_returned_ownership_unbound_destination
+    self.assertTrue(mirrored)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 14 tests in 10.037s
+
+FAILED (failures=3)
+policy {'action': 'block', 'message': 'Current Discord permissions do not admit private delivery'}
+missing-configuration mirror False 0
+returned-ownership shared-audience mirror False
+policy {'action': 'block', 'message': 'Current Discord permissions do not admit private delivery'}
+returned-ownership unbound mirror False 0

@@ -3,6 +3,7 @@
 import asyncio
 import json
 import os
+import threading
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -154,3 +155,121 @@ class DiscordNotificationMirrorTests(unittest.TestCase):
         self.manager._hooks['pre_message_delivery'] = []
         self.assertTrue(self.mirror())
         self.assertEqual(len(self.store.load_transcript('notification-session')), 1)
+
+    def test_returned_ownership_keeps_unbound_destination_mirrors(self):
+        self.fixture.configuration['ownership_enabled'] = False
+        MemoryConfiguration(self.fixture.path).save(self.fixture.configuration)
+        self.db.create_session('unbound-session', 'discord', chat_id='999', user_id='20', chat_type='dm')
+        self.assertTrue(mirror_to_session('discord', '999', 'Synthetic notice',
+            session_id='unbound-session'))
+        self.assertEqual(len(self.store.load_transcript('unbound-session')), 1)
+
+    def test_absent_memory_configuration_keeps_hermes_mirrors(self):
+        self.fixture.path.unlink()
+        self.assertTrue(self.mirror())
+        self.assertEqual(len(self.store.load_transcript('notification-session')), 1)
+
+    def test_invalid_memory_configuration_still_refuses_mirrors(self):
+        self.fixture.path.write_text('{')
+        self.assertFalse(self.mirror())
+
+    def test_returned_ownership_keeps_mirrors_when_channel_audience_changes(self):
+        self.fixture.configuration['ownership_enabled'] = False
+        MemoryConfiguration(self.fixture.path).save(self.fixture.configuration)
+        self.audience.responses['/channels/60']['permission_overwrites'].append(
+            {'id': '40', 'type': 1, 'allow': '1024', 'deny': '0'})
+        self.assertTrue(self.mirror())
+        self.assertEqual(self.audience.requests, [])
+
+    def test_admitted_direct_message_keeps_mirror_without_a_channel_binding(self):
+        config = self.fixture.configuration
+        del config['discord_channels']
+        config['destinations']['discord:70'] = dict(config['destinations']['discord:60'])
+        MemoryConfiguration(self.fixture.path).save(config)
+        self.db.create_session('dm-session', 'discord', chat_id='70', user_id='20', chat_type='dm')
+        self.fixture.runtime.admit(self.fixture.metadata(app='discord', user='20',
+            destination='70', session='dm-session'), **self.fixture.route, is_first_turn=True)
+        self.assertTrue(mirror_to_session('discord', '70', 'Synthetic notice', session_id='dm-session'))
+        self.assertEqual(len(self.store.load_transcript('dm-session')), 1)
+        self.assertEqual(self.audience.requests, [])
+
+    def test_send_tool_resolves_real_gateway_session_before_and_after_admission(self):
+        from tools.send_message_tool import _mirror_sent_message
+        from gateway.config import Platform
+        from gateway.session import SessionSource
+        entry = self.store.get_or_create_session(SessionSource(platform=Platform.DISCORD,
+            chat_id='60', chat_type='group', user_id='20', scope_id='10'))
+        self.assertFalse(_mirror_sent_message('discord', '60', 'Synthetic morning notice', None))
+        self.assertEqual(self.store.load_transcript(entry.session_id), [])
+        self.fixture.runtime.admit(self.metadata(entry.session_id),
+            **self.fixture.route, is_first_turn=True)
+        self.assertTrue(_mirror_sent_message('discord', '60', 'Synthetic morning notice', None))
+        self.assertEqual(len(self.store.load_transcript(entry.session_id)), 1)
+
+    def test_webhook_mirror_checks_run_outside_the_gateway_event_loop(self):
+        from agent.secret_scope import set_secret_scope, reset_secret_scope
+        from gateway.config import Platform, PlatformConfig
+        from gateway.platforms.base import SendResult
+        from gateway.platforms.webhook import WebhookAdapter
+        from gateway.session import SessionSource
+        from plugins.platforms.discord import adapter
+        entry = self.store.get_or_create_session(SessionSource(platform=Platform.DISCORD,
+            chat_id='60', chat_type='group', user_id='20', scope_id='10'))
+        self.fixture.runtime.admit(self.metadata(entry.session_id),
+            **self.fixture.route, is_first_turn=True)
+        callback_threads = []
+        mirror_started = threading.Event()
+        heartbeat_seen = threading.Event()
+        heartbeat_unblocked_request = []
+        self.audience.requests.clear()
+
+        def await_heartbeat(path):
+            if path == '/users/@me' and self.audience.deliveries:
+                mirror_started.set()
+                heartbeat_unblocked_request.append(heartbeat_seen.wait(timeout=1))
+
+        self.audience.on_request = await_heartbeat
+
+        def observe_thread(**kwargs):
+            if kwargs.get('purpose') == 'mirror':
+                callback_threads.append(threading.get_ident())
+            return {'action': 'allow'}
+
+        ctx = PluginContext(PluginManifest(name='mirror-thread-probe', version='1.0.0',
+            description='Synthetic thread measurement'), self.manager)
+        ctx.register_hook('pre_message_delivery', observe_thread)
+
+        class LocalDiscordAdapter:
+            async def send(self, chat_id, content, metadata=None):
+                result = await adapter._standalone_send(PlatformConfig(token='synthetic-token',
+                    extra={'guild_channel_only': True, 'allowed_channels': ['60']}), chat_id, content)
+                return SendResult(success=result.get('success', False))
+
+        webhook = WebhookAdapter(PlatformConfig())
+        webhook.gateway_runner = SimpleNamespace(
+            _authorization_adapter=lambda platform, profile: LocalDiscordAdapter())
+        token = set_secret_scope({'DISCORD_BOT_TOKEN': 'synthetic-token'})
+        self.addCleanup(reset_secret_scope, token)
+        loop_thread = threading.get_ident()
+
+        async def deliver_with_heartbeat():
+            async def heartbeat():
+                while not mirror_started.is_set():
+                    await asyncio.sleep(0.001)
+                heartbeat_seen.set()
+
+            pulse = asyncio.create_task(heartbeat())
+            try:
+                return await webhook._deliver_cross_platform('discord', 'Synthetic webhook notice',
+                    {'mirror': True, 'route': 'synthetic', 'deliver_extra': {'chat_id': '60'}})
+            finally:
+                await asyncio.wait_for(pulse, timeout=2)
+
+        with patch.object(adapter, '_DISCORD_API_BASE', self.audience.origin):
+            result = asyncio.run(deliver_with_heartbeat())
+        self.assertTrue(result.success)
+        self.assertEqual(len(self.audience.deliveries), 1)
+        self.assertEqual(len(self.store.load_transcript(entry.session_id)), 1)
+        self.assertEqual(len(callback_threads), 1)
+        self.assertNotEqual(callback_threads[0], loop_thread)
+        self.assertEqual(heartbeat_unblocked_request, [True])

@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+## 0.7.1 (2026-10-16)
+
 - Keep private Discord notifications from creating unverified foreground history before the first human turn.
 - Preserve actual notification delivery and mirroring in admitted conversations.
+- Preserve admitted direct-message mirrors and native mirrors after memory ownership returns to Hermes.
+- Keep webhook mirror permission checks outside the gateway event loop.
+- Include notification mirror files in native patch regeneration.
 - Keep existing memory admission and compression checks unchanged.
 - Close failed Discord audience responses before propagating their refusal.
 

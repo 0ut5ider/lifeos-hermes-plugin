@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Source version:** `0.7.0` adds optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. Source acceptance does not publish or deploy a qualified release package.
+**Source version:** `0.7.1` preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. Source acceptance does not publish or deploy a qualified release package.
 
 **Published stable release:** `0.6.0`, program commit `c86b5887`, adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [release record](docs/verification/2026-10-15-release-0.6.0/README.md) binds the exact package and qualification. The [portability contract](docs/memory-portability.md) defines retained data and recovery.
 

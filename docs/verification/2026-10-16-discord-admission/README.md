@@ -21,3 +21,17 @@ Daily chat is restored by the owner's native `/new` and greeting. The [recovery 
 The [post-recovery native metadata](daily-after.json) confirms a live foreground session with both human and assistant messages. The observer reads role counts and session identifiers only.
 
 The baseline reproduction operator uses the immutable 0.7.0 Hermes source. The regression suite registers the complete private delivery policy and exercises the corrected native mirror.
+
+## Independent review corrections
+
+Claude Opus 5.5 reviews PR34 at `3634f58b`. The [round 1 report](../../agents/2026-10-16-pr34-opus-review-round-1/pr34-opus-review-round-1.md) identifies one medium regression and three low findings. The primary agent independently reproduces all four destination and ownership failures. The permanent regression run reports five expected failures, including patch assignment. The initial callback-thread test passes on the synchronous caller because Hermes already executes bounded hooks on a worker. That assertion does not measure gateway loop progress.
+
+The mirror-purpose policy now preserves standard Hermes mirroring when memory configuration is absent or ownership is returned. Invalid configuration still refuses. An admitted direct message does not require a guild-channel binding. Its exact stored session, current owner account, private audience, destination, and scope must match. A bound channel retains current Discord audience verification. Ordinary delivery keeps its original channel gate.
+
+The patch generator owns `gateway/mirror.py` and `gateway/platforms/webhook.py`. Regeneration from the prepared source includes both changes. Other patch bodies match; their index abbreviations differ under the local Git configuration. Only the session lifecycle patch is replaced. The webhook caller awaits its synchronous mirror through `asyncio.to_thread`. A local HTTP heartbeat test measures gateway loop progress while mirror permission lookup waits. A real send-tool case resolves the current gateway session without an explicit session identifier and verifies refusal before admission and mirroring afterward.
+
+The focused correction gate passes 23 tests, including native patch regeneration and full replay. Version 0.7.1 is the selected patch-release source. Independent follow-up review, exact-package qualification, publication, and updates to development and daily remain required. The servers still run 0.7.0 at this checkpoint.
+
+The broader primary correction run passes 138 tests. Its initial webhook thread assertion passes before the caller change and therefore cannot establish responsiveness. The final heartbeat assertion deliberately delays the first audience request after actual HTTP delivery. The isolated synchronous baseline cannot advance the loop within the one-second window and reports the expected failure. The corrected caller advances the heartbeat and passes. An earlier heartbeat probe waits on a request count that includes the native forum-type lookup and times out; the corrected probe selects requests after actual delivery. This changes the measurement, not product policy.
+
+The expanded native gate passes 177 tests across mirror, send-tool, cron-origin, and all webhook modules. The final heartbeat test passes separately after its measurement correction. These are source-fixture checks; exact 0.7.1 archive and installed release acceptance remain pending.
