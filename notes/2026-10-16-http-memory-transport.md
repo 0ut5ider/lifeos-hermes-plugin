@@ -55,3 +55,12 @@ MCP status through the background service. A bounded second status query reports
 the connection. A single cold-start status query is insufficient client evidence.
 Codex completes actual OAuth login, and Claude Code and OpenCode pass bearer
 health checks without changing the deployed client configuration.
+
+The broad source gate passes 1,028 of 1,030 cases on the shared workstation.
+Two removal cases refuse an unrelated non-dumpable `sshd-session` whose executable
+metadata is unreadable. Unchanged 0.6.0 reproduces both refusals. The native Bun
+case passes in a private process namespace. All eight consumer and coordinator
+cases pass under the development service account with unchanged program bytes
+and assertions. Account process checks need a suitable service-account fixture.
+Weakening the refusal to make a shared-workstation test green would remove a
+required removal boundary.

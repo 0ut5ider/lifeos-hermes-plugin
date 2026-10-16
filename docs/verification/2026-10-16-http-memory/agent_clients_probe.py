@@ -24,7 +24,7 @@ try:
  while not server.started and time.monotonic()<deadline:time.sleep(.01)
  assert server.started
  client_home=fixture.home/'codex';client_home.mkdir(mode=0o700)
- (client_home/'config.toml').write_text('[mcp_servers.synthetic-memory]\nurl = '+json.dumps(origin+MCP_PATH)+'\n')
+ (client_home/'config.toml').write_text('mcp_oauth_credentials_store = "file"\n[mcp_servers.synthetic-memory]\nurl = '+json.dumps(origin+MCP_PATH)+'\n')
  env=dict(os.environ,CODEX_HOME=str(client_home))
  stdout=(out/'codex-login.private.stdout').open('w');stderr=(out/'codex-login.private.stderr').open('w')
  process=subprocess.Popen(['/home/outsider/.local/bin/codex','mcp','login','synthetic-memory','--no-browser'],
@@ -109,16 +109,22 @@ try:
  receipt['opencode_version']=subprocess.check_output(['/home/outsider/.opencode/bin/opencode','--version'],text=True).strip()
  receipt.update(status='PASS',client='Codex CLI',version=subprocess.check_output(['/home/outsider/.local/bin/codex','--version'],text=True).strip(),
   discovery=True,dynamic_registration=True,oauth_code_pkce=True,owner_consent=True,callback=True,credentials_saved=True,
-  test_data='synthetic',shared_client_config_unchanged=True,default_oauth_registration_and_scope=True)
+  test_data='synthetic',shared_client_config_unchanged=True,default_oauth_registration_and_scope=True,codex_test_credential_store='private file')
  code=0
 except BaseException as error:
  receipt.update(status='FAIL',error_type=type(error).__name__)
  (out/'client-private-error.txt').write_text(traceback.format_exc())
 finally:
+ if process and process.poll() is None:process.terminate();process.wait(timeout=10)
+ if 'client_home' in locals():
+  logged_out=subprocess.run(['/home/outsider/.local/bin/codex','mcp','logout','synthetic-memory'],env=dict(os.environ,CODEX_HOME=str(client_home)),cwd=fixture.home,capture_output=True,text=True,timeout=20)
+  (out/'codex-logout.private.stdout').write_text(logged_out.stdout)
+  (out/'codex-logout.private.stderr').write_text(logged_out.stderr)
+  receipt['isolated_codex_credentials_removed']=logged_out.returncode==0
+  if not receipt['isolated_codex_credentials_removed']:code=1;receipt['status']='FAIL'
  if open_env is not None:
   stopped=subprocess.run(['/home/outsider/.opencode/bin/opencode','service','stop'],env=open_env,cwd=fixture.home,capture_output=True,text=True,timeout=20)
   receipt['isolated_opencode_service_stopped']=stopped.returncode==0
- if process and process.poll() is None:process.terminate();process.wait(timeout=10)
  server.should_exit=True;thread.join(10);listener.close();fixture.doCleanups()
  (out/'client-verification.json').write_text(json.dumps(receipt,indent=2)+'\n')
  (out/'client-verification.done').write_text(str(code)+'\n')

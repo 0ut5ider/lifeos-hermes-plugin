@@ -77,8 +77,12 @@ separate bearer credential. These health checks establish MCP connection, not
 model-driven tool selection. Codex uses its default registration and scope
 settings in this final replay. OpenCode's first status query returns before its
 MCP configuration is ready. A bounded second query reports the connection.
-The probe stops its isolated OpenCode service and removes its disposable client
-configuration. It does not change a deployed agent configuration.
+The probe logs Codex out, stops its isolated OpenCode service, and removes its
+disposable client configuration. It does not change a deployed agent configuration.
+An initial Codex cleanup check fails because desktop keyring deletion is unavailable.
+The final replay uses `mcp_oauth_credentials_store = "file"` in its disposable
+profile, as the [official OpenAI configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+permits. Both credential deletion and service shutdown then pass.
 
 The [version check](version-verification.json) verifies all five declarations at
 0.7.0. All eight version tests pass. The version-only change follows the clear
@@ -86,13 +90,35 @@ third review. It does not change the reviewed transport implementation.
 The [source identity check](source-identity-verification.json) verifies that only
 the five version declarations change in product or test paths after review.
 
-Initial test discovery selects the native Hermes `tests` namespace. Its 760
+The [initial discovery receipt](initial-discovery-failure.json) records selection
+of the native Hermes `tests` namespace. Its 760
 tests have six failures, 31 errors, and seven skips. Those results do not qualify
 the plugin. The corrected runner uses the established explicit plugin module
 list, records every collected identity, and rejects foreign test namespaces.
-The 1,030-test plugin integration check runs against a fixed candidate worktree.
-It uses qualified public native fixtures. Archive recovery cases use the 0.6.0
-archive, and do not establish a qualified 0.7.0 release package.
+The [integration coverage receipt](integration-verification.json) records all
+1,030 plugin cases against a fixed candidate worktree. The workstation run passes
+1,028 cases and has one failure and one error. Both involve the unchanged account
+process inventory. An unrelated non-dumpable `sshd-session` denies executable
+inspection. The safety policy refuses the unverifiable account boundary. The
+[original failing run](integration-host.json), complete output, and test identities
+remain in this directory. It is not a single clean full-suite run.
+
+The [baseline comparison](process-boundary-comparison.json) reproduces the same
+process refusal on unchanged 0.6.0. The [baseline coordinator result](baseline-coordinator.stderr)
+reproduces the same admission refusal. The two program files and two test files
+match that baseline byte for byte. A [private process namespace check](isolated-process-boundary.json)
+passes the actual Bun-process case without changing assertions or policy.
+
+The [development process-boundary replay](development-process-boundary.json)
+passes all eight consumer and coordinator cases under the development service
+account. It includes both workstation refusals. The replay uses copied public
+source, synthetic profiles, and owned temporary units. It preserves the selected
+release and daily installation. All primary cases therefore have passing
+evidence across the workstation and service-account fixtures. The complete
+account inventory remains a required installed qualification check.
+
+The integration check uses qualified public native fixtures. Archive recovery
+cases use the 0.6.0 archive and do not establish a qualified 0.7.0 release package.
 
 This acceptance does not publish or deploy a release package. Development and
 daily remain on qualified 0.6.0. No current Codex, Claude Code, OpenCode, or Hermes

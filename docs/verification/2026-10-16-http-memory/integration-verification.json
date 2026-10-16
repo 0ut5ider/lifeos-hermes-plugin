@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "scope": "Source regression case coverage across workstation and development service-account fixtures",
+  "program_commit": "1c50bbc4f03dee337b432225a042c85b01df32f7",
+  "primary_run_status": "FAIL",
+  "primary_run_total": 1030,
+  "primary_run_passed": 1028,
+  "primary_run_failures": 1,
+  "primary_run_errors": 1,
+  "primary_run_skips": 0,
+  "unhandled_diagnostics": false,
+  "single_clean_full_run": false,
+  "environment_dependent_cases": [
+    "test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses",
+    "test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted"
+  ],
+  "measured_cause": "An unrelated non-dumpable sshd-session denies /proc executable inspection. Both cases also fail on unchanged 0.6.0. The existing safety policy refuses the unverifiable process boundary.",
+  "development_module_replay": "PASS",
+  "development_module_replay_tests": 8,
+  "all_primary_cases_have_passing_evidence": true,
+  "test_assertions_changed": false,
+  "product_policy_changed": false,
+  "production_qualified": false,
+  "daily_changed": false
+}
