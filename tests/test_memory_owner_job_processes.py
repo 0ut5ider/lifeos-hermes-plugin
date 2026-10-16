@@ -36,7 +36,8 @@ class MemoryOwnerJobProcessTests(unittest.TestCase):
                     state = path.read_text().rsplit(')', 1)[1].split()[0]
                 except (FileNotFoundError, ProcessLookupError):
                     break
-                # Process-group signals can reach a grandchild after the direct child exits.
+                # SIGKILL is queued to the whole group; a grandchild can exit after its parent.
+                # A killed grandchild can await the operating system's parent reaper.
                 if state == 'Z':
                     break
                 self.assertLess(time.monotonic(), deadline, f'Child {pid} still runs in state {state}')
