@@ -1,0 +1,39 @@
+{
+  "status": "CORRECTED",
+  "production_code_changed": false,
+  "candidate_archive_changed": false,
+  "corrections": [
+    {
+      "kind": "missing_fixture_input",
+      "measurement": "Fresh preparation raises FileNotFoundError for the absent qualified hermes-dashboard.tgz input.",
+      "action": "Copy the existing immutable qualified dashboard asset before preparation."
+    },
+    {
+      "kind": "safety_masks_retained",
+      "measurement": "Fresh preview refuses existing masked gateway and Pulse service definitions at release_services.py:174.",
+      "action": "Remove only the two owned /dev/null safety-mask symlinks. Reload systemd and verify both units are inactive and not found before preparation."
+    },
+    {
+      "kind": "test_workspace_not_pristine",
+      "measurement": "The native pytest guard adds .pytest-cache/gw-adapter-guard-* even with the pytest cache provider disabled. The source validator refuses the changed workspace.",
+      "action": "Validate and compare a separate pristine extraction. Retain the original archive unchanged."
+    },
+    {
+      "kind": "baseline_validator_binding",
+      "measurement": "The 0.7.1 validator refuses the 0.7.0 native source because its lifecycle patch hash differs.",
+      "action": "Validate the baseline through its own immutable version of the validator before comparing file maps."
+    },
+    {
+      "kind": "ownership_setup_not_completed",
+      "measurement": "The account .claude alias and selected native root exist, but lifeos-memory.json is absent. Fresh software installation has not claimed memory ownership. An initial HOME-layout hypothesis is disproved by these metadata.",
+      "action": "Complete the normal authenticated owner claim and reviewed ownership setup on the synthetic guest before the state-preserving update test. Do not create or change HOME aliases."
+    },
+    {
+      "kind": "existing_cache_permission_refusal",
+      "measurement": "Ownership backup refuses the synthetic USER/CACHE directory at mode 0775. This matches the recorded 0.7.0 fixture correction. The current model operator sets umask 0077, so the directory creator is not attributed to a permissive operator umask.",
+      "action": "Verify the exact owned regular directory and tighten only that directory to 0700. Retain the backup policy and all data. Retry owner setup.",
+      "production_files_changed": false,
+      "underlying_directory_creator_attributed": false
+    }
+  ]
+}

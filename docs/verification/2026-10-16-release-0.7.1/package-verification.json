@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "program_commit": "3cfddbfce4d82808f0277f53b8a1f06a8be0aa72",
+  "archive_sha256": "46eb23cdc82880a2292f05e9031f18cb252a8261abc3621e292ba0326b8b68e9",
+  "archive_bytes": 288195487,
+  "native": {
+    "hermes": {
+      "tree_sha256": "9ff7e31b195b247fed4ba24b847ff5ebf9e26f890f5627389d7edf23c9c3f4ce",
+      "matches_qualified_070": false,
+      "patches": 10
+    },
+    "lifeos": {
+      "tree_sha256": "9291b358a1469021d971e78954d506fce225410ee968545413134f0462276a0a",
+      "matches_qualified_070": true,
+      "patches": 25
+    }
+  },
+  "python_closure_matches_qualified_070": true,
+  "runtime_changes": {
+    "lifeos_hook_bridge": [
+      "dashboard/manifest.json",
+      "discord_audience.py",
+      "discord_delivery.py",
+      "patches/hermes-session-lifecycle.patch",
+      "plugin.yaml"
+    ],
+    "optional/lifeos_release_manager": [
+      "dashboard/manifest.json",
+      "plugin.yaml"
+    ],
+    "hermes": [
+      "gateway/mirror.py",
+      "gateway/platforms/webhook.py",
+      "hermes-source-manifest.json"
+    ]
+  },
+  "installed_selection_changed": false,
+  "stock_program_files_match_qualified_070": true
+}
