@@ -1,19 +1,19 @@
 # LifeOS plugin for Hermes
 
-**Source version:** `0.7.2` clarifies both LifeOS setup pages with scoped styles, visible controls, and distinct sections. It preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. The [0.7.1 release record](docs/verification/2026-10-16-release-0.7.1/README.md) binds qualification, publication, and deployment evidence.
+**Source version:** `0.7.2` clarifies both LifeOS setup pages with scoped styles, visible controls, and distinct sections. It preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. The [0.7.2 release record](docs/verification/2026-10-16-release-0.7.2/README.md) binds qualification, publication, and deployment evidence.
 
-**Published stable release:** `0.7.1`, program commit `3cfddbfce4d82808f0277f53b8a1f06a8be0aa72`, corrects notification-first Discord memory admission. The package also includes the qualified HTTP memory and portability features. The [release record](docs/verification/2026-10-16-release-0.7.1/README.md) identifies the exact archive and verification limits.
+**Published stable release:** `0.7.2`, program commit `b257d29f81fa2b88d202da72914b778d4eda3bb5`, supplies the setup interface changes. The package retains the qualified notification admission, HTTP memory, and portability features. The [release record](docs/verification/2026-10-16-release-0.7.2/README.md) identifies the exact archive and verification limits.
 
-**Deployed release:** Development `.252` and daily `.253` use the complete qualified `0.7.1` package. Both installations use the same program commit and package hash. The owner-reviewed updates preserve model choices, credentials, memory configuration, and the existing ownership mount.
+**Deployed release:** Development `.252` and daily `.253` use the complete qualified `0.7.2` package. Both installations use the same program commit and package hash. The owner-reviewed updates preserve model choices, credentials, memory configuration, and the existing ownership mount.
 
-**Setup interface candidate:** Both LifeOS setup pages include their own scoped styles, visible action buttons, labeled fields, and section navigation. The Bridge page separates memory, agent connections, installation, model routing, and advanced source checks. HTTP setup separates the endpoint, permissions, sign-in requests, and existing connections. The Releases page separates package preparation, operation review, and memory ownership workflows. Disabled approval controls explain the required fields. These interface changes require a qualified release before deployment. The [interface verification record](docs/verification/2026-10-16-plugin-setup-ui/README.md) describes the checks and deployment limits.
+**Deployed setup interface:** Both LifeOS setup pages include their own scoped styles, visible action buttons, labeled fields, and section navigation. The Bridge page separates memory, agent connections, installation, model routing, and advanced source checks. HTTP setup separates the endpoint, permissions, sign-in requests, and existing connections. The Releases page separates package preparation, operation review, and memory ownership workflows. Disabled approval controls explain the required fields. The [interface verification record](docs/verification/2026-10-16-plugin-setup-ui/README.md) describes the component checks. The [installed acceptance record](docs/verification/2026-10-16-release-0.7.2/README.md#installed-interface-acceptance) records automatic stylesheet loading and exact asset delivery.
 
 The public Hermes Plugins form installs the manager from the documented GitHub subdirectory URL. Install LifeOS selects the latest stable complete package after separate owner review. The historical fresh `0.6.0` replay verifies all 38 manager files, the public certificate, 11 sealed program groups, preserved model choices, and an actual FlashNext reply. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.6.0/PUBLIC-LATEST-ACCEPTANCE.json) records the complete replay. The [public replay evidence](docs/verification/2026-10-15-release-0.6.0/public-fresh-verification.json) retains its actual model result.
 
 The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.
-The exact 0.7.1 archive executes 1,124 integration cases: 1,122 pass on the workstation, and two process-inspection cases refuse there.
-All eight unchanged process-boundary cases pass under the isolated service account. This is coverage across two environments.
-All 177 changed native-path tests and eighteen installed notification cases pass. Unchanged components retain their 0.7.0 qualification.
+The exact 0.7.2 archive executes 1,124 integration cases: 1,122 pass on the workstation, and two process-inspection cases refuse there.
+All eight exact-archive process-boundary cases pass again under the isolated service account. This is coverage across two environments.
+All 42 interface cases pass. The unchanged native programs retain the 177 native-path and eighteen installed notification checks from 0.7.1.
 It uses ten Hermes patch groups and twenty-five LifeOS patch groups. All twelve native dependency locks stay fixed.
 Bun 1.4.3 supplies the verified runtime.
 
@@ -36,15 +36,15 @@ The [previous patch qualification record](docs/verification/2026-10-12-release-0
 The [managed release record](docs/verification/2026-10-12-hermes-managed-release/README.md) retains the earlier implementation checkpoints.
 Data-only profile backups record managed release and memory-portability workspaces as runtime exclusions. Full guest backups preserve the installed runtime, retained removal helpers, and rollback artifacts.
 
-**Daily deployed version:** `0.7.1`, program commit `3cfddbfc`, on `.253`. The authenticated complete update verifies nine selected program groups and the existing ownership mount. Gateway, dashboard, Pulse, the actual FlashNext reply, and the current private Discord audience pass. The normal morning schedule remains `0 7 * * *`. No new automatic morning run is claimed for this patch release. The [owner-rescheduled automatic evening check](docs/verification/2026-10-14-evening-observation/README.md) remains historical 0.4.3 evidence. Its 07:00 wall-clock observation did not run.
-**Development deployed version:** `0.7.1`, program commit `3cfddbfc`, on `.252`. The same qualified package passes selected-program verification, service checks, an actual model reply, and notification mirror-policy checks. Both updates preserve the model tiers, credential bytes, memory configuration, and current owner mount. See the [0.7.1 deployment record](docs/verification/2026-10-16-release-0.7.1/README.md).
+**Daily deployed version:** `0.7.2`, program commit `b257d29f`, on `.253`. The authenticated complete update verifies nine selected program groups and the existing ownership mount. Gateway, dashboard, Pulse, the actual FlashNext reply, and the current private Discord audience pass. The normal morning schedule remains `0 7 * * *`. No new automatic morning run is claimed for this patch release. The [owner-rescheduled automatic evening check](docs/verification/2026-10-14-evening-observation/README.md) remains historical 0.4.3 evidence. Its 07:00 wall-clock observation did not run.
+**Development deployed version:** `0.7.2`, program commit `b257d29f`, on `.252`. The same qualified package passes selected-program verification, service checks, an actual model reply, and notification mirror-policy checks. Both updates preserve the model tiers, credential bytes, memory configuration, and current owner mount. See the [0.7.2 deployment record](docs/verification/2026-10-16-release-0.7.2/README.md).
 **Historical 0.4.2 public installation tests:** A manager-free guest at `.246` installs the complete stable package through the native Plugins page and Install LifeOS. A separate guest at `.248` updates from `0.4.2-rc.3` through Update plugin, then verifies Update LifeOS. Both guests preserve their private FlashNext selection. Fresh installation also passes actual lasting-memory save and recall in separate Hermes conversations. The earlier [default GitHub URL replay](docs/verification/2026-10-13-pr18-final-review-replay/README.md) and [public user-action checks](docs/verification/2026-10-13-release-ui-install/README.md) remain historical checkpoints. The stopped `.249` guest retains `0.4.2-rc.3`. Test qualification does not select a daily production release.
 The owned release-test guests are removed after acceptance. Their receipts remain in the release record. The [published public acceptance checkpoint](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.4.2/PUBLIC-LATEST-ACCEPTANCE.json) records the completed installation and update paths.
 See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
 The [October 12 release acceptance](docs/verification/2026-10-12-capture-cursor/README.md) closes a post-cleanup capture refusal. The sealed package passes 552 integration tests. Installed checks verify both servers, actual private model replies, authenticated daily dashboard routes, and the private Discord audience. All five daily owner jobs, an actual scheduled capture, and the Cerebo inbound reply pass. The final daily backup and isolated restore pass, including 41,742 artifacts and all three Atlas recovery cases. The automatic 07:00 Toronto brief passes: Pulse completes at 07:01:17 and Cerebo delivers exactly one message at 07:01:16 on October 12. All six release steps are complete. Earlier acceptance paragraphs describe their checkpoint state.
 
-The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) describes the initial daily installation. The [0.7.1 release record](docs/verification/2026-10-16-release-0.7.1/README.md) supplies the current release status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
+The [October 11 daily deployment record](docs/verification/2026-10-11-daily-guest/README.md) describes the initial daily installation. The [0.7.2 release record](docs/verification/2026-10-16-release-0.7.2/README.md) supplies the current release status. Earlier component paragraphs retain their checkpoint results. Their historical open items do not describe the deployed release. Deferred work remains in [TODO.md](TODO.md).
 
 Fresh-store preparation leaves personal TELOS, health, finance, work, gear, and project sections empty. It retains native section headings and template metadata. It stores the exact examples outside the active user tree for review, and omits the three example company and customer directories. Existing stores keep their data.
 
@@ -295,7 +295,7 @@ The `host`, `user`, `port`, and `root` must match the active Hermes SSH backend.
 
 The standalone manager in `optional/lifeos_release_manager` adds the `lifeos-release` command and a registered Hermes skill.
 The complete package includes the supported Hermes runtime, LifeOS programs, bridge, manager, dependencies, dashboard, and public commands.
-The qualified 0.7.1 certificate binds the complete package and frozen dependency closure. Exact-version installation passes on the isolated guest. Both live servers prepare the published archive and certificate through the public catalog.
+The qualified 0.7.2 certificate binds the complete package and frozen dependency closure. The unchanged native programs retain isolated 0.7.1 installation evidence. Both live servers prepare the published 0.7.2 archive and certificate through the public catalog.
 The existing 0.3.1 assets remain historical release and rollback inputs.
 
 The 0.4.2 test prereleases add the three preparation buttons and the managed-dashboard first-installation path.
@@ -304,7 +304,7 @@ Managed first installation requires the owner dashboard service to use the accou
 Set `UMask=0077` in that service before installing the manager through the native GitHub form.
 The complete release worker also uses a private mask for native profile files and backup artifacts.
 The earlier prerelease checks qualify their synthetic installation and complete-package update workflow.
-For current installation, leave the version empty to select stable 0.7.1. Enter an exact version for a test prerelease.
+For current installation, leave the version empty to select stable 0.7.2. Enter an exact version for a test prerelease.
 
 The native Hermes Plugins page accepts this repository URL:
 
@@ -334,7 +334,7 @@ An older installed manager can create an incomplete plan or refuse an omitted na
 Install the manager from the selected release before the first complete published update.
 Use `--force --enable` with the native install command when that development manager already exists.
 Restart the Hermes dashboard after replacement so it loads the selected manager.
-The current qualified 0.7.1 release commit is `3cfddbfce4d82808f0277f53b8a1f06a8be0aa72`.
+The current qualified 0.7.2 release commit is `b257d29f81fa2b88d202da72914b778d4eda3bb5`.
 The earlier 0.4.3 manager requires replacement before it can prepare later complete packages.
 The current package is published and deployed. Its notification correction requires the complete package because native callers and bridge policy change together.
 
