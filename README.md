@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Source version:** `0.7.1` preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. The [0.7.1 release record](docs/verification/2026-10-16-release-0.7.1/README.md) binds qualification, publication, and deployment evidence.
+**Source version:** `0.7.2` clarifies both LifeOS setup pages with scoped styles, visible controls, and distinct sections. It preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. The [0.7.1 release record](docs/verification/2026-10-16-release-0.7.1/README.md) binds qualification, publication, and deployment evidence.
 
 **Published stable release:** `0.7.1`, program commit `3cfddbfce4d82808f0277f53b8a1f06a8be0aa72`, corrects notification-first Discord memory admission. The package also includes the qualified HTTP memory and portability features. The [release record](docs/verification/2026-10-16-release-0.7.1/README.md) identifies the exact archive and verification limits.
 
