@@ -20,3 +20,5 @@ The [initial certificate](RELEASE-CERTIFICATE.json) binds the exact archive and 
 
 
 The [publication receipt](release-publication.json) verifies all three new assets and preservation of all 61 earlier assets. The initial certificate remains unchanged. The GitHub tag lookup returns 404 while the release remains a draft without a Git tag. The owner release ID API verifies the draft and all assets before publication. The published tag and latest stable release then verify as `v0.7.0`.
+
+The [development preparation](development-public-preparation.json) verifies the public archive, production certificate, and unchanged active 0.6.0 package. The authenticated owner selects Update plugin and Review release in the existing dashboard session. The [review](development-owner-release-review.json) binds the expected package and requires no native remount. Protected backup completion precedes application.
