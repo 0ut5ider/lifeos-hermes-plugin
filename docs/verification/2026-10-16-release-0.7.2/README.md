@@ -1,4 +1,4 @@
-# LifeOS 0.7.2 release qualification
+# LifeOS 0.7.2 release and deployment
 
 The qualified program commit is `b257d29f81fa2b88d202da72914b778d4eda3bb5`. The archive is `0.7.2-b257d29f.tgz`, with SHA-256 `293cfa2c6593b597c327fb8ad11f458d3e374352552dfbe7f4dbba5cd7e67265`. Its size is 288,201,691 bytes.
 
@@ -24,6 +24,29 @@ The owned guest starts from the retained synthetic stock baseline. Its messaging
 
 The [cleanup receipt](guest-cleanup.json) verifies graceful shutdown, removal, and unchanged power states for all original guests, including VM801. The initial cleanup check does not immediately observe stopped status in the aggregate inventory. The resumed operator verifies stopped status directly before removal and waits for inventory convergence. No host restart occurs.
 
-## Promotion state
+## Publication and deployment
 
-At this qualification checkpoint, neither installed server changes. Development `.252` must complete its owner-reviewed update and verification before daily `.253`. Both retain their qualified 0.7.1 packages until their respective updates complete. The existing daily HTTP grants, model choices, memory configuration, and normal morning schedule form part of the promotion baseline.
+[PR36](https://github.com/0ut5ider/lifeos-hermes-plugin/pull/36) merges as `60c5fee32454be0b752e10ccccd1cd2b306418a8`. The [stable 0.7.2 release](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.7.2) publishes the qualified archive, dashboard archive, and initial certificate. Publication preserves all 69 prior assets. The new [deployment asset](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.7.2/DEPLOYMENT-ACCEPTANCE.json) preserves those assets and all three initial 0.7.2 assets. No asset replacement occurs.
+
+Development `.252` updates first through the actual Releases page controls. Daily `.253` then uses the same authenticated owner review and apply routes. Both prepare the published archive through the public catalog. The reviewed version, program commit, and package hash match the identity above. The updates retain the existing ownership mount and do not require a native remount.
+
+| Installation | Applied operation | Verified version |
+| --- | --- | --- |
+| Development `.252` | `7ecc4302491d4d9e8a05b6e0056d03e0` | `0.7.2` |
+| Daily `.253` | `9a17bb13744642c2bb9503643eb40d0b` | `0.7.2` |
+
+Both installations pass selected-program verification, selected runtime checks, active gateway/dashboard/Pulse checks, fresh gateway heartbeat, and connected Discord state. Each installation returns the expected marker through its actual private FlashNext model without tools. Both pass the current private-audience and notification mirror-policy checks. The harness does not send a Discord message during this deployment.
+
+The update preserves model choices, tier mapping, unrelated configuration, credential bytes, memory configuration, and the current owner mount journal. Daily retains all five HTTP connections, including four enabled connections. Its authenticated metadata and registered HTTP memory status and recall pass. The harness reads the existing project verification fact through its registered MCP connection. It does not read personal memory files or use dashboard memory-record APIs.
+
+The daily Pulse configuration retains `0 7 * * *`. This release does not repeat an automatic morning observation or a whole-guest restore. Both guests retain the coherent `lifeos-072-preupdate-20261016` checkpoint. Writers stop before each checkpoint and resume afterward. The retained prior 0.7.1 operations remain rollback inputs.
+
+## Installed interface acceptance
+
+Both installations serve both plugin scripts and both plugin stylesheets with HTTP 200 and exact archive hashes. The host manifests declare version 0.7.2 and `dist/style.css`. All four responses use the correct content type and disable caching.
+
+The installed development browser loads the stylesheets automatically after a normal reload. No preview stylesheet or script injection remains. At 1,440 and 390 pixels, the page has no horizontal overflow. All 22 visible buttons have padding, borders, and a minimum height. No visible control lacks its label. The daily authenticated manifests and public asset hashes match the same qualified package. This record does not claim an authenticated daily browser screenshot.
+
+![Installed development LifeOS setup page](deployment/installed-development.png)
+
+The [deployment acceptance receipt](deployment/DEPLOYMENT-ACCEPTANCE.json) binds the original safe operator receipts by SHA-256. Repository copies preserve the original receipt bytes. The HTTP before/after receipts remain in the operator workspace; the repository contains their reduced connection-metadata result. The [publication receipt](deployment/deployment-publication.json) records the new immutable asset. The deployment directory contains only safe receipts and the installed interface screenshot. Credentials, model narration, and personal records remain outside repository evidence.
