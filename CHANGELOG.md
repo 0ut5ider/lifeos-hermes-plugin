@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.7.3 (2026-10-16)
+
+- Add contributor instructions and a codebase navigation guide.
+- Separate current setup instructions from historical verification records.
+- Share dashboard request helpers and test fixtures.
+- Share hook command parsing and release launcher serialization.
+- Remove unused imports and preserve public memory interfaces.
+
 ## 0.7.2 (2026-10-16)
 
 - Load scoped styles for both LifeOS setup pages through their plugin manifests.
