@@ -1,5 +1,8 @@
 # VersionDrift baseline without a Git repository in Hermes home
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 Implementation status on 2026-09-28: The plugin-owned baseline, scoped Git adapter, dashboard preview and renewal controls, and native synchronous and asynchronous tests are implemented on the isolated `.212` installation. The baseline contains 1,796 files, is stored under `~/.local/state/lifeos-hook-bridge/`, and reports zero initial changes. See [the setup guide](version-drift-baseline.md) and [the measured false-positive record](../notes/2026-09-28-version-drift-skill-scope.md). The design below records the original proposal and its verification criteria.
 
 ## Observed constraint

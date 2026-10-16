@@ -1,5 +1,8 @@
 # Isolated LifeOS test environment
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 As of 2026-10-04, the development fixture is the unprivileged `lifeos-hermes` account on `192.168.8.212`. It started with fresh Hermes and LifeOS installations. No LifeOS data was copied from an existing installation. The principal is the fictional `Test Operator`.
 
 The [catalog deployment record](verification/2026-10-04-catalog-release-212/README.md) covers this Discord fixture and the separate `lifeos-plugin-install-probe` browser profile. Both active installations now run plugin version `0.1.0` at tested commit `02d7ac85d96fb416b3c8832928d274ec9ddab4cf`. The update builds on the [October 3 merged release](verification/2026-10-03-merged-release-212/README.md), preserves existing profiles, and keeps memory ownership disabled.

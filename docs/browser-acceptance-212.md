@@ -1,5 +1,8 @@
 # Browser acceptance on the separate .212 installation
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 Date: 2026-10-02
 
 Retired on 2026-10-06. The account, its services, and its firewall rules no longer exist. See the [test environment record](test-environment.md).

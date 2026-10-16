@@ -1,5 +1,8 @@
 # Fresh store selection and return
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 Date: 2026-10-05. Status: Adrian approved the profile setting design on 2026-10-06. The implementation notes below refine it.
 
 A prepared fresh store is a complete LifeOS installation at `<state>/fresh-stores/<profile>/<identifier>/home/.claude`, with its user data at `home/.config/LIFEOS/USER`. Selection makes that installation the active LifeOS for one Hermes profile. Return makes the previous installation active again.
