@@ -127,3 +127,18 @@ operators remain unchanged. The previous 42-case interface result remains applic
 `final-resolution-checks.json` records the exact corrected guide text and SHA-256 hashes for installation, portability,
 source preparation, contribution, source map, and TODO. It preserves the final link scan and change-boundary checks.
 The initial findings and raw patch difference remain above and on disk.
+
+## Final committed artifact check
+
+Result: **PASS** at head `800bdf32735caa2d2eb4a7721674dbcfeb8c2e9b`.
+
+The primary agent reports two inherited trailing spaces in the historical README snapshot after the first commit.
+The subsequent documentation commit normalizes those spaces and records that normalization in the history index.
+I independently run `git diff --check origin/main...HEAD` at the head above. It exits zero with no output.
+
+All 26 reviewed active-document hashes match the last reviewed versions. Both lifecycle patch copies retain their original
+reviewed hashes. The committed branch changes no product source or unrelated paths. No product tests repeat for this
+artifact-only correction. The documentation review remains CLEAR, with the two underlying limitations tracked separately.
+
+`final-committed-artifact-check.json` records the exact head, committed-range whitespace output, active-document hash
+comparisons, unchanged source-patch hashes, and committed path boundary check.
