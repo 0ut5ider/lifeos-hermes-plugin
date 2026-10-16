@@ -61,11 +61,16 @@ class MemoryRemoteDashboardTests(unittest.TestCase):
                 self.assertIn('token', enrollment.json())
                 token = enrollment.json()['token']
                 self.assertNotIn(token, client.get(endpoint + '/settings').text)
+                response = client.post(endpoint + '/registrations/clear', json={})
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertTrue(response.json()['active_connections_preserved'])
+                self.assertEqual(client.post(endpoint + '/registrations/clear', json={'caller': 'owner'}).status_code, 400)
                 client.cookies.clear()
                 self.assertEqual(client.get(RESOURCE_METADATA_PATH).status_code, 200)
                 self.assertEqual(client.post(MCP_PATH).status_code, 401)
                 self.assertEqual(client.get(endpoint + '/settings', headers={'Authorization': 'Bearer ' + token}).status_code, 401)
                 self.assertEqual(client.post(endpoint + '/connections', headers={'Authorization': 'Bearer ' + token}, json={}).status_code, 401)
+                self.assertEqual(client.post(endpoint + '/registrations/clear', headers={'Authorization': 'Bearer ' + token}, json={}).status_code, 401)
 
 
 if __name__ == '__main__':

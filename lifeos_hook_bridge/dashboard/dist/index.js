@@ -381,8 +381,12 @@
         settings?.mcp_url ? h("label", { className: "block" }, "MCP URL",
           h("input", { readOnly: true, value: settings.mcp_url, className: "block w-full p-2" })) : null,
         h("button", { type: "button", disabled: busy, onClick: function () { return run(refresh); } }, "Review connection requests"),
+        h("button", { type: "button", disabled: busy, onClick: function () {
+          return run(function () { return post("/registrations/clear", {}); });
+        } }, "Clear unused OAuth registrations"),
+        h("p", null, "Clearing removes unused registrations and waiting sign-in requests. Active connections keep their credentials."),
         settings && !settings.sharing_enabled ? h("p", null,
-          "Memory sharing is disabled. Enable memory sharing above before agent sign-in. Creating a token also enables sharing for all enabled connections.") : null,
+          "Memory sharing is disabled. Enable memory sharing above before agent sign-in. Approving a request or creating a token enables sharing for all enabled connections.") : null,
         h("p", null, "Add the MCP URL in your agent, then sign in. Review its name and callback below. Choose permissions before approving. Client names and declared model routes are unverified."),
         h("p", null, "A cloud model can receive every fact returned through this connection. Project access starts read-only. Use a distinct name for each connection."),
         h("form", { id: "http_enrollment", onSubmit: function (event) {

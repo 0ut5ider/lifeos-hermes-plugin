@@ -27,3 +27,18 @@ Root, principal, origin, and epoch alone allow a copied profile to reuse a token
 against the same native store. Adding the configuration path to the credential
 binding makes the test pass. Recovered profiles also refuse original credentials
 after ownership and sharing are reenabled.
+
+Independent review measures two additional boundaries. Refresh replay initially
+returns 400 while replacement access and refresh credentials both remain valid
+with 200. Consumed token hashes must survive rotation so reuse can revoke the
+family. Anonymous registration also fills the four-megabyte credential file to
+4,194,185 bytes. The owner then receives an enrollment failure after a grant is
+published. Registration admission now has its own metadata and count budget,
+and credential publication precedes memory-grant publication.
+
+The pinned SDK represents OAuth errors as frozen dataclasses. Python's generator
+context manager assigns an exception traceback while unwinding. That assignment
+replaces the intended SDK error with FrozenInstanceError. The class-based
+credential update releases the underlying generator lock without passing the
+frozen exception through it. The HTTP regression checks receive the intended
+OAuth error responses.

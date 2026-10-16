@@ -62,3 +62,9 @@ test('OAuth requests require owner approval and display the callback', async () 
   assert.equal(callback.props.referrerPolicy, 'no-referrer');
   assert.equal(callback.props.href, 'http://localhost:9812/callback?code=synthetic');
 });
+test('the owner can clear unused OAuth registrations without revoking connections', async () => {
+  const p = await panel({enabled: true, public_url: 'https://synthetic.ts.net', sharing_enabled: true, pending: [], connections: []});
+  await find(p.render(), node => node.type === 'button' && node.children.includes('Clear unused OAuth registrations')).props.onClick();
+  const call = p.calls.find(call => call.url.endsWith('/registrations/clear'));
+  assert.deepEqual(JSON.parse(call.init.body), {});
+});

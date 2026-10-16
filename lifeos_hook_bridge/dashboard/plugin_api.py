@@ -179,6 +179,13 @@ def revoke_http_memory(client: str, account: str = Depends(_memory_account)):
     return _remote_memory_action(account, lambda remote: remote.revoke(client, account=account))
 
 
+@router.post('/memory/http/registrations/clear')
+def clear_http_registrations(request: dict, account: str = Depends(_memory_account)):
+    if request != {}:
+        raise HTTPException(status_code=400, detail='Clear unused OAuth registrations with an empty request')
+    return _remote_memory_action(account, lambda remote: remote.clear_unapproved(account=account))
+
+
 @router.post('/memory/http/authorization/{identifier}')
 def authorize_http_memory(identifier: str, request: dict, account: str = Depends(_memory_account)):
     if request.get('decision') == 'approve' and set(request) == {'decision', 'grant'}:

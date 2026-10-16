@@ -69,6 +69,12 @@ Refreshing a connection replaces its access and refresh tokens. Requests must
 identify the exact displayed MCP URL as their OAuth resource. The server refuses
 credentials from another origin or installation.
 
+Reusing a consumed refresh token revokes that token family. Start a fresh owner
+authorization if the client reports this error. Unapproved client registrations
+expire after ten minutes and have a separate count and metadata budget. The owner
+can select **Clear unused OAuth registrations** to remove unused registrations
+and waiting sign-in requests. Active connections retain their credentials.
+
 Codex CLI configuration can use:
 
 ```toml
@@ -104,8 +110,8 @@ url = "https://YOUR-SERVER.YOUR-TAILNET.ts.net/api/plugins/lifeos-hook-bridge/me
 bearer_token_env_var = "LIFEOS_MEMORY_TOKEN"
 ```
 
-Creating a token enables memory sharing for every connection whose grant remains
-enabled. Check the listed connections before creating the token. The default
+Approving an OAuth request or creating a token enables memory sharing for every
+connection whose grant remains enabled. Check the listed connections first. The default
 HTTP grant permits project reads for the selected projects and no writes.
 An explicit checkbox permits project writes. Identity reads require separate
 checkboxes. Every returned fact can enter the configured model's context.

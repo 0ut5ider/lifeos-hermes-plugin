@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-from contextlib import contextmanager
 import hashlib
 import ipaddress
 import json
@@ -33,6 +32,36 @@ RESOURCE_METADATA_PATH = '/.well-known/oauth-protected-resource' + MCP_PATH
 AUTH_METADATA_PATH = '/.well-known/oauth-authorization-server' + HTTP_PREFIX
 SCOPE = 'lifeos:memory'
 MAX_BODY = 1024 * 1024
+MAX_CREDENTIAL_BYTES = 4 * 1024 * 1024
+
+
+class CredentialUpdate:
+    def __init__(self, store):
+        self.store = store
+        self.lock = store.lock._lock()
+        self.value = None
+
+    def __enter__(self):
+        self.lock.__enter__()
+        try:
+            self.value = self.store.load()
+            now = time.time()
+            for field in ('tokens', 'requests', 'codes', 'clients'):
+                self.value[field] = {key: item for key, item in self.value[field].items() if item['expires_at'] > now}
+            return self.value
+        except BaseException:
+            self.lock.__exit__(None, None, None)
+            raise
+
+    def __exit__(self, error_type, error, traceback):
+        try:
+            if error_type is None:
+                self.store.write(self.value)
+        finally:
+            # SDK OAuth errors are frozen exceptions. Passing them through a generator
+            # context would make contextlib's traceback assignment replace the OAuth error.
+            self.lock.__exit__(None, None, None)
+        return False
 
 
 def public_origin(value):
@@ -70,28 +99,26 @@ class CredentialStore:
             info = os.fstat(stream.fileno())
             if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
                 raise MemoryUnavailable('HTTP credentials require private owner files')
-            data = stream.read(4 * 1024 * 1024 + 1)
-        if len(data) > 4 * 1024 * 1024:
+            data = stream.read(MAX_CREDENTIAL_BYTES + 1)
+        if len(data) > MAX_CREDENTIAL_BYTES:
             raise MemoryUnavailable('HTTP credential storage exceeds its limit')
         value = json.loads(data)
         if value.get('version') != 1 or any(not isinstance(value.get(key), dict) for key in ('tokens', 'clients', 'requests', 'codes')):
             raise MemoryUnavailable('HTTP credentials are unavailable')
         return value
 
-    @contextmanager
     def transaction(self):
-        with self.lock._lock():
-            value = self.load()
-            now = time.time()
-            for field in ('tokens', 'requests', 'codes', 'clients'):
-                value[field] = {key: item for key, item in value[field].items() if item['expires_at'] > now}
-            yield value
-            data = (json.dumps(value, indent=2) + '\n').encode()
-            if len(data) > 4 * 1024 * 1024:
-                raise MemoryUnavailable('HTTP credential storage exceeds its limit')
-            if self.path.is_symlink():
-                raise MemoryUnavailable('HTTP credentials must not be a symlink')
-            publish(self.path, data)
+        return CredentialUpdate(self)
+
+    def write(self, value):
+        data = (json.dumps(value, indent=2) + '\n').encode()
+        if len(data) > MAX_CREDENTIAL_BYTES:
+            raise MemoryUnavailable('HTTP credential storage exceeds its limit')
+        if self.path.is_symlink():
+            raise MemoryUnavailable('HTTP credentials must not be a symlink')
+        if self.path.is_file() and self.path.read_bytes() == data:
+            return
+        publish(self.path, data)
 
 
 class MemoryRemote:
@@ -170,30 +197,37 @@ class MemoryRemote:
             raise ValueError('Select at least one project and a declared model route of at most 256 characters')
         return identifier, grant
 
-    def _admit(self, request, account, *, expected_binding=None):
+    def _admit(self, request, account, prepare, *, expected_binding=None):
         identifier, grant = self.grant(request)
-        def change(config):
-            self._owner(config, account)
-            if expected_binding is not None and self.binding(config) != expected_binding:
-                raise MemoryUnavailable('The installation changes before approval')
-            settings = config.get('http_mcp', {})
-            if not settings.get('enabled') or not config.get('ownership_enabled'):
-                raise MemoryUnavailable('Enable HTTP memory before adding a connection')
-            if identifier in config.get('clients', {}):
-                raise ValueError('This connection name already exists; use a distinct name')
-            config.setdefault('clients', {})[identifier] = grant
-            config['sharing_enabled'] = True
-        config = self.configuration.update(change)
+        with self.store.transaction() as value:
+            with self.configuration._lock():
+                config = self.configuration.load()
+                self._owner(config, account)
+                if expected_binding is not None and self.binding(config) != expected_binding:
+                    raise MemoryUnavailable('The installation changes before approval')
+                settings = config.get('http_mcp', {})
+                if not settings.get('enabled') or not config.get('ownership_enabled'):
+                    raise MemoryUnavailable('Enable HTTP memory before adding a connection')
+                if identifier in config.get('clients', {}):
+                    raise ValueError('This connection name already exists; use a distinct name')
+                config.setdefault('clients', {})[identifier] = grant
+                config['sharing_enabled'] = True
+                self.configuration.validate(config)
+                prepare(value, identifier, config)
+                # A credential without a grant cannot authorize a request. Publication in
+                # this order leaves policy unchanged when credential capacity or IO fails.
+                self.store.write(value)
+                self.configuration._publish(config)
         return identifier, config
 
     def enroll(self, request, *, account):
         token = secrets.token_urlsafe(32)
-        with self.store.transaction() as value:
+        def prepare(value, identifier, config):
             if len(value['tokens']) >= 1000:
                 raise MemoryUnavailable('Revoke unused HTTP connections before adding another')
-            identifier, config = self._admit(request, account)
             value['tokens'][digest(token)] = {'kind': 'personal', 'grant': identifier,
                 'binding': self.binding(config), 'expires_at': time.time() + 90 * 86400}
+        identifier, config = self._admit(request, account, prepare)
         return {'client': identifier, 'token': token, 'mcp_url': config['http_mcp']['public_url'] + MCP_PATH,
                 'expires_in': 90 * 86400, 'status': 'enrolled'}
 
@@ -223,6 +257,18 @@ class MemoryRemote:
             for field in ('tokens', 'codes'):
                 value[field] = {key: entry for key, entry in value[field].items() if entry.get('grant') != identifier}
         return {'status': 'revoked', 'client': identifier, 'records_deleted': False}
+
+    def clear_unapproved(self, *, account):
+        with self.store.transaction() as value:
+            self._owner(self.configuration.load(), account)
+            active = {entry['client_id'] for field in ('tokens', 'codes') for entry in value[field].values()
+                      if entry.get('client_id') and entry.get('kind') != 'consumed_refresh'}
+            removed = {key for key, entry in value['clients'].items() if not entry.get('approved') or key not in active}
+            value['clients'] = {key: entry for key, entry in value['clients'].items() if key not in removed}
+            requests = len(value['requests'])
+            value['requests'] = {}
+        return {'status': 'cleared', 'registrations_removed': len(removed), 'requests_removed': requests,
+                'active_connections_preserved': True}
 
 
 class MemoryRemoteMiddleware:

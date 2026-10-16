@@ -4,7 +4,7 @@ The branch adds Streamable HTTP memory access to the existing Hermes dashboard
 listener. The installed MCP SDK remains `2.0.0`. Hermes remains v0.21.7 with ten
 patches. The transport requires no additional Hermes patch or Python dependency.
 
-The targeted local check passes 38 tests. The dashboard check passes all 35 UI
+The targeted local check passes 43 tests. The initial dashboard check passes all 35 UI
 tests. These checks cover native memory operations, authenticated owner controls,
 private hashed credentials, explicit project grants, cross-client isolation,
 PKCE, one-time codes, refresh rotation, revocation, request limits, copied-profile
@@ -47,6 +47,14 @@ The private probe outputs remain outside Git. The replay programs in this
 directory contain synthetic fixture setup and safe receipts. They contain no
 credentials or private memory. The full integration result and independent
 review closure are recorded here before merge.
+
+The [first independent review](../../agents/2026-10-16-http-memory-review-1/http-memory-review-1.md)
+finds refresh replay, registration exhaustion, and frozen SDK exception defects.
+The primary independently repeats all three probes. Regression tests verify
+family revocation and unrelated-client isolation, the original refresh exchange
+race, bounded registration metadata, owner cleanup, and refusal of a partial
+grant when credential storage is full. The owner cleanup has an authenticated
+API and a tested button. The next review checks the corrections before merge.
 
 This acceptance does not publish or deploy a release package. Development and
 daily remain on qualified 0.6.0. Claude Code and OpenCode HTTP login have not yet

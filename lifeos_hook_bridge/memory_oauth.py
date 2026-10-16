@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import secrets
+import json
 import time
 from urllib.parse import urlsplit
 
@@ -22,6 +23,12 @@ from .memory_service import MemoryService
 from .memory_remote import AUTH_METADATA_PATH, HTTP_PREFIX, MCP_PATH, SCOPE, digest
 
 
+UNAPPROVED_CLIENT_LIMIT = 128
+APPROVED_CLIENT_LIMIT = 128
+REGISTRATION_BYTES = 4096
+OAUTH_TOKEN_LIMIT = 4096
+
+
 class MemoryAuthorization:
     def __init__(self, remote):
         self.remote = remote
@@ -33,6 +40,9 @@ class MemoryAuthorization:
         return None
 
     async def register_client(self, client_info):
+        metadata = client_info.model_dump(mode='json')
+        if len(json.dumps(metadata).encode()) > REGISTRATION_BYTES:
+            raise RegistrationError('invalid_client_metadata', 'Registration metadata exceeds 4096 bytes')
         redirects = client_info.redirect_uris or []
         if not 1 <= len(redirects) <= 10 or len(client_info.client_name or '') > 256:
             raise RegistrationError('invalid_client_metadata', 'Provide a client name and at most ten redirect addresses')
@@ -43,10 +53,10 @@ class MemoryAuthorization:
                     or (address.scheme == 'http' and address.hostname not in ('localhost', '127.0.0.1', '::1'))):
                 raise RegistrationError('invalid_redirect_uri', 'Use an HTTPS redirect or a localhost HTTP callback')
         with self.remote.store.transaction() as value:
-            if len(value['clients']) >= 512:
+            if sum(not entry.get('approved') for entry in value['clients'].values()) >= UNAPPROVED_CLIENT_LIMIT:
                 raise RegistrationError('invalid_client_metadata', 'The registration limit is reached')
-            value['clients'][client_info.client_id] = {'metadata': client_info.model_dump(mode='json'),
-                                                       'expires_at': time.time() + 365 * 86400}
+            value['clients'][client_info.client_id] = {'metadata': metadata, 'approved': False,
+                                                       'expires_at': time.time() + 600}
 
     async def authorize(self, client, params):
         config = self.remote.current()
@@ -66,15 +76,24 @@ class MemoryAuthorization:
     def approve(self, identifier, request, *, account):
         config = self.remote.configuration.load()
         self.remote._owner(config, account)
-        with self.remote.store.transaction() as value:
+        code = secrets.token_urlsafe(32)
+        entry = None
+        def prepare(value, grant, current):
+            nonlocal entry
             entry = value['requests'].get(identifier)
-            if not entry or entry['binding'] != self.remote.binding(self.remote.current()):
+            if not entry or entry['binding'] != self.remote.binding(current):
                 raise ValueError('This authorization request expires or belongs to another installation')
-            grant, current = self.remote._admit(request, account, expected_binding=entry['binding'])
-            code = secrets.token_urlsafe(32)
-            params = entry['params']
+            registered = value['clients'].get(entry['client_id'])
+            if registered is None:
+                raise ValueError('The unapproved client registration expires')
+            if (not registered.get('approved') and sum(item.get('approved', False) for item in value['clients'].values()) >= APPROVED_CLIENT_LIMIT
+                    or len(value['codes']) >= 100):
+                raise MemoryUnavailable('Revoke unused OAuth connections before approving another')
+            registered.update(approved=True, expires_at=time.time() + 365 * 86400)
             value['codes'][digest(code)] = {**entry, 'grant': grant, 'expires_at': time.time() + 120}
             del value['requests'][identifier]
+        grant, current = self.remote._admit(request, account, prepare, expected_binding=self.remote.binding(config))
+        params = entry['params']
         return {'status': 'approved', 'client': grant, 'redirect_url': construct_redirect_uri(
             params['redirect_uri'], code=code, state=params.get('state'),
             iss=current['http_mcp']['public_url'] + HTTP_PREFIX)}
@@ -121,7 +140,10 @@ class MemoryAuthorization:
         except (MemoryUnavailable, ValueError, OSError) as error:
             raise TokenError('invalid_grant', 'This memory connection is unavailable') from error
         family = entry.get('family', secrets.token_hex(24))
-        value['tokens'] = {key: item for key, item in value['tokens'].items() if item.get('family') != family}
+        value['tokens'] = {key: item for key, item in value['tokens'].items()
+                           if item.get('family') != family or item['kind'] == 'consumed_refresh'}
+        if len(value['tokens']) + 2 > OAUTH_TOKEN_LIMIT:
+            raise TokenError('invalid_grant', 'Revoke unused OAuth connections before requesting more credentials')
         access, refresh = secrets.token_urlsafe(32), secrets.token_urlsafe(32)
         now = int(time.time())
         common = {'client_id': entry['client_id'], 'grant': entry['grant'],
@@ -138,6 +160,11 @@ class MemoryAuthorization:
             return self._issue(value, entry)
 
     async def load_refresh_token(self, client, refresh_token):
+        with self.remote.store.transaction() as value:
+            entry = value['tokens'].get(digest(refresh_token))
+            if entry and entry.get('kind') == 'consumed_refresh' and entry['client_id'] == client.client_id:
+                self._revoke_family(value, entry['family'])
+                return None
         entry = self._entry('tokens', refresh_token, 'refresh')
         if not entry or entry['client_id'] != client.client_id:
             return None
@@ -145,11 +172,27 @@ class MemoryAuthorization:
                             expires_at=entry['expires_at'], subject=entry['grant'])
 
     async def exchange_refresh_token(self, client, refresh_token, scopes):
+        replay = False
+        result = None
         with self.remote.store.transaction() as value:
             entry = value['tokens'].get(digest(refresh_token.token))
-            if not entry or entry['kind'] != 'refresh' or entry['client_id'] != client.client_id or scopes != [SCOPE]:
+            if not entry or entry['client_id'] != client.client_id or scopes != [SCOPE]:
                 raise TokenError('invalid_grant', 'This refresh credential expires or is already used')
-            return self._issue(value, entry)
+            if entry['kind'] == 'consumed_refresh':
+                self._revoke_family(value, entry['family'])
+                replay = True
+            elif entry['kind'] == 'refresh':
+                value['tokens'][digest(refresh_token.token)] = {**entry, 'kind': 'consumed_refresh'}
+                result = self._issue(value, entry)
+            else:
+                raise TokenError('invalid_grant', 'Use a current refresh credential')
+        if replay:
+            raise TokenError('invalid_grant', 'Refresh credential reuse revokes this connection family')
+        return result
+
+    @staticmethod
+    def _revoke_family(value, family):
+        value['tokens'] = {key: item for key, item in value['tokens'].items() if item.get('family') != family}
 
     async def load_access_token(self, token):
         entry = self._entry('tokens', token, 'access')
@@ -164,8 +207,7 @@ class MemoryAuthorization:
         with self.remote.store.transaction() as value:
             entry = value['tokens'].get(digest(token.token))
             if entry:
-                value['tokens'] = {key: item for key, item in value['tokens'].items()
-                                   if item.get('family') != entry.get('family')}
+                self._revoke_family(value, entry['family'])
 
 
 def authorization_routes(remote, origin):
