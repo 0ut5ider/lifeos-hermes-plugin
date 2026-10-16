@@ -20,6 +20,7 @@ import mcp_types as protocol
 
 if __package__:
     from .memory_service import MemoryConfiguration, MemoryService, tool_schemas
+    from .memory_access import MemoryUnavailable
 else:
     package = types.ModuleType("lifeos_memory_plugin")
     package.__path__ = [str(Path(__file__).resolve().parent)]
@@ -27,10 +28,16 @@ else:
     service = importlib.import_module(package.__name__ + ".memory_service")
     MemoryConfiguration, MemoryService = service.MemoryConfiguration, service.MemoryService
     tool_schemas = service.tool_schemas
+    MemoryUnavailable = importlib.import_module(package.__name__ + '.memory_access').MemoryUnavailable
 
 
-def create_server(configuration: Path, client: str) -> Server:
-    access = MemoryService(MemoryConfiguration(configuration))
+def create_server(configuration: Path, client: str, *, authorize=None) -> Server:
+    class AuthorizedConfiguration(MemoryConfiguration):
+        def load(self):
+            if authorize is not None and not authorize():
+                raise MemoryUnavailable('This memory credential expires or is revoked')
+            return super().load()
+    access = MemoryService(AuthorizedConfiguration(configuration))
 
     async def list_tools(context, parameters):
         return protocol.ListToolsResult(tools=[protocol.Tool(

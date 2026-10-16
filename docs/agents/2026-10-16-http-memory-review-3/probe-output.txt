@@ -1,0 +1,67 @@
+{
+  "previous_findings": {
+    "wrong_client_refresh": {
+      "status": 400,
+      "family_retained": true
+    },
+    "refresh_replay": {
+      "status": 400,
+      "replacement_revoked": true,
+      "replacement_refresh_status": 400,
+      "unrelated_retained": true
+    },
+    "registration_limit": {
+      "accepted": 128,
+      "blocked": 400,
+      "error": "invalid_client_metadata",
+      "owner_enrollment": "enrolled"
+    },
+    "registration_recovery": {
+      "status": "cleared",
+      "registrations_removed": 129,
+      "requests_removed": 0,
+      "active_connections_preserved": true,
+      "next_status": 201,
+      "active_refresh_status": 200
+    },
+    "pending_limit": {
+      "status": 302,
+      "oauth_error": [
+        "temporarily_unavailable"
+      ]
+    },
+    "expired_registration": {
+      "next_status": 201,
+      "remaining_unapproved": 1
+    },
+    "binding_change_error": "TokenError",
+    "plaintext_nonloopback_localhost_origin": {
+      "status": 400,
+      "tools_returned": 0
+    }
+  },
+  "transport_boundaries": {
+    "remote": {
+      "/.well-known/oauth-protected-resource/api/plugins/lifeos-hook-bridge/memory/http/mcp": 400,
+      "/.well-known/oauth-authorization-server/api/plugins/lifeos-hook-bridge/memory/http": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/authorize": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/token": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/register": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/revoke": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/mcp": 400
+    },
+    "missing_peer": {
+      "/.well-known/oauth-protected-resource/api/plugins/lifeos-hook-bridge/memory/http/mcp": 400,
+      "/.well-known/oauth-authorization-server/api/plugins/lifeos-hook-bridge/memory/http": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/authorize": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/token": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/register": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/revoke": 400,
+      "/api/plugins/lifeos-hook-bridge/memory/http/mcp": 400
+    },
+    "direct_https_nonloopback": 200,
+    "local_tls_proxy": 200,
+    "untrusted_forwarded_proto": 400,
+    "default_port_canonicalization": true
+  }
+}

@@ -566,7 +566,10 @@ class MemoryPreferences:
                                        write_project=request.get('write_project',False), account=account)
 
     def revoke(self, identifier: str, *, account: str | None = None) -> dict[str, Any]:
-        self._configuration(account=account)
+        config = self._configuration(account=account)
+        if config.get('clients', {}).get(identifier, {}).get('transport') == 'http':
+            from .memory_remote import MemoryRemote
+            return MemoryRemote(self.configuration.path).revoke(identifier, account=account)
         if self.connection_enrollment_available():
             result = self.connections.revoke(identifier, account=account)
             self.configuration.update(lambda config: config.get('clients', {}).get(identifier, {}).pop(

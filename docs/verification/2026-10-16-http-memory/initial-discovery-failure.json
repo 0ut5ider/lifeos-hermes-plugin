@@ -1,0 +1,23 @@
+{
+  "status": "FAIL",
+  "commit": "1c50bbc4",
+  "immutable_test_worktree": true,
+  "tests_run": 760,
+  "failures": 6,
+  "errors": 31,
+  "skips": 7,
+  "elapsed_seconds": 55.28604097699281,
+  "qualification_result": "INVALID_TEST_SELECTION",
+  "root_cause": "Native Hermes tests namespace selected during generic discovery",
+  "used_for_plugin_acceptance": false,
+  "diagnostic_sha256": "ed01b1987c6a2ac012a5228d472455cd434eb54655ff2bf4e3575f1ff8be27c4",
+  "failure_identities": [
+    "test_binding_the_launch_dir_explicitly_replays_the_pin (tests.agent.test_compaction_prompt_rebuild.TestWorkspaceSnapshotPinnedAcrossCompaction.test_binding_the_launch_dir_explicitly_replays_the_pin)",
+    "test_live_kernels_are_capped_lru_across_owners (tests.tools.test_code_kernel.TestKernelOwnershipAndLifecycle.test_live_kernels_are_capped_lru_across_owners)",
+    "test_parallel_cells_share_one_kernel_process (tests.tools.test_code_kernel.TestKernelOwnershipAndLifecycle.test_parallel_cells_share_one_kernel_process)",
+    "test_session_clear_disposes_the_owners_kernels (tests.tools.test_code_kernel.TestKernelOwnershipAndLifecycle.test_session_clear_disposes_the_owners_kernels)",
+    "test_each_cell_installs_a_fresh_authority (tests.tools.test_code_kernel.TestPerCellRpcAuthority.test_each_cell_installs_a_fresh_authority)",
+    "test_state_persists_across_cells (tests.tools.test_code_kernel.TestSessionStatePersistence.test_state_persists_across_cells)"
+  ],
+  "replacement": "Explicit plugin module list with recorded identities and foreign namespace assertion"
+}
