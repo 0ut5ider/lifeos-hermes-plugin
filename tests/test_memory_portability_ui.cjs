@@ -1,39 +1,19 @@
 // ABOUTME: Exercises import review decisions and authenticated failures through the dashboard SDK.
 // ABOUTME: Checks source provenance, explicit publication, and private draft removal after refusal.
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const vm = require('node:vm');
-
-function find(node, match) {
-  if (!node || typeof node !== 'object') return null;
-  if (match(node)) return node;
-  for (const child of node.children ?? []) { const result = find(child, match); if (result) return result; }
-  return null;
-}
+const { component, find, loadDashboard, settle } = require('./support/dashboard_sdk.cjs');
 
 async function panel(respond, name = 'MemoryImportReview') {
-  let states = [], index = 0, root, mounted = false;
   const calls = [];
-  const sdk = { React: { createElement(type, props, ...children) { return { type, props: props ?? {}, children: children.flat() }; } },
-    hooks: { useState(value) { const slot = index++; if (!(slot in states)) states[slot] = value;
-      return [states[slot], value => { states[slot] = typeof value === 'function' ? value(states[slot]) : value; }]; },
-    useEffect() {} },
+  const sdk = {
     fetchJSON(url, options) { calls.push({ url, options });
       if (url.endsWith('/memory')) return Promise.resolve({ state: 'configured', remaining_gates: {} });
       return Promise.resolve().then(() => respond(url, JSON.parse(options.body))); } };
-  const bundle = fs.readFileSync(path.join(__dirname, '../lifeos_hook_bridge/dashboard/dist/index.js'), 'utf8');
-  vm.runInNewContext(bundle, { window: { __HERMES_PLUGIN_SDK__: sdk,
-    __HERMES_PLUGINS__: { register(_name, component) { root = component; } } } });
-  const preferences = find(root(), node => typeof node.type === 'function' && node.type.name === 'MemoryPreferences');
-  sdk.hooks.useEffect = callback => { if (!mounted) { mounted = true; callback(); } };
-  states = []; index = 0; preferences.type(); await new Promise(setImmediate);
-  index = 0;
-  const component = find(preferences.type(), node => typeof node.type === 'function' && node.type.name === name);
-  assert.ok(component, 'The configured owner page includes ' + name);
-  states = [];
-  const render = () => { index = 0; return component.type(); };
+  const app = loadDashboard('bridge', sdk);
+  const preferences = app.mount(component(app.preview(), 'MemoryPreferences'));
+  await settle();
+  const render = app.mount(component(preferences(), name));
   return { render, calls };
 }
 

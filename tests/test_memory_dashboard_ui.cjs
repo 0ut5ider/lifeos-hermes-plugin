@@ -1,25 +1,12 @@
 // ABOUTME: Tests owner-facing memory status and sharing controls in the dashboard SDK.
 // ABOUTME: Verifies activation limits, default grants, and displayed native record references.
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const vm = require('node:vm');
-const bundle = fs.readFileSync(path.join(__dirname,'../lifeos_hook_bridge/dashboard/dist/index.js'),'utf8');
-
-function find(node, match) {
-  if (!node || typeof node !== 'object') return null;
-  if (match(node)) return node;
-  for (const child of node.children || []) { const result = find(child,match); if (result) return result; }
-  return null;
-}
+const { component, find, loadDashboard, settle } = require('./support/dashboard_sdk.cjs');
 
 async function panel(initial, reviewResponse, adoptionResponse) {
-  const state = [], calls = []; let index = 0, mounted = false, root;
+  const calls = [];
   const sdk = {
-    React:{createElement:(type,props,...children)=>({type,props:props||{},children:children.flat()})},
-    hooks:{useState(value){const slot=index++; if (!(slot in state)) state[slot]=value;
-      return [state[slot],value=>{state[slot]=typeof value==='function'?value(state[slot]):value;}];},useEffect(){}},
     fetchJSON(url,init){calls.push({url,init});
       if(url.includes('/memory/adoption') && adoptionResponse)return Promise.resolve(adoptionResponse(url,JSON.parse(init.body)));
       if(url.endsWith('/memory/review')) {
@@ -29,14 +16,9 @@ async function panel(initial, reviewResponse, adoptionResponse) {
       if(url.endsWith('/memory/connections'))return Promise.resolve({status:'enrolled',client:'reader',permissions:{read:['project'],write:[]}});
       return Promise.resolve(initial);},
   };
-  vm.runInNewContext(bundle,{window:{crypto:require('node:crypto').webcrypto,__HERMES_PLUGIN_SDK__:sdk,__HERMES_PLUGINS__:{register(_name,view){root=view;}}},console});
-  const container=root();
-  const component=find(container,node=>typeof node.type==='function'&&node.type.name==='MemoryPreferences');
-  assert.ok(component,'The LifeOS page must include the memory preferences panel');
-  state.length=0;
-  sdk.hooks.useEffect=callback=>{if(!mounted){mounted=true;callback();}};
-  const render=()=>{index=0;return component.type();};
-  render();await new Promise(setImmediate);
+  const app=loadDashboard('bridge',{...sdk,window:{crypto:require('node:crypto').webcrypto}});
+  const render=app.mount(component(app.preview(),'MemoryPreferences'));
+  await settle();
   return {render,calls};
 }
 
@@ -115,7 +97,7 @@ test('owner search displays references and new connections default to read-only 
   const p=await panel({state:'prepared',native_health:'ok',active_facts:1,sharing_enabled:false,connections:[],remaining_gates:{}});
   find(p.render(),n=>n.type==='input'&&n.props.id==='memory_query').props.onChange({target:{value:'synthetic'}});
   find(p.render(),n=>n.type==='form'&&n.props.id==='memory_search').props.onSubmit({preventDefault(){}});
-  await new Promise(setImmediate);
+  await settle();
   const view=p.render();
   assert.ok(find(view,n=>n.type==='p'&&n.children.includes('Synthetic visible fact')));
   assert.ok(find(view,n=>n.type==='p'&&n.children.some(c=>typeof c==='string'&&c.includes('stable, revision 3'))));
@@ -123,7 +105,7 @@ test('owner search displays references and new connections default to read-only 
     find(p.render(),n=>n.type==='input'&&n.props.id===id).props.onChange({target:{value}});
   }
   find(p.render(),n=>n.type==='form'&&n.props.id==='memory_enrollment').props.onSubmit({preventDefault(){}});
-  await new Promise(setImmediate);
+  await settle();
   const request=p.calls.find(c=>c.url.endsWith('/memory/connections')&&c.init?.method==='POST');
   assert.deepEqual(JSON.parse(request.init.body),{client:'reader',public_key:'ssh-ed25519 synthetic',projects:['lab'],model_route:'unknown',read:['project'],write_project:false});
 });
@@ -186,7 +168,7 @@ test('an unconfigured installation offers the owner claim and shows the claimed 
   const claim=find(p.render(),n=>n.type==='button'&&n.children.includes('Claim this LifeOS installation'));
   assert.ok(claim,'An unconfigured installation must offer the owner claim');
   await claim.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   const request=p.calls.find(c=>c.url.endsWith('/memory/owner'));
   assert.equal(request.init.method,'POST');
   assert.equal(request.init.body,undefined);

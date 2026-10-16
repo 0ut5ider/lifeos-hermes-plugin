@@ -1,37 +1,20 @@
 // ABOUTME: Tests the HTTP memory setup and owner consent controls in the dashboard SDK.
 // ABOUTME: Verifies explicit permissions, one-time credential display, and safe connection links.
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const vm = require('node:vm');
-const bundle = fs.readFileSync(path.join(__dirname, '../lifeos_hook_bridge/dashboard/dist/index.js'), 'utf8');
-function find(node, match) {
-  if (!node || typeof node !== 'object') return null;
-  if (match(node)) return node;
-  for (const child of node.children ?? []) { const found = find(child, match); if (found) return found; }
-  return null;
-}
+const { component, find, loadDashboard, settle } = require('./support/dashboard_sdk.cjs');
 async function panel(initial) {
-  const state = [], calls = []; let index = 0, mounted = false, root;
+  const calls = [];
   const sdk = {
-    React: {createElement: (type, props, ...children) => ({type, props: props ?? {}, children: children.flat()})},
-    hooks: {useState(value) {const slot = index++; if (!(slot in state)) state[slot] = value;
-      return [state[slot], value => {state[slot] = typeof value === 'function' ? value(state[slot]) : value;}];},
-      useEffect() {}},
     fetchJSON(url, init) {calls.push({url, init});
       if (url.endsWith('/connections') && init) return Promise.resolve({token: 'synthetic-token', expires_in: 7776000});
       if (url.includes('/authorization/')) return Promise.resolve({redirect_url: 'http://localhost:9812/callback?code=synthetic'});
       return Promise.resolve(initial);},
   };
-  vm.runInNewContext(bundle, {window: {__HERMES_PLUGIN_SDK__: sdk, __HERMES_PLUGINS__: {register(_name, view) {root = view;}}}, console});
-  const memory = find(root(), node => node.type?.name === 'MemoryPreferences');
-  const component = find(memory.type(), node => node.type?.name === 'MemoryHTTPPreferences');
-  assert.ok(component, 'The plugin must include HTTP memory setup');
-  state.length = 0; index = 0; mounted = false;
-  sdk.hooks.useEffect = callback => {if (!mounted) {mounted = true; callback();}};
-  const render = () => {index = 0; return component.type();};
-  render(); await new Promise(setImmediate);
+  const app = loadDashboard('bridge', sdk);
+  const memory = component(app.preview(), 'MemoryPreferences');
+  const render = app.mount(component(app.preview(memory), 'MemoryHTTPPreferences'));
+  await settle();
   return {render, calls};
 }
 test('HTTP setup recommends Tailscale Serve and retains explicit grants', async () => {
