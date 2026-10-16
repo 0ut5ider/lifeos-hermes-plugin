@@ -42,6 +42,7 @@ class MemoryRemoteTests(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(ValueError):
                 self.configure(url)
         self.assertTrue(self.configure('https://memory.example')['enabled'])
+        self.assertEqual(self.configure('https://memory.example:443')['public_url'], 'https://memory.example')
 
     def test_credentials_are_private_hashed_and_persist_across_restart(self):
         self.configure()
@@ -84,7 +85,7 @@ class MemoryRemoteTests(unittest.TestCase):
         credential = self.enroll()
         for available, expected in [(lambda: False, 404), (lambda: True, 413)]:
             with TestClient(MemoryRemoteMiddleware(Starlette(), configuration=self.path, available=available),
-                            base_url='http://127.0.0.1:9100') as client:
+                            base_url='http://127.0.0.1:9100', client=('127.0.0.1', 5000)) as client:
                 response = client.post(MCP_PATH, headers={'Authorization': 'Bearer ' + credential['token']},
                                        content=b'x' * (1024 * 1024 + 1))
                 self.assertEqual(response.status_code, expected)
@@ -99,6 +100,19 @@ class MemoryRemoteTests(unittest.TestCase):
             self.assertEqual(client.get(RESOURCE_METADATA_PATH, headers={'X-Forwarded-Proto': 'https'}).status_code, 400)
         with TestClient(app, base_url='http://memory.example', client=('127.0.0.1', 5000)) as client:
             self.assertEqual(client.get(RESOURCE_METADATA_PATH).status_code, 200)
+
+    def test_localhost_http_origin_rejects_non_loopback_peers_with_a_valid_bearer(self):
+        self.configure()
+        credential = self.enroll()
+        app = MemoryRemoteMiddleware(Starlette(), configuration=self.path)
+        headers = {'Authorization': 'Bearer ' + credential['token'],
+                   'Accept': 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-03-26'}
+        message = {'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list', 'params': {}}
+        for peer in [('192.0.2.20', 23456), None]:
+            with TestClient(app, base_url='http://127.0.0.1:9100', client=peer) as client:
+                self.assertEqual(client.post(MCP_PATH, headers=headers, json=message).status_code, 400)
+        with TestClient(app, base_url='http://127.0.0.1:9100', client=('127.0.0.1', 23456)) as client:
+            self.assertEqual(client.post(MCP_PATH, headers=headers, json=message).status_code, 200)
 
     def test_backup_recovery_retains_credentials_but_cannot_reuse_them(self):
         from test_profile_backup_recovery import ProfileRecoveryTests
@@ -127,7 +141,7 @@ class MemoryRemoteTests(unittest.TestCase):
         first = self.enroll()
         second = self.enroll('other', projects=['other'])
         app = MemoryRemoteMiddleware(Starlette(), configuration=self.path)
-        with TestClient(app, base_url='http://127.0.0.1:9100') as client:
+        with TestClient(app, base_url='http://127.0.0.1:9100', client=('127.0.0.1', 5000)) as client:
             self.assertEqual(client.get('/unrelated').status_code, 404)
             challenge = client.post(MCP_PATH)
             self.assertEqual(challenge.status_code, 401)
@@ -161,7 +175,7 @@ class MemoryRemoteTests(unittest.TestCase):
         self.configure()
         self.configuration.update(lambda value: value.update(sharing_enabled=True))
         provider = MemoryAuthorization(self.remote)
-        with TestClient(MemoryRemoteMiddleware(Starlette(), configuration=self.path), base_url='http://127.0.0.1:9100') as client:
+        with TestClient(MemoryRemoteMiddleware(Starlette(), configuration=self.path), base_url='http://127.0.0.1:9100', client=('127.0.0.1', 5000)) as client:
             origin = 'http://127.0.0.1:9100'
             resource = origin + MCP_PATH
             self.assertEqual(client.get(RESOURCE_METADATA_PATH).json()['resource'], resource)

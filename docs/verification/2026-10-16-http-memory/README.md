@@ -56,6 +56,15 @@ race, bounded registration metadata, owner cleanup, and refusal of a partial
 grant when credential storage is full. The owner cleanup has an authenticated
 API and a tested button. The next review checks the corrections before merge.
 
+The [second independent review](../../agents/2026-10-16-http-memory-review-2/http-memory-review-2.md)
+confirms those three corrections and finds a remaining plaintext boundary.
+A valid bearer from a non-loopback peer can reach a localhost HTTP origin when
+its Host header matches. The primary reproduces HTTP 200 before the correction.
+The corrected transport requires a loopback peer for HTTP origins. Tests verify
+HTTP 400 for LAN and absent peer addresses, successful local requests, and the
+existing HTTPS proxy path. Explicit default HTTPS ports normalize to the same
+origin. The updated direct check passes 19 tests.
+
 This acceptance does not publish or deploy a release package. Development and
 daily remain on qualified 0.6.0. Claude Code and OpenCode HTTP login have not yet
 been replayed. Their configuration examples are instructions, not acceptance

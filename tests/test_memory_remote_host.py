@@ -39,7 +39,7 @@ from hermes_cli import web_server
 from lifeos_hook_bridge.memory_remote import MCP_PATH, RESOURCE_METADATA_PATH
 assert getattr(web_server.app.state, 'lifeos_memory_http', False), 'Native plugin import must install HTTP MCP'
 web_server.app.state.auth_required = True
-with TestClient(web_server.app, base_url='http://127.0.0.1:9100') as client:
+with TestClient(web_server.app, base_url='http://127.0.0.1:9100', client=('127.0.0.1', 5000)) as client:
     assert client.get('/api/plugins/lifeos-hook-bridge/memory/http/settings').status_code == 401
     assert client.get(RESOURCE_METADATA_PATH).status_code == 200
     assert client.post(MCP_PATH).status_code == 401

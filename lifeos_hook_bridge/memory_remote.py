@@ -69,7 +69,7 @@ def public_origin(value):
         raise ValueError('Provide the HTTPS origin that serves this Hermes dashboard')
     parsed = urlsplit(value)
     try:
-        parsed.port
+        port = parsed.port
     except ValueError as error:
         raise ValueError('Provide a valid public port') from error
     if (not parsed.hostname or parsed.username is not None or parsed.password is not None
@@ -78,7 +78,10 @@ def public_origin(value):
             or parsed.scheme not in ('https', 'http')
             or (parsed.scheme == 'http' and parsed.hostname not in ('localhost', '127.0.0.1', '::1'))):
         raise ValueError('Use HTTPS, or HTTP on localhost, without a path, credentials, query, or fragment')
-    return f'{parsed.scheme}://{parsed.netloc.lower()}'
+    authority = parsed.netloc.lower()
+    if port == (443 if parsed.scheme == 'https' else 80):
+        authority = '[' + parsed.hostname + ']' if ':' in parsed.hostname else parsed.hostname
+    return f'{parsed.scheme}://{authority}'
 
 
 def digest(value):
@@ -304,9 +307,12 @@ class MemoryRemoteMiddleware:
         if request.headers.get('host', '').lower() != urlsplit(origin).netloc:
             return await respond(421, {'error': 'Use the configured HTTP memory host'})
         try:
-            loopback_proxy = ipaddress.ip_address(scope.get('client', ('', 0))[0]).is_loopback
+            peer = scope.get('client')
+            loopback_proxy = bool(peer) and ipaddress.ip_address(peer[0]).is_loopback
         except ValueError:
             loopback_proxy = False
+        if origin.startswith('http://') and not loopback_proxy:
+            return await respond(400, {'error': 'Localhost HTTP requires a loopback connection'})
         if origin.startswith('https://') and scope.get('scheme') != 'https' and not loopback_proxy:
             return await respond(400, {'error': 'Use HTTPS or the local HTTPS proxy'})
         if request.headers.get('origin') not in (None, origin):

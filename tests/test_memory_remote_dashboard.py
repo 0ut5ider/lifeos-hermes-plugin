@@ -46,7 +46,7 @@ class MemoryRemoteDashboardTests(unittest.TestCase):
             module.install_memory_cache_headers(app)
             install_http_memory(app, path)
             endpoint = '/api/plugins/lifeos-hook-bridge/memory/http'
-            with TestClient(app, base_url='http://127.0.0.1:9100') as client:
+            with TestClient(app, base_url='http://127.0.0.1:9100', client=('127.0.0.1', 5000)) as client:
                 self.assertEqual(client.get(endpoint + '/settings').status_code, 401)
                 self.assertEqual(client.post('/auth/password-login', json={'provider': 'basic',
                     'username': 'synthetic-owner', 'password': 'synthetic-password'}).status_code, 200)

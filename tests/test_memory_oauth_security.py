@@ -28,7 +28,7 @@ class MemoryOAuthSecurityTests(unittest.TestCase):
         self.owner = self.fixture.owner
         self.remote.configuration.update(lambda value: value.update(sharing_enabled=True))
         self.origin = 'http://127.0.0.1:9100'
-        self.client = self.enterContext(TestClient(MemoryRemoteMiddleware(Starlette(), configuration=self.fixture.path), base_url=self.origin))
+        self.client = self.enterContext(TestClient(MemoryRemoteMiddleware(Starlette(), configuration=self.fixture.path), base_url=self.origin, client=('127.0.0.1', 5000)))
 
     def register(self, **extra):
         return self.client.post(HTTP_PREFIX + '/register', json={
