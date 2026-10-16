@@ -1,5 +1,8 @@
 # Import existing Hermes memory into LifeOS
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 Date: 2026-10-05. Status: implementation in progress. The original proposal and independent findings remain below. The candidate implements source review, private snapshots, manual item plans, and recoverable native publication. It does not activate ownership or complete migration.
 
 The [approved memory design](../notes/2026-09-30-memory-design.md) gives LifeOS ownership of lasting facts. Hermes retains history, compression, and skills. Fresh installations remain the first target. Import applies separately to an established Hermes profile that already has `memories/MEMORY.md` or `memories/USER.md`.

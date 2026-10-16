@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-16",
+  "role": "independent reviewer, round 2",
+  "model": "claude-opus-5-5",
+  "base": "455154c19611da320086592b98e15ead302817dc",
+  "previous_head": "99e18c44f1c09a894125299f5469f256122244f7",
+  "head": "70fa8390e86c782bb47e7073c492124970ff68d1",
+  "verdict": "CLEAR",
+  "findings": [],
+  "non_blocking_observations": [
+    {"file": "tests/test_memory_owner_job_processes.py", "line": 39, "note": "Comment wording: killpg queues SIGKILL to all members at once; the grandchild exit lags. The prior Z-state explanation is removed."},
+    {"file": "tests/test_memory_owner_job_processes.py", "line": 31, "note": "PID reuse inside 5 s window could false-fail; pid_max 4194304, negligible, same exposure as before."}
+  ],
+  "product_code": {
+    "memory_owner_jobs_diff_base_to_head": "unused NativeMemory import removed only",
+    "terminate_and_command_changed": false
+  },
+  "archive_stderr_check": {
+    "ran": 1128,
+    "summary": "FAILED (failures=2, errors=3)",
+    "errors": [
+      "test_memory_life_health.test_leaf_filename_with_repeated_dots_preserves_native_fields: OSError Errno 122",
+      "test_memory_life_health.test_oversize_health_note_refuses_before_returning_source_text: OSError Errno 122",
+      "test_removal_consumers.test_running_bun_outside_reviewed_service_groups_refuses: PermissionError /proc/814420/exe"
+    ],
+    "failures": [
+      "test_memory_owner_job_processes.test_deadline_kills_the_actual_child_and_grandchild: Child 3840685 still runs",
+      "test_removal_coordinator.test_exact_running_coordinator_is_admitted: account process boundary cannot be verified"
+    ]
+  },
+  "termination_timing_recomputed": {
+    "rounds": 100,
+    "nonterminal_at_return": 12,
+    "initial_states": {"absent": 64, "Z": 24, "R": 12},
+    "final_states": {"absent": 76, "Z": 24},
+    "max_elapsed_seconds_all": 0.004175217007286847,
+    "max_elapsed_seconds_nonterminal": 0.00202240000362508
+  },
+  "replay_r2_cases": 16,
+  "health_module_test_count_at_head": 14,
+  "tests_run": {
+    "interpreter": "/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/bin/python 3.14.7",
+    "flags": "-W error::ResourceWarning",
+    "tmpdir": "/home/outsider/.cache/pr38-r2/tmp",
+    "individual": {
+      "test_stop_assertion_waits_for_actual_process_exit": {"result": "OK", "seconds": 0.520},
+      "test_deadline_kills_the_actual_child_and_grandchild": {"result": "OK", "seconds": 1.005},
+      "test_termination_kills_the_actual_child_and_grandchild": {"result": "OK", "seconds": 0.196}
+    },
+    "module_repeats": {"runs": 30, "pass": 30, "fail": 0},
+    "red_replay": {"assertion": "parent commit assert_stopped", "result": "FAIL as expected", "seconds": 0.002},
+    "mutation_replay": {"mutation": "_terminate kills and reaps direct child only", "result": "detected", "seconds": 6.012, "surviving_pid": 4124412, "pid_alive_after_cleanup": false, "stray_sleep60_processes": 0}
+  },
+  "not_run": [
+    "391-case suite",
+    "1128-case archive suite",
+    "service-account /proc boundary tests",
+    "dashboard mutations"
+  ],
+  "style_check": "no em dash or trailing whitespace in new report, note, or test file"
+}

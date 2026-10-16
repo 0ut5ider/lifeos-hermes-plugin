@@ -1,5 +1,8 @@
 # LifeOS hook parity record
 
+> Event translation reference with historical checkpoint results. The [Step 1 ledger](parity/step1-acceptance.md) records the accepted scenarios.
+> Use the [current release record](verification/2026-10-16-release-0.7.2/README.md) for package qualification and deployment status.
+
 This record describes the public LifeOS hook settings installed from commit `5e2f2e8` on 2026-09-27. It distinguishes registered callbacks from verified behavior. The runtime bridge is a Hermes plugin and does not edit the active LifeOS source. The plugin's install preparation now applies the compatibility patches to a separate candidate tree.
 
 ## Event coverage

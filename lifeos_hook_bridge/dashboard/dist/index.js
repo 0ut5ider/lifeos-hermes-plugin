@@ -12,7 +12,31 @@
   const lifeosUpdateEndpoint = installationEndpoint + "/update";
   const baselineEndpoint = "/api/plugins/lifeos-hook-bridge/version-drift";
   const modelEndpoint = "/api/model/options?explicit_only=1";
+  const memoryWorkflowsEndpoint = "/api/plugins/lifeos-release-manager/memory-workflows";
   const tiers = ["haiku", "sonnet", "opus", "fable"];
+
+  function postJSON(url, body) {
+    return SDK.fetchJSON(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  }
+
+  async function encodeFile(file) {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let binary = "";
+    for (const value of bytes) binary += String.fromCharCode(value);
+    return window.btoa(binary);
+  }
+
+  // Every agent grant reads project facts; owner and assistant preferences are explicit additions.
+  function readScopes(principal, assistant) {
+    const read = ["project"];
+    if (principal) read.push("principal");
+    if (assistant) read.push("assistant");
+    return read;
+  }
+
+  function projectNames(value) {
+    return value.split(",").map(function (name) { return name.trim(); }).filter(Boolean);
+  }
 
   function MemoryImportReview() {
     const base = "/api/plugins/lifeos-hook-bridge/memory/import";
@@ -30,8 +54,7 @@
     const [portableUpload, setPortableUpload] = SDK.hooks.useState("");
 
     async function post(path, body) {
-      return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body) });
+      return postJSON(base + path, body);
     }
     function binding() {
       return { identifier: snapshot.identifier, snapshot_signature: snapshot.snapshot_signature };
@@ -52,9 +75,9 @@
     }
     async function begin(sourceIdentifier) {
       setReview(null); setSnapshot(null); setPlan(null); setPublication(null);
-      const source = sourceIdentifier ? { source_identifier: sourceIdentifier } : {};
-      const current = await post("/preview", source);
-      const saved = await post("/snapshot", { signature: current.signature, ...source });
+      const origin = sourceIdentifier ? { source_identifier: sourceIdentifier } : {};
+      const current = await post("/preview", origin);
+      const saved = await post("/snapshot", { signature: current.signature, ...origin });
       const selected = {};
       for (const source of current.sources) {
         for (const item of source.chunks.filter(function (chunk) { return chunk.content; })) {
@@ -103,10 +126,7 @@
                 return run(async function () {
                   if (!file) { setUploads(function (current) { const next = { ...current }; delete next[name]; return next; }); return; }
                   if (file.size > 1024 * 1024) throw new Error("Each source file must be at most 1 MiB.");
-                  const bytes = new Uint8Array(await file.arrayBuffer());
-                  let binary = "";
-                  for (const value of bytes) binary += String.fromCharCode(value);
-                  const encoded = window.btoa(binary);
+                  const encoded = await encodeFile(file);
                   setUploads(function (current) { return { ...current, [name]: encoded }; });
                 });
               } })); }),
@@ -124,10 +144,7 @@
               return run(async function () {
                 if (!file) { setPortableUpload(""); return; }
                 if (file.size > 16 * 1024 * 1024) throw new Error("A portable bundle must be at most 16 MiB.");
-                const bytes = new Uint8Array(await file.arrayBuffer());
-                let binary = "";
-                for (const value of bytes) binary += String.fromCharCode(value);
-                setPortableUpload(window.btoa(binary));
+                setPortableUpload(await encodeFile(file));
               });
             } })),
           h("p", { className: "lifeos-help" }, "Choose a portable memory JSON file to enable upload."),
@@ -197,9 +214,8 @@
               h("div", { className: "space-y-2" },
                 h("p", null, "Prepare a separate ownership review to use LifeOS memory in new Hermes sessions. The preparation saves a private backup and restarts Hermes services."),
                 h("button", { type: "button", disabled: busy, onClick: function () { return run(async function () {
-                  const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ kind: "activation", ...binding(), plan_signature: plan.signature }) });
+                  const result = await postJSON(memoryWorkflowsEndpoint,
+                    { kind: "activation", ...binding(), plan_signature: plan.signature });
                   setMessage("Ownership review started. Workflow: " + result.identifier + ". Open LifeOS releases to review the cutover.");
                 }); } }, "Prepare LifeOS ownership activation"),
                 h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null,
@@ -220,7 +236,7 @@
     const [message, setMessage] = SDK.hooks.useState("");
     const [prompt, setPrompt] = SDK.hooks.useState("");
     async function post(path, body) {
-      return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      return postJSON(base + path, body);
     }
     function binding() { return { identifier: snapshot.identifier, signature: snapshot.signature }; }
     async function run(operation) {
@@ -308,9 +324,8 @@
                 onChange: function (event) { setPrompt(event.target.value); } })),
               h("p", { className: "lifeos-help" }, "Enter a replacement Hermes prompt to prepare provider return."),
               h("button", { type: "button", disabled: busy || !prompt.trim(), onClick: function () { return run(async function () {
-                const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
-                  method: "POST", headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ kind: "return", ...binding(), plan_signature: plan.signature, prompt: prompt }) });
+                const result = await postJSON(memoryWorkflowsEndpoint,
+                  { kind: "return", ...binding(), plan_signature: plan.signature, prompt: prompt });
                 setMessage("Provider return review prepared. Workflow: " + result.identifier + ". Open LifeOS releases to review and apply it.");
               }); } }, "Prepare return to built-in Hermes"),
               h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null) : null) : null));
@@ -343,7 +358,7 @@
       finally { setBusy(false); }
     }
     function post(path, body) {
-      return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      return postJSON(base + path, body);
     }
     function field(id, label, value, setter) {
       return h("label", { htmlFor: id, className: "block text-sm" }, label,
@@ -357,8 +372,7 @@
           onChange: function (event) { setter(event.target.checked); } }), " " + label);
     }
     function grant() {
-      const read = ["project"]; if (principal) read.push("principal"); if (assistant) read.push("assistant");
-      return { client: client, read: read, projects: projects.split(",").map(function (value) { return value.trim(); }).filter(Boolean),
+      return { client: client, read: readScopes(principal, assistant), projects: projectNames(projects),
         model_route: route, write_project: write };
     }
     function authorize(request, decision) {
@@ -491,55 +505,55 @@
       finally { setBusy(false); }
     }
 
-    async function action(path, method, body) {
+    async function action(path, method, body, show) {
       setBusy(true);
       try {
-        const result = await SDK.fetchJSON(memoryEndpoint + path, {
+        await show(await SDK.fetchJSON(memoryEndpoint + path, {
           method: method, headers: { "Content-Type": "application/json" },
           ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-        });
-        if (path === "/adoption/preview") {
-          setAdoption(result); setAssignments({}); setSourcePage(0); setAdoptionRequest(requestId()); setMessage("");
-        } else if (path === "/adoption") {
-          if (result.status === "committed") {
-            const outcome = "Added " + result.facts_adopted + " fact(s) and " + result.proposals_adopted + " pending change(s). Native files remain unchanged.";
-            setAdoption(null); setMessage(outcome);
-            try { setMemory(await SDK.fetchJSON(memoryEndpoint)); }
-            catch (error) { setMessage(outcome + " Could not refresh memory status: " + error.message); }
-          } else { setMessage(result.reason ?? result.status); }
-        } else if (path === "/review") {
-          if (body.tool === "lifeos_memory_proposals") {
-            if (result.status === "ok") setProposals(result.results ?? []);
-            setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
-          } else if (body.tool === "lifeos_memory_decide_proposal") {
-            if (result.status === "committed") {
-              const outcome = "Change " + result.proposal_status + ".";
-              setMessage(outcome);
-              try {
-                const pending = await SDK.fetchJSON(memoryEndpoint + "/review", {
-                  method: "POST", headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ tool: "lifeos_memory_proposals", arguments: {} }),
-                });
-                if (pending.status !== "ok") throw new Error(pending.reason ?? pending.status);
-                setProposals(pending.results ?? []);
-              } catch (error) { setMessage(outcome + " Could not refresh pending changes: " + error.message); }
-            } else { setMessage(result.reason ?? result.status); }
-          } else {
-            setResults(result.results ?? []);
-            setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
-          }
-        } else if (path === "/owner") {
-          setMemory(result);
-          setMessage("This dashboard account now owns the LifeOS installation. Ownership and sharing stay disabled.");
-        } else {
-          setMemory(await SDK.fetchJSON(memoryEndpoint));
-          setMessage(result.status === "enrolled" ?
-            "Connection added. Use its private key with SSH and the lifeos-memory command. The private key stays on the other agent's computer." :
-            result.status === "revoked" ? "Connection revoked. Its contributed facts remain." :
-              "Memory sharing is " + (result.sharing_enabled ? "enabled." : "disabled."));
-        }
+        }));
       } catch (error) { setMessage(error.message); }
       finally { setBusy(false); }
+    }
+
+    function showAdoptionPreview(result) {
+      setAdoption(result); setAssignments({}); setSourcePage(0); setAdoptionRequest(requestId()); setMessage("");
+    }
+    async function showAdoption(result) {
+      if (result.status !== "committed") { setMessage(result.reason ?? result.status); return; }
+      const outcome = "Added " + result.facts_adopted + " fact(s) and " + result.proposals_adopted + " pending change(s). Native files remain unchanged.";
+      setAdoption(null); setMessage(outcome);
+      try { setMemory(await SDK.fetchJSON(memoryEndpoint)); }
+      catch (error) { setMessage(outcome + " Could not refresh memory status: " + error.message); }
+    }
+    function showProposals(result) {
+      if (result.status === "ok") setProposals(result.results ?? []);
+      setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
+    }
+    async function showDecision(result) {
+      if (result.status !== "committed") { setMessage(result.reason ?? result.status); return; }
+      const outcome = "Change " + result.proposal_status + ".";
+      setMessage(outcome);
+      try {
+        const pending = await postJSON(memoryEndpoint + "/review", { tool: "lifeos_memory_proposals", arguments: {} });
+        if (pending.status !== "ok") throw new Error(pending.reason ?? pending.status);
+        setProposals(pending.results ?? []);
+      } catch (error) { setMessage(outcome + " Could not refresh pending changes: " + error.message); }
+    }
+    function showSearch(result) {
+      setResults(result.results ?? []);
+      setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
+    }
+    function showClaim(result) {
+      setMemory(result);
+      setMessage("This dashboard account now owns the LifeOS installation. Ownership and sharing stay disabled.");
+    }
+    async function showConnectionChange(result) {
+      setMemory(await SDK.fetchJSON(memoryEndpoint));
+      setMessage(result.status === "enrolled" ?
+        "Connection added. Use its private key with SSH and the lifeos-memory command. The private key stays on the other agent's computer." :
+        result.status === "revoked" ? "Connection revoked. Its contributed facts remain." :
+          "Memory sharing is " + (result.sharing_enabled ? "enabled." : "disabled."));
     }
 
     function input(id, label, value, setter, required) {
@@ -568,7 +582,7 @@
         reference: record.reference, decision: decision, request_id: requestId(),
         ...(decision === "edit" ? { content: values.content ?? record.edit } : {}),
         ...(decision === "applied_elsewhere" ? { note: values.note ?? "" } : {}),
-      } });
+      } }, showDecision);
     }
     const configured = memory && ["prepared", "configured"].includes(memory.state);
     return h("section", { id: "lifeos_memory", className: "rounded border border-border p-4 space-y-3" },
@@ -578,7 +592,7 @@
       memory?.state === "not_configured" ? h("p", { className: "text-sm" },
         "Claim the installation to prepare a fresh store or review memory. The claim binds this dashboard account as the owner. It does not enable ownership or sharing.") : null,
       memory?.state === "not_configured" ? h("button", { type: "button", disabled: busy,
-        onClick: function () { return action("/owner", "POST"); },
+        onClick: function () { return action("/owner", "POST", undefined, showClaim); },
         className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Claim this LifeOS installation") : null,
       memory?.state === "unavailable" ? h("p", { role: "alert" }, "Memory is unavailable: " + memory.message) : null,
       configured ? h("p", null, "Native memory check: " + memory.native_health + ". Current indexed facts: " + (memory.active_facts ?? "unknown") + ".") : null,
@@ -597,7 +611,7 @@
             h("p", { className: "text-sm" }, "Preview native notes before adding them to governed recall. This does not copy or change their files. Unknown authors stay unknown. Learning notes remain historical."),
             h("p", { className: "text-sm" }, "Leave a project name blank to keep an unclassified note private to the owner. Assign a project only if agents with access to that project can read the note."),
             h("button", { type: "button", disabled: busy, onClick: function () {
-              return action("/adoption/preview", "POST", {});
+              return action("/adoption/preview", "POST", {}, showAdoptionPreview);
             } }, "Preview existing LifeOS memory"),
             adoption ? h("div", { className: "space-y-3" },
               h("p", null, "Preview: " + adoption.records.length + " fact(s), " + adoption.proposals.length + " pending change(s), " + adoption.excluded.length + " excluded source(s)."),
@@ -632,13 +646,13 @@
               h("p", { className: "text-sm" }, "Adding pending changes does not accept them. Review them separately after adoption."),
               h("button", { type: "button", disabled: busy || adoption.records.length + adoption.proposals.length === 0,
                 onClick: function () {
-                  const projects = Object.fromEntries(Object.entries(assignments).filter(function (entry) { return entry[1].trim(); })
+                  const assigned = Object.fromEntries(Object.entries(assignments).filter(function (entry) { return entry[1].trim(); })
                     .map(function (entry) { return [entry[0], entry[1].trim()]; }));
-                  return action("/adoption", "POST", { signature: adoption.signature, projects: projects, request_id: adoptionRequest });
+                  return action("/adoption", "POST", { signature: adoption.signature, projects: assigned, request_id: adoptionRequest }, showAdoption);
                 } }, "Add reviewed sources to memory")) : null)),
         h("h3", { className: "font-semibold" }, "Review current facts"),
         h("form", { id: "memory_search", className: "space-y-2", onSubmit: function (event) {
-          event.preventDefault(); return action("/review", "POST", { tool: "lifeos_memory_search", arguments: { query: query } });
+          event.preventDefault(); return action("/review", "POST", { tool: "lifeos_memory_search", arguments: { query: query } }, showSearch);
         } }, input("memory_query", "Find a fact", query, setQuery, true),
         h("button", { type: "submit", disabled: busy, className: "rounded border border-border px-3 py-2" }, "Search memories")),
         results.map(function (record) {
@@ -654,7 +668,7 @@
           h("div", { className: "space-y-3 pt-3" },
             h("p", { className: "text-sm" }, "Pending changes have not been applied. Check the proposed text and its target before accepting. Changed targets require a fresh review. Applied identity changes require a new conversation."),
             h("button", { type: "button", disabled: busy, onClick: function () {
-              return action("/review", "POST", { tool: "lifeos_memory_proposals", arguments: {} });
+              return action("/review", "POST", { tool: "lifeos_memory_proposals", arguments: {} }, showProposals);
             } }, "Review pending changes"),
             proposals?.length === 0 ? h("p", null, "No pending changes.") : null,
             (proposals ?? []).map(function (record) {
@@ -684,7 +698,7 @@
           h("div", { className: "space-y-3 pt-3" },
             h("p", { className: "text-sm" }, "Sharing is " + (memory.sharing_enabled ? "enabled" : "disabled") + ". Each agent gets its own SSH key and permissions. This shares memory operations, not LifeOS hooks or Hermes conversations."),
             h("button", { type: "button", disabled: busy, className: memory.sharing_enabled ? "lifeos-danger" : "lifeos-primary",
-              onClick: function () { return action("/sharing", "POST", { enabled: !memory.sharing_enabled }); }
+              onClick: function () { return action("/sharing", "POST", { enabled: !memory.sharing_enabled }, showConnectionChange); }
             }, memory.sharing_enabled ? "Disable memory sharing" : "Enable memory sharing"),
             (memory.connections ?? []).map(function (connection) {
               return h("article", { key: connection.client, className: "rounded border border-border p-3 text-sm" },
@@ -692,12 +706,12 @@
                 h("p", null, "Reads: " + (connection.read ?? ["project"]).join(", ") + ". Writes: " + ((connection.write ?? []).join(", ") || "none") + "."),
                 h("p", null, "Projects: " + (connection.projects ?? []).join(", ") + ". Declared model route: " + (connection.model_route ?? "unknown") + "."),
                 connection.enabled ? h("button", { type: "button", className: "lifeos-danger", disabled: busy,
-                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
+                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE", undefined, showConnectionChange); }
                 }, "Revoke " + connection.client) : null,
                 !connection.enabled && connection.credential_entry_pending ? h("p", null,
                   "The SSH entry of this connection is still present. It cannot reach memory. Install the sharing component to remove it.") : null,
                 !connection.enabled && connection.credential_entry_pending && memory.connection_enrollment_available !== false ? h("button", { type: "button", className: "lifeos-danger", disabled: busy,
-                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
+                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE", undefined, showConnectionChange); }
                 }, "Remove SSH entry of " + connection.client) : null);
             }),
             h("p", { className: "text-sm" }, "A cloud model can receive every fact this connection returns. An unknown model route is unverified. Adding a connection enables sharing for the enabled connections listed above."),
@@ -705,10 +719,8 @@
               "Adding a connection needs the optional SSH sharing component. Install it on the server, then reload this page. Existing connections can still be revoked here.") :
             h("form", { id: "memory_enrollment", className: "space-y-3", onSubmit: function (event) {
               event.preventDefault();
-              const read = ["project"]; if (principal) read.push("principal"); if (assistant) read.push("assistant");
-              return action("/connections", "POST", { client: client, public_key: publicKey,
-                projects: projects.split(",").map(function (value) { return value.trim(); }).filter(Boolean),
-                model_route: modelRoute, read: read, write_project: writeProject });
+              return action("/connections", "POST", { client: client, public_key: publicKey, projects: projectNames(projects),
+                model_route: modelRoute, read: readScopes(principal, assistant), write_project: writeProject }, showConnectionChange);
             } }, input("memory_client", "Connection name", client, setClient, true),
               input("memory_public_key", "Agent's Ed25519 public key", publicKey, setPublicKey, true),
               input("memory_projects", "Project names (comma separated; * allows all projects)", projects, setProjects, true),
@@ -735,37 +747,33 @@
       try { setSelection(await SDK.fetchJSON(selectionEndpoint)); }
       catch (error) { setNotice("Could not read the selected installation: " + error.message); }
     }
-    async function choose(path, body, started) {
+    async function change(request, done) {
       setBusy(true);
       try {
-        await SDK.fetchJSON(selectionEndpoint + path, { method: "POST",
-          ...(body === undefined ? {} : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }) });
-        setNotice(started);
+        await request();
+        setNotice(done);
         await load();
       } catch (error) { setNotice(error.message); }
       finally { setBusy(false); }
+    }
+    function choose(path, body, started) {
+      return change(function () {
+        return SDK.fetchJSON(selectionEndpoint + path, { method: "POST",
+          ...(body === undefined ? {} : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }) });
+      }, started);
     }
     SDK.hooks.useEffect(function () { load(); }, []);
 
-    async function start(event) {
+    function start(event) {
       event.preventDefault();
-      setBusy(true);
-      try {
-        await SDK.fetchJSON(endpoint + "/start", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ principal_name: principalName, assistant_name: assistantName }) });
-        setNotice("Preparation started. It continues if this page closes.");
-        await load();
-      } catch (error) { setNotice(error.message); }
-      finally { setBusy(false); }
+      return change(function () {
+        return postJSON(endpoint + "/start", { principal_name: principalName, assistant_name: assistantName });
+      }, "Preparation started. It continues if this page closes.");
     }
-    async function remove(identifier) {
-      setBusy(true);
-      try {
-        await SDK.fetchJSON(endpoint + "/stores/" + encodeURIComponent(identifier), { method: "DELETE" });
-        setNotice("Store removed. The current installation is unchanged.");
-        await load();
-      } catch (error) { setNotice(error.message); }
-      finally { setBusy(false); }
+    function remove(identifier) {
+      return change(function () {
+        return SDK.fetchJSON(endpoint + "/stores/" + encodeURIComponent(identifier), { method: "DELETE" });
+      }, "Store removed. The current installation is unchanged.");
     }
     function describe(store) {
       const names = store.names ? store.names.principal + " and " + store.names.assistant : "Unknown names";
@@ -942,10 +950,7 @@
       setBaselineBusy(true);
       setBaselineStatus("");
       setCandidate(null);
-      SDK.fetchJSON(baselineEndpoint + "/preview", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: values.lifeos_source_dir ?? "" }),
-      }).then(function (result) {
+      postJSON(baselineEndpoint + "/preview", { source: values.lifeos_source_dir ?? "" }).then(function (result) {
         setCandidate(result);
         setBaselineStatus("Review the file list before creating this baseline.");
       }).catch(function (error) {
@@ -957,12 +962,9 @@
       if (!candidate) return;
       setBaselineBusy(true);
       setBaselineStatus("");
-      SDK.fetchJSON(baselineEndpoint, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: values.lifeos_source_dir ?? "", fingerprint: candidate.fingerprint,
-          renew: baseline?.baseline_exists === true,
-        }),
+      postJSON(baselineEndpoint, {
+        source: values.lifeos_source_dir ?? "", fingerprint: candidate.fingerprint,
+        renew: baseline?.baseline_exists === true,
       }).then(function (result) {
         setBaseline(result);
         setCandidate(null);
@@ -972,72 +974,60 @@
       }).finally(function () { setBaselineBusy(false); });
     }
 
-    function prepareLifeOS() {
+    function runInstallationAction(url, succeed, failure) {
       setInstallationBusy(true);
       setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/prepare", { method: "POST" }).then(function (result) {
+      SDK.fetchJSON(url, { method: "POST" }).then(succeed).catch(function (error) {
+        setInstallationStatus(failure + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
+    function prepareLifeOS() {
+      runInstallationAction(installationEndpoint + "/prepare", function (result) {
         setInstallation(function (current) { return Object.assign({}, current, {
           candidate_ready: true, candidate_commit: result.upstream_commit,
           candidate_patch_count: result.patches.length, candidate_error: null,
         }); });
         setInstallationStatus("Candidate prepared from LifeOS commit " + result.upstream_commit + ". The running installation has not changed.");
-      }).catch(function (error) {
-        setInstallationStatus("Could not prepare LifeOS: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not prepare LifeOS: ");
     }
 
     function installLifeOS() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/apply", { method: "POST" }).then(function (result) {
+      runInstallationAction(installationEndpoint + "/apply", function (result) {
         return SDK.fetchJSON(installationEndpoint).then(function (status) {
           setInstallation(status);
           setInstallationStatus("LifeOS " + result.installed_version + " installed. Finish setup to mount it into Hermes and record the VersionDrift baseline.");
         });
-      }).catch(function (error) {
-        setInstallationStatus("Could not install LifeOS: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not install LifeOS: ");
     }
 
     function finalizeLifeOS() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/finalize", { method: "POST" }).then(function () {
+      runInstallationAction(installationEndpoint + "/finalize", function () {
         return Promise.all([SDK.fetchJSON(installationEndpoint), SDK.fetchJSON(baselineEndpoint)]).then(function (results) {
           setInstallation(results[0]);
           setBaseline(results[1]);
           setInstallationStatus("LifeOS is mounted and the baseline is recorded. Restart the Hermes gateway to load the new configuration.");
         });
-      }).catch(function (error) {
-        setInstallationStatus("Could not finish LifeOS setup: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not finish LifeOS setup: ");
     }
 
     function recoverLifeOSMount() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/mount/recover", { method: "POST" }).then(function () {
+      runInstallationAction(installationEndpoint + "/mount/recover", function () {
         return SDK.fetchJSON(installationEndpoint).then(function (result) {
           setInstallation(result);
           setInstallationStatus("The previous Hermes files are restored. You can finish setup again.");
         });
-      }).catch(function (error) {
-        setInstallationStatus("Could not restore the mount: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not restore the mount: ");
     }
 
     function prepareHermes() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/prepare-hermes", { method: "POST" }).then(function (result) {
+      runInstallationAction(installationEndpoint + "/prepare-hermes", function (result) {
         setInstallation(function (current) { return Object.assign({}, current, {
           hermes_candidate_ready: true, hermes_candidate_commit: result.base_commit,
           hermes_candidate_patch_count: result.patches.length, hermes_candidate_error: null,
         }); });
         setInstallationStatus("Hermes candidate prepared. The running Hermes installation has not changed.");
-      }).catch(function (error) {
-        setInstallationStatus("Could not prepare Hermes: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not prepare Hermes: ");
     }
 
     function refreshHostPatch(attempt) {
@@ -1058,36 +1048,24 @@
     }
 
     function applyHermes() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/apply-hermes", { method: "POST" }).then(function () {
+      runInstallationAction(installationEndpoint + "/apply-hermes", function () {
         setInstallationStatus("Hermes patch worker started. The gateway will restart while it applies the tested extension.");
         refreshHostPatch(0);
-      }).catch(function (error) {
-        setInstallationStatus("Could not start Hermes patch: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not start Hermes patch: ");
     }
 
     function restoreHermes() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/restore-hermes", { method: "POST" }).then(function () {
+      runInstallationAction(installationEndpoint + "/restore-hermes", function () {
         setInstallationStatus("Restoring the previous Hermes source. The gateway will restart.");
         refreshHostPatch(0);
-      }).catch(function (error) {
-        setInstallationStatus("Could not start Hermes restore: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not start Hermes restore: ");
     }
 
     function recoverHermes() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(installationEndpoint + "/recover-hermes", { method: "POST" }).then(function () {
+      runInstallationAction(installationEndpoint + "/recover-hermes", function () {
         setInstallationStatus("Returning Hermes to its stock files. The gateway will restart.");
         refreshHostPatch(0);
-      }).catch(function (error) {
-        setInstallationStatus("Could not start Hermes recovery: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not start Hermes recovery: ");
     }
 
     function refreshLifeOSUpdate(attempt) {
@@ -1107,36 +1085,24 @@
     }
 
     function applyLifeOSUpdate() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(lifeosUpdateEndpoint, { method: "POST" }).then(function () {
+      runInstallationAction(lifeosUpdateEndpoint, function () {
         setInstallationStatus("LifeOS update started. The gateway will restart after native checks pass.");
         refreshLifeOSUpdate(0);
-      }).catch(function (error) {
-        setInstallationStatus("Could not start LifeOS update: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not start LifeOS update: ");
     }
 
     function recoverLifeOSUpdate() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(lifeosUpdateEndpoint + "/recover", { method: "POST" }).then(function () {
+      runInstallationAction(lifeosUpdateEndpoint + "/recover", function () {
         setInstallationStatus("LifeOS recovery started. If no files were replaced, the worker restarts the current version. Otherwise, it restores the prior version and restarts Hermes.");
         refreshLifeOSUpdate(0);
-      }).catch(function (error) {
-        setInstallationStatus("Could not start LifeOS recovery: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not start LifeOS recovery: ");
     }
 
     function restoreLifeOSUpdate() {
-      setInstallationBusy(true);
-      setInstallationStatus("");
-      SDK.fetchJSON(lifeosUpdateEndpoint + "/restore", { method: "POST" }).then(function () {
+      runInstallationAction(lifeosUpdateEndpoint + "/restore", function () {
         setInstallationStatus("Restoring the previous LifeOS version. Hermes will restart.");
         refreshLifeOSUpdate(0);
-      }).catch(function (error) {
-        setInstallationStatus("Could not restore LifeOS: " + error.message);
-      }).finally(function () { setInstallationBusy(false); });
+      }, "Could not restore LifeOS: ");
     }
 
     function renderTier(tier) {

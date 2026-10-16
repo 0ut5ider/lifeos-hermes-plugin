@@ -1,5 +1,8 @@
 # Full LifeOS experience release
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 Original plan date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. References to `.212` below describe earlier development. `.252` is the current development server; the separate daily guest is container 102 at `192.168.8.253`.
 
 ## Current release and next work (October 14, 0.5.0)

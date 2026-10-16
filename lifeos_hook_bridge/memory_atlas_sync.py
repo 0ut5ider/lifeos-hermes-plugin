@@ -7,7 +7,7 @@ import re
 from uuid import uuid4
 
 from .memory_access import MemoryConflict, MemoryUnavailable, _now
-from .memory_atlas import (DATABASE, SNAPSHOT, CACHE, _collect, _graph, source_path, admit_graph,
+from .memory_atlas import (DATABASE, SNAPSHOT, _collect, _graph, source_path, admit_graph,
                           capacity_projection, PROJECTION_FIELD_LIMIT)
 from .memory_atlas_insight import _request, _admit_output
 from .memory_source_review import _retirement_digest

@@ -2,22 +2,8 @@
 // ABOUTME: Runs the plugin bundle against a small React SDK contract without a browser.
 
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const path = require("node:path");
 const test = require("node:test");
-const vm = require("node:vm");
-
-const bundle = fs.readFileSync(path.join(__dirname, "../lifeos_hook_bridge/dashboard/dist/index.js"), "utf8");
-
-function find(node, match) {
-  if (!node || typeof node !== "object") return null;
-  if (match(node)) return node;
-  for (const child of node.children || []) {
-    const result = find(child, match);
-    if (result) return result;
-  }
-  return null;
-}
+const { find, findAll, loadDashboard, plain, settle } = require("./support/dashboard_sdk.cjs");
 
 test("model picker starts with the current Hermes model and saves every tier", async () => {
   const fields = ["haiku", "sonnet", "opus", "fable"].flatMap((tier) => [
@@ -32,22 +18,7 @@ test("model picker starts with the current Hermes model and saves every tier", a
     { slug: "remote", name: "Remote endpoint", models: ["other"] },
   ] };
   const calls = [];
-  const state = [];
-  let index = 0;
-  let effectRan = false;
-  let component;
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(initial) {
-        const slot = index++;
-        if (!(slot in state)) state[slot] = initial;
-        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
-      },
-      useEffect(callback) {
-        if (!effectRan) { effectRan = true; callback(); }
-      },
-    },
     fetchJSON(url, init) {
       calls.push({ url, init });
       if (init?.method === "PUT") return Promise.resolve({ saved: ["haiku_model"] });
@@ -71,14 +42,8 @@ test("model picker starts with the current Hermes model and saves every tier", a
       return Promise.resolve({ fields });
     },
   };
-  const window = {
-    __HERMES_PLUGIN_SDK__: sdk,
-    __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
-  };
-  vm.runInNewContext(bundle, { window, console });
-  const render = () => { index = 0; return component(); };
-  render();
-  await new Promise(setImmediate);
+  const render = loadDashboard("bridge", sdk).mount();
+  await settle();
   const view = render();
   for (const tier of ["haiku", "sonnet", "opus", "fable"]) {
     const selectedModel = find(view, (node) => node.type === "select" && node.props.id === tier + "_model");
@@ -94,7 +59,7 @@ test("model picker starts with the current Hermes model and saves every tier", a
   effortSelect.props.onChange({ target: { value: "high" } });
   const form = find(render(), (node) => node.type === "form");
   form.props.onSubmit({ preventDefault() {} });
-  await new Promise(setImmediate);
+  await settle();
   const saved = calls.find((call) => call.init?.method === "PUT");
   assert.ok(saved);
   const values = JSON.parse(saved.init.body);
@@ -111,7 +76,7 @@ test("model picker starts with the current Hermes model and saves every tier", a
   inherited.props.onChange({ target: { value: "" } });
   const inheritForm = find(render(), (node) => node.type === "form");
   inheritForm.props.onSubmit({ preventDefault() {} });
-  await new Promise(setImmediate);
+  await settle();
   const inheritSave = calls.filter((call) => call.init?.method === "PUT").at(-1);
   assert.equal(JSON.parse(inheritSave.init.body).haiku_model, "");
   assert.equal(JSON.parse(inheritSave.init.body).haiku_inherit_child_default, true);
@@ -122,7 +87,7 @@ test("model picker starts with the current Hermes model and saves every tier", a
   stopPolicy.props.onChange({ target: { value: "fail_closed" } });
   const policyForm = find(render(), (node) => node.type === "form");
   policyForm.props.onSubmit({ preventDefault() {} });
-  await new Promise(setImmediate);
+  await settle();
   const lastSave = calls.filter((call) => call.init?.method === "PUT").at(-1);
   assert.equal(JSON.parse(lastSave.init.body).stop_cap_policy, "fail_closed");
   assert.ok(calls.some((call) => call.url.includes("/api/model/options?explicit_only=1")));
@@ -131,13 +96,13 @@ test("model picker starts with the current Hermes model and saves every tier", a
   source.props.onChange({ target: { value: "/srv/LifeOS/LifeOS/install" } });
   const preview = find(render(), (node) => node.type === "button" && node.children.includes("Preview baseline files"));
   preview.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   const reviewed = find(render(), (node) => node.type === "pre" &&
     node.children.includes("hooks/VersionDrift.hook.ts"));
   assert.ok(reviewed);
   const create = find(render(), (node) => node.type === "button" && node.children.includes("Create reviewed baseline"));
   create.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   const apply = calls.find((call) => call.url.endsWith("/version-drift") && call.init?.method === "POST");
   assert.deepEqual(JSON.parse(apply.init.body), {
     source: "/srv/LifeOS/LifeOS/install", fingerprint: "reviewed", renew: false,
@@ -154,20 +119,7 @@ test("an explicit existing child route stays selected after reloading", async ()
     { key: tier + "_inherit_child_default", value: tier === "haiku" },
     { key: tier + "_effort", value: "low", choices: ["low", "medium", "xhigh"] },
   ]);
-  const state = [];
-  let index = 0;
-  let effectRan = false;
-  let component;
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(initial) {
-        const slot = index++;
-        if (!(slot in state)) state[slot] = initial;
-        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
-      },
-      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
-    },
     fetchJSON(url) {
       if (url.endsWith("/settings")) return Promise.resolve({ fields });
       if (url.includes("/api/model/options")) return Promise.resolve({
@@ -180,13 +132,8 @@ test("an explicit existing child route stays selected after reloading", async ()
       return Promise.resolve({ state: "missing" });
     },
   };
-  vm.runInNewContext(bundle, { window: {
-    __HERMES_PLUGIN_SDK__: sdk,
-    __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
-  }, console });
-  const render = () => { index = 0; return component(); };
-  render();
-  await new Promise(setImmediate);
+  const render = loadDashboard("bridge", sdk).mount();
+  await settle();
   const view = render();
   const selected = (tier) => find(view, (node) => node.type === "select" && node.props.id === tier + "_model").props.value;
   assert.equal(selected("haiku"), "");
@@ -197,23 +144,10 @@ test("an explicit existing child route stays selected after reloading", async ()
 
 test("missing LifeOS shows preparation without active model settings", async () => {
   const calls = [];
-  const state = [];
-  let index = 0;
-  let effectRan = false;
-  let component;
   let lifeos = "missing";
   let candidateReady = false;
   let setupComplete = false;
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(initial) {
-        const slot = index++;
-        if (!(slot in state)) state[slot] = initial;
-        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
-      },
-      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
-    },
     fetchJSON(url, init) {
       calls.push({ url, init });
       if (url.endsWith("/installation/prepare")) {
@@ -241,16 +175,8 @@ test("missing LifeOS shows preparation without active model settings", async () 
       return Promise.resolve({ fields: [] });
     },
   };
-  vm.runInNewContext(bundle, {
-    window: {
-      __HERMES_PLUGIN_SDK__: sdk,
-      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
-    },
-    console,
-  });
-  const render = () => { index = 0; return component(); };
-  render();
-  await new Promise(setImmediate);
+  const render = loadDashboard("bridge", sdk).mount();
+  await settle();
   const view = render();
   assert.equal(find(view, (node) => node.type === "form"), null);
   assert.equal(find(view, (node) => node.type === "h2" && node.children.includes("VersionDrift baseline")), null);
@@ -258,7 +184,7 @@ test("missing LifeOS shows preparation without active model settings", async () 
     node.children.includes("Prepare latest LifeOS"));
   assert.ok(prepareLifeOS);
   prepareLifeOS.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/prepare") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("Candidate prepared"))));
@@ -268,8 +194,8 @@ test("missing LifeOS shows preparation without active model settings", async () 
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("1 compatibility patch"))));
   installLifeOS.props.onClick();
-  await new Promise(setImmediate);
-  await new Promise(setImmediate);
+  await settle();
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/apply") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("LifeOS 7.40.4 is installed"))));
@@ -279,8 +205,8 @@ test("missing LifeOS shows preparation without active model settings", async () 
     node.children.includes("Finish LifeOS setup"));
   assert.ok(finish);
   finish.props.onClick();
-  await new Promise(setImmediate);
-  await new Promise(setImmediate);
+  await settle();
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/finalize") && call.init?.method === "POST"));
   assert.equal(find(render(), (node) => node.type === "button" &&
     node.children.includes("Finish LifeOS setup")), null);
@@ -288,25 +214,12 @@ test("missing LifeOS shows preparation without active model settings", async () 
 
 test("installed LifeOS on stock Hermes shows the reduced safety limits", async () => {
   const calls = [];
-  const state = [];
-  let index = 0;
-  let effectRan = false;
-  let component;
   let candidateReady = false;
   let lifeosCandidateReady = false;
   let lifeosUpdateApplied = false;
   let hostPatched = false;
   let hostRestored = false;
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(initial) {
-        const slot = index++;
-        if (!(slot in state)) state[slot] = initial;
-        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
-      },
-      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
-    },
     fetchJSON(url, init) {
       calls.push({ url, init });
       if (url.endsWith("/installation/prepare")) {
@@ -347,16 +260,8 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
       return Promise.resolve({ fields: [] });
     },
   };
-  vm.runInNewContext(bundle, {
-    window: {
-      __HERMES_PLUGIN_SDK__: sdk,
-      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
-    },
-    console,
-  });
-  const render = () => { index = 0; return component(); };
-  render();
-  await new Promise(setImmediate);
+  const render = loadDashboard("bridge", sdk).mount();
+  await settle();
   const view = render();
   assert.ok(find(view, (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce LifeOS Bash permission decisions"))));
@@ -366,25 +271,25 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
     node.children.includes("Prepare latest LifeOS update"));
   assert.ok(prepareUpdate);
   prepareUpdate.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   const applyUpdate = find(render(), (node) => node.type === "button" &&
     node.children.includes("Apply prepared LifeOS update"));
   assert.ok(applyUpdate);
   applyUpdate.props.onClick();
-  await new Promise(setImmediate);
-  await new Promise(setImmediate);
+  await settle();
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/update") && call.init?.method === "POST"));
   const restoreLifeOS = find(render(), (node) => node.type === "button" &&
     node.children.includes("Restore previous LifeOS version"));
   assert.ok(restoreLifeOS);
   restoreLifeOS.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/update/restore") && call.init?.method === "POST"));
   const prepareHost = find(view, (node) => node.type === "button" &&
     node.children.includes("Prepare tested Hermes extension"));
   assert.ok(prepareHost);
   prepareHost.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/prepare-hermes") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("19 Hermes patches"))));
@@ -392,8 +297,8 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
     node.children.includes("Apply tested Hermes extension"));
   assert.ok(applyHost);
   applyHost.props.onClick();
-  await new Promise(setImmediate);
-  await new Promise(setImmediate);
+  await settle();
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/apply-hermes") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("Hermes extension is active"))));
@@ -401,28 +306,15 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
     node.children.includes("Restore previous Hermes"));
   assert.ok(restoreHost);
   restoreHost.props.onClick();
-  await new Promise(setImmediate);
-  await new Promise(setImmediate);
+  await settle();
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/restore-hermes") && call.init?.method === "POST"));
   assert.equal(find(render(), (node) => node.type === "button" &&
     node.children.includes("Restore previous Hermes")), null);
 });
 
 test("a host change waiting for a dashboard restart hides stale Hermes controls", async () => {
-  const state = [];
-  let index = 0;
-  let effectRan = false;
-  let component;
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(initial) {
-        const slot = index++;
-        if (!(slot in state)) state[slot] = initial;
-        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
-      },
-      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
-    },
     fetchJSON: (url) => {
       if (url.endsWith("/installation/host-patch")) return Promise.resolve({ state: "applied" });
       if (url.endsWith("/installation")) return Promise.resolve({
@@ -434,16 +326,8 @@ test("a host change waiting for a dashboard restart hides stale Hermes controls"
       return Promise.resolve({ fields: [] });
     },
   };
-  vm.runInNewContext(bundle, {
-    window: {
-      __HERMES_PLUGIN_SDK__: sdk,
-      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
-    },
-    console,
-  });
-  const render = () => { index = 0; return component(); };
-  render();
-  await new Promise(setImmediate);
+  const render = loadDashboard("bridge", sdk).mount();
+  await settle();
   const view = render();
   assert.ok(find(view, (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("Restart the Hermes dashboard"))));
@@ -454,21 +338,8 @@ test("a host change waiting for a dashboard restart hides stale Hermes controls"
 });
 
 test("an interrupted Hermes patch change offers recovery", async () => {
-  const state = [];
   const calls = [];
-  let index = 0;
-  let effectRan = false;
-  let component;
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(initial) {
-        const slot = index++;
-        if (!(slot in state)) state[slot] = initial;
-        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
-      },
-      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
-    },
     fetchJSON: (url, init) => {
       calls.push({ url, init });
       if (url.endsWith("/installation/recover-hermes")) return Promise.resolve({ state: "recovering" });
@@ -481,20 +352,143 @@ test("an interrupted Hermes patch change offers recovery", async () => {
       return Promise.resolve({ fields: [] });
     },
   };
-  vm.runInNewContext(bundle, {
-    window: {
-      __HERMES_PLUGIN_SDK__: sdk, setTimeout: () => 0,
-      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
-    },
-    console,
-  });
-  const render = () => { index = 0; return component(); };
-  render();
-  await new Promise(setImmediate);
+  const render = loadDashboard("bridge", { ...sdk, window: { setTimeout: () => 0 } }).mount();
+  await settle();
   const recover = find(render(), (node) => node.type === "button" &&
     node.children.includes("Recover interrupted Hermes change"));
   assert.ok(recover);
   recover.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/recover-hermes") && call.init?.method === "POST"));
+});
+
+const commit = "a".repeat(40);
+const installationActions = [
+  { label: "Prepare latest LifeOS", path: "/installation/prepare", installation: { lifeos: "missing", candidate_ready: false },
+    result: { upstream_commit: commit, patches: [] }, refreshed: [], failed: "Could not prepare LifeOS: ",
+    done: "Candidate prepared from LifeOS commit " + commit + ". The running installation has not changed." },
+  { label: "Install prepared LifeOS", path: "/installation/apply",
+    installation: { lifeos: "missing", candidate_ready: true, candidate_commit: commit, candidate_patch_count: 1 },
+    result: { installed_version: "7.40.4" }, refreshed: ["/installation"], failed: "Could not install LifeOS: ",
+    done: "LifeOS 7.40.4 installed. Finish setup to mount it into Hermes and record the VersionDrift baseline." },
+  { label: "Finish LifeOS setup", path: "/installation/finalize",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: false, candidate_ready: true },
+    result: { mounted: true }, refreshed: ["/installation", "/version-drift"], failed: "Could not finish LifeOS setup: ",
+    done: "LifeOS is mounted and the baseline is recorded. Restart the Hermes gateway to load the new configuration." },
+  { label: "Restore interrupted mount", path: "/installation/mount/recover",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: false, mount: { recovery_required: true } },
+    result: { restored: true }, refreshed: ["/installation"], failed: "Could not restore the mount: ",
+    done: "The previous Hermes files are restored. You can finish setup again." },
+  { label: "Prepare tested Hermes extension", path: "/installation/prepare-hermes",
+    installation: { lifeos: "installed", hermes: "stock", setup_baseline_exists: true, candidate_ready: true, hermes_candidate_ready: false },
+    result: { base_commit: commit, patches: [] }, refreshed: [], failed: "Could not prepare Hermes: ",
+    done: "Hermes candidate prepared. The running Hermes installation has not changed." },
+  { label: "Apply tested Hermes extension", path: "/installation/apply-hermes",
+    installation: { lifeos: "installed", hermes: "stock", setup_baseline_exists: true, candidate_ready: true, hermes_candidate_ready: true },
+    result: { state: "staged" }, refreshed: ["/installation/host-patch"], failed: "Could not start Hermes patch: ",
+    done: "Hermes patch worker started. The gateway will restart while it applies the tested extension." },
+  { label: "Restore previous Hermes", path: "/installation/restore-hermes", hostPatch: { state: "applied" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "restoring" }, refreshed: ["/installation/host-patch", "/installation"], failed: "Could not start Hermes restore: ",
+    done: "Restoring the previous Hermes source. The gateway will restart." },
+  { label: "Recover interrupted Hermes change", path: "/installation/recover-hermes", hostPatch: { state: "interrupted" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "recovering" }, refreshed: ["/installation/host-patch"], failed: "Could not start Hermes recovery: ",
+    done: "Returning Hermes to its stock files. The gateway will restart." },
+  { label: "Prepare latest LifeOS update", path: "/installation/prepare",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: false },
+    result: { upstream_commit: commit, patches: [] }, refreshed: [], failed: "Could not prepare LifeOS: ",
+    done: "Candidate prepared from LifeOS commit " + commit + ". The running installation has not changed." },
+  { label: "Apply prepared LifeOS update", path: "/installation/update",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "queued" }, refreshed: ["/installation/update"], failed: "Could not start LifeOS update: ",
+    done: "LifeOS update started. The gateway will restart after native checks pass." },
+  { label: "Restore previous LifeOS version", path: "/installation/update/restore", update: { state: "applied" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "restoring" }, refreshed: ["/installation/update", "/installation", "/version-drift"], failed: "Could not restore LifeOS: ",
+    done: "Restoring the previous LifeOS version. Hermes will restart." },
+  { label: "Restore interrupted update", path: "/installation/update/recover", update: { state: "interrupted", transaction_state: "swapped" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "recovering" }, refreshed: ["/installation/update"], failed: "Could not start LifeOS recovery: ",
+    done: "LifeOS recovery started. If no files were replaced, the worker restarts the current version. Otherwise, it restores the prior version and restarts Hermes." },
+];
+
+async function installationPage(action, respond, refresh) {
+  const calls = [];
+  let submitted = false;
+  const sdk = {
+    fetchJSON(url, init) {
+      calls.push({ url, init });
+      if (init?.method === "POST") { submitted = true; return respond(); }
+      if (submitted && refresh && url.endsWith("/installation")) return refresh();
+      if (url.endsWith("/installation/host-patch")) return Promise.resolve(action.hostPatch ?? { state: "none" });
+      if (url.endsWith("/installation/update")) return Promise.resolve(action.update ?? { state: "none" });
+      if (url.endsWith("/installation")) return Promise.resolve({ version: "7.40.4", ...action.installation });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
+      if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
+      return Promise.resolve({ fields: [] });
+    },
+  };
+  const render = loadDashboard("bridge", { ...sdk, window: { setTimeout: () => 0 } }).mount();
+  await settle();
+  const section = () => find(render(), (node) => node.props.id === "lifeos_installation");
+  const button = () => find(section(), (node) => node.type === "button" && node.children.includes(action.label));
+  const status = () => find(section(), (node) => node.type === "p" && node.props.role === "status" && node.props.className === "mt-3");
+  assert.ok(button(), "Missing installation action: " + action.label);
+  return { calls, section, button, status };
+}
+
+test("installation actions post once, stay busy, then report their result", async () => {
+  for (const action of installationActions) {
+    const page = await installationPage(action, () => Promise.resolve(action.result));
+    const before = page.calls.length;
+    page.button().props.onClick();
+    const buttons = findAll(page.section(), (node) => node.type === "button");
+    assert.ok(buttons.length && buttons.every((node) => node.props.disabled === true), action.label + " must disable installation actions");
+    for (let turn = 0; turn < 4; turn++) await settle();
+    const after = page.calls.slice(before);
+    assert.ok(after[0].url.endsWith(action.path), action.label);
+    assert.deepEqual(plain(after[0].init), { method: "POST" });
+    assert.deepEqual(after.slice(1).map((call) => call.url.replace("/api/plugins/lifeos-hook-bridge", "")), action.refreshed, action.label);
+    assert.ok(after.slice(1).every((call) => call.init === undefined));
+    assert.deepEqual(page.status()?.children, [action.done]);
+  }
+});
+
+test("installation action failures report the reason and release the busy state", async () => {
+  for (const action of installationActions) {
+    const page = await installationPage(action, () => Promise.reject(new Error("synthetic refusal")));
+    const before = page.calls.length;
+    page.button().props.onClick();
+    for (let turn = 0; turn < 4; turn++) await settle();
+    assert.equal(page.calls.length - before, 1, action.label + " must not refresh after a failure");
+    assert.deepEqual(page.status()?.children, [action.failed + "synthetic refusal"]);
+    assert.equal(page.button().props.disabled, false, action.label);
+  }
+});
+
+test("installation refresh failures keep actions busy and clear the previous status", async () => {
+  const refreshing = ["/installation/apply", "/installation/finalize", "/installation/mount/recover"];
+  for (const action of installationActions.filter(action => refreshing.includes(action.path))) {
+    let rejectRefresh, attempt = 0;
+    const refresh = new Promise((resolve, reject) => { rejectRefresh = reject; });
+    const page = await installationPage(action, () => ++attempt === 1 ?
+      Promise.reject(new Error("synthetic prior refusal")) : Promise.resolve(action.result), () => refresh);
+    page.button().props.onClick();
+    await settle();
+    assert.deepEqual(page.status()?.children, [action.failed + "synthetic prior refusal"]);
+    page.button().props.onClick();
+    assert.deepEqual(page.status()?.children ?? [], [], action.label + " clears its previous status");
+    await settle();
+    try {
+      const buttons = findAll(page.section(), node => node.type === "button");
+      assert.ok(buttons.length && buttons.every(node => node.props.disabled === true),
+        action.label + " waits for its pending refresh");
+    } finally {
+      rejectRefresh(new Error("synthetic refresh refusal"));
+      await settle();
+    }
+    assert.deepEqual(page.status()?.children, [action.failed + "synthetic refresh refusal"]);
+    assert.equal(page.button().props.disabled, false, action.label);
+  }
 });

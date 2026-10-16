@@ -1,0 +1,130 @@
+> Historical snapshot, 2026-10-16, before documentation consolidation. Source: `docs/discord-setup.md` at commit `455154c19611da320086592b98e15ead302817dc`.
+> This page preserves local migration, generic Hermes audience modes, and earlier test observations. Use the [current Discord guide](../discord-setup.md) for the qualified private-channel setup.
+
+# Discord setup for a Hermes and LifeOS test installation
+
+This guide records the steps that made the isolated `.212` Hermes installation work with Discord. Discord is a Hermes gateway connection; the LifeOS hook bridge does not own the bot token or create the gateway service. Use a separate bot for each simultaneously running Hermes gateway. Keep the bot token outside Git.
+
+The [Hermes Discord guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/discord) is the upstream reference. Check it when the Developer Portal or Hermes version changes.
+
+## Permanent move to .252 on October 7
+
+At the October 7 checkpoint, Adrian selects `192.168.8.252` as the replacement for `.212`. The October 11 daily deployment uses `.253`; `.252` remains the development server. The existing Shiny Hermes Bot now connects from the permanent `lifeos-hermes` account on `.252`, UID 1008. Its existing Discord application, token, guild membership, user allowlist, and channel routing are retained. The channel remains `#hermes-212`, ID `1554859357374513222`. A new bot invitation is unnecessary.
+
+The source gateway is stopped and masked. Its active `.env` no longer contains `DISCORD_BOT_TOKEN`. Existing source backups are not erased by this operation. Do not restore the bot to `.212`. Recovery configuration stays in the private destination directory `~/migration/2026-10-07/`.
+
+The destination contains the merged plugin runtime, all 11 supported Hermes patch groups, and all 23 native LifeOS patch groups. A fresh native installation uses Adrian and Cerebo. No source conversations, personal memory, or scheduled jobs are imported. Managed memory ownership and sharing are disabled at this October 7 checkpoint. The existing private FlashNext tier mapping is unchanged, and the carrier probe reports `HOLDS` at xhigh effort.
+
+The user gateway service is enabled with systemd linger. The private development recorder is installed outside the plugin and writes a new capture on `.252`. Installation and connection checks pass. The subsequent [live Discord acceptance](../verification/2026-10-07-discord-cutover/README.md) passes question, answer, timeout, cancellation, and recovery checks. The 120-second test timeout is historical. The deployed gateway uses the normal 3600-second timeout.
+
+## 1. Create and install the Discord bot
+
+### Separate development and daily bots
+
+Adrian retains Shiny Hermes Bot on `.252` for development in `#hermes-212`. The daily guest at `.253` uses a separate Cerebo application, ID `1558867947152347198`. The operator creates Cerebo on October 11 and enables the Message Content and Server Members intents. Presence intent and the OAuth2 code grant remain disabled. Guild installation requests `bot` and `applications.commands`, with View Channels, Send Messages, Embed Links, Attach Files, Read Message History, and Add Reactions. User installation is disabled. This text profile does not request thread, voice, or Administrator permissions.
+
+The selected destination guild is Outsider's server, ID `1553540018302099486`. Discord accepts the invitation after Adrian completes human verification. A current guild-member request verifies Cerebo's bot identity and its join time, `2026-10-11T15:49:11.975000+00:00`. A separate Developer Portal read confirms both required intents remain enabled. Adrian completes multi-factor authentication for token generation. The operator transfers the token privately and verifies Cerebo's identity before installing it in the daily profile with mode `0600`.
+
+Adrian authorizes creation of the daily channel. The operator creates private text channel `#cerebo`, ID `1558870196784205927`. It denies View Channel to the default role and allows the Cerebo member. The actual installed audience resolver verifies that only Adrian and Cerebo can read the channel. It refuses a different channel, a different author, and a thread. The daily configuration binds that guild, owner, bot, private destination, and selected model route. Direct messages and threads remain disabled. A real outbound setup marker arrives from Cerebo, and the daily gateway connects as `Cerebo#1748`. [Daily acceptance](../verification/2026-10-11-daily-guest/README.md) passes exact inbound delivery, ownership activation, and save and recall across separate Discord sessions. Pulse is active. Governed cleanup removes the synthetic fact from active recall. Sharing remains disabled. The operator does not move or reset the development bot token.
+
+### Daily release: one private text channel
+
+The daily release uses a private server text channel. Direct messages are disabled for this profile. The deployed 0.2.0 patch provides `DISCORD_GUILD_CHANNEL_ONLY=true`; this setting requires exactly one numeric ID in `DISCORD_ALLOWED_CHANNELS`. It gates messages, slash commands, adapter sends, and standalone text or attachment sends. Threads are refused. Older installed patches do not provide this setting.
+
+Configure the tested release with these values after verifying the channel permissions:
+
+```dotenv
+DISCORD_ALLOWED_USERS=<owner-user-id>
+DISCORD_ALLOWED_CHANNELS=<private-text-channel-id>
+DISCORD_GUILD_CHANNEL_ONLY=true
+DISCORD_FREE_RESPONSE_CHANNELS=<private-text-channel-id>
+DISCORD_NO_THREAD_CHANNELS=<private-text-channel-id>
+DISCORD_AUTO_THREAD=false
+DISCORD_FREE_RESPONSE_AUTO_THREAD=false
+DISCORD_HOME_CHANNEL=<private-text-channel-id>
+```
+
+The channel must deny **View Channel** to `@everyone`. Only the installation owner and the selected bot may read it. Discord server owners and administrators bypass channel permission overwrites. The memory check reads current roles and members, applies the channel permission rules, and refuses additional readers. The selected bot needs the Server Members privileged intent for that check.
+
+The memory configuration separately binds the channel to its guild, owner, bot, and private destination grant. A channel allowlist alone does not grant private-memory access. Memory requests recheck the audience, including before native publication and after tool reads. The [October 11 installed acceptance](../verification/2026-10-11-daily-guest/README.md) passes application and final delivery checks. See the [control results](../verification/2026-10-07-private-channel/README.md).
+
+1. Create an application in the [Discord Developer Portal](https://discord.com/developers/applications). Choose the bot template or create a blank application. Set the bot's username on its **Bot** page.
+2. On **Bot**, enable **Public Bot** if you will use Discord's provided install link. Leave **Requires OAuth2 Code Grant** off. Enable the **Message Content** and **Server Members** privileged gateway intents, then save. The message content intent was required to clear the connection error in our setup.
+3. On **Bot**, reset and copy the bot token. Treat it as a password. The **Installation** link and application ID are not bot tokens.
+4. On **Installation**, enable **Guild Install**. Choose **Discord Provided Link**. Under Guild Install, select the `bot` and `applications.commands` scopes. Select **View Channels**, **Send Messages**, **Embed Links**, **Attach Files**, and **Read Message History**. Select **Send Messages in Threads** and **Add Reactions** for the conversation behavior used here. Select **Create Public Threads** if you want Hermes to start a thread after a channel mention. Do not grant **Administrator** for this setup.
+5. Open the provided install link, choose the test server, and authorize the bot. You need permission to manage that server.
+6. In Discord, enable **User Settings → Advanced → Developer Mode**. Right-click your profile and copy your numeric User ID. Also copy the target channel ID if you want scheduled messages delivered there.
+
+## 2. Prepare the Hermes account
+
+Install the Discord dependency as the same Linux user that runs Hermes:
+
+```sh
+hermes pm install --extra discord
+```
+
+Configure the bot with `hermes gateway setup`, or set `DISCORD_BOT_TOKEN` and `DISCORD_ALLOWED_USERS` in that account's private `~/.hermes/.env`. The allowed-users value is your numeric Discord User ID. Set `DISCORD_HOME_CHANNEL` to a numeric channel ID if you want `discord` without an explicit channel ID to be the destination for proactive messages. Do not put credentials in the plugin repository.
+
+Install a persistent user gateway service:
+
+```sh
+hermes gateway install --start-now --start-on-login
+systemctl --user status hermes-gateway.service
+```
+
+The `.212` gateway had previously been started by the dashboard. After it stopped, the dashboard did not relaunch it, and its Start button reported that the service was missing. Installing the user service fixed that. On a server that must run the service after logout, enable systemd linger for the Hermes account if it is not already enabled. The `.212` account already had linger enabled.
+
+## 3. Check network access
+
+The bot needs outbound HTTPS and WebSocket access to Discord. The `.212` test account originally had a LAN-only nftables rule that blocked both the Discord dependency installation and the bot connection. An approved persistent rule now allows UID 1004 outbound TCP port 443 **to any internet destination** before the reject rules. This is a broad HTTPS exception, not a Discord-only allowlist. The rule lives in `/etc/lifeos-hermes-test-egress.nft`, loaded by `lifeos-hermes-test-egress.service`. The previous file is backed up at `/etc/lifeos-hermes-test-egress.nft.before-discord-20260928-082859`.
+
+For a new restricted installation, decide its outbound network policy before connecting the bot. Test the ruleset with `nft --check` before applying it. A static Discord IP allowlist is brittle because service addresses can change. The plugin does not change the firewall. Do not copy the `.212` UID into another account's rules.
+
+## 4. Verify both directions
+
+Check gateway service status and the Hermes Channels page. Then send one outbound message to a test channel:
+
+```sh
+hermes send --to discord:<channel-id> "Hermes outbound test"
+```
+
+Confirm that the message appears as the intended test bot. This checks outbound Discord REST delivery. It does **not** prove that the gateway receives Discord events. In the channel, send `@Your Bot inbound test`. Hermes requires a mention in server channels by default. A plain channel message may be ignored correctly. The bot should reply, often in a thread it creates. Inside a thread where it has participated, the default behavior accepts follow-up messages without another mention. A direct message to the bot also needs no mention. Check `hermes sessions list --source discord` if the bot stays silent.
+
+On `.212`, an outbound message appeared in `#general`. An unmentioned `READY-212` was ignored. A message mentioning Shiny Hermes Bot created a thread and received a `READY-212` response. This verified inbound gateway events and outbound replies with the separate test bot.
+
+Discord can show the bot account and its same-named role as identical `@Shiny Hermes Bot` labels. The raw form `<@bot-user-id>` mentions the bot account. The form `<@&role-id>` mentions a role, and Hermes's channel mention rule ignores it. On `.212`, two 10:42 and 10:54 test requests used the role form and produced no Hermes session or watchdog. Select the bot account in Discord's member list, or send the request inside a thread that the bot already joined. Check the raw message through Discord's API if the visual label is ambiguous.
+
+To make one channel mention-free, set `DISCORD_FREE_RESPONSE_CHANNELS` to its channel ID. Keep `DISCORD_REQUIRE_MENTION=true` for other channels. If you also want a thread for each top-level message in that free-response channel, set `DISCORD_FREE_RESPONSE_AUTO_THREAD=true`; the default is inline replies. Restart the gateway after configuration changes.
+
+### Use a separate channel for each Hermes instance
+
+Two bots in a shared free-response channel can both answer the same message. Give each gateway its own channel and preserve its user allowlist. Set these values in that gateway account's private `~/.hermes/.env`, replacing the channel ID:
+
+```dotenv
+DISCORD_ALLOWED_CHANNELS=123456789012345678
+DISCORD_FREE_RESPONSE_CHANNELS=123456789012345678
+DISCORD_REQUIRE_MENTION=true
+DISCORD_FREE_RESPONSE_AUTO_THREAD=false
+DISCORD_HOME_CHANNEL=123456789012345678
+```
+
+`DISCORD_ALLOWED_CHANNELS` restricts server-channel admission to the selected channel and its threads. `DISCORD_FREE_RESPONSE_CHANNELS` accepts ordinary messages there without an @ mention. `DISCORD_FREE_RESPONSE_AUTO_THREAD=false` keeps replies inline. `DISCORD_HOME_CHANNEL` sets the default destination for proactive delivery. Keep `DISCORD_ALLOWED_USERS` set to the intended user's numeric ID. Channel admission and direct-message admission are separate rules.
+
+On 2026-09-30, `.212` moved to `#hermes-212`, channel `1554859357374513222`. The gateway accepted a plain message and delivered its reply. The `.213` configuration was not changed. Existing cron jobs with an explicit destination retain that destination; changing the home channel does not rewrite them.
+
+Back up `.env` before changing these values. Restart the gateway after active turns finish, then verify a plain message in the selected channel. Restore the backup and restart the gateway to undo the routing change.
+
+## 5. Verify scheduled delivery separately
+
+Hermes cron can send output to `discord:<channel-id>`. For a disposable delivery test, run the following as the Hermes account, replacing the channel ID:
+
+```sh
+mkdir -p ~/.hermes/scripts
+printf '%s\n' '#!/bin/sh' 'echo "Hermes scheduled delivery test"' > ~/.hermes/scripts/discord-delivery-test.sh
+hermes cron create 1m --name discord-delivery-test --deliver discord:123456789012345678 --repeat 1 --script discord-delivery-test.sh --no-agent
+hermes cron runs
+```
+
+After the job completes, confirm the marker in Discord and remove `~/.hermes/scripts/discord-delivery-test.sh`. On `.212`, the first attempt failed because a source-install cron worker used a Python environment without `ruamel`; [the worker bootstrap patch](../../patches/hermes-cron-bootstrap.patch) made it use Hermes's managed dependency environment. Check `hermes cron runs` as well as the Discord channel when testing a new installation. A successful `hermes send` does not prove cron delivery works.
+
+A scheduled channel post by itself does not create a daily conversation thread. Before promising a daily thread, configure and test the exact creation path, target channel, local time zone, and prompt. No recurring morning job was installed on `.212` during this test.

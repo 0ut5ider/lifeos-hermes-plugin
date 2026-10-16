@@ -10,7 +10,6 @@ import os
 import re
 import stat
 from pathlib import Path
-import shlex
 import sys
 import types
 import traceback
@@ -24,7 +23,7 @@ if not __package__:
 from .cli import operation, read_private, write_state
 from .release_catalog import ReleaseRejected, _json
 from .release_plan import inspect_operation, service_environment, verify_runtime
-from .release_programs import ProgramTransaction, fingerprint, publish
+from .release_programs import ProgramTransaction, fingerprint, launcher_script, publish
 from .release_stage import load_bridge, sha, run_stage, _environment
 from .release_operation import (action_state, operation_lock, seal_plan,
     validate_admission, validate_plan, write_admission, request_digest)
@@ -186,7 +185,7 @@ def _program_plan(job, request, selected):
     directories = {selected['bridge']: package / 'lifeos_hook_bridge',
                    profile / 'plugins/lifeos-release-manager': package / 'optional/lifeos_release_manager'}
     launch = generated / 'hermes'
-    publish(launch, ('#!/bin/sh\nexec ' + shlex.quote(request['runtime']['hermes']) + ' "$@"\n').encode(), 0o700)
+    publish(launch, launcher_script(request['runtime']['hermes']), 0o700)
     for path in selected['launchers']:
         files[path] = launch
     commands = _json((job / 'manifest.json').read_bytes())['runtime']['commands']
@@ -194,7 +193,7 @@ def _program_plan(job, request, selected):
         if commands.get(name) != 'bin/' + name:
             raise ReleaseRejected('The prepared runtime changes a native command path')
         command = generated / name
-        publish(command, ('#!/bin/sh\nexec ' + shlex.quote(str(job / commands[name])) + ' "$@"\n').encode(), 0o700)
+        publish(command, launcher_script(str(job / commands[name])), 0o700)
         files[Path(request['account_home']) / '.local/bin' / name] = command
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
@@ -325,7 +324,6 @@ def _execute(job, action, *, checkpoint=lambda point: None):
     profile = Path(request['profile'])
     job, request = operation(profile, job.name)
     sys.path.insert(0, request['runtime']['source'])
-    active_bridge = profile / 'plugins/lifeos-hook-bridge'
     current = recovery_bridge(job, profile)
     lock = current.memory_module('installation_lock').installation_lock
     program_lock = current.memory_module('program_lock')

@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The current bundle uses eleven Hermes patch groups and twenty-five LifeOS patches, for 36 total patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation. The [conditional Hermes upgrade record](../notes/2026-10-10-conditional-hermes-patch-reduction.md) describes one possible removal and the checks required before reducing the count to 35.
+The qualified bundle uses ten Hermes patch groups and twenty-five LifeOS patches, for 35 total patches. The exact base revisions and ordered patch lists are declared in [`install_source.py`](../lifeos_hook_bridge/install_source.py) and [`prepare_sources.py`](../scripts/prepare_sources.py). The [current release record](verification/2026-10-16-release-0.7.2/README.md) binds the qualified package. The [conditional reduction record](../notes/2026-10-10-conditional-hermes-patch-reduction.md) preserves the earlier 36-to-35 proposal. Hermes v0.21.7 replaces the protected-instruction approval patch with upstream behavior.
 
 ## Hermes patch groups
 
@@ -16,7 +16,6 @@ The current bundle uses eleven Hermes patch groups and twenty-five LifeOS patche
 | `hermes-cron-bootstrap.patch` | Installation-bound scheduled worker startup |
 | `hermes-required-middleware.patch` | Required admission before model requests, exact user text, and rejection of asynchronous required callbacks |
 | `hermes-web-result-status.patch` | External Safety delivery after successful and partial web extraction |
-| `hermes-protected-instruction-approval.patch` | Immediate refusal of unattended protected instruction writes |
 
 The additional native patches bind configuration audit rows to their actual source, detect shell-quoted literal write targets, honor the Pulse hook switch, and publish concurrent evaluation state through separate temporary files. The system-surface patch retains the latest observed criterion detail in the visible system line. The full declared order is in `scripts/prepare_sources.py`.
 
@@ -46,7 +45,7 @@ If a registered native TaskGovernance file has no valid record or its bytes chan
 
 An existing installation needs the complete plugin and LifeOS update package. Updating only the plugin does not provide the capability record. Keep the prior snapshot until verification passes. The reduced profile for an unpatched Hermes installation remains a separate, documented installation choice.
 
-## Verification and limits
+## Historical reduction verification (September 29)
 
 The replay check compares the regenerated bundle with the intended modified source files. The behavioral checks cover native model warnings, task counts, update and restore, required policy failures, and command routing through a stock launcher.
 
@@ -56,7 +55,7 @@ The [independent Astra review](agents/2026-09-29-footprint-review/footprint-revi
 
 The command fixture uses real HTTP requests against a deterministic local protocol server. It checks profile isolation, managed dependencies, image input, streamed child responses, and provider failure without fallback. It does not establish private model accuracy or reasoning depth.
 
-This reduction does not complete the 74-hook parity release gate. The running `.212` gateway still uses its earlier package until a coordinated release is applied. The work does not deploy to `.211` or `.213`.
+Those September 29 checks do not establish the later complete release state. The [Step 1 ledger](parity/step1-acceptance.md) records the accepted hook scenarios. The [current release record](verification/2026-10-16-release-0.7.2/README.md) records present qualification and deployment.
 
 ## Regenerate the Hermes patch groups
 

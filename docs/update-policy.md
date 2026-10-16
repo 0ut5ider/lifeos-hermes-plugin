@@ -1,63 +1,56 @@
-# Updating the Hermes and LifeOS bridge
+# Update and recover a qualified integration
 
-The current bridge is a tested combination of three independent code bases. The plugin installs LifeOS into a new account, updates an installed LifeOS from a tested candidate, and can apply or restore its tested Hermes patch set. No later upstream revision has passed the compatibility gate. The source preparation command builds the pinned combination from known base commits.
+A supported release is a tested combination of Hermes, LifeOS, bridge, manager, dependencies, and dashboard. Update the complete combination through **LifeOS releases**. The [installation guide](installation-workflow.md) owns the shared preparation and apply instructions.
 
-| Component | Current test source | Update risk |
-| --- | --- | --- |
-| Hermes | Base `758ad514eb0e800547e015edf05aa18f78b78d82` plus nine patch groups | Stock plugin events do not provide every LifeOS control. A normal source update can switch away from the patched feature branch or leave untested patch merges. |
-| LifeOS | Base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c` plus ten patches | Hook files and registrations can change. The current `DeployCore.ts` uses `copyMissing`, which does not replace an already installed system file. Repeating the install commands alone cannot prove deployed hooks match a new source release. |
-| Bridge plugin | Public Git commit pinned during install | A plugin update cannot restore missing Hermes events or port LifeOS source changes. Hermes refuses automatic updates of a pinned plugin. |
+The [current release record](verification/2026-10-16-release-0.7.2/README.md) supplies the exact package identity. The ordered upstream revisions and patch lists are declared in [`install_source.py`](../lifeos_hook_bridge/install_source.py) and [`prepare_sources.py`](../scripts/prepare_sources.py).
 
-## Rule for the current `.212` test installation
+## Owner update workflow
 
-Do not use the Hermes dashboard Update button or `hermes update` to advance this patched test install. Do not run a LifeOS update over its deployed hook tree. The test account now sets `updates.auto_switch_parked_branch: false` in `~/.hermes/config.yaml`. Hermes documents that this prevents a clean parked feature branch from being switched to the update target. This guards one failure mode only. The setting can be reverted with `hermes config set --force updates.auto_switch_parked_branch true`; the prior config is backed up at `~/.hermes/config.yaml.before-update-guard-20260928`.
+1. Finish or stop active work and retain a private recovery checkpoint.
+2. Select **Update LifeOS** or **Update plugin** in **LifeOS releases**.
+3. Leave the version empty for the latest stable package, or select an exact published version.
+4. Wait for preparation, then select **Review release**.
+5. Check the version, commit, hash, profile, and current owner authorization.
+6. Select **Install this release**.
+7. After restart, verify `hermes lifeos-release status IDENTIFIER` and `hermes lifeos-version`.
+8. Check services, the configured model, messaging policy, and any enabled external memory connection before resuming normal work.
 
-The original `lifeos-hermes` account uses a shared root: `~/.claude` links to `~/.hermes`. The LifeOS update worker requires separate roots and refuses this layout. The 2026-09-29 release uses a private operator transaction for the shared root. It preserves generated identity files, unchanged hook registrations, model settings, credentials, and user data. Its snapshot and checks are recorded in [the release note](../notes/2026-09-29-release-212.md). Use the separate-root layout in [the clean install guide](clean-install.md) for a new server. The `.211` and `.213` installations are outside this deployment plan.
+Both update buttons select the complete qualified package. The manager stages outside the active installation and checks the certificate, archive, selected programs, services, profile, and owner authority. It preserves current model choices, credentials, memory configuration, and user data.
 
-## Required update workflow
+Do not run `hermes update`, an upstream LifeOS updater, or a manual program overlay over the managed installation. Those operations can separate the patched host, native programs, bridge, and recorded package identity. A successful upstream checkout or clean patch application is not compatibility evidence.
 
-1. Choose exact upstream Hermes and LifeOS commits and one exact bridge plugin commit. Record the three revisions as a tested compatibility set.
-2. Prepare new source trees away from the running install. Port each required change to those revisions. Stop if any patch conflicts or if an upstream change makes a patch unnecessary.
-3. Compare the new LifeOS hook registration manifest and deployed system files. Check every registration against the bridge event map. Snapshot the system files that `OverlaySystem.ts` will change before applying its update. Do not advance the LifeOS version marker while files remain stale.
-4. Run the bridge suite, Hermes core tests, native LifeOS hook tests, and live `.212` checks for the affected events, including the local model routes and Discord watchdog path when those parts change.
-5. Back up the running code, Hermes profile, and LifeOS data separately. Keep user-owned `USER/` and `LIFEOS/MEMORY/` content out of system-file replacement. Hermes's quick update snapshot covers selected state files, not application code.
-6. Install the tested source and plugin revisions, restart the gateway, and verify the running code, hook registrations, and model route. If a gate fails, restore the code and data snapshots before accepting another message.
+## Recovery and rollback
 
-The LifeOS settings page starts a detached update worker for a prepared candidate. The worker makes a fresh reference install, checks managed-file ownership, stages source files and dependencies, replaces exact LifeOS-owned hook registrations, and snapshots Hermes mount files and the VersionDrift baseline. It stops the gateway, swaps the staged tree, remounts LifeOS, renews the baseline, restarts the gateway, and checks the native hooks and running service. A failure after stop restores the prior tree, mount files, and baseline. An interrupted swap has a recovery action. The [service-backed update rehearsal](../notes/2026-09-29-lifeos-update-transaction.md) passed apply, restore, and forced-failure rollback on the pinned revision. The isolated acceptance installation verifies authenticated setup and recovery controls. A newer upstream revision remains untested. See [the browser acceptance record](verification/2026-10-02-mount-acceptance/README.md).
+Use the operation's actual current status. A queued worker is unfinished. `preparation_failed` leaves the previous programs selected. `recovery_required` needs the retained operation and a reviewed recovery action.
 
-Version restore preserves external LifeOS user data in place. The transaction records each external directory link, its physical target, device, and inode. Restore checks the installed and prior program links against that record. Changed or replaced links and target directories refuse restoration. Audit entries, current facts, and retired facts in those same external directories stay current. Changed user data stored inside the program tree still refuses restoration. Version restore refuses later changes to Hermes mount files, directory contents, or permissions. It also refuses snapshots without a post-update profile record. The worker checks again after stopping the gateway, before the LifeOS swap. Replaced profile files and the baseline move into private `.lifeos-restore-*` directories beside their targets. This supports separate profile and baseline filesystems and preserves writes that race with the final check. The snapshot's `mount-before-restore/<operation>/archive-manifest.json` records each archive location before its target moves. Successful version restore records the index directory in `profile_archive`. The index and retained files remain available after rollback or interrupted recovery. A worker exception with an unfinished swap reports `interrupted`, so the authenticated dashboard offers recovery. Restore and recovery reject requests from other origins, query parameters, and request bodies. Temporary per-mount preparation copies are removed after commit or rollback. Pending mount recovery retains its copies. Unknown historical snapshot directories require operator inspection. See [the review correction record](verification/2026-10-02-opus-review-fixes/README.md).
+When available, the dashboard provides **Recover operation** and **Restore prior programs**. The command-line equivalents are:
 
-The update worker keeps the prior candidate source because the baseline refers to it. A later supported candidate uses a new directory and a plugin-owned selection file. A changed `CLAUDE.template.md` or `settings.system.json` requires a reviewed migration before the worker will stop the gateway. A normal Hermes source update is separate from this LifeOS worker.
-
-The older `scripts/release_transaction.py` stages Hermes code, bridge code, Hermes config, and LifeOS system files as one transaction. It does not install LifeOS dependencies, change hook registrations, or renew the VersionDrift baseline. Keep it for the Hermes and plugin release gate, with those limits. See the [system-file rehearsal](../notes/2026-09-28-overlay-rollback-rehearsal.md), [coordinated rehearsal](../notes/2026-09-28-release-transaction-rehearsal.md), and [service rehearsal](../notes/2026-09-29-service-release-rehearsal.md).
-
-The transaction command has three actions: `stage`, `apply`, and `restore`. Stage requires separate current and candidate paths for Hermes and the bridge, a LifeOS payload, the installed LifeOS root, and Hermes config. Apply requires an executable verifier and either a named gateway service or `--no-gateway` for an account with no running gateway. It refuses changed candidate Hermes code, bridge code, or LifeOS payload before stopping the service. The snapshot is private and can contain a copy of Hermes config, so keep it in the target account's home directory. The current rehearsal command does not install new dependencies or change LifeOS hook registrations in `settings.json`.
-
-For a prepared LifeOS source and a stopped test gateway, use the following LifeOS file sequence. Inspect the dry run and keep the snapshot until the updated install passes its checks:
-
-```sh
-python scripts/system_overlay_snapshot.py snapshot \
-  "$LIFEOS_SRC/LifeOS/install" "$HOME/.claude" "$HOME/workspace/lifeos-overlay-snapshot"
-bun "$LIFEOS_SRC/LifeOS/Tools/OverlaySystem.ts" \
-  --config-root "$HOME/.claude" --skill-root "$LIFEOS_SRC/LifeOS"
-bun "$LIFEOS_SRC/LifeOS/Tools/OverlaySystem.ts" \
-  --config-root "$HOME/.claude" --skill-root "$LIFEOS_SRC/LifeOS" --apply
-python scripts/system_overlay_snapshot.py verify \
-  "$HOME/workspace/lifeos-overlay-snapshot" "$HOME/.claude"
+```bash
+hermes lifeos-release recover IDENTIFIER
+hermes lifeos-release rollback IDENTIFIER
 ```
 
-To restore the prior LifeOS system files, run `python scripts/system_overlay_snapshot.py restore "$HOME/workspace/lifeos-overlay-snapshot" "$HOME/.claude"`. If an installed file changed after the overlay, restoration refuses it. Inspect the change, then add `--preserve-divergent` to save that file in the snapshot's `divergent/` directory before restoration. The tool does not update `settings.json`; hook registration changes require a separate verified step.
+Rollback requires the current release identity, retained programs, and native mount to match the operation. Later program edits, a later remount, or another release can expire that rollback. Use the current `restore_available` result. Do not assume an older applied operation is still restorable.
 
-The LifeOS Bridge page offers **Prepare latest LifeOS update** and **Apply prepared LifeOS update** for the tested revision. It does not call `hermes update` or repeat `DeployCore.ts --apply` over the live tree. Its registration replacement accounts for the native installer's empty-matcher grouping, preserves unrelated hooks, and refuses edited or duplicate old hooks. [The ownership probe](../notes/2026-09-29-update-tool-ownership.md) records the 74-hook check.
+If interruption stops the dashboard, use the retained qualified command from that operation. If the installed manager directory is missing, an operator must use the retained worker and verified journal. Do not recreate directories, edit the plan, or erase the operation to make a control reappear.
 
-The long-term way to reduce this maintenance cost is to contribute the generic Hermes hook events upstream and make the LifeOS handlers accept Hermes event data upstream. Until both sides contain those changes, the compatibility set and staged verification remain necessary.
+Recovery and rollback preserve current user data and refuse conflicting later edits. They restore selected software, not a historical personal-memory state. Review [provider return and software removal](memory-portability.md) as separate workflows.
 
-## Operation admission
+Data-only profile backups exclude managed runtime workspaces. They do not establish full program recovery or external Atlas coverage. A whole-guest backup must include selected programs, native user data, external Atlas state, governance metadata, and pending journals as a coherent group. The [daily recovery contract](deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate) defines that operator gate. Restore activated backups with networking removed and automatic application services masked before current owner and audience review.
 
-Restore records a durable `restore_stopping` state before it stops the gateway. If the worker dies in this state, the authenticated recovery action restarts and verifies the selected installation. It does not replace program files, the profile, the baseline, or user data. It then records `applied`. A later restore request must pass the current data and profile checks again. Once the worker records `restoring`, recovery uses the prior installation snapshot. Status reads use a completed durable state if a worker dies before it writes its final status.
+## Qualify a new upstream combination
 
-Update apply records the recoverable `stopped` intent after it saves the mount snapshot and before it calls the gateway stop operation. Recovery can restart the prior installation if process death occurs during that stop operation.
+1. Select exact upstream commits and a bridge/manager program commit.
+2. Prepare sources outside the running installation and port every required patch.
+3. Compare registrations, program maps, dependencies, selected services, and owned mount files.
+4. Run focused source tests and the affected native behavior controls.
+5. Obtain independent review and resolve measured findings.
+6. Build from committed source, then test the exact archive and record its integrity before and after execution.
+7. Verify fresh installation, update, interruption recovery, rollback, and the changed installed workflows in isolated fixtures.
+8. Publish the qualified immutable package and certificate.
+9. Update development before daily, with current owner review and preservation checks.
+10. Add deployment evidence without replacing initial release assets.
 
-The dashboard rejects installation mutations from another origin. Fixed installation actions also reject query parameters and request bodies. Authenticated admission and detached code workers share a private installation lock. A competing action receives a conflict before it creates a job or owner grant. Process termination releases the lock; the transaction journal still determines whether recovery is required.
+Test counts and inherited gates must name their package and environment. Record failures, skips, and process-inspection restrictions explicitly. Never replace failed receipts or claim a clean full run from coverage across separate environments.
 
-The [PR readiness record](verification/2026-10-02-pr-readiness/README.md) verifies real lock contention, process termination, browser apply, and version restore with later external audit data. These checks use the pinned revisions. They do not establish compatibility with a newer upstream version.
+The [contributor guide](../CONTRIBUTING.md#release-changes) identifies build inputs and evidence rules. The [historical update snapshot](history/2026-10-16-update-policy.md) retains earlier component transactions, shared-root constraints, and `.212` operator checks.

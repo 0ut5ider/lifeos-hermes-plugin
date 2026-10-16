@@ -1,37 +1,20 @@
 // ABOUTME: Tests the HTTP memory setup and owner consent controls in the dashboard SDK.
 // ABOUTME: Verifies explicit permissions, one-time credential display, and safe connection links.
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const vm = require('node:vm');
-const bundle = fs.readFileSync(path.join(__dirname, '../lifeos_hook_bridge/dashboard/dist/index.js'), 'utf8');
-function find(node, match) {
-  if (!node || typeof node !== 'object') return null;
-  if (match(node)) return node;
-  for (const child of node.children ?? []) { const found = find(child, match); if (found) return found; }
-  return null;
-}
+const { component, find, loadDashboard, settle } = require('./support/dashboard_sdk.cjs');
 async function panel(initial) {
-  const state = [], calls = []; let index = 0, mounted = false, root;
+  const calls = [];
   const sdk = {
-    React: {createElement: (type, props, ...children) => ({type, props: props ?? {}, children: children.flat()})},
-    hooks: {useState(value) {const slot = index++; if (!(slot in state)) state[slot] = value;
-      return [state[slot], value => {state[slot] = typeof value === 'function' ? value(state[slot]) : value;}];},
-      useEffect() {}},
     fetchJSON(url, init) {calls.push({url, init});
       if (url.endsWith('/connections') && init) return Promise.resolve({token: 'synthetic-token', expires_in: 7776000});
       if (url.includes('/authorization/')) return Promise.resolve({redirect_url: 'http://localhost:9812/callback?code=synthetic'});
       return Promise.resolve(initial);},
   };
-  vm.runInNewContext(bundle, {window: {__HERMES_PLUGIN_SDK__: sdk, __HERMES_PLUGINS__: {register(_name, view) {root = view;}}}, console});
-  const memory = find(root(), node => node.type?.name === 'MemoryPreferences');
-  const component = find(memory.type(), node => node.type?.name === 'MemoryHTTPPreferences');
-  assert.ok(component, 'The plugin must include HTTP memory setup');
-  state.length = 0; index = 0; mounted = false;
-  sdk.hooks.useEffect = callback => {if (!mounted) {mounted = true; callback();}};
-  const render = () => {index = 0; return component.type();};
-  render(); await new Promise(setImmediate);
+  const app = loadDashboard('bridge', sdk);
+  const memory = component(app.preview(), 'MemoryPreferences');
+  const render = app.mount(component(app.preview(memory), 'MemoryHTTPPreferences'));
+  await settle();
   return {render, calls};
 }
 test('HTTP setup recommends Tailscale Serve and retains explicit grants', async () => {
@@ -105,4 +88,21 @@ test('permission editing cannot implicitly submit the manual-token form', async 
   const form = find(p.render(), node => node.props.id === 'http_enrollment');
   assert.equal(find(form, node => node.props.id === 'http_client'), null);
   assert.ok(find(form, node => node.type === 'button' && node.children.includes('Create agent token (90 days)')));
+});
+
+test('optional HTTP permissions extend the approved grant', async () => {
+  const p = await panel({enabled: true, public_url: 'https://synthetic.ts.net', sharing_enabled: true, connections: [],
+    pending: [{id: 'request one', client_name: 'Synthetic client', redirect_uri: 'http://localhost:9812/callback'}]});
+  for (const [id, value] of [['http_client', 'desktop'], ['http_projects', ' lab, ,ops '], ['http_model_route', 'cloud']]) {
+    find(p.render(), node => node.props.id === id).props.onChange({target: {value}});
+  }
+  for (const id of ['http_principal', 'http_assistant', 'http_write']) {
+    find(p.render(), node => node.props.id === id).props.onChange({target: {checked: true}});
+  }
+  await find(p.render(), node => node.type === 'button' && node.children.includes('Approve Synthetic client')).props.onClick();
+  const call = p.calls.find(call => call.init?.method === 'POST');
+  assert.ok(call.url.endsWith('/memory/http/authorization/request%20one'));
+  assert.equal(JSON.stringify(call.init.headers), JSON.stringify({'Content-Type': 'application/json'}));
+  assert.deepEqual(JSON.parse(call.init.body), {decision: 'approve', grant: {client: 'desktop', read: ['project', 'principal', 'assistant'],
+    projects: ['lab', 'ops'], model_route: 'cloud', write_project: true}});
 });

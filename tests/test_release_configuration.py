@@ -103,6 +103,24 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertEqual((job / 'generated/config.yaml').read_bytes(), before)
             self.assertEqual(yaml.load((profile / 'config.yaml').read_bytes())['_config_version'], 46)
 
+    def test_program_plan_stages_the_runtime_launcher_before_command_checks(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            job, profile, package = root / 'job', root / '.hermes', root / 'package'
+            for path in (job, profile, package):
+                path.mkdir(mode=0o700)
+            commands = {'hermes': 'bin/changed', 'hermes-agent': 'bin/hermes-agent', 'hermes-acp': 'bin/hermes-acp'}
+            (job / 'manifest.json').write_text(json.dumps({'runtime': {'commands': commands}}))
+            runtime = root / 'runtime dir/bin/hermes'
+            request = {'account_home': str(root), 'runtime': {'hermes': str(runtime)}}
+            selected = {'profile': profile, 'installed': root / '.claude', 'package': package,
+                        'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes']}
+            with self.assertRaisesRegex(ValueError, 'The prepared runtime changes a native command path'):
+                _program_plan(job, request, selected)
+            launcher = job / 'generated/hermes'
+            self.assertEqual(launcher.read_bytes(), ("#!/bin/sh\nexec '" + str(runtime) + "' \"$@\"\n").encode())
+            self.assertEqual(launcher.stat().st_mode & 0o777, 0o700)
+
     def test_unchanged_native_update_preserves_baseline_time_and_prepared_bytes(self):
         from types import SimpleNamespace
         from lifeos_hook_bridge import update_plan, version_drift

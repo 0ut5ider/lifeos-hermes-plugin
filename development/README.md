@@ -1,5 +1,7 @@
 # Development hook capture
 
+Deployment observations below describe the dated September and October fixtures. They do not establish that the recorder is active on a current server. Inspect source hashes and obtain authorization before enabling capture on a development account.
+
 This recorder collects private evidence for development tests. The public plugin installer copies `lifeos_hook_bridge/`. It does not install this directory, its Python startup file, or captured data.
 
 The recorder observes Hermes callbacks, bridge translation, selected and skipped registrations, native command and HTTP results, remote transport, detached runners, host tool boundaries, model context construction, and Discord admission, slash dispatch, and delivery. It records the registered Hermes event separately from the bridge method. A returned directive is not proof of host enforcement.

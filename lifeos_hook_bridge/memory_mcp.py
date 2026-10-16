@@ -12,7 +12,6 @@ import importlib
 from pathlib import Path
 import sys
 import types
-from typing import Any
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server

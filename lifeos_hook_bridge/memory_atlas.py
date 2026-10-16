@@ -4,8 +4,7 @@ from datetime import datetime, timezone
 import json
 
 from .memory_access import MemoryUnavailable
-from .memory_sources import (authorize, _admit, _source_time, SOURCE_LIMIT, CORPUS_LIMIT,
-                             json_projection)
+from .memory_sources import authorize, _admit, _source_time, SOURCE_LIMIT, CORPUS_LIMIT
 from .memory_tab_freshness import _checked
 from .memory_operational_views import projection, project_value, PROJECTION_FIELD_LIMIT
 

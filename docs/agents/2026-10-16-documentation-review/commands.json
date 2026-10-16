@@ -1,0 +1,45 @@
+[
+  {
+    "name": "ui-component-tests",
+    "command": [
+      "node",
+      "--test",
+      "tests/test_dashboard_ui.cjs",
+      "tests/test_fresh_store_ui.cjs",
+      "tests/test_memory_dashboard_ui.cjs",
+      "tests/test_memory_portability_ui.cjs",
+      "tests/test_memory_remote_ui.cjs",
+      "tests/test_memory_removal_ui.cjs",
+      "tests/test_release_ui.cjs",
+      "tests/test_setup_presentation.cjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "prepare-usage",
+    "command": [
+      "python",
+      "scripts/prepare_sources.py",
+      "--help"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "build-usage",
+    "command": [
+      "python",
+      "scripts/build_managed_release.py",
+      "--help"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "whitespace",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0
+  }
+]

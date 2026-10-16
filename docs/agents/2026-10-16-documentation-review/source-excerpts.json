@@ -1,0 +1,42 @@
+[
+  {
+    "path": "lifeos_hook_bridge/dashboard/dist/index.js",
+    "lines": [
+      183,
+      210
+    ],
+    "text": "183:           plan ? h(\"div\", { className: \"space-y-2\" },\n184:             h(\"h4\", null, \"Publication plan\"),\n185:             plan.items.map(function (item) { return h(\"article\", { key: item.id, className: \"rounded border border-border p-2\" },\n186:               h(\"p\", null, item.action + \": \" + (item.content ?? item.reason)),\n187:               item.destination ? h(\"p\", null, \"Destination: \" + item.destination) : null,\n188:               item.transformation ? h(\"p\", { className: \"whitespace-pre-wrap\" }, \"Published text: \" + item.transformation.published) : null); }),\n189:             h(\"p\", null, \"Required held or excluded entries keep this import incomplete. No existing entry is evicted.\"),\n190:             h(\"button\", { type: \"button\", disabled: busy, onClick: function () { return run(async function () {\n191:               setPublication(await post(\"/apply\", { ...binding(), plan_signature: plan.signature }));\n192:             }); } }, \"Apply reviewed import\"),\n193:             h(\"button\", { type: \"button\", disabled: busy, onClick: function () { return run(refresh); } }, \"Check import status\")) : null,\n194:           publication ? h(\"div\", { role: \"status\" },\n195:             h(\"p\", null, \"Import state: \" + publication.state + \". Required entries verified: \" + publication.required_items_verified + \".\"),\n196:             publication.state === \"published\" && publication.required_items_verified && !review.ownership_enabled ?\n197:               h(\"div\", { className: \"space-y-2\" },\n198:                 h(\"p\", null, \"Prepare a separate ownership review to use LifeOS memory in new Hermes sessions. The preparation saves a private backup and restarts Hermes services.\"),\n199:                 h(\"button\", { type: \"button\", disabled: busy, onClick: function () { return run(async function () {\n200:                   const result = await SDK.fetchJSON(\"/api/plugins/lifeos-release-manager/memory-workflows\", {\n201:                     method: \"POST\", headers: { \"Content-Type\": \"application/json\" },\n202:                     body: JSON.stringify({ kind: \"activation\", ...binding(), plan_signature: plan.signature }) });\n203:                   setMessage(\"Ownership review started. Workflow: \" + result.identifier + \". Open LifeOS releases to review the cutover.\");\n204:                 }); } }, \"Prepare LifeOS ownership activation\"),\n205:                 h(\"a\", { href: \"/lifeos-releases\", className: \"underline\" }, \"Open LifeOS releases\")) : null,\n206:             publication.reason ? h(\"p\", null, publication.reason) : null,\n207:             publication.items.map(function (item) { return h(\"p\", { key: item.id }, item.action + \": \" +\n208:               (item.receipt?.reference ? item.receipt.reference.id + \", revision \" + item.receipt.reference.revision : \"No published reference\") +\n209:               \". Current verification: \" + item.verified + \".\"); })) : null) : null));\n210:   }"
+  },
+  {
+    "path": "lifeos_hook_bridge/dashboard/dist/index.js",
+    "lines": [
+      585,
+      595
+    ],
+    "text": "585:       configured ? h(\"p\", { className: \"text-sm\" }, memory.ownership_enabled\n586:         ? \"LifeOS owns lasting memory. Export current facts and review a return to switch to built-in Hermes memory.\"\n587:         : \"After the required import entries are verified, prepare an ownership review. Open LifeOS releases to review and apply the provider switch.\") : null,\n588:       h(\"button\", { type: \"button\", disabled: busy, onClick: refresh, className: \"rounded border border-border px-3 py-2\" }, \"Check memory status\"),\n589:       message ? h(\"p\", { role: \"status\", className: \"text-sm\" }, message) : null,\n590:       h(MemoryHTTPPreferences),\n591:       configured ? h(\"div\", { className: \"space-y-3\" },\n592:         h(\"details\", { id: \"memory_transfer\" }, h(\"summary\", null, \"Import and export Hermes memory\"),\n593:           h(\"div\", null, h(MemoryImportReview), h(MemoryExportReview))),\n594:         h(\"details\", null,\n595:           h(\"summary\", { className: \"cursor-pointer font-semibold\" }, \"Add existing LifeOS memory\"),"
+  },
+  {
+    "path": "lifeos_hook_bridge/memory_import.py",
+    "lines": [
+      566,
+      581
+    ],
+    "text": "566:                     failure={'state':'conflict','reason':'The native import target changes outside this reviewed publication'}\n567:             try:\n568:                 self._source_current(review,account)\n569:             except MemoryConflict as error:\n570:                 failure={'state':'conflict','reason':str(error)}\n571:             required=all(row['verified'] for row in output if row['required'])\n572:             committed=all(row['verified'] for row in output if row['action']=='import')\n573:             result={'state':failure['state'] if failure else 'published' if required and committed else 'partial',\n574:                 'reason':failure['reason'] if failure else None,'items':output,'required_items_verified':required,\n575:                 'ownership_enabled':selected.get('ownership_enabled',False),'ownership_switch':False,\n576:                 'plan_signature':plan_signature,'snapshot_signature':snapshot_signature}\n577:             publish(destination/'publication.json',_encoded(result))\n578:             return result"
+  },
+  {
+    "path": "scripts/prepare_sources.py",
+    "lines": [
+      93,
+      103
+    ],
+    "text": "93:     run(\"git\", \"clone\", \"--quiet\", \"--no-checkout\", \"--\", str(repo), str(output))\n94:     run(\"git\", \"checkout\", \"--quiet\", \"-B\", \"feature/lifeos-hook-parity\", base, cwd=output)\n95:     applied = []\n96:     for filename in source[\"patches\"]:\n97:         patch = ROOT / \"patches\" / filename\n98:         if not patch.is_file():\n99:             raise PreparationError(f\"missing patch: {patch}\")\n100:         run(\"git\", \"apply\", \"--check\", str(patch), cwd=output)\n101:         run(\"git\", \"apply\", str(patch), cwd=output)\n102:         applied.append({\"name\": filename, \"sha256\": hashlib.sha256(patch.read_bytes()).hexdigest()})\n103:     run(\"git\", \"diff\", \"--check\", cwd=output)"
+  },
+  {
+    "path": "scripts/build_managed_release.py",
+    "lines": [
+      35,
+      45
+    ],
+    "text": "35:     sys.path.insert(0, str(package))\n36:     from lifeos_hook_bridge import install_source, release_version\n37:     if release_version.versions(package) != version:\n38:         raise ValueError('Integration version declarations differ')\n39:     hermes = install_source.prepare_supported_hermes(args.hermes_source, package / 'hermes')\n40:     from optional.lifeos_release_manager.stock_hermes import build_archive\n41:     stock = build_archive(args.hermes_source, package / 'stock-hermes.tgz', hermes['base_commit'])\n42:     lifeos = install_source.prepare_lifeos(str(args.lifeos_source), package / 'lifeos',\n43:         install_source.SUPPORTED_LIFEOS_COMMIT, package / 'lifeos_hook_bridge/patches', install_source.LIFEOS_PATCHES)\n44:     closure = package / 'python-runtime'\n45:     closure.mkdir(mode=0o700)"
+  }
+]

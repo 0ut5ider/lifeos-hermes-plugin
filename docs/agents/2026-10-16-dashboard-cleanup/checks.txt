@@ -1,0 +1,511 @@
+# Dashboard cleanup checks, 2026-10-16
+# Worktree: /home/outsider/.cache/lifeos-code-cleanup-20261016/dashboard-cleanup
+# Starting commit: 728cd17a94607ec4c119419c052060582a8b75af
+# node v22.22.3
+
+## 1. Baseline: node --test tests/*.cjs at 728cd17a (before any change)
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+# Subtest: missing LifeOS shows preparation without active model settings
+ok 3 - missing LifeOS shows preparation without active model settings
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+# Subtest: a host change waiting for a dashboard restart hides stale Hermes controls
+ok 5 - a host change waiting for a dashboard restart hides stale Hermes controls
+# Subtest: an interrupted Hermes patch change offers recovery
+ok 6 - an interrupted Hermes patch change offers recovery
+# Subtest: each store shows its state, names, and the reason for a failure
+ok 7 - each store shows its state, names, and the reason for a failure
+# Subtest: starting a store sends only the two names and shows the running preparation
+ok 8 - starting a store sends only the two names and shows the running preparation
+# Subtest: remove is offered for every store and confirms by identifier
+ok 9 - remove is offered for every store and confirms by identifier
+# Subtest: while an installation operation runs the start control is disabled
+ok 10 - while an installation operation runs the start control is disabled
+# Subtest: a reviewed store can be selected and a selected store offers return
+ok 11 - a reviewed store can be selected and a selected store offers return
+# Subtest: an interrupted selection offers recovery
+ok 12 - an interrupted selection offers recovery
+# Subtest: memory status explains reviewed activation without engineering gates
+ok 13 - memory status explains reviewed activation without engineering gates
+# Subtest: agent correction guidance requires active memory ownership
+ok 14 - agent correction guidance requires active memory ownership
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 15 - pending changes show their target and exact revision for manual decisions
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 16 - conflicted proposal remains visible and edit decisions send the owner draft
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 17 - valid minimal revoked grants do not break the preferences page
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 18 - owner search displays references and new connections default to read-only project access
+# Subtest: connection form is replaced by an installation note without the sharing component
+ok 19 - connection form is replaced by an installation note without the sharing component
+# Subtest: a disabled connection with a remaining SSH entry offers removal only with the component
+ok 20 - a disabled connection with a remaining SSH entry offers removal only with the component
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 21 - source adoption previews historical records and sends exact project assignments
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 22 - source adoption retains a conflicted preview and reuses its request identifier
+# Subtest: an unconfigured installation offers the owner claim and shows the claimed state
+ok 23 - an unconfigured installation offers the owner claim and shows the claimed state
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 24 - import shows source provenance and never publishes before plan approval
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 25 - an authorization refusal clears private review text and approval controls
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 26 - reverse export shows capacity and retains every item until the owner chooses
+# Subtest: published import queues ownership review without applying the cutover
+ok 27 - published import queues ownership review without applying the cutover
+# Subtest: HTTP setup recommends Tailscale Serve and retains explicit grants
+ok 28 - HTTP setup recommends Tailscale Serve and retains explicit grants
+# Subtest: OAuth requests require owner approval and display the callback
+ok 29 - OAuth requests require owner approval and display the callback
+# Subtest: the owner can clear unused OAuth registrations without revoking connections
+ok 30 - the owner can clear unused OAuth registrations without revoking connections
+# Subtest: waiting approval explains required permissions and keeps manual tokens separate
+ok 31 - waiting approval explains required permissions and keeps manual tokens separate
+# Subtest: HTTP settings, denial, and revocation retain their explicit API contracts
+ok 32 - HTTP settings, denial, and revocation retain their explicit API contracts
+# Subtest: permission editing cannot implicitly submit the manual-token form
+ok 33 - permission editing cannot implicitly submit the manual-token form
+# Subtest: complete removal requires explicit Discord acknowledgment and queues the exact verified return
+ok 34 - complete removal requires explicit Discord acknowledgment and queues the exact verified return
+# Subtest: a ready removal has distinct software application and recovery instructions
+ok 35 - a ready removal has distinct software application and recovery instructions
+# Subtest: a ready activation discloses the local account profile and exact model route
+ok 36 - a ready activation discloses the local account profile and exact model route
+# Subtest: fresh page offers Install LifeOS and queues preparation without applying programs
+ok 37 - fresh page offers Install LifeOS and queues preparation without applying programs
+# Subtest: installed page offers both update actions for the complete integration
+ok 38 - installed page offers both update actions for the complete integration
+# Subtest: recovery blocks preparation and each operation has a visible identifier
+ok 39 - recovery blocks preparation and each operation has a visible identifier
+# Subtest: lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+ok 40 - lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+# Subtest: optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+ok 41 - optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+# Subtest: Bridge and release pages expose labelled navigation and scoped roots
+ok 42 - Bridge and release pages expose labelled navigation and scoped roots
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 182.821854
+
+## 2. Characterization: tests at 3ba2ed63 against unchanged bundles (bundle diff vs 728cd17a was empty)
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+# Subtest: missing LifeOS shows preparation without active model settings
+ok 3 - missing LifeOS shows preparation without active model settings
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+# Subtest: a host change waiting for a dashboard restart hides stale Hermes controls
+ok 5 - a host change waiting for a dashboard restart hides stale Hermes controls
+# Subtest: an interrupted Hermes patch change offers recovery
+ok 6 - an interrupted Hermes patch change offers recovery
+# Subtest: installation actions post once, stay busy, then report their result
+ok 7 - installation actions post once, stay busy, then report their result
+# Subtest: installation action failures report the reason and release the busy state
+ok 8 - installation action failures report the reason and release the busy state
+# Subtest: each store shows its state, names, and the reason for a failure
+ok 9 - each store shows its state, names, and the reason for a failure
+# Subtest: starting a store sends only the two names and shows the running preparation
+ok 10 - starting a store sends only the two names and shows the running preparation
+# Subtest: remove is offered for every store and confirms by identifier
+ok 11 - remove is offered for every store and confirms by identifier
+# Subtest: while an installation operation runs the start control is disabled
+ok 12 - while an installation operation runs the start control is disabled
+# Subtest: a reviewed store can be selected and a selected store offers return
+ok 13 - a reviewed store can be selected and a selected store offers return
+# Subtest: an interrupted selection offers recovery
+ok 14 - an interrupted selection offers recovery
+# Subtest: each store change reports its notice and reloads both statuses
+ok 15 - each store change reports its notice and reloads both statuses
+# Subtest: a refused store change shows the reason, skips reload, and enables controls
+ok 16 - a refused store change shows the reason, skips reload, and enables controls
+# Subtest: memory status explains reviewed activation without engineering gates
+ok 17 - memory status explains reviewed activation without engineering gates
+# Subtest: agent correction guidance requires active memory ownership
+ok 18 - agent correction guidance requires active memory ownership
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 19 - pending changes show their target and exact revision for manual decisions
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 20 - conflicted proposal remains visible and edit decisions send the owner draft
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 21 - valid minimal revoked grants do not break the preferences page
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 22 - owner search displays references and new connections default to read-only project access
+# Subtest: connection form is replaced by an installation note without the sharing component
+ok 23 - connection form is replaced by an installation note without the sharing component
+# Subtest: a disabled connection with a remaining SSH entry offers removal only with the component
+ok 24 - a disabled connection with a remaining SSH entry offers removal only with the component
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 25 - source adoption previews historical records and sends exact project assignments
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 26 - source adoption retains a conflicted preview and reuses its request identifier
+# Subtest: an unconfigured installation offers the owner claim and shows the claimed state
+ok 27 - an unconfigured installation offers the owner claim and shows the claimed state
+# Subtest: connection changes refresh memory status and report each outcome
+ok 28 - connection changes refresh memory status and report each outcome
+# Subtest: review refusals report their reason and keep the previous proposal list
+ok 29 - review refusals report their reason and keep the previous proposal list
+# Subtest: a committed decision reports a failed pending-change refresh
+ok 30 - a committed decision reports a failed pending-change refresh
+# Subtest: a committed adoption reports a failed memory status refresh
+ok 31 - a committed adoption reports a failed memory status refresh
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 32 - import shows source provenance and never publishes before plan approval
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 33 - an authorization refusal clears private review text and approval controls
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 34 - reverse export shows capacity and retains every item until the owner chooses
+# Subtest: published import queues ownership review without applying the cutover
+ok 35 - published import queues ownership review without applying the cutover
+# Subtest: profile file upload encodes each chosen file and reviews the uploaded source
+ok 36 - profile file upload encodes each chosen file and reviews the uploaded source
+# Subtest: portable bundle upload encodes the chosen file and reviews the uploaded source
+ok 37 - portable bundle upload encodes the chosen file and reviews the uploaded source
+# Subtest: a verified export prepares provider return with the reviewed prompt
+ok 38 - a verified export prepares provider return with the reviewed prompt
+# Subtest: HTTP setup recommends Tailscale Serve and retains explicit grants
+ok 39 - HTTP setup recommends Tailscale Serve and retains explicit grants
+# Subtest: OAuth requests require owner approval and display the callback
+ok 40 - OAuth requests require owner approval and display the callback
+# Subtest: the owner can clear unused OAuth registrations without revoking connections
+ok 41 - the owner can clear unused OAuth registrations without revoking connections
+# Subtest: waiting approval explains required permissions and keeps manual tokens separate
+ok 42 - waiting approval explains required permissions and keeps manual tokens separate
+# Subtest: HTTP settings, denial, and revocation retain their explicit API contracts
+ok 43 - HTTP settings, denial, and revocation retain their explicit API contracts
+# Subtest: permission editing cannot implicitly submit the manual-token form
+ok 44 - permission editing cannot implicitly submit the manual-token form
+# Subtest: optional HTTP permissions extend the approved grant
+ok 45 - optional HTTP permissions extend the approved grant
+# Subtest: complete removal requires explicit Discord acknowledgment and queues the exact verified return
+ok 46 - complete removal requires explicit Discord acknowledgment and queues the exact verified return
+# Subtest: a ready removal has distinct software application and recovery instructions
+ok 47 - a ready removal has distinct software application and recovery instructions
+# Subtest: a ready activation discloses the local account profile and exact model route
+ok 48 - a ready activation discloses the local account profile and exact model route
+# Subtest: fresh page offers Install LifeOS and queues preparation without applying programs
+ok 49 - fresh page offers Install LifeOS and queues preparation without applying programs
+# Subtest: installed page offers both update actions for the complete integration
+ok 50 - installed page offers both update actions for the complete integration
+# Subtest: recovery blocks preparation and each operation has a visible identifier
+ok 51 - recovery blocks preparation and each operation has a visible identifier
+# Subtest: a ready release is reviewed before its separate installation request
+ok 52 - a ready release is reviewed before its separate installation request
+# Subtest: lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+ok 53 - lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+# Subtest: optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+ok 54 - optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+# Subtest: Bridge and release pages expose labelled navigation and scoped roots
+ok 55 - Bridge and release pages expose labelled navigation and scoped roots
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 542.345329
+
+## 3. Final: node --test tests/*.cjs at HEAD
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+# Subtest: missing LifeOS shows preparation without active model settings
+ok 3 - missing LifeOS shows preparation without active model settings
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+# Subtest: a host change waiting for a dashboard restart hides stale Hermes controls
+ok 5 - a host change waiting for a dashboard restart hides stale Hermes controls
+# Subtest: an interrupted Hermes patch change offers recovery
+ok 6 - an interrupted Hermes patch change offers recovery
+# Subtest: installation actions post once, stay busy, then report their result
+ok 7 - installation actions post once, stay busy, then report their result
+# Subtest: installation action failures report the reason and release the busy state
+ok 8 - installation action failures report the reason and release the busy state
+# Subtest: each store shows its state, names, and the reason for a failure
+ok 9 - each store shows its state, names, and the reason for a failure
+# Subtest: starting a store sends only the two names and shows the running preparation
+ok 10 - starting a store sends only the two names and shows the running preparation
+# Subtest: remove is offered for every store and confirms by identifier
+ok 11 - remove is offered for every store and confirms by identifier
+# Subtest: while an installation operation runs the start control is disabled
+ok 12 - while an installation operation runs the start control is disabled
+# Subtest: a reviewed store can be selected and a selected store offers return
+ok 13 - a reviewed store can be selected and a selected store offers return
+# Subtest: an interrupted selection offers recovery
+ok 14 - an interrupted selection offers recovery
+# Subtest: each store change reports its notice and reloads both statuses
+ok 15 - each store change reports its notice and reloads both statuses
+# Subtest: a refused store change shows the reason, skips reload, and enables controls
+ok 16 - a refused store change shows the reason, skips reload, and enables controls
+# Subtest: memory status explains reviewed activation without engineering gates
+ok 17 - memory status explains reviewed activation without engineering gates
+# Subtest: agent correction guidance requires active memory ownership
+ok 18 - agent correction guidance requires active memory ownership
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 19 - pending changes show their target and exact revision for manual decisions
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 20 - conflicted proposal remains visible and edit decisions send the owner draft
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 21 - valid minimal revoked grants do not break the preferences page
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 22 - owner search displays references and new connections default to read-only project access
+# Subtest: connection form is replaced by an installation note without the sharing component
+ok 23 - connection form is replaced by an installation note without the sharing component
+# Subtest: a disabled connection with a remaining SSH entry offers removal only with the component
+ok 24 - a disabled connection with a remaining SSH entry offers removal only with the component
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 25 - source adoption previews historical records and sends exact project assignments
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 26 - source adoption retains a conflicted preview and reuses its request identifier
+# Subtest: an unconfigured installation offers the owner claim and shows the claimed state
+ok 27 - an unconfigured installation offers the owner claim and shows the claimed state
+# Subtest: connection changes refresh memory status and report each outcome
+ok 28 - connection changes refresh memory status and report each outcome
+# Subtest: review refusals report their reason and keep the previous proposal list
+ok 29 - review refusals report their reason and keep the previous proposal list
+# Subtest: a committed decision reports a failed pending-change refresh
+ok 30 - a committed decision reports a failed pending-change refresh
+# Subtest: a committed adoption reports a failed memory status refresh
+ok 31 - a committed adoption reports a failed memory status refresh
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 32 - import shows source provenance and never publishes before plan approval
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 33 - an authorization refusal clears private review text and approval controls
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 34 - reverse export shows capacity and retains every item until the owner chooses
+# Subtest: published import queues ownership review without applying the cutover
+ok 35 - published import queues ownership review without applying the cutover
+# Subtest: profile file upload encodes each chosen file and reviews the uploaded source
+ok 36 - profile file upload encodes each chosen file and reviews the uploaded source
+# Subtest: portable bundle upload encodes the chosen file and reviews the uploaded source
+ok 37 - portable bundle upload encodes the chosen file and reviews the uploaded source
+# Subtest: a verified export prepares provider return with the reviewed prompt
+ok 38 - a verified export prepares provider return with the reviewed prompt
+# Subtest: HTTP setup recommends Tailscale Serve and retains explicit grants
+ok 39 - HTTP setup recommends Tailscale Serve and retains explicit grants
+# Subtest: OAuth requests require owner approval and display the callback
+ok 40 - OAuth requests require owner approval and display the callback
+# Subtest: the owner can clear unused OAuth registrations without revoking connections
+ok 41 - the owner can clear unused OAuth registrations without revoking connections
+# Subtest: waiting approval explains required permissions and keeps manual tokens separate
+ok 42 - waiting approval explains required permissions and keeps manual tokens separate
+# Subtest: HTTP settings, denial, and revocation retain their explicit API contracts
+ok 43 - HTTP settings, denial, and revocation retain their explicit API contracts
+# Subtest: permission editing cannot implicitly submit the manual-token form
+ok 44 - permission editing cannot implicitly submit the manual-token form
+# Subtest: optional HTTP permissions extend the approved grant
+ok 45 - optional HTTP permissions extend the approved grant
+# Subtest: complete removal requires explicit Discord acknowledgment and queues the exact verified return
+ok 46 - complete removal requires explicit Discord acknowledgment and queues the exact verified return
+# Subtest: a ready removal has distinct software application and recovery instructions
+ok 47 - a ready removal has distinct software application and recovery instructions
+# Subtest: a ready activation discloses the local account profile and exact model route
+ok 48 - a ready activation discloses the local account profile and exact model route
+# Subtest: fresh page offers Install LifeOS and queues preparation without applying programs
+ok 49 - fresh page offers Install LifeOS and queues preparation without applying programs
+# Subtest: installed page offers both update actions for the complete integration
+ok 50 - installed page offers both update actions for the complete integration
+# Subtest: recovery blocks preparation and each operation has a visible identifier
+ok 51 - recovery blocks preparation and each operation has a visible identifier
+# Subtest: a ready release is reviewed before its separate installation request
+ok 52 - a ready release is reviewed before its separate installation request
+# Subtest: lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+ok 53 - lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+# Subtest: optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+ok 54 - optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+# Subtest: Bridge and release pages expose labelled navigation and scoped roots
+ok 55 - Bridge and release pages expose labelled navigation and scoped roots
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 475.140462
+
+## 3a. Tests at HEAD versus characterization commit 3ba2ed63
+identical (no test edits after characterization)
+
+## 4. Syntax checks
+node --check lifeos_hook_bridge/dashboard/dist/index.js: OK
+node --check optional/lifeos_release_manager/dashboard/dist/index.js: OK
+
+## 5. Whitespace checks
+git diff --check: clean
+git diff --check 728cd17a HEAD: clean
+
+## 6. Mutation checks (each mutation applied alone, suite run, file restored)
+MUTATION [installation-busy-reset] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 3
+MUTATION [installation-failure-text] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+MUTATION [installation-method] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 5
+MUTATION [encode-bytes] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 2
+MUTATION [read-scopes] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 2
+MUTATION [project-names] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 2
+MUTATION [postjson-headers] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 5
+MUTATION [action-await] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 4
+MUTATION [connection-message] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+MUTATION [change-reload] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 4
+MUTATION [upload-encode] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+MUTATION [return-body] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+MUTATION [adoption-clear] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 2
+MUTATION [release-step] in optional/lifeos_release_manager/dashboard/dist/index.js -> # fail 1
+MUTATION [removal-body] in optional/lifeos_release_manager/dashboard/dist/index.js -> # fail 1
+MUTATION [release-intent] in optional/lifeos_release_manager/dashboard/dist/index.js -> # fail 1
+MUTATION [baseline-body] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+MUTATION [http-clear] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+MUTATION [fresh-start] in lifeos_hook_bridge/dashboard/dist/index.js -> # fail 1
+
+## 7. String literal comparison (count<TAB>literal), original 728cd17a vs HEAD; only count changes, no added/removed literal
+### lifeos_hook_bridge/dashboard/dist/index.js
+28c28
+< 77	""
+---
+> 66	""
+38c38
+< 2	","
+---
+> 1	","
+68,69c68,69
+< 2	"/adoption"
+< 2	"/adoption/preview"
+---
+> 1	"/adoption"
+> 1	"/adoption/preview"
+80c80
+< 2	"/api/plugins/lifeos-release-manager/memory-workflows"
+---
+> 1	"/api/plugins/lifeos-release-manager/memory-workflows"
+93c93
+< 2	"/owner"
+---
+> 1	"/owner"
+104c104
+< 5	"/review"
+---
+> 4	"/review"
+189c189
+< 13	"Content-Type"
+---
+> 5	"Content-Type"
+330c330
+< 30	"POST"
+---
+> 12	"POST"
+472c472
+< 13	"application/json"
+---
+> 5	"application/json"
+481c481
+< 3	"assistant"
+---
+> 2	"assistant"
+581,582c581,582
+< 2	"lifeos_memory_decide_proposal"
+< 3	"lifeos_memory_proposals"
+---
+> 1	"lifeos_memory_decide_proposal"
+> 2	"lifeos_memory_proposals"
+641,642c641,642
+< 5	"principal"
+< 8	"project"
+---
+> 4	"principal"
+> 7	"project"
+added literals: 0; removed literals: 0
+### optional/lifeos_release_manager/dashboard/dist/index.js
+(no difference)
+added literals: 0; removed literals: 0
+
+## 8. Caller evidence at HEAD
+### MemoryPreferences.action callers (each passes an explicit handler)
+581:      return action("/review", "POST", { tool: "lifeos_memory_decide_proposal", arguments: {
+595:        onClick: function () { return action("/owner", "POST", undefined, showClaim); },
+614:              return action("/adoption/preview", "POST", {}, showAdoptionPreview);
+651:                  return action("/adoption", "POST", { signature: adoption.signature, projects: assigned, request_id: adoptionRequest }, showAdoption);
+655:          event.preventDefault(); return action("/review", "POST", { tool: "lifeos_memory_search", arguments: { query: query } }, showSearch);
+671:              return action("/review", "POST", { tool: "lifeos_memory_proposals", arguments: {} }, showProposals);
+701:              onClick: function () { return action("/sharing", "POST", { enabled: !memory.sharing_enabled }, showConnectionChange); }
+709:                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE", undefined, showConnectionChange); }
+714:                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE", undefined, showConnectionChange); }
+722:              return action("/connections", "POST", { client: client, public_key: publicKey, projects: projectNames(projects),
+### postJSON callers
+18:  function postJSON(url, body) {
+57:      return postJSON(base + path, body);
+217:                  const result = await postJSON(memoryWorkflowsEndpoint,
+239:      return postJSON(base + path, body);
+327:                const result = await postJSON(memoryWorkflowsEndpoint,
+361:      return postJSON(base + path, body);
+538:        const pending = await postJSON(memoryEndpoint + "/review", { tool: "lifeos_memory_proposals", arguments: {} });
+770:        return postJSON(endpoint + "/start", { principal_name: principalName, assistant_name: assistantName });
+953:      postJSON(baselineEndpoint + "/preview", { source: values.lifeos_source_dir ?? "" }).then(function (result) {
+965:      postJSON(baselineEndpoint, {
+### runInstallationAction callers
+977:    function runInstallationAction(url, succeed, failure) {
+986:      runInstallationAction(installationEndpoint + "/prepare", function (result) {
+996:      runInstallationAction(installationEndpoint + "/apply", function (result) {
+1005:      runInstallationAction(installationEndpoint + "/finalize", function () {
+1015:      runInstallationAction(installationEndpoint + "/mount/recover", function () {
+1024:      runInstallationAction(installationEndpoint + "/prepare-hermes", function (result) {
+1051:      runInstallationAction(installationEndpoint + "/apply-hermes", function () {
+1058:      runInstallationAction(installationEndpoint + "/restore-hermes", function () {
+1065:      runInstallationAction(installationEndpoint + "/recover-hermes", function () {
+1088:      runInstallationAction(lifeosUpdateEndpoint, function () {
+1095:      runInstallationAction(lifeosUpdateEndpoint + "/recover", function () {
+1102:      runInstallationAction(lifeosUpdateEndpoint + "/restore", function () {
+### FreshStores change callers
+750:    async function change(request, done) {
+760:      return change(function () {
+769:      return change(function () {
+774:      return change(function () {
+### readScopes / projectNames / encodeFile callers
+22:  async function encodeFile(file) {
+30:  function readScopes(principal, assistant) {
+37:  function projectNames(value) {
+129:                  const encoded = await encodeFile(file);
+147:                setPortableUpload(await encodeFile(file));
+375:      return { client: client, read: readScopes(principal, assistant), projects: projectNames(projects),
+722:              return action("/connections", "POST", { client: client, public_key: publicKey, projects: projectNames(projects),
+723:                model_route: modelRoute, read: readScopes(principal, assistant), write_project: writeProject }, showConnectionChange);
+### Release action callers (renamed parameter step)
+169:    async function action(identifier, step) {
+243:                onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,
+245:                onClick: function () { return action(operation.identifier, "restore"); }}, "Restore prior programs") : null,
+247:                onClick: function () { return action(operation.identifier, "recover"); }}, "Recover operation") : null));
+255:            return action(reviewed.identifier, "apply");
+
+## 9. Unused-declaration scan (syntactic: const/let/function names that occur once)
+### lifeos_hook_bridge/dashboard/dist/index.js
+none
+### optional/lifeos_release_manager/dashboard/dist/index.js
+none
+Origin snapshot result is the same: run against 728cd17a found none in either bundle.
+
+## 10. Shadowing evidence at 728cd17a
+122:    const [name, setName] = SDK.hooks.useState("User");
+169:    async function action(identifier, name) {
+55:      const source = sourceIdentifier ? { source_identifier: sourceIdentifier } : {};
+59:      for (const source of current.sources) {
+324:    const [projects, setProjects] = SDK.hooks.useState("");
+471:    const [projects, setProjects] = SDK.hooks.useState("");
+635:                  const projects = Object.fromEntries(Object.entries(assignments).filter(function (entry) { return entry[1].trim(); })
+
+## 11. Known ownership activation gap (unchanged, reported only)
+199:            onClick: function () { return run(prepare); } }, "Review publication plan") : null,
+
+## 12. Committed-range whitespace check after the directory attribute (HEAD 8a2cd238)
+git diff --check 728cd17a 8a2cd238: clean
+git diff --check 728cd17a fba9bce1 (code and tests only): clean

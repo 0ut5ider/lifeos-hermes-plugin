@@ -1,70 +1,46 @@
-# Clean install with separate LifeOS and Hermes roots
+# Prepare pinned sources for development
 
-This sequence was exercised on a separate `.212` Unix account on 2026-09-28. It installs LifeOS under `~/.claude` and Hermes under `~/.hermes`. It does not copy an existing LifeOS user tree. The patches target the base commits named in [README.md](../README.md).
+This guide prepares source trees for isolated development and tests. For a supported installation, use the [complete-package workflow](installation-workflow.md).
 
-Prepare both source trees from repositories that contain the pinned base revisions. Run this from the plugin repository:
+**Known source-copy discrepancy:** `scripts/prepare_sources.py` reads `patches/`, while the managed builder reads `lifeos_hook_bridge/patches/`. At the documentation audit checkpoint, their `hermes-session-lifecycle.patch` files differ. The development copy lacks the distributed Discord mirror-policy and webhook-threading additions. Resolve and verify that [tracked discrepancy](../TODO.md#documentation-audit-follow-ups) before treating this helper's output as equivalent to qualified managed source. The published 0.7.2 package uses the distributed copy.
 
-```sh
+Run the preparation command from the plugin repository. Supply local Git repositories that contain the pinned upstream base commits:
+
+```bash
 python scripts/prepare_sources.py \
-  --hermes-repo "$HOME/workspace/hermes-agent" \
-  --lifeos-repo "$HOME/workspace/LifeOS" \
-  --output "$HOME/workspace/lifeos-prepared"
+  --hermes-repo /path/to/hermes-agent \
+  --lifeos-repo /path/to/LifeOS \
+  --output /path/to/new-prepared-tree
 ```
 
-The command checks each patch against the preceding result and publishes both trees only after all 17 patches pass. It refuses an existing output path and leaves the source repositories untouched. `source-manifest.json` records the base commits and patch hashes. This name matters: Hermes treats a parent `manifest.json` as a packaged PM runtime, so that name prevents source setup from starting. The prepared Git branches contain the applied patches as uncommitted changes for review. A real-source test on `.212` prepared both trees and passed `git diff --check` for each. This step prepares source code; it does not install LifeOS or Hermes into the account.
+The output must not exist, including as a symlink. The command leaves both input repositories unchanged. It checks each patch against the preceding result, applies the ordered patches, checks whitespace, and publishes both trees only after preparation succeeds.
 
-Run the commands as the new account from its own home directory. Install Bun first and keep it on `PATH`. Set `LIFEOS_SRC` and `HERMES_SRC` to the two patched source checkouts:
+## Output and source authority
 
-```sh
-cd "$HOME"
-export LIFEOS_SRC="$HOME/workspace/lifeos-prepared/lifeos"
-export HERMES_SRC="$HOME/workspace/lifeos-prepared/hermes"
-export PATH="$HOME/.local/bin:$PATH"
+| Output | Purpose |
+| --- | --- |
+| `hermes/` | Pinned Hermes source with the supported patch groups |
+| `lifeos/` | Pinned LifeOS source with the native patches |
+| `source-manifest.json` | Base revisions and ordered patch hashes |
 
-cd "$HERMES_SRC"
-./setup-hermes.sh --runtime-only
-mkdir -p "$HOME/.hermes"
-cat > "$HOME/.hermes/config.yaml" <<'YAML'
-model:
-  default: probe-local
-YAML
+The patch declarations live in [`scripts/prepare_sources.py`](../scripts/prepare_sources.py). The managed installer declares the same base revisions and patch names in [`lifeos_hook_bridge/install_source.py`](../lifeos_hook_bridge/install_source.py). The qualified 0.7.2 combination uses ten Hermes and twenty-five LifeOS patches. Keep the development patch files in `patches/` and runtime copies in `lifeos_hook_bridge/patches/` synchronized.
 
-cd "$HOME"
-mkdir -p "$HOME/.claude"
-cp "$LIFEOS_SRC/LifeOS/install/CLAUDE.template.md" "$HOME/.claude/CLAUDE.md"
-for tool in InstallSettings DeployCore ScaffoldUser LinkUser InstallHooks ActivateImports; do
-  bun "$LIFEOS_SRC/LifeOS/Tools/$tool.ts" \
-    --config-root "$HOME/.claude" \
-    --skill-root "$LIFEOS_SRC/LifeOS" \
-    --apply
-done
+Do not rename `source-manifest.json` to `manifest.json`. Hermes can treat the latter as packaged-runtime metadata and refuse ordinary source setup. The prepared Git working trees contain the applied changes for review; source preparation does not install a runtime or select live programs.
 
-export HERMES_HOME="$HOME/.hermes"
-export HERMES_WORKSPACE="$HOME/workspace"
-bun "$HOME/.claude/LIFEOS/HERMES/Mount.ts"
-bun "$HOME/.claude/LIFEOS/HERMES/Mount.ts" --check
-"$HERMES_SRC/.hermes/bin/hermes" config check
+## Use prepared sources in tests
+
+Tests declare their own fixture requirements. Two common memory/backend fixtures are:
+
+```bash
+export LIFEOS_HERMES_SOURCE=/path/to/new-prepared-tree/hermes
+export LIFEOS_MEMORY_SOURCE=/path/to/new-prepared-tree/lifeos/LifeOS/install
+export PYTHONPATH="$LIFEOS_HERMES_SOURCE:$PWD${PYTHONPATH:+:$PYTHONPATH}"
 ```
 
-Replace `probe-local` with a model you have configured in Hermes before you run model calls. The runtime-only setup does not create `config.yaml`; `Mount.ts` needs a valid YAML file to patch. `--skill-root` must point to the inner `LifeOS` directory. Without it, `DeployCore` could not find the nested skill payload in the clean probe.
+Use a Python interpreter with the required Hermes and plugin dependencies. Native tests also need the appropriate Bun runtime. Other suites can require additional explicit fixtures; check their environment reads and skip conditions before selecting a run. The [contributor guide](../CONTRIBUTING.md#focused-checks) gives starting commands.
 
-After the plugin branch is published, install a full 40-character commit ID from this repository:
+## Source installation limits
 
-```sh
-"$HERMES_SRC/.hermes/bin/hermes" plugins install \
-  0ut5ider/lifeos-hermes-plugin/lifeos_hook_bridge \
-  --ref <full-commit-id> --no-deps --no-enable
-"$HERMES_SRC/.hermes/bin/hermes" plugins enable lifeos-hook-bridge
-"$HERMES_SRC/.hermes/bin/hermes" plugins validate \
-  "$HOME/.hermes/plugins/lifeos-hook-bridge"
-```
+Preparation proves that the patches apply to their declared bases. It does not prove native effects, memory ownership, service integration, messaging delivery, or release qualification. Build a complete candidate and exercise the relevant isolated gates before deployment.
 
-For a noninteractive install, `--no-deps --no-enable` first records the plugin without requesting dependency consent. `plugins enable` then installs the pinned dependencies and activates the plugin. A forced install of an existing active plugin without these steps was refused because dependency consent was unavailable; the installed plugin stayed unchanged. Back up and disable an existing plugin before replacing it, then use `--force --no-deps --no-enable` and enable the new version.
-
-Start Hermes from a directory that the account can read. The first clean prompt-hook probe inherited `/home/outsider` as its working directory and all 14 native hook starts failed with permission denied. The same probe from the new account's home returned hook context and created a transcript. Run a native hook test before you configure Discord or start a long-running gateway.
-
-The clean probe now also has a private LAN model configuration. Its prepared Hermes source accepted a real model call and returned `PATCHED-MODEL-212`. The account received only the model section of the `.212` test service configuration and the bridge's local model environment file; it received no LifeOS user data or Discord credentials. The prior configuration is at `~/.hermes/config.yaml.before-local-model-20260928`. The tested `.212` service account verified a selected-provider child inference call separately. See [the probe record](../notes/2026-09-28-clean-install-probe.md) and [the source manifest collision](../notes/2026-09-28-source-manifest-runtime-collision.md).
-
-## Carrier probe after model setup
-
-Set the Hermes main-loop model and effort to the LifeOS top tier. The LifeOS Bridge uses Hermes's current model for Fable until you choose and save another model. Run `hermes lifeos-probe --run` after configuring the model and again whenever you change the Fable route. The command creates one real delegated child call and stores its evidence under `~/.claude/LIFEOS/MEMORY/STATE/`. IntegrityCheck rejects evidence older than 30 days. The clean account without model credentials cannot run this probe. The configured `.212` account passed it with the local model.
+The [September 28 manual setup snapshot](history/2026-10-16-clean-install.md) preserves the earlier separate-account installation probe. Its patch counts, model values, command paths, and host-specific results describe that historical fixture. Do not use it as the current installation procedure.

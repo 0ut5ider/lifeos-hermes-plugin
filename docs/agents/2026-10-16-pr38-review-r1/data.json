@@ -1,0 +1,50 @@
+{
+  "review": "pr38-review-r1",
+  "date": "2026-10-16",
+  "model": "claude-opus-5-5",
+  "base": "455154c19611da320086592b98e15ead302817dc",
+  "head": "99e18c44f1c09a894125299f5469f256122244f7",
+  "checkout_head_at_review": "99e18c44f1c09a894125299f5469f256122244f7",
+  "scratch": {
+    "exports": "git archive of base and head, first under /tmp/pr38-r1, then moved to /home/outsider/.cache/pr38-review-r1-scratch/{base,head}",
+    "fixture_copies": {
+      "hermes": "cp -a of /home/outsider/.cache/lifeos-release-0.7.2-20261016/packages/0.7.2-b257d29f/hermes",
+      "lifeos": "cp -a of /home/outsider/.cache/lifeos-release-0.7.2-20261016/packages/0.7.2-b257d29f/lifeos",
+      "native-claude": "cp -a of /home/outsider/.cache/lifeos-release-0.5.0-20261014/candidate-fixture-04efe633/account/.hermes/.lifeos-releases/6118299dea37462094bcb7d411effb73/reference-home/.claude",
+      "control-lifeos-install": "cp -a of /home/outsider/.cache/lifeos-daily-promotion-20261014/control-lifeos-install"
+    },
+    "interpreter": "/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/bin/python (Python 3.14.7), run with -B",
+    "node": "v22.22.3",
+    "shared_release_trees_used_for_execution": false
+  },
+  "commands": [
+    {"id": "diff-check", "command": "git diff --check 455154c1 99e18c44", "exit": 0},
+    {"id": "patch-scope", "command": "git diff --stat 455154c1 99e18c44 -- patches lifeos_hook_bridge/patches lifeos_hook_bridge/install_source.py", "result": "no changes"},
+    {"id": "removed-imports", "command": "python3 -I scripts/removed_names.py <base> <head> <24 changed Python files>", "result": "23 removed import bindings, 0 remaining loads", "raw": "removed-names.json"},
+    {"id": "removed-local", "command": "grep active_bridge release_worker.py (base and head)", "result": "only the removed assignment existed in base"},
+    {"id": "mock-and-attribute-references", "command": "grep for module-attribute or mock.patch use of every removed name across tests, scripts, optional, lifeos_hook_bridge", "result": "no matches"},
+    {"id": "version-declarations", "command": "release_version.versions(head)", "result": "0.7.3"},
+    {"id": "patch-copy-compare", "command": "diff -rq patches lifeos_hook_bridge/patches", "result": "only hermes-session-lifecycle.patch differs (baseline)"},
+    {"id": "builder-patch-source", "command": "read scripts/build_managed_release.py", "result": "builder prepares LifeOS from lifeos_hook_bridge/patches (distributed copy)"},
+    {"id": "node-head", "command": "node --test tests/*.cjs (head export)", "exit": 0, "tests": 57, "pass": 57, "fail": 0, "skipped": 0, "raw": "evidence/node-tests.txt"},
+    {"id": "node-check", "command": "node --check on both dist/index.js (head export)", "exit": [0, 0]},
+    {"id": "node-head-tests-base-bundles", "command": "node --test tests/*.cjs with base dist/index.js bundles and head tests, manifests, styles", "exit": 0, "tests": 57, "pass": 57, "raw": "evidence/node-tests-base-bundles.txt", "note": "first attempt failed 2 tests because the reviewer's copy lacked manifest.json; corrected copy passes"},
+    {"id": "hook-characterization-on-base", "command": "unittest test_bridge_hook_commands against base bridge.py", "exit": 0, "tests": 4, "raw": "evidence/hook-tests-on-base.txt"},
+    {"id": "targeted-without-fixtures", "command": "unittest test_bridge_hook_commands test_release_programs test_removal_generation test_removal_preparation test_release_configuration, no native fixtures", "exit": 1, "note": "errors are ModuleNotFoundError hermes_cli; environment only", "raw": "evidence/targeted-without-fixtures.txt"},
+    {"id": "targeted", "command": "same five modules with copied fixtures", "exit": 0, "tests": 48, "pass": 48, "raw": "evidence/targeted.txt"},
+    {"id": "runtime-r1", "command": "runtime module list from primary-runtime.json, without LIFEOS_AGENT_INVOCATION_PATH, LIFEOS_VERSION_DRIFT_PATH, LIFEOS_GUARD_SOURCE", "exit": 1, "tests": 391, "failures": ["test_memory_atlas_capacity.MemoryAtlasRefreshJobTests.test_regeneration_reconciles_changed_sources_before_actual_model_request"], "skipped": 15, "raw": "evidence/runtime.txt", "note": "run overlapped with /tmp quota exhaustion (EDQUOT) on this machine"},
+    {"id": "atlas-head", "command": "unittest test_memory_atlas_capacity (head)", "exit": 0, "tests": 9, "pass": 9, "raw": "evidence/atlas-head.txt"},
+    {"id": "atlas-base", "command": "unittest test_memory_atlas_capacity (base)", "exit": 0, "tests": 9, "pass": 9, "raw": "evidence/atlas-base.txt"},
+    {"id": "runtime-r2", "command": "runtime module list with the three native hook variables set to the copied native-claude fixture", "exit": 0, "tests": 391, "pass": 390, "skipped": ["test_native_version_drift.NativeVersionDriftTests.test_native_tagged_control_nags_once"], "raw": "evidence/runtime-r2.txt"},
+    {"id": "release", "command": "release module list from primary-release.json", "exit": 1, "tests": 150, "pass": 145, "failures": ["test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted"], "errors": ["test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses"], "skipped": ["test_release_dashboard.ReleaseDashboardTests.test_historical_fresh_review_refuses_without_blocking_the_dashboard", "test_release_operation.ReleaseOperationTests.test_fresh_recovery_keeps_one_lease_namespace_after_bridge_publication", "test_release_operation.ReleaseOperationTests.test_prepared_fresh_operation_loads_candidate_without_a_prior_bridge"], "raw": "evidence/release.txt", "note": "failure and error are the known /proc process-inspection cases; two extra skips because LIFEOS_MANAGED_FRESH_OPERATION points into a shared historical fixture that this review did not use"},
+    {"id": "doc-links", "command": "python3 -I scripts/check_doc_links.py <head> <36 changed Markdown files outside new worker report directories>", "result": "0 broken relative links or anchors; 17 backticked paths unresolved, all host paths, package-relative paths, or generic names", "raw": "evidence/doc-links.json"},
+    {"id": "patch-counts", "command": "count .patch entries in HERMES_PATCHES and LIFEOS_PATCHES", "result": {"hermes": 10, "lifeos": 25}, "readme_claim": "ten Hermes patch groups and twenty-five LifeOS patches"}
+  ],
+  "findings": [],
+  "informational": [
+    "I1 (from dashboard review r2) remains: no test pins install status text while the post-success refresh is pending. Pre-existing, unchanged callback bodies.",
+    "tests/test_removal_generation.py:72-73 asserts KeyError('certificate') from an intentionally incomplete fixture. It pins an incidental crash point, not a contract.",
+    "One transient Atlas capacity failure in runtime-r1, not reproduced in three later runs (isolated head, isolated base, full runtime-r2). Cause not verified."
+  ],
+  "verdict": "CLEAR"
+}

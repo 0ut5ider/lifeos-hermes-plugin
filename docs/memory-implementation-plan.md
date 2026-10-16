@@ -1,5 +1,8 @@
 # Memory implementation and activation gates
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 ## October 4 continuation
 
 The [headless synthesis gate](verification/2026-10-04-memory-distill-synthesis/README.md) passes 218 tests and 104 subtests. Native synthesis uses current admitted notes, validates generated items, preserves native digest and state bytes, and journals both publications. Actual process death restores the previous pair. Scripted local HTTP establishes request assembly and selected effects. Live private model acceptance, other publishers, aggregate recovery, and ownership activation remain open.

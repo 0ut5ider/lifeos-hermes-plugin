@@ -3,7 +3,6 @@
 from contextlib import redirect_stderr, redirect_stdout
 import hashlib
 import io
-from pathlib import Path
 from uuid import uuid4
 
 

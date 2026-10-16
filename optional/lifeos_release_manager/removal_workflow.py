@@ -1,6 +1,5 @@
 # ABOUTME: Selects and recovers the exact owner-reviewed complete software removal.
 # ABOUTME: Uses retained manager sources and stock Hermes after active integration files disappear.
-import hashlib
 import json
 import os
 from pathlib import Path

@@ -176,30 +176,29 @@ def _bash_permission_rule_decision(command: str, sources: list[Any], *, checked_
     return "allow" if allow_safe and allowed and all(allowed) else "none"
 
 
-def _is_native_version_drift(command: str, root: Path) -> bool:
+def _hook_script(command: str) -> str | None:
     try:
         tokens = shlex.split(command)
     except ValueError:
-        return False
+        return None
     if len(tokens) == 2 and Path(tokens[0]).name == "bun":
         tokens = tokens[1:]
-    if len(tokens) != 1:
+    return tokens[0] if len(tokens) == 1 else None
+
+
+def _is_native_version_drift(command: str, root: Path) -> bool:
+    script = _hook_script(command)
+    if script is None:
         return False
-    if tokens[0] in {"$HOME/.claude/hooks/VersionDrift.hook.ts", "${HOME}/.claude/hooks/VersionDrift.hook.ts"}:
+    if script in {"$HOME/.claude/hooks/VersionDrift.hook.ts", "${HOME}/.claude/hooks/VersionDrift.hook.ts"}:
         return True
-    return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
+    return Path(script).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
 
 
 def _native_post_hook(command: str, root: Path) -> str:
-    try:
-        tokens = shlex.split(command)
-    except ValueError:
+    token = _hook_script(command)
+    if token is None:
         return ""
-    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
-        tokens = tokens[1:]
-    if len(tokens) != 1:
-        return ""
-    token = tokens[0]
     for prefix in ("$HOME/.claude/", "${HOME}/.claude/", "~/.claude/"):
         if token.startswith(prefix):
             token = str(root / token[len(prefix):])
@@ -232,30 +231,20 @@ def _native_state_key(command: str, root: Path, event: str, session_id: str) -> 
 
 
 def _is_native_checkpoint(command: str) -> bool:
-    try:
-        tokens = shlex.split(command)
-    except ValueError:
+    script = _hook_script(command)
+    if script is None:
         return False
-    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
-        tokens = tokens[1:]
-    if len(tokens) != 1:
-        return False
-    path = tokens[0].replace("${HOME}", "~").replace("$HOME", "~")
+    path = script.replace("${HOME}", "~").replace("$HOME", "~")
     return Path(path).parts[-3:] == (".claude", "hooks", "CheckpointPerISC.hook.ts")
 
 
 def _is_native_task_governance(command: str, root: Path) -> bool:
     if not isinstance(command, str):
         return False
-    try:
-        tokens = shlex.split(command)
-    except ValueError:
+    script = _hook_script(command)
+    if script is None:
         return False
-    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
-        tokens = tokens[1:]
-    if len(tokens) != 1:
-        return False
-    path = tokens[0].replace("${HOME}", "~").replace("$HOME", "~")
+    path = script.replace("${HOME}", "~").replace("$HOME", "~")
     return Path(path).expanduser().resolve() == (root / "hooks/TaskGovernance.hook.ts").resolve()
 
 

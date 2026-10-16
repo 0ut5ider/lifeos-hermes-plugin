@@ -13,7 +13,7 @@ import tempfile
 import time
 import uuid
 
-from .memory_access import NativeMemory, JOB_OUTPUT_LIMIT
+from .memory_access import JOB_OUTPUT_LIMIT
 from .memory_policy import CATEGORIES
 from .memory_runtime import MemoryAdmissionError, MemoryRuntime
 from .memory_service import MemoryService

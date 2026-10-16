@@ -1,5 +1,8 @@
 # Set up the LifeOS VersionDrift baseline
 
+> Historical design and verification record. Dates, hosts, counts, and open gates below describe their original checkpoints.
+> Use the [documentation index](README.md) for current installation, development, and release guidance.
+
 The native LifeOS `VersionDrift.hook.ts` expects a semantic-version Git tag in `~/.claude`. In a Hermes installation, `~/.claude` can be the live Hermes home without a Git repository. The bridge gives only this hook three read-only Git answers from a separate baseline. It does not initialize Git in Hermes home.
 
 ## Create a baseline

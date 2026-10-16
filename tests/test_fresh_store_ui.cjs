@@ -1,37 +1,17 @@
 // ABOUTME: Tests the dashboard controls that prepare, list, and remove fresh LifeOS stores.
 // ABOUTME: Runs the shipped bundle with a recording SDK and checks requests and visible states.
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const vm = require('node:vm');
-const bundle = fs.readFileSync(path.join(__dirname, '../lifeos_hook_bridge/dashboard/dist/index.js'), 'utf8');
+const { component, find, findAll, loadDashboard, plain, settle, text } = require('./support/dashboard_sdk.cjs');
 
-function find(node, match) {
-  if (!node || typeof node !== 'object') return null;
-  if (match(node)) return node;
-  for (const child of node.children || []) { const result = find(child, match); if (result) return result; }
-  return null;
-}
-function text(node) {
-  if (typeof node === 'string') return node;
-  if (!node || typeof node !== 'object') return '';
-  return (node.children || []).map(text).join('');
-}
-
-async function controls(listing, selection) {
-  const state = [], calls = []; let index = 0, mounted = false, root;
+async function controls(listing, selection, refusal) {
+  const calls = [];
   let current = listing;
   let selected = selection || { configured: false, home: '/home/owner', running_home: '/home/owner', job: { state: 'none' } };
   const sdk = {
-    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
-    hooks: {
-      useState(value) { const slot = index++; if (!(slot in state)) state[slot] = value;
-        return [state[slot], value => { state[slot] = typeof value === 'function' ? value(state[slot]) : value; }]; },
-      useEffect() {},
-    },
     fetchJSON(url, init) {
       calls.push({ url, init });
+      if (refusal && init?.method) return Promise.reject(new Error(refusal));
       if (url.endsWith('/memory/fresh/start')) {
         current = { busy: true, stores: [{ identifier: 'c'.repeat(32), state: 'preparing',
           names: { principal: 'Adrian', assistant: 'Cerebo' } }, ...current.stores] };
@@ -55,14 +35,9 @@ async function controls(listing, selection) {
       return Promise.resolve({ state: 'not_configured', remaining_gates: {}, connections: [] });
     },
   };
-  vm.runInNewContext(bundle, { window: { crypto: require('node:crypto').webcrypto, __HERMES_PLUGIN_SDK__: sdk,
-    __HERMES_PLUGINS__: { register(_name, view) { root = view; } } }, console });
-  const component = find(root(), node => typeof node.type === 'function' && node.type.name === 'FreshStores');
-  assert.ok(component, 'The LifeOS page must include the fresh store controls');
-  state.length = 0;
-  sdk.hooks.useEffect = callback => { if (!mounted) { mounted = true; callback(); } };
-  const render = () => { index = 0; return component.type(); };
-  render(); await new Promise(setImmediate);
+  const app = loadDashboard('bridge', { ...sdk, window: { crypto: require('node:crypto').webcrypto } });
+  const render = app.mount(component(app.preview(), 'FreshStores'));
+  await settle();
   return { render, calls };
 }
 
@@ -88,7 +63,7 @@ test('starting a store sends only the two names and shows the running preparatio
   find(page.render(), n => n.type === 'input' && n.props.id === 'fresh_principal').props.onChange({ target: { value: 'Adrian' } });
   find(page.render(), n => n.type === 'input' && n.props.id === 'fresh_assistant').props.onChange({ target: { value: 'Cerebo' } });
   find(page.render(), n => n.type === 'form' && n.props.id === 'fresh_store_start').props.onSubmit({ preventDefault() {} });
-  await new Promise(setImmediate); await new Promise(setImmediate);
+  await settle(); await settle();
   const request = page.calls.find(call => call.url.endsWith('/memory/fresh/start'));
   assert.deepEqual(JSON.parse(request.init.body), { principal_name: 'Adrian', assistant_name: 'Cerebo' });
   assert.match(text(page.render()), /Adrian and Cerebo: preparing/);
@@ -96,13 +71,10 @@ test('starting a store sends only the two names and shows the running preparatio
 
 test('remove is offered for every store and confirms by identifier', async () => {
   const page = await controls(listing);
-  const buttons = [];
-  (function walk(node) { if (!node || typeof node !== 'object') return;
-    if (node.type === 'button' && text(node).startsWith('Remove')) buttons.push(node);
-    (node.children || []).forEach(walk); })(page.render());
+  const buttons = findAll(page.render(), node => node.type === 'button' && text(node).startsWith('Remove'));
   assert.equal(buttons.length, 3);
   buttons[1].props.onClick();
-  await new Promise(setImmediate); await new Promise(setImmediate);
+  await settle(); await settle();
   const removal = page.calls.find(call => call.init?.method === 'DELETE');
   assert.ok(removal.url.endsWith('/memory/fresh/stores/' + 'b'.repeat(32)));
   assert.doesNotMatch(text(page.render()), /interrupted/);
@@ -119,7 +91,7 @@ test('a reviewed store can be selected and a selected store offers return', asyn
   const use = find(page.render(), node => node.type === 'button' && text(node) === 'Use ' + 'a'.repeat(8));
   assert.ok(use, 'A reviewed store must offer selection');
   await use.props.onClick();
-  await new Promise(setImmediate);
+  await settle();
   const request = page.calls.find(call => call.url.endsWith('/installation/selection') && call.init?.method === 'POST');
   assert.deepEqual(JSON.parse(request.init.body), { store: 'a'.repeat(32) });
   assert.ok(find(page.render(), node => node.props?.role === 'status' && text(node).includes('queued')));
@@ -143,4 +115,62 @@ test('an interrupted selection offers recovery', async () => {
   const recover = find(page.render(), node => node.type === 'button' && text(node) === 'Recover interrupted selection');
   assert.ok(recover);
   assert.equal(find(page.render(), node => node.type === 'button' && text(node) === 'Use ' + 'a'.repeat(8)), null);
+});
+
+const notice = (view, message) => find(view, node => node.type === 'p' && node.props.role === 'status' && text(node) === message);
+const action = (view, label) => find(view, node => node.type === 'button' && text(node) === label);
+
+test('each store change reports its notice and reloads both statuses', async () => {
+  const listed = { busy: false, stores: listing.stores.slice(0, 1) };
+  const interrupted = { configured: false, home: '/home/owner', running_home: '/home/owner', job: { state: 'interrupted' } };
+  const home = '/home/owner/.local/state/lifeos-hook-bridge/fresh-stores/p/' + 'a'.repeat(32) + '/home';
+  for (const change of [
+    { selection: undefined, label: 'Use ' + 'a'.repeat(8), path: '/installation/selection', body: { store: 'a'.repeat(32) },
+      done: 'Selection started. Hermes restarts with the fresh store when it finishes.' },
+    { selection: { configured: true, home, running_home: home, job: { state: 'applied' } }, label: 'Return to the previous installation',
+      path: '/installation/selection/return', done: 'Return started. Hermes restarts when it finishes.' },
+    { selection: interrupted, label: 'Recover interrupted selection', path: '/installation/selection/recover', done: 'Recovery started.' },
+    { selection: undefined, label: 'Remove ' + 'a'.repeat(8), path: '/memory/fresh/stores/' + 'a'.repeat(32), method: 'DELETE',
+      done: 'Store removed. The current installation is unchanged.' },
+  ]) {
+    const page = await controls(listed, change.selection);
+    const before = page.calls.length;
+    const pending = action(page.render(), change.label).props.onClick();
+    assert.ok(action(page.render(), change.label), change.label + ' remains visible while pending');
+    assert.equal(action(page.render(), change.label).props.disabled, true, change.label + ' must wait for the request');
+    assert.equal(notice(page.render(), change.done), null, change.label + ' waits before reporting success');
+    await pending;
+    const after = page.calls.slice(before).map(call => ({ path: call.url.replace('/api/plugins/lifeos-hook-bridge', ''), init: call.init && plain(call.init) }));
+    const request = change.body === undefined ? { method: change.method ?? 'POST' } :
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(change.body) };
+    assert.deepEqual(after, [{ path: change.path, init: request }, { path: '/memory/fresh/status', init: undefined },
+      { path: '/installation/selection', init: undefined }]);
+    assert.ok(notice(page.render(), change.done), change.label);
+  }
+  const page = await controls({ busy: false, stores: [] });
+  find(page.render(), n => n.props.id === 'fresh_principal').props.onChange({ target: { value: 'Adrian' } });
+  find(page.render(), n => n.props.id === 'fresh_assistant').props.onChange({ target: { value: 'Cerebo' } });
+  const before = page.calls.length;
+  const pending = find(page.render(), n => n.props.id === 'fresh_store_start').props.onSubmit({ preventDefault() {} });
+  assert.equal(notice(page.render(), 'Preparation started. It continues if this page closes.'), null);
+  await pending;
+  const start = page.calls[before];
+  assert.equal(start.init.method, 'POST');
+  assert.equal(JSON.stringify(start.init.headers), JSON.stringify({ 'Content-Type': 'application/json' }));
+  assert.deepEqual(page.calls.slice(before + 1).map(call => call.url.replace('/api/plugins/lifeos-hook-bridge', '')),
+    ['/memory/fresh/status', '/installation/selection']);
+  assert.ok(notice(page.render(), 'Preparation started. It continues if this page closes.'));
+});
+
+test('a refused store change shows the reason, skips reload, and enables controls', async () => {
+  const page = await controls(listing, undefined, 'Synthetic store refusal');
+  const before = page.calls.length;
+  await action(page.render(), 'Remove ' + 'a'.repeat(8)).props.onClick();
+  await action(page.render(), 'Use ' + 'a'.repeat(8)).props.onClick();
+  find(page.render(), n => n.props.id === 'fresh_principal').props.onChange({ target: { value: 'Adrian' } });
+  await find(page.render(), n => n.props.id === 'fresh_store_start').props.onSubmit({ preventDefault() {} });
+  assert.deepEqual(page.calls.slice(before).map(call => call.init.method), ['DELETE', 'POST', 'POST']);
+  assert.ok(notice(page.render(), 'Synthetic store refusal'));
+  assert.equal(action(page.render(), 'Remove ' + 'a'.repeat(8)).props.disabled, false);
+  assert.equal(action(page.render(), 'Use ' + 'a'.repeat(8)).props.disabled, false);
 });

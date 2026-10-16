@@ -3,7 +3,6 @@
 from datetime import datetime, timezone
 from itertools import islice
 import json
-from pathlib import Path
 import re
 
 from .memory_access import MemoryUnavailable, MemoryConflict

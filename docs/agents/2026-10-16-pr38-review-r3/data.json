@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-16",
+  "role": "independent reviewer",
+  "model": "claude-opus-5-5",
+  "question": "Final PR38 increment 70fa8390..03d6f486: comment correction, documentation honesty, AST and runtime byte equivalence, open objections",
+  "verdict": "CLEAR",
+  "findings": [],
+  "range": {
+    "base": "455154c1",
+    "r1": "99e18c44",
+    "r2": "70fa8390",
+    "head": "03d6f486cb2427941af9919f1742a5e6183c7e5c",
+    "head_parent": "70fa8390e86c782bb47e7073c492124970ff68d1"
+  },
+  "changed_files": [
+    "docs/agents/2026-10-16-pr38-review-r2/data.json",
+    "docs/agents/2026-10-16-pr38-review-r2/evidence.tar.gz",
+    "docs/agents/2026-10-16-pr38-review-r2/pr38-review-r2.md",
+    "notes/2026-10-16-process-exit-observation.md",
+    "tests/test_memory_owner_job_processes.py"
+  ],
+  "diff_outside_docs_agents": "diff --git a/notes/2026-10-16-process-exit-observation.md b/notes/2026-10-16-process-exit-observation.md\nindex 82bb3998..a54054a3 100644\n--- a/notes/2026-10-16-process-exit-observation.md\n+++ b/notes/2026-10-16-process-exit-observation.md\n@@ -2,4 +2,4 @@\n \n The 0.7.3 archive run exposes a racy cancellation test. After SIGKILL reaches the group and `wait()` returns for its leader, the grandchild can still have a nonterminal procfs state. A 100-run probe observes this in 12 runs. Every observed grandchild then reaches a terminal state within five seconds. The test now polls within a fixed five-second bound. A parent-only kill mutation still fails because its grandchild survives. No product cancellation code changes.\n \n-The same qualification run reports two explicit disk-quota errors while building synthetic health fixtures. Concurrent source exports put pressure on the workstation temporary filesystem. Future full qualification runs use a private directory on the larger cache filesystem. Preserve failed attempts and correct missing fixture variables before interpreting a replay.\n+The same qualification run reports two explicit disk-quota errors while building synthetic health fixtures. Concurrent source exports overlap with these errors. Their contribution to quota exhaustion is plausible but not measured. Future full qualification runs use a private directory on the larger cache filesystem. Preserve failed attempts and correct missing fixture variables before interpreting a replay.\ndiff --git a/tests/test_memory_owner_job_processes.py b/tests/test_memory_owner_job_processes.py\nindex 18f956a5..eaa98143 100644\n--- a/tests/test_memory_owner_job_processes.py\n+++ b/tests/test_memory_owner_job_processes.py\n@@ -36,7 +36,8 @@ class MemoryOwnerJobProcessTests(unittest.TestCase):\n                     state = path.read_text().rsplit(')', 1)[1].split()[0]\n                 except (FileNotFoundError, ProcessLookupError):\n                     break\n-                # Process-group signals can reach a grandchild after the direct child exits.\n+                # SIGKILL is queued to the whole group; a grandchild can exit after its parent.\n+                # A killed grandchild can await the operating system's parent reaper.\n                 if state == 'Z':\n                     break\n                 self.assertLess(time.monotonic(), deadline, f'Child {pid} still runs in state {state}')\n",
+  "packaged_paths": [
+    "lifeos_hook_bridge",
+    "optional",
+    "scripts",
+    "tests",
+    "docs/deployment/daily-text",
+    "VERSION",
+    "CHANGELOG.md",
+    "README.md",
+    "docs/verification/2026-10-11-daily-guest/deliver_morning.py"
+  ],
+  "packaged_diff_stat": " tests/test_memory_owner_job_processes.py | 3 ++-\n 1 file changed, 2 insertions(+), 1 deletion(-)\n",
+  "tree_ids": {
+    "lifeos_hook_bridge": [
+      "26c65f42091671ed7aaac4f6797098fb2290543e",
+      "26c65f42091671ed7aaac4f6797098fb2290543e"
+    ],
+    "optional": [
+      "71908c200259f52af4fb6e1d05fecc2d7c7482c2",
+      "71908c200259f52af4fb6e1d05fecc2d7c7482c2"
+    ],
+    "scripts": [
+      "17a4abc7a27c6993c1a5ec405c43bce16c6359b7",
+      "17a4abc7a27c6993c1a5ec405c43bce16c6359b7"
+    ],
+    "VERSION": [
+      "f38fc5393ff66e64aaa5d8733ea9b44d31927dce",
+      "f38fc5393ff66e64aaa5d8733ea9b44d31927dce"
+    ]
+  },
+  "test_file_ast_equal": true,
+  "test_file_sha256": {
+    "70fa8390": "4025dd44ebe1679afff4adf15e12c0a9cf0586e38b89c06cbb52fdb52d29d479",
+    "03d6f486": "3a69e3627a40244971030b7815e27bf71a8a355e9a4eeb0d01150395b9e82e20"
+  },
+  "comment_at_99e18c44": "            # A killed grandchild can await the operating system's parent reaper.",
+  "style_checks": {
+    "em_dash_count": 0,
+    "trailing_whitespace_lines": 0,
+    "git_diff_check_exit": 0,
+    "files": [
+      "notes/2026-10-16-process-exit-observation.md",
+      "tests/test_memory_owner_job_processes.py",
+      "docs/agents/2026-10-16-pr38-review-r2/pr38-review-r2.md"
+    ]
+  },
+  "tests": [
+    {
+      "name": "test_memory_owner_job_processes (first attempt)",
+      "result": "ModuleNotFoundError, missing PYTHONPATH, invocation error"
+    },
+    {
+      "name": "test_memory_owner_job_processes",
+      "exit": 0,
+      "output": "test_deadline_kills_the_actual_child_and_grandchild (test_memory_owner_job_processes.MemoryOwnerJobProcessTests.test_deadline_kills_the_actual_child_and_grandchild) ... ok\ntest_stop_assertion_waits_for_actual_process_exit (test_memory_owner_job_processes.MemoryOwnerJobProcessTests.test_stop_assertion_waits_for_actual_process_exit) ... ok\ntest_termination_kills_the_actual_child_and_grandchild (test_memory_owner_job_processes.MemoryOwnerJobProcessTests.test_termination_kills_the_actual_child_and_grandchild) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.802s\n\nOK\n"
+    }
+  ],
+  "leftover_sleep60_processes": "none",
+  "not_run": [
+    "391 runtime suite",
+    "1129 archive suite",
+    "30 process repeats",
+    "active archive run inspection"
+  ],
+  "scratch": "/home/outsider/.cache/pr38-r3"
+}
