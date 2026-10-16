@@ -1,5 +1,5 @@
 diff --git a/cli.py b/cli.py
-index 375f42661..adf60e666 100644
+index 375f4266..adf60e66 100644
 --- a/cli.py
 +++ b/cli.py
 @@ -502,7 +502,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
@@ -25,8 +25,56 @@ index 375f42661..adf60e666 100644
          try:
              _shutdown_agent_memory_provider(_active_agent_ref)
          except Exception as e:
+diff --git a/gateway/mirror.py b/gateway/mirror.py
+index 44a977d0..d82e6541 100644
+--- a/gateway/mirror.py
++++ b/gateway/mirror.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Mirrors delivered messages into the selected native conversation.
++# ABOUTME: Applies configured delivery policy before changing Discord transcript history.
+ """Session mirroring for cross-platform message delivery.
+ 
+ When a message is sent to a platform (send_message or cron delivery), append a
+@@ -61,6 +63,18 @@ def mirror_to_session(
+                 platform, chat_id, thread_id, user_id,
+             )
+             return False
++        if platform.lower() == "discord":
++            from hermes_cli.plugins import get_plugin_manager
++            manager = get_plugin_manager()
++            if manager.has_hook("pre_message_delivery"):
++                decisions = manager.invoke_hook("pre_message_delivery", platform="discord",
++                    chat_id=str(chat_id), hermes_home=str(get_hermes_home()),
++                    purpose="mirror", session_id=session_id)
++                if not decisions or any(not isinstance(decision, dict)
++                        or decision.get("action") != "allow"
++                        or "mirror" in decision and decision["mirror"] is not True
++                        for decision in decisions):
++                    return False
+         _append_to_sqlite(session_id, {
+             "role": role, "content": message_text, "timestamp": datetime.now().isoformat(),
+             "mirror": True, "mirror_source": source_label,
+diff --git a/gateway/platforms/webhook.py b/gateway/platforms/webhook.py
+index c948fe83..36ddd01a 100644
+--- a/gateway/platforms/webhook.py
++++ b/gateway/platforms/webhook.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Routes authenticated webhook events into gateway jobs and platform deliveries.
++# ABOUTME: Keeps delivery transcript policy checks outside the gateway event loop.
+ """Generic webhook platform adapter: aiohttp server that validates HMAC-signed POSTs (GitHub, GitLab,
+ Svix, Linear, generic), renders payloads into agent prompts, and routes responses back (github_comment
+ or any gateway platform). Routes live under platforms.webhook.extra.routes: events (header filter),
+@@ -944,7 +946,7 @@ class WebhookAdapter(BasePlatformAdapter):
+             thread_id = extra.get("message_thread_id") or extra.get("thread_id")  # Telegram forum topics
+             result = await adapter.send(chat_id, content, metadata={"thread_id": thread_id} if thread_id else None)
+             if result.success:
+-                self._mirror_delivery(platform_name, str(chat_id), content, delivery, thread_id)
++                await asyncio.to_thread(self._mirror_delivery, platform_name, str(chat_id), content, delivery, thread_id)
+             return result
+ 
+     def _delivery_config(self, profile: Optional[str]):
 diff --git a/gateway/run_agent_cache.py b/gateway/run_agent_cache.py
-index 2225f4a16..0ee0a7852 100644
+index 2225f4a1..0ee0a785 100644
 --- a/gateway/run_agent_cache.py
 +++ b/gateway/run_agent_cache.py
 @@ -1,3 +1,5 @@
@@ -47,7 +95,7 @@ index 2225f4a16..0ee0a7852 100644
              threading.Thread(
                  target=copy_context().run,
 diff --git a/gateway/run_turn_runner.py b/gateway/run_turn_runner.py
-index 7e29a4cdf..f9b24125c 100644
+index 7e29a4cd..f9b24125 100644
 --- a/gateway/run_turn_runner.py
 +++ b/gateway/run_turn_runner.py
 @@ -1,3 +1,5 @@
@@ -105,7 +153,7 @@ index 7e29a4cdf..f9b24125c 100644
          elif rearm:
              # Reopen typing IMMEDIATELY, not on the LLM's first post-answer token (native streaming
 diff --git a/gateway/run_turn_runner_clarify_delivery.py b/gateway/run_turn_runner_clarify_delivery.py
-index e3bd3f4f8..c8cf722c2 100644
+index e3bd3f4f..c8cf722c 100644
 --- a/gateway/run_turn_runner_clarify_delivery.py
 +++ b/gateway/run_turn_runner_clarify_delivery.py
 @@ -77,7 +77,7 @@ def _clarify_send_disposition(fut, *, session_key: str, clarify_mod) -> Optional
@@ -147,7 +195,7 @@ index e3bd3f4f8..c8cf722c2 100644
 +def clarify_retirement_notice(response, cancelled):
 +    return "This prompt was cancelled. No answer was recorded." if response == cancelled else _clarify_expired_notice()
 diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
-index c73d27656..833028714 100644
+index c73d2765..83302871 100644
 --- a/gateway/slash_commands_session.py
 +++ b/gateway/slash_commands_session.py
 @@ -909,6 +909,12 @@ class GatewaySessionCommandsMixin:
@@ -164,7 +212,7 @@ index c73d27656..833028714 100644
          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
 diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
-index ac050556f..93af0cd80 100644
+index ac050556..93af0cd8 100644
 --- a/hermes_cli/cli_commands_mixin.py
 +++ b/hermes_cli/cli_commands_mixin.py
 @@ -5,6 +5,7 @@ the helpers/handlers via ``from cli import ...`` — cli.py imports this module
@@ -204,7 +252,7 @@ index ac050556f..93af0cd80 100644
          # One lineage SELECT, two projections: model_history is alternation-repaired for live
 diff --git a/hermes_cli/cli_session_boundary.py b/hermes_cli/cli_session_boundary.py
 new file mode 100644
-index 000000000..b46da2aef
+index 00000000..b46da2ae
 --- /dev/null
 +++ b/hermes_cli/cli_session_boundary.py
 @@ -0,0 +1,13 @@
@@ -222,7 +270,7 @@ index 000000000..b46da2aef
 +    with suppress(Exception):
 +        cli._session_db.end_session(cli.session_id, reason)
 diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
-index d17d73f65..a80f7798a 100644
+index d17d73f6..a80f7798 100644
 --- a/hermes_cli/cli_session_mixin.py
 +++ b/hermes_cli/cli_session_mixin.py
 @@ -419,16 +419,16 @@ class CLISessionMixin:
@@ -256,7 +304,7 @@ index d17d73f65..a80f7798a 100644
          if self._session_db and old_session_id:
              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
 diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
-index c470445a7..7c706dbd0 100644
+index c470445a..7c706dbd 100644
 --- a/hermes_cli/cli_tui_runtime_mixin.py
 +++ b/hermes_cli/cli_tui_runtime_mixin.py
 @@ -486,8 +486,9 @@ class CLITuiRuntimeMixin:
@@ -271,7 +319,7 @@ index c470445a7..7c706dbd0 100644
          self._print_exit_summary()
          self._release_active_session()
 diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
-index 8610268cb..21dbd229a 100644
+index 8610268c..21dbd229 100644
 --- a/plugins/platforms/discord/adapter.py
 +++ b/plugins/platforms/discord/adapter.py
 @@ -1,4 +1,9 @@
@@ -705,7 +753,7 @@ index 8610268cb..21dbd229a 100644
      if "history_backfill" in discord_cfg:
 diff --git a/plugins/platforms/discord/adapter_channel_policy.py b/plugins/platforms/discord/adapter_channel_policy.py
 new file mode 100644
-index 000000000..8fb1cd438
+index 00000000..8fb1cd43
 --- /dev/null
 +++ b/plugins/platforms/discord/adapter_channel_policy.py
 @@ -0,0 +1,82 @@
@@ -793,7 +841,7 @@ index 000000000..8fb1cd438
 +    return available, warnings
 diff --git a/plugins/platforms/discord/adapter_commands.py b/plugins/platforms/discord/adapter_commands.py
 new file mode 100644
-index 000000000..d18191d10
+index 00000000..d18191d1
 --- /dev/null
 +++ b/plugins/platforms/discord/adapter_commands.py
 @@ -0,0 +1,65 @@
@@ -863,7 +911,7 @@ index 000000000..d18191d10
 +        summary["total"] = len(desired_payloads)
 +        return summary
 diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
-index 73e3d3de3..0a857e4fc 100644
+index 73e3d3de..0a857e4f 100644
 --- a/plugins/platforms/discord/adapter_media.py
 +++ b/plugins/platforms/discord/adapter_media.py
 @@ -1,3 +1,5 @@
@@ -962,7 +1010,7 @@ index 73e3d3de3..0a857e4fc 100644
 -
 diff --git a/plugins/platforms/discord/delivery.py b/plugins/platforms/discord/delivery.py
 new file mode 100644
-index 000000000..cdb15ca4c
+index 00000000..cdb15ca4
 --- /dev/null
 +++ b/plugins/platforms/discord/delivery.py
 @@ -0,0 +1,16 @@
@@ -983,7 +1031,7 @@ index 000000000..cdb15ca4c
 +    if not results or any(not isinstance(result, dict) or result.get('action') != 'allow' for result in results):
 +        raise PermissionError('Current Discord permissions do not admit private delivery')
 diff --git a/tests/gateway/conftest.py b/tests/gateway/conftest.py
-index 9dba55ef3..7576f937e 100644
+index 9dba55ef..7576f937 100644
 --- a/tests/gateway/conftest.py
 +++ b/tests/gateway/conftest.py
 @@ -215,8 +215,14 @@ def _ensure_discord_mock() -> None:
@@ -1005,7 +1053,7 @@ index 9dba55ef3..7576f937e 100644
  
 diff --git a/tests/gateway/test_clarify_cancellation_outcome.py b/tests/gateway/test_clarify_cancellation_outcome.py
 new file mode 100644
-index 000000000..9d9b27966
+index 00000000..9d9b2796
 --- /dev/null
 +++ b/tests/gateway/test_clarify_cancellation_outcome.py
 @@ -0,0 +1,156 @@
@@ -1166,7 +1214,7 @@ index 000000000..9d9b27966
 +if __name__ == '__main__':
 +    unittest.main()
 diff --git a/tests/gateway/test_clarify_delivery_fallback.py b/tests/gateway/test_clarify_delivery_fallback.py
-index 0e1816260..55a8db7fd 100644
+index 0e181626..55a8db7f 100644
 --- a/tests/gateway/test_clarify_delivery_fallback.py
 +++ b/tests/gateway/test_clarify_delivery_fallback.py
 @@ -1,3 +1,5 @@
@@ -1198,7 +1246,7 @@ index 0e1816260..55a8db7fd 100644
  def _runner(adapter, loop, monkeypatch, timeout=5):
 diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
 new file mode 100644
-index 000000000..0cdd80e48
+index 00000000..0cdd80e4
 --- /dev/null
 +++ b/tests/gateway/test_discord_command_identity.py
 @@ -0,0 +1,118 @@
@@ -1321,7 +1369,7 @@ index 000000000..0cdd80e48
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tests/gateway/test_discord_connect.py b/tests/gateway/test_discord_connect.py
-index 18002e175..b5c078aaf 100644
+index 18002e17..b5c078aa 100644
 --- a/tests/gateway/test_discord_connect.py
 +++ b/tests/gateway/test_discord_connect.py
 @@ -1,9 +1,12 @@
@@ -1375,7 +1423,7 @@ index 18002e175..b5c078aaf 100644
      }
 diff --git a/tests/gateway/test_discord_guild_channel_only.py b/tests/gateway/test_discord_guild_channel_only.py
 new file mode 100644
-index 000000000..572cbc3d2
+index 00000000..572cbc3d
 --- /dev/null
 +++ b/tests/gateway/test_discord_guild_channel_only.py
 @@ -0,0 +1,118 @@
@@ -1498,7 +1546,7 @@ index 000000000..572cbc3d2
 +if __name__ == '__main__':
 +    unittest.main()
 diff --git a/tests/gateway/test_discord_sync_limit.py b/tests/gateway/test_discord_sync_limit.py
-index ca8f298f8..4a94ec585 100644
+index ca8f298f..4a94ec58 100644
 --- a/tests/gateway/test_discord_sync_limit.py
 +++ b/tests/gateway/test_discord_sync_limit.py
 @@ -1,3 +1,6 @@
@@ -1525,7 +1573,7 @@ index ca8f298f8..4a94ec585 100644
  
      # Simulate having 100 commands on Discord, with 1 that's no longer desired
 diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
-index 8d6e0b006..622a290e0 100644
+index 8d6e0b00..622a290e 100644
 --- a/tests/gateway/test_resume_command.py
 +++ b/tests/gateway/test_resume_command.py
 @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
@@ -1555,7 +1603,7 @@ index 8d6e0b006..622a290e0 100644
          """Resume must not carry a previous session's /model override into the
 diff --git a/tests/gateway/test_stop_clarify_waiters.py b/tests/gateway/test_stop_clarify_waiters.py
 new file mode 100644
-index 000000000..c3b7d4d23
+index 00000000..c3b7d4d2
 --- /dev/null
 +++ b/tests/gateway/test_stop_clarify_waiters.py
 @@ -0,0 +1,114 @@
@@ -1674,7 +1722,7 @@ index 000000000..c3b7d4d23
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
-index 365499669..a1548102d 100644
+index 36549966..a1548102 100644
 --- a/tests/hermes_cli/test_cli_resume_command.py
 +++ b/tests/hermes_cli/test_cli_resume_command.py
 @@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:
@@ -1726,7 +1774,7 @@ index 365499669..a1548102d 100644
      """Regression for #47202: /resume must flush un-persisted messages to
      the session DB before ending the old session, just like /new and
 diff --git a/tools/clarify_gateway.py b/tools/clarify_gateway.py
-index c97a44315..8200f7e98 100644
+index c97a4431..8200f7e9 100644
 --- a/tools/clarify_gateway.py
 +++ b/tools/clarify_gateway.py
 @@ -58,14 +58,15 @@ def register(clarify_id: str, session_key: str, question: str, choices: Optional

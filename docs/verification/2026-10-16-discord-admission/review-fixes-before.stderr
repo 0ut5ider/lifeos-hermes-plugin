@@ -1,0 +1,72 @@
+test_absent_memory_configuration_keeps_hermes_mirrors (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_absent_memory_configuration_keeps_hermes_mirrors) ... FAIL
+test_actual_standalone_notice_delivers_without_creating_unadmitted_history (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_actual_standalone_notice_delivers_without_creating_unadmitted_history) ... ok
+test_admitted_conversation_keeps_the_native_delivery_mirror (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_admitted_conversation_keeps_the_native_delivery_mirror) ... ok
+test_admitted_direct_message_keeps_mirror_without_a_channel_binding (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_admitted_direct_message_keeps_mirror_without_a_channel_binding) ... FAIL
+test_another_author_cannot_supply_the_destination_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_another_author_cannot_supply_the_destination_admission) ... ok
+test_another_native_session_cannot_borrow_an_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_another_native_session_cannot_borrow_an_admission) ... ok
+test_changed_audience_does_not_keep_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_changed_audience_does_not_keep_mirroring) ... ok
+test_invalid_memory_configuration_still_refuses_mirrors (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_invalid_memory_configuration_still_refuses_mirrors) ... ok
+test_no_delivery_policy_preserves_standard_hermes_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_no_delivery_policy_preserves_standard_hermes_mirroring) ... ok
+test_notice_before_first_human_turn_preserves_empty_history_and_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_notice_before_first_human_turn_preserves_empty_history_and_admission) ... ok
+test_notification_does_not_create_an_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_notification_does_not_create_an_admission) ... ok
+test_private_delivery_still_succeeds_without_a_foreground_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_private_delivery_still_succeeds_without_a_foreground_admission) ... ok
+test_returned_memory_ownership_preserves_standard_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_returned_memory_ownership_preserves_standard_mirroring) ... ok
+test_returned_ownership_keeps_mirrors_when_channel_audience_changes (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_returned_ownership_keeps_mirrors_when_channel_audience_changes) ... FAIL
+test_returned_ownership_keeps_unbound_destination_mirrors (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_returned_ownership_keeps_unbound_destination_mirrors) ... FAIL
+test_revoked_scope_does_not_keep_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_revoked_scope_does_not_keep_mirroring) ... ok
+test_send_tool_resolves_real_gateway_session_before_and_after_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_send_tool_resolves_real_gateway_session_before_and_after_admission) ... ok
+test_webhook_mirror_checks_run_outside_the_gateway_event_loop (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_webhook_mirror_checks_run_outside_the_gateway_event_loop) ... ok
+test_all_distributed_patches_have_an_exact_file_group (test_hermes_patch_regeneration.PatchAssignmentTests.test_all_distributed_patches_have_an_exact_file_group) ... ok
+test_session_lifecycle_group_owns_notification_mirror_paths (test_hermes_patch_regeneration.PatchAssignmentTests.test_session_lifecycle_group_owns_notification_mirror_paths) ... FAIL
+
+======================================================================
+FAIL: test_absent_memory_configuration_keeps_hermes_mirrors (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_absent_memory_configuration_keeps_hermes_mirrors)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 169, in test_absent_memory_configuration_keeps_hermes_mirrors
+    self.assertTrue(self.mirror())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_admitted_direct_message_keeps_mirror_without_a_channel_binding (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_admitted_direct_message_keeps_mirror_without_a_channel_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 192, in test_admitted_direct_message_keeps_mirror_without_a_channel_binding
+    self.assertTrue(mirror_to_session('discord', '70', 'Synthetic notice', session_id='dm-session'))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_returned_ownership_keeps_mirrors_when_channel_audience_changes (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_returned_ownership_keeps_mirrors_when_channel_audience_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 181, in test_returned_ownership_keeps_mirrors_when_channel_audience_changes
+    self.assertTrue(self.mirror())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_returned_ownership_keeps_unbound_destination_mirrors (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_returned_ownership_keeps_unbound_destination_mirrors)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 163, in test_returned_ownership_keeps_unbound_destination_mirrors
+    self.assertTrue(mirror_to_session('discord', '999', 'Synthetic notice',
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        session_id='unbound-session'))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_session_lifecycle_group_owns_notification_mirror_paths (test_hermes_patch_regeneration.PatchAssignmentTests.test_session_lifecycle_group_owns_notification_mirror_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_hermes_patch_regeneration.py", line 18, in test_session_lifecycle_group_owns_notification_mirror_paths
+    self.assertIn('gateway/mirror.py', GROUPS['hermes-session-lifecycle.patch'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'gateway/mirror.py' not found in ('cli.py', 'tests/gateway/conftest.py', 'gateway/slash_commands_session.py', 'gateway/run_agent_cache.py', 'hermes_cli/cli_commands_mixin.py', 'hermes_cli/cli_session_mixin.py', 'hermes_cli/cli_tui_runtime_mixin.py', 'tests/gateway/test_resume_command.py', 'tests/gateway/test_stop_clarify_waiters.py', 'plugins/platforms/discord/adapter.py', 'tests/gateway/test_discord_command_identity.py', 'plugins/platforms/discord/adapter_media.py', 'plugins/platforms/discord/delivery.py', 'tests/gateway/test_discord_connect.py', 'tests/gateway/test_discord_sync_limit.py', 'tests/gateway/test_discord_guild_channel_only.py', 'tools/clarify_gateway.py', 'gateway/run_turn_runner.py', 'gateway/run_turn_runner_clarify_delivery.py', 'tests/gateway/test_clarify_cancellation_outcome.py', 'tests/gateway/test_clarify_delivery_fallback.py', 'tests/hermes_cli/test_cli_resume_command.py', 'hermes_cli/cli_session_boundary.py', 'plugins/platforms/discord/adapter_commands.py', 'plugins/platforms/discord/adapter_channel_policy.py')
+
+----------------------------------------------------------------------
+Ran 20 tests in 12.638s
+
+FAILED (failures=5)

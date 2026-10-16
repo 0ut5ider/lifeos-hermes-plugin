@@ -1,0 +1,125 @@
+diff --git a/lifeos_hook_bridge/discord_audience.py b/lifeos_hook_bridge/discord_audience.py
+index cd9b12d8..c44775cc 100644
+--- a/lifeos_hook_bridge/discord_audience.py
++++ b/lifeos_hook_bridge/discord_audience.py
+@@ -3,7 +3,7 @@
+ from dataclasses import dataclass
+ import json
+ import os
+-from urllib.error import URLError
++from urllib.error import HTTPError, URLError
+ from urllib.request import HTTPRedirectHandler, Request, build_opener
+ 
+ 
+@@ -55,8 +55,12 @@ class DiscordAPI:
+         request = Request(self.origin + path, headers={
+             'Authorization': 'Bot ' + self.token,
+             'User-Agent': 'LifeOS-Hermes/0.1.0'})
+-        with build_opener(_RefuseRedirects()).open(request, timeout=3) as response:
+-            data = response.read(4 * 1024 * 1024 + 1)
++        try:
++            with build_opener(_RefuseRedirects()).open(request, timeout=3) as response:
++                data = response.read(4 * 1024 * 1024 + 1)
++        except HTTPError as error:
++            error.close()
++            raise
+         if len(data) > 4 * 1024 * 1024:
+             raise ValueError('The Discord audience response exceeds its supported size')
+         return json.loads(data)
+diff --git a/lifeos_hook_bridge/discord_delivery.py b/lifeos_hook_bridge/discord_delivery.py
+index 792e87eb..ab8a8b0b 100644
+--- a/lifeos_hook_bridge/discord_delivery.py
++++ b/lifeos_hook_bridge/discord_delivery.py
+@@ -1,5 +1,6 @@
+ # ABOUTME: Admits private Discord writes against the current configured channel audience.
+ # ABOUTME: Binds each policy call to one Hermes profile without relying on a turn context.
++from dataclasses import replace
+ from pathlib import Path
+ 
+ from .discord_audience import ChannelAudience, resolve_audience
+@@ -12,10 +13,34 @@ class PrivateDiscordDelivery:
+         self.configuration = MemoryConfiguration(configuration)
+         self.audience_lookup = audience_lookup or resolve_audience
+ 
+-    def check(self, *, platform='', chat_id='', guild_id='', hermes_home='', **_):
++    def _mirror_admitted(self, configuration, chat_id, session_id):
++        if not configuration.get('ownership_enabled', False):
++            return True
++        if not isinstance(session_id, str) or not session_id or len(session_id) > 128:
++            return False
++        from .memory_context import parse_context
++        from .memory_runtime import MemoryRuntime
++        runtime = MemoryRuntime(self.configuration.path)
++        previous = runtime._states().get(session_id)
++        if not isinstance(previous, dict) or not isinstance(previous.get('generation'), str):
++            return False
++        context = parse_context(previous.get('context'))
++        binding = configuration['discord_channels'][chat_id]
++        if (context.session_id != session_id or context.transport != 'discord'
++                or context.author != binding['owner'] or context.destination != chat_id
++                or context.visibility != 'private'
++                or context.participants != (configuration['principal'],)):
++            return False
++        # Admission stamps omit the session from the scope signature. The stored
++        # context above still binds this exact native session and destination.
++        return runtime._scope(configuration, replace(context, session_id='')).signature == previous.get('scope')
++
++    def check(self, *, platform='', chat_id='', guild_id='', hermes_home='',
++              purpose='delivery', session_id='', **_):
+         denied = {'action':'block','message':'Current Discord permissions do not admit private delivery'}
+         try:
+-            if (platform != 'discord' or not isinstance(hermes_home,str)
++            if (platform != 'discord' or purpose not in ('delivery', 'mirror')
++                    or not isinstance(hermes_home,str)
+                     or Path(hermes_home).absolute() != self.configuration.path.parent.absolute()):
+                 return denied
+             configuration = self.configuration.load()
+@@ -29,6 +54,11 @@ class PrivateDiscordDelivery:
+             if (audience != ChannelAudience(chat_id,binding['owner'],configuration['principal'])
+                     or self.configuration.load() != configuration):
+                 return denied
++            if purpose == 'mirror':
++                admitted = self._mirror_admitted(configuration, chat_id, session_id)
++                if self.configuration.load() != configuration:
++                    return denied
++                return {'action': 'allow', 'mirror': admitted}
+             return {'action':'allow'}
+         except (MemoryUnavailable, ValueError, KeyError, OSError, TypeError, RuntimeError):
+             return denied
+diff --git a/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch b/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+index 949b6bd1..085189d7 100644
+--- a/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
++++ b/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+@@ -1757,3 +1757,32 @@ index c97a44315..8200f7e98 100644
+          _entries.pop(clarify_id, None)  # regardless of outcome
+          ids = _session_index.get(entry.session_key) or []
+          if clarify_id in ids:
++
++diff --git a/gateway/mirror.py b/gateway/mirror.py
++--- a/gateway/mirror.py
+++++ b/gateway/mirror.py
++@@ -1,3 +1,5 @@
+++# ABOUTME: Mirrors delivered messages into the selected native conversation.
+++# ABOUTME: Applies configured delivery policy before changing Discord transcript history.
++ """Session mirroring for cross-platform message delivery.
++ 
++ When a message is sent to a platform (send_message or cron delivery), append a
++@@ -61,6 +63,18 @@
++                 platform, chat_id, thread_id, user_id,
++             )
++             return False
+++        if platform.lower() == "discord":
+++            from hermes_cli.plugins import get_plugin_manager
+++            manager = get_plugin_manager()
+++            if manager.has_hook("pre_message_delivery"):
+++                decisions = manager.invoke_hook("pre_message_delivery", platform="discord",
+++                    chat_id=str(chat_id), hermes_home=str(get_hermes_home()),
+++                    purpose="mirror", session_id=session_id)
+++                if not decisions or any(not isinstance(decision, dict)
+++                        or decision.get("action") != "allow"
+++                        or "mirror" in decision and decision["mirror"] is not True
+++                        for decision in decisions):
+++                    return False
++         _append_to_sqlite(session_id, {
++             "role": role, "content": message_text, "timestamp": datetime.now().isoformat(),
++             "mirror": True, "mirror_source": source_label,

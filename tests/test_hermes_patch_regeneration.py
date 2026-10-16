@@ -14,6 +14,10 @@ class PatchAssignmentTests(unittest.TestCase):
     def test_all_distributed_patches_have_an_exact_file_group(self):
         self.assertEqual(set(GROUPS), set(HERMES_PATCHES))
 
+    def test_session_lifecycle_group_owns_notification_mirror_paths(self):
+        self.assertIn('gateway/mirror.py', GROUPS['hermes-session-lifecycle.patch'])
+        self.assertIn('gateway/platforms/webhook.py', GROUPS['hermes-session-lifecycle.patch'])
+
 @unittest.skipUnless((SOURCE / '.git').exists(), 'A prepared source checkout with new files marked for diff is required')
 class HermesPatchRegenerationTests(unittest.TestCase):
     def test_whitespace_failure_refuses_before_publishing_patch_files(self):
@@ -53,6 +57,9 @@ class HermesPatchRegenerationTests(unittest.TestCase):
             self.assertIn('agent/turn_request_assembly.py', patch)
             self.assertIn('hermes_cli/plugin_validate.py', patch)
             self.assertIn('test_capability_probe_records_required_middleware', patch)
+            lifecycle = (output / 'hermes-session-lifecycle.patch').read_text()
+            self.assertIn('purpose="mirror"', lifecycle)
+            self.assertIn('await asyncio.to_thread', lifecycle)
             web = (output / 'hermes-web-result-status.patch').read_text()
             self.assertIn('def web_extract_result_failed', web)
             self.assertIn('a/agent/display.py', web)

@@ -197,6 +197,15 @@ class DiscordAudienceTests(unittest.TestCase):
         self.assertEqual(self.context().visibility, 'unknown')
         self.assertEqual(self.requests, ['/users/@me'])
 
+    def test_failed_audience_request_closes_its_http_response(self):
+        from urllib.error import HTTPError
+        from lifeos_hook_bridge.discord_audience import DiscordAPI
+        api = DiscordAPI('synthetic-token', origin=self.origin)
+        with self.assertRaises(HTTPError) as failure:
+            api.get('/synthetic-missing-channel')
+        self.addCleanup(failure.exception.close)
+        self.assertTrue(failure.exception.fp.closed)
+
     def test_invalid_channel_bindings_refuse_without_network_requests(self):
         for binding in ([], None, {'owner': '20'}, {'guild':'9' * 5000,'owner':'20','bot':'30'}):
             with self.subTest(binding_type=type(binding).__name__):

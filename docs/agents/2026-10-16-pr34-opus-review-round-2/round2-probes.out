@@ -1,0 +1,31 @@
+test_probe_dm_mirror_refused_after_owner_account_removed (test_review_round2.Round2Probes.test_probe_dm_mirror_refused_after_owner_account_removed) ... ok
+test_probe_dm_mirror_refused_after_grant_revoked (test_review_round2.Round2Probes.test_probe_dm_mirror_refused_after_grant_revoked) ... ok
+test_probe_dm_mirror_refused_for_unadmitted_dm_session (test_review_round2.Round2Probes.test_probe_dm_mirror_refused_for_unadmitted_dm_session) ... ok
+test_probe_dm_session_cannot_mirror_into_bound_channel_destination (test_review_round2.Round2Probes.test_probe_dm_session_cannot_mirror_into_bound_channel_destination) ... ok
+test_probe_dm_mirror_refused_when_state_file_permissions_unsafe (test_review_round2.Round2Probes.test_probe_dm_mirror_refused_when_state_file_permissions_unsafe) ... ok
+test_probe_dm_mirror_refused_for_other_profile_home (test_review_round2.Round2Probes.test_probe_dm_mirror_refused_for_other_profile_home) ... ok
+test_probe_channel_unbound_after_admission (test_review_round2.Round2Probes.test_probe_channel_unbound_after_admission) ... ok
+test_probe_webhook_synchronous_baseline_blocks_heartbeat (test_review_round2.Round2Probes.test_probe_webhook_synchronous_baseline_blocks_heartbeat) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 6.023s
+
+OK
+removed-account decision {'action': 'allow', 'mirror': False}
+revoked-grant decision {'action': 'block', 'message': 'Current Discord permissions do not admit private delivery'}
+dm-session into bound 60 decision {'action': 'allow', 'mirror': False}
+unsafe-state decision {'action': 'block', 'message': 'Current Discord permissions do not admit private delivery'}
+other-home decision {'action': 'block', 'message': 'Current Discord permissions do not admit private delivery'}
+unbound-after-admission decision {'action': 'allow', 'mirror': False} requests []
+unbound-after-admission mirrored False history 0
+next admission refused: MemoryAdmissionError Conversation visibility is unknown or differs from its approved grant
+scope unchanged True
+synchronous baseline assertion: Lists differ: [False] != [True]
+
+First differing element 0:
+False
+True
+
+- [False]
++ [True]
+exit=0

@@ -1,0 +1,22 @@
+test_webhook_mirror_checks_run_outside_the_gateway_event_loop (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_webhook_mirror_checks_run_outside_the_gateway_event_loop) ... FAIL
+
+======================================================================
+FAIL: test_webhook_mirror_checks_run_outside_the_gateway_event_loop (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_webhook_mirror_checks_run_outside_the_gateway_event_loop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 275, in test_webhook_mirror_checks_run_outside_the_gateway_event_loop
+    self.assertEqual(heartbeat_unblocked_request, [True])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [False] != [True]
+
+First differing element 0:
+False
+True
+
+- [False]
++ [True]
+
+----------------------------------------------------------------------
+Ran 1 test in 2.112s
+
+FAILED (failures=1)

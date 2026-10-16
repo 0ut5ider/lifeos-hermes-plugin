@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "program_commit": "3cfddbfce4d82808f0277f53b8a1f06a8be0aa72",
+  "archive_sha256": "46eb23cdc82880a2292f05e9031f18cb252a8261abc3621e292ba0326b8b68e9",
+  "exit_code": 0,
+  "native_source_unchanged": true,
+  "isolated_home": true,
+  "command": [
+    "/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/bin/python",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-q",
+    "tests/gateway/test_mirror.py",
+    "tests/cron/test_mirror_origin_fallback.py",
+    "tests/tools/test_send_message_tool.py",
+    "tests/gateway/test_webhook_adapter.py",
+    "tests/gateway/test_webhook_coalescing.py",
+    "tests/gateway/test_webhook_cron_trigger.py",
+    "tests/gateway/test_webhook_deliver_only.py",
+    "tests/gateway/test_webhook_dynamic_routes.py",
+    "tests/gateway/test_webhook_filter_interpreter.py",
+    "tests/gateway/test_webhook_integration.py",
+    "tests/gateway/test_webhook_offloop_delivery.py",
+    "tests/gateway/test_webhook_profile_egress.py",
+    "tests/gateway/test_webhook_route_toolsets.py",
+    "tests/gateway/test_webhook_session_close.py",
+    "tests/gateway/test_webhook_signature_rate_limit.py"
+  ]
+}

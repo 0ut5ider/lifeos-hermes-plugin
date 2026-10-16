@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-**Source version:** `0.7.0` adds optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. Source acceptance does not publish or deploy a qualified release package.
+**Source version:** `0.7.1` preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. Source acceptance does not publish or deploy a qualified release package.
 
 **Published stable release:** `0.6.0`, program commit `c86b5887`, adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [release record](docs/verification/2026-10-15-release-0.6.0/README.md) binds the exact package and qualification. The [portability contract](docs/memory-portability.md) defines retained data and recovery.
 
@@ -45,6 +45,8 @@ The [October 11 daily deployment record](docs/verification/2026-10-11-daily-gues
 Fresh-store preparation leaves personal TELOS, health, finance, work, gear, and project sections empty. It retains native section headings and template metadata. It stores the exact examples outside the active user tree for review, and omits the three example company and customer directories. Existing stores keep their data.
 
 The daily Discord release uses one private server text channel. The [channel restriction controls](docs/verification/2026-10-07-private-channel/README.md) verify message, command, outbound delivery, and memory admission rules. The daily guest at `.253` passes live channel admission and managed memory activation. Actual Discord save and recall pass in separate sessions.
+
+The [notification admission fix](docs/verification/2026-10-16-discord-admission/README.md) stages a correction for a first greeting after scheduled notices. The corrected delivery policy mirrors notices only into an admitted conversation. Notifications still deliver before the first human turn. For an affected 0.7.0 session, `/new` restores chat and preserves lasting memory. The fix requires a complete qualified release because its native caller and bridge policy change together.
 
 The [October 11 morning sender correction](docs/verification/2026-10-11-morning-text-fix/README.md) refuses attachment, voice, and document directives in narration before sending. Native renderer regressions, 41 local controls, development checks, and checks against the installed daily operator pass. The corrected operator is installed on `.253`.
 
