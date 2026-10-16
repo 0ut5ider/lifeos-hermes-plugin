@@ -1,6 +1,6 @@
 # Memory import, return, and removal
 
-Date: 2026-10-15. Status: implemented, qualified, and published in release 0.6.0. Development and daily remain on 0.5.0.
+Date: 2026-10-15. Status: implemented, qualified, and published in release 0.6.0. Development and daily select 0.6.0 through separate authenticated owner updates.
 
 Adrian authorizes all six implementation stages and complete LifeOS software removal as an owner option. He also authorizes useful source content from `.213` and `.211`. Source stores remain intact. Personal source bytes and item reviews remain private and do not enter Git or public verification receipts. Shared `.211` records require the memory connector. A connector failure does not permit filesystem access to its records.
 
@@ -93,7 +93,7 @@ The first standalone recovery command uses the existing password-authenticated d
 
 The host must satisfy the stock Hermes tool prerequisites before removal preparation. Ubuntu 24.04 needs the `libatomic1` system package for the managed Node runtime. An administrator installs this prerequisite. An unprivileged background worker cannot complete an interactive `sudo` request. Preparation refuses before software removal if a required stock tool cannot start.
 
-Release 0.6.0 is published. Installed checks verify normal removal, real stock model learning, reboot, authenticated software rollback, and exact 0.6 interrupted-removal recovery. The whole-guest restore, complete release qualification, and public latest installation replay pass. The [release record](verification/2026-10-15-release-0.6.0/README.md) identifies the exact checkpoints and preservation limits. No release check selects 0.6.0 on development or daily.
+Release 0.6.0 is published. Installed checks verify normal removal, real stock model learning, reboot, authenticated software rollback, and exact 0.6 interrupted-removal recovery. The whole-guest restore, complete release qualification, and public latest installation replay pass. The [release record](verification/2026-10-15-release-0.6.0/README.md) identifies the exact checkpoints and preservation limits. The subsequent [deployment record](verification/2026-10-15-release-0.6.0-deployment/README.md) records separate owner updates on development and daily. Updating starts none of the memory portability workflows.
 
 Removal preparation normalizes the retained environment with the pinned Hermes formatter before owner review. The review binds those exact bytes. Later environment edits still refuse publication and recovery. Invalid UTF-8 refuses before review.
 
