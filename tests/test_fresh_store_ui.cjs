@@ -136,7 +136,9 @@ test('each store change reports its notice and reloads both statuses', async () 
     const page = await controls(listed, change.selection);
     const before = page.calls.length;
     const pending = action(page.render(), change.label).props.onClick();
-    assert.equal(action(page.render(), change.label)?.props.disabled ?? true, true, change.label + ' must wait for the request');
+    assert.ok(action(page.render(), change.label), change.label + ' remains visible while pending');
+    assert.equal(action(page.render(), change.label).props.disabled, true, change.label + ' must wait for the request');
+    assert.equal(notice(page.render(), change.done), null, change.label + ' waits before reporting success');
     await pending;
     const after = page.calls.slice(before).map(call => ({ path: call.url.replace('/api/plugins/lifeos-hook-bridge', ''), init: call.init && plain(call.init) }));
     const request = change.body === undefined ? { method: change.method ?? 'POST' } :
@@ -149,7 +151,9 @@ test('each store change reports its notice and reloads both statuses', async () 
   find(page.render(), n => n.props.id === 'fresh_principal').props.onChange({ target: { value: 'Adrian' } });
   find(page.render(), n => n.props.id === 'fresh_assistant').props.onChange({ target: { value: 'Cerebo' } });
   const before = page.calls.length;
-  await find(page.render(), n => n.props.id === 'fresh_store_start').props.onSubmit({ preventDefault() {} });
+  const pending = find(page.render(), n => n.props.id === 'fresh_store_start').props.onSubmit({ preventDefault() {} });
+  assert.equal(notice(page.render(), 'Preparation started. It continues if this page closes.'), null);
+  await pending;
   const start = page.calls[before];
   assert.equal(start.init.method, 'POST');
   assert.equal(JSON.stringify(start.init.headers), JSON.stringify({ 'Content-Type': 'application/json' }));

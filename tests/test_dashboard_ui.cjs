@@ -413,12 +413,14 @@ const installationActions = [
     done: "LifeOS recovery started. If no files were replaced, the worker restarts the current version. Otherwise, it restores the prior version and restarts Hermes." },
 ];
 
-async function installationPage(action, respond) {
+async function installationPage(action, respond, refresh) {
   const calls = [];
+  let submitted = false;
   const sdk = {
     fetchJSON(url, init) {
       calls.push({ url, init });
-      if (init?.method === "POST") return respond();
+      if (init?.method === "POST") { submitted = true; return respond(); }
+      if (submitted && refresh && url.endsWith("/installation")) return refresh();
       if (url.endsWith("/installation/host-patch")) return Promise.resolve(action.hostPatch ?? { state: "none" });
       if (url.endsWith("/installation/update")) return Promise.resolve(action.update ?? { state: "none" });
       if (url.endsWith("/installation")) return Promise.resolve({ version: "7.40.4", ...action.installation });
@@ -461,6 +463,32 @@ test("installation action failures report the reason and release the busy state"
     for (let turn = 0; turn < 4; turn++) await settle();
     assert.equal(page.calls.length - before, 1, action.label + " must not refresh after a failure");
     assert.deepEqual(page.status()?.children, [action.failed + "synthetic refusal"]);
+    assert.equal(page.button().props.disabled, false, action.label);
+  }
+});
+
+test("installation refresh failures keep actions busy and clear the previous status", async () => {
+  const refreshing = ["/installation/apply", "/installation/finalize", "/installation/mount/recover"];
+  for (const action of installationActions.filter(action => refreshing.includes(action.path))) {
+    let rejectRefresh, attempt = 0;
+    const refresh = new Promise((resolve, reject) => { rejectRefresh = reject; });
+    const page = await installationPage(action, () => ++attempt === 1 ?
+      Promise.reject(new Error("synthetic prior refusal")) : Promise.resolve(action.result), () => refresh);
+    page.button().props.onClick();
+    await settle();
+    assert.deepEqual(page.status()?.children, [action.failed + "synthetic prior refusal"]);
+    page.button().props.onClick();
+    assert.deepEqual(page.status()?.children ?? [], [], action.label + " clears its previous status");
+    await settle();
+    try {
+      const buttons = findAll(page.section(), node => node.type === "button");
+      assert.ok(buttons.length && buttons.every(node => node.props.disabled === true),
+        action.label + " waits for its pending refresh");
+    } finally {
+      rejectRefresh(new Error("synthetic refresh refusal"));
+      await settle();
+    }
+    assert.deepEqual(page.status()?.children, [action.failed + "synthetic refresh refusal"]);
     assert.equal(page.button().props.disabled, false, action.label);
   }
 });

@@ -209,7 +209,29 @@ test('connection changes refresh memory status and report each outcome',async()=
   assert.equal(find(p.render(),n=>n.type==='button'&&n.children.includes('Check memory status')).props.disabled,false);
 });
 
-test('review refusals report their reason and keep the previous proposal list',async()=>{
+test('connection refresh failures keep controls busy until the reason is shown',async()=>{
+  let changed=false,rejectRefresh;
+  const refresh=new Promise((resolve,reject)=>{rejectRefresh=reject;});
+  const p=await panel((url,init)=>{
+    if(url.endsWith('/memory/sharing')){changed=true;return {status:'ok',sharing_enabled:true};}
+    if(changed&&url.endsWith('/memory'))return refresh;
+    return {state:'prepared',native_health:'ok',sharing_enabled:false,connections:[],remaining_gates:{}};
+  });
+  const button=()=>find(p.render(),n=>n.type==='button'&&n.children.includes('Enable memory sharing'));
+  const pending=button().props.onClick();
+  await settle();
+  try {
+    assert.equal(button().props.disabled,true);
+    assert.notEqual(statusMessage(p.render()),'Memory sharing is enabled.');
+  } finally {
+    rejectRefresh(new Error('synthetic status refusal'));
+    await pending;
+  }
+  assert.equal(statusMessage(p.render()),'synthetic status refusal');
+  assert.equal(button().props.disabled,false);
+});
+
+test('review refusals report their reason and keep the proposal list unloaded',async()=>{
   const searches=[{status:'ok',results:[{content:'Synthetic listed fact',reference:{id:'listed',revision:1},writer:'owner'}]},
     {status:'denied',reason:'Synthetic search refusal'},{status:'unavailable'}];
   const p=await panel({state:'prepared',native_health:'ok',proposal_review_available:true,remaining_gates:{}},request=>
