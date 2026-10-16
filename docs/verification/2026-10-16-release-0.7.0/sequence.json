@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "phase": "http-postrestart",
+  "test_fixture_only": true,
+  "production_changed": false,
+  "restart_ready_probe": "Actual authenticated MCP recall",
+  "health_probe_correction": "The /health route returns a sign-in redirect after owner authentication is enabled. HTTP 200 is not its unauthenticated readiness contract."
+}
