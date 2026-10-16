@@ -42,3 +42,16 @@ replaces the intended SDK error with FrozenInstanceError. The class-based
 credential update releases the underlying generator lock without passing the
 frozen exception through it. The HTTP regression checks receive the intended
 OAuth error responses.
+
+The second review measures a plaintext boundary: a non-loopback TCP peer with a
+loopback-looking Host header and a valid token receives nine tools. HTTP origins
+now require an actual loopback peer. Independent probes receive 400 across all
+seven public paths for both a remote peer and absent peer metadata. Direct HTTPS
+and a local TLS proxy still work. The third review has no remaining findings.
+
+OpenCode 2.0.30 initially reports no MCP servers in its isolated profile. Its
+configuration debugger shows the expected server. The native CLI source reads
+MCP status through the background service. A bounded second status query reports
+the connection. A single cold-start status query is insufficient client evidence.
+Codex completes actual OAuth login, and Claude Code and OpenCode pass bearer
+health checks without changing the deployed client configuration.

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.7.0 (2026-10-16)
 
 - Add an optional Streamable HTTP memory server to the LifeOS Bridge dashboard listener.
 - Add owner controls for HTTPS configuration, OAuth consent, per-agent tokens, and revocation.
