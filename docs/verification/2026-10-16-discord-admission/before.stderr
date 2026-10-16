@@ -1,0 +1,58 @@
+test_admitted_conversation_keeps_the_native_delivery_mirror (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_admitted_conversation_keeps_the_native_delivery_mirror) ... ok
+test_another_native_session_cannot_borrow_an_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_another_native_session_cannot_borrow_an_admission) ... FAIL
+test_changed_audience_does_not_keep_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_changed_audience_does_not_keep_mirroring) ... FAIL
+test_no_delivery_policy_preserves_standard_hermes_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_no_delivery_policy_preserves_standard_hermes_mirroring) ... ok
+test_notice_before_first_human_turn_preserves_empty_history_and_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_notice_before_first_human_turn_preserves_empty_history_and_admission) ... FAIL
+test_notification_does_not_create_an_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_notification_does_not_create_an_admission) ... FAIL
+test_private_delivery_still_succeeds_without_a_foreground_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_private_delivery_still_succeeds_without_a_foreground_admission) ... ok
+test_revoked_scope_does_not_keep_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_revoked_scope_does_not_keep_mirroring) ... FAIL
+
+======================================================================
+FAIL: test_another_native_session_cannot_borrow_an_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_another_native_session_cannot_borrow_an_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 98, in test_another_native_session_cannot_borrow_an_admission
+    self.assertFalse(self.mirror('another-session'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_changed_audience_does_not_keep_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_changed_audience_does_not_keep_mirroring)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 114, in test_changed_audience_does_not_keep_mirroring
+    self.assertFalse(self.mirror())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_notice_before_first_human_turn_preserves_empty_history_and_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_notice_before_first_human_turn_preserves_empty_history_and_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 72, in test_notice_before_first_human_turn_preserves_empty_history_and_admission
+    self.assertFalse(self.mirror())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_notification_does_not_create_an_admission (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_notification_does_not_create_an_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 91, in test_notification_does_not_create_an_admission
+    self.assertFalse(self.mirror())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_revoked_scope_does_not_keep_mirroring (test_discord_notification_mirror.DiscordNotificationMirrorTests.test_revoked_scope_does_not_keep_mirroring)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_notification_mirror.py", line 106, in test_revoked_scope_does_not_keep_mirroring
+    self.assertFalse(self.mirror())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 8 tests in 5.895s
+
+FAILED (failures=5)

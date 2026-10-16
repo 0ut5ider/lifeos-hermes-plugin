@@ -1,0 +1,28 @@
+{
+  "status": "REPRODUCED",
+  "native_mirror_roles": [
+    "assistant"
+  ],
+  "hook_metadata": [
+    {
+      "session": "notification-first",
+      "is_first_turn": false
+    },
+    {
+      "session": "fresh-first",
+      "is_first_turn": true
+    }
+  ],
+  "outcomes": {
+    "notification-first": {
+      "admission": "REFUSED",
+      "error_type": "PromptBlocked",
+      "missing_verified_context": true
+    },
+    "fresh-first": {
+      "admission": "PASS"
+    }
+  },
+  "production_changed": false,
+  "personal_memory_read": false
+}

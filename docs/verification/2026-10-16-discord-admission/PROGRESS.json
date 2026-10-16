@@ -1,0 +1,25 @@
+{
+  "status": "STAGED_FIX_VERIFIED_DAILY_CHAT_RECOVERED",
+  "production_version": "0.7.0",
+  "production_code_changed": false,
+  "new_release_published": false,
+  "independent_review_performed": false,
+  "primary_source_review_performed": true,
+  "bridge_main_run_passed": 116,
+  "additional_edge_cases_passed": 2,
+  "bridge_unique_cases_passed": 118,
+  "native_cases_passed": 70,
+  "all_hermes_patch_groups_replayed": 10,
+  "native_mirror_matches_tested_source": true,
+  "memory_admission_loosened": false,
+  "raw_personal_records_read": false,
+  "source_sha256": {
+    "lifeos_hook_bridge/discord_delivery.py": "1209c7eacaeadbe3675d4ae6356c5def79ac746be6c3cb1247d13360a81fb2e9",
+    "lifeos_hook_bridge/discord_audience.py": "7a666a3d803ea53731037b333121629663501b2025060b32d4d56f3016208295",
+    "lifeos_hook_bridge/patches/hermes-session-lifecycle.patch": "c4c2f1fb683944c63cd6555f67a37b776b0ab0dcd9333d8e8a00e32848904aac"
+  },
+  "initial_wider_run": {
+    "errors": 30,
+    "reason": "The extracted test source lacks its root YAML dependency. Corrected fixture provisioning resolves the failures."
+  }
+}

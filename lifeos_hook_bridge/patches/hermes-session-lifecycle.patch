@@ -1757,3 +1757,32 @@ index c97a44315..8200f7e98 100644
          _entries.pop(clarify_id, None)  # regardless of outcome
          ids = _session_index.get(entry.session_key) or []
          if clarify_id in ids:
+
+diff --git a/gateway/mirror.py b/gateway/mirror.py
+--- a/gateway/mirror.py
++++ b/gateway/mirror.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Mirrors delivered messages into the selected native conversation.
++# ABOUTME: Applies configured delivery policy before changing Discord transcript history.
+ """Session mirroring for cross-platform message delivery.
+ 
+ When a message is sent to a platform (send_message or cron delivery), append a
+@@ -61,6 +63,18 @@
+                 platform, chat_id, thread_id, user_id,
+             )
+             return False
++        if platform.lower() == "discord":
++            from hermes_cli.plugins import get_plugin_manager
++            manager = get_plugin_manager()
++            if manager.has_hook("pre_message_delivery"):
++                decisions = manager.invoke_hook("pre_message_delivery", platform="discord",
++                    chat_id=str(chat_id), hermes_home=str(get_hermes_home()),
++                    purpose="mirror", session_id=session_id)
++                if not decisions or any(not isinstance(decision, dict)
++                        or decision.get("action") != "allow"
++                        or "mirror" in decision and decision["mirror"] is not True
++                        for decision in decisions):
++                    return False
+         _append_to_sqlite(session_id, {
+             "role": role, "content": message_text, "timestamp": datetime.now().isoformat(),
+             "mirror": True, "mirror_source": source_label,

@@ -1,0 +1,15 @@
+test_failed_audience_request_closes_its_http_response (test_discord_audience.DiscordAudienceTests.test_failed_audience_request_closes_its_http_response) ... FAIL
+
+======================================================================
+FAIL: test_failed_audience_request_closes_its_http_response (test_discord_audience.DiscordAudienceTests.test_failed_audience_request_closes_its_http_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_discord_audience.py", line 207, in test_failed_audience_request_closes_its_http_response
+    self.assertTrue(failure.exception.fp.closed)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 0.509s
+
+FAILED (failures=1)

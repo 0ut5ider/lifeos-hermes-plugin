@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 import json
 import os
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 
@@ -55,8 +55,12 @@ class DiscordAPI:
         request = Request(self.origin + path, headers={
             'Authorization': 'Bot ' + self.token,
             'User-Agent': 'LifeOS-Hermes/0.1.0'})
-        with build_opener(_RefuseRedirects()).open(request, timeout=3) as response:
-            data = response.read(4 * 1024 * 1024 + 1)
+        try:
+            with build_opener(_RefuseRedirects()).open(request, timeout=3) as response:
+                data = response.read(4 * 1024 * 1024 + 1)
+        except HTTPError as error:
+            error.close()
+            raise
         if len(data) > 4 * 1024 * 1024:
             raise ValueError('The Discord audience response exceeds its supported size')
         return json.loads(data)

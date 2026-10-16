@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Keep private Discord notifications from creating unverified foreground history before the first human turn.
+- Preserve actual notification delivery and mirroring in admitted conversations.
+- Keep existing memory admission and compression checks unchanged.
+- Close failed Discord audience responses before propagating their refusal.
+
 ## 0.7.0 (2026-10-16)
 
 - Add an optional Streamable HTTP memory server to the LifeOS Bridge dashboard listener.
