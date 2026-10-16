@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "program_commit": "b257d29f81fa2b88d202da72914b778d4eda3bb5",
+  "archive_sha256": "293cfa2c6593b597c327fb8ad11f458d3e374352552dfbe7f4dbba5cd7e67265",
+  "archive_bytes": 288201691,
+  "native": {
+    "hermes": {
+      "matches_qualified_071": true,
+      "tree_sha256": "9ff7e31b195b247fed4ba24b847ff5ebf9e26f890f5627389d7edf23c9c3f4ce",
+      "patches": 10
+    },
+    "lifeos": {
+      "matches_qualified_071": true,
+      "tree_sha256": "9291b358a1469021d971e78954d506fce225410ee968545413134f0462276a0a",
+      "patches": 25
+    }
+  },
+  "python_closure_matches_qualified_071": true,
+  "stock_program_files_match_qualified_071": true,
+  "plugin_program_deltas": {
+    "lifeos_hook_bridge": [
+      "dashboard/dist/index.js",
+      "dashboard/dist/style.css",
+      "dashboard/manifest.json",
+      "plugin.yaml"
+    ],
+    "optional/lifeos_release_manager": [
+      "dashboard/dist/index.js",
+      "dashboard/dist/style.css",
+      "dashboard/manifest.json",
+      "plugin.yaml"
+    ]
+  },
+  "all_backend_programs_unchanged": true,
+  "both_manifest_css_assets_present": true,
+  "live_selection_changed": false
+}

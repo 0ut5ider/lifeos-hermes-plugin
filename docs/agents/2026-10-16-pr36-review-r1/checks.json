@@ -1,0 +1,83 @@
+{
+  "reviewed_head": "b257d29f81fa2b88d202da72914b778d4eda3bb5",
+  "commands": {
+    "ui-tests.txt": {
+      "command": [
+        "node",
+        "--test",
+        "tests/test_dashboard_ui.cjs",
+        "tests/test_fresh_store_ui.cjs",
+        "tests/test_memory_dashboard_ui.cjs",
+        "tests/test_memory_portability_ui.cjs",
+        "tests/test_memory_remote_ui.cjs",
+        "tests/test_memory_removal_ui.cjs",
+        "tests/test_release_ui.cjs",
+        "tests/test_setup_presentation.cjs"
+      ],
+      "exit_code": 0
+    },
+    "javascript-bridge.txt": {
+      "command": [
+        "node",
+        "--check",
+        "lifeos_hook_bridge/dashboard/dist/index.js"
+      ],
+      "exit_code": 0
+    },
+    "javascript-manager.txt": {
+      "command": [
+        "node",
+        "--check",
+        "optional/lifeos_release_manager/dashboard/dist/index.js"
+      ],
+      "exit_code": 0
+    },
+    "diff-check.txt": {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "origin/main...b257d29f81fa2b88d202da72914b778d4eda3bb5"
+      ],
+      "exit_code": 2
+    },
+    "reviewed-diff.patch": {
+      "command": [
+        "git",
+        "diff",
+        "origin/main...b257d29f81fa2b88d202da72914b778d4eda3bb5",
+        "--",
+        "lifeos_hook_bridge/dashboard",
+        "optional/lifeos_release_manager/dashboard",
+        "tests/test_memory_remote_ui.cjs",
+        "tests/test_setup_presentation.cjs",
+        "VERSION",
+        "README.md",
+        "CHANGELOG.md",
+        "lifeos_hook_bridge/plugin.yaml",
+        "optional/lifeos_release_manager/plugin.yaml"
+      ],
+      "exit_code": 0
+    }
+  },
+  "manifests": {
+    "VERSION": "0.7.2",
+    "lifeos_hook_bridge/dashboard/manifest.json": {
+      "version": "0.7.2",
+      "css": "dist/style.css",
+      "css_exists": true,
+      "css_sha256": "29b341815f3e0acc7beffc71911268b28e6e00dc6622c02069abe73632bedc58"
+    },
+    "optional/lifeos_release_manager/dashboard/manifest.json": {
+      "version": "0.7.2",
+      "css": "dist/style.css",
+      "css_exists": true,
+      "css_sha256": "29b341815f3e0acc7beffc71911268b28e6e00dc6622c02069abe73632bedc58"
+    }
+  },
+  "correction_verification": {
+    "head": "b8feaf11b84be2a1b9cf06269068244048b44155",
+    "diff_check_exit_code": 0,
+    "product_diff_empty": true
+  }
+}

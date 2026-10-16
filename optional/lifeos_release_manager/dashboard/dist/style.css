@@ -1,0 +1,95 @@
+/* ABOUTME: Styles the LifeOS setup pages independently of host utility generation. */
+/* ABOUTME: Scopes controls, sections, focus states, and responsive layout to LifeOS roots. */
+.lifeos-setup {
+  --lifeos-text: var(--midground-base, #e6edf3);
+  --lifeos-canvas: var(--background-base, #101d25);
+  --lifeos-panel: color-mix(in srgb, var(--lifeos-text) 4%, var(--lifeos-canvas));
+  --lifeos-inset: color-mix(in srgb, var(--lifeos-text) 7%, var(--lifeos-canvas));
+  --lifeos-border: color-mix(in srgb, var(--lifeos-text) 23%, var(--lifeos-canvas));
+  --lifeos-muted: color-mix(in srgb, var(--lifeos-text) 78%, var(--lifeos-canvas));
+  --lifeos-accent: var(--lifeos-text);
+  --lifeos-danger: #ef716a;
+  color: var(--lifeos-text);
+  font-family: var(--theme-font-sans, system-ui, sans-serif);
+  font-size: 15px;
+  line-height: 1.6;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px;
+  min-width: 0;
+}
+.lifeos-setup *, .lifeos-setup *::before, .lifeos-setup *::after { box-sizing: border-box; }
+.lifeos-setup :is(section, article, details, form, div) { min-width: 0; }
+.lifeos-setup :is(section, details, [id]) { scroll-margin-top: 24px; }
+.lifeos-setup > * + *, .lifeos-setup .lifeos-stack > * + * { margin-top: 24px; }
+.lifeos-setup :is(h1, h2, h3, h4, p) { margin: 0 0 12px; }
+.lifeos-setup h1 { font-size: 30px; font-weight: 750; line-height: 1.25; letter-spacing: -.025em; }
+.lifeos-setup h2 { font-size: 21px; font-weight: 700; line-height: 1.35; }
+.lifeos-setup h3 { font-size: 17px; font-weight: 700; line-height: 1.4; }
+.lifeos-setup h4 { font-size: 15px; font-weight: 700; }
+.lifeos-setup p { color: var(--lifeos-muted); overflow-wrap: anywhere; }
+.lifeos-setup .lifeos-eyebrow { color: var(--lifeos-muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.lifeos-setup .lifeos-intro { max-width: 74ch; margin-bottom: 0; }
+.lifeos-setup .lifeos-navigation { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border: 1px solid var(--lifeos-border); background: var(--lifeos-panel); border-radius: 12px; }
+.lifeos-setup .lifeos-navigation a { padding: 7px 12px; color: var(--lifeos-text); border-radius: 7px; text-decoration: none; font-size: 13px; font-weight: 650; }
+.lifeos-setup .lifeos-navigation a:hover { background: var(--lifeos-inset); text-decoration: underline; }
+.lifeos-setup section, .lifeos-setup .lifeos-card { border: 1px solid var(--lifeos-border); border-radius: 14px; padding: 24px; background: var(--lifeos-panel); }
+.lifeos-setup section > * + *, .lifeos-setup .lifeos-card > * + * { margin-top: 16px; }
+.lifeos-setup section > :last-child, .lifeos-setup .lifeos-card > :last-child { margin-bottom: 0; }
+.lifeos-setup section section { background: var(--lifeos-canvas); padding: 20px; }
+.lifeos-setup article { border: 1px solid var(--lifeos-border); border-radius: 10px; padding: 18px; margin: 16px 0; background: var(--lifeos-canvas); }
+.lifeos-setup article > :last-child { margin-bottom: 0; }
+.lifeos-setup details { border: 1px solid var(--lifeos-border); border-radius: 10px; background: var(--lifeos-panel); margin: 16px 0; padding: 0; }
+.lifeos-setup summary { cursor: pointer; font-size: 15px; font-weight: 700; padding: 16px 18px; list-style-position: inside; border-radius: 9px; }
+.lifeos-setup summary:hover { background: var(--lifeos-inset); }
+.lifeos-setup details[open] > summary { border-bottom: 1px solid var(--lifeos-border); border-radius: 9px 9px 0 0; }
+.lifeos-setup details > :not(summary) { margin: 16px 18px; }
+.lifeos-setup details > div > * + * { margin-top: 16px; }
+.lifeos-setup details section { background: var(--lifeos-canvas); padding: 20px; }
+.lifeos-setup form { display: grid; gap: 16px; margin: 16px 0; }
+.lifeos-setup fieldset { border: 1px solid var(--lifeos-border); border-radius: 9px; padding: 12px 16px; min-width: 0; }
+.lifeos-setup legend { padding: 0 6px; font-size: 13px; font-weight: 700; color: var(--lifeos-text); }
+.lifeos-setup label { display: block; font-size: 13px; font-weight: 700; line-height: 1.5; color: var(--lifeos-text); }
+.lifeos-setup label:has(input[type="checkbox"]) { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; font-weight: 500; font-size: 14px; }
+.lifeos-setup :is(input:not([type="checkbox"]), select, textarea) { display: block; width: 100%; max-width: 100%; min-height: 44px; margin: 7px 0 0; border: 1px solid var(--lifeos-border); border-radius: 8px; background: var(--lifeos-canvas); padding: 10px 12px; color: var(--lifeos-text); font: inherit; font-weight: 400; box-shadow: inset 0 1px 2px rgb(0 0 0 / .08); }
+.lifeos-setup input[type="checkbox"] { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--lifeos-accent); cursor: pointer; }
+.lifeos-setup input[type="file"] { padding: 8px; font-size: 13px; }
+.lifeos-setup input[type="file"]::file-selector-button { padding: 5px 10px; margin-right: 10px; border: 1px solid var(--lifeos-border); border-radius: 5px; color: var(--lifeos-text); background: var(--lifeos-inset); cursor: pointer; }
+.lifeos-setup textarea { min-height: 112px; resize: vertical; }
+.lifeos-setup input[readonly], .lifeos-setup textarea[readonly] { background: var(--lifeos-inset); font-family: var(--theme-font-mono, monospace); font-size: 12px; }
+.lifeos-setup input::placeholder, .lifeos-setup textarea::placeholder { color: var(--lifeos-muted); opacity: 1; }
+.lifeos-setup :is(button, .lifeos-action-link) { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; max-width: 100%; padding: 9px 15px; margin: 6px 8px 6px 0; border: 1px solid var(--lifeos-border); border-radius: 8px; background: var(--lifeos-inset); color: var(--lifeos-text); font: inherit; font-size: 13px; font-weight: 650; line-height: 1.45; text-align: center; white-space: normal; overflow-wrap: anywhere; cursor: pointer; transition: background-color .12s, border-color .12s; text-decoration: none; }
+.lifeos-setup form > button { justify-self: start; }
+.lifeos-setup button:hover:not(:disabled), .lifeos-setup .lifeos-action-link:hover { background: color-mix(in srgb, var(--lifeos-text) 14%, var(--lifeos-canvas)); border-color: var(--lifeos-muted); }
+.lifeos-setup button:is(.lifeos-primary, .bg-primary) { background: var(--lifeos-accent); border-color: var(--lifeos-accent); color: var(--lifeos-canvas); }
+.lifeos-setup button:is(.lifeos-primary, .bg-primary):hover:not(:disabled) { background: color-mix(in srgb, var(--lifeos-accent) 88%, var(--lifeos-canvas)); }
+.lifeos-setup button.lifeos-danger { color: var(--lifeos-text); background: color-mix(in srgb, var(--lifeos-danger) 12%, var(--lifeos-canvas)); border-color: color-mix(in srgb, var(--lifeos-danger) 70%, var(--lifeos-canvas)); }
+.lifeos-setup button.lifeos-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--lifeos-danger) 25%, var(--lifeos-canvas)); }
+.lifeos-setup :is(button, input, select, textarea):disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.lifeos-setup :is(button, input, select, textarea, summary, a):focus-visible { outline: 3px solid var(--lifeos-accent); outline-offset: 3px; }
+.lifeos-setup a { color: var(--lifeos-text); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.lifeos-setup .lifeos-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lifeos-setup .lifeos-actions > button { margin: 0; }
+.lifeos-setup .lifeos-grid, .lifeos-setup .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.lifeos-setup .lifeos-help { color: var(--lifeos-muted); font-size: 13px; font-weight: 400; margin: 6px 0 0; }
+.lifeos-setup .lifeos-notice, .lifeos-setup [role="status"], .lifeos-setup [role="alert"] { display: block; padding: 12px 15px; border: 1px solid var(--lifeos-border); border-left: 3px solid var(--lifeos-accent); border-radius: 8px; background: var(--lifeos-inset); font-size: 13px; color: var(--lifeos-text); margin-top: 14px; }
+.lifeos-setup [role="alert"], .lifeos-setup .lifeos-caution { border-left-color: var(--lifeos-danger); }
+.lifeos-setup pre, .lifeos-setup code { overflow-wrap: anywhere; word-break: break-word; font-family: var(--theme-font-mono, monospace); font-size: 12px; }
+.lifeos-setup pre { white-space: pre-wrap; max-height: 360px; overflow: auto; background: var(--lifeos-canvas); border: 1px solid var(--lifeos-border); border-radius: 8px; padding: 14px; }
+.lifeos-setup ul { padding-left: 24px; list-style: disc; }
+.lifeos-setup .lifeos-empty { color: var(--lifeos-muted); font-size: 13px; padding: 12px 0; }
+@media (max-width: 680px) {
+  .lifeos-setup { padding: 16px; }
+  .lifeos-setup h1 { font-size: 26px; }
+  .lifeos-setup section, .lifeos-setup .lifeos-card, .lifeos-setup details section { padding: 16px; }
+  .lifeos-setup .lifeos-grid, .lifeos-setup .grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .lifeos-setup .lifeos-navigation { gap: 4px; }
+  .lifeos-setup .lifeos-navigation a { padding: 6px 8px; }
+  .lifeos-setup details > :not(summary) { margin: 14px 12px; }
+  .lifeos-setup .lifeos-actions { align-items: stretch; }
+  .lifeos-setup .lifeos-actions > button { flex: 1 1 160px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lifeos-setup button { transition: none; }
+}

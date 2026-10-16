@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.7.2 (2026-10-16)
+
+- Load scoped styles for both LifeOS setup pages through their plugin manifests.
+- Show visible buttons, distinct sections, field labels, and keyboard focus.
+- Separate HTTP address, permissions, sign-in requests, and connected agents.
+- Explain disabled approval controls and separate manual token submission from permission inputs.
+- Organize release preparation, review, recovery, and memory ownership controls.
+- Fit setup forms and model grids to desktop and phone widths.
+
 ## 0.7.1 (2026-10-16)
 
 - Keep private Discord notifications from creating unverified foreground history before the first human turn.

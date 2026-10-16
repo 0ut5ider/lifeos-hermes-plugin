@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "owned_guest": 110,
+  "owned_hostname": "lifeos-072-boundary-qualification",
+  "graceful_shutdown": true,
+  "destroyed": true,
+  "all_other_guest_states_preserved": true,
+  "other_guests": {
+    "100": "running",
+    "101": "running",
+    "102": "running",
+    "106": "stopped",
+    "801": "running"
+  },
+  "host_restart_performed": false,
+  "cleanup_resumed_from": "status: stopped",
+  "initial_cleanup_issue": "The immediate aggregate status did not report stopped after shutdown. The direct guest status confirms stopped before resumed removal."
+}
