@@ -16,7 +16,7 @@ The primary agent repeats the delegated checks and inspects the final code. All 
 - Both authored JavaScript bundles pass `node --check`. The plugin has no separate transpilation step.
 - Backend checks pass 64 tests and 61 subtests. Two environment-gated cases skip. See [raw output](backend-tests-prepared.txt).
 - Initial backend checks lack the prepared Hermes import path, then the prepared LifeOS source fixture. Those runs fail before the relevant assertions. The final run supplies both existing fixtures. No test or assertion changes resolve these environment failures.
-- `git diff --check` passes.
+- The complete committed-range `git diff --check` passes after review removes trailing whitespace from the initial failing test log. The log retains its diagnostic content.
 
 The backend command uses the existing frozen Python environment, the prepared Hermes source in `PYTHONPATH` and `LIFEOS_HERMES_SOURCE`, and the prepared native source in `LIFEOS_MEMORY_SOURCE`. The two skipped cases require additional installed fresh-store prerequisites. The candidate does not change backend code.
 

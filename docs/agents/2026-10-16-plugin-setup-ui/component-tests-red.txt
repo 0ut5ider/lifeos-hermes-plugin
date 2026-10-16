@@ -27,10 +27,10 @@ not ok 4 - waiting approval explains required permissions and keeps manual token
   error: |-
     Expected values to be strictly equal:
     + actual - expected
-    
+
     + undefined
     - 'http_grant_help'
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: 'http_grant_help'
@@ -50,10 +50,10 @@ not ok 5 - lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible s
   error: |-
     The host must load plugin CSS from the manifest
     + actual - expected
-    
+
     + undefined
     - 'dist/style.css'
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: 'dist/style.css'
@@ -75,10 +75,10 @@ not ok 6 - optional/lifeos_release_manager/dashboard declares a bundled, scoped,
   error: |-
     The host must load plugin CSS from the manifest
     + actual - expected
-    
+
     + undefined
     - 'dist/style.css'
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: 'dist/style.css'
@@ -101,9 +101,9 @@ not ok 7 - Bridge and release pages expose labelled navigation and scoped roots
   failureType: 'testCodeFailure'
   error: |-
     The expression evaluated to a falsy value:
-    
+
       assert.ok(tree.props.className.includes('lifeos-setup'))
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true
