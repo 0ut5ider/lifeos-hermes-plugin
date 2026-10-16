@@ -12,21 +12,22 @@
     "uid": 1008,
     "source_snapshot": "CT106/stock-ui-manager-qualified-baseline",
     "gateway_and_pulse_masked_before_boot": true,
-    "cleanup": "QUEUED_AFTER_BACKGROUND_DEVELOPMENT_CHECKPOINT"
+    "cleanup": "PASS_REMOVED"
   },
   "development": {
     "guest": 101,
     "address": "192.168.8.252",
     "deployed_version": "0.7.0",
     "changed": true,
-    "protected_checkpoint": "IN_PROGRESS_SERVICES_RESUMED_FROM_FROZEN_SNAPSHOT",
+    "protected_checkpoint": "PASS",
     "preparation": "READY_PUBLIC_CATALOG",
     "operation": "8508715d007643aabc982069fa50c070",
     "owner_browser": "AUTHENTICATED",
     "owner_review": "APPLIED_THROUGH_NATIVE_OWNER_BROWSER",
     "verification": "PASS",
     "model_reply": "PASS",
-    "discord": "CONNECTED"
+    "discord": "CONNECTED",
+    "protected_archive": "PBS-01:backup/ct/101/2026-10-16T12:49:17Z"
   },
   "daily": {
     "guest": 102,
@@ -71,8 +72,8 @@
   "http_memory_enabled_on_existing_servers": false,
   "deployment_asset": "DEPLOYMENT-ACCEPTANCE.json",
   "background_operations": {
-    "development_protected_backup": "IN_PROGRESS_FROM_COHERENT_FROZEN_PREUPDATE_SNAPSHOT",
-    "qualification_guest_cleanup": "QUEUED_AFTER_BACKUP_OPERATOR_FINISHES",
+    "development_protected_backup": "PASS_COMPLETE",
+    "qualification_guest_cleanup": "PASS_REMOVED_ALL_OTHER_GUEST_STATES_PRESERVED",
     "required_for_completed_installation": false
   }
 }
