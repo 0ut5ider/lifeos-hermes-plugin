@@ -28,11 +28,29 @@ class MemoryOwnerJobProcessTests(unittest.TestCase):
 
     def assert_stopped(self):
         self.assertTrue(self.pids.is_file())
+        deadline = time.monotonic() + 5
         for pid in json.loads(self.pids.read_text()):
             path = Path('/proc') / str(pid) / 'stat'
-            # A killed grandchild can await the operating system's parent reaper.
-            self.assertTrue(not path.exists() or path.read_text().rsplit(')', 1)[1].split()[0] == 'Z',
-                            f'Child {pid} still runs')
+            while True:
+                try:
+                    state = path.read_text().rsplit(')', 1)[1].split()[0]
+                except (FileNotFoundError, ProcessLookupError):
+                    break
+                # Process-group signals can reach a grandchild after the direct child exits.
+                if state == 'Z':
+                    break
+                self.assertLess(time.monotonic(), deadline, f'Child {pid} still runs in state {state}')
+                time.sleep(0.01)
+
+    def test_stop_assertion_waits_for_actual_process_exit(self):
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(0.5)'])
+        try:
+            self.pids.write_text(json.dumps([process.pid]))
+            self.assert_stopped()
+        finally:
+            if process.poll() is None:
+                process.kill()
+            process.wait()
 
     def test_deadline_kills_the_actual_child_and_grandchild(self):
         with self.assertRaises(subprocess.TimeoutExpired):
