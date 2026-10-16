@@ -79,12 +79,25 @@ assert plan['fresh'] is False and plan['native_mount_required'] is False
 mount_before = json.loads(args.baseline.with_name(args.server + '-owner-mount-before.json').read_bytes())
 assert mount_before['status'] == 'PASS' and mount_before['state'] == 'committed'
 assert hashlib.sha256(mount.journal.read_bytes()).hexdigest() == mount_before['current_owner_mount_sha256']
-mount.check_completed()
+for entry in mount._manifest()['entries']:
+    if entry['target'] != str(profile / 'config.yaml'):
+        _, current_target = mount_module._read(Path(entry['target']))
+        assert current_target == entry['after']
 active = json.loads(subprocess.run([str(home / '.local/bin/hermes'), 'lifeos-version'],
     capture_output=True, text=True, check=True, timeout=90).stdout)['active']
 assert active['verification'] == 'verified'
 assert all(active[key] == request[key] for key in ('version', 'commit', 'package_sha256'))
 config = YAML(typ='safe').load((profile / 'config.yaml').read_bytes())
+program_entries = transaction._load()['entries']
+configuration_index, configuration_entry = next((index, entry) for index, entry in enumerate(program_entries)
+    if entry['target'] == str(profile / 'config.yaml'))
+before_bytes = (job / 'program-snapshot' / ('before-' + str(configuration_index))).read_bytes()
+assert hashlib.sha256(before_bytes).hexdigest() == configuration_entry['before']['sha256']
+before_configuration = YAML(typ='safe').load(before_bytes)
+assert hashlib.sha256(json.dumps(before_configuration, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest() == baseline['configuration_semantic_sha256']
+source_settings = config['plugins']['entries']['lifeos-hook-bridge']['settings']
+assert source_settings['lifeos_source_dir'] == str(job / 'package/lifeos/LifeOS/install')
+source_settings['lifeos_source_dir'] = before_configuration['plugins']['entries']['lifeos-hook-bridge']['settings']['lifeos_source_dir']
 assert hashlib.sha256(json.dumps(config, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest() == baseline['configuration_semantic_sha256']
 settings = config.get('plugins', {}).get('entries', {}).get('lifeos-hook-bridge', {}).get('settings', {})
 selection = {'model': config.get('model'), 'tiers': {key: value for key, value in settings.items()
@@ -110,7 +123,8 @@ for name, expected in baseline['services'].items():
 report = {'status': 'PASS', 'server': args.server, 'operation': args.operation, 'active_identity': active,
     'program_state': 'applied', 'sealed_program_targets': len(transaction._load()['entries']),
     'native_mount_required': False, 'current_owner_mount_journal_preserved': True,
-    'model_selection_sha256': model_hash, 'model_and_tiers_preserved': True, 'complete_configuration_semantics_preserved': True,
+    'model_selection_sha256': model_hash, 'model_and_tiers_preserved': True,
+    'unrelated_configuration_semantics_preserved': True, 'qualified_release_source_selection_verified': True,
     'credential_file_bytes_preserved': True, 'memory_configuration_bytes_preserved': True,
     'services': services, 'personal_data_imported_or_reset': False, 'personal_records_read': False}
 if args.server == 'daily':

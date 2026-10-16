@@ -38,7 +38,10 @@ worker.check_restore(job, request, plan, mount)
 mount_before = json.loads((Path('/home/lifeos-hermes/releases/qualification-0.6.0/daily-owner-mount-before.json')).read_bytes())
 assert mount_before['status'] == 'PASS' and mount_before['state'] == 'committed'
 assert hashlib.sha256(mount.journal.read_bytes()).hexdigest() == mount_before['current_owner_mount_sha256']
-mount.check_completed()
+for entry in mount._manifest()['entries']:
+    if entry['target'] != str(profile / 'config.yaml'):
+        _, current_target = module._read(Path(entry['target']))
+        assert current_target == entry['after']
 programs = transaction._load()
 units = Path('/home/lifeos-hermes/.config/systemd/user')
 for name in ('hermes-dashboard.service', 'hermes-gateway.service', 'com.lifeos.pulse.service'):
@@ -48,6 +51,15 @@ preserved = json.loads((Path('/home/lifeos-hermes/releases/qualification-0.6.0/p
 assert set(preserved) == {'.env', 'lifeos-memory.json'}
 configuration_before = json.loads(Path('/home/lifeos-hermes/releases/qualification-0.6.0/daily-preapply-baseline.json').read_bytes())
 configuration = YAML(typ='safe').load((profile / 'config.yaml').read_bytes())
+configuration_index, configuration_entry = next((index, entry) for index, entry in enumerate(programs['entries'])
+    if entry['target'] == str(profile / 'config.yaml'))
+before_bytes = (job / 'program-snapshot' / ('before-' + str(configuration_index))).read_bytes()
+assert hashlib.sha256(before_bytes).hexdigest() == configuration_entry['before']['sha256']
+previous_configuration = YAML(typ='safe').load(before_bytes)
+assert hashlib.sha256(json.dumps(previous_configuration, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest() == configuration_before['configuration_semantic_sha256']
+source_settings = configuration['plugins']['entries']['lifeos-hook-bridge']['settings']
+assert source_settings['lifeos_source_dir'] == str(job / 'package/lifeos/LifeOS/install')
+source_settings['lifeos_source_dir'] = previous_configuration['plugins']['entries']['lifeos-hook-bridge']['settings']['lifeos_source_dir']
 assert hashlib.sha256(json.dumps(configuration, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest() == configuration_before['configuration_semantic_sha256']
 assert all(hashlib.sha256((profile / name).read_bytes()).hexdigest() == digest for name, digest in preserved.items())
 pulse_before = json.loads(Path('/home/lifeos-hermes/releases/qualification-0.6.0/daily-pulse-before.json').read_bytes())
@@ -66,5 +78,6 @@ print(json.dumps({'status': 'PASS', 'operation': job.name, 'version': request['v
     'native_mount_required': False, 'native_mount_targets': len(mount._manifest()['entries']),
     'current_owner_mount_journal_preserved': True,
     'owner_memory_configuration_verified': True, 'credential_file_bytes_preserved': True,
-    'private_configuration_exported': False, 'complete_configuration_semantics_preserved': True, 'pulse_user_configuration_preserved': True,
+    'private_configuration_exported': False, 'unrelated_configuration_semantics_preserved': True,
+    'qualified_release_source_selection_verified': True, 'pulse_user_configuration_preserved': True,
     'normal_morning_schedule': '0 7 * * *', 'pulse_editor_enabled': True}, indent=2))
