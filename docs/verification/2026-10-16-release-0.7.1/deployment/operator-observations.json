@@ -1,0 +1,36 @@
+{
+  "format": 1,
+  "status": "RECORDED",
+  "scope": "0.7.1 operational observations",
+  "development_interrupted_preparation": {
+    "operation": "83686739911448738e4845cf592a35f2",
+    "cause": "The operator started preparation before the coherent checkpoint. The checkpoint stopped the dashboard service cgroup and its preparation child.",
+    "active_release_changed": false,
+    "correction": "Complete the checkpoint before restarting supported preparation. The new operation succeeds.",
+    "new_operation": "1f0e88bf29ea4a85a7d16b5d158819f5"
+  },
+  "daily_initial_apply_failure": {
+    "operation": "046cbee16db7420f9c56dbd544828de2",
+    "state_after_failure": "ready",
+    "active_version_after_failure": "0.7.0",
+    "review_receipt_existed_after_failure": false,
+    "exact_cause": "Not established. The controller did not retain the child error output.",
+    "followup_measurement": {
+      "owner_login_http_status": 200,
+      "owner_identity_http_status": 200,
+      "release_review_http_status": 200,
+      "exact_release_identity_matches": true,
+      "fresh": false,
+      "native_mount_required": false
+    },
+    "correction": "Preserve the initial failure receipt. Add phase and HTTP status fields to the temporary operator. Retry the same owner-reviewed operation without changing product policy."
+  },
+  "personal_records_read_by_harness": false,
+  "personal_data_imported_or_reset": false,
+  "daily_initial_http_settings_check": {
+    "status": "FAIL",
+    "active_release_changed": false,
+    "exact_cause": "Not established. The short operator did not retain the child error output.",
+    "followup": "The unchanged read-only check passes immediately afterward. HTTP memory remains disabled and has zero connections."
+  }
+}
