@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "program_commit": "30b383f10fbe76ece98295f53f83322e8d3de880",
+  "archive_sha256": "873c0519424bfd4bf920f1ca0aef0c418ad7dc3a222fbe9a8f0a25343ac7629a",
+  "archive_bytes": 288186773,
+  "native": {
+    "hermes": {
+      "tree_sha256": "8cf8822a6573e29a949bd9b0183f9a2fe8082251e02078549fa1876137f3e5fb",
+      "matches_qualified_060": true,
+      "patches": 10
+    },
+    "lifeos": {
+      "tree_sha256": "9291b358a1469021d971e78954d506fce225410ee968545413134f0462276a0a",
+      "matches_qualified_060": true,
+      "patches": 25
+    }
+  },
+  "python_closure_matches_qualified_060": true,
+  "stock_program_files_match_qualified_060": true,
+  "runtime_changes": {
+    "lifeos_hook_bridge": [
+      "dashboard/dist/index.js",
+      "dashboard/manifest.json",
+      "dashboard/plugin_api.py",
+      "memory_mcp.py",
+      "memory_oauth.py",
+      "memory_preferences.py",
+      "memory_remote.py",
+      "plugin.yaml"
+    ],
+    "optional/lifeos_release_manager": [
+      "dashboard/manifest.json",
+      "plugin.yaml"
+    ]
+  },
+  "installed_selection_changed": false
+}
