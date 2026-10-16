@@ -1,6 +1,6 @@
 # LifeOS 0.7.0 qualification and promotion
 
-Status: qualified. Publication and promotion remain in progress. Development `.252` and daily `.253` still select qualified 0.6.0.
+Status: qualified and [published](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.7.0). Production promotion remains in progress. Development `.252` and daily `.253` still select qualified 0.6.0.
 
 The program commit is `30b383f10fbe76ece98295f53f83322e8d3de880`. The complete archive contains 288,186,773 bytes. Its SHA-256 is `873c0519424bfd4bf920f1ca0aef0c418ad7dc3a222fbe9a8f0a25343ac7629a`.
 
@@ -17,3 +17,6 @@ Operator checks require correction during qualification. Temporary preboot servi
 
 
 The [initial certificate](RELEASE-CERTIFICATE.json) binds the exact archive and qualified receipts. Its SHA-256 is `b4bb7f49d5b79fdca0b69dfe55a9d0752664eeef61d66f11a7a8e31beeb7f32c`. Publication preserves this checkpoint. Later public deployment and recovery acceptance require separate evidence assets. The [primary integration result](archive-integration-30b383f1.json), [raw output](archive-integration-30b383f1.stderr), and [service-account replay](installed-process-boundary.stderr) retain the actual outcomes. No test assertion or product policy changes to avoid the workstation refusal.
+
+
+The [publication receipt](release-publication.json) verifies all three new assets and preservation of all 61 earlier assets. The initial certificate remains unchanged. The GitHub tag lookup returns 404 while the release remains a draft without a Git tag. The owner release ID API verifies the draft and all assets before publication. The published tag and latest stable release then verify as `v0.7.0`.
