@@ -99,7 +99,7 @@ The builder in [`scripts/build_managed_release.py`](../scripts/build_managed_rel
 | External memory connections | [`test_memory_remote.py`](../tests/test_memory_remote.py), [`test_memory_remote_host.py`](../tests/test_memory_remote_host.py), remote dashboard/UI tests |
 | Release preparation and service binding | [`test_release_preparation.py`](../tests/test_release_preparation.py), [`test_release_services.py`](../tests/test_release_services.py), other `test_release_*` |
 | Provider cycles and removal | [`test_memory_portability_lifecycle.py`](../tests/test_memory_portability_lifecycle.py), `test_removal_*`, portability and removal UI tests |
-| Plugin presentation and request contracts | All `tests/*.cjs`, including [`test_setup_presentation.cjs`](../tests/test_setup_presentation.cjs) |
+| Plugin presentation and request contracts | All `tests/*.cjs`, including [`test_setup_presentation.cjs`](../tests/test_setup_presentation.cjs); shared SDK fixture in [`tests/support/dashboard_sdk.cjs`](../tests/support/dashboard_sdk.cjs) |
 | Private recorder | [`development/tests/test_capture.py`](../development/tests/test_capture.py) |
 
 Some Python suites need prepared sources, native services, process visibility, or live test fixtures. Read their prerequisites. Keep component, native, installed, archive, and deployment results distinct. The [verification index](verification/README.md) explains how to interpret historical evidence.
