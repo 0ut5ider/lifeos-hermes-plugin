@@ -166,11 +166,11 @@
       }
     }
 
-    async function action(identifier, name) {
+    async function action(identifier, step) {
       setBusy(true);
       try {
-        const result = await SDK.fetchJSON(endpoint + "/" + identifier + "/" + name, {method: "POST"});
-        if (name === "review") {
+        const result = await SDK.fetchJSON(endpoint + "/" + identifier + "/" + step, {method: "POST"});
+        if (step === "review") {
           setReviewed(result);
           setMessage("");
         } else {
