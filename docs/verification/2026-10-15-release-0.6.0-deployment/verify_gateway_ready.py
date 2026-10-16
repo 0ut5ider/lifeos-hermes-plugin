@@ -12,6 +12,7 @@ import time
 parser = argparse.ArgumentParser()
 parser.add_argument('server', choices=('development', 'daily'))
 parser.add_argument('operation')
+parser.add_argument('--final', action='store_true')
 args = parser.parse_args()
 if sys.flags.optimize or re.fullmatch('[0-9a-f]{32}', args.operation) is None:
     raise RuntimeError('Use assertions and the exact applied operation')
@@ -25,6 +26,7 @@ sys.path.insert(0, str(profile / '.lifeos-releases' / args.operation / 'hermes')
 from gateway.status import read_runtime_status, runtime_status_heartbeat_age_s, runtime_status_pid_is_live, get_running_pid
 
 receipt = {'status': 'FAIL', 'server': args.server, 'operation': args.operation,
+    'phase': 'final' if args.final else 'updated',
     'conversation_content_exported': False, 'discord_message_sent': False}
 try:
     identity = json.loads((profile / 'integration-release.json').read_bytes())
@@ -57,7 +59,7 @@ try:
 except Exception as error:
     receipt['error_type'] = type(error).__name__
 folder = home / 'releases/qualification-0.6.0'
-with (folder / ('gateway-' + args.server + '.json')).open('x') as handle:
+with (folder / ('gateway-' + args.server + ('-final' if args.final else '') + '.json')).open('x') as handle:
     json.dump(receipt, handle, indent=2)
     handle.write('\n')
 print(json.dumps(receipt))

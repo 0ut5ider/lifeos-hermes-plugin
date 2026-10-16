@@ -1,5 +1,5 @@
 {
-  "status": "UPDATE_IN_PROGRESS",
+  "status": "COMPLETE",
   "target_version": "0.6.0",
   "program_commit": "c86b5887b899ca779afbb217c33843e1ee12c381",
   "package_sha256": "9e2a1939efbaccc94abaa879b265f1af447f9bdfe0b82aecc76f872f15fa9fb7",
@@ -19,7 +19,8 @@
     "preservation": "PASS",
     "model_reply": "PASS",
     "discord_readiness": "PASS",
-    "post_model_verification": "PASS"
+    "post_model_verification": "PASS",
+    "final_verification": "PASS"
   },
   "daily": {
     "address": "192.168.8.253",
@@ -37,11 +38,17 @@
     "preservation": "PASS",
     "discord_readiness": "PASS",
     "model_reply": "PASS",
-    "post_model_verification": "PASS"
+    "post_model_verification": "PASS",
+    "final_verification": "PASS"
   },
   "personal_data_imported_or_reset": false,
   "provider_return_requested": false,
   "software_removal_requested": false,
   "initial_checkpoint_refusal": "Wrong fixed UID1000 on development; no service drain or backup occurred. Dynamic current UID correction passes actual service drain.",
-  "daily_recovery": "RUNNING"
+  "daily_recovery": "PASS",
+  "protected_final_daily_archive": "PBS-01:backup/ct/102/2026-10-16T00:37:52Z",
+  "restored_runtime_artifacts": 64363,
+  "atlas_recovery_cases": 3,
+  "disposable_guest_cleanup": "PASS",
+  "automatic_morning_execution_observed": false
 }
