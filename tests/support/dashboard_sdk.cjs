@@ -37,6 +37,11 @@ function component(tree, name) {
   return element.type;
 }
 
+// Copies a value built inside the bundle realm so strict deep equality compares only its data.
+function plain(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
 function settle() {
   return new Promise(setImmediate);
 }
@@ -103,4 +108,4 @@ function loadDashboard(bundle, { fetchJSON, window = {}, globals = {} } = {}) {
   };
 }
 
-module.exports = { component, find, findAll, loadDashboard, settle, text };
+module.exports = { component, find, findAll, loadDashboard, plain, settle, text };

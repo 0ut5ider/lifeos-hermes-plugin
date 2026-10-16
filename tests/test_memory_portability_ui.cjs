@@ -2,7 +2,7 @@
 // ABOUTME: Checks source provenance, explicit publication, and private draft removal after refusal.
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const { component, find, loadDashboard, settle } = require('./support/dashboard_sdk.cjs');
+const { component, find, loadDashboard, plain, settle } = require('./support/dashboard_sdk.cjs');
 
 async function panel(respond, name = 'MemoryImportReview') {
   const calls = [];
@@ -10,7 +10,7 @@ async function panel(respond, name = 'MemoryImportReview') {
     fetchJSON(url, options) { calls.push({ url, options });
       if (url.endsWith('/memory')) return Promise.resolve({ state: 'configured', remaining_gates: {} });
       return Promise.resolve().then(() => respond(url, JSON.parse(options.body))); } };
-  const app = loadDashboard('bridge', sdk);
+  const app = loadDashboard('bridge', { ...sdk, window: { btoa } });
   const preferences = app.mount(component(app.preview(), 'MemoryPreferences'));
   await settle();
   const render = app.mount(component(preferences(), name));
@@ -102,4 +102,89 @@ test('published import queues ownership review without applying the cutover', as
   assert.equal(JSON.parse(call.options.body).kind, 'activation');
   assert.equal(JSON.parse(call.options.body).plan_signature, 'c'.repeat(64));
   assert.equal(p.calls.filter(c => c.url.includes('/memory-workflows/')).length, 0);
+});
+
+const json = { 'Content-Type': 'application/json' };
+const bytes = [0, 255, 200, 65];
+function upload(size) {
+  return { size, arrayBuffer: async () => { if (size > bytes.length) throw new Error('Oversized files must not be read'); return new Uint8Array(bytes).buffer; } };
+}
+function fileInput(view, label) {
+  return find(find(view, node => node.type === 'label' && node.children.includes(label)), node => node.type === 'input');
+}
+function source(url, body) {
+  if (url.endsWith('/upload')) return { identifier: 'upload-one' };
+  if (url.endsWith('/preview')) return review;
+  if (url.endsWith('/snapshot')) return { identifier: 'a'.repeat(32), snapshot_signature: 'b'.repeat(64) };
+  throw new Error('Unexpected request: ' + url + ' ' + JSON.stringify(body));
+}
+
+test('profile file upload encodes each chosen file and reviews the uploaded source', async () => {
+  const p = await panel(source);
+  find(p.render(), node => node.type === 'input' && node.props.maxLength === 256).props.onChange({ target: { value: 'Laptop profile' } });
+  const uploadButton = () => find(p.render(), node => node.type === 'button' && node.children.includes('Upload files for review'));
+  await fileInput(p.render(), 'USER.md').props.onChange({ target: { files: [upload(bytes.length)] } });
+  assert.equal(uploadButton().props.disabled, false);
+  // A refused file clears every chosen file, including the valid USER.md above.
+  await fileInput(p.render(), 'MEMORY.md').props.onChange({ target: { files: [upload(1024 * 1024 + 1)] } });
+  assert.ok(find(p.render(), node => node.props.role === 'status' && node.children.includes('Each source file must be at most 1 MiB.')));
+  assert.equal(uploadButton().props.disabled, true);
+  await fileInput(p.render(), 'USER.md').props.onChange({ target: { files: [upload(bytes.length)] } });
+  await fileInput(p.render(), 'MEMORY.md').props.onChange({ target: { files: [upload(bytes.length)] } });
+  await fileInput(p.render(), 'MEMORY.md').props.onChange({ target: { files: [] } });
+  await uploadButton().props.onClick();
+  const requests = p.calls.filter(call => call.options).map(call => ({ url: call.url, ...plain(call.options), body: JSON.parse(call.options.body) }));
+  assert.deepEqual(requests.map(call => call.url.replace('/api/plugins/lifeos-hook-bridge/memory/import', '')), ['/upload', '/preview', '/snapshot']);
+  assert.ok(requests.every(call => call.method === 'POST' && JSON.stringify(call.headers) === JSON.stringify(json)));
+  assert.deepEqual(requests[0].body, { label: 'Laptop profile', files: { 'USER.md': Buffer.from(bytes).toString('base64') } });
+  assert.deepEqual(requests[1].body, { source_identifier: 'upload-one' });
+  assert.deepEqual(requests[2].body, { signature: 'review', source_identifier: 'upload-one' });
+  assert.ok(JSON.stringify(p.render()).includes('Synthetic source host'));
+  assert.equal(uploadButton().props.disabled, true);
+});
+
+test('portable bundle upload encodes the chosen file and reviews the uploaded source', async () => {
+  const p = await panel(source);
+  const uploadButton = () => find(p.render(), node => node.type === 'button' && node.children.includes('Upload portable bundle for review'));
+  await fileInput(p.render(), 'Portable memory JSON file').props.onChange({ target: { files: [upload(16 * 1024 * 1024 + 1)] } });
+  assert.ok(find(p.render(), node => node.props.role === 'status' && node.children.includes('A portable bundle must be at most 16 MiB.')));
+  assert.equal(uploadButton().props.disabled, true);
+  await fileInput(p.render(), 'Portable memory JSON file').props.onChange({ target: { files: [upload(bytes.length)] } });
+  await uploadButton().props.onClick();
+  const requests = p.calls.filter(call => call.options).map(call => JSON.parse(call.options.body));
+  assert.deepEqual(requests[0], { label: 'Uploaded portable LifeOS bundle', bundle_bytes: Buffer.from(bytes).toString('base64') });
+  assert.deepEqual(requests[1], { source_identifier: 'upload-one' });
+  assert.equal(uploadButton().props.disabled, true);
+});
+
+test('a verified export prepares provider return with the reviewed prompt', async () => {
+  const p = await panel((url, body) => {
+    if (url.endsWith('/preview')) return { signature: 'review', settings: { memory_char_limit: 80, user_char_limit: 40 },
+      items: [{ id: 'lifeos:one', content: 'Synthetic reverse fact.', category: 'principal', reference: { id: 'one', revision: 2 },
+        retired_claim: false, quarantined: false }] };
+    if (url.endsWith('/snapshot')) return { identifier: 'a'.repeat(32), signature: 'b'.repeat(64) };
+    if (url.endsWith('/plan')) return { signature: 'c'.repeat(64), items: body.decisions, files: { 'USER.md': 'Synthetic reverse fact.' },
+      limits: { 'MEMORY.md': 80, 'USER.md': 40 }, ready_for_return: true };
+    if (url.endsWith('/export/apply')) return { state: 'exported' };
+    if (url.endsWith('/memory-workflows')) return { identifier: 'd'.repeat(32) };
+    throw new Error('Unexpected request: ' + url);
+  }, 'MemoryExportReview');
+  await find(p.render(), n => n.type === 'button' && n.children.includes('Review reverse export')).props.onClick();
+  find(p.render(), n => n.type === 'select' && n.props.value === 'retain').props.onChange({ target: { value: 'export' } });
+  await find(p.render(), n => n.type === 'button' && n.children.includes('Review export plan')).props.onClick();
+  await find(p.render(), n => n.type === 'button' && n.children.includes('Create reviewed export')).props.onClick();
+  const prepare = () => find(p.render(), n => n.type === 'button' && n.children.includes('Prepare return to built-in Hermes'));
+  assert.equal(prepare().props.disabled, true);
+  find(p.render(), n => n.type === 'textarea' && !n.props.readOnly && n.props.value === '').props.onChange({ target: { value: 'Synthetic prompt.' } });
+  await prepare().props.onClick();
+  const call = p.calls.find(c => c.url === '/api/plugins/lifeos-release-manager/memory-workflows');
+  assert.equal(call.options.method, 'POST');
+  assert.deepEqual(plain(call.options.headers), json);
+  assert.deepEqual(JSON.parse(call.options.body), { kind: 'return', identifier: 'a'.repeat(32), signature: 'b'.repeat(64),
+    plan_signature: 'c'.repeat(64), prompt: 'Synthetic prompt.' });
+  assert.ok(find(p.render(), n => n.props.role === 'status' && n.children.includes('Provider return review prepared. Workflow: ' + 'd'.repeat(32) +
+    '. Open LifeOS releases to review and apply it.')));
+  const plan = p.calls.find(c => c.url.endsWith('/export/plan'));
+  assert.deepEqual(JSON.parse(plan.options.body).decisions, [{ id: 'lifeos:one', action: 'export', required: true, file: 'USER.md',
+    content: 'Synthetic reverse fact.' }]);
 });

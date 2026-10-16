@@ -89,3 +89,20 @@ test('permission editing cannot implicitly submit the manual-token form', async 
   assert.equal(find(form, node => node.props.id === 'http_client'), null);
   assert.ok(find(form, node => node.type === 'button' && node.children.includes('Create agent token (90 days)')));
 });
+
+test('optional HTTP permissions extend the approved grant', async () => {
+  const p = await panel({enabled: true, public_url: 'https://synthetic.ts.net', sharing_enabled: true, connections: [],
+    pending: [{id: 'request one', client_name: 'Synthetic client', redirect_uri: 'http://localhost:9812/callback'}]});
+  for (const [id, value] of [['http_client', 'desktop'], ['http_projects', ' lab, ,ops '], ['http_model_route', 'cloud']]) {
+    find(p.render(), node => node.props.id === id).props.onChange({target: {value}});
+  }
+  for (const id of ['http_principal', 'http_assistant', 'http_write']) {
+    find(p.render(), node => node.props.id === id).props.onChange({target: {checked: true}});
+  }
+  await find(p.render(), node => node.type === 'button' && node.children.includes('Approve Synthetic client')).props.onClick();
+  const call = p.calls.find(call => call.init?.method === 'POST');
+  assert.ok(call.url.endsWith('/memory/http/authorization/request%20one'));
+  assert.equal(JSON.stringify(call.init.headers), JSON.stringify({'Content-Type': 'application/json'}));
+  assert.deepEqual(JSON.parse(call.init.body), {decision: 'approve', grant: {client: 'desktop', read: ['project', 'principal', 'assistant'],
+    projects: ['lab', 'ops'], model_route: 'cloud', write_project: true}});
+});

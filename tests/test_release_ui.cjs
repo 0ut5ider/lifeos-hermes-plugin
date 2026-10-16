@@ -11,6 +11,9 @@ async function page(installed, operations = []) {
       calls.push({url, options});
       if (url.endsWith('/installation')) return {installed};
       if (url.endsWith('/prepare')) return {identifier: 'a'.repeat(32), state: 'preparing'};
+      if (url.endsWith('/review')) return {identifier: url.split('/').at(-2), version: '0.7.3', commit: 'c'.repeat(40),
+        package_sha256: 'd'.repeat(64), restart_required: true};
+      if (url.endsWith('/apply')) return {state: 'queued-apply'};
       return {operations};
     },
   };
@@ -29,7 +32,7 @@ test('fresh page offers Install LifeOS and queues preparation without applying p
   await button.props.onClick();
   const call = ui.calls.find((item) => item.url.endsWith('/prepare'));
   assert.equal(call.options.method, 'POST');
-  assert.equal(JSON.parse(call.options.body).intent, 'install');
+  assert.deepEqual(JSON.parse(call.options.body), {intent: 'install', name: 'User', assistant: 'Hermes'});
   assert.equal(ui.calls.some((item) => item.url.endsWith('/apply')), false);
   ui.cleanup();
 });
@@ -58,5 +61,23 @@ test('recovery blocks preparation and each operation has a visible identifier', 
     assert.equal(button.props.disabled, true);
   }
   assert.ok(find(tree, (node) => node.children.includes('Operation: ' + identifier)));
+  ui.cleanup();
+});
+
+test('a ready release is reviewed before its separate installation request', async () => {
+  const identifier = 'e'.repeat(32);
+  const ui = await page(true, [{identifier, version: '0.7.3', state: 'ready'}]);
+  await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Review release')).props.onClick();
+  const operation = '/api/plugins/lifeos-release-manager/operations/' + identifier;
+  const review = ui.calls.find((item) => item.url === operation + '/review');
+  assert.equal(JSON.stringify(review.options), JSON.stringify({method: 'POST'}));
+  assert.equal(ui.calls.some((item) => item.url.endsWith('/apply')), false);
+  assert.ok(find(ui.render(), (node) => node.type === 'p' && node.children.includes('Package SHA-256: ' + 'd'.repeat(64))));
+  await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Install this release')).props.onClick();
+  const apply = ui.calls.find((item) => item.url === operation + '/apply');
+  assert.equal(JSON.stringify(apply.options), JSON.stringify({method: 'POST'}));
+  assert.equal(find(ui.render(), (node) => node.type === 'button' && node.children.includes('Install this release')), null);
+  assert.ok(find(ui.render(), (node) => node.props.role === 'status' &&
+    node.children.includes('Release operation started. Hermes can restart. Refresh this page to check the result.')));
   ui.cleanup();
 });

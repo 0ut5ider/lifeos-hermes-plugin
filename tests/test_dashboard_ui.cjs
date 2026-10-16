@@ -3,7 +3,7 @@
 
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { find, loadDashboard, settle } = require("./support/dashboard_sdk.cjs");
+const { find, findAll, loadDashboard, plain, settle } = require("./support/dashboard_sdk.cjs");
 
 test("model picker starts with the current Hermes model and saves every tier", async () => {
   const fields = ["haiku", "sonnet", "opus", "fable"].flatMap((tier) => [
@@ -360,4 +360,107 @@ test("an interrupted Hermes patch change offers recovery", async () => {
   recover.props.onClick();
   await settle();
   assert.ok(calls.some((call) => call.url.endsWith("/installation/recover-hermes") && call.init?.method === "POST"));
+});
+
+const commit = "a".repeat(40);
+const installationActions = [
+  { label: "Prepare latest LifeOS", path: "/installation/prepare", installation: { lifeos: "missing", candidate_ready: false },
+    result: { upstream_commit: commit, patches: [] }, refreshed: [], failed: "Could not prepare LifeOS: ",
+    done: "Candidate prepared from LifeOS commit " + commit + ". The running installation has not changed." },
+  { label: "Install prepared LifeOS", path: "/installation/apply",
+    installation: { lifeos: "missing", candidate_ready: true, candidate_commit: commit, candidate_patch_count: 1 },
+    result: { installed_version: "7.40.4" }, refreshed: ["/installation"], failed: "Could not install LifeOS: ",
+    done: "LifeOS 7.40.4 installed. Finish setup to mount it into Hermes and record the VersionDrift baseline." },
+  { label: "Finish LifeOS setup", path: "/installation/finalize",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: false, candidate_ready: true },
+    result: { mounted: true }, refreshed: ["/installation", "/version-drift"], failed: "Could not finish LifeOS setup: ",
+    done: "LifeOS is mounted and the baseline is recorded. Restart the Hermes gateway to load the new configuration." },
+  { label: "Restore interrupted mount", path: "/installation/mount/recover",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: false, mount: { recovery_required: true } },
+    result: { restored: true }, refreshed: ["/installation"], failed: "Could not restore the mount: ",
+    done: "The previous Hermes files are restored. You can finish setup again." },
+  { label: "Prepare tested Hermes extension", path: "/installation/prepare-hermes",
+    installation: { lifeos: "installed", hermes: "stock", setup_baseline_exists: true, candidate_ready: true, hermes_candidate_ready: false },
+    result: { base_commit: commit, patches: [] }, refreshed: [], failed: "Could not prepare Hermes: ",
+    done: "Hermes candidate prepared. The running Hermes installation has not changed." },
+  { label: "Apply tested Hermes extension", path: "/installation/apply-hermes",
+    installation: { lifeos: "installed", hermes: "stock", setup_baseline_exists: true, candidate_ready: true, hermes_candidate_ready: true },
+    result: { state: "staged" }, refreshed: ["/installation/host-patch"], failed: "Could not start Hermes patch: ",
+    done: "Hermes patch worker started. The gateway will restart while it applies the tested extension." },
+  { label: "Restore previous Hermes", path: "/installation/restore-hermes", hostPatch: { state: "applied" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "restoring" }, refreshed: ["/installation/host-patch", "/installation"], failed: "Could not start Hermes restore: ",
+    done: "Restoring the previous Hermes source. The gateway will restart." },
+  { label: "Recover interrupted Hermes change", path: "/installation/recover-hermes", hostPatch: { state: "interrupted" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "recovering" }, refreshed: ["/installation/host-patch"], failed: "Could not start Hermes recovery: ",
+    done: "Returning Hermes to its stock files. The gateway will restart." },
+  { label: "Prepare latest LifeOS update", path: "/installation/prepare",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: false },
+    result: { upstream_commit: commit, patches: [] }, refreshed: [], failed: "Could not prepare LifeOS: ",
+    done: "Candidate prepared from LifeOS commit " + commit + ". The running installation has not changed." },
+  { label: "Apply prepared LifeOS update", path: "/installation/update",
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "queued" }, refreshed: ["/installation/update"], failed: "Could not start LifeOS update: ",
+    done: "LifeOS update started. The gateway will restart after native checks pass." },
+  { label: "Restore previous LifeOS version", path: "/installation/update/restore", update: { state: "applied" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "restoring" }, refreshed: ["/installation/update", "/installation", "/version-drift"], failed: "Could not restore LifeOS: ",
+    done: "Restoring the previous LifeOS version. Hermes will restart." },
+  { label: "Restore interrupted update", path: "/installation/update/recover", update: { state: "interrupted", transaction_state: "swapped" },
+    installation: { lifeos: "installed", hermes: "patched_hooks_present", setup_baseline_exists: true, candidate_ready: true },
+    result: { state: "recovering" }, refreshed: ["/installation/update"], failed: "Could not start LifeOS recovery: ",
+    done: "LifeOS recovery started. If no files were replaced, the worker restarts the current version. Otherwise, it restores the prior version and restarts Hermes." },
+];
+
+async function installationPage(action, respond) {
+  const calls = [];
+  const sdk = {
+    fetchJSON(url, init) {
+      calls.push({ url, init });
+      if (init?.method === "POST") return respond();
+      if (url.endsWith("/installation/host-patch")) return Promise.resolve(action.hostPatch ?? { state: "none" });
+      if (url.endsWith("/installation/update")) return Promise.resolve(action.update ?? { state: "none" });
+      if (url.endsWith("/installation")) return Promise.resolve({ version: "7.40.4", ...action.installation });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
+      if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
+      return Promise.resolve({ fields: [] });
+    },
+  };
+  const render = loadDashboard("bridge", { ...sdk, window: { setTimeout: () => 0 } }).mount();
+  await settle();
+  const section = () => find(render(), (node) => node.props.id === "lifeos_installation");
+  const button = () => find(section(), (node) => node.type === "button" && node.children.includes(action.label));
+  const status = () => find(section(), (node) => node.type === "p" && node.props.role === "status" && node.props.className === "mt-3");
+  assert.ok(button(), "Missing installation action: " + action.label);
+  return { calls, section, button, status };
+}
+
+test("installation actions post once, stay busy, then report their result", async () => {
+  for (const action of installationActions) {
+    const page = await installationPage(action, () => Promise.resolve(action.result));
+    const before = page.calls.length;
+    page.button().props.onClick();
+    const buttons = findAll(page.section(), (node) => node.type === "button");
+    assert.ok(buttons.length && buttons.every((node) => node.props.disabled === true), action.label + " must disable installation actions");
+    for (let turn = 0; turn < 4; turn++) await settle();
+    const after = page.calls.slice(before);
+    assert.ok(after[0].url.endsWith(action.path), action.label);
+    assert.deepEqual(plain(after[0].init), { method: "POST" });
+    assert.deepEqual(after.slice(1).map((call) => call.url.replace("/api/plugins/lifeos-hook-bridge", "")), action.refreshed, action.label);
+    assert.ok(after.slice(1).every((call) => call.init === undefined));
+    assert.deepEqual(page.status()?.children, [action.done]);
+  }
+});
+
+test("installation action failures report the reason and release the busy state", async () => {
+  for (const action of installationActions) {
+    const page = await installationPage(action, () => Promise.reject(new Error("synthetic refusal")));
+    const before = page.calls.length;
+    page.button().props.onClick();
+    for (let turn = 0; turn < 4; turn++) await settle();
+    assert.equal(page.calls.length - before, 1, action.label + " must not refresh after a failure");
+    assert.deepEqual(page.status()?.children, [action.failed + "synthetic refusal"]);
+    assert.equal(page.button().props.disabled, false, action.label);
+  }
 });
