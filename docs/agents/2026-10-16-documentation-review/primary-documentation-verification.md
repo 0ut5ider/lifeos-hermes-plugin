@@ -13,7 +13,7 @@ Checks:
 - Both JavaScript syntax checks pass.
 - Source-preparation and package-builder help match the documented flags.
 - Local links and headings pass for 33 edited guides and snapshots. Incoming links from 921 tracked Markdown files show no new regression.
-- All six historical snapshots preserve their complete original bodies, with relative links rebased.
+- All six historical snapshots preserve their original prose, with relative links rebased. The README snapshot also normalizes two pre-existing trailing spaces at snapshot lines 72 and 75.
 - All 35 active patch pairs are inspected. Exactly one baseline pair differs. Both patch files still match the committed baseline.
 - All corrected document hashes match the final independent review.
 - Existing tracked changes affect Markdown only. Product code, patches, tests, deployment profile inputs, historical receipts, and release certificates are unchanged.
@@ -23,3 +23,7 @@ The root README decreases from 568 to 86 lines. Current installation, updates, c
 The work does not run a new installation, memory activation, Discord acceptance, server update, or release build. Remote link availability is not checked. New reports and safe raw results remain in this review directory.
 
 The patch discrepancy needs synchronization and source-equivalence testing in a separately qualified product change. The empty-review limitation needs an explicit tested ownership-activation UI path. This documentation change exposes those limits and does not claim to fix them.
+
+## Committed-range whitespace correction
+
+The staged check reports two copied trailing spaces in the README snapshot. The initial commit still occurs because the shell sequence does not stop on that diagnostic. A follow-up documentation correction normalizes only those two line endings and records the normalization in the history index. The primary then checks the complete branch diff again. The original source prose and earlier measured snapshot check remain available.

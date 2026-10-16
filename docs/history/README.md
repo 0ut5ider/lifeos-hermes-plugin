@@ -11,4 +11,4 @@ These snapshots preserve material removed from active guides during the October 
 | [Discord setup](2026-10-16-discord-setup.md) | Earlier bot migrations, firewall observations, and generic thread/DM behavior |
 | [TODO](2026-10-16-todo.md) | Completed milestones and superseded release-status statements |
 
-Each snapshot names its original path and source commit. Relative links are adjusted for this directory. Dated verification receipts and published release assets remain in their original locations.
+Each snapshot names its original path and source commit. Relative links are adjusted for this directory. The README snapshot also normalizes two pre-existing trailing spaces; its prose remains unchanged. Dated verification receipts and published release assets remain in their original locations.
