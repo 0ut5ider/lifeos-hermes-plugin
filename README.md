@@ -4,7 +4,7 @@
 
 **Published stable release:** `0.7.0`, program commit `30b383f1`, adds optional HTTP memory access, OAuth consent, scoped tokens, and revocation. HTTP access starts disabled. The [release record](docs/verification/2026-10-16-release-0.7.0/README.md) binds the exact package and qualification. The [portability contract](docs/memory-portability.md) defines retained data and recovery from 0.6.0.
 
-**Deployed release:** Development `.252` and daily `.253` currently select qualified `0.6.0`, program commit `c86b5887`. The qualified 0.7.0 promotion is in progress. Current authenticated owner admission and protected backups precede application.
+**Deployed release:** Development `.252` and daily `.253` select qualified `0.7.0`, program commit `30b383f1`. Both native owner updates pass package, service, model, memory-preservation, and Discord readiness checks. The [deployment receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.7.0/DEPLOYMENT-ACCEPTANCE.json) records the exact selected package. HTTP memory access stays disabled until owner setup.
 
 The public Hermes Plugins form installs the manager from the documented GitHub subdirectory URL. Install LifeOS selects the latest stable complete package after separate owner review. The earlier fresh `0.6.0` replay verifies all 38 manager files, the public certificate, 11 sealed program groups, preserved model choices, and an actual FlashNext reply. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.6.0/PUBLIC-LATEST-ACCEPTANCE.json) records the complete replay. The [public replay evidence](docs/verification/2026-10-15-release-0.6.0/public-fresh-verification.json) retains its actual model result.
 

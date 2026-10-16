@@ -1,0 +1,83 @@
+{
+  "format": 1,
+  "status": "PASS",
+  "version": "0.7.0",
+  "program_commit": "30b383f10fbe76ece98295f53f83322e8d3de880",
+  "package_sha256": "873c0519424bfd4bf920f1ca0aef0c418ad7dc3a222fbe9a8f0a25343ac7629a",
+  "observed_at": "2026-10-16T13:44:15.558474+00:00",
+  "deployment_method": "Public qualified package through authenticated native owner preparation, review, and apply",
+  "servers": {
+    "daily": {
+      "operation": "b832d4faf44a4e958439696a4308c04c",
+      "active_identity": {
+        "version": "0.7.0",
+        "verification": "verified",
+        "verification_scope": "plugin_sources",
+        "commit": "30b383f10fbe76ece98295f53f83322e8d3de880",
+        "package_sha256": "873c0519424bfd4bf920f1ca0aef0c418ad7dc3a222fbe9a8f0a25343ac7629a",
+        "recorded_version": "0.7.0",
+        "modified_files": []
+      },
+      "sealed_program_targets": 9,
+      "all_three_services_active": true,
+      "model_and_tiers_preserved": true,
+      "actual_model_reply": true,
+      "credential_file_bytes_preserved": true,
+      "memory_configuration_bytes_preserved": true,
+      "current_owner_mount_journal_preserved": true,
+      "discord_connected": true,
+      "synthetic_memory_preserved": true,
+      "prior_forgotten_fact_stays_absent": true,
+      "normal_morning_schedule": "0 7 * * *"
+    },
+    "development": {
+      "operation": "8508715d007643aabc982069fa50c070",
+      "active_identity": {
+        "version": "0.7.0",
+        "verification": "verified",
+        "verification_scope": "plugin_sources",
+        "commit": "30b383f10fbe76ece98295f53f83322e8d3de880",
+        "package_sha256": "873c0519424bfd4bf920f1ca0aef0c418ad7dc3a222fbe9a8f0a25343ac7629a",
+        "recorded_version": "0.7.0",
+        "modified_files": []
+      },
+      "sealed_program_targets": 10,
+      "all_three_services_active": true,
+      "model_and_tiers_preserved": true,
+      "actual_model_reply": true,
+      "credential_file_bytes_preserved": true,
+      "memory_configuration_bytes_preserved": true,
+      "current_owner_mount_journal_preserved": true,
+      "discord_connected": true
+    }
+  },
+  "http_memory_enabled": false,
+  "personal_data_imported_or_reset": false,
+  "recovery": {
+    "daily_coherent_local_snapshot": "lifeos-070-preupdate-20261016",
+    "prior_protected_daily_archive_retained": "PBS-01:backup/ct/102/2026-10-16T00:37:52Z",
+    "prior_daily_archive_version": "0.6.0",
+    "development_frozen_snapshot_services_resumed": true,
+    "development_background_pbs_transfer": "IN_PROGRESS_NOT_REQUIRED_FOR_INSTALLATION",
+    "new_070_whole_guest_restore_performed": false
+  },
+  "operator_observations": {
+    "initial_daily_preparation": "GitHub API 403 rate limit; no installation change. A subsequent API request succeeds and the native retry applies the package.",
+    "initial_daily_postinstall_check": "The first operator attempt fails without retaining assertion detail. The complete verification rerun passes without an installation change. The cause remains unclassified."
+  },
+  "evidence_sha256": {
+    "development-final-verification.json": "c0578fafe7b5cb0fed021a3b7fdd2f5c5054859f7daac0f5dd4b4de2e1994863",
+    "development-model-reply.json": "d40aea2fafa4064a94a9e51d1da4f75392b7992a021b1e6bf4996e5f9d30ab5e",
+    "development-postapply-verification.json": "c0578fafe7b5cb0fed021a3b7fdd2f5c5054859f7daac0f5dd4b4de2e1994863",
+    "development-gateway.json": "710879dc33105a172ccc62b7a6bfebedee3d7aa09d023801ec1f19ba60c6aec9",
+    "daily-postapply-verification.json": "c8ee3ef8f6f8de7c05d09be47580c84d4c8f5b01d4fc91d688646c2535697d6a",
+    "daily-model-reply.json": "3510ce6e1ed2484b85a22f6052e6b737138b4fc3b8703549f018f2fe7a0243bd",
+    "daily-gateway.json": "e7dca970e1f0a2b8fdd38bca89062af2214577903d0a21cc401e4f0b5ec60ae8",
+    "daily-http-disabled.json": "b9b57e3b8efda3af8aaa00343b948a8f052f4886ab4e50598207c475d6dd1ac1",
+    "development-http-disabled.json": "1df6c40250923dac22d2baeeada998f125b6a18a66942b207e3f454443b81984",
+    "daily-owner-prepare.json": "bd1917b814303530bb2905801bf34e92a0698a1506db96df890479a19528ef5b",
+    "daily-owner-release-review.json": "ad934b6cea02463840fdc36c83f9c021bd3357fec0ec80e8dc238b96e3881a39",
+    "daily-owner-apply.json": "abc79320a71e86303683d5b7ca92a7e6dbf9e8b5b08ec4c0f0226bc4b0b58f24",
+    "daily-initial-verification-attempt.json": "29ad9f0835afcaf13006068790251aa4b1d33363716718f962101fd233bf19ed"
+  }
+}

@@ -3,7 +3,7 @@
   "program_commit": "30b383f10fbe76ece98295f53f83322e8d3de880",
   "archive_sha256": "873c0519424bfd4bf920f1ca0aef0c418ad7dc3a222fbe9a8f0a25343ac7629a",
   "archive_bytes": 288186773,
-  "status": "PUBLIC_RELEASE_PUBLISHED_PROMOTION_PENDING",
+  "status": "DEPLOYMENT_VERIFIED",
   "build": "PASS",
   "ui_component_tests": 36,
   "owned_qualification_guest": {
@@ -11,25 +11,39 @@
     "address": "192.168.8.214",
     "uid": 1008,
     "source_snapshot": "CT106/stock-ui-manager-qualified-baseline",
-    "gateway_and_pulse_masked_before_boot": true
+    "gateway_and_pulse_masked_before_boot": true,
+    "cleanup": "QUEUED_AFTER_BACKGROUND_DEVELOPMENT_CHECKPOINT"
   },
   "development": {
     "guest": 101,
     "address": "192.168.8.252",
-    "deployed_version": "0.6.0",
-    "changed": false,
+    "deployed_version": "0.7.0",
+    "changed": true,
     "protected_checkpoint": "IN_PROGRESS_SERVICES_RESUMED_FROM_FROZEN_SNAPSHOT",
     "preparation": "READY_PUBLIC_CATALOG",
     "operation": "8508715d007643aabc982069fa50c070",
     "owner_browser": "AUTHENTICATED",
-    "owner_review": "RENDERED_EXPECTED_VERSION_COMMIT_AND_DIGEST_APPLICATION_PENDING"
+    "owner_review": "APPLIED_THROUGH_NATIVE_OWNER_BROWSER",
+    "verification": "PASS",
+    "model_reply": "PASS",
+    "discord": "CONNECTED"
   },
   "daily": {
     "guest": 102,
     "address": "192.168.8.253",
-    "deployed_version": "0.6.0",
-    "changed": false,
-    "protected_checkpoint": "QUEUED_AFTER_DEVELOPMENT_BACKUP"
+    "deployed_version": "0.7.0",
+    "changed": true,
+    "protected_checkpoint": "COHERENT_LOCAL_SNAPSHOT_COMPLETE_PRIOR_PBS_RETAINED",
+    "preparation": "READY_PUBLIC_CATALOG",
+    "operation": "b832d4faf44a4e958439696a4308c04c",
+    "first_preparation": "GITHUB_API_RATE_LIMIT_REFUSED_WITHOUT_INSTALL_CHANGE",
+    "local_snapshot": "lifeos-070-preupdate-20261016",
+    "owner_review": "APPLIED_THROUGH_AUTHENTICATED_NATIVE_OWNER_API",
+    "verification": "PASS",
+    "model_reply": "PASS",
+    "synthetic_memory_recall": "PASS_SAME_REFERENCE",
+    "normal_morning_schedule": "0 7 * * *",
+    "discord": "CONNECTED"
   },
   "personal_data_imported_or_reset": false,
   "public_release_published": true,
@@ -52,5 +66,13 @@
   "single_clean_full_integration_run": false,
   "initial_certificate_sha256": "b4bb7f49d5b79fdca0b69dfe55a9d0752664eeef61d66f11a7a8e31beeb7f32c",
   "release_url": "https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.7.0",
-  "prior_release_assets_preserved": 61
+  "prior_release_assets_preserved": 61,
+  "full_backup_transfer_required_before_update": false,
+  "http_memory_enabled_on_existing_servers": false,
+  "deployment_asset": "DEPLOYMENT-ACCEPTANCE.json",
+  "background_operations": {
+    "development_protected_backup": "IN_PROGRESS_FROM_COHERENT_FROZEN_PREUPDATE_SNAPSHOT",
+    "qualification_guest_cleanup": "QUEUED_AFTER_BACKUP_OPERATOR_FINISHES",
+    "required_for_completed_installation": false
+  }
 }
