@@ -312,6 +312,108 @@
               h("a", { href: "/lifeos-releases", className: "underline" }, "Open LifeOS releases")) : null) : null) : null));
   }
 
+  function MemoryHTTPPreferences() {
+    const base = "/api/plugins/lifeos-hook-bridge/memory/http";
+    const [settings, setSettings] = SDK.hooks.useState(null);
+    const [origin, setOrigin] = SDK.hooks.useState("");
+    const [client, setClient] = SDK.hooks.useState("");
+    const [projects, setProjects] = SDK.hooks.useState("");
+    const [route, setRoute] = SDK.hooks.useState("unknown");
+    const [principal, setPrincipal] = SDK.hooks.useState(false);
+    const [assistant, setAssistant] = SDK.hooks.useState(false);
+    const [write, setWrite] = SDK.hooks.useState(false);
+    const [token, setToken] = SDK.hooks.useState("");
+    const [callback, setCallback] = SDK.hooks.useState("");
+    const [message, setMessage] = SDK.hooks.useState("");
+    const [busy, setBusy] = SDK.hooks.useState(false);
+
+    async function refresh() {
+      const value = await SDK.fetchJSON(base + "/settings");
+      setSettings(value); setOrigin(value.public_url);
+    }
+    SDK.hooks.useEffect(function () { refresh().catch(function (error) { setMessage(error.message); }); }, []);
+    async function run(operation) {
+      setBusy(true); setMessage(""); setCallback("");
+      try { await operation(); await refresh(); }
+      catch (error) { setToken(""); setMessage(error.message); }
+      finally { setBusy(false); }
+    }
+    function post(path, body) {
+      return SDK.fetchJSON(base + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    }
+    function field(id, label, value, setter) {
+      return h("label", { htmlFor: id, className: "block text-sm" }, label,
+        h("input", { id: id, value: value, required: true, disabled: busy,
+          className: "block w-full rounded border border-border bg-background p-2",
+          onChange: function (event) { setter(event.target.value); } }));
+    }
+    function permission(id, label, value, setter) {
+      return h("label", { htmlFor: id, className: "block text-sm" },
+        h("input", { id: id, type: "checkbox", checked: value, disabled: busy,
+          onChange: function (event) { setter(event.target.checked); } }), " " + label);
+    }
+    function grant() {
+      const read = ["project"]; if (principal) read.push("principal"); if (assistant) read.push("assistant");
+      return { client: client, read: read, projects: projects.split(",").map(function (value) { return value.trim(); }).filter(Boolean),
+        model_route: route, write_project: write };
+    }
+    function authorize(request, decision) {
+      return run(async function () {
+        const result = await post("/authorization/" + encodeURIComponent(request.id),
+          decision === "approve" ? { decision: decision, grant: grant() } : { decision: decision });
+        setCallback(result.redirect_url);
+      });
+    }
+    const validGrant = Boolean(client.trim() && projects.trim() && route.trim());
+    return h("details", { id: "memory_http" },
+      h("summary", { className: "cursor-pointer font-semibold" }, "Connect agents over HTTP"),
+      h("div", { className: "space-y-3 pt-3" },
+        h("p", null, "Use Tailscale Serve for private HTTPS access from your computers. Each agent still needs owner-approved memory permissions. Tailscale is optional."),
+        h("p", null, "Serve this dashboard's origin without a path rewrite. Use Tailscale Serve, which limits access to your tailnet. Keep dashboard sign-in enabled."),
+        h("form", { id: "http_settings", onSubmit: function (event) {
+          event.preventDefault(); return run(function () { return post("/settings", { enabled: true, public_url: origin }); });
+        } }, field("http_public_url", "Public HTTPS origin (for example https://hermes.example.ts.net)", origin, setOrigin),
+          h("button", { type: "submit", disabled: busy || !origin.trim() }, "Save and enable HTTP MCP")),
+        settings?.enabled ? h("button", { type: "button", disabled: busy, onClick: function () {
+          return run(function () { setToken(""); return post("/settings", { enabled: false, public_url: settings.public_url }); });
+        } }, "Disable HTTP MCP and invalidate credentials") : null,
+        h("p", null, "Changing the origin or disabling HTTP invalidates existing credentials. Add a fresh connection afterward."),
+        settings?.mcp_url ? h("label", { className: "block" }, "MCP URL",
+          h("input", { readOnly: true, value: settings.mcp_url, className: "block w-full p-2" })) : null,
+        h("button", { type: "button", disabled: busy, onClick: function () { return run(refresh); } }, "Review connection requests"),
+        settings && !settings.sharing_enabled ? h("p", null,
+          "Memory sharing is disabled. Enable memory sharing above before agent sign-in. Creating a token also enables sharing for all enabled connections.") : null,
+        h("p", null, "Add the MCP URL in your agent, then sign in. Review its name and callback below. Choose permissions before approving. Client names and declared model routes are unverified."),
+        h("p", null, "A cloud model can receive every fact returned through this connection. Project access starts read-only. Use a distinct name for each connection."),
+        h("form", { id: "http_enrollment", onSubmit: function (event) {
+          event.preventDefault(); return run(async function () { const result = await post("/connections", grant()); setToken(result.token); });
+        } }, field("http_client", "Connection name", client, setClient),
+          field("http_projects", "Projects (comma separated; * permits all projects)", projects, setProjects),
+          field("http_model_route", "Declared model route", route, setRoute),
+          permission("http_principal", "Allow reading owner preferences and identity", principal, setPrincipal),
+          permission("http_assistant", "Allow reading assistant preferences", assistant, setAssistant),
+          permission("http_write", "Allow writing project facts", write, setWrite),
+          h("button", { type: "submit", disabled: busy || !settings?.enabled || !validGrant }, "Create agent token (90 days)")),
+        token ? h("div", null,
+          h("p", null, "Store this token privately in your agent. The server shows it once. Use the Authorization: Bearer header. Do not put it in a URL or chat."),
+          h("textarea", { readOnly: true, value: token, spellCheck: false, autoComplete: "off", className: "block w-full p-2" }),
+          h("button", { type: "button", onClick: function () { setToken(""); } }, "Hide token")) : null,
+        (settings?.pending ?? []).map(function (request) { return h("article", { key: request.id, className: "rounded border p-3" },
+          h("p", null, "Agent requests access: " + request.client_name),
+          h("p", null, "Callback: " + request.redirect_uri),
+          h("p", null, "Approval uses the permissions selected above."),
+          h("button", { type: "button", disabled: busy || !validGrant, onClick: function () { return authorize(request, "approve"); } }, "Approve " + request.client_name),
+          h("button", { type: "button", disabled: busy, onClick: function () { return authorize(request, "deny"); } }, "Deny " + request.client_name)); }),
+        callback ? h("a", { href: callback, referrerPolicy: "no-referrer", rel: "noreferrer" }, "Return to agent") : null,
+        (settings?.connections ?? []).map(function (connection) { return h("article", { key: connection.client, className: "rounded border p-3" },
+          h("p", null, connection.client + ": " + (connection.enabled ? "enabled" : "revoked")),
+          h("p", null, "Reads: " + connection.read.join(", ") + ". Writes: " + (connection.write.join(", ") || "none") + ". Projects: " + connection.projects.join(", ")),
+          connection.enabled ? h("button", { type: "button", disabled: busy, onClick: function () {
+            return run(function () { setToken(""); return SDK.fetchJSON(base + "/connections/" + encodeURIComponent(connection.client), { method: "DELETE" }); });
+          } }, "Revoke HTTP " + connection.client) : null); }),
+        message ? h("p", { role: "status" }, message) : null));
+  }
+
   function MemoryPreferences() {
     const memoryEndpoint = "/api/plugins/lifeos-hook-bridge/memory";
     const [memory, setMemory] = SDK.hooks.useState(null);
@@ -432,6 +534,7 @@
     const configured = memory && ["prepared", "configured"].includes(memory.state);
     return h("section", { id: "lifeos_memory", className: "rounded border border-border p-4 space-y-3" },
       h("h2", { className: "text-lg font-semibold" }, "Lasting memory"),
+      h(MemoryHTTPPreferences),
       h("p", { className: "text-sm" }, "LifeOS keeps durable facts and preferences. Hermes keeps conversation history and context compression."),
       memory?.state === "not_configured" ? h("p", null, "Memory setup is not configured. Your current memory settings have not been changed.") : null,
       memory?.state === "not_configured" ? h("p", { className: "text-sm" },

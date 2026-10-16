@@ -108,6 +108,11 @@ def install_memory_cache_headers(app: FastAPI) -> None:
 _dashboard_host = sys.modules.get('hermes_cli.web_server')
 if _dashboard_host is not None and isinstance(getattr(_dashboard_host, 'app', None), FastAPI):
     install_memory_cache_headers(_dashboard_host.app)
+    def _http_plugin_available():
+        from hermes_cli.plugins_cmd import _get_disabled_set, _get_enabled_set
+        return PLUGIN_ID in _get_enabled_set() and PLUGIN_ID not in _get_disabled_set()
+    install_module.memory_module('memory_remote').install_http_memory(
+        _dashboard_host.app, HERMES_HOME / 'lifeos-memory.json', available=_http_plugin_available)
 
 
 def _memory_preferences():
@@ -144,6 +149,45 @@ def _memory_account(request: Request) -> str:
 @router.get('/memory')
 def get_memory(account: str = Depends(_memory_account)):
     return _memory_action(lambda preferences:preferences.status(account=account))
+
+
+def _remote_memory_action(account, action):
+    def execute(preferences):
+        preferences._configuration(account=account)
+        remote = install_module.memory_module('memory_remote').MemoryRemote(preferences.configuration.path)
+        return action(remote)
+    return _memory_action(execute)
+
+
+@router.get('/memory/http/settings')
+def http_memory_settings(account: str = Depends(_memory_account)):
+    return _remote_memory_action(account, lambda remote: remote.status(account=account))
+
+
+@router.post('/memory/http/settings')
+def configure_http_memory(request: dict, account: str = Depends(_memory_account)):
+    return _remote_memory_action(account, lambda remote: remote.configure(request, account=account))
+
+
+@router.post('/memory/http/connections')
+def enroll_http_memory(request: dict, account: str = Depends(_memory_account)):
+    return _remote_memory_action(account, lambda remote: remote.enroll(request, account=account))
+
+
+@router.delete('/memory/http/connections/{client}')
+def revoke_http_memory(client: str, account: str = Depends(_memory_account)):
+    return _remote_memory_action(account, lambda remote: remote.revoke(client, account=account))
+
+
+@router.post('/memory/http/authorization/{identifier}')
+def authorize_http_memory(identifier: str, request: dict, account: str = Depends(_memory_account)):
+    if request.get('decision') == 'approve' and set(request) == {'decision', 'grant'}:
+        return _remote_memory_action(account, lambda remote:
+            install_module.memory_module('memory_oauth').MemoryAuthorization(remote).approve(identifier, request['grant'], account=account))
+    if request == {'decision': 'deny'}:
+        return _remote_memory_action(account, lambda remote:
+            install_module.memory_module('memory_oauth').MemoryAuthorization(remote).deny(identifier, account=account))
+    raise HTTPException(status_code=400, detail='Approve one reviewed grant or deny the connection request')
 
 
 def _mount_transaction():
