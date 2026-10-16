@@ -2,7 +2,6 @@
 # ABOUTME: Verifies actual empty control groups and resumes only the reviewed Hermes services.
 import hashlib
 import json
-import os
 from pathlib import Path
 
 from .cli import read_private

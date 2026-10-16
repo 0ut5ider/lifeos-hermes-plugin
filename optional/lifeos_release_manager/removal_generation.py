@@ -1,15 +1,12 @@
 # ABOUTME: Binds account-wide removal to an exact managed integration generation and native installation.
 # ABOUTME: Refuses shared profiles, modified programs, and launchers outside the reviewed complete release.
-import json
-import os
 from pathlib import Path
 import re
-import shlex
 
 from .cli import profile_directory,read_private
 from .release_accounts import account_home
 from .release_catalog import ReleaseRejected
-from .release_programs import fingerprint
+from .release_programs import fingerprint,launcher_script
 from .release_stage import validate_package,validate_files,runtime_source_fingerprint
 
 
@@ -28,7 +25,7 @@ def account(profile, installed):
 
 
 def _wrapper(path, command):
-    expected=('#!/bin/sh\nexec '+shlex.quote(str(command))+' "$@"\n').encode()
+    expected=launcher_script(str(command))
     identity=fingerprint(path)
     if identity is None or identity['type']!='file' or path.read_bytes()!=expected:
         raise ReleaseRejected('An account launcher differs from the qualified integration generation')
@@ -52,7 +49,7 @@ def selected(profile, installed, *, bridge):
         if (current['state']=='applied' and request.get('profile')==str(profile)
                 and request.get('installed')==str(installed)
                 and all(request.get(key)==identity.get(key) for key in ('version','commit','package_sha256'))):
-            expected=('#!/bin/sh\nexec '+shlex.quote(str(job/'bin/hermes'))+' "$@"\n').encode()
+            expected=launcher_script(str(job/'bin/hermes'))
             if (home/'.local/bin/hermes').read_bytes()==expected:candidates.append((job,request))
     if len(candidates)!=1:raise ReleaseRejected('Removal requires one exact currently selected complete generation')
     job,request=candidates[0];package=job/'package'

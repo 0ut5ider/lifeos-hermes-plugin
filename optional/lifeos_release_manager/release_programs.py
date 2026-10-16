@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shlex
 import shutil
 import stat
 import tempfile
@@ -14,6 +15,11 @@ import uuid
 
 class ProgramConflict(ValueError):
     pass
+
+
+def launcher_script(command):
+    # Release publication and removal admission compare account launchers against these exact bytes.
+    return ('#!/bin/sh\nexec ' + shlex.quote(command) + ' "$@"\n').encode()
 
 
 def publish(path, data, mode=0o600):

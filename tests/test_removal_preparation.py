@@ -114,6 +114,8 @@ class RemovalSoftwarePlanTests(unittest.TestCase):
         for name in ('hermes','hermes-agent','hermes-acp'):
             text=files[self.home/'.local/bin'/name].read_text()
             self.assertIn(str(self.runtime/'bin'/name),text)
+            self.assertEqual(text,'#!/bin/sh\nexec '+str(self.runtime/'bin'/name)+' "$@"\n')
+            self.assertEqual(files[self.home/'.local/bin'/name].stat().st_mode & 0o777,0o700)
         self.assertEqual(files[self.profile/'.env'].read_bytes(),b'SYNTHETIC_KEEP=yes\n')
         self.assertEqual((self.profile/'SOUL.md').read_bytes(),b'Synthetic reviewed prompt')
         self.assertEqual((self.workspace/'owner.txt').read_bytes(),b'Synthetic owner work')

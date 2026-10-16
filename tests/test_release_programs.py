@@ -4,10 +4,16 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from optional.lifeos_release_manager.release_programs import ProgramTransaction, ProgramConflict, fingerprint
+from optional.lifeos_release_manager.release_programs import ProgramTransaction, ProgramConflict, fingerprint, launcher_script
 
 
 class ProgramTransactionTests(unittest.TestCase):
+    def test_launcher_script_quotes_one_command_and_forwards_arguments(self):
+        self.assertEqual(launcher_script('/opt/hermes/bin/hermes'), b'#!/bin/sh\nexec /opt/hermes/bin/hermes "$@"\n')
+        self.assertEqual(launcher_script("/owner home/it's/hermes"),
+                         b'#!/bin/sh\nexec \'/owner home/it\'"\'"\'s/hermes\' "$@"\n')
+        with self.assertRaises(TypeError):launcher_script(Path('/opt/hermes/bin/hermes'))
+
     def test_missing_or_changed_before_copy_refuses_before_apply(self):
         for changed in (False,True):
             with self.subTest(changed=changed),tempfile.TemporaryDirectory() as temp:

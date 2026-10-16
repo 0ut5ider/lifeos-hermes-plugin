@@ -36,8 +36,7 @@ def returned(profile, identifier, signature, *, owner, source, configuration, in
 
 
 def software(profile, installed, generation, native, runtime, generated, *, workspace, pulse):
-    import shlex
-    from .release_programs import publish
+    from .release_programs import launcher_script,publish
     from .removal_configuration import configuration,environment
     from .removal_consumers import hooks
     profile,installed,runtime,generated=map(Path,(profile,installed,runtime,generated))
@@ -61,7 +60,7 @@ def software(profile, installed, generation, native, runtime, generated, *, work
     for path in generation['launchers']:
         name=path.name if path.name in {'hermes','hermes-agent','hermes-acp'} else 'hermes'
         target=runtime/'bin'/name
-        publish(generated/name,('#!/bin/sh\nexec '+shlex.quote(str(target))+' "$@"\n').encode(),0o700)
+        publish(generated/name,launcher_script(str(target)),0o700)
         files[path]=generated/name
     if profile/'.env' not in files:expected.pop(profile/'.env')
     return directories,files,native['dependencies'],expected
