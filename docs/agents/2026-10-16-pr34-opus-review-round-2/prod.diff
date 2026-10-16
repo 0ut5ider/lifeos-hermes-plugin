@@ -1,0 +1,507 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0872d673..a83795dc 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,17 @@
+ # Changelog
+ 
++## Unreleased
++
++## 0.7.1 (2026-10-16)
++
++- Keep private Discord notifications from creating unverified foreground history before the first human turn.
++- Preserve actual notification delivery and mirroring in admitted conversations.
++- Preserve admitted direct-message mirrors and native mirrors after memory ownership returns to Hermes.
++- Keep webhook mirror permission checks outside the gateway event loop.
++- Include notification mirror files in native patch regeneration.
++- Keep existing memory admission and compression checks unchanged.
++- Close failed Discord audience responses before propagating their refusal.
++
+ ## 0.7.0 (2026-10-16)
+ 
+ - Add an optional Streamable HTTP memory server to the LifeOS Bridge dashboard listener.
+diff --git a/README.md b/README.md
+index 1c95943c..7c570b13 100644
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+ # LifeOS plugin for Hermes
+ 
+-**Source version:** `0.7.0` adds optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. Source acceptance does not publish or deploy a qualified release package.
++**Source version:** `0.7.1` preserves first-turn Discord memory admission after scheduled notifications. It retains optional HTTP memory connections with owner-approved grants. The [HTTP setup guide](docs/http-memory-mcp.md) recommends Tailscale Serve for private HTTPS access. Source acceptance does not publish or deploy a qualified release package.
+ 
+ **Published stable release:** `0.6.0`, program commit `c86b5887`, adds owner-reviewed memory import, portable export, provider return, and complete LifeOS software removal. The [release record](docs/verification/2026-10-15-release-0.6.0/README.md) binds the exact package and qualification. The [portability contract](docs/memory-portability.md) defines retained data and recovery.
+ 
+@@ -46,6 +46,8 @@ Fresh-store preparation leaves personal TELOS, health, finance, work, gear, and
+ 
+ The daily Discord release uses one private server text channel. The [channel restriction controls](docs/verification/2026-10-07-private-channel/README.md) verify message, command, outbound delivery, and memory admission rules. The daily guest at `.253` passes live channel admission and managed memory activation. Actual Discord save and recall pass in separate sessions.
+ 
++The [notification admission fix](docs/verification/2026-10-16-discord-admission/README.md) stages a correction for a first greeting after scheduled notices. The corrected delivery policy mirrors notices only into an admitted conversation. Notifications still deliver before the first human turn. For an affected 0.7.0 session, `/new` restores chat and preserves lasting memory. The fix requires a complete qualified release because its native caller and bridge policy change together.
++
+ The [October 11 morning sender correction](docs/verification/2026-10-11-morning-text-fix/README.md) refuses attachment, voice, and document directives in narration before sending. Native renderer regressions, 41 local controls, development checks, and checks against the installed daily operator pass. The corrected operator is installed on `.253`.
+ 
+ Adrian completes private-channel setup after creation of the separate daily guest. The [combined development acceptance](docs/verification/2026-10-10-daily-text-release/README.md) passes on `.252`. The frozen candidate includes fresh personal defaults and a bounded owner-job admission correction. Local gates pass 490 combined tests, 38 fresh-store tests, 42 channel and model controls, and 96 native Hermes tests. All 12 installed commands and the selected browser pages pass. PR7 merges the corrections as `2514eea8`. The October 11 guest at `.253` installs equivalent certified program bytes and passes three actual off-server restore cases. Its separate Cerebo bot connects in private channel `#cerebo`. Actual audience and outbound checks pass. Shiny Hermes Bot stays on `.252` for development. The exact inbound owner reply passes. Governed memory ownership, all five owner jobs, authenticated Pulse routes, and actual morning-brief delivery pass. Actual save and recall pass in separate Discord sessions. Governed cleanup restores zero active facts, and Cerebo starts a fresh daily session. The [independent PR7 review](docs/agents/2026-10-10-pr7-daily-release-review/pr7-daily-release-review.md) finds no blocking product defect. The [primary follow-up](docs/verification/2026-10-10-pr7-review-followup/README.md) closes worker-test pipes and passes all 66 focused tests with clean output.
+diff --git a/TODO.md b/TODO.md
+index 88cac11c..5a971d48 100644
+--- a/TODO.md
++++ b/TODO.md
+@@ -26,3 +26,8 @@ Published release: 0.6.0. Development `.252` and daily `.253` remain on 0.5.0. T
+ - [x] Verify final daily guest off-server backup and coherent Atlas group recovery before bot cutover. The October 11 actual PBS restores pass baseline, interrupted-publication, and later-edit cases for container 102 at `.253`. See the [installed recovery receipts](docs/verification/2026-10-11-daily-guest/README.md). Include the external graph and snapshot, sources, cache, governance receipts, journals, and selected program manifests. See the [required guest gate](docs/deployment/daily-text/README.md#final-daily-vm-backup-and-recovery-gate). Profile recovery alone does not complete this gate.
+ - [x] Implement governed Atlas history retention and archive automation in development. Preserve observation references, collector timestamps, cumulative metrics, current owner admission, and grouped recovery. See the [retention policy and verification](docs/verification/2026-10-11-atlas-retention/README.md).
+ - [x] Release Atlas retention to the daily guest as a tested release package. Both `.252` and `.253` run release 0.3.1. The final daily restore verifies 41,742 artifacts and all three Atlas cases, including external history and governance journals. The automatic October 12 morning observation completes all six release steps. See the [final release acceptance](docs/verification/2026-10-12-capture-cursor/README.md).
++
++- [x] Reproduce the October 16 first-greeting refusal after scheduled Discord notices and stage a delivery-mirror correction. Preserve memory admission and existing admitted history. Daily chat recovers through the owner's native `/new`. See the [incident verification](docs/verification/2026-10-16-discord-admission/README.md).
++- [ ] Review, qualify, and deploy the notification admission fix as a complete patch release. Keep the immutable deployed 0.7.0 package until qualification.
++
++- [ ] Complete PR34 Opus 5.5 review, exact 0.7.1 package qualification, merge, and managed updates to development `.252` and daily `.253`. Verify notification-first foreground admission and preserve owner memory and configuration. Round 1 findings have source corrections; follow-up review remains pending.
+diff --git a/VERSION b/VERSION
+index faef31a4..39e898a4 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-0.7.0
++0.7.1
+diff --git a/lifeos_hook_bridge/dashboard/manifest.json b/lifeos_hook_bridge/dashboard/manifest.json
+index 0f4875ea..f38fda5b 100644
+--- a/lifeos_hook_bridge/dashboard/manifest.json
++++ b/lifeos_hook_bridge/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS Bridge",
+   "description": "Configure LifeOS models and Stop hooks",
+   "icon": "Settings",
+-  "version": "0.7.0",
++  "version": "0.7.1",
+   "tab": {
+     "path": "/lifeos-bridge",
+     "position": "after:plugins"
+diff --git a/lifeos_hook_bridge/discord_audience.py b/lifeos_hook_bridge/discord_audience.py
+index cd9b12d8..c44775cc 100644
+--- a/lifeos_hook_bridge/discord_audience.py
++++ b/lifeos_hook_bridge/discord_audience.py
+@@ -3,7 +3,7 @@
+ from dataclasses import dataclass
+ import json
+ import os
+-from urllib.error import URLError
++from urllib.error import HTTPError, URLError
+ from urllib.request import HTTPRedirectHandler, Request, build_opener
+ 
+ 
+@@ -55,8 +55,12 @@ class DiscordAPI:
+         request = Request(self.origin + path, headers={
+             'Authorization': 'Bot ' + self.token,
+             'User-Agent': 'LifeOS-Hermes/0.1.0'})
+-        with build_opener(_RefuseRedirects()).open(request, timeout=3) as response:
+-            data = response.read(4 * 1024 * 1024 + 1)
++        try:
++            with build_opener(_RefuseRedirects()).open(request, timeout=3) as response:
++                data = response.read(4 * 1024 * 1024 + 1)
++        except HTTPError as error:
++            error.close()
++            raise
+         if len(data) > 4 * 1024 * 1024:
+             raise ValueError('The Discord audience response exceeds its supported size')
+         return json.loads(data)
+diff --git a/lifeos_hook_bridge/discord_delivery.py b/lifeos_hook_bridge/discord_delivery.py
+index 792e87eb..6e5fb476 100644
+--- a/lifeos_hook_bridge/discord_delivery.py
++++ b/lifeos_hook_bridge/discord_delivery.py
+@@ -1,5 +1,6 @@
+ # ABOUTME: Admits private Discord writes against the current configured channel audience.
+ # ABOUTME: Binds each policy call to one Hermes profile without relying on a turn context.
++from dataclasses import replace
+ from pathlib import Path
+ 
+ from .discord_audience import ChannelAudience, resolve_audience
+@@ -12,14 +13,52 @@ class PrivateDiscordDelivery:
+         self.configuration = MemoryConfiguration(configuration)
+         self.audience_lookup = audience_lookup or resolve_audience
+ 
+-    def check(self, *, platform='', chat_id='', guild_id='', hermes_home='', **_):
++    def _mirror_admitted(self, configuration, chat_id, session_id):
++        if not configuration.get('ownership_enabled', False):
++            return True
++        if not isinstance(session_id, str) or not session_id or len(session_id) > 128:
++            return False
++        from .memory_context import parse_context
++        from .memory_runtime import MemoryRuntime
++        runtime = MemoryRuntime(self.configuration.path)
++        previous = runtime._states().get(session_id)
++        if not isinstance(previous, dict) or not isinstance(previous.get('generation'), str):
++            return False
++        context = parse_context(previous.get('context'))
++        binding = configuration.get('discord_channels', {}).get(chat_id)
++        if (context.session_id != session_id or context.transport != 'discord'
++                or configuration['accounts'].get('discord:' + context.author) != configuration['principal']
++                or binding is not None and context.author != binding['owner']
++                or context.destination != chat_id
++                or context.visibility != 'private'
++                or context.participants != (configuration['principal'],)):
++            return False
++        # Admission stamps omit the session from the scope signature. The stored
++        # context above still binds this exact native session and destination.
++        return runtime._scope(configuration, replace(context, session_id='')).signature == previous.get('scope')
++
++    def check(self, *, platform='', chat_id='', guild_id='', hermes_home='',
++              purpose='delivery', session_id='', **_):
+         denied = {'action':'block','message':'Current Discord permissions do not admit private delivery'}
+         try:
+-            if (platform != 'discord' or not isinstance(hermes_home,str)
++            if (platform != 'discord' or purpose not in ('delivery', 'mirror')
++                    or not isinstance(hermes_home,str)
+                     or Path(hermes_home).absolute() != self.configuration.path.parent.absolute()):
+                 return denied
++            if (purpose == 'mirror' and not self.configuration.path.exists()
++                    and not self.configuration.path.is_symlink()):
++                return {'action': 'allow', 'mirror': True}
+             configuration = self.configuration.load()
++            if purpose == 'mirror' and not configuration.get('ownership_enabled', False):
++                if self.configuration.load() != configuration:
++                    return denied
++                return {'action': 'allow', 'mirror': True}
+             binding = configuration.get('discord_channels',{}).get(chat_id)
++            if purpose == 'mirror' and binding is None:
++                admitted = self._mirror_admitted(configuration, chat_id, session_id)
++                if self.configuration.load() != configuration:
++                    return denied
++                return {'action': 'allow', 'mirror': admitted}
+             if binding is None or guild_id and guild_id != binding['guild']:
+                 return denied
+             metadata = {'HERMES_SESSION_PLATFORM':'discord', 'HERMES_SESSION_CHAT_ID':chat_id,
+@@ -29,6 +68,11 @@ class PrivateDiscordDelivery:
+             if (audience != ChannelAudience(chat_id,binding['owner'],configuration['principal'])
+                     or self.configuration.load() != configuration):
+                 return denied
++            if purpose == 'mirror':
++                admitted = self._mirror_admitted(configuration, chat_id, session_id)
++                if self.configuration.load() != configuration:
++                    return denied
++                return {'action': 'allow', 'mirror': admitted}
+             return {'action':'allow'}
+         except (MemoryUnavailable, ValueError, KeyError, OSError, TypeError, RuntimeError):
+             return denied
+diff --git a/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch b/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+index 949b6bd1..15e7ed66 100644
+--- a/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
++++ b/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+@@ -1,5 +1,5 @@
+ diff --git a/cli.py b/cli.py
+-index 375f42661..adf60e666 100644
++index 375f4266..adf60e66 100644
+ --- a/cli.py
+ +++ b/cli.py
+ @@ -502,7 +502,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
+@@ -25,8 +25,56 @@ index 375f42661..adf60e666 100644
+          try:
+              _shutdown_agent_memory_provider(_active_agent_ref)
+          except Exception as e:
++diff --git a/gateway/mirror.py b/gateway/mirror.py
++index 44a977d0..d82e6541 100644
++--- a/gateway/mirror.py
+++++ b/gateway/mirror.py
++@@ -1,3 +1,5 @@
+++# ABOUTME: Mirrors delivered messages into the selected native conversation.
+++# ABOUTME: Applies configured delivery policy before changing Discord transcript history.
++ """Session mirroring for cross-platform message delivery.
++ 
++ When a message is sent to a platform (send_message or cron delivery), append a
++@@ -61,6 +63,18 @@ def mirror_to_session(
++                 platform, chat_id, thread_id, user_id,
++             )
++             return False
+++        if platform.lower() == "discord":
+++            from hermes_cli.plugins import get_plugin_manager
+++            manager = get_plugin_manager()
+++            if manager.has_hook("pre_message_delivery"):
+++                decisions = manager.invoke_hook("pre_message_delivery", platform="discord",
+++                    chat_id=str(chat_id), hermes_home=str(get_hermes_home()),
+++                    purpose="mirror", session_id=session_id)
+++                if not decisions or any(not isinstance(decision, dict)
+++                        or decision.get("action") != "allow"
+++                        or "mirror" in decision and decision["mirror"] is not True
+++                        for decision in decisions):
+++                    return False
++         _append_to_sqlite(session_id, {
++             "role": role, "content": message_text, "timestamp": datetime.now().isoformat(),
++             "mirror": True, "mirror_source": source_label,
++diff --git a/gateway/platforms/webhook.py b/gateway/platforms/webhook.py
++index c948fe83..36ddd01a 100644
++--- a/gateway/platforms/webhook.py
+++++ b/gateway/platforms/webhook.py
++@@ -1,3 +1,5 @@
+++# ABOUTME: Routes authenticated webhook events into gateway jobs and platform deliveries.
+++# ABOUTME: Keeps delivery transcript policy checks outside the gateway event loop.
++ """Generic webhook platform adapter: aiohttp server that validates HMAC-signed POSTs (GitHub, GitLab,
++ Svix, Linear, generic), renders payloads into agent prompts, and routes responses back (github_comment
++ or any gateway platform). Routes live under platforms.webhook.extra.routes: events (header filter),
++@@ -944,7 +946,7 @@ class WebhookAdapter(BasePlatformAdapter):
++             thread_id = extra.get("message_thread_id") or extra.get("thread_id")  # Telegram forum topics
++             result = await adapter.send(chat_id, content, metadata={"thread_id": thread_id} if thread_id else None)
++             if result.success:
++-                self._mirror_delivery(platform_name, str(chat_id), content, delivery, thread_id)
+++                await asyncio.to_thread(self._mirror_delivery, platform_name, str(chat_id), content, delivery, thread_id)
++             return result
++ 
++     def _delivery_config(self, profile: Optional[str]):
+ diff --git a/gateway/run_agent_cache.py b/gateway/run_agent_cache.py
+-index 2225f4a16..0ee0a7852 100644
++index 2225f4a1..0ee0a785 100644
+ --- a/gateway/run_agent_cache.py
+ +++ b/gateway/run_agent_cache.py
+ @@ -1,3 +1,5 @@
+@@ -47,7 +95,7 @@ index 2225f4a16..0ee0a7852 100644
+              threading.Thread(
+                  target=copy_context().run,
+ diff --git a/gateway/run_turn_runner.py b/gateway/run_turn_runner.py
+-index 7e29a4cdf..f9b24125c 100644
++index 7e29a4cd..f9b24125 100644
+ --- a/gateway/run_turn_runner.py
+ +++ b/gateway/run_turn_runner.py
+ @@ -1,3 +1,5 @@
+@@ -105,7 +153,7 @@ index 7e29a4cdf..f9b24125c 100644
+          elif rearm:
+              # Reopen typing IMMEDIATELY, not on the LLM's first post-answer token (native streaming
+ diff --git a/gateway/run_turn_runner_clarify_delivery.py b/gateway/run_turn_runner_clarify_delivery.py
+-index e3bd3f4f8..c8cf722c2 100644
++index e3bd3f4f..c8cf722c 100644
+ --- a/gateway/run_turn_runner_clarify_delivery.py
+ +++ b/gateway/run_turn_runner_clarify_delivery.py
+ @@ -77,7 +77,7 @@ def _clarify_send_disposition(fut, *, session_key: str, clarify_mod) -> Optional
+@@ -147,7 +195,7 @@ index e3bd3f4f8..c8cf722c2 100644
+ +def clarify_retirement_notice(response, cancelled):
+ +    return "This prompt was cancelled. No answer was recorded." if response == cancelled else _clarify_expired_notice()
+ diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
+-index c73d27656..833028714 100644
++index c73d2765..83302871 100644
+ --- a/gateway/slash_commands_session.py
+ +++ b/gateway/slash_commands_session.py
+ @@ -909,6 +909,12 @@ class GatewaySessionCommandsMixin:
+@@ -164,7 +212,7 @@ index c73d27656..833028714 100644
+          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
+          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
+ diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
+-index ac050556f..93af0cd80 100644
++index ac050556..93af0cd8 100644
+ --- a/hermes_cli/cli_commands_mixin.py
+ +++ b/hermes_cli/cli_commands_mixin.py
+ @@ -5,6 +5,7 @@ the helpers/handlers via ``from cli import ...`` — cli.py imports this module
+@@ -204,7 +252,7 @@ index ac050556f..93af0cd80 100644
+          # One lineage SELECT, two projections: model_history is alternation-repaired for live
+ diff --git a/hermes_cli/cli_session_boundary.py b/hermes_cli/cli_session_boundary.py
+ new file mode 100644
+-index 000000000..b46da2aef
++index 00000000..b46da2ae
+ --- /dev/null
+ +++ b/hermes_cli/cli_session_boundary.py
+ @@ -0,0 +1,13 @@
+@@ -222,7 +270,7 @@ index 000000000..b46da2aef
+ +    with suppress(Exception):
+ +        cli._session_db.end_session(cli.session_id, reason)
+ diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
+-index d17d73f65..a80f7798a 100644
++index d17d73f6..a80f7798 100644
+ --- a/hermes_cli/cli_session_mixin.py
+ +++ b/hermes_cli/cli_session_mixin.py
+ @@ -419,16 +419,16 @@ class CLISessionMixin:
+@@ -256,7 +304,7 @@ index d17d73f65..a80f7798a 100644
+          if self._session_db and old_session_id:
+              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
+ diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
+-index c470445a7..7c706dbd0 100644
++index c470445a..7c706dbd 100644
+ --- a/hermes_cli/cli_tui_runtime_mixin.py
+ +++ b/hermes_cli/cli_tui_runtime_mixin.py
+ @@ -486,8 +486,9 @@ class CLITuiRuntimeMixin:
+@@ -271,7 +319,7 @@ index c470445a7..7c706dbd0 100644
+          self._print_exit_summary()
+          self._release_active_session()
+ diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
+-index 8610268cb..21dbd229a 100644
++index 8610268c..21dbd229 100644
+ --- a/plugins/platforms/discord/adapter.py
+ +++ b/plugins/platforms/discord/adapter.py
+ @@ -1,4 +1,9 @@
+@@ -705,7 +753,7 @@ index 8610268cb..21dbd229a 100644
+      if "history_backfill" in discord_cfg:
+ diff --git a/plugins/platforms/discord/adapter_channel_policy.py b/plugins/platforms/discord/adapter_channel_policy.py
+ new file mode 100644
+-index 000000000..8fb1cd438
++index 00000000..8fb1cd43
+ --- /dev/null
+ +++ b/plugins/platforms/discord/adapter_channel_policy.py
+ @@ -0,0 +1,82 @@
+@@ -793,7 +841,7 @@ index 000000000..8fb1cd438
+ +    return available, warnings
+ diff --git a/plugins/platforms/discord/adapter_commands.py b/plugins/platforms/discord/adapter_commands.py
+ new file mode 100644
+-index 000000000..d18191d10
++index 00000000..d18191d1
+ --- /dev/null
+ +++ b/plugins/platforms/discord/adapter_commands.py
+ @@ -0,0 +1,65 @@
+@@ -863,7 +911,7 @@ index 000000000..d18191d10
+ +        summary["total"] = len(desired_payloads)
+ +        return summary
+ diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
+-index 73e3d3de3..0a857e4fc 100644
++index 73e3d3de..0a857e4f 100644
+ --- a/plugins/platforms/discord/adapter_media.py
+ +++ b/plugins/platforms/discord/adapter_media.py
+ @@ -1,3 +1,5 @@
+@@ -962,7 +1010,7 @@ index 73e3d3de3..0a857e4fc 100644
+ -
+ diff --git a/plugins/platforms/discord/delivery.py b/plugins/platforms/discord/delivery.py
+ new file mode 100644
+-index 000000000..cdb15ca4c
++index 00000000..cdb15ca4
+ --- /dev/null
+ +++ b/plugins/platforms/discord/delivery.py
+ @@ -0,0 +1,16 @@
+@@ -983,7 +1031,7 @@ index 000000000..cdb15ca4c
+ +    if not results or any(not isinstance(result, dict) or result.get('action') != 'allow' for result in results):
+ +        raise PermissionError('Current Discord permissions do not admit private delivery')
+ diff --git a/tests/gateway/conftest.py b/tests/gateway/conftest.py
+-index 9dba55ef3..7576f937e 100644
++index 9dba55ef..7576f937 100644
+ --- a/tests/gateway/conftest.py
+ +++ b/tests/gateway/conftest.py
+ @@ -215,8 +215,14 @@ def _ensure_discord_mock() -> None:
+@@ -1005,7 +1053,7 @@ index 9dba55ef3..7576f937e 100644
+  
+ diff --git a/tests/gateway/test_clarify_cancellation_outcome.py b/tests/gateway/test_clarify_cancellation_outcome.py
+ new file mode 100644
+-index 000000000..9d9b27966
++index 00000000..9d9b2796
+ --- /dev/null
+ +++ b/tests/gateway/test_clarify_cancellation_outcome.py
+ @@ -0,0 +1,156 @@
+@@ -1166,7 +1214,7 @@ index 000000000..9d9b27966
+ +if __name__ == '__main__':
+ +    unittest.main()
+ diff --git a/tests/gateway/test_clarify_delivery_fallback.py b/tests/gateway/test_clarify_delivery_fallback.py
+-index 0e1816260..55a8db7fd 100644
++index 0e181626..55a8db7f 100644
+ --- a/tests/gateway/test_clarify_delivery_fallback.py
+ +++ b/tests/gateway/test_clarify_delivery_fallback.py
+ @@ -1,3 +1,5 @@
+@@ -1198,7 +1246,7 @@ index 0e1816260..55a8db7fd 100644
+  def _runner(adapter, loop, monkeypatch, timeout=5):
+ diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
+ new file mode 100644
+-index 000000000..0cdd80e48
++index 00000000..0cdd80e4
+ --- /dev/null
+ +++ b/tests/gateway/test_discord_command_identity.py
+ @@ -0,0 +1,118 @@
+@@ -1321,7 +1369,7 @@ index 000000000..0cdd80e48
+ +if __name__ == "__main__":
+ +    unittest.main()
+ diff --git a/tests/gateway/test_discord_connect.py b/tests/gateway/test_discord_connect.py
+-index 18002e175..b5c078aaf 100644
++index 18002e17..b5c078aa 100644
+ --- a/tests/gateway/test_discord_connect.py
+ +++ b/tests/gateway/test_discord_connect.py
+ @@ -1,9 +1,12 @@
+@@ -1375,7 +1423,7 @@ index 18002e175..b5c078aaf 100644
+      }
+ diff --git a/tests/gateway/test_discord_guild_channel_only.py b/tests/gateway/test_discord_guild_channel_only.py
+ new file mode 100644
+-index 000000000..572cbc3d2
++index 00000000..572cbc3d
+ --- /dev/null
+ +++ b/tests/gateway/test_discord_guild_channel_only.py
+ @@ -0,0 +1,118 @@
+@@ -1498,7 +1546,7 @@ index 000000000..572cbc3d2
+ +if __name__ == '__main__':
+ +    unittest.main()
+ diff --git a/tests/gateway/test_discord_sync_limit.py b/tests/gateway/test_discord_sync_limit.py
+-index ca8f298f8..4a94ec585 100644
++index ca8f298f..4a94ec58 100644
+ --- a/tests/gateway/test_discord_sync_limit.py
+ +++ b/tests/gateway/test_discord_sync_limit.py
+ @@ -1,3 +1,6 @@
+@@ -1525,7 +1573,7 @@ index ca8f298f8..4a94ec585 100644
+  
+      # Simulate having 100 commands on Discord, with 1 that's no longer desired
+ diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
+-index 8d6e0b006..622a290e0 100644
++index 8d6e0b00..622a290e 100644
+ --- a/tests/gateway/test_resume_command.py
+ +++ b/tests/gateway/test_resume_command.py
+ @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
+@@ -1555,7 +1603,7 @@ index 8d6e0b006..622a290e0 100644
+          """Resume must not carry a previous session's /model override into the
+ diff --git a/tests/gateway/test_stop_clarify_waiters.py b/tests/gateway/test_stop_clarify_waiters.py
+ new file mode 100644
+-index 000000000..c3b7d4d23
++index 00000000..c3b7d4d2
+ --- /dev/null
+ +++ b/tests/gateway/test_stop_clarify_waiters.py
+ @@ -0,0 +1,114 @@
+@@ -1674,7 +1722,7 @@ index 000000000..c3b7d4d23
+ +if __name__ == "__main__":
+ +    unittest.main()
+ diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
+-index 365499669..a1548102d 100644
++index 36549966..a1548102 100644
+ --- a/tests/hermes_cli/test_cli_resume_command.py
+ +++ b/tests/hermes_cli/test_cli_resume_command.py
+ @@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:
+@@ -1726,7 +1774,7 @@ index 365499669..a1548102d 100644
+      """Regression for #47202: /resume must flush un-persisted messages to
+      the session DB before ending the old session, just like /new and
+ diff --git a/tools/clarify_gateway.py b/tools/clarify_gateway.py
+-index c97a44315..8200f7e98 100644
++index c97a4431..8200f7e9 100644
+ --- a/tools/clarify_gateway.py
+ +++ b/tools/clarify_gateway.py
+ @@ -58,14 +58,15 @@ def register(clarify_id: str, session_key: str, question: str, choices: Optional
+diff --git a/lifeos_hook_bridge/plugin.yaml b/lifeos_hook_bridge/plugin.yaml
+index 257b5c8f..bb4ce95e 100644
+--- a/lifeos_hook_bridge/plugin.yaml
++++ b/lifeos_hook_bridge/plugin.yaml
+@@ -1,6 +1,6 @@
+ name: lifeos-hook-bridge
+ kind: standalone
+-version: 0.7.0
++version: 0.7.1
+ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+ author: 0ut5ider
+ python_dependencies:
+diff --git a/optional/lifeos_release_manager/dashboard/manifest.json b/optional/lifeos_release_manager/dashboard/manifest.json
+index fd98d616..9bd1b18d 100644
+--- a/optional/lifeos_release_manager/dashboard/manifest.json
++++ b/optional/lifeos_release_manager/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS releases",
+   "description": "Install and update complete qualified integration releases",
+   "icon": "Package",
+-  "version": "0.7.0",
++  "version": "0.7.1",
+   "tab": {
+     "path": "/lifeos-releases",
+     "position": "after:plugins"
+diff --git a/optional/lifeos_release_manager/plugin.yaml b/optional/lifeos_release_manager/plugin.yaml
+index 774d41cd..83fc5969 100644
+--- a/optional/lifeos_release_manager/plugin.yaml
++++ b/optional/lifeos_release_manager/plugin.yaml
+@@ -1,5 +1,5 @@
+ name: lifeos-release-manager
+ kind: standalone
+-version: 0.7.0
++version: 0.7.1
+ description: Installs and updates qualified LifeOS integration releases from Hermes.
+ author: 0ut5ider
+diff --git a/scripts/rebuild_hermes_patches.py b/scripts/rebuild_hermes_patches.py
+index e6588bd5..39edb4e9 100644
+--- a/scripts/rebuild_hermes_patches.py
++++ b/scripts/rebuild_hermes_patches.py
+@@ -57,6 +57,8 @@ GROUPS = {'hermes-plugin-events.patch': ('hermes_cli/plugins.py',
+                                  'tests/tools/test_protected_instruction_cli_channel.py',
+                                  'tools/approval_policy.py'),
+  'hermes-session-lifecycle.patch': ('cli.py',
++                                    'gateway/mirror.py',
++                                    'gateway/platforms/webhook.py',
+                                     'tests/gateway/conftest.py',
+                                     'gateway/slash_commands_session.py',
+                                     'gateway/run_agent_cache.py',

@@ -1,0 +1,545 @@
+diff --git a/lifeos_hook_bridge/dashboard/manifest.json b/lifeos_hook_bridge/dashboard/manifest.json
+index 0f4875ea..f38fda5b 100644
+--- a/lifeos_hook_bridge/dashboard/manifest.json
++++ b/lifeos_hook_bridge/dashboard/manifest.json
+@@ -3,7 +3,7 @@
+   "label": "LifeOS Bridge",
+   "description": "Configure LifeOS models and Stop hooks",
+   "icon": "Settings",
+-  "version": "0.7.0",
++  "version": "0.7.1",
+   "tab": {
+     "path": "/lifeos-bridge",
+     "position": "after:plugins"
+diff --git a/lifeos_hook_bridge/discord_delivery.py b/lifeos_hook_bridge/discord_delivery.py
+index ab8a8b0b..6e5fb476 100644
+--- a/lifeos_hook_bridge/discord_delivery.py
++++ b/lifeos_hook_bridge/discord_delivery.py
+@@ -25,9 +25,11 @@ class PrivateDiscordDelivery:
+         if not isinstance(previous, dict) or not isinstance(previous.get('generation'), str):
+             return False
+         context = parse_context(previous.get('context'))
+-        binding = configuration['discord_channels'][chat_id]
++        binding = configuration.get('discord_channels', {}).get(chat_id)
+         if (context.session_id != session_id or context.transport != 'discord'
+-                or context.author != binding['owner'] or context.destination != chat_id
++                or configuration['accounts'].get('discord:' + context.author) != configuration['principal']
++                or binding is not None and context.author != binding['owner']
++                or context.destination != chat_id
+                 or context.visibility != 'private'
+                 or context.participants != (configuration['principal'],)):
+             return False
+@@ -43,8 +45,20 @@ class PrivateDiscordDelivery:
+                     or not isinstance(hermes_home,str)
+                     or Path(hermes_home).absolute() != self.configuration.path.parent.absolute()):
+                 return denied
++            if (purpose == 'mirror' and not self.configuration.path.exists()
++                    and not self.configuration.path.is_symlink()):
++                return {'action': 'allow', 'mirror': True}
+             configuration = self.configuration.load()
++            if purpose == 'mirror' and not configuration.get('ownership_enabled', False):
++                if self.configuration.load() != configuration:
++                    return denied
++                return {'action': 'allow', 'mirror': True}
+             binding = configuration.get('discord_channels',{}).get(chat_id)
++            if purpose == 'mirror' and binding is None:
++                admitted = self._mirror_admitted(configuration, chat_id, session_id)
++                if self.configuration.load() != configuration:
++                    return denied
++                return {'action': 'allow', 'mirror': admitted}
+             if binding is None or guild_id and guild_id != binding['guild']:
+                 return denied
+             metadata = {'HERMES_SESSION_PLATFORM':'discord', 'HERMES_SESSION_CHAT_ID':chat_id,
+diff --git a/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch b/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+index 085189d7..15e7ed66 100644
+--- a/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
++++ b/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+@@ -1,5 +1,5 @@
+ diff --git a/cli.py b/cli.py
+-index 375f42661..adf60e666 100644
++index 375f4266..adf60e66 100644
+ --- a/cli.py
+ +++ b/cli.py
+ @@ -502,7 +502,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
+@@ -25,8 +25,56 @@ index 375f42661..adf60e666 100644
+          try:
+              _shutdown_agent_memory_provider(_active_agent_ref)
+          except Exception as e:
++diff --git a/gateway/mirror.py b/gateway/mirror.py
++index 44a977d0..d82e6541 100644
++--- a/gateway/mirror.py
+++++ b/gateway/mirror.py
++@@ -1,3 +1,5 @@
+++# ABOUTME: Mirrors delivered messages into the selected native conversation.
+++# ABOUTME: Applies configured delivery policy before changing Discord transcript history.
++ """Session mirroring for cross-platform message delivery.
++ 
++ When a message is sent to a platform (send_message or cron delivery), append a
++@@ -61,6 +63,18 @@ def mirror_to_session(
++                 platform, chat_id, thread_id, user_id,
++             )
++             return False
+++        if platform.lower() == "discord":
+++            from hermes_cli.plugins import get_plugin_manager
+++            manager = get_plugin_manager()
+++            if manager.has_hook("pre_message_delivery"):
+++                decisions = manager.invoke_hook("pre_message_delivery", platform="discord",
+++                    chat_id=str(chat_id), hermes_home=str(get_hermes_home()),
+++                    purpose="mirror", session_id=session_id)
+++                if not decisions or any(not isinstance(decision, dict)
+++                        or decision.get("action") != "allow"
+++                        or "mirror" in decision and decision["mirror"] is not True
+++                        for decision in decisions):
+++                    return False
++         _append_to_sqlite(session_id, {
++             "role": role, "content": message_text, "timestamp": datetime.now().isoformat(),
++             "mirror": True, "mirror_source": source_label,
++diff --git a/gateway/platforms/webhook.py b/gateway/platforms/webhook.py
++index c948fe83..36ddd01a 100644
++--- a/gateway/platforms/webhook.py
+++++ b/gateway/platforms/webhook.py
++@@ -1,3 +1,5 @@
+++# ABOUTME: Routes authenticated webhook events into gateway jobs and platform deliveries.
+++# ABOUTME: Keeps delivery transcript policy checks outside the gateway event loop.
++ """Generic webhook platform adapter: aiohttp server that validates HMAC-signed POSTs (GitHub, GitLab,
++ Svix, Linear, generic), renders payloads into agent prompts, and routes responses back (github_comment
++ or any gateway platform). Routes live under platforms.webhook.extra.routes: events (header filter),
++@@ -944,7 +946,7 @@ class WebhookAdapter(BasePlatformAdapter):
++             thread_id = extra.get("message_thread_id") or extra.get("thread_id")  # Telegram forum topics
++             result = await adapter.send(chat_id, content, metadata={"thread_id": thread_id} if thread_id else None)
++             if result.success:
++-                self._mirror_delivery(platform_name, str(chat_id), content, delivery, thread_id)
+++                await asyncio.to_thread(self._mirror_delivery, platform_name, str(chat_id), content, delivery, thread_id)
++             return result
++ 
++     def _delivery_config(self, profile: Optional[str]):
+ diff --git a/gateway/run_agent_cache.py b/gateway/run_agent_cache.py
+-index 2225f4a16..0ee0a7852 100644
++index 2225f4a1..0ee0a785 100644
+ --- a/gateway/run_agent_cache.py
+ +++ b/gateway/run_agent_cache.py
+ @@ -1,3 +1,5 @@
+@@ -47,7 +95,7 @@ index 2225f4a16..0ee0a7852 100644
+              threading.Thread(
+                  target=copy_context().run,
+ diff --git a/gateway/run_turn_runner.py b/gateway/run_turn_runner.py
+-index 7e29a4cdf..f9b24125c 100644
++index 7e29a4cd..f9b24125 100644
+ --- a/gateway/run_turn_runner.py
+ +++ b/gateway/run_turn_runner.py
+ @@ -1,3 +1,5 @@
+@@ -105,7 +153,7 @@ index 7e29a4cdf..f9b24125c 100644
+          elif rearm:
+              # Reopen typing IMMEDIATELY, not on the LLM's first post-answer token (native streaming
+ diff --git a/gateway/run_turn_runner_clarify_delivery.py b/gateway/run_turn_runner_clarify_delivery.py
+-index e3bd3f4f8..c8cf722c2 100644
++index e3bd3f4f..c8cf722c 100644
+ --- a/gateway/run_turn_runner_clarify_delivery.py
+ +++ b/gateway/run_turn_runner_clarify_delivery.py
+ @@ -77,7 +77,7 @@ def _clarify_send_disposition(fut, *, session_key: str, clarify_mod) -> Optional
+@@ -147,7 +195,7 @@ index e3bd3f4f8..c8cf722c2 100644
+ +def clarify_retirement_notice(response, cancelled):
+ +    return "This prompt was cancelled. No answer was recorded." if response == cancelled else _clarify_expired_notice()
+ diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
+-index c73d27656..833028714 100644
++index c73d2765..83302871 100644
+ --- a/gateway/slash_commands_session.py
+ +++ b/gateway/slash_commands_session.py
+ @@ -909,6 +909,12 @@ class GatewaySessionCommandsMixin:
+@@ -164,7 +212,7 @@ index c73d27656..833028714 100644
+          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
+          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
+ diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
+-index ac050556f..93af0cd80 100644
++index ac050556..93af0cd8 100644
+ --- a/hermes_cli/cli_commands_mixin.py
+ +++ b/hermes_cli/cli_commands_mixin.py
+ @@ -5,6 +5,7 @@ the helpers/handlers via ``from cli import ...`` — cli.py imports this module
+@@ -204,7 +252,7 @@ index ac050556f..93af0cd80 100644
+          # One lineage SELECT, two projections: model_history is alternation-repaired for live
+ diff --git a/hermes_cli/cli_session_boundary.py b/hermes_cli/cli_session_boundary.py
+ new file mode 100644
+-index 000000000..b46da2aef
++index 00000000..b46da2ae
+ --- /dev/null
+ +++ b/hermes_cli/cli_session_boundary.py
+ @@ -0,0 +1,13 @@
+@@ -222,7 +270,7 @@ index 000000000..b46da2aef
+ +    with suppress(Exception):
+ +        cli._session_db.end_session(cli.session_id, reason)
+ diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
+-index d17d73f65..a80f7798a 100644
++index d17d73f6..a80f7798 100644
+ --- a/hermes_cli/cli_session_mixin.py
+ +++ b/hermes_cli/cli_session_mixin.py
+ @@ -419,16 +419,16 @@ class CLISessionMixin:
+@@ -256,7 +304,7 @@ index d17d73f65..a80f7798a 100644
+          if self._session_db and old_session_id:
+              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
+ diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
+-index c470445a7..7c706dbd0 100644
++index c470445a..7c706dbd 100644
+ --- a/hermes_cli/cli_tui_runtime_mixin.py
+ +++ b/hermes_cli/cli_tui_runtime_mixin.py
+ @@ -486,8 +486,9 @@ class CLITuiRuntimeMixin:
+@@ -271,7 +319,7 @@ index c470445a7..7c706dbd0 100644
+          self._print_exit_summary()
+          self._release_active_session()
+ diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
+-index 8610268cb..21dbd229a 100644
++index 8610268c..21dbd229 100644
+ --- a/plugins/platforms/discord/adapter.py
+ +++ b/plugins/platforms/discord/adapter.py
+ @@ -1,4 +1,9 @@
+@@ -705,7 +753,7 @@ index 8610268cb..21dbd229a 100644
+      if "history_backfill" in discord_cfg:
+ diff --git a/plugins/platforms/discord/adapter_channel_policy.py b/plugins/platforms/discord/adapter_channel_policy.py
+ new file mode 100644
+-index 000000000..8fb1cd438
++index 00000000..8fb1cd43
+ --- /dev/null
+ +++ b/plugins/platforms/discord/adapter_channel_policy.py
+ @@ -0,0 +1,82 @@
+@@ -793,7 +841,7 @@ index 000000000..8fb1cd438
+ +    return available, warnings
+ diff --git a/plugins/platforms/discord/adapter_commands.py b/plugins/platforms/discord/adapter_commands.py
+ new file mode 100644
+-index 000000000..d18191d10
++index 00000000..d18191d1
+ --- /dev/null
+ +++ b/plugins/platforms/discord/adapter_commands.py
+ @@ -0,0 +1,65 @@
+@@ -863,7 +911,7 @@ index 000000000..d18191d10
+ +        summary["total"] = len(desired_payloads)
+ +        return summary
+ diff --git a/plugins/platforms/discord/adapter_media.py b/plugins/platforms/discord/adapter_media.py
+-index 73e3d3de3..0a857e4fc 100644
++index 73e3d3de..0a857e4f 100644
+ --- a/plugins/platforms/discord/adapter_media.py
+ +++ b/plugins/platforms/discord/adapter_media.py
+ @@ -1,3 +1,5 @@
+@@ -962,7 +1010,7 @@ index 73e3d3de3..0a857e4fc 100644
+ -
+ diff --git a/plugins/platforms/discord/delivery.py b/plugins/platforms/discord/delivery.py
+ new file mode 100644
+-index 000000000..cdb15ca4c
++index 00000000..cdb15ca4
+ --- /dev/null
+ +++ b/plugins/platforms/discord/delivery.py
+ @@ -0,0 +1,16 @@
+@@ -983,7 +1031,7 @@ index 000000000..cdb15ca4c
+ +    if not results or any(not isinstance(result, dict) or result.get('action') != 'allow' for result in results):
+ +        raise PermissionError('Current Discord permissions do not admit private delivery')
+ diff --git a/tests/gateway/conftest.py b/tests/gateway/conftest.py
+-index 9dba55ef3..7576f937e 100644
++index 9dba55ef..7576f937 100644
+ --- a/tests/gateway/conftest.py
+ +++ b/tests/gateway/conftest.py
+ @@ -215,8 +215,14 @@ def _ensure_discord_mock() -> None:
+@@ -1005,7 +1053,7 @@ index 9dba55ef3..7576f937e 100644
+  
+ diff --git a/tests/gateway/test_clarify_cancellation_outcome.py b/tests/gateway/test_clarify_cancellation_outcome.py
+ new file mode 100644
+-index 000000000..9d9b27966
++index 00000000..9d9b2796
+ --- /dev/null
+ +++ b/tests/gateway/test_clarify_cancellation_outcome.py
+ @@ -0,0 +1,156 @@
+@@ -1166,7 +1214,7 @@ index 000000000..9d9b27966
+ +if __name__ == '__main__':
+ +    unittest.main()
+ diff --git a/tests/gateway/test_clarify_delivery_fallback.py b/tests/gateway/test_clarify_delivery_fallback.py
+-index 0e1816260..55a8db7fd 100644
++index 0e181626..55a8db7f 100644
+ --- a/tests/gateway/test_clarify_delivery_fallback.py
+ +++ b/tests/gateway/test_clarify_delivery_fallback.py
+ @@ -1,3 +1,5 @@
+@@ -1198,7 +1246,7 @@ index 0e1816260..55a8db7fd 100644
+  def _runner(adapter, loop, monkeypatch, timeout=5):
+ diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
+ new file mode 100644
+-index 000000000..0cdd80e48
++index 00000000..0cdd80e4
+ --- /dev/null
+ +++ b/tests/gateway/test_discord_command_identity.py
+ @@ -0,0 +1,118 @@
+@@ -1321,7 +1369,7 @@ index 000000000..0cdd80e48
+ +if __name__ == "__main__":
+ +    unittest.main()
+ diff --git a/tests/gateway/test_discord_connect.py b/tests/gateway/test_discord_connect.py
+-index 18002e175..b5c078aaf 100644
++index 18002e17..b5c078aa 100644
+ --- a/tests/gateway/test_discord_connect.py
+ +++ b/tests/gateway/test_discord_connect.py
+ @@ -1,9 +1,12 @@
+@@ -1375,7 +1423,7 @@ index 18002e175..b5c078aaf 100644
+      }
+ diff --git a/tests/gateway/test_discord_guild_channel_only.py b/tests/gateway/test_discord_guild_channel_only.py
+ new file mode 100644
+-index 000000000..572cbc3d2
++index 00000000..572cbc3d
+ --- /dev/null
+ +++ b/tests/gateway/test_discord_guild_channel_only.py
+ @@ -0,0 +1,118 @@
+@@ -1498,7 +1546,7 @@ index 000000000..572cbc3d2
+ +if __name__ == '__main__':
+ +    unittest.main()
+ diff --git a/tests/gateway/test_discord_sync_limit.py b/tests/gateway/test_discord_sync_limit.py
+-index ca8f298f8..4a94ec585 100644
++index ca8f298f..4a94ec58 100644
+ --- a/tests/gateway/test_discord_sync_limit.py
+ +++ b/tests/gateway/test_discord_sync_limit.py
+ @@ -1,3 +1,6 @@
+@@ -1525,7 +1573,7 @@ index ca8f298f8..4a94ec585 100644
+  
+      # Simulate having 100 commands on Discord, with 1 that's no longer desired
+ diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
+-index 8d6e0b006..622a290e0 100644
++index 8d6e0b00..622a290e 100644
+ --- a/tests/gateway/test_resume_command.py
+ +++ b/tests/gateway/test_resume_command.py
+ @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
+@@ -1555,7 +1603,7 @@ index 8d6e0b006..622a290e0 100644
+          """Resume must not carry a previous session's /model override into the
+ diff --git a/tests/gateway/test_stop_clarify_waiters.py b/tests/gateway/test_stop_clarify_waiters.py
+ new file mode 100644
+-index 000000000..c3b7d4d23
++index 00000000..c3b7d4d2
+ --- /dev/null
+ +++ b/tests/gateway/test_stop_clarify_waiters.py
+ @@ -0,0 +1,114 @@
+@@ -1674,7 +1722,7 @@ index 000000000..c3b7d4d23
+ +if __name__ == "__main__":
+ +    unittest.main()
+ diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
+-index 365499669..a1548102d 100644
++index 36549966..a1548102 100644
+ --- a/tests/hermes_cli/test_cli_resume_command.py
+ +++ b/tests/hermes_cli/test_cli_resume_command.py
+ @@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:
+@@ -1726,7 +1774,7 @@ index 365499669..a1548102d 100644
+      """Regression for #47202: /resume must flush un-persisted messages to
+      the session DB before ending the old session, just like /new and
+ diff --git a/tools/clarify_gateway.py b/tools/clarify_gateway.py
+-index c97a44315..8200f7e98 100644
++index c97a4431..8200f7e9 100644
+ --- a/tools/clarify_gateway.py
+ +++ b/tools/clarify_gateway.py
+ @@ -58,14 +58,15 @@ def register(clarify_id: str, session_key: str, question: str, choices: Optional
+@@ -1757,32 +1805,3 @@ index c97a44315..8200f7e98 100644
+          _entries.pop(clarify_id, None)  # regardless of outcome
+          ids = _session_index.get(entry.session_key) or []
+          if clarify_id in ids:
+-
+-diff --git a/gateway/mirror.py b/gateway/mirror.py
+---- a/gateway/mirror.py
+-+++ b/gateway/mirror.py
+-@@ -1,3 +1,5 @@
+-+# ABOUTME: Mirrors delivered messages into the selected native conversation.
+-+# ABOUTME: Applies configured delivery policy before changing Discord transcript history.
+- """Session mirroring for cross-platform message delivery.
+- 
+- When a message is sent to a platform (send_message or cron delivery), append a
+-@@ -61,6 +63,18 @@
+-                 platform, chat_id, thread_id, user_id,
+-             )
+-             return False
+-+        if platform.lower() == "discord":
+-+            from hermes_cli.plugins import get_plugin_manager
+-+            manager = get_plugin_manager()
+-+            if manager.has_hook("pre_message_delivery"):
+-+                decisions = manager.invoke_hook("pre_message_delivery", platform="discord",
+-+                    chat_id=str(chat_id), hermes_home=str(get_hermes_home()),
+-+                    purpose="mirror", session_id=session_id)
+-+                if not decisions or any(not isinstance(decision, dict)
+-+                        or decision.get("action") != "allow"
+-+                        or "mirror" in decision and decision["mirror"] is not True
+-+                        for decision in decisions):
+-+                    return False
+-         _append_to_sqlite(session_id, {
+-             "role": role, "content": message_text, "timestamp": datetime.now().isoformat(),
+-             "mirror": True, "mirror_source": source_label,
+diff --git a/lifeos_hook_bridge/plugin.yaml b/lifeos_hook_bridge/plugin.yaml
+index 257b5c8f..bb4ce95e 100644
+--- a/lifeos_hook_bridge/plugin.yaml
++++ b/lifeos_hook_bridge/plugin.yaml
+@@ -1,6 +1,6 @@
+ name: lifeos-hook-bridge
+ kind: standalone
+-version: 0.7.0
++version: 0.7.1
+ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+ author: 0ut5ider
+ python_dependencies:
+diff --git a/scripts/rebuild_hermes_patches.py b/scripts/rebuild_hermes_patches.py
+index e6588bd5..39edb4e9 100644
+--- a/scripts/rebuild_hermes_patches.py
++++ b/scripts/rebuild_hermes_patches.py
+@@ -57,6 +57,8 @@ GROUPS = {'hermes-plugin-events.patch': ('hermes_cli/plugins.py',
+                                  'tests/tools/test_protected_instruction_cli_channel.py',
+                                  'tools/approval_policy.py'),
+  'hermes-session-lifecycle.patch': ('cli.py',
++                                    'gateway/mirror.py',
++                                    'gateway/platforms/webhook.py',
+                                     'tests/gateway/conftest.py',
+                                     'gateway/slash_commands_session.py',
+                                     'gateway/run_agent_cache.py',
+diff --git a/tests/test_discord_notification_mirror.py b/tests/test_discord_notification_mirror.py
+index b0fa2d38..14731896 100644
+--- a/tests/test_discord_notification_mirror.py
++++ b/tests/test_discord_notification_mirror.py
+@@ -3,6 +3,7 @@
+ import asyncio
+ import json
+ import os
++import threading
+ from types import SimpleNamespace
+ import unittest
+ from unittest.mock import patch
+@@ -154,3 +155,121 @@ class DiscordNotificationMirrorTests(unittest.TestCase):
+         self.manager._hooks['pre_message_delivery'] = []
+         self.assertTrue(self.mirror())
+         self.assertEqual(len(self.store.load_transcript('notification-session')), 1)
++
++    def test_returned_ownership_keeps_unbound_destination_mirrors(self):
++        self.fixture.configuration['ownership_enabled'] = False
++        MemoryConfiguration(self.fixture.path).save(self.fixture.configuration)
++        self.db.create_session('unbound-session', 'discord', chat_id='999', user_id='20', chat_type='dm')
++        self.assertTrue(mirror_to_session('discord', '999', 'Synthetic notice',
++            session_id='unbound-session'))
++        self.assertEqual(len(self.store.load_transcript('unbound-session')), 1)
++
++    def test_absent_memory_configuration_keeps_hermes_mirrors(self):
++        self.fixture.path.unlink()
++        self.assertTrue(self.mirror())
++        self.assertEqual(len(self.store.load_transcript('notification-session')), 1)
++
++    def test_invalid_memory_configuration_still_refuses_mirrors(self):
++        self.fixture.path.write_text('{')
++        self.assertFalse(self.mirror())
++
++    def test_returned_ownership_keeps_mirrors_when_channel_audience_changes(self):
++        self.fixture.configuration['ownership_enabled'] = False
++        MemoryConfiguration(self.fixture.path).save(self.fixture.configuration)
++        self.audience.responses['/channels/60']['permission_overwrites'].append(
++            {'id': '40', 'type': 1, 'allow': '1024', 'deny': '0'})
++        self.assertTrue(self.mirror())
++        self.assertEqual(self.audience.requests, [])
++
++    def test_admitted_direct_message_keeps_mirror_without_a_channel_binding(self):
++        config = self.fixture.configuration
++        del config['discord_channels']
++        config['destinations']['discord:70'] = dict(config['destinations']['discord:60'])
++        MemoryConfiguration(self.fixture.path).save(config)
++        self.db.create_session('dm-session', 'discord', chat_id='70', user_id='20', chat_type='dm')
++        self.fixture.runtime.admit(self.fixture.metadata(app='discord', user='20',
++            destination='70', session='dm-session'), **self.fixture.route, is_first_turn=True)
++        self.assertTrue(mirror_to_session('discord', '70', 'Synthetic notice', session_id='dm-session'))
++        self.assertEqual(len(self.store.load_transcript('dm-session')), 1)
++        self.assertEqual(self.audience.requests, [])
++
++    def test_send_tool_resolves_real_gateway_session_before_and_after_admission(self):
++        from tools.send_message_tool import _mirror_sent_message
++        from gateway.config import Platform
++        from gateway.session import SessionSource
++        entry = self.store.get_or_create_session(SessionSource(platform=Platform.DISCORD,
++            chat_id='60', chat_type='group', user_id='20', scope_id='10'))
++        self.assertFalse(_mirror_sent_message('discord', '60', 'Synthetic morning notice', None))
++        self.assertEqual(self.store.load_transcript(entry.session_id), [])
++        self.fixture.runtime.admit(self.metadata(entry.session_id),
++            **self.fixture.route, is_first_turn=True)
++        self.assertTrue(_mirror_sent_message('discord', '60', 'Synthetic morning notice', None))
++        self.assertEqual(len(self.store.load_transcript(entry.session_id)), 1)
++
++    def test_webhook_mirror_checks_run_outside_the_gateway_event_loop(self):
++        from agent.secret_scope import set_secret_scope, reset_secret_scope
++        from gateway.config import Platform, PlatformConfig
++        from gateway.platforms.base import SendResult
++        from gateway.platforms.webhook import WebhookAdapter
++        from gateway.session import SessionSource
++        from plugins.platforms.discord import adapter
++        entry = self.store.get_or_create_session(SessionSource(platform=Platform.DISCORD,
++            chat_id='60', chat_type='group', user_id='20', scope_id='10'))
++        self.fixture.runtime.admit(self.metadata(entry.session_id),
++            **self.fixture.route, is_first_turn=True)
++        callback_threads = []
++        mirror_started = threading.Event()
++        heartbeat_seen = threading.Event()
++        heartbeat_unblocked_request = []
++        self.audience.requests.clear()
++
++        def await_heartbeat(path):
++            if path == '/users/@me' and self.audience.deliveries:
++                mirror_started.set()
++                heartbeat_unblocked_request.append(heartbeat_seen.wait(timeout=1))
++
++        self.audience.on_request = await_heartbeat
++
++        def observe_thread(**kwargs):
++            if kwargs.get('purpose') == 'mirror':
++                callback_threads.append(threading.get_ident())
++            return {'action': 'allow'}
++
++        ctx = PluginContext(PluginManifest(name='mirror-thread-probe', version='1.0.0',
++            description='Synthetic thread measurement'), self.manager)
++        ctx.register_hook('pre_message_delivery', observe_thread)
++
++        class LocalDiscordAdapter:
++            async def send(self, chat_id, content, metadata=None):
++                result = await adapter._standalone_send(PlatformConfig(token='synthetic-token',
++                    extra={'guild_channel_only': True, 'allowed_channels': ['60']}), chat_id, content)
++                return SendResult(success=result.get('success', False))
++
++        webhook = WebhookAdapter(PlatformConfig())
++        webhook.gateway_runner = SimpleNamespace(
++            _authorization_adapter=lambda platform, profile: LocalDiscordAdapter())
++        token = set_secret_scope({'DISCORD_BOT_TOKEN': 'synthetic-token'})
++        self.addCleanup(reset_secret_scope, token)
++        loop_thread = threading.get_ident()
++
++        async def deliver_with_heartbeat():
++            async def heartbeat():
++                while not mirror_started.is_set():
++                    await asyncio.sleep(0.001)
++                heartbeat_seen.set()
++
++            pulse = asyncio.create_task(heartbeat())
++            try:
++                return await webhook._deliver_cross_platform('discord', 'Synthetic webhook notice',
++                    {'mirror': True, 'route': 'synthetic', 'deliver_extra': {'chat_id': '60'}})
++            finally:
++                await asyncio.wait_for(pulse, timeout=2)
++
++        with patch.object(adapter, '_DISCORD_API_BASE', self.audience.origin):
++            result = asyncio.run(deliver_with_heartbeat())
++        self.assertTrue(result.success)
++        self.assertEqual(len(self.audience.deliveries), 1)
++        self.assertEqual(len(self.store.load_transcript(entry.session_id)), 1)
++        self.assertEqual(len(callback_threads), 1)
++        self.assertNotEqual(callback_threads[0], loop_thread)
++        self.assertEqual(heartbeat_unblocked_request, [True])
+diff --git a/tests/test_hermes_patch_regeneration.py b/tests/test_hermes_patch_regeneration.py
+index 4f42284e..2ca75559 100644
+--- a/tests/test_hermes_patch_regeneration.py
++++ b/tests/test_hermes_patch_regeneration.py
+@@ -14,6 +14,10 @@ class PatchAssignmentTests(unittest.TestCase):
+     def test_all_distributed_patches_have_an_exact_file_group(self):
+         self.assertEqual(set(GROUPS), set(HERMES_PATCHES))
+ 
++    def test_session_lifecycle_group_owns_notification_mirror_paths(self):
++        self.assertIn('gateway/mirror.py', GROUPS['hermes-session-lifecycle.patch'])
++        self.assertIn('gateway/platforms/webhook.py', GROUPS['hermes-session-lifecycle.patch'])
++
+ @unittest.skipUnless((SOURCE / '.git').exists(), 'A prepared source checkout with new files marked for diff is required')
+ class HermesPatchRegenerationTests(unittest.TestCase):
+     def test_whitespace_failure_refuses_before_publishing_patch_files(self):
+@@ -53,6 +57,9 @@ class HermesPatchRegenerationTests(unittest.TestCase):
+             self.assertIn('agent/turn_request_assembly.py', patch)
+             self.assertIn('hermes_cli/plugin_validate.py', patch)
+             self.assertIn('test_capability_probe_records_required_middleware', patch)
++            lifecycle = (output / 'hermes-session-lifecycle.patch').read_text()
++            self.assertIn('purpose="mirror"', lifecycle)
++            self.assertIn('await asyncio.to_thread', lifecycle)
+             web = (output / 'hermes-web-result-status.patch').read_text()
+             self.assertIn('def web_extract_result_failed', web)
+             self.assertIn('a/agent/display.py', web)
