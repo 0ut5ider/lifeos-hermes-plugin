@@ -27,7 +27,7 @@ try:
  (client_home/'config.toml').write_text('[mcp_servers.synthetic-memory]\nurl = '+json.dumps(origin+MCP_PATH)+'\n')
  env=dict(os.environ,CODEX_HOME=str(client_home))
  stdout=(out/'codex-login.private.stdout').open('w');stderr=(out/'codex-login.private.stderr').open('w')
- process=subprocess.Popen(['/home/outsider/.local/bin/codex','mcp','login','synthetic-memory','--no-browser','--scopes','lifeos:memory','--oauth-client-registration','dcr'],
+ process=subprocess.Popen(['/home/outsider/.local/bin/codex','mcp','login','synthetic-memory','--no-browser'],
   cwd=fixture.home,env=env,stdin=subprocess.PIPE,stdout=stdout,stderr=stderr,text=True)
  deadline=time.monotonic()+30;authorization=None
  while time.monotonic()<deadline:
@@ -109,7 +109,7 @@ try:
  receipt['opencode_version']=subprocess.check_output(['/home/outsider/.opencode/bin/opencode','--version'],text=True).strip()
  receipt.update(status='PASS',client='Codex CLI',version=subprocess.check_output(['/home/outsider/.local/bin/codex','--version'],text=True).strip(),
   discovery=True,dynamic_registration=True,oauth_code_pkce=True,owner_consent=True,callback=True,credentials_saved=True,
-  test_data='synthetic',shared_client_config_unchanged=True)
+  test_data='synthetic',shared_client_config_unchanged=True,default_oauth_registration_and_scope=True)
  code=0
 except BaseException as error:
  receipt.update(status='FAIL',error_type=type(error).__name__)

@@ -74,7 +74,8 @@ forwarded-protocol headers do not authorize plaintext LAN requests.
 The [final client receipt](agent-clients-verification.json) repeats actual Codex
 CLI 0.163.0 OAuth login. Claude Code 2.1.301 and OpenCode 2.0.30 connect with a
 separate bearer credential. These health checks establish MCP connection, not
-model-driven tool selection. OpenCode's first status query returns before its
+model-driven tool selection. Codex uses its default registration and scope
+settings in this final replay. OpenCode's first status query returns before its
 MCP configuration is ready. A bounded second query reports the connection.
 The probe stops its isolated OpenCode service and removes its disposable client
 configuration. It does not change a deployed agent configuration.
@@ -82,6 +83,8 @@ configuration. It does not change a deployed agent configuration.
 The [version check](version-verification.json) verifies all five declarations at
 0.7.0. All eight version tests pass. The version-only change follows the clear
 third review. It does not change the reviewed transport implementation.
+The [source identity check](source-identity-verification.json) verifies that only
+the five version declarations change in product or test paths after review.
 
 Initial test discovery selects the native Hermes `tests` namespace. Its 760
 tests have six failures, 31 errors, and seven skips. Those results do not qualify
