@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from itertools import islice
 import json
 import os
-from pathlib import Path
 
 from .memory_access import MemoryUnavailable
 from .memory_sources import authorize, _admit, _source_time, SOURCE_LIMIT, SOURCE_COUNT_LIMIT, CORPUS_LIMIT

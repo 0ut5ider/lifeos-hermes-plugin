@@ -9,7 +9,7 @@ import re
 import sqlite3
 
 from .memory_access import MemoryUnavailable, _now
-from .memory_atlas import DATABASE, SNAPSHOT
+from .memory_atlas import SNAPSHOT
 from .memory_atlas_insight import _request, _admit_output
 
 

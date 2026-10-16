@@ -5,7 +5,6 @@ from itertools import islice
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
 
 from .memory_access import MemoryConflict, MemoryUnavailable
