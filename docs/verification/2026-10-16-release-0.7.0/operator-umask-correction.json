@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "scope": "Owned synthetic qualification guest only",
+  "cause": "Model test process inherits permissive umask and creates CACHE with mode 0775",
+  "original_directory_mode": "0775",
+  "corrected_directory_mode": "0700",
+  "subsequent_test_process_umask": "0077",
+  "policy_changed": false,
+  "personal_records_read_or_changed": false
+}
