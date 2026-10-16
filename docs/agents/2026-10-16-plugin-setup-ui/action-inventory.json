@@ -1,0 +1,336 @@
+[
+  {
+    "file": "lifeos_hook_bridge/dashboard/dist/index.js",
+    "before_button_calls": 58,
+    "after_button_calls": 58,
+    "missing_labels": [],
+    "added_labels": [],
+    "actions": [
+      {
+        "label_expression": "\"Review Hermes memory\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Upload files for review\"",
+        "handler_paths": [
+          "\"/upload\", { label: sourceLabel, files: uploads })"
+        ]
+      },
+      {
+        "label_expression": "\"Upload portable bundle for review\"",
+        "handler_paths": [
+          "\"/upload\", { label: \"Uploaded portable LifeOS bundle\", bundle_bytes: portableUpload })"
+        ]
+      },
+      {
+        "label_expression": "\"Load saved import\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Review publication plan\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Apply reviewed import\"",
+        "handler_paths": [
+          "\"/apply\", { ...binding(), plan_signature: plan.signature }))"
+        ]
+      },
+      {
+        "label_expression": "\"Check import status\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Prepare LifeOS ownership activation\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Review reverse export\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Review export plan\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Create reviewed export\"",
+        "handler_paths": [
+          "\"/apply\", { ...binding(), plan_signature: plan.signature }))"
+        ]
+      },
+      {
+        "label_expression": "\"Download portable memory\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Prepare return to built-in Hermes\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Save and enable HTTP MCP\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Disable HTTP MCP and invalidate credentials\"",
+        "handler_paths": [
+          "\"/settings\", { enabled: false, public_url: settings.public_url })"
+        ]
+      },
+      {
+        "label_expression": "\"Create agent token (90 days)\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Hide token\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Review connection requests\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Approve \" + request.client_name",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Deny \" + request.client_name",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Revoke HTTP \" + connection.client",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Clear unused OAuth registrations\"",
+        "handler_paths": [
+          "\"/registrations/clear\", {})"
+        ]
+      },
+      {
+        "label_expression": "\"Claim this LifeOS installation\"",
+        "handler_paths": [
+          "\"/owner\", \"POST\")"
+        ]
+      },
+      {
+        "label_expression": "\"Check memory status\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Preview existing LifeOS memory\"",
+        "handler_paths": [
+          "\"/adoption/preview\", \"POST\", {})"
+        ]
+      },
+      {
+        "label_expression": "\"Previous sources\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Next sources\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Add reviewed sources to memory\"",
+        "handler_paths": [
+          "\"/adoption\", \"POST\", { signature: adoption.signature, projects: projects, request_id: adoptionRequest })"
+        ]
+      },
+      {
+        "label_expression": "\"Search memories\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Review pending changes\"",
+        "handler_paths": [
+          "\"/review\", \"POST\", { tool: \"lifeos_memory_proposals\", arguments: {} })"
+        ]
+      },
+      {
+        "label_expression": "\"Accept change\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Reject change\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Apply edited change\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Mark applied elsewhere\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "memory.sharing_enabled ? \"Disable memory sharing\" : \"Enable memory sharing\"",
+        "handler_paths": [
+          "\"/sharing\", \"POST\", { enabled: !memory.sharing_enabled })"
+        ]
+      },
+      {
+        "label_expression": "\"Revoke \" + connection.client",
+        "handler_paths": [
+          "\"/connections/\" + encodeURIComponent(connection.client), \"DELETE\")"
+        ]
+      },
+      {
+        "label_expression": "\"Remove SSH entry of \" + connection.client",
+        "handler_paths": [
+          "\"/connections/\" + encodeURIComponent(connection.client), \"DELETE\")"
+        ]
+      },
+      {
+        "label_expression": "\"Add agent connection\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Prepare fresh store\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Return to the previous installation\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Recover interrupted selection\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Use \" + store.identifier.slice(0, 8)",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Remove \" + store.identifier.slice(0, 8)",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Preparing...\" : lifeosUpdate?.state === \"applied\" ? \"Check for newer supported LifeOS\" : \"Prepare latest LifeOS update\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Starting...\" : \"Apply prepared LifeOS update\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Restore previous LifeOS version\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Restore interrupted update\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Restore interrupted mount\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Finishing...\" : \"Finish LifeOS setup\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Preparing...\" : \"Prepare tested Hermes extension\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Starting...\" : \"Apply tested Hermes extension\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Restore previous Hermes\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Recover interrupted Hermes change\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Preparing...\" : \"Prepare latest LifeOS\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "installationBusy ? \"Installing...\" : \"Install prepared LifeOS\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "saving ? \"Saving...\" : \"Save settings\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "baselineBusy ? \"Working...\" : \"Preview baseline files\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "baseline?.baseline_exists === true ? \"Renew reviewed baseline\" : \"Create reviewed baseline\"",
+        "handler_paths": []
+      }
+    ]
+  },
+  {
+    "file": "optional/lifeos_release_manager/dashboard/dist/index.js",
+    "before_button_calls": 11,
+    "after_button_calls": 11,
+    "missing_labels": [],
+    "added_labels": [],
+    "actions": [
+      {
+        "label_expression": "\"Refresh memory workflows\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "operation.kind === \"activation\" ? \"Activate reviewed LifeOS ownership\" : operation.kind === \"removal\" ? \"Remove reviewed LifeOS software\" : \"Apply reviewed provider return\"",
+        "handler_paths": [
+          "operation, \"apply\")"
+        ]
+      },
+      {
+        "label_expression": "\"Prepare complete LifeOS removal\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Recover memory workflow\"",
+        "handler_paths": [
+          "operation, \"recover\")"
+        ]
+      },
+      {
+        "label_expression": "operation.kind === \"removal\" ? \"Restore integration software\" : \"Restore previous provider settings\"",
+        "handler_paths": [
+          "operation, \"rollback\")"
+        ]
+      },
+      {
+        "label_expression": "entry[0]",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Refresh status\"",
+        "handler_paths": []
+      },
+      {
+        "label_expression": "\"Review release\"",
+        "handler_paths": [
+          "operation.identifier, \"review\")"
+        ]
+      },
+      {
+        "label_expression": "\"Restore prior programs\"",
+        "handler_paths": [
+          "operation.identifier, \"restore\")"
+        ]
+      },
+      {
+        "label_expression": "\"Recover operation\"",
+        "handler_paths": [
+          "operation.identifier, \"recover\")"
+        ]
+      },
+      {
+        "label_expression": "\"Install this release\"",
+        "handler_paths": [
+          "reviewed.identifier, \"apply\")"
+        ]
+      }
+    ]
+  }
+]

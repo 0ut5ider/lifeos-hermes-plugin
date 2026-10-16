@@ -61,7 +61,9 @@
         if (mounted.current) { setOperations([]); setRemoval({}); setMessage(error.message); }
       } finally { if (mounted.current) setBusy(false); }
     }
-    return h("section", {className: "space-y-3 rounded border border-border p-4"},
+    return h("details", {id: "memory_workflows"},
+      h("summary", null, "Advanced: memory ownership and removal"),
+      h("section", {className: "space-y-3 rounded border border-border p-4"},
       h("h2", {className: "text-lg font-semibold"}, "Memory ownership workflows"),
       h("p", null, "Prepare an import activation or provider return from the LifeOS memory page. After a verified return, you can prepare complete LifeOS software removal."),
       h("a", {href: "/lifeos-bridge", className: "underline"}, "Open LifeOS memory controls"),
@@ -90,7 +92,7 @@
               h("p", null, "Copy this recovery command before you continue. This integration page closes after removal succeeds."),
               h("code", {className: "break-all"}, operation.review.recovery_command),
               h("p", null, "Run the command with recover or rollback. Recovery requires your dashboard owner username and password.")) : null,
-            h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "apply"); }},
+            h("button", {type: "button", className: operation.kind === "removal" ? "lifeos-danger" : "lifeos-primary", disabled: busy, onClick: function () { return act(operation, "apply"); }},
               operation.kind === "activation" ? "Activate reviewed LifeOS ownership" :
               operation.kind === "removal" ? "Remove reviewed LifeOS software" : "Apply reviewed provider return")) : null,
           operation.kind === "return" && operation.state === "verified" && operation.receipt?.application_verified === true ?
@@ -99,14 +101,15 @@
               h("label", null, h("input", {type: "checkbox", checked: Boolean(removal[operation.identifier]), disabled: busy,
                 onChange: function (event) { setRemoval({...removal, [operation.identifier]: event.target.checked}); }}),
                 " I understand that removal disables Discord. Stock Hermes does not include the integration's private-channel restrictions."),
-              h("button", {type: "button", disabled: busy || !removal[operation.identifier],
+              h("p", {className: "lifeos-help"}, "Select the acknowledgement above to enable removal preparation."),
+              h("button", {type: "button", className: "lifeos-danger", disabled: busy || !removal[operation.identifier],
                 onClick: function () { return prepareRemoval(operation); }}, "Prepare complete LifeOS removal")) : null,
           ["queued", "interrupted"].includes(operation.state) ? h("button", {type: "button", disabled: busy,
             onClick: function () { return act(operation, "recover"); }}, "Recover memory workflow") : null,
           ["configured", "verified", "verification_required", "interrupted"].includes(operation.state) ?
             h("button", {type: "button", disabled: busy, onClick: function () { return act(operation, "rollback"); }},
               operation.kind === "removal" ? "Restore integration software" : "Restore previous provider settings") : null);
-      }), message ? h("p", {role: "status"}, message) : null);
+      }), message ? h("p", {role: "status"}, message) : null));
   }
 
   function Releases() {
@@ -182,55 +185,78 @@
       }
     }
 
-    return h("section", {className: "space-y-4 p-6"},
-      h("h1", {className: "text-2xl font-semibold"}, "LifeOS releases"),
+    const pendingOperation = operations.some(function (operation) {
+      return ["preparing", "applying", "recovering", "restoring", "recovery_required"].includes(operation.state)
+        || operation.state.startsWith("queued-");
+    });
+    const preparationHelp = busy ? "An operation is in progress. Wait before preparing another release."
+      : pendingOperation ? "Finish or recover the active release operation before preparing another release."
+      : installed === null ? "Checking the current installation. Refresh status if this message continues."
+      : installed ? "LifeOS is installed. Choose an update action to prepare a complete tested package."
+      : "LifeOS is not installed. Choose Install LifeOS to prepare the complete integration.";
+    return h("main", {className: "lifeos-setup"},
+      h("header", null,
+        h("p", {className: "lifeos-eyebrow"}, "Integration maintenance"),
+        h("h1", null, "LifeOS releases"),
+        h("p", {className: "lifeos-intro"}, "Install or update the complete integration. Prepare a release first, review its contents, then approve installation.")),
+      h("nav", {className: "lifeos-navigation", "aria-label": "LifeOS release sections"},
+        h("a", {href: "#release_prepare"}, "Prepare a release"),
+        h("a", {href: "#release_operations"}, "Release operations"),
+        installed === true ? h("a", {href: "#memory_workflows"}, "Memory ownership") : null,
+        h("a", {href: "/lifeos-bridge"}, "Memory and model settings")),
+      h("section", {id: "release_prepare", "aria-labelledby": "release_prepare_title"},
+        h("h2", {id: "release_prepare_title"}, "Prepare a release"),
+        h("p", null, "Use these controls or ask Hermes in chat. Preparation does not install the release."),
+        h("p", {className: "lifeos-notice"}, "All update actions prepare the complete tested package: Hermes, LifeOS, the bridge, and the release manager. Your personal data and model settings stay in place."),
+        h("label", {className: "block"}, "Release version (leave blank for latest stable)",
+          h("input", {type: "text", value: version, disabled: busy, placeholder: "Latest stable",
+            className: "block rounded border border-border bg-background p-2", onChange: function (event) { setVersion(event.target.value); }})),
+        installed === false ? h("div", {className: "lifeos-grid"},
+          h("label", {className: "block"}, "Your name", h("input", {type: "text", value: name, disabled: busy,
+            className: "block rounded border border-border bg-background p-2", onChange: function (event) { setName(event.target.value); }})),
+          h("label", {className: "block"}, "Assistant name", h("input", {type: "text", value: assistant, disabled: busy,
+            className: "block rounded border border-border bg-background p-2", onChange: function (event) { setAssistant(event.target.value); }}))) : null,
+        h("div", {className: "lifeos-actions"},
+          [["Install LifeOS", "install", installed !== false], ["Update LifeOS", "update", installed !== true],
+            ["Update plugin", "plugin", installed !== true]].map(function (entry) {
+            return h("button", {key: entry[1], type: "button", "aria-describedby": "release_preparation_help",
+              disabled: busy || entry[2] || pendingOperation,
+              onClick: function () { return prepare(entry[1]); },
+              className: entry[1] === "install" ? "lifeos-primary" : ""}, entry[0]);
+          })),
+        h("p", {id: "release_preparation_help", className: "lifeos-help", role: "status"}, preparationHelp)),
+      h("section", {id: "release_operations", "aria-labelledby": "release_operations_title"},
+        h("h2", {id: "release_operations_title"}, "Release operations"),
+        h("p", null, "Review prepared releases here. Recovery and restore actions appear when an operation supports them."),
+        h("button", {type: "button", disabled: busy, onClick: async function () {
+          try { await refresh(); setMessage(""); }
+          catch (error) { setMessage(error.message); }
+        }}, "Refresh status"),
+        !operations.length ? h("p", {className: "lifeos-empty"}, "No release operations yet. Prepare a release above to begin.") : null,
+        operations.map(function (operation) {
+          return h("article", {key: operation.identifier},
+            h("h3", null, "Release " + (operation.version ?? "preparation") + ": " + operation.state),
+            h("p", {className: "lifeos-help"}, "Operation: " + operation.identifier),
+            operation.error ? h("p", {role: "status"}, operation.error) : null,
+            h("div", {className: "lifeos-actions"},
+              operation.state === "ready" ? h("button", {type: "button", className: "lifeos-primary", disabled: busy,
+                onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,
+              operation.restore_available ? h("button", {type: "button", className: "lifeos-danger", disabled: busy,
+                onClick: function () { return action(operation.identifier, "restore"); }}, "Restore prior programs") : null,
+              operation.recover_available ? h("button", {type: "button", disabled: busy,
+                onClick: function () { return action(operation.identifier, "recover"); }}, "Recover operation") : null));
+        }),
+        reviewed ? h("article", {className: "lifeos-review"},
+          h("h3", null, "Install release " + reviewed.version),
+          h("p", {className: "lifeos-notice"}, reviewed.restart_required ? "Hermes services will restart during this update." : "The prepared integration will become available to this profile."),
+          h("p", null, "Program commit: " + reviewed.commit),
+          h("p", {className: "lifeos-help"}, "Package SHA-256: " + reviewed.package_sha256),
+          h("button", {type: "button", disabled: busy, onClick: function () {
+            return action(reviewed.identifier, "apply");
+          }, className: "lifeos-primary"}, "Install this release")) : null),
       installed === true ? h(MemoryWorkflows) : null,
-      h("p", null, "Prepare a release with these controls or ask Hermes in chat. Review the prepared release before installation."),
-      h("p", null, "All update actions prepare the complete tested package: Hermes, LifeOS, the bridge, and the release manager. Your personal data and model settings stay in place."),
-      h("label", {className: "block"}, "Release version (leave blank for latest stable)",
-        h("input", {type: "text", value: version, disabled: busy, placeholder: "Latest stable",
-          className: "block rounded border border-border bg-background p-2", onChange: function (event) { setVersion(event.target.value); }})),
-      installed === false ? h("div", {className: "space-y-2"},
-        h("label", {className: "block"}, "Your name", h("input", {type: "text", value: name, disabled: busy,
-          className: "block rounded border border-border bg-background p-2", onChange: function (event) { setName(event.target.value); }})),
-        h("label", {className: "block"}, "Assistant name", h("input", {type: "text", value: assistant, disabled: busy,
-          className: "block rounded border border-border bg-background p-2", onChange: function (event) { setAssistant(event.target.value); }}))) : null,
-      h("div", {className: "flex flex-wrap gap-2"},
-        [["Install LifeOS", "install", installed !== false], ["Update LifeOS", "update", installed !== true],
-          ["Update plugin", "plugin", installed !== true]].map(function (entry) {
-          return h("button", {key: entry[1], type: "button",
-            disabled: busy || entry[2] || operations.some(function (operation) {
-              return ["preparing", "applying", "recovering", "restoring", "recovery_required"].includes(operation.state)
-                || operation.state.startsWith("queued-");
-            }),
-            onClick: function () { return prepare(entry[1]); },
-            className: "rounded border border-border px-4 py-2 disabled:opacity-50"}, entry[0]);
-        })),
-      h("button", {type: "button", disabled: busy, onClick: async function () {
-        try { await refresh(); setMessage(""); }
-        catch (error) { setMessage(error.message); }
-      }, className: "rounded border border-border px-4 py-2"}, "Refresh status"),
-      operations.map(function (operation) {
-        return h("article", {key: operation.identifier, className: "space-y-2 rounded border border-border p-4"},
-          h("p", null, "Release " + (operation.version ?? "preparation") + ": " + operation.state),
-          h("p", {className: "break-all text-sm"}, "Operation: " + operation.identifier),
-          operation.error ? h("p", {role: "status"}, operation.error) : null,
-          operation.state === "ready" ? h("button", {type: "button", disabled: busy,
-            onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,
-          operation.restore_available ? h("button", {type: "button", disabled: busy,
-            onClick: function () { return action(operation.identifier, "restore"); }}, "Restore prior programs") : null,
-          operation.recover_available ? h("button", {type: "button", disabled: busy,
-            onClick: function () { return action(operation.identifier, "recover"); }}, "Recover operation") : null);
-      }),
-      reviewed ? h("article", {className: "space-y-2 rounded border border-border p-4"},
-        h("h2", {className: "text-lg font-semibold"}, "Install release " + reviewed.version),
-        h("p", null, reviewed.restart_required ? "Hermes services will restart during this update." : "The prepared integration will become available to this profile."),
-        h("p", null, "Program commit: " + reviewed.commit),
-        h("p", {className: "break-all text-sm"}, "Package SHA-256: " + reviewed.package_sha256),
-        h("button", {type: "button", disabled: busy, onClick: function () {
-          return action(reviewed.identifier, "apply");
-        }, className: "rounded bg-primary px-4 py-2 text-primary-foreground"}, "Install this release")) : null,
       message ? h("p", {role: "status"}, message) : null);
+
   }
   window.__HERMES_PLUGINS__.register("lifeos-release-manager", Releases);
 })();

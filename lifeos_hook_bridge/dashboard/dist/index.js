@@ -1,5 +1,5 @@
-// ABOUTME: Maps each LifeOS tier to a configured Hermes provider, model, and effort.
-// ABOUTME: Uses Hermes's authenticated model catalog and the bridge settings API.
+// ABOUTME: Presents LifeOS memory, agent access, installation, and model setup controls.
+// ABOUTME: Uses authenticated Hermes APIs while preserving separate review and application actions.
 (function () {
   "use strict";
 
@@ -110,6 +110,7 @@
                   setUploads(function (current) { return { ...current, [name]: encoded }; });
                 });
               } })); }),
+          h("p", { className: "lifeos-help" }, "Enter a source label and choose at least one file to enable upload."),
           h("button", { type: "button", disabled: busy || !sourceLabel.trim() || !Object.keys(uploads).length,
             onClick: function () { return run(async function () {
               const source = await post("/upload", { label: sourceLabel, files: uploads });
@@ -129,6 +130,7 @@
                 setPortableUpload(window.btoa(binary));
               });
             } })),
+          h("p", { className: "lifeos-help" }, "Choose a portable memory JSON file to enable upload."),
           h("button", { type: "button", disabled: busy || !portableUpload,
             onClick: function () { return run(async function () {
               const source = await post("/upload", { label: "Uploaded portable LifeOS bundle", bundle_bytes: portableUpload });
@@ -139,6 +141,7 @@
             onChange: function (event) { setResumeId(event.target.value); setSnapshot(null); } })),
           h("label", null, "Snapshot signature", h("input", { value: resumeSignature, disabled: busy,
             onChange: function (event) { setResumeSignature(event.target.value); setSnapshot(null); } })),
+          h("p", { className: "lifeos-help" }, "Enter the saved import identifier and snapshot signature to resume its review."),
           h("button", { type: "button", disabled: busy || !resumeId || !resumeSignature,
             onClick: function () { return run(refresh); } }, "Load saved import")),
         message ? h("p", { role: "status" }, message) : null,
@@ -303,6 +306,7 @@
               h("label", null, "Replacement Hermes prompt", h("textarea", { value: prompt, disabled: busy,
                 className: "block w-full rounded border border-border bg-background p-2",
                 onChange: function (event) { setPrompt(event.target.value); } })),
+              h("p", { className: "lifeos-help" }, "Enter a replacement Hermes prompt to prepare provider return."),
               h("button", { type: "button", disabled: busy || !prompt.trim(), onClick: function () { return run(async function () {
                 const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/memory-workflows", {
                   method: "POST", headers: { "Content-Type": "application/json" },
@@ -367,54 +371,85 @@
     const validGrant = Boolean(client.trim() && projects.trim() && route.trim());
     return h("details", { id: "memory_http" },
       h("summary", { className: "cursor-pointer font-semibold" }, "Connect agents over HTTP"),
-      h("div", { className: "space-y-3 pt-3" },
-        h("p", null, "Use Tailscale Serve for private HTTPS access from your computers. Each agent still needs owner-approved memory permissions. Tailscale is optional."),
-        h("p", null, "Serve this dashboard's origin without a path rewrite. Use Tailscale Serve, which limits access to your tailnet. Keep dashboard sign-in enabled."),
-        h("form", { id: "http_settings", onSubmit: function (event) {
-          event.preventDefault(); return run(function () { return post("/settings", { enabled: true, public_url: origin }); });
-        } }, field("http_public_url", "Public HTTPS origin (for example https://hermes.example.ts.net)", origin, setOrigin),
-          h("button", { type: "submit", disabled: busy || !origin.trim() }, "Save and enable HTTP MCP")),
-        settings?.enabled ? h("button", { type: "button", disabled: busy, onClick: function () {
-          return run(function () { setToken(""); return post("/settings", { enabled: false, public_url: settings.public_url }); });
-        } }, "Disable HTTP MCP and invalidate credentials") : null,
-        h("p", null, "Changing the origin or disabling HTTP invalidates existing credentials. Add a fresh connection afterward."),
-        settings?.mcp_url ? h("label", { className: "block" }, "MCP URL",
-          h("input", { readOnly: true, value: settings.mcp_url, className: "block w-full p-2" })) : null,
-        h("button", { type: "button", disabled: busy, onClick: function () { return run(refresh); } }, "Review connection requests"),
-        h("button", { type: "button", disabled: busy, onClick: function () {
-          return run(function () { return post("/registrations/clear", {}); });
-        } }, "Clear unused OAuth registrations"),
-        h("p", null, "Clearing removes unused registrations and waiting sign-in requests. Active connections keep their credentials."),
-        settings && !settings.sharing_enabled ? h("p", null,
-          "Memory sharing is disabled. Enable memory sharing above before agent sign-in. Approving a request or creating a token enables sharing for all enabled connections.") : null,
-        h("p", null, "Add the MCP URL in your agent, then sign in. Review its name and callback below. Choose permissions before approving. Client names and declared model routes are unverified."),
-        h("p", null, "A cloud model can receive every fact returned through this connection. Project access starts read-only. Use a distinct name for each connection."),
-        h("form", { id: "http_enrollment", onSubmit: function (event) {
-          event.preventDefault(); return run(async function () { const result = await post("/connections", grant()); setToken(result.token); });
-        } }, field("http_client", "Connection name", client, setClient),
-          field("http_projects", "Projects (comma separated; * permits all projects)", projects, setProjects),
-          field("http_model_route", "Declared model route", route, setRoute),
-          permission("http_principal", "Allow reading owner preferences and identity", principal, setPrincipal),
-          permission("http_assistant", "Allow reading assistant preferences", assistant, setAssistant),
-          permission("http_write", "Allow writing project facts", write, setWrite),
-          h("button", { type: "submit", disabled: busy || !settings?.enabled || !validGrant }, "Create agent token (90 days)")),
-        token ? h("div", null,
-          h("p", null, "Store this token privately in your agent. The server shows it once. Use the Authorization: Bearer header. Do not put it in a URL or chat."),
-          h("textarea", { readOnly: true, value: token, spellCheck: false, autoComplete: "off", className: "block w-full p-2" }),
-          h("button", { type: "button", onClick: function () { setToken(""); } }, "Hide token")) : null,
-        (settings?.pending ?? []).map(function (request) { return h("article", { key: request.id, className: "rounded border p-3" },
-          h("p", null, "Agent requests access: " + request.client_name),
-          h("p", null, "Callback: " + request.redirect_uri),
-          h("p", null, "Approval uses the permissions selected above."),
-          h("button", { type: "button", disabled: busy || !validGrant, onClick: function () { return authorize(request, "approve"); } }, "Approve " + request.client_name),
-          h("button", { type: "button", disabled: busy, onClick: function () { return authorize(request, "deny"); } }, "Deny " + request.client_name)); }),
-        callback ? h("a", { href: callback, referrerPolicy: "no-referrer", rel: "noreferrer" }, "Return to agent") : null,
-        (settings?.connections ?? []).map(function (connection) { return h("article", { key: connection.client, className: "rounded border p-3" },
-          h("p", null, connection.client + ": " + (connection.enabled ? "enabled" : "revoked")),
-          h("p", null, "Reads: " + connection.read.join(", ") + ". Writes: " + (connection.write.join(", ") || "none") + ". Projects: " + connection.projects.join(", ")),
-          connection.enabled ? h("button", { type: "button", disabled: busy, onClick: function () {
-            return run(function () { setToken(""); return SDK.fetchJSON(base + "/connections/" + encodeURIComponent(connection.client), { method: "DELETE" }); });
-          } }, "Revoke HTTP " + connection.client) : null); }),
+      h("div", { className: "lifeos-stack" },
+        h("p", null, "Connect another agent to lasting memory. Use Tailscale Serve for private HTTPS access from your computers. Tailscale is optional."),
+        h("section", { id: "http_endpoint", "aria-labelledby": "http_endpoint_title" },
+          h("h3", { id: "http_endpoint_title" }, "1. Set the connection address"),
+          h("p", null, "Serve this dashboard's origin without a path rewrite. Tailscale Serve limits access to your tailnet. Keep dashboard sign-in enabled."),
+          h("form", { id: "http_settings", onSubmit: function (event) {
+            event.preventDefault(); return run(function () { return post("/settings", { enabled: true, public_url: origin }); });
+          } }, field("http_public_url", "Public HTTPS origin", origin, setOrigin),
+            h("p", { className: "lifeos-help" }, "For example: https://hermes.example.ts.net"),
+            h("button", { type: "submit", className: "lifeos-primary", disabled: busy || !origin.trim() }, "Save and enable HTTP MCP")),
+          h("p", { className: "lifeos-notice lifeos-caution" }, "Changing the origin or disabling HTTP invalidates existing credentials. Add a fresh connection afterward."),
+          settings?.mcp_url ? h("label", { className: "block" }, "MCP URL to add in your agent",
+            h("input", { readOnly: true, value: settings.mcp_url, className: "block w-full p-2" })) : null,
+          settings?.enabled ? h("details", null, h("summary", null, "Disable HTTP access"),
+            h("p", null, "This action invalidates the credentials of all HTTP connections."),
+            h("button", { type: "button", className: "lifeos-danger", disabled: busy, onClick: function () {
+              return run(function () { setToken(""); return post("/settings", { enabled: false, public_url: settings.public_url }); });
+            } }, "Disable HTTP MCP and invalidate credentials")) : null),
+        h("section", { id: "http_permissions", "aria-labelledby": "http_permissions_title" },
+          h("h3", { id: "http_permissions_title" }, "2. Choose the agent permissions"),
+          h("p", null, "Add the MCP URL in your agent, then sign in. Use these permissions to approve its request below or create a manual token."),
+          h("p", { className: "lifeos-notice" }, "A cloud model can receive every fact returned through this connection. Project access starts read-only. Client names and declared model routes are unverified."),
+          settings && !settings.sharing_enabled ? h("p", null,
+            "Memory sharing is disabled. Approving a request or creating a token enables sharing for all enabled connections.") : null,
+          h("div", { className: "lifeos-stack" },
+            h("div", { className: "lifeos-grid" },
+              field("http_client", "Connection name", client, setClient),
+              field("http_projects", "Projects (comma separated; * permits all projects)", projects, setProjects)),
+            field("http_model_route", "Declared model route", route, setRoute),
+            h("p", { className: "lifeos-help" }, "Use a distinct connection name for each computer and agent. Keep unknown if the model route is not verified."),
+            h("fieldset", { className: "lifeos-permissions" },
+              h("legend", null, "Optional permissions"),
+              permission("http_principal", "Allow reading owner preferences and identity", principal, setPrincipal),
+              permission("http_assistant", "Allow reading assistant preferences", assistant, setAssistant),
+              permission("http_write", "Allow writing project facts", write, setWrite)),
+            h("p", { id: "http_grant_help", className: "lifeos-help", role: "status" }, busy
+              ? "An operation is in progress. Wait before changing this connection."
+              : !validGrant ? "Enter a connection name, at least one project, and a declared model route to enable approval and token creation."
+              : "Permissions are ready. Approve a waiting request below, or create a manual token if your agent needs one."),
+            h("details", { id: "http_manual_token" }, h("summary", null, "Advanced: create a token manually"),
+              h("p", null, "Use this option when your agent cannot sign in through the browser. Browser sign-in does not need a manual token."),
+              !settings?.enabled ? h("p", { className: "lifeos-help" }, "Enable HTTP MCP above before creating a token.") : null,
+              h("form", { id: "http_enrollment", onSubmit: function (event) {
+                event.preventDefault(); return run(async function () { const result = await post("/connections", grant()); setToken(result.token); });
+              } }, h("button", { type: "submit", disabled: busy || !settings?.enabled || !validGrant,
+                "aria-describedby": "http_grant_help" }, "Create agent token (90 days)")))),
+          token ? h("div", { className: "lifeos-notice" },
+            h("p", null, "Store this token privately in your agent. The server shows it once. Use the Authorization: Bearer header. Do not put it in a URL or chat."),
+            h("label", null, "One-time agent token",
+              h("textarea", { readOnly: true, value: token, spellCheck: false, autoComplete: "off", className: "block w-full p-2" })),
+            h("button", { type: "button", onClick: function () { setToken(""); } }, "Hide token")) : null),
+        h("section", { id: "http_requests", "aria-labelledby": "http_requests_title" },
+          h("h3", { id: "http_requests_title" }, "3. Review sign-in requests"),
+          h("p", null, "Check the agent name and callback address before approving. Approval uses the permissions selected above."),
+          h("button", { type: "button", disabled: busy, onClick: function () { return run(refresh); } }, "Review connection requests"),
+          !(settings?.pending ?? []).length ? h("p", { className: "lifeos-empty" }, "No sign-in requests are waiting. Start sign-in from your agent, then refresh this list.") : null,
+          (settings?.pending ?? []).map(function (request) { return h("article", { key: request.id },
+            h("h4", null, "Agent requests access: " + request.client_name),
+            h("p", null, "Callback: " + request.redirect_uri),
+            h("div", { className: "lifeos-actions" },
+              h("button", { type: "button", className: "lifeos-primary", disabled: busy || !validGrant,
+                "aria-describedby": "http_grant_help", onClick: function () { return authorize(request, "approve"); } }, "Approve " + request.client_name),
+              h("button", { type: "button", className: "lifeos-danger", disabled: busy,
+                onClick: function () { return authorize(request, "deny"); } }, "Deny " + request.client_name))); }),
+          callback ? h("a", { href: callback, className: "lifeos-action-link", referrerPolicy: "no-referrer", rel: "noreferrer" }, "Return to agent") : null),
+        h("section", { id: "http_connections", "aria-labelledby": "http_connections_title" },
+          h("h3", { id: "http_connections_title" }, "Connected agents"),
+          !(settings?.connections ?? []).length ? h("p", { className: "lifeos-empty" }, "No HTTP connections have been created.") : null,
+          (settings?.connections ?? []).map(function (connection) { return h("article", { key: connection.client },
+            h("h4", null, connection.client + ": " + (connection.enabled ? "enabled" : "revoked")),
+            h("p", null, "Reads: " + connection.read.join(", ") + ". Writes: " + (connection.write.join(", ") || "none") + ". Projects: " + connection.projects.join(", ")),
+            connection.enabled ? h("button", { type: "button", className: "lifeos-danger", disabled: busy, onClick: function () {
+              return run(function () { setToken(""); return SDK.fetchJSON(base + "/connections/" + encodeURIComponent(connection.client), { method: "DELETE" }); });
+            } }, "Revoke HTTP " + connection.client) : null); }),
+          h("details", null, h("summary", null, "Clean up unused sign-in registrations"),
+            h("p", null, "Clearing removes unused registrations and waiting sign-in requests. Active connections keep their credentials."),
+            h("button", { type: "button", className: "lifeos-danger", disabled: busy, onClick: function () {
+              return run(function () { return post("/registrations/clear", {}); });
+            } }, "Clear unused OAuth registrations"))),
         message ? h("p", { role: "status" }, message) : null));
   }
 
@@ -538,7 +573,6 @@
     const configured = memory && ["prepared", "configured"].includes(memory.state);
     return h("section", { id: "lifeos_memory", className: "rounded border border-border p-4 space-y-3" },
       h("h2", { className: "text-lg font-semibold" }, "Lasting memory"),
-      h(MemoryHTTPPreferences),
       h("p", { className: "text-sm" }, "LifeOS keeps durable facts and preferences. Hermes keeps conversation history and context compression."),
       memory?.state === "not_configured" ? h("p", null, "Memory setup is not configured. Your current memory settings have not been changed.") : null,
       memory?.state === "not_configured" ? h("p", { className: "text-sm" },
@@ -553,9 +587,10 @@
         : "After the required import entries are verified, prepare an ownership review. Open LifeOS releases to review and apply the provider switch.") : null,
       h("button", { type: "button", disabled: busy, onClick: refresh, className: "rounded border border-border px-3 py-2" }, "Check memory status"),
       message ? h("p", { role: "status", className: "text-sm" }, message) : null,
+      h(MemoryHTTPPreferences),
       configured ? h("div", { className: "space-y-3" },
-        h(MemoryImportReview),
-        h(MemoryExportReview),
+        h("details", { id: "memory_transfer" }, h("summary", null, "Import and export Hermes memory"),
+          h("div", null, h(MemoryImportReview), h(MemoryExportReview))),
         h("details", null,
           h("summary", { className: "cursor-pointer font-semibold" }, "Add existing LifeOS memory"),
           h("div", { className: "space-y-3 pt-3" },
@@ -645,10 +680,10 @@
                   h("button", { type: "button", disabled: busy || !(values.note ?? "").trim(),
                     onClick: function () { return decide(record, "applied_elsewhere"); } }, "Mark applied elsewhere")));
             }))) : null,
-        h("details", null, h("summary", { className: "cursor-pointer font-semibold" }, "Share memory with another agent"),
+        h("details", null, h("summary", { className: "cursor-pointer font-semibold" }, "Advanced: connect an agent over SSH"),
           h("div", { className: "space-y-3 pt-3" },
             h("p", { className: "text-sm" }, "Sharing is " + (memory.sharing_enabled ? "enabled" : "disabled") + ". Each agent gets its own SSH key and permissions. This shares memory operations, not LifeOS hooks or Hermes conversations."),
-            h("button", { type: "button", disabled: busy, className: "rounded border border-border px-3 py-2",
+            h("button", { type: "button", disabled: busy, className: memory.sharing_enabled ? "lifeos-danger" : "lifeos-primary",
               onClick: function () { return action("/sharing", "POST", { enabled: !memory.sharing_enabled }); }
             }, memory.sharing_enabled ? "Disable memory sharing" : "Enable memory sharing"),
             (memory.connections ?? []).map(function (connection) {
@@ -656,12 +691,12 @@
                 h("p", null, connection.client + ": " + (connection.enabled ? "enabled" : "revoked")),
                 h("p", null, "Reads: " + (connection.read ?? ["project"]).join(", ") + ". Writes: " + ((connection.write ?? []).join(", ") || "none") + "."),
                 h("p", null, "Projects: " + (connection.projects ?? []).join(", ") + ". Declared model route: " + (connection.model_route ?? "unknown") + "."),
-                connection.enabled ? h("button", { type: "button", disabled: busy,
+                connection.enabled ? h("button", { type: "button", className: "lifeos-danger", disabled: busy,
                   onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
                 }, "Revoke " + connection.client) : null,
                 !connection.enabled && connection.credential_entry_pending ? h("p", null,
                   "The SSH entry of this connection is still present. It cannot reach memory. Install the sharing component to remove it.") : null,
-                !connection.enabled && connection.credential_entry_pending && memory.connection_enrollment_available !== false ? h("button", { type: "button", disabled: busy,
+                !connection.enabled && connection.credential_entry_pending && memory.connection_enrollment_available !== false ? h("button", { type: "button", className: "lifeos-danger", disabled: busy,
                   onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
                 }, "Remove SSH entry of " + connection.client) : null);
             }),
@@ -746,7 +781,9 @@
     const selectedStore = selection?.configured ? stores.find(function (store) {
       return selection.home.includes("/" + store.identifier + "/");
     }) : null;
-    return h("section", { className: "space-y-3" },
+    return h("details", { id: "lifeos_stores" },
+      h("summary", null, "Memory stores: prepare, select, or recover"),
+      h("section", { className: "space-y-3" },
       h("h3", { className: "font-semibold" }, "Fresh LifeOS store"),
       h("p", { className: "text-sm" }, "Prepare a separate store with no existing facts. The current installation stays selected; preparing a store does not switch memory."),
       h("form", { id: "fresh_store_start", className: "space-y-2", onSubmit: start },
@@ -759,7 +796,9 @@
             className: "mt-1 block w-full rounded border border-border bg-background p-2",
             onChange: function (event) { setAssistantName(event.target.value); } })),
         h("button", { type: "submit", disabled: busy || !listing || listing.busy,
-          className: "rounded border border-border px-3 py-2" }, "Prepare fresh store")),
+          className: "rounded border border-border px-3 py-2" }, "Prepare fresh store"),
+        busy || !listing || listing.busy ? h("p", { className: "lifeos-help" },
+          !listing ? "Loading store status. Preparation becomes available after this check." : "Wait for the active store operation to finish before preparing another store.") : null),
       selection?.configured ? h("div", { className: "space-y-2 text-sm" },
         h("p", null, "This profile uses the fresh store " + (selectedStore ? selectedStore.identifier.slice(0, 8) : selection.home) +
           ". The previous installation and its data stay unchanged."),
@@ -778,10 +817,10 @@
             onClick: function () { return choose("", { store: store.identifier },
               "Selection started. Hermes restarts with the fresh store when it finishes."); } },
             "Use " + store.identifier.slice(0, 8)) : null,
-          h("button", { type: "button", disabled: busy || store.state === "preparing",
+          h("button", { type: "button", className: "lifeos-danger", disabled: busy || store.state === "preparing",
             onClick: function () { return remove(store.identifier); } }, "Remove " + store.identifier.slice(0, 8)));
       }),
-      notice ? h("p", { role: "status", className: "text-sm" }, notice) : null);
+      notice ? h("p", { role: "status", className: "text-sm" }, notice) : null));
   }
 
   function LifeOSSettings() {
@@ -1125,7 +1164,7 @@
         }, choice.label));
       }
       return h("section", { key: tier, className: "rounded border border-border p-4" },
-        h("h2", { className: "mb-3 text-lg font-semibold" }, label),
+        h("h3", { className: "mb-3 text-lg font-semibold" }, label),
         h("div", { className: "grid gap-4 md:grid-cols-2" },
           h("div", null,
             h("label", { htmlFor: modelKey, className: "mb-1 block font-medium" }, "Hermes model"),
@@ -1149,17 +1188,22 @@
 
     const pinField = fields.find(function (field) { return field.key === "pinned_tier"; });
     const stopField = fields.find(function (field) { return field.key === "stop_cap_policy"; });
-    return h("main", { className: "mx-auto max-w-4xl space-y-6 p-6" },
-      h("div", null,
-      h("h1", { className: "text-2xl font-semibold" }, "LifeOS Bridge"),
+    return h("main", { className: "lifeos-setup" },
+      h("header", null,
+        h("p", { className: "lifeos-eyebrow" }, "Integration settings"),
+        h("h1", null, "LifeOS Bridge"),
+        h("p", { className: "lifeos-intro" }, "Manage lasting memory, connect your agents, and configure LifeOS. Review each change before applying it.")),
+      h("nav", { className: "lifeos-navigation", "aria-label": "LifeOS setup sections" },
+        h("a", { href: "#lifeos_memory" }, "Lasting memory"),
+        h("a", { href: "#memory_http" }, "Agent access"),
+        h("a", { href: "#lifeos_stores" }, "Memory stores"),
+        h("a", { href: "#lifeos_installation" }, "Installation"),
+        installation?.lifeos === "installed" ? h("a", { href: "#lifeos_models" }, "Models and behavior") : null,
+        h("a", { href: "/lifeos-releases" }, "Install and update releases")),
       h(MemoryPreferences),
       h(FreshStores),
-        h("p", { className: "text-muted-foreground" },
-          "LifeOS asks for four levels of work. Choose a Hermes model and effort for each one. Using one model in every row is fine. The model currently selected in Hermes fills empty rows by default. Effort controls the amount of reasoning requested."),
-        suggestedDefaults ? h("p", { role: "status", className: "mt-2 text-sm" },
-          "Hermes's current model is selected for the empty rows. Save settings to keep these choices when you change Hermes's main model.") : null,
-        h("a", { href: "/models", className: "text-sm underline" }, "Manage Hermes models")),
-      h("section", { className: "rounded border border-border p-4" },
+
+      h("section", { id: "lifeos_installation", className: "rounded border border-border p-4" },
         h("h2", { className: "mb-2 text-lg font-semibold" }, "LifeOS installation"),
         installation?.lifeos === "missing" ? h("p", { className: "mb-3 text-sm" },
           "LifeOS is not installed. Prepare the latest supported revision from Daniel Miessler's GitHub repository. This step checks and applies the LifeOS compatibility patches in a private candidate directory. It does not change the running installation.") : null,
@@ -1274,13 +1318,21 @@
         installation?.candidate_error ? h("p", { role: "status", className: "mt-2 text-sm" },
           "Candidate cannot be installed: " + installation.candidate_error) : null,
         installationStatus ? h("p", { role: "status", className: "mt-3" }, installationStatus) : null),
-      installation?.lifeos === "installed" ? h("form", { onSubmit: save, className: "space-y-4" },
-        fields.length ? tiers.map(renderTier) : null,
+      installation?.lifeos === "installed" ? h("form", { id: "lifeos_models", onSubmit: save, className: "lifeos-card" },
+        h("h2", null, "Models and behavior"),
+        h("p", null, "Choose the model and reasoning effort for each LifeOS tier. Save these settings together."),
+      h("div", { className: "lifeos-model-intro" },
+        h("p", { className: "text-muted-foreground" },
+          "LifeOS asks for four levels of work. Choose a Hermes model and effort for each one. Using one model in every row is fine. The model currently selected in Hermes fills empty rows by default. Effort controls the amount of reasoning requested."),
+        suggestedDefaults ? h("p", { role: "status", className: "mt-2 text-sm" },
+          "Hermes's current model is selected for the empty rows. Save settings to keep these choices when you change Hermes's main model.") : null,
+        h("a", { href: "/models", className: "text-sm underline" }, "Manage Hermes models")),
+        h("div", { className: "lifeos-grid" }, fields.length ? tiers.map(renderTier) : null),
         stopField ? h("section", { className: "rounded border border-border p-4" },
-          h("h2", { className: "mb-2 text-lg font-semibold" }, "Stop hook limit"),
+          h("h3", { className: "mb-2 text-lg font-semibold" }, "Stop hook limit"),
           h("p", { className: "mb-3 text-sm text-muted-foreground" }, stopField.description),
           h("select", {
-            id: "stop_cap_policy", value: values.stop_cap_policy ?? "claude",
+            id: "stop_cap_policy", "aria-label": "Stop hook limit", value: values.stop_cap_policy ?? "claude",
             onChange: function (event) { update("stop_cap_policy", event.target.value); },
             className: "w-full rounded border border-border bg-background p-2",
           }, [
@@ -1291,7 +1343,7 @@
           h("summary", { className: "cursor-pointer font-medium" }, "Advanced: pinned LifeOS tier"),
           h("p", { className: "mt-2 text-sm text-muted-foreground" }, pinField.description),
           h("select", {
-            id: "pinned_tier", value: values.pinned_tier ?? "fable",
+            id: "pinned_tier", "aria-label": "Pinned LifeOS tier", value: values.pinned_tier ?? "fable",
             onChange: function (event) { update("pinned_tier", event.target.value); },
             className: "mt-2 w-full rounded border border-border bg-background p-2",
           }, (pinField.choices ?? []).map(function (choice) {
@@ -1301,7 +1353,9 @@
           type: "submit", disabled: saving,
           className: "rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50",
         }, saving ? "Saving..." : "Save settings") : null) : null,
-      installation?.lifeos === "installed" ? h("section", { className: "rounded border border-border p-4" },
+      installation?.lifeos === "installed" ? h("details", { id: "lifeos_baseline" },
+        h("summary", null, "Advanced: source baseline and file verification"),
+        h("section", { className: "rounded border border-border p-4" },
         h("h2", { className: "mb-2 text-lg font-semibold" }, "VersionDrift baseline"),
         h("p", { className: "mb-3 text-sm text-muted-foreground" },
           "Track installed LifeOS system files without adding a Git repository to Hermes home."),
@@ -1336,7 +1390,7 @@
             type: "button", disabled: baselineBusy, onClick: applyBaseline,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, baseline?.baseline_exists === true ? "Renew reviewed baseline" : "Create reviewed baseline")) : null,
-        baselineStatus ? h("p", { role: "status", className: "mt-3" }, baselineStatus) : null) : null,
+        baselineStatus ? h("p", { role: "status", className: "mt-3" }, baselineStatus) : null)) : null,
       status ? h("p", { role: "status" }, status) : null);
   }
 

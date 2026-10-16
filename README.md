@@ -6,6 +6,8 @@
 
 **Deployed release:** Development `.252` and daily `.253` use the complete qualified `0.7.1` package. Both installations use the same program commit and package hash. The owner-reviewed updates preserve model choices, credentials, memory configuration, and the existing ownership mount.
 
+**Setup interface candidate:** Both LifeOS setup pages include their own scoped styles, visible action buttons, labeled fields, and section navigation. The Bridge page separates memory, agent connections, installation, model routing, and advanced source checks. HTTP setup separates the endpoint, permissions, sign-in requests, and existing connections. The Releases page separates package preparation, operation review, and memory ownership workflows. Disabled approval controls explain the required fields. These interface changes require a qualified release before deployment. The [interface verification record](docs/verification/2026-10-16-plugin-setup-ui/README.md) describes the checks and deployment limits.
+
 The public Hermes Plugins form installs the manager from the documented GitHub subdirectory URL. Install LifeOS selects the latest stable complete package after separate owner review. The historical fresh `0.6.0` replay verifies all 38 manager files, the public certificate, 11 sealed program groups, preserved model choices, and an actual FlashNext reply. The [published acceptance receipt](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/download/v0.6.0/PUBLIC-LATEST-ACCEPTANCE.json) records the complete replay. The [public replay evidence](docs/verification/2026-10-15-release-0.6.0/public-fresh-verification.json) retains its actual model result.
 
 The qualified package targets Hermes `v0.21.7` at commit `71d34bad1045610252eda02ee79549436896e784`.

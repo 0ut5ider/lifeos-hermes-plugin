@@ -68,3 +68,41 @@ test('the owner can clear unused OAuth registrations without revoking connection
   const call = p.calls.find(call => call.url.endsWith('/registrations/clear'));
   assert.deepEqual(JSON.parse(call.init.body), {});
 });
+
+test('waiting approval explains required permissions and keeps manual tokens separate', async () => {
+  const p = await panel({enabled: true, public_url: 'https://synthetic.ts.net', sharing_enabled: true,
+    connections: [], pending: [{id: 'request-one', client_name: 'Synthetic client', redirect_uri: 'http://localhost:9812/callback'}]});
+  const view = p.render();
+  const approve = find(view, node => node.type === 'button' && node.children.includes('Approve Synthetic client'));
+  assert.equal(approve.props['aria-describedby'], 'http_grant_help');
+  assert.ok(find(view, node => node.props.id === 'http_grant_help').children.join('').includes('connection name'));
+  assert.ok(find(view, node => node.type === 'details' && node.props.id === 'http_manual_token'));
+  for (const id of ['http_endpoint', 'http_permissions', 'http_requests', 'http_connections']) {
+    assert.ok(find(view, node => node.props.id === id), 'Missing HTTP group: ' + id);
+  }
+});
+
+test('HTTP settings, denial, and revocation retain their explicit API contracts', async () => {
+  const p = await panel({enabled: true, public_url: 'https://synthetic.ts.net', sharing_enabled: true,
+    connections: [{client: 'synthetic-agent', enabled: true, read: ['project'], write: [], projects: ['lab']}],
+    pending: [{id: 'request-one', client_name: 'Synthetic client', redirect_uri: 'http://localhost:9812/callback'}]});
+  find(p.render(), node => node.props.id === 'http_public_url').props.onChange({target: {value: 'https://changed.ts.net'}});
+  await find(p.render(), node => node.props.id === 'http_settings').props.onSubmit({preventDefault() {}});
+  const enabled = p.calls.find(call => call.url.endsWith('/settings') && call.init?.method === 'POST');
+  assert.deepEqual(JSON.parse(enabled.init.body), {enabled: true, public_url: 'https://changed.ts.net'});
+  await find(p.render(), node => node.type === 'button' && node.children.includes('Deny Synthetic client')).props.onClick();
+  const denied = p.calls.find(call => call.url.includes('/authorization/'));
+  assert.deepEqual(JSON.parse(denied.init.body), {decision: 'deny'});
+  await find(p.render(), node => node.type === 'button' && node.children.includes('Revoke HTTP synthetic-agent')).props.onClick();
+  assert.ok(p.calls.some(call => call.url.endsWith('/connections/synthetic-agent') && call.init.method === 'DELETE'));
+  await find(p.render(), node => node.type === 'button' && node.children.includes('Disable HTTP MCP and invalidate credentials')).props.onClick();
+  const disabled = p.calls.filter(call => call.url.endsWith('/settings') && call.init?.method === 'POST').at(-1);
+  assert.deepEqual(JSON.parse(disabled.init.body), {enabled: false, public_url: 'https://synthetic.ts.net'});
+});
+
+test('permission editing cannot implicitly submit the manual-token form', async () => {
+  const p = await panel({enabled: true, public_url: 'https://synthetic.ts.net', sharing_enabled: true, connections: [], pending: []});
+  const form = find(p.render(), node => node.props.id === 'http_enrollment');
+  assert.equal(find(form, node => node.props.id === 'http_client'), null);
+  assert.ok(find(form, node => node.type === 'button' && node.children.includes('Create agent token (90 days)')));
+});
