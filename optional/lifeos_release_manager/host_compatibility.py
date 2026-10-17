@@ -419,8 +419,26 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None
     return _result(detected, manifest, reasons, qualified=entry and entry['label'], dependencies=dependencies)
 
 
+def transition_source(hermes_home, source=None):
+    """Return the stock checkout that replaces a managed LifeOS runtime, or None when Hermes is not managed.
+
+    A managed release runs Hermes from ``<profile>/.lifeos-releases/<operation>/hermes``. Its transition
+    target is the stock Git installation at ``<profile>/hermes-agent``, which the official installer creates.
+    """
+    profile = Path(hermes_home).absolute()
+    source = running_source() if source is None else Path(source).absolute()
+    releases = profile / '.lifeos-releases'
+    if (source.name != 'hermes' or source.parent.parent != releases
+            or re.fullmatch('[0-9a-f]{32}', source.parent.name) is None):
+        return None
+    return profile / 'hermes-agent'
+
+
 def check(hermes_home, *, manifest=MANIFEST, search_path=None):
-    """Inspect the Hermes installation that runs this process, for the dashboard and command line."""
+    """Inspect the Hermes installation that runs this process, or the stock checkout that replaces a managed runtime."""
     from .host_record import load_record
-    return inspect_host(running_source(), load_manifest(manifest), hermes_home=hermes_home,
-                        search_path=search_path, record=load_record(hermes_home))
+    target = transition_source(hermes_home)
+    result = inspect_host(target or running_source(), load_manifest(manifest), hermes_home=hermes_home,
+                          search_path=search_path, record=load_record(hermes_home))
+    result['transition'] = target is not None
+    return result

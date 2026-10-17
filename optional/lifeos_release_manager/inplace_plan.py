@@ -103,9 +103,11 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     services = current.memory_module('profile_services').ProfileServices(
         profile, installed, units={role: UNITS[role] for role in roles}, roles=roles,
         installation_lease=installation_lease, first_installation=fresh) if roles else None
+    # A transition verifies through the account launcher that the existing services start.
+    launcher = home / '.local/bin/hermes' if request['host'].get('transition') else host_launcher(source)
     result.update(services={'roles': roles, 'created': created, 'consumers': consumers['consumers'],
                             'signature': None if services is None else services.preview()['signature']},
-                  created_roles=tuple(created), launchers=[str(host_launcher(source))])
+                  created_roles=tuple(created), launchers=[str(launcher)])
     if fresh:
         result['native_changes'] = True
     else:
@@ -134,4 +136,20 @@ def host_entries(job, request, selected, generated):
     files[record_path(profile)] = generated / 'lifeos-host.json'
     publish(generated / 'update-hold.json', (json.dumps({'holder': 'LifeOS', 'message': HOLD_MESSAGE}) + '\n').encode())
     files[source / '.git' / HOLD] = generated / 'update-hold.json'
+    if request['host'].get('transition'):
+        files.update(transition_launchers(Path(request['account_home']), source, generated))
     return {}, files
+
+
+def transition_launchers(home, source, generated):
+    """Point the account commands at the stock checkout, with the same forwarders Hermes itself publishes."""
+    import shlex
+    commands = {'hermes': [source / '.hermes/bin/hermes'],
+                'hermes-agent': [source / '.hermes/bin/hermes', '--run-module', 'run_agent'],
+                'hermes-acp': [source / '.hermes/bin/hermes-acp']}
+    files = {}
+    for name, command in commands.items():
+        script = generated / ('launcher-' + name)
+        publish(script, ('#!/bin/sh\nexec ' + ' '.join(shlex.quote(str(part)) for part in command) + ' "$@"\n').encode(), 0o755)
+        files[home / '.local/bin' / name] = script
+    return files

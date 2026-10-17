@@ -96,3 +96,28 @@ class InventoryTests(unittest.TestCase):
                         {**after, 'packages': {**after['packages'], 'six': ['1.0']}}):
             with self.subTest(changed=changed), self.assertRaises(ReleaseRejected):
                 check_inventory(before, changed, {'tree-sitter': ['0.26.0']})
+
+
+class TransitionTests(unittest.TestCase):
+    def test_only_a_managed_job_runtime_has_a_transition_target(self):
+        from optional.lifeos_release_manager.host_compatibility import transition_source
+        profile = Path('/home/owner/.hermes')
+        self.assertEqual(transition_source(profile, profile / '.lifeos-releases' / ('a' * 32) / 'hermes'),
+                         profile / 'hermes-agent')
+        for source in (profile / 'hermes-agent', profile / '.lifeos-releases/short/hermes',
+                       profile / '.lifeos-releases' / ('a' * 32) / 'package/hermes', Path('/usr/local/lib/hermes-agent')):
+            with self.subTest(source=source):
+                self.assertIsNone(transition_source(profile, source))
+
+    def test_transition_launchers_match_the_stock_forwarders(self):
+        from optional.lifeos_release_manager.inplace_plan import transition_launchers
+        with tempfile.TemporaryDirectory() as directory:
+            generated = Path(directory)
+            files = transition_launchers(Path('/home/owner'), Path('/home/owner/.hermes/hermes-agent'), generated)
+            self.assertEqual(sorted(path.name for path in files), ['hermes', 'hermes-acp', 'hermes-agent'])
+            expected = {'hermes': 'exec /home/owner/.hermes/hermes-agent/.hermes/bin/hermes "$@"\n',
+                        'hermes-agent': 'exec /home/owner/.hermes/hermes-agent/.hermes/bin/hermes --run-module run_agent "$@"\n',
+                        'hermes-acp': 'exec /home/owner/.hermes/hermes-agent/.hermes/bin/hermes-acp "$@"\n'}
+            for target, source in files.items():
+                self.assertEqual(source.read_text(), '#!/bin/sh\n' + expected[target.name])
+                self.assertEqual(source.stat().st_mode & 0o777, 0o755)

@@ -147,6 +147,8 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
     fresh = not selected.installed.exists() and not selected.installed.is_symlink()
     if intent == 'install' and (not fresh or record is not None):
         raise ReleaseRejected('Use an update for the existing LifeOS installation')
+    if result['transition'] and (fresh or record is not None or intent == 'install'):
+        raise ReleaseRejected('Moving from a managed runtime requires the installed managed release and an update')
     if intent in {'update', 'plugin'} and fresh:
         raise ReleaseRejected('Install LifeOS before requesting an update')
     if fresh:
@@ -193,6 +195,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
         'configuration_sha256': sha(profile / 'config.yaml'),
         'host': {'source': str(source), 'commit': entry['commit'], 'label': entry['label'],
                  'state': result['state'], 'state_directory': str(state_directory(source)),
+                 'transition': result['transition'],
                  'record_sha256': None if record is None else sha(profile / 'lifeos-host.json')},
         'runtime': {'python': str(python), 'bun': str(bun), 'hermes': str(host_launcher(source)),
                     'source': str(preview), 'reference': str(reference / '.claude'),
