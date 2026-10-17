@@ -4,6 +4,8 @@ Use the release manager for a supported installation. It prepares one qualified 
 
 The [current release record](verification/2026-10-16-release-0.7.3/README.md) identifies the supported package. [Source preparation](clean-install.md) is a separate development workflow.
 
+The accepted [installation redesign](in-place-installation-plan.md) will patch a compatible existing Hermes installation and refuse unsupported hosts. It will not offer a replacement runtime. That redesign is not implemented or qualified. This guide describes the published 0.7.3 workflow.
+
 ## Before installation
 
 Configure a working model in Hermes. The installer preserves that model and the configured LifeOS tier mapping. Have an authenticated Hermes dashboard owner account available.

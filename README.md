@@ -47,6 +47,8 @@ The qualified 0.7.3 package targets Hermes `v0.21.7`, base commit `71d34bad10456
 
 Stock Hermes lacks some required admission, lifecycle, and final-answer controls. Installing only the bridge does not supply the full integration. A newer upstream commit needs a port and behavior qualification before it can replace the supported combination.
 
+The accepted [installation redesign](docs/in-place-installation-plan.md) uses the existing Hermes installation, checks exact compatibility, and applies reversible host patches. It has no replacement-runtime option. Implementation and qualification are pending; the 0.7.3 instructions above still describe the published managed-runtime release.
+
 The [Step 1 ledger](docs/parity/step1-acceptance.md) records 152 accepted scenarios. These selected comparisons do not prove equivalence for every possible Claude Code event or handler branch.
 
 ## Lasting memory, experimental

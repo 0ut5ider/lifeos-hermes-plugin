@@ -12,6 +12,17 @@ The [0.7.3 release record](docs/verification/2026-10-16-release-0.7.3/README.md)
 - [ ] Complete Discord voice input and spoken replies. Verify transcription, speech generation, and actual Discord delivery before enabling daily voice.
 - [ ] Add native Content audio and video processing with the voice release. Verify extraction, transcription, runner control, and actual media outputs.
 
+## Installation redesign
+
+The accepted [in-place installation plan](docs/in-place-installation-plan.md) supersedes the private-runtime recommendation in the architecture review. The installer must preserve the existing Hermes installation and refuse unsupported hosts. Complete and qualify these steps as one release:
+
+- [ ] Add exact compatibility admission and clear bootstrap page results.
+- [ ] Add pinned LifeOS component acquisition and verified cache reuse.
+- [ ] Add durable in-place patch transactions and coordinated consumer restart.
+- [ ] Add qualified patch updates, Hermes updater coordination, and original-file restoration.
+- [ ] Qualify real dashboard installation, recovery, and removal with existing tools and plugins, including the managed-release transition.
+- [ ] Complete independent review and exact-release qualification before development and daily deployment.
+
 ## Completed capabilities with canonical references
 
 | Capability | Reference |

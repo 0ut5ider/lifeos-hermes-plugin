@@ -4,6 +4,8 @@ Role: primary agent, Cerebo. Model: GPT-6.1 Sol. Question: which parts of the pr
 
 This record contains independent measurements. The Opus architecture report supplies the design review. These checks do not qualify a new installation path.
 
+Owner decision, 2026-10-17: the [accepted plan](../../in-place-installation-plan.md) selects patching the existing Hermes installation as the only path. The review's private-runtime recommendation is superseded. Its raw experiments and this verification remain evidence for the implementation requirements.
+
 - The current source is `f231c30514c547051386306c564c179bf8d44b12`. Product source is unchanged during the investigation.
 - The qualified 0.7.3 archive SHA-256 is `2deae5dcedfef8224959312410a5381baa91312532c968afa5534f19fd2149c8`. The primary agent recomputes it and verifies that all ten canonical Hermes patch files equal those in the archive.
 - All forty patch commands pass on a disposable stock-source copy: apply check, apply, reverse check, and reverse for ten ordered patch groups.
