@@ -130,11 +130,11 @@ def host_entries(job, request, selected, generated):
     profile, source, entry = selected['profile'], selected['source'], selected['entry']
     record = load_record(profile)
     originals = check_originals(record) if record is not None else None
-    patched = {relative: value for relative, value in selected['staged'].items()}
-    desired = desired_host_files(entry, patched, record, originals)
+    staged = selected['staged']
+    desired = desired_host_files(entry, staged, record, originals)
     files = {source / relative: path for relative, path in desired.items()}
     retained = originals_path(profile)
-    for relative, value in patched.items():
+    for relative, value in staged.items():
         if value['stock'] is not None:
             files[retained / relative] = value['stock']
     if record is not None:
