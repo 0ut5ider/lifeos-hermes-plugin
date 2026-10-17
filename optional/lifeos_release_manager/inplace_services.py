@@ -2,6 +2,8 @@
 # ABOUTME: Binds existing user units, offers standard units for hand-started consumers, and refuses the rest.
 from __future__ import annotations
 
+import os
+from pathlib import Path
 import subprocess
 
 from .consumer_scan import source_consumers, start_time
@@ -22,7 +24,20 @@ def _properties(unit):
     return dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
 
 
-def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset()):
+def ancestors(pid=None):
+    """Return the process IDs above ``pid`` (default: this process), which run the operation itself."""
+    chain, current = set(), os.getpid() if pid is None else pid
+    while current > 1:
+        try:
+            fields = Path('/proc', str(current), 'stat').read_text().rsplit(')', 1)[1].split()
+        except (FileNotFoundError, ProcessLookupError):
+            break
+        current = int(fields[1])
+        chain.add(current)
+    return chain
+
+
+def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset(), operators=frozenset()):
     """Return the bound unit roles, the processes outside them, and the units the owner can create.
 
     A role is bound when its standard user unit is loaded from a definition file. A hand-started
@@ -36,7 +51,8 @@ def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset()):
             bound.append(role)
             if values.get('ControlGroup'):
                 groups.add(values['ControlGroup'])
-    consumers = source_consumers(source, state_dir, excluded_pids=excluded_pids, excluded_groups=groups)
+    consumers = [item for item in source_consumers(source, state_dir, excluded_pids=excluded_pids, excluded_groups=groups)
+                 if not (item['pid'] in operators and item['role'] == 'other')]
     offers = sorted({item['role'] for item in consumers if item['role'] in OFFERABLE and item['role'] not in bound})
     blocking = [item for item in consumers if item['role'] not in offers]
     return {'bound': bound, 'consumers': consumers, 'offers': offers, 'blocking': blocking}

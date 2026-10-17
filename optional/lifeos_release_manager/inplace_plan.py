@@ -9,7 +9,7 @@ from pathlib import Path
 from .host_compatibility import inspect_host, load_manifest
 from .host_record import build_record, check_originals, load_record, originals_path, record_path
 from .inplace_preparation import desired_host_files, host_launcher, host_python
-from .inplace_services import UNITS, inventory
+from .inplace_services import UNITS, ancestors, inventory
 from .integration_package import COMPATIBILITY, validate_integration
 from .release_accounts import account_home
 from .release_catalog import ReleaseRejected
@@ -91,7 +91,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     if fresh and not fresh_recovery and (installed.is_symlink() or selected.user_data.exists()
             or selected.user_data.is_symlink() or (profile / 'lifeos-memory.json').exists()):
         raise ReleaseRejected('Fresh installation requires an empty native destination without existing personal data')
-    consumers = inventory(source, Path(request['host']['state_directory']))
+    # The command or preparation process that runs this review is the operator, not a consumer to stop.
+    consumers = inventory(source, Path(request['host']['state_directory']), operators=ancestors())
     if consumers['blocking']:
         names = ', '.join(item['command'] + ' (' + str(item['pid']) + ')' for item in consumers['blocking'])
         raise ReleaseRejected('Close these Hermes processes before the operation: ' + names)

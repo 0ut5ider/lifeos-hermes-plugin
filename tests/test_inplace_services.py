@@ -75,6 +75,16 @@ class InplaceServicesTests(unittest.TestCase):
         result = inventory(self.source, self.state, units=self.units)
         self.assertEqual([(item['pid'], item['role']) for item in result['blocking']], [(pid, 'other')])
 
+    def test_operator_processes_do_not_block_but_a_hand_started_dashboard_is_still_offered(self):
+        from optional.lifeos_release_manager.inplace_services import ancestors
+        operator = self.process('lifeos-release', 'prepare')
+        dashboard = self.process('dashboard')
+        result = inventory(self.source, self.state, units=self.units, operators={operator, dashboard})
+        self.assertEqual([item['pid'] for item in result['consumers']], [dashboard])
+        self.assertEqual(result['offers'], ['dashboard'])
+        self.assertEqual(result['blocking'], [])
+        self.assertIn(os.getppid(), ancestors())
+
     def test_replacement_requires_the_reviewed_process_incarnation(self):
         pid = self.process('dashboard')
         admitted = inventory(self.source, self.state, units=self.units)['consumers']

@@ -121,9 +121,23 @@ def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, 
     try:
         return _prepare_inplace_operation(profile, job, version, name=name, assistant=assistant,
                                           catalog=catalog, intent=intent)
-    except BaseException:
-        write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
+    except BaseException as error:
+        write_state(job, 'preparation_failed', error=_preparation_error(job, error))
         raise
+
+
+def _preparation_error(job, error):
+    """Return the owner-facing reason for a failed preparation; refusals explain themselves."""
+    reason = None
+    if isinstance(error, ReleaseRejected) and not str(error).startswith('Release preparation fails at '):
+        reason = str(error)
+    elif (job / 'worker-failure.json').is_file():
+        try:
+            reason = read_private(job / 'worker-failure.json').get('message')
+        except (ValueError, OSError):
+            reason = None
+    unchanged = 'Preparation did not change the active installation.'
+    return unchanged if not reason else reason + ' ' + unchanged
 
 
 def _prepare_managed_package(profile, home, job, version, *, name, assistant, catalog=None, intent=None):

@@ -484,7 +484,11 @@ def _revoke(administration, profile, request):
 def record_failure(job, error):
     frames = [{'file': frame.filename, 'line': frame.lineno, 'function': frame.name}
               for frame in traceback.extract_tb(error.__traceback__)]
-    publish(job / 'worker-failure.json', (json.dumps({'exception': type(error).__name__, 'frames': frames}) + '\n').encode())
+    value = {'exception': type(error).__name__, 'frames': frames}
+    if isinstance(error, ReleaseRejected):
+        # Release refusals are written for the owner and carry no credentials or command text.
+        value['message'] = str(error)
+    publish(job / 'worker-failure.json', (json.dumps(value) + '\n').encode())
 
 
 def _restore_mount_manifest(job, request, journal, *, required=False):

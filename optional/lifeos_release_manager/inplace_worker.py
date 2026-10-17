@@ -66,8 +66,14 @@ def _terminate(processes):
 def _consumers_stopped(request, plan):
     created = [role for role in plan['services']['created'] if role in CREATED_UNITS]
     _terminate(replace_with_units(plan['services']['consumers'], created))
-    remaining = inventory(Path(request['host']['source']), Path(request['host']['state_directory']),
-                          excluded_pids={os.getpid()})
+    # The command that launched this worker exits right after the launch; give it a moment to finish.
+    deadline = time.monotonic() + 15
+    while True:
+        remaining = inventory(Path(request['host']['source']), Path(request['host']['state_directory']),
+                              excluded_pids={os.getpid()})
+        if not remaining['consumers'] or time.monotonic() > deadline:
+            break
+        time.sleep(0.5)
     if remaining['consumers']:
         names = ', '.join(item['command'] + ' (' + str(item['pid']) + ')' for item in remaining['consumers'])
         raise ReleaseRejected('Hermes processes still use the installation: ' + names)
