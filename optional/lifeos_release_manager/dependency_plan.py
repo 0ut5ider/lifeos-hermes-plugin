@@ -52,6 +52,7 @@ def resolve(source, profile, bridge, workspace):
     """Lock the enabled plugin members plus ``bridge`` in ``workspace`` against the selected lock."""
     from pm.environment import managed_environment
     from pm.native_build import source_build_environment
+    # pm.workspace._generate_pyproject is a private function of the pinned Hermes v0.21.7.
     from pm.workspace import _generate_pyproject, enabled_member_dirs
     source, profile, bridge, workspace = map(Path, (source, profile, bridge, workspace))
     seed = selected_lock(source)

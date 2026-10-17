@@ -71,6 +71,7 @@ def _run(command, installed, environment, label):
 
 
 def _check_prepared_config(installed, environment, stage):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     source = Path(_launchers.__file__).resolve().parents[1]
     # Bootstrap the installed dependency environment before selecting the prepared config.

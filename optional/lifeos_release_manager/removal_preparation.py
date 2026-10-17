@@ -235,6 +235,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
 
 def _recovery_command(profile, job, runtime):
     import shlex
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     code=Path(__file__).with_name('removal_bootstrap.py').read_text()+('\n'
         'selected=validate(sys.argv[1],sys.argv[2])\n'

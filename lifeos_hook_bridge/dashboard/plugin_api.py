@@ -720,6 +720,7 @@ async def prepare_fresh_store(request: dict, account: str = Depends(_memory_acco
 
 
 def _launch_fresh_store(arguments, unit):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
     runtime = _launchers.runtime_command(_host_source(), [str(PLUGIN_DIR / 'fresh_store_worker.py'), *arguments],
@@ -1024,6 +1025,7 @@ def _launch_lifeos_update(job: Path, action: str = "apply"):
         os.fchmod(stream.fileno(), 0o600)
         json.dump(status, stream)
         stream.write("\n")
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     arguments = [str(PLUGIN_DIR / "update_worker.py"), str(job)]
     if action != "apply":
@@ -1224,6 +1226,7 @@ def get_installation_selection(account: str = Depends(_memory_account)):
 
 
 def _launch_selection(job: Path, action: str, account: str):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     module = install_module.memory_module('installation_selection')
     module.selection_authority(job, HERMES_HOME, account, action)

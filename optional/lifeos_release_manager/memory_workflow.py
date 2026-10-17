@@ -190,6 +190,7 @@ def admit(profile, identifier, action, signature, *, owner, launch):
 
 
 def launch(job, unit, action):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
     worker=Path(__file__).with_name('memory_workflow_worker.py')
@@ -226,6 +227,7 @@ PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
 
 
 def run_transition_probe(profile, source, expected, *, runtime=None, output=None):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
     code=PROBE_CODE

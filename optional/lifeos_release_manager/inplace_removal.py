@@ -179,6 +179,7 @@ def runtime(plan):
 
 def command(selected, arguments, *, code):
     """Return a command that runs ``code`` with the host source and the environment Hermes selects at start."""
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     result = _launchers.runtime_command(Path(selected['source']), [str(item) for item in arguments], code=code)
     result.insert(1, '-B')
