@@ -1,6 +1,6 @@
 # In-place installation design
 
-Date: 2026-10-17. Status: draft for review. This document turns the accepted [in-place installation plan](in-place-installation-plan.md) into a concrete design. The plan states the requirements; this document states how the code meets them.
+Date: 2026-10-17. Status: revised after the [independent design review](agents/2026-10-17-in-place-design-review/in-place-design-review.md); section 14 lists the resolutions. This document turns the accepted [in-place installation plan](in-place-installation-plan.md) into a concrete design. The plan states the requirements; this document states how the code meets them.
 
 Evidence for the stock Hermes and release manager behavior below is in the [design mapping](agents/2026-10-17-in-place-design-mapping/). File references point to stock Hermes `v0.21.7` (`71d34bad`) or to this repository.
 
@@ -14,6 +14,7 @@ Evidence for the stock Hermes and release manager behavior below is in the [desi
 | Development and daily move to a fresh stock Hermes Git installation, then receive the in-place installation. Their profile configuration, Discord setup, memory, and native LifeOS data stay. | Owner, 2026-10-17 |
 | The first supported layout is a single-profile, user-owned Linux Git checkout at a qualified commit. | Plan |
 | An 11th Hermes patch group adds generic update holds to `hermes update` admission. | This design, section 6 |
+| When the dashboard or gateway runs outside a user service, the review offers to create the standard user unit for it. Without that choice, the installer refuses. | Owner, 2026-10-17 |
 | The bridge's Python dependencies enter the owner's environment through Hermes's own environment manager. | This design, section 5 |
 
 ## 2. Release format
@@ -73,7 +74,7 @@ The dashboard launches the worker with `systemd-run --user`, because the worker 
 7. Start the consumers that were running. Verify the result (section 7).
 8. Record `applied`.
 
-Any failure after step 3 restores the programs, synchronizes the environment back to the restored configuration, restores the mount, and resumes the services, as the current worker does.
+Any failure after step 3 runs, in this order: restore the mount, restore the programs, synchronize the environment against the restored configuration, then resume the services. The mount comes first because `config.yaml` is both a mount target and a program target (`release_worker.py:434-448`). A failed environment synchronization does not stop the rollback; it is recorded, and recovery repeats it.
 
 ### 4.3 Program plan
 
@@ -89,7 +90,7 @@ The plan uses `ProgramTransaction` for every change. It provides fsynced publica
 | `<profile>/integration-release.json` | Release receipt, extended with the host identity |
 | `<profile>/lifeos-host.json` | Host record (section 8) |
 | `<profile>/.lifeos-host/originals/` | Retained original host files |
-| `<install state>/update-holds/lifeos.json` | Update hold (section 6) |
+| `<source>/.git/hermes-update-holds/lifeos.json` | Update hold (section 6) |
 | Native LifeOS files, settings, and dependencies | As today for an update |
 
 The account launchers (`~/.local/bin/hermes`, `hermes-agent`, `hermes-acp`) and the service definitions are not changed. A first installation creates only the Pulse unit; it uses the owner's existing gateway and dashboard units (section 7).
@@ -98,35 +99,36 @@ The account launchers (`~/.local/bin/hermes`, `hermes-agent`, `hermes-acp`) and 
 
 Hermes builds each environment as a generation under `<root>/installs/<key>/environments/<uuid>/venv`. It includes enabled plugins' `python_dependencies` as workspace members, and it selects the generation in `facts.json` (`pm/packages.py:430`, `pm/workspace.py`). The bridge declares four exact pins in `plugin.yaml`.
 
-The worker publishes `config.yaml` with the bridge enabled, then runs `hermes pm install` for the profile. This is the explicit synchronization that `hermes update` also uses. It resolves the bridge member against the seed lock, builds a new generation, and selects it only when the build succeeds. A resolver conflict leaves the previous generation selected. The worker then rolls back the programs.
+The worker publishes `config.yaml` with the bridge enabled, then calls `pm.client.sync_venv(explicit=True, project_root=<source>)` with the host interpreter, plugin discovery from the configuration, and no plugin eviction. It resolves the bridge member against the current resolved lock, builds a new generation, and records it in `facts.json` only when the build succeeds (`pm/install.py:769-855`, `pm/packages.py:484-486`). A failure leaves the previous generation selected, and the worker rolls back. The worker does not run `hermes pm install`: that command also reinstalls tools, downloads optional defaults, and republishes launchers (`pm/cli.py:343-398`).
 
 Rollback and removal publish the configuration without the bridge and synchronize again. That builds a generation without the bridge member. The previous generation is not reselected; Hermes has no generation history (stock-Hermes map, section 3).
 
-Preparation reports the four pins against the installed packages (implemented in the compatibility check). It does not resolve a candidate generation, so an unexpected resolver conflict appears at apply time and causes a rollback.
+Preparation proves the resolution before review. It generates a throwaway workspace with the currently enabled plugin members and the staged bridge, seeds it with the current resolved lock, and runs `uv lock` without installing anything. It refuses when any package of the current lock would change version or disappear. The review lists the added packages. The worker records the selected generation's lock hash at review and refuses at apply if it changed.
 
 ## 6. Hermes updater coordination
 
 `hermes update` stashes local changes, updates, and reapplies them, or parks them after a conflict (`update_cmd_stash.py`). No plugin hook or setting makes it refuse. The CLI, the update command, and the dashboard update action all call `evaluate_update_admission` (`hermes_cli/update_contract.py:82`).
 
-The new patch group `hermes-update-hold.patch` adds a first admission layer. It reads `<install state>/update-holds/*.json`. A valid hold refuses the update with the hold's message. An unreadable or malformed hold also refuses, because an integrity defect is not permission to update. The patch is generic: any integration can place a hold. It changes `hermes_cli/update_contract.py` and adds one test file.
+The new patch group `hermes-update-hold.patch` adds a first admission layer. It reads `<git common dir>/hermes-update-holds/*.json`, beside Hermes's own checkout lock and outside the working tree. A valid hold refuses the update with the hold's message. An unreadable or malformed hold also refuses, because an integrity defect is not permission to update. The patch is generic: any integration can place a hold. It changes `hermes_cli/update_contract.py` and adds one test file.
 
 The LifeOS hold message tells the owner to remove LifeOS, or to wait for a release that qualifies the new Hermes version. The hold is part of the program plan, so rollback and removal delete it.
 
-The installer cannot stop the owner from rerunning `install.sh` or editing files. The bridge detects that drift (section 9).
+The installer cannot stop the owner from rerunning `install.sh`, running `hermes pm update`, or editing files. The bridge detects that drift (section 9). The hold does not hide the passive update banner or the dashboard check's `can_apply` value; the update itself refuses.
 
 ## 7. Consumers and restart
 
 All Hermes processes import the checkout directly (`pm/environments.py`, `activate_dependencies`). The consumers are the gateway (which also runs cron and Kanban watchers), the dashboard or `serve`, ACP, CLI sessions, and separate cron or Kanban worker processes.
 
-- The worker stops and restarts the supported units with `ProfileServices`: `hermes-gateway.service`, `hermes-dashboard.service`, and `com.lifeos.pulse.service`.
+- Preparation inventories the profile's consumers: the stock gateway unit (`hermes-gateway.service`, created by `hermes gateway install`), a dashboard unit, the Pulse unit, and any Hermes process outside a unit. A gateway or dashboard that runs outside a unit is shown in the review with an offer to create its standard user unit. The owner can accept, or close the process and prepare again; otherwise the installer refuses.
+- The worker stops and restarts the bound units with `ProfileServices`, extended to bind only the roles that exist on the host. It records and restores each unit's enabled and active state.
 - Before publication, the worker scans `/proc` for this account's processes whose executable, command line, or current directory uses the Hermes source or its environment generations. Any process outside the stopped units' control groups refuses the operation, with the process identities shown. An interactive CLI session must be closed first.
-- After restart, the worker requires a new main PID with a start time after publication for each restarted unit. It runs `hermes lifeos-version` and a host capability probe in fresh processes. The probe checks that `VALID_HOOKS` contains the patched hooks and that `REQUIRED_MIDDLEWARE_API_VERSION == 1`.
+- After restart, the worker requires a new main PID with a start time after publication for each restarted unit. It runs `hermes lifeos-version` and a host capability probe in fresh processes. The probe checks that `VALID_HOOKS` contains the patched hooks and that `REQUIRED_MIDDLEWARE_API_VERSION == 1`. The bridge writes a registration receipt with its process ID and registration mode; the worker requires a `patched` receipt from the restarted gateway's main PID.
 
 Python revalidates `.pyc` files by source size and modification time, so the publication of new source files invalidates old bytecode. The worker still removes the `__pycache__` entries of the changed modules before restart.
 
 ## 8. Host record, updates, and removal
 
-`<profile>/lifeos-host.json` records the source path, the commit, the compatibility entry label, and each target's stock and patched hash. `<profile>/.lifeos-host/originals/` holds the original bytes and modes of the 68 modified files. Their hashes equal the manifest's stock hashes, so the originals are verifiable without the job directory.
+`<profile>/lifeos-host.json` records the source path, the commit, the compatibility entry label, and each target's stock and patched hash. `<profile>/.lifeos-host/originals/` holds the original bytes and modes of the 69 modified files (96 targets, 27 added). The record also holds the before-values of the configuration keys LifeOS changes, and the inventory below. Their hashes equal the manifest's stock hashes, so the originals are verifiable without the job directory.
 
 The compatibility check gains an `installed` state. It applies when the record exists, the commit matches, and every target has its recorded patched hash. Every other case keeps its current refusal.
 
@@ -134,16 +136,18 @@ The compatibility check gains an `installed` state. It applies when the record e
 
 **Removal** keeps the current order: a verified memory provider return, then software removal. The in-place removal plan restores the 94 host files from the originals, deletes the added files, removes the bridge and manager directories, removes the LifeOS configuration keys, removes the hold, the host record, and the receipts, and synchronizes the environment without the bridge. It does not prepare a stock runtime or change launchers. The configuration, `.env`, settings-hook, native-file, and service logic in the existing `removal_*` modules is reused; the generation and runtime selection is replaced.
 
+Before and after each operation the worker records an inventory: enabled plugins and their directories, configured toolsets and MCP servers, the model and provider keys, and the selected environment's package set. The review shows the planned difference; verification requires every item outside the planned difference to be unchanged.
+
 ## 9. Drift reporting
 
-The bridge compares the host identity with `lifeos-host.json` at registration and in `hermes lifeos-version`. A difference produces the state `host_drift`, with the changed paths. The releases page shows it with a repair path: run the compatibility check, then remove or reinstall LifeOS. Lasting memory stays fail-closed, as today. This design does not change the turn policy when the host lacks the patched hooks.
+The bridge compares the host identity with `lifeos-host.json` at registration and in `hermes lifeos-version`. It also reports when the bridge is no longer enabled or `memory.provider` no longer names it, because a boot-time environment synchronization can evict a plugin (`hermes_cli/venv_sync.py:602`, `pm/plugin_eviction.py`). A difference produces the state `host_drift`, with the changed paths. The releases page shows it with a repair path: run the compatibility check, then remove or reinstall LifeOS. Lasting memory stays fail-closed, as today. This design does not change the turn policy when the host lacks the patched hooks.
 
 ## 10. Development and daily transition
 
 1. Back up the profile, `~/.claude`, `~/.config/LIFEOS`, `~/.local/bin`, and the user units.
 2. Stop the services.
-3. Install stock Hermes `v0.21.7` with `install.sh --commit 71d34bad... --skip-setup` into `~/.hermes/hermes-agent`. Check first that the installer does not change `config.yaml`, `.env`, or the user units, and record which launchers it publishes.
-4. Run the in-place operation in transition mode. LifeOS is already installed and the host is unpatched. The plan also points the account launchers at the stock installation if the installer did not.
+3. Install stock Hermes `v0.21.7` with `install.sh --commit 71d34bad... --skip-setup` into `~/.hermes/hermes-agent`. `--skip-setup` skips `hermes setup` and `gateway install`. The installer's products stage still runs configuration migration and skills synchronization on the live profile, and its environment build includes the enabled bridge, so the backup in step 1 is required and the rehearsal checks the result. The installer does not repoint launchers that another owner created (`hermes_cli/_launchers.py:505-548`).
+4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally.
 5. Verify, then retain the managed job directories until the owner approves their removal.
 
 The transition is rehearsed first on a clone of the development container.
@@ -170,3 +174,20 @@ The transition is rehearsed first on a clone of the development container.
 - **Third-party plugins.** The patches change plugin dispatch for every plugin. Qualification uses representative extra plugins; it cannot prove every plugin.
 - **Resolver conflicts.** They appear only at apply time and cause a rollback (section 5).
 - **No release signature.** This risk is unchanged from the current releases.
+
+## 14. Review resolutions
+
+| Review finding | Resolution |
+| --- | --- |
+| `hermes pm install` is the wrong synchronization | Section 5: `pm.client.sync_venv(explicit=True, project_root=...)` |
+| `ProfileServices` cannot bind a stock host | Section 7: bind only existing roles; record enabled state |
+| The launching dashboard is an uncontrolled consumer | Owner decision: offer to create the standard unit, else refuse |
+| Resolver conflicts deferred to apply time | Section 5: throwaway-workspace lock at preparation |
+| Rollback order | Section 4.2: mount, programs, environment, services |
+| Hold location | Section 6: `<git common dir>/hermes-update-holds/` |
+| No preparation-time consumer inspection | Section 7: inventory at preparation, shown in review |
+| Byte-managed `config.yaml` and key-level removal | Section 8: record key before-values; removal restores keys |
+| Plugin eviction at boot-time synchronization | Section 9: drift reports bridge disablement and provider changes |
+| Manifest counts | 96 targets, 27 added, 69 modified |
+| Transition launchers and live-profile effects | Section 10 |
+| Plan gaps: inventory, tested scope, registration proof, enabled state | Sections 7 and 8; the page states the tested scope |
