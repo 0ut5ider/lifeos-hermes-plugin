@@ -26,10 +26,15 @@ PROPERTIES = ('Id', 'LoadState', 'ActiveState', 'MainPID', 'ControlGroup', 'Work
     'FragmentPath', 'DropInPaths', 'ExecStart', 'KillMode', 'RootDirectory', 'RootImage', 'NeedDaemonReload')
 
 
+# A unit can take its whole TimeoutStopSec (the stock gateway sets 70s) before systemd kills it.
+TRANSITION_TIMEOUT = 300
+
+
 def _run(*arguments):
+    timeout = TRANSITION_TIMEOUT if arguments and arguments[0] in {'stop', 'start', 'restart'} else 45
     try:
         result = subprocess.run(['systemctl', '--user', *arguments], text=True,
-            capture_output=True, timeout=45)
+            capture_output=True, timeout=timeout)
     except (OSError, subprocess.TimeoutExpired) as error:
         raise MemoryUnavailable('The owner service manager does not complete the selected operation') from error
     if result.returncode or result.stderr:

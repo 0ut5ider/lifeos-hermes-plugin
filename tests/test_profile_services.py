@@ -204,6 +204,24 @@ class ProfileServicesTests(unittest.TestCase):
         self.assertEqual(barrier.resume()['services_started'], ['gateway'])
         self.assertNotEqual(self.properties('gateway')['MainPID'], before['gateway']['MainPID'])
 
+    def test_drain_waits_for_a_unit_that_needs_its_whole_stop_timeout(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        unit = self.units['pulse']
+        self.command('systemctl', '--user', 'stop', unit)
+        path = self.home / 'units' / unit
+        path.write_text('[Unit]\nDescription=LifeOS synthetic slow-stopping control\n[Service]\nType=simple\n'
+            'WorkingDirectory=' + str(self.directories['pulse']) + '\n'
+            'ExecStart=' + json.dumps(sys.executable) + ' -c "import signal,time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(600)"\n'
+            'KillMode=control-group\nTimeoutStopSec=46s\nRestart=no\n')
+        self.command('systemctl', '--user', 'daemon-reload')
+        self.command('systemctl', '--user', 'start', unit)
+        barrier = ProfileServices(self.profile, self.installed, units={'pulse': unit}, roles=('pulse',))
+        started = time.monotonic()
+        self.assertEqual(barrier.drain(signature=barrier.preview()['signature'])['state'], 'stopped')
+        self.assertGreater(time.monotonic() - started, 45)
+        self.assertEqual(barrier.resume()['services_started'], ['pulse'])
+        self.command('systemctl', '--user', 'kill', '--signal=SIGKILL', unit)
+
     def test_selected_roles_refuse_unknown_or_mismatched_bindings(self):
         from lifeos_hook_bridge.profile_services import ProfileServices
         for roles, units in ((('gateway', 'mail'), {'gateway': self.units['gateway']}),
