@@ -99,6 +99,18 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.configuration.save(self.policy)
         self.assertEqual(self.request(self.owner)[0], 403)
 
+    def test_compatibility_requires_owner_and_reports_the_running_hermes(self):
+        from optional.lifeos_release_manager.host_compatibility import running_source
+        self.assertEqual(self.request(path='/compatibility')[0], 401)
+        self.assertEqual(self.request(self.other, path='/compatibility')[0], 403)
+        code, value = self.request(self.owner, path='/compatibility')
+        self.assertEqual(code, 200)
+        self.assertEqual(value['detected']['source'], str(running_source()))
+        self.assertEqual(value['detected']['profile'], str(self.profile))
+        self.assertIn(value['state'], ('compatible', 'unsupported_layout', 'unsupported_version', 'modified_source',
+            'partially_patched', 'patched_without_record', 'shared_installation', 'dependency_conflict'))
+        self.assertFalse((self.profile / '.lifeos-releases').exists())
+
     def test_mutations_reject_foreign_origin_and_client_supplied_fields(self):
         path = '/operations/' + ('a' * 32) + '/review'
         self.assertEqual(self.request(self.owner, path=path, method='POST', origin='https://other.invalid')[0], 403)

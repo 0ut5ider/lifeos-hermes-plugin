@@ -1,0 +1,33 @@
+{
+  "compatible": false,
+  "dependencies": {
+    "add": [
+      "tree-sitter==0.26.0",
+      "tree-sitter-bash==0.25.1"
+    ],
+    "conflicts": []
+  },
+  "detected": {
+    "commit": "f4795c922c2ef9eef244ea0fb886ad863dc452be",
+    "interpreter": "/usr/local/lib/hermes-agent/venv/bin/python",
+    "profile": "/root/.hermes",
+    "python": "3.11.16",
+    "source": "/usr/local/lib/hermes-agent",
+    "version": "v0.21.4+canary.20260926T065603Z-588-gf4795c922"
+  },
+  "format": 1,
+  "qualified": null,
+  "reasons": [
+    {
+      "code": "unsupported_version",
+      "message": "LifeOS has no qualified patch set for this Hermes version."
+    }
+  ],
+  "state": "unsupported_version",
+  "supported": [
+    {
+      "commit": "71d34bad1045610252eda02ee79549436896e784",
+      "label": "v0.21.7"
+    }
+  ]
+}

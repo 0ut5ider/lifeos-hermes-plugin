@@ -123,6 +123,28 @@ class ReleaseManagerCommandTests(unittest.TestCase):
             finally:
                 reset_hermes_home_override(token)
 
+    def test_compatibility_reports_the_running_hermes_without_creating_release_state(self):
+        from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+        from lifeos_hook_bridge.install_source import SUPPORTED_HERMES_COMMIT
+        from optional.lifeos_release_manager.host_compatibility import running_source
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            token = set_hermes_home_override(profile)
+            try:
+                parser = argparse.ArgumentParser()
+                configure(parser)
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    code = run(parser.parse_args(['compatibility']))
+                value = json.loads(output.getvalue())
+                self.assertEqual(code, 0 if value['compatible'] or value['installed'] else 1)
+                self.assertEqual(value['detected']['source'], str(running_source()))
+                self.assertEqual(value['detected']['profile'], str(profile))
+                self.assertEqual(value['supported'], [{'label': 'v0.21.7', 'commit': SUPPORTED_HERMES_COMMIT}])
+                self.assertEqual(list(profile.iterdir()), [])
+            finally:
+                reset_hermes_home_override(token)
+
     def test_invalid_operation_identifier_refuses_without_reading_an_external_file(self):
         from hermes_constants import set_hermes_home_override, reset_hermes_home_override
         with tempfile.TemporaryDirectory() as temp:

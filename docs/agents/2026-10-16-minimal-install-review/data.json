@@ -1,0 +1,174 @@
+{
+  "format": 1,
+  "date": "2026-10-16",
+  "role": "Read-only architecture and code reviewer (subagent)",
+  "model": "claude-opus-5-5 (Opus 5.5), high effort as selected by the parent",
+  "question": "Can the release stop shipping complete Hermes and LifeOS, install only a plugin through Hermes, fetch and patch LifeOS on activation, and apply reversible compatibility patches to an existing Hermes installation? Evaluate options A to E.",
+  "repository": {
+    "path": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+    "head": "f231c30514c547051386306c564c179bf8d44b12",
+    "branch": "feature/release-073-deployment",
+    "version_file": "0.7.3",
+    "product_files_modified": false,
+    "note": "README.md still names 0.7.2 as the stable release; VERSION and both plugin.yaml files say 0.7.3."
+  },
+  "inputs_inspected": {
+    "archive": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/packages/0.7.3-70fa8390.tgz",
+    "archive_sha256_measured": "2deae5dcedfef8224959312410a5381baa91312532c968afa5534f19fd2149c8",
+    "archive_sha256_matches_certificate": true,
+    "archive_bytes": 288173954,
+    "size_breakdown_file": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/package-size-breakdown.json",
+    "disposable_workspace": "/home/outsider/.cache/minimal-install-review-20261016",
+    "not_inspected": ["deployment metadata", "credentials", "profiles", "personal memory", "server data", "the extracted qualification fixture packages/0.7.3-70fa8390/", "the parent's primary-* files in this directory"]
+  },
+  "measured_facts": {
+    "uncompressed_components_bytes": {
+      "hermes": 303413272, "lifeos": 47455229, "stock-hermes.tgz": 81180515,
+      "lifeos_hook_bridge": 9644196, "tests": 4362602, "python-runtime": 1257861,
+      "optional": 314179, "scripts": 461296,
+      "hermes_git_metadata": 89642568, "lifeos_git_metadata": 18113982,
+      "hermes_worktree_without_git": 213770704, "lifeos_worktree_without_git": 29341247,
+      "source": "du -sb on the disposable extraction and review-measure-raw.json; matches package-size-breakdown.json"
+    },
+    "separately_compressed_components_gzip9_bytes": {
+      "hermes_worktree_without_git": 81550670,
+      "hermes_git_metadata": 88235209,
+      "stock_hermes_tgz_as_stored": 81180515,
+      "lifeos_worktree_without_git": 15946547,
+      "lifeos_git_metadata": 17696330,
+      "lifeos_hook_bridge": 1953166,
+      "lifeos_hook_bridge_patches_only": 1406849,
+      "hermes_patch_series_only": 86215,
+      "hermes_overlay_all_94_changed_files": 1022795,
+      "hermes_overlay_58_runtime_changed_files": 902757,
+      "optional": 76535,
+      "tests": 832734,
+      "scripts": 113522,
+      "python-runtime": 388878,
+      "docs": 6761,
+      "integration_only_bridge_manager_closure_scripts_docs_root_files": 2565246,
+      "sum_of_component_streams_excluding_root_text_files": 287980867,
+      "method": "Python tarfile w:gz compresslevel 9, the same default the builder uses. Each figure is an independent stream; the sum is within 0.07 percent of the real archive, but these are attributions, not guaranteed savings."
+    },
+    "hermes_base_represented_three_times": {
+      "patched_worktree_gz": 81550670, "shallow_git_pack_gz": 88235209, "stock_hermes_tgz": 81180515,
+      "total": 250966394,
+      "packaged_hermes_git": "shallow, 1 commit, 19262 objects, 83.40 MiB pack, origin points at a builder-local cache path"
+    },
+    "hermes_patch_delta": {
+      "stock_files": 18243, "changed_files": 94, "modified": 68, "added": 26, "removed": 0,
+      "by_category": {"wheel_packages": 55, "root_modules": 2, "tests": 36, "other": 1},
+      "other_paths": ["scripts/run_tests.sh"], "root_modules": ["cli.py", "model_tools.py"],
+      "runtime_changed_bytes_before": 3201872, "runtime_changed_bytes_after": 3254452,
+      "touches_dependency_manifests": false, "touches_web_or_compiled_dashboard": false
+    },
+    "hermes_patch_stats": {
+      "hermes-plugin-events": {"files": 15, "added": 451, "removed": 149, "test_files": 8},
+      "hermes-turn-gates": {"files": 13, "added": 553, "removed": 68, "test_files": 3},
+      "hermes-command-policy": {"files": 18, "added": 842, "removed": 88, "test_files": 10},
+      "hermes-session-lifecycle": {"files": 27, "added": 926, "removed": 129, "test_files": 10},
+      "hermes-child-routing": {"files": 2, "added": 211, "removed": 9, "test_files": 1},
+      "hermes-strict-inference": {"files": 3, "added": 73, "removed": 18, "test_files": 1},
+      "hermes-remote-files": {"files": 7, "added": 293, "removed": 11, "test_files": 2},
+      "hermes-cron-bootstrap": {"files": 1, "added": 9, "removed": 9, "test_files": 0},
+      "hermes-required-middleware": {"files": 5, "added": 184, "removed": 5, "test_files": 1},
+      "hermes-web-result-status": {"files": 3, "added": 31, "removed": 2, "test_files": 0}
+    },
+    "lifeos_patch_delta": {
+      "git_status_entries": 333, "modified": 218, "deleted": 55, "untracked": 60,
+      "diff_stat": "273 files changed, 7047 insertions(+), 2036 deletions(-)",
+      "largest_patch": "lifeos-content-response-consumption.patch, 6176050 bytes, 192 file sections, 110 under PULSE/Observability/out/_next (compiled output)",
+      "second_largest": "lifeos-memory-access.patch, 761404 bytes, 114 file sections",
+      "lifeos_git": "717 commits, full history"
+    },
+    "python_closure": {
+      "stock_uv_lock_packages": 328, "qualified_closure_packages": 331,
+      "only_in_closure": ["hermes-plugin-lifeos-hook-bridge-e4d619c25245a31d 0.0.0", "tree-sitter 0.26.0", "tree-sitter-bash 0.25.1"],
+      "only_in_stock": []
+    },
+    "release_assets_0_7_3": {
+      "archive": 288173954, "hermes-dashboard.tgz": 1542030, "RELEASE-CERTIFICATE.json": 4225,
+      "bun_declared_bytes_per_preparation": 42015103,
+      "source": "docs/verification/2026-10-16-release-0.7.3/release-publication.json and optional/lifeos_release_manager/release-tools.json"
+    },
+    "patch_copies": {
+      "distributed_vs_package_patches": "all 36 byte-identical",
+      "top_level_vs_distributed": "only hermes-session-lifecycle.patch differs (documented pre-existing development-path issue)"
+    }
+  },
+  "experiments": {
+    "E1_forward_apply_to_unversioned_stock": {"result": "all 10 Hermes patches applied with git apply; resulting tree equals the qualified patched tree exactly (0 missing, 0 extra, 0 different, excluding .git and manifest)"},
+    "E2_already_patched_detection": {"result": "every forward --check fails on the qualified tree; reverse check of the series passes"},
+    "E3_reverse_to_stock": {"result": "reverse series restores the stock tree exactly (0 differences)"},
+    "E4_local_edit_inside_hunk": {"result": "first patch refuses: patch failed: hermes_cli/plugins.py:108; nothing applied"},
+    "E5_local_edit_outside_hunk": {"result": "all 10 patches still apply; the edited file then differs from the qualified hash; reverse restores the local edit byte-exactly and every other file equals stock", "implication": "patch admission alone accepts unqualified files; admission must compare file hashes"},
+    "E6_wheel_like_subset": {"result": "unfiltered series fails on missing tests/ paths; with --exclude=tests/* --exclude=scripts/* all runtime hunks apply and match the qualified runtime files", "limit": "simulated from the pyproject setuptools include list, not a built wheel"},
+    "E7_copy_timing_btrfs": {"reflink_seconds": 1.16, "plain_copy_seconds": 3.5, "limit": "one warm-cache run; shared extents not measured"},
+    "E8_git_worktree_overlay": {"result": "detached worktree at base in about 2 s; 10 patches applied; primary checkout status stays clean"},
+    "E9a_autostash_same_base": {"result": "stash push and apply round trip restores the identical patch state"},
+    "E9b_upstream_edit_adjacent_to_hunk": {"result": "stash apply merges without conflict; patched files now sit on an untested commit"},
+    "E9c_upstream_edit_in_unrelated_file": {"result": "stash apply succeeds; HEAD is not the qualified base; 94 patched paths present"},
+    "E9d_upstream_edit_overlapping_hunk": {"result": "stash apply conflicts in hermes_cli/plugins.py", "hermes_behavior_by_code_reading": "stock update_cmd_stash.py lines 486-496 reset the tree to clean and park the stash; lines 470-482 report it; the update continues"},
+    "existing_unit_tests": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest tests.test_hermes_install_source tests.test_release_programs tests.test_stock_hermes tests.test_latest_hermes -v",
+      "ran": 38, "passed": 37, "failed": 1,
+      "failure": "tests.test_latest_hermes: prepare and validate passed; the post-prepare import check failed with ModuleNotFoundError: No module named 'ruamel' because system python3 lacks Hermes dependencies. Environment limit, not a code finding.",
+      "fixtures": "LIFEOS_LATEST_HERMES_SOURCE was a disposable clean clone of the packaged Hermes .git at base; LIFEOS_TEST_PYTHON=python3 (3.14.8)",
+      "logs": ["review-existing-tests.stderr.gz", "review-existing-tests.stdout"]
+    },
+    "raw_logs": ["review-measure-raw.json", "review-git-experiments-raw.json", "review-hermes-changed-files.json", "scripts/measure.py", "scripts/git_experiments.py", "review-commands.md"]
+  },
+  "code_findings": [
+    {"id": "F1", "claim": "An in-place Hermes patch transaction already exists from the earlier bridge-first design", "refs": ["lifeos_hook_bridge/install_source.py:468-757", "lifeos_hook_bridge/dashboard/plugin_api.py:1328-1425"], "kind": "reusable"},
+    {"id": "F2", "claim": "That transaction stops and verifies only hermes-gateway.service; the dashboard, CLI sessions, cron workers, and other profiles keep running old code", "refs": ["lifeos_hook_bridge/install_source.py:729-757", "lifeos_hook_bridge/install_source.py:703-720"], "kind": "gap"},
+    {"id": "F3", "claim": "Its post-restart check does not verify that the new process exposes the patched hooks or required middleware", "refs": ["lifeos_hook_bridge/install_source.py:703-720"], "kind": "gap"},
+    {"id": "F4", "claim": "Its journal and file writes use os.replace without fsync, unlike ProgramTransaction.publish", "refs": ["lifeos_hook_bridge/install_source.py:449-459", "lifeos_hook_bridge/install_source.py:524-541", "optional/lifeos_release_manager/release_programs.py:25-48"], "kind": "gap"},
+    {"id": "F5", "claim": "The bridge silently registers reduced stock hooks when patched hooks are absent", "refs": ["lifeos_hook_bridge/__init__.py:54-80"], "kind": "risk for in-place patches"},
+    {"id": "F6", "claim": "Lasting-memory ownership fails closed on a host without REQUIRED_MIDDLEWARE_API_VERSION", "refs": ["lifeos_hook_bridge/memory_provider.py:36-43", "lifeos_hook_bridge/memory_provider.py:99-115"], "kind": "preserved behavior"},
+    {"id": "F7", "claim": "The managed release copies the complete patched Hermes tree, including .git, into each operation directory and repoints account launchers to it", "refs": ["optional/lifeos_release_manager/release_stage.py:214-223", "optional/lifeos_release_manager/release_worker.py:185-199"], "kind": "current ownership model"},
+    {"id": "F8", "claim": "Package and candidate validators require Git metadata (git rev-parse HEAD)", "refs": ["lifeos_hook_bridge/install_source.py:138", "lifeos_hook_bridge/install_source.py:209", "optional/lifeos_release_manager/release_stage.py:166-167"], "kind": "obsolete assumption for split assets"},
+    {"id": "F9", "claim": "prepare_lifeos refuses whenever upstream LifeOS HEAD moves past the pinned commit", "refs": ["lifeos_hook_bridge/install_source.py:145-151"], "kind": "obsolete assumption for fetch on activation"},
+    {"id": "F10", "claim": "Removal builds a second stock runtime from stock-hermes.tgz; it does not return to the user's original Hermes install", "refs": ["optional/lifeos_release_manager/removal_preparation.py:136-144", "optional/lifeos_release_manager/release_stage.py:214-221"], "kind": "current ownership model"},
+    {"id": "F11", "claim": "Removal refuses accounts with additional Hermes profiles", "refs": ["optional/lifeos_release_manager/removal_generation.py:16-24"], "kind": "constraint"},
+    {"id": "F12", "claim": "Every preparation downloads the full archive, dashboard, and Bun; no reuse or retention cleanup was found", "refs": ["optional/lifeos_release_manager/release_catalog.py:144-185", "optional/lifeos_release_manager/release_tools.py:18-53", "optional/lifeos_release_manager/release_stage.py:200"], "kind": "transfer and disk cost", "search": "git grep rmtree|prune|retention|cleanup in the manager found only staging and grant cleanup"},
+    {"id": "F13", "claim": "release_version.status verifies plugin files only, not host Hermes files", "refs": ["lifeos_hook_bridge/release_version.py:65-93"], "kind": "gap for in-place identity"},
+    {"id": "F14", "claim": "No integration code blocks hermes update; the guard is documentation", "refs": ["docs/update-policy.md:20", "docs/installation-workflow.md:106"], "search": "git grep for hermes update and update admission in lifeos_hook_bridge and optional Python files", "kind": "gap in current and proposed designs"},
+    {"id": "F15", "claim": "release_validation.py named in the brief does not exist at HEAD", "refs": ["git ls-files | grep release_validation returned nothing"], "kind": "input correction"}
+  ],
+  "hermes_stock_facts": [
+    {"claim": "Stock v0.21.7 base lacks pre_prompt_admission, pre_command_approval, augment_tool_result, pre_turn_stop, on_turn_result, pre_message_delivery", "refs": ["stock hermes_cli/plugins.py:109-170"]},
+    {"claim": "Stock register_hook and register_middleware accept unknown names with a warning", "refs": ["stock hermes_cli/plugins.py:933-955"]},
+    {"claim": "Stock middleware kinds are tool request, tool execution, LLM request, LLM execution; no required flag", "refs": ["stock hermes_cli/middleware.py:17-26"]},
+    {"claim": "Default Linux installer creates a Git checkout at HERMES_HOME/hermes-agent", "refs": ["stock scripts/install.sh:23-27", "stock scripts/install.sh:85", "stock scripts/install.sh:532-572"]},
+    {"claim": "Install provenance is an install stamp (docker, nix, desktop-app), live Git, or unknown", "refs": ["stock hermes_cli/version_info.py:1-10", "stock hermes_cli/version_info.py:185-186"]},
+    {"claim": "A tree with .git is treated as a dev checkout, never a sealed payload", "refs": ["stock hermes_cli/_launchers.py:872-883"]},
+    {"claim": "hermes update autostashes local changes, then reapplies; on conflict it resets to clean and parks the stash", "refs": ["stock hermes_cli/update_cmd_stash.py:88-100", "stock hermes_cli/update_cmd_stash.py:448-496"]},
+    {"claim": "hermes update holds a kernel lock at <git common dir>/hermes-update.lock (or <install root>/.hermes-update.lock for ZIP installs)", "refs": ["stock hermes_cli/update_lock.py:1-16", "stock hermes_cli/update_lock.py:135"]},
+    {"claim": "When the configured memory provider is unavailable the agent runs without it and warns", "refs": ["stock agent/agent_init.py:1343-1371"]},
+    {"claim": "Hermes-strict-inference keeps provider fallback by default (allow_provider_fallback=True)", "refs": ["lifeos_hook_bridge/patches/hermes-strict-inference.patch"], "scope": "spot check of one patch only"}
+  ],
+  "hypotheses_untested": [
+    "A user pm venv synced from the stock uv.lock plus Hermes plugin dependency install of the bridge reproduces the qualified 331-package closure",
+    "Holding the Hermes checkout update lock excludes a concurrent hermes update for the full patch transaction",
+    "The ten Hermes patches are behavior-neutral for profiles that do not load the bridge (only strict inference was spot-checked)",
+    "Fetching exactly one LifeOS or Hermes commit from GitHub is materially smaller than the full LifeOS clone or the stock archive",
+    "A .pth-installed import overlay can substitute patched modules before Hermes imports them and survives pm venv sync",
+    "Removing .git from the packaged runtime keeps Hermes identity, update refusal, and launcher behavior acceptable when an install stamp is written",
+    "On-disk use per retained operation is at least 1.08 GB (archive, extracted package, runtime copy, Bun archive); venv, Bun binary, reference .claude, and pm runtime are extra",
+    "Python wheel and LifeOS native package downloads per preparation (not measured; no network used)"
+  ],
+  "options": {
+    "A_in_place_patch": {"feasible": "for one layout only: clean default Git checkout at the exact base, user-owned, every Hermes process systemd-managed", "existing_support": "partial (F1) with gaps F2 to F5, F13, F14", "measured_proof": "E1 to E5, E9 on disposable trees only", "risk": "highest: hermes update interaction (E9), shared checkout across profiles and plugins, mixed-module window"},
+    "B_private_runtime_from_local_base": {"feasible": "yes for Git checkouts that contain the base commit object, regardless of working-tree edits", "existing_support": "prepare_hermes already clones a local repo at the pinned commit (install_source.py:216-250)", "measured_proof": "E1, E7, E8, existing test_latest_hermes prepare path", "risk": "low to medium"},
+    "C_split_content_addressed_assets": {"feasible": "yes", "existing_support": "certificate digests, tree_sha256 manifests, stock archive identity", "measured_proof": "component compression and E1 equality", "risk": "low; identity and validator changes"},
+    "D_stock_hermes_plugin_only": {"feasible": "yes with reduced features", "existing_support": "reduced registration path in __init__.py; memory provider fails closed", "measured_proof": "hook set comparison only", "risk": "safety contract not met; must be explicit, never silent"},
+    "E_upstream_or_overlay": {"feasible": "upstream: depends on maintainers; overlay: untested hypothesis", "existing_support": "none", "measured_proof": "none", "risk": "upstream: schedule; overlay: high and unverified"}
+  },
+  "estimated_transfers_bytes": {
+    "current_first_or_update_preparation": {"github_release_assets": 289720209, "bun": 42015103, "python_wheels": "unmeasured", "lifeos_native_packages": "unmeasured"},
+    "C_first_install_estimate": {"stock_hermes": 81180515, "lifeos_patched_worktree": 15946547, "integration": 2565246, "dashboard": 1542030, "certificate": 4225, "total_before_bun_and_wheels": 101238563},
+    "C_update_with_unchanged_bases_estimate": {"integration": 2565246, "certificate": 4225, "dashboard_if_unchanged": 0, "bun_if_cached": 0},
+    "B_or_A_with_local_base_commit": {"hermes": 0, "lifeos": "15946547 as an asset, or an upstream fetch of unmeasured size", "integration": 2565246},
+    "method": "sums of separately compressed measured components; real assets will differ slightly"
+  }
+}

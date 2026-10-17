@@ -19,8 +19,9 @@ def returned(profile, identifier, signature, *, owner, source, configuration, in
             or receipt.get('state')!='verified' or receipt.get('application_verified') is not True
             or review.get('signature')!=signature or receipt.get('signature')!=signature):
         raise ReleaseRejected('Removal requires the exact verified provider-return workflow')
+    from .inplace_services import profile_units
     transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-        installation_lease=installation_lease,operation_id=identifier)
+        units=profile_units(profile),installation_lease=installation_lease,operation_id=identifier)
     plan,state=transition._load(signature,owner)
     expected=source.memory_module('memory_import_sources').directory(profile,request['selection']['identifier'])
     if state!='verified' or plan['snapshot']!=str(expected):
@@ -35,11 +36,11 @@ def returned(profile, identifier, signature, *, owner, source, configuration, in
     return {'return_identifier':identifier,'return_signature':signature,'native_signature':inner['target_signature']}
 
 
-def software(profile, installed, generation, native, runtime, generated, *, workspace, pulse):
+def software(profile, installed, generation, native, runtime, generated, *, workspace, pulse, recorded=None):
     from .release_programs import launcher_script,publish
     from .removal_configuration import configuration,environment
     from .removal_consumers import hooks
-    profile,installed,runtime,generated=map(Path,(profile,installed,runtime,generated))
+    profile,installed,generated=map(Path,(profile,installed,generated))
     import json
     hooks(json.loads(native['settings']),profile,installed)
     directories={profile/'plugins'/name:None for name in ('lifeos','lifeos-hook-bridge','lifeos-release-manager')}
@@ -51,7 +52,7 @@ def software(profile, installed, generation, native, runtime, generated, *, work
     expected.update(native.get('before',{}));expected.update(generation['launchers'])
     if 'bun_identity' in generation:expected[generation['bun']]=generation['bun_identity']
     publish(generated/'settings.json',native['settings']);files[installed/'settings.json']=generated/'settings.json'
-    publish(generated/'config.yaml',configuration(_input(profile/'config.yaml',expected),installed))
+    publish(generated/'config.yaml',configuration(_input(profile/'config.yaml',expected),installed,recorded))
     files[profile/'config.yaml']=generated/'config.yaml'
     path=profile/'.env'
     if path.exists() or path.is_symlink():
@@ -59,7 +60,7 @@ def software(profile, installed, generation, native, runtime, generated, *, work
         files[path]=generated/'environment'
     for path in generation['launchers']:
         name=path.name if path.name in {'hermes','hermes-agent','hermes-acp'} else 'hermes'
-        target=runtime/'bin'/name
+        target=Path(runtime)/'bin'/name
         publish(generated/name,launcher_script(str(target)),0o700)
         files[path]=generated/name
     if profile/'.env' not in files:expected.pop(profile/'.env')
@@ -82,7 +83,7 @@ def _encoded(value):
     return json.dumps(value,sort_keys=True,separators=(',',':')).encode()
 
 
-def _consumers(profile, installed, services, *, workflow=None):
+def _consumers(profile, installed, services, *, workflow=None, source=None):
     from . import removal_consumers
     admitted=services._admission()
     known=set()
@@ -95,6 +96,14 @@ def _consumers(profile, installed, services, *, workflow=None):
         known.add(coordinator['fragment']);known.update(coordinator['dropins']);groups.add(coordinator['group'])
     removal_consumers.unit_files(profile,installed,known=known,coordinator=coordinator)
     removal_consumers.processes(profile,installed,groups=groups)
+    if source is not None:
+        # An in-place removal changes the Hermes source, so every process that runs it must be a stopped unit.
+        from .consumer_scan import source_consumers
+        from .inplace_preparation import state_directory
+        found=source_consumers(source,state_directory(source),excluded_groups=groups)
+        if found:
+            raise ReleaseRejected('Close these Hermes processes before removal: '+', '.join(
+                item['command']+' ('+str(item['pid'])+')' for item in found))
     if workflow is not None and removal_consumers.coordinator(profile,workflow)!=coordinator:
         raise ReleaseRejected('The admitted removal coordinator changes during consumer inspection')
 
@@ -106,7 +115,9 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
     from .release_catalog import _directory
     from .release_programs import ProgramTransaction,fingerprint,publish
     from .release_stage import prepare_runtime,runtime_source_fingerprint,sha,validate_files
-    from . import removal_generation,removal_inventory,removal_ownership
+    from . import inplace_removal,removal_generation,removal_inventory,removal_ownership
+    from .host_record import record_path
+    from .inplace_services import profile_units
     from .removal_recovery import basic_settings
     from .removal_services import RemovalServices
     from .removal_runtime import identity as runtime_identity,launchers
@@ -119,7 +130,10 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         binding=returned(profile,selected['identifier'],selected['signature'],owner=owner,
             source=source,configuration=configuration,installation_lease=lease)
         policy=configuration.load();installed=Path(policy['root'])
-        generation=removal_generation.selected(profile,installed,bridge=source)
+        # A LifeOS host record selects the in-place removal, which restores the patched host in place.
+        inplace=record_path(profile).exists() or record_path(profile).is_symlink()
+        generation=(inplace_removal.selected if inplace else removal_generation.selected)(profile,installed,bridge=source)
+        host=generation['record']['source'] if inplace else None
         settings=basic_settings(profile)
         if owner!='dashboard:basic:'+settings['username']:
             raise ReleaseRejected('The current dashboard password account must own standalone removal recovery')
@@ -129,19 +143,25 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             state=read_private(sibling/'status.json')['state']
             if state.startswith('queued-') or state in {'preparing','applying','recovering','restoring','recovery_required'}:
                 raise ReleaseRejected('Finish or recover the pending complete release before removal')
-        services=source.memory_module('profile_services').ProfileServices(profile,installed,installation_lease=lease)
-        _consumers(profile,installed,services,workflow=job)
+        units=profile_units(profile) if inplace else None
+        services=source.memory_module('profile_services').ProfileServices(profile,installed,units=units,
+            roles=None if units is None else tuple(units),installation_lease=lease)
+        _consumers(profile,installed,services,workflow=job,source=host)
         removal_ownership.guard(profile,installed,bridge=source)
         pulse=removal_ownership.pulse(profile,installed)
-        package=generation['package'];dashboard=generation['job']/'download/hermes-dashboard.tgz'
-        if sha(dashboard)!=generation['request']['certificate'].get('hermes_dashboard_sha256'):
-            raise ReleaseRejected('The stock dashboard differs from the qualified release asset')
-        if 'stock_hermes' not in generation['manifest']:
-            raise ReleaseRejected('Install a complete release with qualified stock removal support first')
+        package=generation['package']
+        if not inplace:
+            dashboard=generation['job']/'download/hermes-dashboard.tgz'
+            if sha(dashboard)!=generation['request']['certificate'].get('hermes_dashboard_sha256'):
+                raise ReleaseRejected('The stock dashboard differs from the qualified release asset')
+            if 'stock_hermes' not in generation['manifest']:
+                raise ReleaseRejected('Install a complete release with qualified stock removal support first')
         stage=job/'removal';stage.mkdir(mode=0o700)
-        runtime_root=job/'stock-runtime';runtime_root.mkdir(mode=0o700)
-        runtime=prepare_runtime(runtime_root,package,dashboard,profile,stock=True)
-        launchers(runtime_root)
+        runtime_root=None
+        if not inplace:
+            runtime_root=job/'stock-runtime';runtime_root.mkdir(mode=0o700)
+            runtime=prepare_runtime(runtime_root,package,dashboard,profile,stock=True)
+            launchers(runtime_root)
         for name,files,origin in (('recovery-bridge',generation['bridge_files'],profile/'plugins/lifeos-hook-bridge'),
                 ('recovery-manager',generation['manager_files'],profile/'plugins/lifeos-release-manager')):
             validate_files(origin,files)
@@ -149,13 +169,12 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             validate_files(stage/name,files,forbid_bytecode=True)
         binding=returned(profile,selected['identifier'],selected['signature'],owner=owner,
             source=source,configuration=configuration,installation_lease=lease)
-        _consumers(profile,installed,services,workflow=job)
+        _consumers(profile,installed,services,workflow=job,source=host)
         guard_identity=removal_ownership.guard(profile,installed,bridge=source)
         pulse_identity=fingerprint(pulse)
         if removal_ownership.pulse(profile,installed)!=pulse:
             raise ReleaseRejected('The current Pulse ownership changes during preparation')
-        native=removal_inventory.native(installed,package/'lifeos/LifeOS/install',
-            Path(generation['request']['runtime']['reference']),bridge=source)
+        native=removal_inventory.native(installed,generation['native_source'],generation['reference'],bridge=source)
         workspace=source.memory_module('lifeos_installation').selection(profile).workspace
         generated=stage/'generated';generated.mkdir(mode=0o700)
         mount=source.memory_module('mount_transaction')
@@ -163,8 +182,13 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             data,metadata=mount._read(profile/name)
             if data is not None and metadata['mode'] & 0o077:
                 raise ReleaseRejected('The current configuration and environment require private owner permissions')
+        recorded=inplace_removal.recorded_configuration(profile) if inplace else None
         directories,files,dependencies,expected=software(profile,installed,generation,native,runtime_root,generated,
-            workspace=workspace,pulse=pulse)
+            workspace=workspace,pulse=pulse,recorded=recorded)
+        if inplace:
+            host_directories,host_files,host_expected=inplace_removal.host_plan(profile,generation['record'],
+                generation['originals'],stage)
+            directories.update(host_directories);files.update(host_files);expected.update(host_expected)
         programs=ProgramTransaction(stage/'programs')
         expected[profile/'plugins/lifeos']=guard_identity;expected[pulse]=pulse_identity
         for name in ('lifeos-hook-bridge','lifeos-release-manager'):
@@ -177,10 +201,23 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         plan={'format':1,'profile':str(profile),'root':str(installed),'identifier':job.name,'owner':owner,
             'workspace':str(workspace),'bridge_files':generation['bridge_files'],'manager_files':generation['manager_files'],
             'owner_policy_sha256':hashlib.sha256(encoded_policy).hexdigest(),'program_entries_sha256':programs.entries_digest(),
-            'service_signature':service_signature,'stock_runtime':runtime,'stock_runtime_source':runtime_source_fingerprint(runtime_root/'hermes'),
-            'stock_runtime_manifest_sha256':sha(runtime_root/'manifest.json'),
-            'stock_runtime_execution':runtime_identity(runtime_root),
-            'generation':generation['job'].name,'disable_discord':True,**binding}
+            'service_signature':service_signature,'generation':generation['job'].name,'disable_discord':True,**binding}
+        if inplace:
+            record=generation['record']
+            plan.update(host={'source':record['source'],'commit':record['commit'],'label':record['label'],
+                'operation':record['operation']},service_units=units)
+            runtime=inplace_removal.runtime(plan)
+            stock_commit=record['commit']
+            if recorded is not None:
+                from ruamel.yaml import YAML
+                from .host_configuration import restore
+                _,retained_keys=restore(YAML(typ='safe').load((profile/'config.yaml').read_text()) or {},recorded)
+                plan['configuration_retained']=retained_keys
+        else:
+            plan.update(stock_runtime=runtime,stock_runtime_source=runtime_source_fingerprint(runtime_root/'hermes'),
+                stock_runtime_manifest_sha256=sha(runtime_root/'manifest.json'),
+                stock_runtime_execution=runtime_identity(runtime_root))
+            stock_commit=runtime['stock_source']['commit']
         recovery=_recovery_command(profile,job,runtime)
         publish(stage/'recover',recovery,0o700)
         plan['recovery_command_sha256']=hashlib.sha256(recovery).hexdigest()
@@ -192,8 +229,9 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         prepared(profile,job.name,signature)
         return {'state':'ready','signature':signature,'kind':'removal','application_verified':False,
             'native_data_retained':True,'builtin_memory_retained':True,'discord_disabled':True,
-            'stock_commit':runtime['stock_source']['commit'],'stock_patches':0,
-            'program_targets':len(programs._load()['entries']),'recovery_command':str(stage/'recover')}
+            'stock_commit':stock_commit,'stock_patches':0,
+            'program_targets':len(programs._load()['entries']),'recovery_command':str(stage/'recover'),
+            'configuration_retained':plan.get('configuration_retained',[])}
 
 
 def _recovery_command(profile, job, runtime):
@@ -203,8 +241,12 @@ def _recovery_command(profile, job, runtime):
         'selected=validate(sys.argv[1],sys.argv[2])\n'
         'sys.argv=[selected["worker"],*sys.argv[1:],selected["signature"]]\n'
         'runpy.run_path(selected["worker"],run_name="__main__")\n')
-    command=_launchers.runtime_command(Path(runtime['source']),[str(profile),job.name],
-        code=code,python=runtime['python'])
-    from .removal_runtime import command as stock_command
-    command=stock_command(command,runtime)
+    if runtime.get('kind')=='host':
+        from .inplace_removal import command as host_command
+        command=host_command(runtime,[profile,job.name],code=code)
+    else:
+        command=_launchers.runtime_command(Path(runtime['source']),[str(profile),job.name],
+            code=code,python=runtime['python'])
+        from .removal_runtime import command as stock_command
+        command=stock_command(command,runtime)
     return ('#!/bin/sh\nexec '+shlex.join(command)+' "$@"\n').encode()

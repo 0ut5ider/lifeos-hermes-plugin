@@ -1,5 +1,5 @@
 # ABOUTME: Publishes a reviewed software removal under the owner, native writer, and service barriers.
-# ABOUTME: Resumes interrupted program changes and restores software without rewriting later Hermes memory.
+# ABOUTME: Resumes interrupted program changes, synchronizes an in-place host environment, and keeps later memory.
 import json
 from pathlib import Path
 
@@ -25,8 +25,9 @@ class RemovalPublication:
                 raise ReleaseRejected('Software removal has an incomplete publication review')
         self.signature=signature;self.lease=installation_lease;self.stage=self.job/'removal'
         self.programs=ProgramTransaction(self.stage/'programs',expected_entries_sha256=self.plan['program_entries_sha256'])
+        units=self.plan.get('service_units')
         controller=self.source.memory_module('profile_services').ProfileServices(self.profile,Path(self.plan['root']),
-            installation_lease=installation_lease) if services is None else None
+            units=units,roles=None if units is None else tuple(units),installation_lease=installation_lease) if services is None else None
         self.services=RemovalServices(controller,self.stage/'services.json') if services is None else services
         bindings=self.services._load(self.plan['service_signature'])
         if bindings['profile']!=str(self.profile) or bindings['installed']!=self.plan['root']:
@@ -61,6 +62,20 @@ class RemovalPublication:
         return {'state':state,'signature':self.signature,'native_data_retained':True,'builtin_memory_retained':True,
             'application_verified':state=='verified'}
 
+    def _host_files(self):
+        if 'host' in self.plan:
+            from .inplace_removal import check_host_files
+            check_host_files(self.programs._load()['entries'],self.plan['host']['source'])
+
+    def _synchronize(self, label, *, required):
+        if 'host' not in self.plan:return
+        from .inplace_removal import synchronize
+        try:synchronize(self.stage,self.plan,label)
+        except (ReleaseRejected,OSError,ValueError) as error:
+            if required:raise
+            # A rollback continues to restore the services; recovery can repeat the synchronization.
+            publish(self.stage/(label+'-failure.json'),json.dumps({'error':type(error).__name__}).encode())
+
     def apply(self, *, account, checkpoint=lambda point:None):
         lock=self.source.memory_module('installation_lock').installation_lock
         program_lock=self.source.memory_module('program_lock')
@@ -70,6 +85,7 @@ class RemovalPublication:
             if state in {'verification_required','verified'}:
                 self.programs.check_applied();self.services.verify(self.plan['service_signature'])
                 return self._receipt(state)
+            self._host_files()
             if state=='ready':self.programs.check_prepared()
             else:self.programs.check_recovery()
             self._state('draining');self.services.stop(self.plan['service_signature']);checkpoint('drained')
@@ -80,6 +96,7 @@ class RemovalPublication:
                 self.services.verify_stopped(self.plan['service_signature'])
                 self._state('publishing');self.programs.resume(checkpoint=checkpoint)
                 self.programs.check_applied();checkpoint('programs-published')
+                self._synchronize('dependency-removal',required=True);checkpoint('dependencies-synchronized')
                 self._owner(account)
                 if self.importer._target_signature(connection)!=self.plan['native_signature']:
                     raise ReleaseRejected('Native data changes during software removal')
@@ -93,11 +110,13 @@ class RemovalPublication:
         with lock(self.profile,lease=self.lease),program_lock.exclusive(self.profile,600):
             self._owner(account);state=self._load()
             if state=='rolled_back':return self._receipt(state)
+            self._host_files()
             self.programs.check_recovery()
             self._state('restoring');self.services.stop(self.plan['service_signature']);checkpoint('drained')
             with self.configuration._lock(),barrier(self.importer.memory):
                 self._owner(account);self.services.verify_stopped(self.plan['service_signature'])
                 self.programs.restore();checkpoint('programs-restored')
+                self._synchronize('dependency-restore',required=False)
                 self._owner(account);self.services.resume(self.plan['service_signature'],restored=True)
                 self._state('rolled_back')
             return self._receipt('rolled_back')

@@ -17,7 +17,7 @@ The [current release record](verification/2026-10-16-release-0.7.3/README.md) su
 
 Both update buttons select the complete qualified package. The manager stages outside the active installation and checks the certificate, archive, selected programs, services, profile, and owner authority. It preserves current model choices, credentials, memory configuration, and user data.
 
-Do not run `hermes update`, an upstream LifeOS updater, or a manual program overlay over the managed installation. Those operations can separate the patched host, native programs, bridge, and recorded package identity. A successful upstream checkout or clean patch application is not compatibility evidence.
+Do not run `hermes update`, an upstream LifeOS updater, or a manual program overlay over the installation. On an in-place installation, LifeOS places an update hold in the Hermes checkout, and `hermes update` refuses while the hold exists. Remove LifeOS before you update Hermes outside a qualified release. Those operations can separate the patched host, native programs, bridge, and recorded package identity. A successful upstream checkout or clean patch application is not compatibility evidence.
 
 ## Recovery and rollback
 

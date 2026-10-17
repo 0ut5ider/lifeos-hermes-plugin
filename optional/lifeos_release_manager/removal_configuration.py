@@ -28,13 +28,17 @@ def _mapping(config, name):
     return value
 
 
-def configuration(data, installed):
+def configuration(data, installed, recorded=None):
     yaml=YAML();yaml.preserve_quotes=True
     try:value=yaml.load(data.decode())
     except (YAMLError,UnicodeError,RecursionError) as error:
         raise ReleaseRejected('The current Hermes configuration cannot be removed safely') from error
     if not isinstance(value,dict) or getattr(value,'merge',None):
         raise ReleaseRejected('Removal requires an explicit current configuration mapping')
+    if recorded is not None:
+        # Values LifeOS changed return to their pre-installation values unless the owner changed them since.
+        from .host_configuration import restore
+        value,_=restore(value,recorded)
     memory=_mapping(value,'memory')
     if (memory.get('provider','builtin') not in (None,'builtin') or memory.get('memory_enabled',True) is not True
             or memory.get('user_profile_enabled',True) is not True):
@@ -75,6 +79,9 @@ def environment(data, profile, workspace):
     block=environment_block(profile,workspace)
     if data.count(block)>1:raise ReleaseRejected('The owned environment block is ambiguous')
     from hermes_cli.config import _sanitize_env_lines
-    try:lines=io.StringIO(data.replace(block,b'').decode('utf-8-sig'),newline=None).readlines()
+    # The block starts with its own line break; a later owner line must not join an unterminated line before it.
+    before,found,after=data.partition(block)
+    separator=b'\n' if found and after and before and not before.endswith((b'\n',b'\r')) else b''
+    try:lines=io.StringIO((before+separator+after).decode('utf-8-sig'),newline=None).readlines()
     except UnicodeError as error:raise ReleaseRejected('The current environment requires valid UTF-8 before removal') from error
     return ''.join(_sanitize_env_lines(lines)).encode()

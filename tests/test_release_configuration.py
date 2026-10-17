@@ -30,6 +30,19 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual(result.stdout + result.stderr, '')
 
+    def test_selected_service_roles_generate_only_their_units(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
+            for path in (profile, generated, installed / 'LIFEOS/PULSE'):
+                path.mkdir(parents=True, mode=0o700)
+            request = {'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}
+            files = service_files(request, generated, roles=('pulse',))
+            self.assertEqual([path.name for path in files], ['com.lifeos.pulse.service'])
+            with self.assertRaises(ValueError):
+                service_files(request, generated, roles=('mail',))
+
     def test_unsupported_service_paths_refuse_before_generating_files(self):
         from optional.lifeos_release_manager.release_services import service_files
         with tempfile.TemporaryDirectory() as temp:

@@ -79,19 +79,44 @@ class InstallSourceTests(unittest.TestCase):
             self.assertEqual(manifest["upstream_commit"], revision)
             self.assertEqual(module.validate_candidate(target, revision, patches, ("lifeos-test.patch",)), manifest)
 
-    def test_new_upstream_revision_is_not_silently_installed(self):
+    def test_later_upstream_commit_still_prepares_the_pinned_revision(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             upstream, supported, patches = self.fixture(root)
-            (upstream / "LifeOS/install/LIFEOS/VERSION").write_text("7.40.5\n")
+            (upstream / "LifeOS/install/CLAUDE.template.md").write_text("# Later upstream\n")
             git("add", "LifeOS", cwd=upstream)
             git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
                 "commit", "-qm", "later", cwd=upstream)
             target = root / "candidate"
+            manifest = prepare_lifeos(str(upstream), target, supported, patches, ("lifeos-test.patch",))
+            self.assertEqual(manifest["upstream_commit"], supported)
+            self.assertEqual(git("rev-parse", "HEAD", cwd=target), supported)
+            self.assertEqual((target / "LifeOS/install/CLAUDE.template.md").read_text(), "# LifeOS test\n")
+            self.assertEqual(git("rev-list", "--count", "HEAD", cwd=target), "1")
+
+    def test_missing_pinned_commit_leaves_no_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, _, patches = self.fixture(root)
+            target = root / "candidate"
             with self.assertRaises(IncompatibleLifeOS):
-                prepare_lifeos(str(upstream), target, supported, patches,
-                               ("lifeos-test.patch",))
+                prepare_lifeos(str(upstream), target, "f" * 40, patches, ("lifeos-test.patch",))
             self.assertFalse(target.exists())
+
+    def test_unexpected_prepared_tree_leaves_no_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            reference = prepare_lifeos(str(upstream), root / "reference", revision, patches, ("lifeos-test.patch",))
+            target = root / "candidate"
+            manifest = prepare_lifeos(str(upstream), target, revision, patches, ("lifeos-test.patch",),
+                                      expected_tree=reference["tree_sha256"])
+            self.assertEqual(manifest["tree_sha256"], reference["tree_sha256"])
+            other = root / "other"
+            with self.assertRaisesRegex(IncompatibleLifeOS, "tree"):
+                prepare_lifeos(str(upstream), other, revision, patches, ("lifeos-test.patch",),
+                               expected_tree="0" * 64)
+            self.assertFalse(other.exists())
 
     def test_failed_patch_leaves_no_candidate(self):
         with tempfile.TemporaryDirectory() as directory:

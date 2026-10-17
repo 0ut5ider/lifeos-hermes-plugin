@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from lifeos_hook_bridge.install_source import prepare_supported_hermes, validate_supported_hermes
+from lifeos_hook_bridge.install_source import HERMES_PATCHES, prepare_supported_hermes, validate_supported_hermes
 
 
 class LatestHermesTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class LatestHermesTests(unittest.TestCase):
             result = prepare_supported_hermes(source, prepared)
             self.assertEqual(result['base_commit'], expected)
             self.assertEqual(validate_supported_hermes(prepared), result)
-            self.assertEqual(len(result['patches']), 10)
+            self.assertEqual(len(result['patches']), len(HERMES_PATCHES))
             checks = subprocess.run([os.environ['LIFEOS_TEST_PYTHON'],'-c',
                 'from hermes_cli.plugins import VALID_HOOKS\n'
                 'from hermes_cli.middleware import REQUIRED_MIDDLEWARE_API_VERSION\n'

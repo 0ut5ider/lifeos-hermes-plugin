@@ -10,7 +10,9 @@ import sys
 from uuid import uuid4
 
 from .cli import profile_directory, read_private
+from .inplace_services import profile_units
 from .release_accounts import account_home
+from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint, publish, sync_directory
 from .release_stage import load_bridge
 
@@ -198,12 +200,13 @@ def launch(job, unit, action):
         from .removal_workflow import launch_sources
         review=read_private(job/'review.json')
         worker,runtime=launch_sources(job.parent.parent,job,review['signature'])
-        host=Path(runtime['source']);python=runtime['python']
+        # An in-place host has no fixed interpreter: Hermes selects the environment when the command starts.
+        host=Path(runtime['source']);python=runtime.get('python')
     code="worker=sys.argv.pop(1)\nsys.argv[0]=worker\nrunpy.run_path(worker,run_name='__main__')\n"
     command=_launchers.runtime_command(host,[str(worker),str(job),action],
         code=code,python=python)
     command.insert(1,'-B')
-    if runtime is not None:
+    if runtime is not None and runtime.get('kind')!='host':
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     profile=job.parent.parent
@@ -214,24 +217,49 @@ def launch(job, unit, action):
     if result.returncode:raise RuntimeError('The owner service manager cannot start the memory workflow')
 
 
-def _probe(profile, source, expected, *, runtime=None):
+# The probe runs isolated (-I), which ignores PYTHONDONTWRITEBYTECODE; bytecode would alter retained recovery code.
+PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
+    'package=types.ModuleType("lifeos_memory_return_probe")\n'
+    'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
+    'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
+    'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
+
+
+def _probe(profile, source, expected, *, runtime=None, output=None):
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
-    code=('import importlib,json,types\n'
-        'package=types.ModuleType("lifeos_memory_return_probe")\n'
-        'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
-        'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
-        'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
+    code=PROBE_CODE
     host=host if runtime is None else Path(runtime['source'])
-    python=sys.executable if runtime is None else runtime['python']
+    python=sys.executable if runtime is None else runtime.get('python')
     command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
-    if runtime is not None:
+    if runtime is not None and runtime.get('kind')!='host':
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
     result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
-    if result.returncode or result.stderr:raise RuntimeError('The actual fresh Hermes agent does not verify the reviewed memory')
+    if result.returncode or result.stderr:
+        if output is not None:record_probe_output(output,result.stderr)
+        raise probe_failure(result.stderr)
     return json.loads(result.stdout)
+
+
+PROBE_REFUSAL='MemoryUnavailable: '
+PROBE_OUTPUT_LINES=64
+
+
+def record_probe_output(path, stderr):
+    """Keep the last lines of a failed probe's diagnostics in a private file of the owner's workflow job."""
+    publish(path,('\n'.join(stderr.splitlines()[-PROBE_OUTPUT_LINES:])+'\n').encode())
+
+
+def probe_failure(stderr):
+    """Return the probe's own refusal for the owner record; other output can hold arbitrary content."""
+    lines=stderr.strip().splitlines()
+    last=lines[-1] if lines else ''
+    head,found,message=last.partition(PROBE_REFUSAL)
+    if found and head.endswith('memory_access.') and message.startswith('The '):
+        return ReleaseRejected(message)
+    return ReleaseRejected('The actual fresh Hermes agent does not verify the reviewed memory')
 
 
 def _cancel_preparation(source, configuration, job, request, lease):
@@ -242,14 +270,14 @@ def _cancel_preparation(source, configuration, job, request, lease):
         return {'state':'cancelled','application_verified':False,'native_data_retained':True}
     if selected['kind']=='activation':
         activation=source.memory_module('memory_activation').MemoryActivation(configuration,
-            installation_lease=lease,operation_id=job.name)
+            units=profile_units(profile),installation_lease=lease,operation_id=job.name)
         if activation.owns_operation(account=owner):return activation.recover(account=owner)
     else:
         snapshot=source.memory_module('memory_import_sources').directory(profile,selected['identifier'])
         returned=source.memory_module('memory_return').MemoryReturn(configuration,
             installation_lease=lease,operation_id=job.name)
         transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-            installation_lease=lease,operation_id=job.name)
+            units=profile_units(profile),installation_lease=lease,operation_id=job.name)
         own_inner=returned.owns_operation(snapshot,account=owner)
         own_outer=transition.owns_operation(account=owner)
         if own_outer and not own_inner:raise RuntimeError('The transition loses its bound return preparation')
@@ -300,7 +328,7 @@ def execute(profile, identifier, action):
                     configuration=configuration,installation_lease=lease)
             elif selected['kind']=='activation':
                 activation=source.memory_module('memory_activation').MemoryActivation(configuration,
-                    installation_lease=lease,operation_id=identifier)
+                    units=profile_units(profile),installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     selected_source=read_private(snapshot/'source-binding.json')['source_identifier']
                     source_directory=paths.directory(profile,selected_source,source=True) if selected_source is not None else None
@@ -311,7 +339,7 @@ def execute(profile, identifier, action):
                 else:result=activation.recover(account=owner)
             else:
                 transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-                    installation_lease=lease,operation_id=identifier)
+                    units=profile_units(profile),installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     returned=source.memory_module('memory_return').MemoryReturn(configuration,
                         installation_lease=lease,operation_id=identifier)
@@ -320,7 +348,7 @@ def execute(profile, identifier, action):
                 elif action=='rollback':result=transition.rollback(signature,account=owner)
                 else:
                     result=transition.apply(signature,account=owner)
-                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected),account=owner)
+                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
             if action=='prepare':publish(job/'review.json',_encoded(result))
             publish(job/'receipt.json',_encoded(result));_state(job,result['state'])
             return result

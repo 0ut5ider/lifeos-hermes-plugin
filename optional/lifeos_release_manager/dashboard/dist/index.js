@@ -112,6 +112,67 @@
       }), message ? h("p", {role: "status"}, message) : null));
   }
 
+  function shortCommit(commit) {
+    return commit ? commit.slice(0, 12) : "unknown";
+  }
+
+  function inPlaceReview(review) {
+    const hermes = review.hermes;
+    const services = review.services;
+    return h("div", {className: "lifeos-stack"},
+      h("p", null, "Hermes " + hermes.label + " (commit " + shortCommit(hermes.commit) + "): " + hermes.modified +
+        " files changed and " + hermes.added + " files added in " + hermes.source + "."),
+      hermes.update_hold ? h("p", {className: "lifeos-help"}, "Hermes updates stay held while LifeOS is installed, so an update can't move these changes onto an untested version.") : null,
+      h("p", null, "Python packages added: " + (review.packages.length ? review.packages.join(", ") : "none")),
+      h("p", null, "Services that restart: " + (services.restarted.length ? services.restarted.join(", ") : "none")),
+      services.created.length ? h("p", null, "User services created: " + services.created.join(", ")) : null,
+      services.replaced.map(function (item) {
+        return h("p", {key: item.pid, className: "lifeos-notice lifeos-caution"}, "Stops the hand-started " + item.role +
+          " (process " + item.pid + "); its new user service replaces it.");
+      }),
+      h("p", {className: "lifeos-help"}, review.tested_scope));
+  }
+
+  function compatibilitySection(result, error, busy, check) {
+    const visible = 10;
+    let body;
+    if (error) {
+      body = [h("p", {key: "error", role: "alert"}, error)];
+    } else if (!result) {
+      body = [h("p", {key: "pending", className: "lifeos-empty"}, "Checking this Hermes installation.")];
+    } else {
+      const detected = result.detected;
+      body = [
+        h("p", {key: "result", className: result.compatible || result.installed ? "lifeos-notice" : "lifeos-notice lifeos-caution"},
+          result.compatible ? "LifeOS can be installed on this Hermes installation."
+            : result.installed ? "LifeOS is installed on this Hermes installation."
+            : "LifeOS can't be installed on this Hermes installation."),
+        result.reasons.length ? h("ul", {key: "reasons"}, result.reasons.map(function (reason) {
+          const paths = reason.paths ?? [];
+          const hidden = (reason.count ?? paths.length) - Math.min(paths.length, visible);
+          return h("li", {key: reason.code}, reason.message,
+            paths.length ? h("p", {className: "lifeos-help"}, h("code", null, paths.slice(0, visible).join(", ")),
+              hidden > 0 ? " and " + hidden + " more" : "") : null);
+        })) : null,
+        result.transition ? h("p", {key: "transition", className: "lifeos-notice"},
+          "LifeOS runs from its own managed Hermes runtime today. The next update moves it to your Hermes installation at " +
+          detected.source + " and points the hermes commands there. Restoring that update returns to the managed runtime.") : null,
+        h("p", {key: "detected"}, "Detected Hermes: " + (detected.version ?? "unknown") + " (commit " + shortCommit(detected.commit) + ")"),
+        h("p", {key: "source", className: "lifeos-help"}, "Source: " + detected.source),
+        h("p", {key: "supported", className: "lifeos-help"}, "Qualified Hermes versions: " + result.supported.map(function (entry) {
+          return entry.label + " (commit " + shortCommit(entry.commit) + ")";
+        }).join(", ")),
+        result.compatible && result.dependencies.add.length ? h("p", {key: "packages", className: "lifeos-help"},
+          "Installation adds these Python packages: " + result.dependencies.add.join(", ")) : null,
+      ];
+    }
+    return h("section", {id: "release_compatibility", "aria-labelledby": "release_compatibility_title"},
+      h("h2", {id: "release_compatibility_title"}, "Hermes compatibility"),
+      h("p", null, "LifeOS patches your existing Hermes installation. This check doesn't change anything, and the installer repeats it right before it makes any change."),
+      ...body,
+      h("button", {type: "button", disabled: busy, onClick: check}, "Check again"));
+  }
+
   function Releases() {
     const [operations, setOperations] = SDK.hooks.useState([]);
     const [reviewed, setReviewed] = SDK.hooks.useState(null);
@@ -121,6 +182,23 @@
     const [version, setVersion] = SDK.hooks.useState("");
     const [name, setName] = SDK.hooks.useState("User");
     const [assistant, setAssistant] = SDK.hooks.useState("Hermes");
+    const [compatibility, setCompatibility] = SDK.hooks.useState(null);
+    const [compatibilityError, setCompatibilityError] = SDK.hooks.useState("");
+
+    async function checkCompatibility() {
+      try {
+        const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/compatibility");
+        if (!result || typeof result.compatible !== "boolean" || !Array.isArray(result.reasons) || !result.detected
+            || !Array.isArray(result.supported) || !result.dependencies || !Array.isArray(result.dependencies.add)) {
+          throw new Error("The Hermes compatibility check returned an unexpected result.");
+        }
+        setCompatibility(result);
+        setCompatibilityError("");
+      } catch (error) {
+        setCompatibility(null);
+        setCompatibilityError(error.message);
+      }
+    }
 
     async function refresh() {
       const result = await SDK.fetchJSON(endpoint);
@@ -140,6 +218,7 @@
         });
       }
       poll();
+      checkCompatibility();
       const timer = setInterval(poll, 5000);
       return function () { active = false; clearInterval(timer); };
     }, []);
@@ -189,25 +268,29 @@
       return ["preparing", "applying", "recovering", "restoring", "recovery_required"].includes(operation.state)
         || operation.state.startsWith("queued-");
     });
+    const hostReady = compatibility !== null && (compatibility.compatible || compatibility.installed);
     const preparationHelp = busy ? "An operation is in progress. Wait before preparing another release."
       : pendingOperation ? "Finish or recover the active release operation before preparing another release."
       : installed === null ? "Checking the current installation. Refresh status if this message continues."
-      : installed ? "LifeOS is installed. Choose an update action to prepare a complete tested package."
-      : "LifeOS is not installed. Choose Install LifeOS to prepare the complete integration.";
+      : compatibility !== null && !hostReady ? "LifeOS can't be installed on this Hermes installation. See Hermes compatibility above."
+      : installed ? "LifeOS is installed. Choose an update action to prepare the latest release."
+      : "LifeOS is not installed. Choose Install LifeOS to prepare it for this Hermes installation.";
     return h("main", {className: "lifeos-setup"},
       h("header", null,
         h("p", {className: "lifeos-eyebrow"}, "Integration maintenance"),
         h("h1", null, "LifeOS releases"),
-        h("p", {className: "lifeos-intro"}, "Install or update the complete integration. Prepare a release first, review its contents, then approve installation.")),
+        h("p", {className: "lifeos-intro"}, "LifeOS installs into your existing Hermes. Prepare a release first, review what it changes, then approve it.")),
       h("nav", {className: "lifeos-navigation", "aria-label": "LifeOS release sections"},
+        h("a", {href: "#release_compatibility"}, "Hermes compatibility"),
         h("a", {href: "#release_prepare"}, "Prepare a release"),
         h("a", {href: "#release_operations"}, "Release operations"),
         installed === true ? h("a", {href: "#memory_workflows"}, "Memory ownership") : null,
         h("a", {href: "/lifeos-bridge"}, "Memory and model settings")),
+      compatibilitySection(compatibility, compatibilityError, busy, checkCompatibility),
       h("section", {id: "release_prepare", "aria-labelledby": "release_prepare_title"},
         h("h2", {id: "release_prepare_title"}, "Prepare a release"),
         h("p", null, "Use these controls or ask Hermes in chat. Preparation does not install the release."),
-        h("p", {className: "lifeos-notice"}, "All update actions prepare the complete tested package: Hermes, LifeOS, the bridge, and the release manager. Your personal data and model settings stay in place."),
+        h("p", {className: "lifeos-notice"}, "Each action downloads the LifeOS integration and patches the Hermes you already have. Your other plugins, tools, personal data, and model settings stay in place."),
         h("label", {className: "block"}, "Release version (leave blank for latest stable)",
           h("input", {type: "text", value: version, disabled: busy, placeholder: "Latest stable",
             className: "block rounded border border-border bg-background p-2", onChange: function (event) { setVersion(event.target.value); }})),
@@ -217,8 +300,9 @@
           h("label", {className: "block"}, "Assistant name", h("input", {type: "text", value: assistant, disabled: busy,
             className: "block rounded border border-border bg-background p-2", onChange: function (event) { setAssistant(event.target.value); }}))) : null,
         h("div", {className: "lifeos-actions"},
-          [["Install LifeOS", "install", installed !== false], ["Update LifeOS", "update", installed !== true],
-            ["Update plugin", "plugin", installed !== true]].map(function (entry) {
+          [["Install LifeOS", "install", installed !== false || !(compatibility && compatibility.compatible)],
+            ["Update LifeOS", "update", installed !== true || !hostReady],
+            ["Update plugin", "plugin", installed !== true || !hostReady]].map(function (entry) {
             return h("button", {key: entry[1], type: "button", "aria-describedby": "release_preparation_help",
               disabled: busy || entry[2] || pendingOperation,
               onClick: function () { return prepare(entry[1]); },
@@ -249,6 +333,7 @@
         reviewed ? h("article", {className: "lifeos-review"},
           h("h3", null, "Install release " + reviewed.version),
           h("p", {className: "lifeos-notice"}, reviewed.restart_required ? "Hermes services will restart during this update." : "The prepared integration will become available to this profile."),
+          reviewed.in_place ? inPlaceReview(reviewed.in_place) : null,
           h("p", null, "Program commit: " + reviewed.commit),
           h("p", {className: "lifeos-help"}, "Package SHA-256: " + reviewed.package_sha256),
           h("button", {type: "button", disabled: busy, onClick: function () {

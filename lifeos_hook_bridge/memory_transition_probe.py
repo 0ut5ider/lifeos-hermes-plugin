@@ -69,8 +69,9 @@ def verify_builtin(expected):
                 'files':{name:metadata for name,(_,metadata) in captured.items()}}
     except MemoryUnavailable:
         raise
-    except Exception:
-        raise MemoryUnavailable('The fresh Hermes agent cannot verify the reviewed built-in memory') from None
+    except Exception as error:
+        raise MemoryUnavailable('The fresh Hermes agent cannot verify the reviewed built-in memory ('
+                                + type(error).__name__ + ')') from None
     finally:
         with redirect_stdout(diagnostics),redirect_stderr(diagnostics):
             if agent is not None:agent.close()

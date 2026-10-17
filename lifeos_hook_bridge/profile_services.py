@@ -26,10 +26,15 @@ PROPERTIES = ('Id', 'LoadState', 'ActiveState', 'MainPID', 'ControlGroup', 'Work
     'FragmentPath', 'DropInPaths', 'ExecStart', 'KillMode', 'RootDirectory', 'RootImage', 'NeedDaemonReload')
 
 
+# A unit can take its whole TimeoutStopSec (the stock gateway sets 70s) before systemd kills it.
+TRANSITION_TIMEOUT = 300
+
+
 def _run(*arguments):
+    timeout = TRANSITION_TIMEOUT if arguments and arguments[0] in {'stop', 'start', 'restart'} else 45
     try:
         result = subprocess.run(['systemctl', '--user', *arguments], text=True,
-            capture_output=True, timeout=45)
+            capture_output=True, timeout=timeout)
     except (OSError, subprocess.TimeoutExpired) as error:
         raise MemoryUnavailable('The owner service manager does not complete the selected operation') from error
     if result.returncode or result.stderr:
@@ -62,7 +67,7 @@ def _definition_file(path):
 
 
 class ProfileServices:
-    def __init__(self, profile, installed, *, units=None, installation_lease=None, first_installation=False):
+    def __init__(self, profile, installed, *, units=None, installation_lease=None, first_installation=False, roles=None):
         self.profile, self.installed = Path(profile).absolute(), Path(installed).absolute()
         self.installation_lease = installation_lease
         try:
@@ -73,7 +78,11 @@ class ProfileServices:
             raise MemoryUnavailable('The installed profile services require a program directory')
         if units is not None and not isinstance(units, dict):
             raise MemoryUnavailable('Profile services require a fixed role-to-service mapping')
-        required = {'dashboard'} if first_installation else set(UNITS)
+        if roles is not None and (not isinstance(roles, (tuple, list)) or not roles
+                or any(role not in UNITS for role in roles) or len(set(roles)) != len(roles)):
+            raise MemoryUnavailable('Profile services require distinct known roles')
+        # An in-place host binds only the roles it has: stock Hermes creates only the gateway unit.
+        required = set(roles) if roles is not None else {'dashboard'} if first_installation else set(UNITS)
         self.units = dict({role: UNITS[role] for role in required} if units is None else units)
         if (set(self.units) != required
                 or any(not isinstance(unit, str) or re.fullmatch('[a-zA-Z0-9_.-]+\\.service', unit) is None
@@ -142,6 +151,10 @@ class ProfileServices:
         return Path('/sys/fs/cgroup') / value.lstrip('/')
 
     def _inspect(self, role):
+        values, definition = self._inspect_definition(role)
+        return values, _digest(definition)
+
+    def _inspect_definition(self, role):
         if self.installed.resolve() != self.physical_root:
             raise MemoryUnavailable('The installed profile service root alias changes during the operation')
         output = _run('show', self.units[role], '--property=' + ','.join(PROPERTIES), '--no-pager')
@@ -172,7 +185,7 @@ class ProfileServices:
             if key not in {'ActiveState', 'MainPID', 'ControlGroup', 'ExecStart', 'DropInPaths'}}
         definition['files'] = [_definition_file(path) for path in (values['FragmentPath'], *drop_ins)]
         self._group(values['ControlGroup'])
-        return values, _digest(definition)
+        return values, definition
 
     def _check_definition(self, document, role):
         values, definition = self._inspect(role)
@@ -180,8 +193,8 @@ class ProfileServices:
             raise MemoryUnavailable('The bound profile service definition changes during recovery')
         return values
 
-    def _empty(self, document, role):
-        values = self._check_definition(document, role)
+    def _empty(self, document, role, values=None):
+        values = self._check_definition(document, role) if values is None else values
         if values['ActiveState'] not in {'inactive', 'failed'} or values['MainPID'] != '0':
             raise MemoryUnavailable('The profile service still has an active process')
         groups = {values['ControlGroup'], document['services'][role]['control_group']}
@@ -263,6 +276,34 @@ class ProfileServices:
             self._publish(document)
             self._drain(document)
             return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
+
+    def adopt_definition(self, role, allowed):
+        """Bind a stopped role to a reviewed replacement of its unit file; return whether the binding changed.
+
+        A transition replaces the gateway unit while the gateway is stopped. Its journal keeps the earlier
+        definition, so resume and recovery would refuse the reviewed file without this rebinding.
+        """
+        if role not in self.units or not allowed or any(re.fullmatch('[0-9a-f]{64}', str(value)) is None for value in allowed):
+            raise ValueError('Adopt a reviewed definition only for a bound role')
+        with self._lock():
+            document = self._load()
+            if document is None:
+                raise MemoryUnavailable('The selected profile services have no recovery state')
+            values, current = self._inspect_definition(role)
+            recorded = document['services'][role]['definition']
+            if _digest(current) == recorded:
+                return False
+            if document['state'] != 'stopped':
+                raise MemoryUnavailable('A profile service adopts a new definition only while it is stopped')
+            self._empty(document, role, values)
+            # Only the unit file may differ from the journaled definition, and only between reviewed contents.
+            fragment, drop_ins = current['files'][0], current['files'][1:]
+            earlier = (_digest({**current, 'files': [{**fragment, 'sha256': value}, *drop_ins]}) for value in allowed)
+            if fragment['sha256'] not in allowed or recorded not in earlier:
+                raise MemoryUnavailable('The profile service definition is not a reviewed replacement')
+            document['services'][role]['definition'] = _digest(current)
+            self._publish(document)
+            return True
 
     def verify_stopped(self):
         with self._lock():

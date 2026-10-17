@@ -28,7 +28,7 @@ class ReleasePreparationTests(unittest.TestCase):
                     raise AssertionError('Overlapping preparation reaches child launch')
                 return trace
             class StopAtDownload:
-                def download(self, directory, version):
+                def download_integration(self, directory, version):
                     previous = sys.gettrace()
                     sys.settrace(trace)
                     try:
@@ -48,7 +48,7 @@ class ReleasePreparationTests(unittest.TestCase):
             state = profile / '.lifeos-releases'
             state.mkdir(mode=0o700)
             class NoDownload:
-                def download(self, directory, version):
+                def download_integration(self, directory, version):
                     raise AssertionError('A duplicate synchronous preparation reaches download')
             with (state / 'preparation.lock').open('wb') as lock:
                 os.fchmod(lock.fileno(), 0o600)
@@ -67,7 +67,7 @@ class ReleasePreparationTests(unittest.TestCase):
                 job.parent.chmod(0o700)
                 write_state(job, phase)
                 class NoDownload:
-                    def download(self, directory, version):
+                    def download_integration(self, directory, version):
                         raise AssertionError('Preparation reaches download during a pending operation')
                 with self.assertRaises(OperationBusy):
                     prepare(profile, catalog=NoDownload())
@@ -83,7 +83,7 @@ class ReleasePreparationTests(unittest.TestCase):
             write_state(job, 'preparing')
             publish(job / 'preparation-worker.json', json.dumps({'pid': os.getpid(), 'start_time': 'expired'}).encode())
             class StopAtDownload:
-                def download(self, directory, version):
+                def download_integration(self, directory, version):
                     raise ValueError('Synthetic retry reaches download')
             with self.assertRaisesRegex(ValueError, 'Synthetic retry reaches download'):
                 prepare(profile, catalog=StopAtDownload())
@@ -94,7 +94,7 @@ class ReleasePreparationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             profile = Path(temp)
             class StopAtDownload:
-                def download(self, directory, version):
+                def download_integration(self, directory, version):
                     self.result = status(profile)['operations'][0]
                     raise ValueError('Synthetic download boundary')
             catalog = StopAtDownload()
@@ -218,7 +218,7 @@ class ReleasePreparationTests(unittest.TestCase):
             profile=Path(directory)
             publish(profile/'.lifeos-removal.json',b'{"format":1,"workflow":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","signature":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}')
             class NoDownload:
-                def download(self,directory,version):raise AssertionError('Removal overlap reaches a release download')
+                def download_integration(self,directory,version):raise AssertionError('Removal overlap reaches a release download')
             with self.assertRaisesRegex(ValueError,'removal'):
                 prepare(profile,catalog=NoDownload())
             self.assertFalse((profile/'.lifeos-releases').exists())

@@ -1,0 +1,21 @@
+Experiment: does a stopped user unit report NeedDaemonReload=yes after its file changes, before a reload?
+Run 2026-10-17 on the workstation (user systemd), before the hypervisor restart. Transient units removed afterwards.
+
+Run 1 (unit linked, never enabled, never started): inconclusive. systemd unloads an unreferenced inactive
+unit, so `systemctl show` reloads it fresh and reports NeedDaemonReload=no after the edit.
+
+Run 2 (unit enabled with WantedBy=default.target, started once, stopped; this mirrors the gateway):
+  LoadState=loaded
+  ActiveState=inactive
+  FragmentPath=/home/outsider/.config/systemd/user/lifeos-review-ndr-427031.service
+  NeedDaemonReload=no
+  (appended "# changed" to the unit file, no reload)
+  LoadState=loaded
+  ActiveState=inactive
+  NeedDaemonReload=yes
+  (systemctl --user daemon-reload)
+  NeedDaemonReload=no
+
+Conclusion: an enabled gateway unit whose file was replaced by the program transaction reports
+NeedDaemonReload=yes until the worker runs daemon-reload. ProfileServices._inspect_definition refuses
+that state ("unreviewed program or process properties").
