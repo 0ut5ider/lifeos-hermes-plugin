@@ -10,6 +10,7 @@ import sys
 from uuid import uuid4
 
 from .cli import profile_directory, read_private
+from .inplace_services import profile_units
 from .release_accounts import account_home
 from .release_programs import fingerprint, publish, sync_directory
 from .release_stage import load_bridge
@@ -198,12 +199,13 @@ def launch(job, unit, action):
         from .removal_workflow import launch_sources
         review=read_private(job/'review.json')
         worker,runtime=launch_sources(job.parent.parent,job,review['signature'])
-        host=Path(runtime['source']);python=runtime['python']
+        # An in-place host has no fixed interpreter: Hermes selects the environment when the command starts.
+        host=Path(runtime['source']);python=runtime.get('python')
     code="worker=sys.argv.pop(1)\nsys.argv[0]=worker\nrunpy.run_path(worker,run_name='__main__')\n"
     command=_launchers.runtime_command(host,[str(worker),str(job),action],
         code=code,python=python)
     command.insert(1,'-B')
-    if runtime is not None:
+    if runtime is not None and runtime.get('kind')!='host':
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     profile=job.parent.parent
@@ -223,9 +225,9 @@ def _probe(profile, source, expected, *, runtime=None):
         'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
         'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
     host=host if runtime is None else Path(runtime['source'])
-    python=sys.executable if runtime is None else runtime['python']
+    python=sys.executable if runtime is None else runtime.get('python')
     command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
-    if runtime is not None:
+    if runtime is not None and runtime.get('kind')!='host':
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
@@ -249,7 +251,7 @@ def _cancel_preparation(source, configuration, job, request, lease):
         returned=source.memory_module('memory_return').MemoryReturn(configuration,
             installation_lease=lease,operation_id=job.name)
         transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-            installation_lease=lease,operation_id=job.name)
+            units=profile_units(profile),installation_lease=lease,operation_id=job.name)
         own_inner=returned.owns_operation(snapshot,account=owner)
         own_outer=transition.owns_operation(account=owner)
         if own_outer and not own_inner:raise RuntimeError('The transition loses its bound return preparation')
@@ -311,7 +313,7 @@ def execute(profile, identifier, action):
                 else:result=activation.recover(account=owner)
             else:
                 transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-                    installation_lease=lease,operation_id=identifier)
+                    units=profile_units(profile),installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     returned=source.memory_module('memory_return').MemoryReturn(configuration,
                         installation_lease=lease,operation_id=identifier)

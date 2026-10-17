@@ -58,6 +58,24 @@ def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset(), oper
     return {'bound': bound, 'consumers': consumers, 'offers': offers, 'blocking': blocking}
 
 
+def profile_units(profile, *, units=UNITS):
+    """Return the unit bindings for profile service barriers, or None to bind every standard role.
+
+    A managed installation always has all three units. An in-place host has only the units its owner
+    created and the Pulse unit that LifeOS added, so its barriers bind exactly the loaded definitions.
+    """
+    from .host_record import record_path
+    path = record_path(profile)
+    if not path.exists() and not path.is_symlink():
+        return None
+    present = {}
+    for role, unit in units.items():
+        values = _properties(unit)
+        if values.get('LoadState') == 'loaded' and values.get('FragmentPath'):
+            present[role] = unit
+    return present
+
+
 def replace_with_units(admitted, created):
     """Return the admitted hand-started processes that the created units replace, if they are unchanged.
 

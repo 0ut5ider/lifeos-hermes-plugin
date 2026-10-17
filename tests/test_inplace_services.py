@@ -85,6 +85,17 @@ class InplaceServicesTests(unittest.TestCase):
         self.assertEqual(result['blocking'], [])
         self.assertIn(os.getppid(), ancestors())
 
+    def test_profile_units_bind_only_existing_units_on_an_in_place_host(self):
+        from optional.lifeos_release_manager.inplace_services import profile_units
+        self.unit('gateway')
+        self.unit('pulse')
+        profile = self.root / '.hermes'
+        profile.mkdir()
+        self.assertIsNone(profile_units(profile, units=self.units))
+        (profile / 'lifeos-host.json').write_text('{}')
+        self.assertEqual(profile_units(profile, units=self.units),
+                         {'gateway': self.units['gateway'], 'pulse': self.units['pulse']})
+
     def test_replacement_requires_the_reviewed_process_incarnation(self):
         pid = self.process('dashboard')
         admitted = inventory(self.source, self.state, units=self.units)['consumers']
