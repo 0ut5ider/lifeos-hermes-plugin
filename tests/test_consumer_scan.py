@@ -8,7 +8,7 @@ import tempfile
 import time
 import unittest
 
-from optional.lifeos_release_manager.consumer_scan import source_consumers
+from optional.lifeos_release_manager.consumer_scan import parent, process_names, source_consumers, start_time
 
 
 class ConsumerScanTests(unittest.TestCase):
@@ -66,6 +66,23 @@ class ConsumerScanTests(unittest.TestCase):
         self.assertEqual(item['role'], 'other')
         self.assertIsInstance(item['start_time'], int)
         self.assertNotIn('do-not-report', repr(item))
+
+
+class ProcessIdentityTests(unittest.TestCase):
+    def test_start_time_and_parent_come_from_the_kernel_process_record(self):
+        from optional.lifeos_release_manager.release_operation import process_stamp
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])
+        self.addCleanup(process.wait)
+        self.addCleanup(process.kill)
+        self.assertEqual(parent(process.pid), os.getpid())
+        self.assertGreaterEqual(start_time(process.pid), start_time(os.getpid()))
+        self.assertEqual(str(start_time(process.pid)), process_stamp(process.pid))
+        with self.assertRaises(FileNotFoundError):
+            start_time(2 ** 22 + 1)
+
+    def test_process_names_list_each_command_with_its_process_id(self):
+        self.assertEqual(process_names([{'command': 'hermes', 'pid': 12}, {'command': 'python3', 'pid': 7}]),
+                         'hermes (12), python3 (7)')
 
 
 if __name__ == '__main__':

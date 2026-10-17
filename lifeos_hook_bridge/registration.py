@@ -11,6 +11,7 @@ MODES = ('patched', 'reduced', 'inactive')
 
 
 def _start_time(pid):
+    # The bridge runs without the release manager, so it reads the kernel start time itself.
     fields = Path('/proc', str(pid), 'stat').read_text().rsplit(')', 1)[1].split()
     return int(fields[19])
 

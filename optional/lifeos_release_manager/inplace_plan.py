@@ -100,8 +100,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     consumers = inventory(source, Path(request['host']['state_directory']), operators=ancestors())
     # Forward recovery repeats the consumer stop in the worker; the services may already be stopped.
     if consumers['blocking'] and not fresh_recovery:
-        names = ', '.join(item['command'] + ' (' + str(item['pid']) + ')' for item in consumers['blocking'])
-        raise ReleaseRejected('Close these Hermes processes before the operation: ' + names)
+        from .consumer_scan import process_names
+        raise ReleaseRejected('Close these Hermes processes before the operation: ' + process_names(consumers['blocking']))
     roles = [role for role in ('gateway', 'dashboard', 'pulse') if role in consumers['bound']]
     created = list(consumers['offers'])
     if fresh:

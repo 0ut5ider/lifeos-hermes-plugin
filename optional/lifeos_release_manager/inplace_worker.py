@@ -80,8 +80,8 @@ def _consumers_stopped(request, plan):
             break
         time.sleep(0.5)
     if remaining['consumers']:
-        names = ', '.join(item['command'] + ' (' + str(item['pid']) + ')' for item in remaining['consumers'])
-        raise ReleaseRejected('Hermes processes still use the installation: ' + names)
+        from .consumer_scan import process_names
+        raise ReleaseRejected('Hermes processes still use the installation: ' + process_names(remaining['consumers']))
 
 
 def _start_created(plan):

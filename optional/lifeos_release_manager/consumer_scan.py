@@ -28,10 +28,24 @@ def _role(arguments):
     return 'other'
 
 
+def stat_fields(pid):
+    """Return the fields of ``/proc/<pid>/stat`` after the command name, starting with the process state."""
+    return Path('/proc', str(pid), 'stat').read_text().rsplit(')', 1)[1].split()
+
+
 def start_time(pid):
     """Return the kernel start time of ``pid`` in clock ticks, which identifies one process incarnation."""
-    fields = Path('/proc', str(pid), 'stat').read_text().rsplit(')', 1)[1].split()
-    return int(fields[19])
+    return int(stat_fields(pid)[19])
+
+
+def parent(pid):
+    """Return the parent process ID of ``pid``."""
+    return int(stat_fields(pid)[1])
+
+
+def process_names(items):
+    """Return ``command (pid)`` for each found process, for a message that asks the owner to close them."""
+    return ', '.join(item['command'] + ' (' + str(item['pid']) + ')' for item in items)
 
 
 def source_consumers(source, state_dir, *, excluded_pids=frozenset(), excluded_groups=frozenset()):

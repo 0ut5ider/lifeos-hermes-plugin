@@ -98,12 +98,11 @@ def _consumers(profile, installed, services, *, workflow=None, source=None):
     removal_consumers.processes(profile,installed,groups=groups)
     if source is not None:
         # An in-place removal changes the Hermes source, so every process that runs it must be a stopped unit.
-        from .consumer_scan import source_consumers
+        from .consumer_scan import process_names,source_consumers
         from .inplace_preparation import state_directory
         found=source_consumers(source,state_directory(source),excluded_groups=groups)
         if found:
-            raise ReleaseRejected('Close these Hermes processes before removal: '+', '.join(
-                item['command']+' ('+str(item['pid'])+')' for item in found))
+            raise ReleaseRejected('Close these Hermes processes before removal: '+process_names(found))
     if workflow is not None and removal_consumers.coordinator(profile,workflow)!=coordinator:
         raise ReleaseRejected('The admitted removal coordinator changes during consumer inspection')
 

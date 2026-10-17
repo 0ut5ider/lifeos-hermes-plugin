@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 import subprocess
 
-from .consumer_scan import source_consumers, start_time
+from .consumer_scan import parent, source_consumers, start_time
 from .release_catalog import ReleaseRejected
 
 
@@ -29,10 +28,9 @@ def ancestors(pid=None):
     chain, current = set(), os.getpid() if pid is None else pid
     while current > 1:
         try:
-            fields = Path('/proc', str(current), 'stat').read_text().rsplit(')', 1)[1].split()
+            current = parent(current)
         except (FileNotFoundError, ProcessLookupError):
             break
-        current = int(fields[1])
         chain.add(current)
     return chain
 
