@@ -88,7 +88,7 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
         returned(profile,selected['identifier'],selected['signature'],owner=owner,source=source,
             configuration=configuration,installation_lease=installation_lease)
         services=source.memory_module('profile_services').ProfileServices(profile,Path(plan['root']),units=units,
-            roles=None if units is None else tuple(units),installation_lease=installation_lease)
+            installation_lease=installation_lease)
         _consumers(profile,Path(plan['root']),services,workflow=job,source=host)
         ProgramTransaction(job/'removal/programs',expected_entries_sha256=plan['program_entries_sha256']).check_prepared()
         publish(marker,_encoded({'format':1,'workflow':job.name,'signature':signature}))

@@ -78,6 +78,9 @@ class ProfileServices:
             raise MemoryUnavailable('The installed profile services require a program directory')
         if units is not None and not isinstance(units, dict):
             raise MemoryUnavailable('Profile services require a fixed role-to-service mapping')
+        # Units without roles bind exactly the roles they name, as on an in-place host that has only some units.
+        if roles is None and units is not None:
+            roles = tuple(units)
         if roles is not None and (not isinstance(roles, (tuple, list)) or not roles
                 or any(role not in UNITS for role in roles) or len(set(roles)) != len(roles)):
             raise MemoryUnavailable('Profile services require distinct known roles')

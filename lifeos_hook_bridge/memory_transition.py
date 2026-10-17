@@ -35,8 +35,7 @@ class MemoryTransition:
             raise ValueError('Provider transition requires a server-issued operation identifier')
         self.operation_id=operation_id
         # An in-place host passes only the units it has; their roles become the bound service set.
-        self.units=ProfileServices(self.profile,self.installed,units=units,
-            roles=None if units is None else tuple(units)).units
+        self.units=ProfileServices(self.profile,self.installed,units=units).units
         self.directory=self.profile/'.lifeos-memory-transition'
 
     @contextmanager
@@ -49,7 +48,7 @@ class MemoryTransition:
             if selected['root']!=str(self.installed):
                 raise MemoryUnavailable('The selected native store changes during provider return')
             self.directory.mkdir(mode=0o700,exist_ok=True);_directory(self.directory,private=True)
-            services=ProfileServices(self.profile,self.installed,units=self.units,roles=tuple(self.units),
+            services=ProfileServices(self.profile,self.installed,units=self.units,
                 installation_lease=lease)
             operation=MemoryReturn(self.configuration,installation_lease=lease,verify_writers=services.verify_stopped,
                 operation_id=self.operation_id)

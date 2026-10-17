@@ -144,7 +144,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
                 raise ReleaseRejected('Finish or recover the pending complete release before removal')
         units=profile_units(profile) if inplace else None
         services=source.memory_module('profile_services').ProfileServices(profile,installed,units=units,
-            roles=None if units is None else tuple(units),installation_lease=lease)
+            installation_lease=lease)
         _consumers(profile,installed,services,workflow=job,source=host)
         removal_ownership.guard(profile,installed,bridge=source)
         pulse=removal_ownership.pulse(profile,installed)

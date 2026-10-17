@@ -230,6 +230,18 @@ class ProfileServicesTests(unittest.TestCase):
             with self.subTest(roles=roles), self.assertRaises(MemoryUnavailable):
                 ProfileServices(self.profile, self.installed, units=units, roles=roles)
 
+    def test_units_without_roles_bind_exactly_the_roles_they_name(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        gateway = {'gateway': self.units['gateway']}
+        derived = ProfileServices(self.profile, self.installed, units=gateway)
+        explicit = ProfileServices(self.profile, self.installed, units=gateway, roles=('gateway',))
+        self.assertEqual((derived.units, derived.stop_order, derived.start_order),
+                         (explicit.units, explicit.stop_order, explicit.start_order))
+        self.assertEqual(derived.units, gateway)
+        for units in ({}, {'mail': 'lifeos-mail.service'}, {**gateway, 'mail': 'lifeos-mail.service'}):
+            with self.subTest(units=units), self.assertRaisesRegex(MemoryUnavailable, 'distinct known roles'):
+                ProfileServices(self.profile, self.installed, units=units)
+
     def test_unit_from_another_profile_refuses_before_any_writer_stops(self):
         before = {role: self.properties(role) for role in self.units}
         other = self.home / 'different-profile'

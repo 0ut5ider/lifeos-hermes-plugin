@@ -27,7 +27,7 @@ class RemovalPublication:
         self.programs=ProgramTransaction(self.stage/'programs',expected_entries_sha256=self.plan['program_entries_sha256'])
         units=self.plan.get('service_units')
         controller=self.source.memory_module('profile_services').ProfileServices(self.profile,Path(self.plan['root']),
-            units=units,roles=None if units is None else tuple(units),installation_lease=installation_lease) if services is None else None
+            units=units,installation_lease=installation_lease) if services is None else None
         self.services=RemovalServices(controller,self.stage/'services.json') if services is None else services
         bindings=self.services._load(self.plan['service_signature'])
         if bindings['profile']!=str(self.profile) or bindings['installed']!=self.plan['root']:
