@@ -21,7 +21,8 @@ def hermes_source():
         import hermes_cli
     except ImportError:
         return None
-    return str(Path(hermes_cli.__file__).resolve().parents[1])
+    module = getattr(hermes_cli, '__file__', None)
+    return str(Path(module).resolve().parents[1]) if module else None
 
 
 def directory(profile):

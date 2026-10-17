@@ -45,6 +45,13 @@ class RegistrationReceiptTests(unittest.TestCase):
         self.assertEqual(value['source'], str(Path(hermes_cli.__file__).resolve().parents[1]))
         self.assertEqual(read_receipt(self.profile, os.getpid())['source'], value['source'])
 
+    def test_receipt_without_an_importable_checkout_file_records_no_source(self):
+        import types
+        from unittest import mock
+        with mock.patch.dict(sys.modules, {'hermes_cli': types.ModuleType('hermes_cli')}):
+            value = write_receipt(self.profile, 'reduced')
+        self.assertIsNone(value['source'])
+
     def test_unknown_mode_is_refused(self):
         with self.assertRaises(ValueError):
             write_receipt(self.profile, 'complete')
