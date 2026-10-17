@@ -9,7 +9,7 @@ The [0.7.3 release record](docs/verification/2026-10-16-release-0.7.3/README.md)
 
 ## Deferred product work
 
-- [ ] Decide and implement installing LifeOS again after a verified removal. Removal retains the native data and the removal selection, and preparation refuses both. See the [design limit](docs/in-place-installation-design.md#9-drift-reporting).
+- [ ] Decide and implement installing LifeOS again after a verified removal. Removal retains the native data and the removal selection, and preparation refuses both. See the [design limit](docs/in-place-installation-design.md#8-host-record-updates-and-removal).
 
 - [ ] Complete Discord voice input and spoken replies. Verify transcription, speech generation, and actual Discord delivery before enabling daily voice.
 - [ ] Add native Content audio and video processing with the voice release. Verify extraction, transcription, runner control, and actual media outputs.
