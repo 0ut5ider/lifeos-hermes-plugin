@@ -2,7 +2,6 @@
 # ABOUTME: Publishes and restores the plan with the real program transaction and requires a clean checkout.
 import hashlib
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -164,13 +163,23 @@ class InplaceRemovalPlanTests(unittest.TestCase):
     def test_runtime_requires_the_host_source_launcher(self):
         from optional.lifeos_release_manager.inplace_removal import runtime
         plan = {'host': {'source': str(self.source)}}
-        with self.assertRaises(ReleaseRejected):
+        unavailable = 'The Hermes installation is unavailable for removal commands'
+        with self.assertRaisesRegex(ReleaseRejected, unavailable):
             runtime(plan)
         launcher = self.source / '.hermes/bin/hermes'
         launcher.parent.mkdir(parents=True)
         launcher.write_text('#!/bin/sh\nexit 0\n')
+        launcher.chmod(0o644)
+        with self.assertRaisesRegex(ReleaseRejected, unavailable):
+            runtime(plan)
         launcher.chmod(0o755)
         self.assertEqual(runtime(plan), {'kind': 'host', 'source': str(self.source), 'hermes': str(launcher)})
+        launcher.rename(launcher.with_name('hermes-real'))
+        launcher.symlink_to('hermes-real')
+        with self.assertRaisesRegex(ReleaseRejected, unavailable):
+            runtime(plan)
+        with self.assertRaisesRegex(ReleaseRejected, unavailable):
+            runtime({'host': {'source': str(self.source / 'missing')}})
 
 
 class InplaceRemovalSelectionTests(unittest.TestCase):

@@ -2,13 +2,12 @@
 # ABOUTME: Rechecks the host, the staged patches, LifeOS, the services, and the consumers before any change.
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
 from .host_compatibility import inspect_host, load_manifest
 from .host_record import build_record, check_originals, load_record, originals_path, record_path
-from .inplace_preparation import GATEWAY_UNIT, TRANSITION_GATEWAY, desired_host_files, host_launcher, host_python
+from .inplace_preparation import GATEWAY_UNIT, TRANSITION_GATEWAY, desired_host_files, host_launcher
 from .inplace_services import UNITS, ancestors, inventory
 from .integration_package import COMPATIBILITY, validate_integration
 from .release_accounts import account_home

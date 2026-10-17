@@ -10,7 +10,7 @@ import signal
 import subprocess
 import time
 
-from .cli import read_private, write_state
+from .cli import write_state
 from .inplace_services import OFFERABLE, UNITS, inventory, replace_with_units
 from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime

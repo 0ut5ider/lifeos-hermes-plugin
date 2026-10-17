@@ -23,6 +23,11 @@ def _properties(unit):
     return dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
 
 
+def _loaded(values):
+    """True when systemd loads the unit from a definition file, so the host has this unit."""
+    return values.get('LoadState') == 'loaded' and bool(values.get('FragmentPath'))
+
+
 def ancestors(pid=None):
     """Return the process IDs above ``pid`` (default: this process), which run the operation itself."""
     chain, current = set(), os.getpid() if pid is None else pid
@@ -46,7 +51,7 @@ def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset(), oper
     bound, groups, active, enabled = [], set(), {}, {}
     for role, unit in units.items():
         values = _properties(unit)
-        if values.get('LoadState') == 'loaded' and values.get('FragmentPath'):
+        if _loaded(values):
             bound.append(role)
             active[role] = values.get('ActiveState') == 'active'
             enabled[role] = values.get('UnitFileState', '')
@@ -73,7 +78,7 @@ def profile_units(profile, *, units=UNITS):
     present = {}
     for role, unit in units.items():
         values = _properties(unit)
-        if values.get('LoadState') == 'loaded' and values.get('FragmentPath'):
+        if _loaded(values):
             present[role] = unit
     return present
 

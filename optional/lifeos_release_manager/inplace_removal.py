@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 import re
 import shutil
@@ -169,11 +168,15 @@ def check_host_files(entries, source):
 
 def runtime(plan):
     """Return the restored host that runs removal commands; Hermes selects its environment at each start."""
+    from .inplace_preparation import host_launcher
     source = Path(plan['host']['source'])
-    launcher = source / '.hermes/bin/hermes'
-    if (not source.is_absolute() or source.resolve() != source or not source.is_dir()
-            or launcher.is_symlink() or not launcher.is_file() or not os.access(launcher, os.X_OK)):
-        raise ReleaseRejected('The Hermes installation is unavailable for removal commands')
+    unavailable = 'The Hermes installation is unavailable for removal commands'
+    if not source.is_absolute() or source.resolve() != source or not source.is_dir():
+        raise ReleaseRejected(unavailable)
+    try:
+        launcher = host_launcher(source)
+    except ReleaseRejected as error:
+        raise ReleaseRejected(unavailable) from error
     return {'kind': 'host', 'source': str(source), 'hermes': str(launcher)}
 
 

@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
-import sys
 
 from .host_compatibility import check, load_manifest, running_source
 from .host_patches import stage_host_files
