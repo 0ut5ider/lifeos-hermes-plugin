@@ -192,6 +192,26 @@ class ProfileServicesTests(unittest.TestCase):
         self.assertEqual(restarted.journal.parent.name, '.lifeos-installation-services')
         self.assertFalse(self.barrier().journal.exists())
 
+    def test_selected_roles_bind_only_the_units_that_exist_on_the_host(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        before = {role: self.properties(role) for role in self.units}
+        barrier = ProfileServices(self.profile, self.installed, units={'gateway': self.units['gateway']},
+                                  roles=('gateway',))
+        self.assertEqual(barrier.drain(signature=barrier.preview()['signature'])['services_stopped'], ['gateway'])
+        self.assertEqual(self.properties('gateway')['MainPID'], '0')
+        for role in ('dashboard', 'pulse'):
+            self.assertEqual(self.properties(role)['MainPID'], before[role]['MainPID'])
+        self.assertEqual(barrier.resume()['services_started'], ['gateway'])
+        self.assertNotEqual(self.properties('gateway')['MainPID'], before['gateway']['MainPID'])
+
+    def test_selected_roles_refuse_unknown_or_mismatched_bindings(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        for roles, units in ((('gateway', 'mail'), {'gateway': self.units['gateway']}),
+                             ((), {}),
+                             (('gateway',), {'dashboard': self.units['dashboard']})):
+            with self.subTest(roles=roles), self.assertRaises(MemoryUnavailable):
+                ProfileServices(self.profile, self.installed, units=units, roles=roles)
+
     def test_unit_from_another_profile_refuses_before_any_writer_stops(self):
         before = {role: self.properties(role) for role in self.units}
         other = self.home / 'different-profile'

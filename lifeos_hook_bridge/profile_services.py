@@ -62,7 +62,7 @@ def _definition_file(path):
 
 
 class ProfileServices:
-    def __init__(self, profile, installed, *, units=None, installation_lease=None, first_installation=False):
+    def __init__(self, profile, installed, *, units=None, installation_lease=None, first_installation=False, roles=None):
         self.profile, self.installed = Path(profile).absolute(), Path(installed).absolute()
         self.installation_lease = installation_lease
         try:
@@ -73,7 +73,11 @@ class ProfileServices:
             raise MemoryUnavailable('The installed profile services require a program directory')
         if units is not None and not isinstance(units, dict):
             raise MemoryUnavailable('Profile services require a fixed role-to-service mapping')
-        required = {'dashboard'} if first_installation else set(UNITS)
+        if roles is not None and (not isinstance(roles, (tuple, list)) or not roles
+                or any(role not in UNITS for role in roles) or len(set(roles)) != len(roles)):
+            raise MemoryUnavailable('Profile services require distinct known roles')
+        # An in-place host binds only the roles it has: stock Hermes creates only the gateway unit.
+        required = set(roles) if roles is not None else {'dashboard'} if first_installation else set(UNITS)
         self.units = dict({role: UNITS[role] for role in required} if units is None else units)
         if (set(self.units) != required
                 or any(not isinstance(unit, str) or re.fullmatch('[a-zA-Z0-9_.-]+\\.service', unit) is None
