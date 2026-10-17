@@ -154,6 +154,9 @@
             paths.length ? h("p", {className: "lifeos-help"}, h("code", null, paths.slice(0, visible).join(", ")),
               hidden > 0 ? " and " + hidden + " more" : "") : null);
         })) : null,
+        result.transition ? h("p", {key: "transition", className: "lifeos-notice"},
+          "LifeOS runs from its own managed Hermes runtime today. The next update moves it to your Hermes installation at " +
+          detected.source + " and points the hermes commands there. Restoring that update returns to the managed runtime.") : null,
         h("p", {key: "detected"}, "Detected Hermes: " + (detected.version ?? "unknown") + " (commit " + shortCommit(detected.commit) + ")"),
         h("p", {key: "source", className: "lifeos-help"}, "Source: " + detected.source),
         h("p", {key: "supported", className: "lifeos-help"}, "Qualified Hermes versions: " + result.supported.map(function (entry) {

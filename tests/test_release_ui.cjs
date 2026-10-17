@@ -188,3 +188,12 @@ test('an in-place review lists the Hermes changes, packages, services, and teste
   assert.match(content, /Qualified on a single-profile Linux Git installation of Hermes v0\.21\.7\./);
   ui.cleanup();
 });
+
+test('a managed runtime shows the move to the stock Hermes installation', async () => {
+  const ui = await page(true, [], {...compatible, transition: true});
+  const content = text(find(ui.render(), (node) => node.props.id === 'release_compatibility'));
+  assert.match(content, /moves it to your Hermes installation at \/home\/owner\/\.hermes\/hermes-agent/);
+  const button = find(ui.render(), (node) => node.type === 'button' && node.children.includes('Update LifeOS'));
+  assert.equal(button.props.disabled, false);
+  ui.cleanup();
+});
