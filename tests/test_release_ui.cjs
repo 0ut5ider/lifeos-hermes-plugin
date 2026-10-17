@@ -10,7 +10,7 @@ const compatible = {format: 1, compatible: true, state: 'compatible', reasons: [
   detected: {source: '/home/owner/.hermes/hermes-agent', commit: qualified.commit, version: 'v0.21.7',
     profile: '/home/owner/.hermes', interpreter: '/home/owner/.hermes/hermes-agent/venv/bin/python', python: '3.11.9'}};
 
-async function page(installed, operations = [], compatibility = compatible) {
+async function page(installed, operations = [], compatibility = compatible, review = null) {
   const calls = [];
   const sdk = {
     fetchJSON: async (url, options) => {
@@ -22,7 +22,7 @@ async function page(installed, operations = [], compatibility = compatible) {
       }
       if (url.endsWith('/prepare')) return {identifier: 'a'.repeat(32), state: 'preparing'};
       if (url.endsWith('/review')) return {identifier: url.split('/').at(-2), version: '0.7.3', commit: 'c'.repeat(40),
-        package_sha256: 'd'.repeat(64), restart_required: true};
+        package_sha256: 'd'.repeat(64), restart_required: true, ...(review ?? {})};
       if (url.endsWith('/apply')) return {state: 'queued-apply'};
       return {operations};
     },
@@ -156,5 +156,35 @@ test('an installed host is reported as installed rather than incompatible', asyn
   const content = text(find(ui.render(), (node) => node.props.id === 'release_compatibility'));
   assert.match(content, /LifeOS is installed on this Hermes installation\./);
   assert.doesNotMatch(content, /can't be installed/);
+  ui.cleanup();
+});
+
+test('an incompatible host disables Install LifeOS and explains why', async () => {
+  const ui = await page(false, [], {...compatible, compatible: false, state: 'unsupported_version',
+    reasons: [{code: 'unsupported_version', message: 'LifeOS has no qualified patch set for this Hermes version.'}]});
+  const button = find(ui.render(), (node) => node.type === 'button' && node.children.includes('Install LifeOS'));
+  assert.equal(button.props.disabled, true);
+  assert.ok(find(ui.render(), (node) => node.props.id === 'release_preparation_help' &&
+    text(node).includes("LifeOS can't be installed on this Hermes installation")));
+  ui.cleanup();
+});
+
+test('an in-place review lists the Hermes changes, packages, services, and tested scope before installation', async () => {
+  const identifier = 'f'.repeat(32);
+  const ui = await page(false, [{identifier, version: '0.8.0', state: 'ready'}], compatible, {in_place: {
+    hermes: {label: 'v0.21.7', commit: qualified.commit, source: '/home/owner/.hermes/hermes-agent', modified: 69, added: 27,
+      update_hold: true},
+    packages: ['tree-sitter==0.26.0', 'tree-sitter-bash==0.25.1'],
+    services: {restarted: ['gateway'], created: ['dashboard', 'pulse'], replaced: [{pid: 4321, command: 'hermes', role: 'dashboard'}]},
+    tested_scope: 'Qualified on a single-profile Linux Git installation of Hermes v0.21.7.'}});
+  await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Review release')).props.onClick();
+  const content = text(find(ui.render(), (node) => node.props.className === 'lifeos-review'));
+  assert.match(content, /Hermes v0\.21\.7 \(commit 71d34bad1045\): 69 files changed and 27 files added in \/home\/owner\/\.hermes\/hermes-agent/);
+  assert.match(content, /Hermes updates stay held while LifeOS is installed/);
+  assert.match(content, /Python packages added: tree-sitter==0\.26\.0, tree-sitter-bash==0\.25\.1/);
+  assert.match(content, /Services that restart: gateway/);
+  assert.match(content, /User services created: dashboard, pulse/);
+  assert.match(content, /Stops the hand-started dashboard \(process 4321\); its new user service replaces it/);
+  assert.match(content, /Qualified on a single-profile Linux Git installation of Hermes v0\.21\.7\./);
   ui.cleanup();
 });

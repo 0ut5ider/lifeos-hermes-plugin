@@ -1,13 +1,13 @@
 ---
 name: lifeos-release
-description: Install, update, check, or recover the complete LifeOS integration from Hermes.
+description: Check compatibility, then install, update, or recover LifeOS in this Hermes installation.
 ---
 
-# Complete LifeOS releases
+# LifeOS releases
 
 Use this skill when the user asks to install or update LifeOS, check its integration version, or recover an interrupted release operation.
 
-The complete release includes the supported Hermes source, LifeOS source, bridge, release manager, dependency closure, and Hermes dashboard. Select the integration release version. The release certificate selects the supported Hermes version and native patches.
+A release contains the LifeOS bridge, the release manager, and the Hermes patches for each supported Hermes version. Installation patches the owner's existing Hermes installation; it never replaces Hermes. Run the compatibility check first: installation requires the state `compatible`, and updates require `installed`.
 
 1. Run `hermes lifeos-release status` to find current operations.
 2. Run `hermes lifeos-release prepare` to prepare the latest stable integration release. Use `--version X.Y.Z` only when the user selects an exact version. For a first installation, add `--name` and `--assistant` with the names the user supplies.

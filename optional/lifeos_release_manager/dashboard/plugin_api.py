@@ -163,15 +163,39 @@ def review_release(identifier):
     try:
         job, value = commands.operation(profile(), identifier)
         selected, plan = worker.review_operation(job, value)
-        return {'identifier': identifier, 'version': value['version'], 'commit': value['commit'],
-                'package_sha256': value['package_sha256'], 'fresh': plan['fresh'],
-                'native_mount_required': plan['native_mount_required'],
-                'restart_required': plan['services'] is not None,
-                'state': commands.read_private(job / 'status.json')['state']}
+        result = {'identifier': identifier, 'version': value['version'], 'commit': value['commit'],
+                  'package_sha256': value['package_sha256'], 'fresh': plan['fresh'],
+                  'native_mount_required': plan['native_mount_required'],
+                  'restart_required': plan['services'] is not None,
+                  'state': commands.read_private(job / 'status.json')['state']}
+        if value.get('format') == 2:
+            result['in_place'] = inplace_review(selected, value, plan)
+        return result
     except services.FirstInstallationUnavailable as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
     except (ValueError, OSError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='The prepared release changes or has unfinished recovery') from error
+
+
+TESTED_SCOPE = ('Qualified on a single-profile Linux Git installation of Hermes {label} installed with the official '
+                'installer, with the stock gateway user service. Other plugins and tools stay installed and keep '
+                'their files; LifeOS changes how Hermes dispatches plugin hooks for every plugin.')
+
+
+def inplace_review(selected, value, plan):
+    """Summarize what an in-place operation changes in the owner's Hermes installation."""
+    entry = selected['entry']
+    files = entry['files']
+    services = plan['services']
+    return {'hermes': {'label': entry['label'], 'commit': entry['commit'], 'source': value['host']['source'],
+                       'modified': sum(item['stock'] is not None for item in files.values()),
+                       'added': sum(item['stock'] is None for item in files.values()),
+                       'update_hold': True},
+            'packages': sorted(name + '==' + versions[0] for name, versions in value['dependencies']['added'].items()),
+            'services': {'restarted': services['roles'], 'created': services['created'],
+                         'replaced': [{'pid': item['pid'], 'command': item['command'], 'role': item['role']}
+                                      for item in services['consumers'] if item['role'] in services['created']]},
+            'tested_scope': TESTED_SCOPE.format(label=entry['label'])}
 
 
 @router.post('/operations/{identifier}/{action}')
