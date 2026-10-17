@@ -130,5 +130,37 @@ class VerifyRestartTests(SyntheticUnits):
             self.verify()
 
 
+class VerifyRuntimeTests(unittest.TestCase):
+    """Runs a real launcher script that answers ``config check`` and ``lifeos-version`` like Hermes."""
+
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        root = Path(folder.name).resolve()
+        self.profile = root / '.hermes'
+        job = self.profile / '.lifeos-releases' / ('a' * 32)
+        job.mkdir(parents=True, mode=0o700)
+        self.report = root / 'report.json'
+        launcher = root / 'hermes'
+        launcher.write_text('#!/bin/sh\nif [ "$1" = lifeos-version ]; then cat ' + str(self.report) + '; fi\n')
+        launcher.chmod(0o755)
+        publish(job / 'plan.json', json.dumps({'launchers': [str(launcher)]}).encode())
+        self.identity = {'version': '0.8.0', 'commit': 'c' * 40, 'package_sha256': 'd' * 64}
+        self.request = {'format': 2, 'profile': str(self.profile), 'account_home': str(root), 'identifier': job.name,
+                        'runtime': {'hermes': str(launcher), 'bun': str(root / 'tools/bun')}, **self.identity}
+
+    def verify(self, host):
+        from optional.lifeos_release_manager.release_plan import verify_runtime
+        self.report.write_text(json.dumps({'active': {'verification': 'verified', **self.identity}, 'host': host}))
+        verify_runtime(self.request)
+
+    def test_installed_host_passes(self):
+        self.verify({'state': 'installed', 'source': '/h', 'changed': []})
+
+    def test_host_drift_is_refused_with_the_changed_paths(self):
+        with self.assertRaisesRegex(ReleaseRejected, 'hermes_cli/plugins.py'):
+            self.verify({'state': 'host_drift', 'source': '/h', 'changed': ['hermes_cli/plugins.py']})
+
+
 if __name__ == '__main__':
     unittest.main()

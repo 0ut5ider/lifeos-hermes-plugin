@@ -147,9 +147,15 @@ def verify_runtime(request, *, restored=False):
         if result.returncode:
             raise ReleaseRejected('The selected installed launcher cannot load the integration commands')
         try:
-            active = json.loads(result.stdout)['active']
+            report = json.loads(result.stdout)
+            active = report['active']
         except (ValueError, KeyError, TypeError) as error:
             raise ReleaseRejected('The installed launcher does not return a release identity') from error
         if (active.get('verification') != 'verified' or any(active.get(name) != request[name]
                 for name in ('version', 'commit', 'package_sha256'))):
             raise ReleaseRejected('The installed command does not match the selected complete release')
+        # The bridge compares the patched Hermes files with the host record that this operation published.
+        host = report.get('host') or {}
+        if host.get('state') == 'host_drift':
+            raise ReleaseRejected('The bridge reports changed Hermes files after publication: '
+                                  + ', '.join(host.get('changed') or [host.get('reason', 'lifeos-host.json')]))

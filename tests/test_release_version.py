@@ -103,6 +103,61 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertIn('extra.py',result['active']['modified_files'])
 
 
+class HostDriftTests(unittest.TestCase):
+    version = ReleaseVersionTests.version
+    publish = ReleaseVersionTests.publish
+
+    def setUp(self):
+        ReleaseVersionTests.setUp(self)
+        self.source = self.root/'hermes-agent'
+        (self.source/'hermes_cli').mkdir(parents=True)
+        self.files = {'hermes_cli/plugins.py': b'patched\n', 'hermes_cli/new_hook.py': b'added\n'}
+        for relative, data in self.files.items():
+            (self.source/relative).write_bytes(data)
+        self.record()
+
+    def record(self, **changes):
+        value = {'format': 1, 'source': str(self.source), 'commit': '3'*40, 'label': 'v0.0.1', 'patches': [],
+                 'files': {'hermes_cli/plugins.py': {'stock': 'a'*64, 'patched': hashlib.sha256(b'patched\n').hexdigest()},
+                           'hermes_cli/new_hook.py': {'stock': None, 'patched': hashlib.sha256(b'added\n').hexdigest()}},
+                 'originals': str(self.profile/'.lifeos-host/originals'), 'operation': 'e'*32, 'version': '0.3.0'}
+        value.update(changes)
+        self.publish('lifeos-host.json', value)
+        return value
+
+    def host(self):
+        return release_version.status(self.profile, self.plugin)['host']
+
+    def test_profile_without_a_host_record_reports_no_host(self):
+        (self.profile/'lifeos-host.json').unlink()
+        self.assertIsNone(self.host())
+
+    def test_unchanged_host_files_are_installed(self):
+        self.assertEqual(self.host(), {'state': 'installed', 'source': str(self.source), 'changed': []})
+
+    def test_changed_missing_or_linked_host_files_are_drift_with_their_paths(self):
+        (self.source/'hermes_cli/plugins.py').write_bytes(b'owner edit\n')
+        self.assertEqual(self.host(), {'state': 'host_drift', 'source': str(self.source),
+                                       'changed': ['hermes_cli/plugins.py']})
+        (self.source/'hermes_cli/new_hook.py').unlink()
+        (self.source/'hermes_cli/new_hook.py').symlink_to(self.root/'elsewhere.py')
+        (self.root/'elsewhere.py').write_bytes(b'added\n')
+        self.assertEqual(self.host()['changed'], ['hermes_cli/new_hook.py', 'hermes_cli/plugins.py'])
+
+    def test_damaged_record_is_drift_that_names_the_record(self):
+        for damage in ('{not json', json.dumps({'format': 1}),
+                       json.dumps(self.record(files={'../outside.py': {'stock': None, 'patched': 'b'*64}}))):
+            with self.subTest(damage=damage[:30]):
+                path = self.profile/'lifeos-host.json'
+                path.write_text(damage);path.chmod(0o600)
+                result = self.host()
+                self.assertEqual(result['state'], 'host_drift')
+                self.assertIn('lifeos-host.json', result['reason'])
+        self.record()
+        (self.profile/'lifeos-host.json').chmod(0o666)
+        self.assertIn('lifeos-host.json', self.host()['reason'])
+
+
 class ReleaseVersionCommandTests(unittest.TestCase):
     def test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call(self):
         import test_memory_owner_job_command as commands

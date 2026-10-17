@@ -1,5 +1,5 @@
 # ABOUTME: Reports matching integration versions and exact installed release identities.
-# ABOUTME: Separates staged candidates from selected code and detects changed plugin files.
+# ABOUTME: Separates staged candidates from selected code and detects changed plugin and patched Hermes files.
 import hashlib
 import json
 import os
@@ -62,6 +62,60 @@ def _identity(value):
     return {name:value[name] for name in ('version','commit','package_sha256')}
 
 
+HOST_RECORD='lifeos-host.json'
+
+
+def _host_record(path):
+    info=path.lstat()
+    if (not stat.S_ISREG(info.st_mode) or info.st_uid!=os.getuid() or info.st_mode & 0o022
+            or info.st_size>2*1024*1024):
+        raise ValueError('The LifeOS host record requires a bounded owner file')
+    try:
+        value=json.loads(path.read_text())
+    except ValueError as error:
+        raise ValueError('The LifeOS host record is unreadable') from error
+    if (not isinstance(value,dict) or not isinstance(value.get('source'),str)
+            or not Path(value['source']).is_absolute() or not isinstance(value.get('files'),dict)):
+        raise ValueError('The LifeOS host record has an invalid structure')
+    for name,hashes in value['files'].items():
+        relative=PurePosixPath(name) if isinstance(name,str) else None
+        if (relative is None or not name or relative.is_absolute() or str(relative)!=name
+                or any(part in {'.','..'} for part in relative.parts) or relative.parts[0]=='.git'
+                or not isinstance(hashes,dict) or not isinstance(hashes.get('patched'),str)
+                or re.fullmatch('[0-9a-f]{64}',hashes['patched']) is None):
+            raise ValueError('The LifeOS host record has invalid file identities')
+    return value
+
+
+def _digest(path):
+    try:
+        descriptor=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+    except OSError:
+        return None
+    with os.fdopen(descriptor,'rb') as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            return None
+        return hashlib.file_digest(stream,'sha256').hexdigest()
+
+
+def host_status(profile):
+    """Compare each Hermes file that LifeOS patched with its recorded hash; None without an in-place record."""
+    path=Path(profile)/HOST_RECORD
+    if not path.exists() and not path.is_symlink():
+        return None
+    try:
+        record=_host_record(path)
+    except OSError:
+        return {'state':'host_drift','reason':'The LifeOS host record is unreadable: '+str(path)+'.'}
+    except ValueError as error:
+        return {'state':'host_drift','reason':str(error)+': '+str(path)+'.'}
+    source=Path(record['source'])
+    changed=sorted(name for name,hashes in record['files'].items()
+        if (source/name).parent.resolve()!=source.resolve()/PurePosixPath(name).parent
+            or _digest(source/name)!=hashes['patched'])
+    return {'state':'host_drift' if changed else 'installed','source':str(source),'changed':changed}
+
+
 def status(profile, plugin):
     profile,plugin=Path(profile),Path(plugin)
     version=_declared(plugin)
@@ -90,4 +144,4 @@ def status(profile, plugin):
             verification='verified' if not changed and record['version']==version else 'modified',
             modified_files=sorted(set(changed)))
     staged=_receipt(profile/'integration-candidate.json')
-    return {'active':active,'staged':None if staged is None else _identity(staged)}
+    return {'active':active,'staged':None if staged is None else _identity(staged),'host':host_status(profile)}
