@@ -244,7 +244,7 @@ def _cancel_preparation(source, configuration, job, request, lease):
         return {'state':'cancelled','application_verified':False,'native_data_retained':True}
     if selected['kind']=='activation':
         activation=source.memory_module('memory_activation').MemoryActivation(configuration,
-            installation_lease=lease,operation_id=job.name)
+            units=profile_units(profile),installation_lease=lease,operation_id=job.name)
         if activation.owns_operation(account=owner):return activation.recover(account=owner)
     else:
         snapshot=source.memory_module('memory_import_sources').directory(profile,selected['identifier'])
@@ -302,7 +302,7 @@ def execute(profile, identifier, action):
                     configuration=configuration,installation_lease=lease)
             elif selected['kind']=='activation':
                 activation=source.memory_module('memory_activation').MemoryActivation(configuration,
-                    installation_lease=lease,operation_id=identifier)
+                    units=profile_units(profile),installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     selected_source=read_private(snapshot/'source-binding.json')['source_identifier']
                     source_directory=paths.directory(profile,selected_source,source=True) if selected_source is not None else None

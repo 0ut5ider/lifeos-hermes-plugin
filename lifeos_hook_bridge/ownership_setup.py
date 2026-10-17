@@ -42,7 +42,9 @@ class OwnershipSetup:
         self.installed = Path(selected['root']).absolute()
         self.physical_root = self.installed.resolve(strict=True)
         self.principal = selected['principal']
-        self.units = ProfileServices(self.profile, self.installed, units=units).units
+        # An in-place host passes only the units it has; their roles become the bound service set.
+        self.units = ProfileServices(self.profile, self.installed, units=units,
+                                     roles=None if units is None else tuple(units)).units
         self.state = self.profile / '.lifeos-ownership-setup'
         self.journal = self.state / 'operation.json'
 
@@ -62,7 +64,8 @@ class OwnershipSetup:
             self._owner(account)
             self.state.mkdir(mode=0o700, exist_ok=True)
             _directory(self.state, private=True)
-            services = ProfileServices(self.profile, self.installed, units=self.units, installation_lease=lease)
+            services = ProfileServices(self.profile, self.installed, units=self.units, roles=tuple(self.units),
+                                       installation_lease=lease)
             ownership = OwnershipTransaction(self.configuration, installation_lease=lease,
                 verify_writers=services.verify_stopped, publication_barrier=self.publication_barrier)
             yield lease, services, ownership

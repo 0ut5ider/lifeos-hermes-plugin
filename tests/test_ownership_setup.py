@@ -78,6 +78,19 @@ class OwnershipSetupTests(unittest.TestCase):
         self.record(before=before, reviewed=reviewed, applied=applied, returned=returned,
             after=self.pids(), journal=json.loads(self.setup_operation().journal.read_text()))
 
+    def test_in_place_host_setup_binds_only_the_units_it_has(self):
+        from lifeos_hook_bridge.ownership_setup import OwnershipSetup
+        units = {role: self.services.units[role] for role in ('gateway', 'pulse')}
+        dashboard = self.services.properties('dashboard')['MainPID']
+        gateway = self.services.properties('gateway')['MainPID']
+        operation = lambda: OwnershipSetup(self.configuration, units=units)
+        reviewed = operation().prepare(self.backup.destination, account='dashboard:owner')
+        applied = operation().apply(reviewed['signature'], account='dashboard:owner')
+        self.assertEqual(applied['state'], 'configured')
+        self.assertTrue(self.configuration.load()['ownership_enabled'])
+        self.assertNotEqual(self.services.properties('gateway')['MainPID'], gateway)
+        self.assertEqual(self.services.properties('dashboard')['MainPID'], dashboard)
+
     def test_changed_review_refuses_before_any_service_stops(self):
         reviewed = self.prepare()
         original_pids = self.pids()
