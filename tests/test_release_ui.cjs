@@ -136,6 +136,27 @@ test('check again repeats the read-only compatibility request', async () => {
   ui.cleanup();
 });
 
+test('a compatibility result that arrives after the page closes changes no state', async () => {
+  let answer;
+  const pending = new Promise((resolve) => { answer = resolve; });
+  const app = loadDashboard('releases', {
+    fetchJSON: async (url) => {
+      if (url.endsWith('/compatibility')) return pending;
+      if (url.endsWith('/installation')) return {installed: false};
+      return {operations: []};
+    },
+    globals: {setInterval: () => 1, clearInterval: () => {}},
+  });
+  const render = app.mount();
+  await settle();
+  app.unmount();
+  answer(compatible);
+  await settle();
+  const content = text(find(render(), (node) => node.props.id === 'release_compatibility'));
+  assert.match(content, /Checking this Hermes installation\./);
+  assert.doesNotMatch(content, /LifeOS can be installed/);
+});
+
 test('an unavailable compatibility check is reported without blocking release status', async () => {
   const ui = await page(false, [], new Error('The Hermes compatibility check is unavailable'));
   const content = text(find(ui.render(), (node) => node.props.id === 'release_compatibility'));

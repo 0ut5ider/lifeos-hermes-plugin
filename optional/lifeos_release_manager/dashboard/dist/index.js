@@ -190,7 +190,7 @@
       h("h2", {id: "release_compatibility_title"}, "Hermes compatibility"),
       h("p", null, "LifeOS patches your existing Hermes installation. This check doesn't change anything, and the installer repeats it right before it makes any change."),
       ...body,
-      h("button", {type: "button", disabled: busy, onClick: check}, "Check again"));
+      h("button", {type: "button", disabled: busy, onClick: function () { return check(); }}, "Check again"));
   }
 
   function Releases() {
@@ -205,16 +205,20 @@
     const [compatibility, setCompatibility] = SDK.hooks.useState(null);
     const [compatibilityError, setCompatibilityError] = SDK.hooks.useState("");
 
-    async function checkCompatibility() {
+    // isActive reports whether the page that started the check is still mounted.
+    async function checkCompatibility(isActive) {
+      const active = isActive ?? function () { return true; };
       try {
         const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/compatibility");
         if (!result || typeof result.compatible !== "boolean" || !Array.isArray(result.reasons) || !result.detected
             || !Array.isArray(result.supported) || !result.dependencies || !Array.isArray(result.dependencies.add)) {
           throw new Error("The Hermes compatibility check returned an unexpected result.");
         }
+        if (!active()) return;
         setCompatibility(result);
         setCompatibilityError("");
       } catch (error) {
+        if (!active()) return;
         setCompatibility(null);
         setCompatibilityError(error.message);
       }
@@ -238,7 +242,7 @@
         });
       }
       poll();
-      checkCompatibility();
+      checkCompatibility(function () { return active; });
       const timer = setInterval(poll, 5000);
       return function () { active = false; clearInterval(timer); };
     }, []);
