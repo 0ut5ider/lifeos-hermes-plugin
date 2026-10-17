@@ -307,6 +307,22 @@ ProfileServices(Path(settings['profile']), Path(settings['installed']), units=se
         self.record('changed-definition', {'after': {role: self.properties(role) for role in self.units},
             'journal': json.loads(self.barrier().journal.read_text())})
 
+    def test_completed_journal_of_other_roles_does_not_block_a_later_review(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        self.barrier().drain()
+        self.barrier().resume()
+        fewer = ProfileServices(self.profile, self.installed, units={'gateway': self.units['gateway']})
+        self.assertEqual(fewer.drain(signature=fewer.preview()['signature'])['services_stopped'], ['gateway'])
+        self.assertEqual(fewer.resume()['services_started'], ['gateway'])
+
+    def test_interrupted_journal_of_other_roles_still_refuses(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        self.barrier().drain()
+        fewer = ProfileServices(self.profile, self.installed, units={'gateway': self.units['gateway']})
+        with self.assertRaises(MemoryUnavailable):
+            fewer.preview()
+        self.barrier().resume()
+
     def test_stopped_role_adopts_only_a_reviewed_replacement_definition(self):
         import hashlib
         self.barrier().drain()

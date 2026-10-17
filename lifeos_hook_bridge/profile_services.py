@@ -129,7 +129,13 @@ class ProfileServices:
                 or document['profile'] != str(self.profile) or document['installed'] != str(self.installed)
                 or document['installed_physical'] != str(self.physical_root)
                 or not isinstance(document['state'], str) or document['state'] not in STATES
-                or not isinstance(document['services'], dict) or set(document['services']) != set(self.units)):
+                or not isinstance(document['services'], dict)):
+            raise MemoryUnavailable('The profile service journal belongs to another profile or has invalid metadata')
+        if set(document['services']) != set(self.units):
+            # A completed operation leaves nothing to recover; a later one can bind other roles, such as after
+            # a removal deletes the Pulse unit.
+            if document['state'] == 'active':
+                return None
             raise MemoryUnavailable('The profile service journal belongs to another profile or has invalid metadata')
         for role, item in document['services'].items():
             if (not isinstance(item, dict) or set(item) != {'unit', 'definition', 'active', 'control_group'}
