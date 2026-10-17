@@ -263,6 +263,9 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
                       dependencies['bun_version'])
     python = host_python(source)
     preview = build_preview(source, desired, job / 'hermes-preview')
+    # The installed host must expose these capabilities after restart; the preview proves the patches provide them.
+    from .host_capabilities import probe_capabilities
+    probe_capabilities(python, preview, entry, environment={**os.environ, 'HOME': str(home), 'HERMES_HOME': str(profile)})
     dependencies = resolve_dependencies(job, python, source, profile, package / 'lifeos_hook_bridge')
     if dependencies['changed']:
         raise ReleaseRejected('LifeOS would change installed Python packages: ' + ', '.join(sorted(dependencies['changed'])))
