@@ -96,7 +96,7 @@ def prepare(profile, version=None, *, name='User', assistant='Hermes', catalog=N
             raise ReleaseRejected('Fresh installation names require bounded text')
     if job is None:
         from .release_preparation import preparation_admission
-        with preparation_admission(profile, intent):
+        with preparation_admission(profile):
             return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, intent=intent)
     return _prepare(profile, version, name=name, assistant=assistant, catalog=catalog, job=job, intent=intent)
 
