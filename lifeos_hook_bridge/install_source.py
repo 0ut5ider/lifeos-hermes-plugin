@@ -92,14 +92,6 @@ def _remove_shared_write(root: Path) -> None:
                 os.chmod(name, stat.S_IMODE(info.st_mode) & ~0o022)
 
 
-def latest_revision(source: str = UPSTREAM_LIFEOS) -> str:
-    answer = _git("ls-remote", source, "HEAD", timeout=30)
-    revision = answer.split("\t", 1)[0]
-    if not re.fullmatch(r"[0-9a-f]{40}", revision):
-        raise IncompatibleLifeOS("LifeOS upstream did not return one Git commit")
-    return revision
-
-
 def _tree_digest(root: Path, manifest_name: str = "lifeos-source-manifest.json") -> str:
     digest = hashlib.sha256()
     for directory, names, files in os.walk(root, followlinks=False):
@@ -143,12 +135,11 @@ def validate_candidate(target: Path, supported_revision: str, patches: Path,
 
 
 def prepare_lifeos(source: str, target: Path, supported_revision: str,
-                   patches: Path, patch_names: tuple[str, ...]) -> dict:
-    revision = latest_revision(source)
-    if revision != supported_revision:
-        raise IncompatibleLifeOS(
-            f"Latest LifeOS commit {revision} is not the tested commit {supported_revision}"
-        )
+                   patches: Path, patch_names: tuple[str, ...], *, expected_tree: str | None = None) -> dict:
+    """Fetch exactly the supported LifeOS commit, apply the patches, and publish the verified tree."""
+    if not re.fullmatch(r"[0-9a-f]{40}", supported_revision):
+        raise IncompatibleLifeOS("LifeOS preparation requires a full pinned commit")
+    revision = supported_revision
     target = target.absolute()
     if target.exists() or target.is_symlink():
         raise IncompatibleLifeOS(f"LifeOS candidate already exists: {target}")
@@ -156,8 +147,10 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
     stage = Path(tempfile.mkdtemp(prefix=f".{target.name}.", dir=target.parent))
     stage.chmod(0o700)
     try:
-        _git("clone", "--quiet", "--no-checkout", "--", source, str(stage))
-        _git("checkout", "--quiet", "--detach", revision, cwd=stage)
+        _git("init", "--quiet", str(stage))
+        # Request the pinned commit directly. Upstream HEAD can move without changing what is installed.
+        _git("fetch", "--quiet", "--depth", "1", "--no-tags", "--", source, revision, cwd=stage)
+        _git("checkout", "--quiet", "--detach", "FETCH_HEAD", cwd=stage)
         if _git("rev-parse", "HEAD", cwd=stage) != revision:
             raise IncompatibleLifeOS("Cloned LifeOS revision differs from the selected commit")
         applied = []
@@ -173,6 +166,8 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
         capabilities["install_capability_record"](stage / "LifeOS/install")
         manifest = {"upstream": source, "upstream_commit": revision, "patches": applied,
                     "tree_sha256": _tree_digest(stage)}
+        if expected_tree is not None and manifest["tree_sha256"] != expected_tree:
+            raise IncompatibleLifeOS("The prepared LifeOS tree differs from its qualified identity")
         (stage / "lifeos-source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
         _remove_shared_write(stage)
         os.replace(stage, target)
