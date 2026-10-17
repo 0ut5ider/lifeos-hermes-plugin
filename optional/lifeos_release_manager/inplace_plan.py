@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from .host_compatibility import check, load_manifest
+from .host_compatibility import inspect_host, load_manifest
 from .host_record import build_record, check_originals, load_record, originals_path, record_path
 from .inplace_preparation import desired_host_files, host_launcher, host_python
 from .inplace_services import UNITS, inventory
@@ -55,7 +55,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
         raise ReleaseRejected('The prepared runtime changes its fixed paths')
     if runtime_source_fingerprint(job / 'hermes-preview') != request['runtime_fingerprint']:
         raise ReleaseRejected('The prepared preview changes before selection')
-    host = check(profile)
+    # The worker imports the preview, so it inspects the recorded host source explicitly.
+    host = inspect_host(source, load_manifest(package / COMPATIBILITY), hermes_home=profile, record=load_record(profile))
     record_file = record_path(profile)
     record_digest = sha(record_file) if record_file.exists() else None
     if (host['state'] != request['host']['state'] or host['detected']['source'] != str(source)
