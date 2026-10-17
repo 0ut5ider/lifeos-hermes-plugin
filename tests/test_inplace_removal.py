@@ -142,6 +142,23 @@ class InplaceRemovalPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(ReleaseRejected, 'another integration'):
             self.plan()
 
+    def test_missing_hold_does_not_block_removal(self):
+        self.hold.unlink()
+        directories, files, expected = self.plan()
+        self.assertNotIn(self.hold, files)
+        self.assertNotIn(self.hold, expected)
+        programs = ProgramTransaction(self.stage / 'programs')
+        programs.prepare(directories=directories, files=files, expected_before=expected)
+        programs.apply()
+        self.assertEqual(git('status', '--porcelain', '--untracked-files=all', cwd=self.source), '')
+        self.assertFalse(self.hold.exists())
+
+    def test_missing_host_record_still_refuses_removal(self):
+        from optional.lifeos_release_manager.host_record import record_path
+        record_path(self.profile).unlink()
+        with self.assertRaisesRegex(ReleaseRejected, 'host record'):
+            self.plan()
+
     def test_runtime_requires_the_host_source_launcher(self):
         from optional.lifeos_release_manager.inplace_removal import runtime
         plan = {'host': {'source': str(self.source)}}

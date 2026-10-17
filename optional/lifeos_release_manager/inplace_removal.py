@@ -93,7 +93,7 @@ def host_plan(profile, record, originals, stage):
     """Return the directories, files, and reviewed identities that restore the recorded Hermes files.
 
     Each patched target returns to a verified copy of its retained original, with the original mode, or is
-    deleted when LifeOS added it. The retained originals, the host record, and the update hold are removed.
+    deleted when LifeOS added it. The retained originals, the host record, and the update hold (when present) are removed.
     """
     profile, stage = Path(profile).absolute(), Path(stage)
     source = Path(record['source'])
@@ -132,13 +132,21 @@ def host_plan(profile, record, originals, stage):
         raise ReleaseRejected('The retained Hermes originals contain files that the host record does not name')
     directories[retained] = None
     expected[retained] = fingerprint(retained)
+    record = record_path(profile)
+    identity = fingerprint(record)
+    if identity is None or identity['type'] != 'file':
+        raise ReleaseRejected('Removal requires the LifeOS host record')
+    files[record] = None
+    expected[record] = identity
     hold = source / '.git' / HOLD
-    for path in (record_path(profile), hold):
-        identity = fingerprint(path)
-        if identity is None or identity['type'] != 'file':
-            raise ReleaseRejected('Removal requires the LifeOS host record and its Hermes update hold')
-        files[path] = None
-        expected[path] = identity
+    identity = fingerprint(hold)
+    # A missing hold only means Hermes updates are already admitted; it does not affect source restoration.
+    if identity is None:
+        return directories, files, expected
+    if identity['type'] != 'file':
+        raise ReleaseRejected('The Hermes update hold is not a regular file')
+    files[hold] = None
+    expected[hold] = identity
     try:
         holder = json.loads(hold.read_bytes()).get('holder')
     except (ValueError, AttributeError) as error:
