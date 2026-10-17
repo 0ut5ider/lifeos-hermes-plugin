@@ -10,17 +10,14 @@ import stat
 import subprocess
 import tempfile
 
+from .release_stage import sha
+
 
 ADDED_MODE = 0o644
 
 
 class HostPatchRejected(ValueError):
     """The owner's Hermes files or the patch set differ from the qualified compatibility entry."""
-
-
-def _digest(path):
-    with Path(path).open('rb') as stream:
-        return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
 def _read_original(path):
@@ -51,7 +48,7 @@ def stage_host_files(source, entry, patches, destination):
         raise HostPatchRejected('Host patch staging requires a new private directory')
     for patch in entry['patches']:
         path = patches / patch['name']
-        if path.is_symlink() or not path.is_file() or _digest(path) != patch['sha256']:
+        if path.is_symlink() or not path.is_file() or sha(path) != patch['sha256']:
             raise HostPatchRejected('The Hermes patch differs from its qualified identity: ' + patch['name'])
     staging = Path(tempfile.mkdtemp(prefix='.host-', dir=destination.parent))
     try:
@@ -83,7 +80,7 @@ def stage_host_files(source, entry, patches, destination):
             raise HostPatchRejected('The patches change files outside the qualified patch targets')
         for relative, hashes in entry['files'].items():
             path = patched / relative
-            if path.is_symlink() or _digest(path) != hashes['patched']:
+            if path.is_symlink() or sha(path) != hashes['patched']:
                 raise HostPatchRejected('A patched Hermes file differs from its qualified result: ' + relative)
             if hashes['stock'] is None:
                 path.chmod(ADDED_MODE)

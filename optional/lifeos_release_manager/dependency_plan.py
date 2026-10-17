@@ -14,6 +14,7 @@ BRIDGE = 'lifeos-hook-bridge'
 WORKSPACE_SOURCES = ('editable', 'virtual', 'directory')
 
 
+# The host interpreter runs this file as a standalone script, so it cannot import release_stage.sha.
 def _digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 

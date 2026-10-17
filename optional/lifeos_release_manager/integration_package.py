@@ -2,7 +2,6 @@
 # ABOUTME: Checks the exact plugin file maps, version declarations, compatibility manifest, and LifeOS pin.
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 
 from .release_catalog import ReleaseRejected, _directory, _json
@@ -14,11 +13,15 @@ TOP_LEVEL = {'lifeos_hook_bridge', 'optional', 'VERSION', 'CHANGELOG.md', MANIFE
 COMPATIBILITY = 'optional/lifeos_release_manager/host-compatibility.json'
 
 
+def source_paths(root):
+    """Return every path below ``root`` in sorted order, without bytecode caches or compiled files."""
+    return [path for path in sorted(Path(root).rglob('*')) if '__pycache__' not in path.parts and path.suffix != '.pyc']
+
+
 def file_map(root):
     """Return the exact SHA-256 map of the regular files below ``root``, excluding bytecode."""
     root = Path(root)
-    return {path.relative_to(root).as_posix(): sha(path) for path in sorted(root.rglob('*'))
-            if path.is_file() and '__pycache__' not in path.parts and path.suffix != '.pyc'}
+    return {path.relative_to(root).as_posix(): sha(path) for path in source_paths(root) if path.is_file()}
 
 
 def _manager_version(manager):
@@ -44,7 +47,7 @@ def validate_integration(package, certificate):
             or manifest['lifeos'] != certificate.get('lifeos')
             or manifest['host_compatibility_sha256'] != certificate.get('host_compatibility_sha256')):
         raise ReleaseRejected('The integration package does not match its release certificate')
-    if hashlib.sha256((package / COMPATIBILITY).read_bytes()).hexdigest() != manifest['host_compatibility_sha256']:
+    if sha(package / COMPATIBILITY) != manifest['host_compatibility_sha256']:
         raise ReleaseRejected('The compatibility manifest differs from its certified identity')
     validate_files(package / 'lifeos_hook_bridge', manifest['plugin_files'], forbid_bytecode=True)
     validate_files(package / 'optional/lifeos_release_manager', manifest['manager_files'], forbid_bytecode=True)

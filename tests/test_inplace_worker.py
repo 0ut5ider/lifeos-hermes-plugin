@@ -281,6 +281,33 @@ class InventorySnapshotTests(unittest.TestCase):
                 inplace_worker.check_inventory(before, inplace_worker.inventory_snapshot(request), {})
 
 
+class PluginDigestTests(unittest.TestCase):
+    def test_bytecode_is_ignored_and_a_changed_link_or_file_is_detected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile, source = root / '.hermes', root / 'hermes-agent'
+            plugin = profile / 'plugins/weather'
+            (plugin / '__pycache__').mkdir(parents=True)
+            (plugin / 'plugin.yaml').write_text('name: weather\n')
+            (plugin / 'current').symlink_to('plugin.yaml')
+            (profile / 'config.yaml').write_text('plugins:\n  enabled: [weather]\n')
+            source.mkdir()
+            (source / 'uv.lock').write_text('version = 1\n')
+            request = {'profile': str(profile), 'host': {'source': str(source)}}
+            before = inplace_worker.inventory_snapshot(request)
+            (plugin / '__pycache__/weather.cpython-314.pyc').write_bytes(b'compiled')
+            (plugin / 'cached.pyc').write_bytes(b'compiled')
+            self.assertEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+            (plugin / 'current').unlink()
+            (plugin / 'current').symlink_to('other.yaml')
+            self.assertNotEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+            (plugin / 'current').unlink()
+            (plugin / 'current').symlink_to('plugin.yaml')
+            self.assertEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+            (plugin / 'plugin.yaml').write_text('name: weather\nversion: 2\n')
+            self.assertNotEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+
+
 class CreatedUnitsTests(unittest.TestCase):
     def test_created_units_are_the_standard_gateway_and_dashboard_units(self):
         self.assertEqual(inplace_worker.CREATED_UNITS,

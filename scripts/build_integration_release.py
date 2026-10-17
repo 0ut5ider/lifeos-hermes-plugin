@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import gzip
-import hashlib
 import io
 import json
 from pathlib import Path
@@ -18,7 +17,8 @@ if str(REPOSITORY) not in sys.path:
     sys.path.insert(0, str(REPOSITORY))
 
 from lifeos_hook_bridge import install_source
-from optional.lifeos_release_manager.integration_package import COMPATIBILITY, MANIFEST_NAME, file_map
+from optional.lifeos_release_manager.integration_package import COMPATIBILITY, MANIFEST_NAME, file_map, source_paths
+from optional.lifeos_release_manager.release_stage import sha
 
 
 SELECTED = ('lifeos_hook_bridge', 'optional/lifeos_release_manager', 'VERSION', 'CHANGELOG.md')
@@ -28,9 +28,7 @@ def _archive(package, destination):
     """Write a reproducible gzip tar: sorted members, fixed owner and time, normalized modes."""
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode='w', format=tarfile.PAX_FORMAT) as archive:
-        for path in sorted(package.rglob('*')):
-            if '__pycache__' in path.parts or path.suffix == '.pyc':
-                continue
+        for path in source_paths(package):
             info = archive.gettarinfo(str(path), arcname=path.relative_to(package).as_posix())
             info.uid = info.gid = 0
             info.uname = info.gname = ''
@@ -69,7 +67,7 @@ def build(output, *, lifeos_source=install_source.UPSTREAM_LIFEOS):
         'format': 2, 'version': version, 'head': head,
         'plugin_files': file_map(package / 'lifeos_hook_bridge'),
         'manager_files': file_map(package / 'optional/lifeos_release_manager'),
-        'host_compatibility_sha256': hashlib.sha256((package / COMPATIBILITY).read_bytes()).hexdigest(),
+        'host_compatibility_sha256': sha(package / COMPATIBILITY),
         'lifeos': {'upstream': install_source.UPSTREAM_LIFEOS, 'commit': lifeos['upstream_commit'],
                    'tree_sha256': lifeos['tree_sha256']},
     }
@@ -77,7 +75,7 @@ def build(output, *, lifeos_source=install_source.UPSTREAM_LIFEOS):
     archive = output / (name + '.tgz')
     _archive(package, archive)
     record = {'version': version, 'head': head, 'archive_name': archive.name,
-              'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+              'archive_sha256': sha(archive),
               'archive_bytes': archive.stat().st_size,
               'host_compatibility_sha256': manifest['host_compatibility_sha256'], 'lifeos': manifest['lifeos']}
     (output / (name + '-build.json')).write_text(json.dumps(record, indent=2, sort_keys=True) + '\n')

@@ -201,15 +201,14 @@ OWNED_PLUGINS = ('lifeos', 'lifeos-hook-bridge', 'lifeos-release-manager')
 
 def _tree_digest(root):
     import hashlib
+    from .integration_package import source_paths
     digest = hashlib.sha256()
-    for path in sorted(Path(root).rglob('*')):
-        if '__pycache__' in path.parts or path.suffix == '.pyc':
-            continue
+    for path in source_paths(root):
         digest.update(path.relative_to(root).as_posix().encode() + b'\0')
         if path.is_symlink():
             digest.update(b'link\0' + os.readlink(path).encode())
         elif path.is_file():
-            digest.update(hashlib.sha256(path.read_bytes()).digest())
+            digest.update(bytes.fromhex(sha(path)))
     return digest.hexdigest()
 
 

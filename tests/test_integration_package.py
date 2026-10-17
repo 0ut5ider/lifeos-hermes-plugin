@@ -79,5 +79,18 @@ class IntegrationPackageTests(unittest.TestCase):
             validate_integration(self.package, self.certificate)
 
 
+
+class FileMapTests(unittest.TestCase):
+    def test_file_map_hashes_regular_files_and_skips_bytecode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'tools/__pycache__').mkdir(parents=True)
+            (root / 'tools/run.py').write_text('print(1)\n')
+            (root / 'tools/__pycache__/run.cpython-314.pyc').write_bytes(b'compiled')
+            (root / 'stale.pyc').write_bytes(b'compiled')
+            (root / 'empty').mkdir()
+            self.assertEqual(file_map(root), {'tools/run.py': hashlib.sha256(b'print(1)\n').hexdigest()})
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -21,6 +20,7 @@ if str(REPOSITORY) not in sys.path:
 from lifeos_hook_bridge import PATCHED_HOOKS
 from lifeos_hook_bridge.install_source import HERMES_PATCHES, SUPPORTED_HERMES_COMMIT
 from optional.lifeos_release_manager.host_compatibility import MANIFEST, load_manifest
+from optional.lifeos_release_manager.release_stage import sha
 
 
 PIN = re.compile(r'([A-Za-z0-9][A-Za-z0-9._-]*)==([0-9][0-9A-Za-z.+!_-]*)')
@@ -32,18 +32,13 @@ class ManifestBuildError(RuntimeError):
     """The inputs cannot produce a trustworthy compatibility entry."""
 
 
-def _digest(path: Path) -> str:
-    with path.open('rb') as stream:
-        return hashlib.file_digest(stream, 'sha256').hexdigest()
-
-
 def _files(root: Path) -> dict[str, str]:
     hashes = {}
     for directory, names, files in os.walk(root, followlinks=False):
         names.sort()
         for name in sorted(files):
             path = Path(directory) / name
-            hashes[path.relative_to(root).as_posix()] = 'symlink' if path.is_symlink() else _digest(path)
+            hashes[path.relative_to(root).as_posix()] = 'symlink' if path.is_symlink() else sha(path)
     return hashes
 
 
@@ -92,7 +87,7 @@ def build_entry(archive: Path, patches: Path, names: tuple[str, ...], label: str
                                     capture_output=True, text=True, timeout=120)
             if result.returncode:
                 raise ManifestBuildError(f'{name} does not apply to the stock archive: {result.stderr.strip()}')
-            identities.append({'name': name, 'sha256': _digest(patch)})
+            identities.append({'name': name, 'sha256': sha(patch)})
         after = _files(source)
     removed = sorted(set(before) - set(after))
     if removed:
