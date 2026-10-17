@@ -106,7 +106,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     created = list(consumers['offers'])
     if fresh:
         created.append('pulse')
-    services = current.memory_module('profile_services').ProfileServices(
+    # The operation's own bridge controls services: an installed managed bridge predates role selection.
+    services = candidate.memory_module('profile_services').ProfileServices(
         profile, installed, units={role: UNITS[role] for role in roles}, roles=roles,
         installation_lease=installation_lease, first_installation=fresh) if roles else None
     # A transition verifies through the account launcher that the existing services start.

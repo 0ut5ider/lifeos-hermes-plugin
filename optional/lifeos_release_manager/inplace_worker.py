@@ -30,12 +30,14 @@ def _systemctl(*arguments):
         raise ReleaseRejected('The owner service manager refuses ' + ' '.join(arguments[:1]))
 
 
-def services_for(current, request, plan, installed, lease):
+def services_for(job, request, plan, installed, lease):
+    """Bind the reviewed service roles with the operation's own validated bridge."""
     roles = plan['services']['roles']
     if not roles:
         return None
     from .inplace_services import UNITS
-    return current.memory_module('profile_services').ProfileServices(
+    from .release_stage import load_bridge
+    return load_bridge(job / 'package/lifeos_hook_bridge').memory_module('profile_services').ProfileServices(
         Path(request['profile']), installed, units={role: UNITS[role] for role in roles}, roles=roles,
         installation_lease=lease, first_installation=plan['fresh'])
 
@@ -241,7 +243,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             raise ReleaseRejected('The recovery changes its selected native installation')
         selected = {'profile': profile, 'installed': Path(request['installed']), 'current': current,
                     'baseline': current.memory_module('version_drift').default_baseline_path(Path(request['installed']).parent)}
-    services = services_for(current, request, plan, selected['installed'], lease)
+    services = services_for(job, request, plan, selected['installed'], lease)
     administration = current.memory_administration()
     environment = service_environment(request)
     if plan['native_mount_required']:
