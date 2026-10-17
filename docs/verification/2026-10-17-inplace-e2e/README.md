@@ -28,6 +28,18 @@ These runs exercise the in-place release on disposable Proxmox containers. They 
 | Managed 0.7.3 to in-place transition on 114 | `812735d6` | Applied (`812e0628`). The gateway runs the stock checkout. |
 | Restore of that transition on 114 | `812735d6` | Rolled back to the managed runtime, all services active |
 
+### Regression after the PR 40 review fixes
+
+Build `9f1749d3` adds the post-restart checks (per-unit start time, enabled state, capability probe, memory provider). On that build:
+
+| Flow | Result |
+| --- | --- |
+| Managed 0.7.3 to in-place transition on 114 | Applied (`dea9b27a`), receipt `{"mode": "patched", "source": "/home/lifeos-hermes/.hermes/hermes-agent"}` |
+| Restore of that transition on 114 | Rolled back to the managed runtime, all services active |
+| In-place update on 112 | Applied (`c288d8d2`), receipt `{"mode": "patched", "source": "/home/owner/.hermes/hermes-agent"}` |
+
+The first attempt on this build failed in preparation on both hosts, because `scripts/local_release_server.py` imported the plugin package, which the harness does not copy. Commit `9f1749d3` fixes the script.
+
 ### Removal end state on 110
 
 - The Hermes checkout is clean at `71d34bad` (`git status` reports nothing).
