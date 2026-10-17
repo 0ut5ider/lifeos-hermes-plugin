@@ -63,8 +63,20 @@ class ConsumerScanTests(unittest.TestCase):
         pid = self.start(environment={'PYTHONPATH': str(self.source), 'SECRET_TOKEN': 'do-not-report'})
         item = next(item for item in source_consumers(self.source, self.state) if item['pid'] == pid)
         self.assertEqual(item['command'], Path(sys.executable).name)
+        self.assertEqual(item['role'], 'other')
+        self.assertIsInstance(item['start_time'], int)
         self.assertNotIn('do-not-report', repr(item))
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ConsumerRoleTests(unittest.TestCase):
+    def test_hermes_command_lines_are_classified_without_exporting_them(self):
+        from optional.lifeos_release_manager.consumer_scan import _role
+        self.assertEqual(_role(b'/home/o/.hermes/hermes-agent/.hermes/bin/hermes\0dashboard\0--no-open\0'), 'dashboard')
+        self.assertEqual(_role(b'python\0-m\0hermes_cli.main\0serve\0'), 'dashboard')
+        self.assertEqual(_role(b'hermes\0gateway\0run\0'), 'gateway')
+        self.assertEqual(_role(b'hermes\0chat\0'), 'other')
+        self.assertEqual(_role(b'hermes\0gateway\0status\0'), 'other')
