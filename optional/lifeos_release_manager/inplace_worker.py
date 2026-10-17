@@ -369,7 +369,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             drained = boot_ticks()
             if fresh_recovery:
                 _restore_mount(job, request, mount)
-            for entry in programs._load()['entries']:
+            for entry in programs.entries():
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
                 native_started = True
@@ -379,7 +379,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             else:
                 programs.apply(checkpoint=checkpoint)
             checkpoint('programs-published')
-            clear_bytecode(request, [entry['target'] for entry in programs._load()['entries']])
+            clear_bytecode(request, [entry['target'] for entry in programs.entries()])
             _systemctl('daemon-reload')
             adopt_units(services, request)
             synchronized = synchronize(job, request, label='dependency-synchronization')

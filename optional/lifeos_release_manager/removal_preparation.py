@@ -230,7 +230,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         return {'state':'ready','signature':signature,'kind':'removal','application_verified':False,
             'native_data_retained':True,'builtin_memory_retained':True,'discord_disabled':True,
             'stock_commit':stock_commit,'stock_patches':0,
-            'program_targets':len(programs._load()['entries']),'recovery_command':str(stage/'recover'),
+            'program_targets':len(programs.entries()),'recovery_command':str(stage/'recover'),
             'configuration_retained':plan.get('configuration_retained',[])}
 
 

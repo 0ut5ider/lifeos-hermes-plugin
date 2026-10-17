@@ -36,7 +36,7 @@ class RemovalPublication:
         root=Path(self.plan['root'])
         protected=(root.parent/'.config/LIFEOS/USER',self.profile/'memories',self.profile/'SOUL.md',
             self.stage,root/'LIFEOS/USER',root/'LIFEOS/MEMORY',self.profile/'workspace',root.parent/'workspace')
-        for entry in self.programs._load()['entries']:
+        for entry in self.programs.entries():
             target=Path(entry['target'])
             if any(target.is_relative_to(path) or path.is_relative_to(target) for path in protected):
                 raise ReleaseRejected('Software removal cannot target personal data or its recovery sources')
@@ -65,7 +65,7 @@ class RemovalPublication:
     def _host_files(self):
         if 'host' in self.plan:
             from .inplace_removal import check_host_files
-            check_host_files(self.programs._load()['entries'],self.plan['host']['source'])
+            check_host_files(self.programs.entries(),self.plan['host']['source'])
 
     def _synchronize(self, label, *, required):
         if 'host' not in self.plan:return

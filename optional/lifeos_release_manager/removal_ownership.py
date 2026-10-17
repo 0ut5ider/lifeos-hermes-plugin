@@ -55,7 +55,7 @@ def pulse(profile, installed):
         plan=validate_plan(job,request)
         if plan.get('fresh') is not True:continue
         programs=ProgramTransaction(job/'program-snapshot',expected_entries_sha256=plan['program_entries_sha256'])
-        entries=programs._load()['entries']
+        entries=programs.entries()
         if any(entry['target']==str(target) and entry['before'] is None and entry['after']==identity
                 and entry['kind']=='file' for entry in entries):return target
     raise ReleaseRejected('The managed integration does not prove ownership of this Pulse definition')

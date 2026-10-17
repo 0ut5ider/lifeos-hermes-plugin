@@ -140,8 +140,12 @@ class ProgramTransaction:
     def _entries_digest(entries):
         return hashlib.sha256(json.dumps(entries, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
+    def entries(self):
+        """Return the validated journal entries in publication order."""
+        return self._load()['entries']
+
     def entries_digest(self):
-        return self._entries_digest(self._load()['entries'])
+        return self._entries_digest(self.entries())
 
     def check_plan(self, *, directories, files, dependencies=None):
         dependencies = {} if dependencies is None else dependencies
@@ -154,7 +158,7 @@ class ProgramTransaction:
                     raise ProgramConflict('The candidate program plan repeats a target')
                 expected[target] = {'source': None if source is None else str(Path(source).absolute()),
                                     'kind': kind, 'allow_links': links}
-        for entry in self._load()['entries']:
+        for entry in self.entries():
             selected = expected.pop(entry['target'], None)
             if selected != {key: entry[key] for key in ('source', 'kind', 'allow_links')}:
                 raise ProgramConflict('The reviewed entries differ from the candidate program plan')

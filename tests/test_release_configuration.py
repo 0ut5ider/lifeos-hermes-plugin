@@ -215,7 +215,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertIn('WorkingDirectory=' + str(root / '.claude/LIFEOS/PULSE') + '\n', files[pulse].read_text())
             transaction = ProgramTransaction(root / 'snapshot')
             transaction.prepare(directories={}, files=files)
-            self.assertEqual(len(transaction._load()['entries']), 3)
+            self.assertEqual(len(transaction.entries()), 3)
             transaction.apply()
             self.assertEqual(dashboard.read_text(), original)
             self.assertTrue(gateway.is_file() and pulse.is_file())

@@ -125,8 +125,7 @@ def recovery_bridge(job, profile):
     expected = plan['program_entries_sha256'] if plan is not None else None
     snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
     if snapshot.journal.is_file():
-        value = snapshot._load()
-        for index, entry in enumerate(value['entries']):
+        for index, entry in enumerate(snapshot.entries()):
             retained = snapshot.snapshot / ('before-' + str(index))
             if entry['target'] == str(active) and entry['before'] is not None and fingerprint(retained) == entry['before']:
                 return load_bridge(retained)
@@ -440,7 +439,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                     check_dashboard_writers(profile)
             if fresh_recovery:
                 _restore_mount(job, request, mount)
-            for entry in programs._load()['entries']:
+            for entry in programs.entries():
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
                 _fresh_native(job, request, selected, checkpoint=checkpoint)

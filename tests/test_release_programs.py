@@ -259,6 +259,21 @@ class ProgramTransactionTests(unittest.TestCase):
             self.assertEqual(victim.read_text(), 'Synthetic preserve')
             self.assertEqual((current / 'program.py').read_text(), 'before')
 
+    def test_entries_lists_the_reviewed_targets_and_refuses_a_substituted_journal(self):
+        import json
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            transaction, current, launcher, receipt = self.fixture(root)
+            expected = transaction.entries_digest()
+            reviewed = ProgramTransaction(transaction.snapshot, expected_entries_sha256=expected)
+            self.assertEqual([entry['target'] for entry in reviewed.entries()],
+                             [str(current), str(launcher), str(receipt)])
+            value = json.loads(transaction.journal.read_bytes())
+            value['entries'][0]['target'] = str(root / 'outside')
+            transaction.journal.write_text(json.dumps(value))
+            with self.assertRaisesRegex(ProgramConflict, 'reviewed program'):
+                reviewed.entries()
+
     def fixture(self, root):
         current, incoming = root / 'bridge', root / 'incoming'
         current.mkdir(); incoming.mkdir()

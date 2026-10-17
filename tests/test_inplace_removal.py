@@ -128,7 +128,7 @@ class InplaceRemovalPlanTests(unittest.TestCase):
         later = PATCHED + '# owner edit after review\n'
         (self.source / 'hermes_cli/plugins.py').write_text(later)
         with self.assertRaisesRegex(ReleaseRejected, 'hermes_cli/plugins.py'):
-            check_host_files(programs._load()['entries'], self.source)
+            check_host_files(programs.entries(), self.source)
         with self.assertRaises(ProgramConflict):
             programs.apply()
         self.assertEqual((self.source / 'hermes_cli/plugins.py').read_text(), later)
