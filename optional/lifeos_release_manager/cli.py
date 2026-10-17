@@ -171,19 +171,19 @@ def _prepare_managed_package(profile, home, job, version, *, name, assistant, ca
     publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
     shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker',
                     ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-    prepare_plan(job, request, manifest['manager_files'])
-    if read_private(job / 'status.json')['state'] != 'ready':
-        raise ReleaseRejected('The candidate does not complete its program review')
-    return {'identifier': job.name, 'state': 'ready', 'version': request['version'],
-        'commit': request['commit'], 'package_sha256': request['package_sha256'], 'active_unchanged': True,
-        'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + job.name}
+    return _ready_operation(job, request, manifest['manager_files'])
 
 
 def _prepare_inplace_operation(profile, job, version, *, name, assistant, catalog=None, intent=None):
     from .inplace_preparation import prepare_inplace
     request, manifest = prepare_inplace(profile, job, version, name=name.strip(), assistant=assistant.strip(),
                                         intent=intent or 'install', catalog=catalog)
-    prepare_plan(job, request, manifest['manager_files'])
+    return _ready_operation(job, request, manifest['manager_files'])
+
+
+def _ready_operation(job, request, files):
+    """Run the candidate program review of a prepared request and return the ready operation for the owner."""
+    prepare_plan(job, request, files)
     if read_private(job / 'status.json')['state'] != 'ready':
         raise ReleaseRejected('The candidate does not complete its program review')
     return {'identifier': job.name, 'state': 'ready', 'version': request['version'],

@@ -183,6 +183,45 @@ class ReleaseManagerCommandTests(unittest.TestCase):
             self.assertEqual((job / 'worker.stderr').read_bytes(), b'')
 
 
+class PreparedOperationTests(unittest.TestCase):
+    """Runs the in-place preparation tail with the request preparation and the candidate review replaced."""
+
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.job = Path(folder.name).resolve() / ('a' * 32)
+        self.job.mkdir(mode=0o700)
+        self.request = {'version': '0.8.0', 'commit': 'c' * 40, 'package_sha256': 'd' * 64}
+
+    def prepare(self, review_state):
+        from unittest import mock
+        from optional.lifeos_release_manager import cli, inplace_preparation
+        reviewed = []
+        def prepare_inplace(profile, job, version, **options):
+            self.assertEqual(options, {'name': 'User', 'assistant': 'Hermes', 'intent': 'install', 'catalog': None})
+            return self.request, {'manager_files': {'cli.py': 'e' * 64}}
+        def prepare_plan(job, request, files):
+            reviewed.append((job, request, files))
+            write_state(job, review_state)
+        with mock.patch.object(inplace_preparation, 'prepare_inplace', side_effect=prepare_inplace), \
+                mock.patch.object(cli, 'prepare_plan', side_effect=prepare_plan):
+            try:
+                return cli._prepare_inplace_operation(Path('/profile'), self.job, None, name=' User ', assistant='Hermes ')
+            finally:
+                self.assertEqual(reviewed, [(self.job, self.request, {'cli.py': 'e' * 64})])
+
+    def test_ready_review_returns_the_operation_and_the_next_step(self):
+        self.assertEqual(self.prepare('ready'), {
+            'identifier': 'a' * 32, 'state': 'ready', 'version': '0.8.0', 'commit': 'c' * 40,
+            'package_sha256': 'd' * 64, 'active_unchanged': True,
+            'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + 'a' * 32})
+
+    def test_incomplete_review_is_refused(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with self.assertRaisesRegex(ReleaseRejected, 'does not complete its program review'):
+            self.prepare('preparation_failed')
+
+
 class PreparationErrorTests(unittest.TestCase):
     def setUp(self):
         folder = tempfile.TemporaryDirectory()
