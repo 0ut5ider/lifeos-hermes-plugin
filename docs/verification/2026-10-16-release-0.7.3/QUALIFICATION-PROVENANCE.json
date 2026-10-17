@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "status": "PASS",
+  "purpose": "Supplement the immutable initial qualification certificate with log and replay provenance.",
+  "version": "0.7.3",
+  "program_commit": "70fa8390e86c782bb47e7073c492124970ff68d1",
+  "archive_sha256": "2deae5dcedfef8224959312410a5381baa91312532c968afa5534f19fd2149c8",
+  "initial_certificate_sha256": "d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58",
+  "initial_certificate_changed": false,
+  "integration_log": {
+    "path": "qualification/archive-integration-70fa8390.stderr.gz",
+    "raw_sha256": "f3d817c84afedccd8b8da7180182e1f762126d6a625107d7e67c5e183a9585fc",
+    "raw_bytes": 213465,
+    "compressed_sha256": "a34f741d6a10f7bb9d74803e2710aa38edc6a837cc7b4a9fcb2d09727bfce2d8",
+    "tests": 1129,
+    "passed": 1126,
+    "errors": 2,
+    "failures": 1,
+    "skipped": 0
+  },
+  "workstation_nonpassing_cases": [
+    {
+      "case": "test_profile_backup.ProfileBackupScopeTests.test_regenerable_and_runtime_entries_are_excluded_and_recorded",
+      "kind": "ERROR",
+      "measured_cause": "AF_UNIX path too long",
+      "passing_replay": "All 35 unchanged test_profile_backup cases under short private TMPDIR."
+    },
+    {
+      "case": "test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses",
+      "kind": "ERROR",
+      "measured_cause": "PermissionError reading /proc/814420/exe",
+      "passing_replay": "Eight isolated service-account cases."
+    },
+    {
+      "case": "test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted",
+      "kind": "FAIL",
+      "measured_cause": "Account process boundary refuses sshd-session inspection.",
+      "passing_replay": "Eight isolated service-account cases."
+    }
+  ],
+  "terminology_clarification": "The initial certificate uses two named workstation failures collectively for the process-inspection results. Strict unittest categories are one error and one failure for those two cases; the third result is the separate socket error.",
+  "socket_replay_metadata": [
+    {
+      "label": "long",
+      "command": [
+        "/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_profile_backup.ProfileBackupScopeTests.test_regenerable_and_runtime_entries_are_excluded_and_recorded"
+      ],
+      "working_directory": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/archive-integration-wgrx453d/package",
+      "TMPDIR": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/qualification-tmp",
+      "tmpdir_characters": 69,
+      "device": 38,
+      "started_at": "2026-10-17T00:15:51.473422+00:00",
+      "finished_at": "2026-10-17T00:15:52.142122+00:00",
+      "exit_code": 1,
+      "tests": 1,
+      "output": "socket-provenance-long.txt.gz",
+      "output_sha256": "79e394618a0d28f219a7724119a945369d1736a19df96d96b499a6af345268d9",
+      "compressed_sha256": "b7fc4130afca9d4936f48feb4fe32baefbbe5f83183bedf647ef9316fe46b6e4"
+    },
+    {
+      "label": "short",
+      "command": [
+        "/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_profile_backup"
+      ],
+      "working_directory": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/archive-integration-wgrx453d/package",
+      "TMPDIR": "/home/outsider/.cache/q73-20261016",
+      "tmpdir_characters": 34,
+      "device": 38,
+      "started_at": "2026-10-17T00:15:52.142304+00:00",
+      "finished_at": "2026-10-17T00:16:20.113285+00:00",
+      "exit_code": 0,
+      "tests": 35,
+      "output": "socket-provenance-short.txt.gz",
+      "output_sha256": "d6a7c68072d2fe1f7d5cf777cc0f9e9d53f62e683764299c1dd5233588eb80da",
+      "compressed_sha256": "22fdc1b908071d065ad828bc20304aa298ce3c13af68aa41c5d0f09aec5b4de4"
+    }
+  ],
+  "socket_directories_same_device": true,
+  "filesystem_measurement_kind": "Captured again immediately before the provenance replays, not inferred from earlier unrecorded commands.",
+  "boundary_replay": {
+    "source_commit": "99e18c44f1c09a894125299f5469f256122244f7",
+    "git_archive_paths": [
+      "tests",
+      "lifeos_hook_bridge",
+      "optional"
+    ],
+    "source_tar_sha256": "5b5b3610b0975052e007eb1c8719ffa92d160a228a7e8bbead0e488a22b597ea",
+    "reproduced_git_archive_sha256": "5b5b3610b0975052e007eb1c8719ffa92d160a228a7e8bbead0e488a22b597ea",
+    "source_files": 787,
+    "source_map": "qualification/boundary-source-map.json.gz",
+    "source_map_raw_sha256": "e0f110176332fe02ca30adadbe290e060440f18c03ca7f10b6d8a4a6e916979b",
+    "source_map_compressed_sha256": "44164c5ab754a7f4891e2dcc3290f2de580f7c99a19e8aba5a2d52c61100760d",
+    "all_product_source_files_match_qualified_archive": true,
+    "source_differences": [
+      "tests/test_memory_owner_job_processes.py"
+    ],
+    "difference_limit": "The one changed test module is not part of or imported by the eight boundary cases. All plugin and manager source files match.",
+    "operator": "qualification/account-boundary-operator.py.gz",
+    "operator_raw_sha256": "fcbf0e4b23e5271e49408d55a7ae7c89d2db2d5c657ee0a3e2a57e5b003e595e",
+    "operator_compressed_sha256": "b5af28db5781bc77e8230fdfbaa579cc0ed5ae340c92ef37d021cf416f2eb68e",
+    "raw_output": "qualification/boundary-replay.stderr.gz",
+    "raw_output_sha256": "f7296c0f19e3ad545a097bce98a439c7bb863dba45c753361eb6e7526917afd5",
+    "raw_output_compressed_sha256": "0d47c4698140341b5b38ccaaaec8e3dcd0d67d4518c6486f16f4b51c0aeaa6fb",
+    "tests": 8,
+    "passed": 8,
+    "skipped": 0,
+    "hermes_origin_package": "0.7.3-99e18c44",
+    "hermes_origin_archive_sha256": "76b6d2fd2ca0e050ad4edc403dbba4510fdc23950f86eab5fcf231d9c070ef63",
+    "hermes_program_files_match_qualified_073": true,
+    "hermes_program_files_compared": 18270,
+    "account_removed": true,
+    "home_removed": true,
+    "hermes_program_map_sha256": "803aae81395079099f6f665fb3cdbe127d5961dcb337895ac838f92eb41ef061",
+    "hermes_map_reconstruction": "Map all regular hermes/ members of the qualified archive, excluding .git path components; hash canonical sorted, indented JSON with a final newline. Each value contains sha256 and executable."
+  },
+  "public_evidence_root": "docs/verification/2026-10-16-release-0.7.3/",
+  "observed_at": "2026-10-17T00:16:29.137673+00:00"
+}

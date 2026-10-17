@@ -5,7 +5,7 @@ Read this page when starting work in the repository. For installation, use the [
 ## Read in this order
 
 1. Read the [root README](../README.md) for product scope and the supported combination.
-2. Check [TODO](../TODO.md) and the [current release record](verification/2026-10-16-release-0.7.2/README.md).
+2. Check [TODO](../TODO.md) and the [current release record](verification/2026-10-16-release-0.7.3/README.md).
 3. Find the relevant source and test family in the tables below.
 4. Read the task's active guide and nearby implementation tests.
 5. Open a dated record only when its decision, regression, or fixture is relevant.

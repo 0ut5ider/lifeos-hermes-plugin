@@ -72,7 +72,7 @@ python scripts/build_managed_release.py \
 
 The Python closure must contain the reviewed `pyproject.toml`, `uv.lock`, and `plugin-deps/`. A build creates a candidate, not a qualification certificate. The package selects committed paths, including the daily deployment profile and a dated morning-delivery operator. Check [`build_managed_release.py`](scripts/build_managed_release.py) before changing or moving those inputs.
 
-Qualify the exact archive after review. Check its file map before and after tests. Record environment limits and inherited checks. Publish immutable assets only after the required gates. Update development before daily, then add deployment evidence as a new receipt. The [update policy](docs/update-policy.md#qualify-a-new-upstream-combination) gives the sequence; the [0.7.2 record](docs/verification/2026-10-16-release-0.7.2/README.md) is a completed example.
+Qualify the exact archive after review. Check its file map before and after tests. Record environment limits and inherited checks. Bind raw test logs, replay commands and environments, and complete replay source hashes in the qualification evidence. Publish immutable assets only after the required gates. Update development before daily, then add deployment evidence as a new receipt. The [update policy](docs/update-policy.md#qualify-a-new-upstream-combination) gives the sequence; the [0.7.2 record](docs/verification/2026-10-16-release-0.7.2/README.md) is a completed example.
 
 Documentation-only changes do not require a version bump, package rebuild, or server deployment. They must still preserve links, source references, and the meaning of prior evidence.
 

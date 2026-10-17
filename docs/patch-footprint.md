@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The qualified bundle uses ten Hermes patch groups and twenty-five LifeOS patches, for 35 total patches. The exact base revisions and ordered patch lists are declared in [`install_source.py`](../lifeos_hook_bridge/install_source.py) and [`prepare_sources.py`](../scripts/prepare_sources.py). The [current release record](verification/2026-10-16-release-0.7.2/README.md) binds the qualified package. The [conditional reduction record](../notes/2026-10-10-conditional-hermes-patch-reduction.md) preserves the earlier 36-to-35 proposal. Hermes v0.21.7 replaces the protected-instruction approval patch with upstream behavior.
+The qualified bundle uses ten Hermes patch groups and twenty-five LifeOS patches, for 35 total patches. The exact base revisions and ordered patch lists are declared in [`install_source.py`](../lifeos_hook_bridge/install_source.py) and [`prepare_sources.py`](../scripts/prepare_sources.py). The [current release record](verification/2026-10-16-release-0.7.3/README.md) binds the qualified package. The [conditional reduction record](../notes/2026-10-10-conditional-hermes-patch-reduction.md) preserves the earlier 36-to-35 proposal. Hermes v0.21.7 replaces the protected-instruction approval patch with upstream behavior.
 
 ## Hermes patch groups
 
@@ -55,7 +55,7 @@ The [independent Astra review](agents/2026-09-29-footprint-review/footprint-revi
 
 The command fixture uses real HTTP requests against a deterministic local protocol server. It checks profile isolation, managed dependencies, image input, streamed child responses, and provider failure without fallback. It does not establish private model accuracy or reasoning depth.
 
-Those September 29 checks do not establish the later complete release state. The [Step 1 ledger](parity/step1-acceptance.md) records the accepted hook scenarios. The [current release record](verification/2026-10-16-release-0.7.2/README.md) records present qualification and deployment.
+Those September 29 checks do not establish the later complete release state. The [Step 1 ledger](parity/step1-acceptance.md) records the accepted hook scenarios. The [current release record](verification/2026-10-16-release-0.7.3/README.md) records present qualification and deployment.
 
 ## Regenerate the Hermes patch groups
 

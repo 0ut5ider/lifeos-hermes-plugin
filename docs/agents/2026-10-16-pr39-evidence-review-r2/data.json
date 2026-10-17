@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-16",
+  "role": "Independent read-only follow-up evidence reviewer for PR39",
+  "model": "Claude Opus 5.5 (claude-opus-5-5), effort high",
+  "pr": 39,
+  "head": "fa45a11b3d5c5b1c31d87ece88c3c2344d5c57f3",
+  "parent": "d593fb1d81ab36dedd21a427a9168694d1eb8b66",
+  "verdict": "CLEAR",
+  "resolution": {
+    "M1": {"status": "RESOLVED", "development-public-ui-assets.json": {"added": "\"origin\": \"http://192.168.8.252:9119\"", "sha256": "f92c30efaad29bcaab74f15652985aa609fb5327e010683b0e9e81b6d41d8f80", "bytes": 1590, "bound_match": true}, "daily-public-ui-assets.json": {"added": "\"origin\": \"https://lifeos-daily.tail682dd.ts.net\"", "sha256": "840c05a20b7e879abe5d673d349a320cc082d4ac5ef99867c3409d7ca9b64686", "bytes": 1596, "bound_match": true}, "daily_origin_previously_tracked_in": "d593fb1d:docs/verification/2026-10-16-release-0.7.2/deployment/daily-public-ui-assets.json:7"},
+    "L1": {"status": "RESOLVED", "lines_now_0.7.3": ["docs/hook-parity.md:4", "docs/installation-workflow.md:5", "docs/memory-portability.md:3", "docs/patch-footprint.md:3", "docs/patch-footprint.md:58", "docs/update-policy.md:5"], "remaining_hits": "only docs/history dated lines; docs/clean-install.md:5,26 optional wording unchanged"},
+    "I1": {"status": "RESOLVED", "daily-http-before.json": {"sha256": "2aca9bf235db5b2aa702ae3e53ee4bd3c298654a10762948db13781050d6be40", "bytes": 646, "manifests": "0.7.2", "connections": 7, "enabled_connections": 6}, "daily-http-after.json": {"sha256": "3ea1a1d511a0dcb984c7a9fafd91837de046338832a0ad96c46479e3911f1ec3", "bytes": 645, "manifests": "0.7.3", "connections": 7, "enabled_connections": 6}, "readme_links": "docs/verification/2026-10-16-release-0.7.3/README.md:82-84", "personal_records_read": false, "credential_values_exported": false}
+  },
+  "receipt_hash_check": {
+    "method": "sha256 of git show fa45a11b:<path>; worktree compared too",
+    "matched": 21,
+    "total": 21,
+    "files": {
+      "release-publication.json": "MATCH", "development-complete.json": "MATCH", "development-postapply-verification.json": "MATCH", "development-gateway.json": "MATCH", "development-model-reply.json": "MATCH", "development-notification-policy.json": "MATCH", "development-public-ui-assets.json": "MATCH", "development-local-checkpoint.json": "MATCH", "development-cli-apply.json": "MATCH", "daily-complete.json": "MATCH", "daily-postapply-verification.json": "MATCH", "daily-gateway.json": "MATCH", "daily-model-reply.json": "MATCH", "daily-notification-policy.json": "MATCH", "daily-public-ui-assets.json": "MATCH", "daily-local-checkpoint.json": "MATCH", "daily-cli-apply.json": "MATCH", "daily-http-after.json": "MATCH", "daily-http-before.json": "MATCH", "daily-registered-mcp-after.json": "MATCH", "qualification/primary-boundary.json": "MATCH"
+    }
+  },
+  "immutable_files": {
+    "diff_d593fb1d_to_fa45a11b": "empty for DEPLOYMENT-ACCEPTANCE.json, RELEASE-CERTIFICATE.json, QUALIFICATION-PROVENANCE.json",
+    "certificate_diff_d4456973_to_fa45a11b": "empty",
+    "local": {
+      "deployment/DEPLOYMENT-ACCEPTANCE.json": {"sha256": "d52018c34777f764c65e051acf5fcf9f296525372ba7d0d73661b7fee08a51ad", "bytes": 4866},
+      "RELEASE-CERTIFICATE.json": {"sha256": "d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58", "bytes": 4225},
+      "QUALIFICATION-PROVENANCE.json": {"sha256": "977dfb095cf200d04186a8bdc53936981545900db97c52f1f60a2ae0b7709840", "bytes": 6424}
+    }
+  },
+  "github_v0.7.3": {
+    "release": {"id": 415471877, "draft": false, "prerelease": false, "target_commitish": "70fa8390e86c782bb47e7073c492124970ff68d1"},
+    "assets": [
+      {"name": "0.7.3-70fa8390.tgz", "id": 648990111, "size": 288173954, "digest": "sha256:2deae5dcedfef8224959312410a5381baa91312532c968afa5534f19fd2149c8", "created_at": "2026-10-16T23:56:20Z", "updated_at": "2026-10-16T23:56:38Z"},
+      {"name": "DEPLOYMENT-ACCEPTANCE.json", "id": 649117428, "size": 4866, "digest": "sha256:d52018c34777f764c65e051acf5fcf9f296525372ba7d0d73661b7fee08a51ad", "created_at": "2026-10-17T00:59:13Z", "updated_at": "2026-10-17T00:59:14Z"},
+      {"name": "hermes-dashboard.tgz", "id": 648990772, "size": 1542030, "digest": "sha256:e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec", "created_at": "2026-10-16T23:56:39Z", "updated_at": "2026-10-16T23:56:40Z"},
+      {"name": "QUALIFICATION-PROVENANCE.json", "id": 649054889, "size": 6424, "digest": "sha256:977dfb095cf200d04186a8bdc53936981545900db97c52f1f60a2ae0b7709840", "created_at": "2026-10-17T00:28:12Z", "updated_at": "2026-10-17T00:28:12Z"},
+      {"name": "RELEASE-CERTIFICATE.json", "id": 648990829, "size": 4225, "digest": "sha256:d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58", "created_at": "2026-10-16T23:56:41Z", "updated_at": "2026-10-16T23:56:41Z"}
+    ],
+    "unchanged_from_round_1": true
+  },
+  "fix_scope": ["A docs/agents/2026-10-16-pr39-evidence-review/data.json", "A docs/agents/2026-10-16-pr39-evidence-review/github-release-assets-all.json", "A docs/agents/2026-10-16-pr39-evidence-review/github-release-v0.7.3.json", "A docs/agents/2026-10-16-pr39-evidence-review/pr39-evidence-review.md", "M docs/hook-parity.md", "M docs/installation-workflow.md", "M docs/memory-portability.md", "M docs/patch-footprint.md", "M docs/update-policy.md", "M docs/verification/2026-10-16-release-0.7.3/README.md", "A docs/verification/2026-10-16-release-0.7.3/deployment/daily-http-after.json", "A docs/verification/2026-10-16-release-0.7.3/deployment/daily-http-before.json", "M docs/verification/2026-10-16-release-0.7.3/deployment/daily-public-ui-assets.json", "M docs/verification/2026-10-16-release-0.7.3/deployment/development-public-ui-assets.json"],
+  "link_check": {"files": 6, "relative_links": 165, "broken": 0, "untracked": 0, "bad_anchors": 0, "em_dash": 0, "detail": "link-check.json"},
+  "commands": [
+    {"cmd": "git rev-parse HEAD", "result": "fa45a11b3d5c5b1c31d87ece88c3c2344d5c57f3"},
+    {"cmd": "git show fa45a11b -- docs/*.md docs/verification/", "result": "one added origin line per UI receipt; six guide links to 0.7.3; two new HTTP receipts; README links"},
+    {"cmd": "python3 -I: walk receipt_sha256 in DEPLOYMENT-ACCEPTANCE.json; sha256 of git show fa45a11b:<path> and worktree", "result": "21/21 MATCH, worktree identical"},
+    {"cmd": "git diff --stat d593fb1d fa45a11b -- the three immutable receipts", "result": "empty"},
+    {"cmd": "git diff --stat d4456973 fa45a11b -- RELEASE-CERTIFICATE.json", "result": "empty"},
+    {"cmd": "git log --oneline -- QUALIFICATION-PROVENANCE.json DEPLOYMENT-ACCEPTANCE.json", "result": "d593fb1d, 3008300f, d4456973; no change in fa45a11b"},
+    {"cmd": "gh api repos/0ut5ider/lifeos-hermes-plugin/releases/tags/v0.7.3", "result": "5 assets identical to round 1"},
+    {"cmd": "git grep tail682dd d593fb1d", "result": "already tracked in the 0.7.2 daily-public-ui-assets.json"},
+    {"cmd": "git grep 'current release record|current qualified' fa45a11b -- '*.md' minus docs/agents and 0.7.3", "result": "only docs/history dated lines and a relative 'above' reference that now resolves to 0.7.3"},
+    {"cmd": "python3 -I check_links.py <6 changed md files>", "result": "165 links, 0 problems, 0 em dash"},
+    {"cmd": "python3 -I -m json.tool on 4 changed/new JSON files", "result": "all parse"},
+    {"cmd": "git grep -c U+2014 fa45a11b -- docs/verification/2026-10-16-release-0.7.3", "result": "0"},
+    {"cmd": "git diff --quiet fa45a11b -- record and guides", "result": "worktree matches HEAD"}
+  ],
+  "findings": []
+}

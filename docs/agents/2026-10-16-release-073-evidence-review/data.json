@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-16",
+  "role": "independent evidence reviewer",
+  "model": "claude-opus-5-5",
+  "question": "Is the 0.7.3 qualification evidence at 2fa3d516 accurate, consistent, and clear, and does any release claim lack a measurement?",
+  "verdict": "NO_BLOCKING_FINDING",
+  "strict_clear": false,
+  "findings": [
+    {"id": "F1", "severity": "LOW", "file": "docs/verification/2026-10-16-release-0.7.3/RELEASE-CERTIFICATE.json", "lines": "50-61", "summary": "Receipt map omits the integration stderr log, the only source of the 1129/1126/2/1 counts"},
+    {"id": "F2", "severity": "LOW", "file": "docs/verification/2026-10-16-release-0.7.3/RELEASE-CERTIFICATE.json", "lines": "41", "summary": "Short TMPDIR value and same-filesystem claim are not recorded in the socket receipts"},
+    {"id": "F3", "severity": "LOW", "file": "docs/verification/2026-10-16-release-0.7.3/qualification/primary-boundary.json", "lines": "8-15", "summary": "Isolated replay binds six files; imported removal_preparation.py and release_programs.py, source commit, and raw output are not bound"},
+    {"id": "F4", "severity": "LOW", "file": "docs/verification/2026-10-16-release-0.7.3/RELEASE-CERTIFICATE.json", "lines": "45", "summary": "Two named workstation failures conflicts with failures=1, errors=2, and names are absent"}
+  ],
+  "receipt_hashes": {
+    "certificate_recorded_vs_measured": {
+      "socket-path-long.txt": ["d722b96263e906b3ce45af70c98ee97f1f6aecb4d992ed9b0ab9de88209a40ad", "match"],
+      "socket-path-short.txt": ["8e9a48fd1fbb7cbc0e8e72e20a1baa9d18fefab1adbf40811d28c85e75aa7ca5", "match"],
+      "source-review-equivalence.json": ["54597ae897f40182697f8d65424364101f55ca64b2cf75b27a5fe72fe115cf8a", "match"],
+      "archive-import-smoke.txt": ["f059b289ff653ef348435d9d7670ecdd3b96f216b5e19434c68e8117cf1be415", "match"],
+      "package-verification.json": ["cb5aeeeadf9990de7242845c3c018402035931f74b8579785e496fe829f069ea", "match"],
+      "review-verification.json": ["970c841b058caf23238fc18b56289363ed1b0a578524cf4f7d3cfc224132dd6a", "match"],
+      "primary-boundary.json": ["5e491a45bb669510ef67954f5f16b68e960c73ead2091a1d70e8b8f4892b7608", "match"],
+      "archive-ui-tests.txt": ["8933a341942743e1eb3ca5376b4c0af42776b5f506661e07bf15fa12a89ca24e", "match"],
+      "archive-cleanup-targets-final.txt": ["28d4683450fda30baea7e24d85337978879b7c474d6e094e5cdacc15d5e11aa6", "match"],
+      "archive-integration-70fa8390.json": ["37f81ca36d02efd2262e44cc6abd4d970ac9eaea424e83fc64f97211c829226d", "match"]
+    },
+    "unrecorded": {
+      "archive-integration-70fa8390.stderr": {"sha256": "f3d817c84afedccd8b8da7180182e1f762126d6a625107d7e67c5e183a9585fc", "bytes": 213465},
+      "archive-integration-70fa8390.stderr.gz": {"sha256": "a34f741d6a10f7bb9d74803e2710aa38edc6a837cc7b4a9fcb2d09727bfce2d8", "bytes": 30171}
+    },
+    "gz_files_sha256": {
+      "archive-cleanup-targets-final.txt.gz": "55b2600c5d5c9b0e18897a8b85ceed9182910ce2721a7d3cc82b7d80de1ecd64",
+      "archive-import-smoke.txt.gz": "397c668a7609fb0287c4a4fffef7260bcb1fa3fa09fc8d9d6c50e06dc5866b63",
+      "archive-ui-tests.txt.gz": "a1bb4b7e8840009d27768bdba53a969f20bfd7f0d81aff5ce7c6628df4b21843",
+      "socket-path-long.txt.gz": "d74bbc1125fea160d045367e5c5aecdf64e78bb3198b8c7489f379a99093e384",
+      "socket-path-short.txt.gz": "d03fae768cc4a098f97ad769a13ad56e93ee9ce5007fb16484043a378be5fe8c"
+    }
+  },
+  "publication": {
+    "certificate_local_sha256": "d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58",
+    "certificate_local_bytes": 4225,
+    "certificate_asset_digest_match": true,
+    "archive_digest_and_size_match": true,
+    "dashboard_digest_matches_certificate_and_072": true,
+    "inherited_072_certificate_sha256_match": true,
+    "prior_072_archive_sha256_match": true
+  },
+  "integration_log": {
+    "test_headers": 1129,
+    "unique_test_headers": 1129,
+    "inline_ok": 1122,
+    "split_ok_lines": 4,
+    "split_ok_cases": [
+      "test_discord_private_delivery.DiscordPrivateDeliveryTests.test_each_chunk_rechecks_the_current_audience",
+      "test_discord_private_delivery.DiscordPrivateDeliveryTests.test_expired_choice_picker_withholds_its_card_after_an_audience_change",
+      "test_discord_private_delivery.DiscordPrivateDeliveryTests.test_expired_question_updates_its_card_with_an_unchanged_audience",
+      "test_discord_private_delivery.DiscordPrivateDeliveryTests.test_expired_question_withholds_its_card_after_an_audience_change"
+    ],
+    "skips": 0,
+    "summary": "Ran 1129 tests in 1818.461s; FAILED (failures=1, errors=2)",
+    "non_passing": [
+      {"case": "test_profile_backup.ProfileBackupScopeTests.test_regenerable_and_runtime_entries_are_excluded_and_recorded", "kind": "ERROR", "cause": "OSError: AF_UNIX path too long"},
+      {"case": "test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses", "kind": "ERROR", "cause": "PermissionError /proc/814420/exe"},
+      {"case": "test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted", "kind": "FAIL", "cause": "refused_process sshd-session"}
+    ],
+    "test_profile_backup_cases_in_full_run": 35,
+    "boundary_module_cases_in_full_run": 8,
+    "full_run_tmpdir": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/qualification-tmp",
+    "full_run_tmpdir_chars": 69
+  },
+  "replays": {
+    "socket_short": "Ran 35 tests, OK; TMPDIR and command not recorded",
+    "socket_long": "Ran 1 test, AF_UNIX path too long; TMPDIR not recorded",
+    "boundary": {
+      "status": "PASS",
+      "exit": 0,
+      "hashed_files_equal_70fa8390_and_03d6f486": 6,
+      "unhashed_imports": ["optional/lifeos_release_manager/removal_preparation.py", "optional/lifeos_release_manager/release_programs.py"],
+      "unhashed_imports_last_changed": "a4c93955 2026-10-16 18:23:27 -0400",
+      "product_python_changes_a4c93955_to_70fa8390": 0,
+      "operator_pass_gate": "account_boundary.py:93 requires 'Ran 8 tests', OK, no skips (cleanup-era copy)",
+      "hermes_tree": "0.7.2 package directory",
+      "raw_output_in_073_directory": false,
+      "receipt_diff_vs_cleanup_receipt": "account name and paths only"
+    }
+  },
+  "equivalence": {
+    "70fa8390_ancestor_of_03d6f486": true,
+    "03d6f486_ancestor_of_403c5f48": true,
+    "diff_70fa_03d6_non_docs_agents": ["notes/2026-10-16-process-exit-observation.md", "tests/test_memory_owner_job_processes.py"],
+    "diff_03d6_403c_non_docs": [],
+    "test_ast_equal": true,
+    "notes_packaged": false
+  },
+  "reviews": {
+    "r1": {"head": "99e18c44", "verdict": "CLEAR", "model": "claude-opus-5-5"},
+    "r2": {"head": "70fa8390", "verdict": "CLEAR", "model": "claude-opus-5-5"},
+    "r3": {"range": "70fa8390..03d6f486", "verdict": "CLEAR", "model": "claude-opus-5-5"},
+    "r3_report_sha256_at_050a4e19": "ece020dd098e5f2a0d0b73248dfa072f2470c5ba5ae456300d3ed3ad1ed1049a",
+    "matches_review_verification": true
+  },
+  "first_attempt": {
+    "commit": "99e18c44",
+    "tests": 1128,
+    "passed": 1123,
+    "errors": 3,
+    "failures": 2,
+    "errno_122_lines": 4,
+    "probe_rounds": 100,
+    "nonterminal_at_return": 12,
+    "max_terminal_seconds": 0.004175217007286847,
+    "mutation_detected": true
+  },
+  "deployment_state": {
+    "progress_status": "PUBLISHED_QUALIFIED_DEPLOYMENT_RUNNING",
+    "development_updated": false,
+    "daily_updated": false,
+    "certificate_development_promotion_verified": false,
+    "certificate_daily_promotion_verified": false
+  }
+}
