@@ -61,11 +61,10 @@ def _retire_marker(profile, workflow):
 
 
 def retire_verified_removal(profile):
-    """Retire the selection of a verified removal before LifeOS is installed again; return whether it did.
+    """Retire the selection of a verified removal before a fresh installation; return whether it did.
 
     A verified removal keeps its selection so the owner can still roll it back. Installing LifeOS again
-    ends that choice; over the native data that removal keeps, that installation is an update. An
-    unfinished removal keeps its selection, and preparation refuses.
+    ends that choice. An unfinished removal keeps its selection, and preparation refuses.
     """
     try:
         marker=read_private(profile/'.lifeos-removal.json',limit=1024)
