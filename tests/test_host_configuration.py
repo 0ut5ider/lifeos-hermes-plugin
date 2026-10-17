@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from optional.lifeos_release_manager.host_configuration import (
-    ABSENT, changed_paths, check_memory_provider, check_preserved, record, restore)
+    ABSENT, RECORD, changed_paths, check_memory_provider, check_preserved, record, record_restored, restore)
 from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
@@ -47,6 +47,18 @@ class HostConfigurationTests(unittest.TestCase):
             later = INSTALLED.replace(b'mode: manual', b'mode: smart')
             second = record(profile, INSTALLED, later)
             self.assertEqual(second['values'][0], {'path': ['approvals'], 'before': ABSENT, 'installed': {'mode': 'smart'}})
+
+    def test_a_rolled_back_configuration_becomes_the_installed_value_of_each_recorded_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            profile = Path(directory)
+            (profile / 'config.yaml').write_bytes(STOCK)
+            self.assertIsNone(record_restored(profile))
+            self.assertFalse((profile / RECORD).exists())
+            record(profile, STOCK, INSTALLED)
+            restored = record_restored(profile)
+            self.assertEqual(restored['values'], [
+                {'path': ['approvals'], 'before': ABSENT, 'installed': ABSENT},
+                {'path': ['skills', 'external_dirs'], 'before': [], 'installed': []}])
 
     def test_restore_returns_recorded_values_and_reports_later_owner_edits(self):
         recorded = {'values': [{'path': ['approvals'], 'before': ABSENT, 'installed': {'mode': 'manual'}},

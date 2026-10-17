@@ -75,6 +75,14 @@ def record(profile, before_data, after_data):
     return value
 
 
+def record_restored(profile):
+    """After a rollback, record the restored configuration as the installed value of every recorded path."""
+    if not (Path(profile) / RECORD).exists():
+        return None
+    configuration = (Path(profile) / 'config.yaml').read_bytes()
+    return record(profile, configuration, configuration)
+
+
 def _get(mapping, path):
     for key in path:
         if not isinstance(mapping, dict) or key not in mapping:

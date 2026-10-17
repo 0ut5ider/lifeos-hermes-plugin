@@ -340,10 +340,8 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
             restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount)
             verify_runtime(request, restored=True)
-            from .host_configuration import RECORD, record
-            if (profile / RECORD).exists():
-                current = (profile / 'config.yaml').read_bytes()
-                record(profile, current, current)
+            from .host_configuration import record_restored
+            record_restored(profile)
             write_state(job, 'rolled_back', error=None if restored_dependencies else DEPENDENCY_RESTORE_ERROR)
             remove_preview(job)
             return {'state': 'rolled_back'}
