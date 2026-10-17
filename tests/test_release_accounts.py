@@ -145,7 +145,9 @@ class ReleaseAccountTests(unittest.TestCase):
                         raise DownloadBoundary()
                 with patch.dict(os.environ, HOME=str(native_home)), \
                         patch.object(inplace_preparation, 'account_home', side_effect=recorded_account):
-                    with self.assertRaises(DownloadBoundary):
+                    # The test interpreter's Hermes is not an admitted host, so the compatibility check refuses
+                    # before any download; the account is already selected at that point.
+                    with self.assertRaisesRegex(ReleaseRejected, 'cannot be installed on this Hermes installation'):
                         cli.prepare(profile, catalog=Catalog(), intent='update')
                 # The in-place request records this account; the native service HOME does not select it.
                 self.assertEqual(accounts, [owner])
