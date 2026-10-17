@@ -4,13 +4,16 @@
 
 0.8.0-rc.1 installs LifeOS into the owner's existing Hermes installation instead of a separate managed runtime.
 
-- Check the Hermes installation before any change: `hermes lifeos-release compatibility` and the releases page compare every target file with the qualified stock and patched hashes.
+- Check the Hermes installation before any change: `hermes lifeos-release compatibility` and the releases page compare every target file with the qualified stock and patched hashes. Preparation runs this check before it downloads anything.
+- Refuse a Hermes that runs another Python version than the release qualifies, and report a damaged `lifeos-host.json` as host drift that names the file.
+- Show the changed and added Hermes files, the configuration keys LifeOS changes, the files an update changes or restores, and any known conflicts in the review.
 - Download a small integration package (bridge, release manager, and patches) and the pinned LifeOS commit. Patch the existing Hermes checkout in place and keep the original files for removal.
 - Publish all host changes through one journaled transaction. Stop and restart only the services that the host has, and offer a standard unit for a hand-started gateway or dashboard.
-- Prove after restart that the gateway imports the installed checkout with the patched hooks.
+- Prove after restart that the gateway imports the installed checkout with the patched hooks. Each restarted service must run a new process and keep its enabled state, the patched hooks and middleware API must be present, and the memory provider must not change.
+- Report host drift in `hermes lifeos-version`: a `host` block lists the patched Hermes files that changed since installation.
 - Hold `hermes update` while LifeOS is installed.
 - Record the configuration values that LifeOS changes. Removal restores them unless the owner changed them later.
-- Remove an in-place installation: restore the original Hermes files, delete the added files, and keep memory, `.env` owner lines, and third-party plugins.
+- Remove an in-place installation: restore the original Hermes files, delete the added files, and keep memory, `.env` owner lines, and third-party plugins. Removal still works when the Hermes update hold is already gone.
 - Move a managed 0.7.x installation to in-place, including its gateway unit, and restore it to the managed runtime on request.
 - Keep a private failure record for stopped memory workflows and failed fresh-agent probes.
 
