@@ -181,3 +181,44 @@ class ReleaseManagerCommandTests(unittest.TestCase):
                 time.sleep(0.01)
             self.assertFalse(worker_running(job))
             self.assertEqual((job / 'worker.stderr').read_bytes(), b'')
+
+
+class PreparationErrorTests(unittest.TestCase):
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.job = Path(folder.name).resolve() / 'job'
+        self.job.mkdir(mode=0o700)
+
+    def error(self, error):
+        from optional.lifeos_release_manager.cli import _preparation_error
+        return _preparation_error(self.job, error)
+
+    def test_refusal_explains_itself_and_states_that_nothing_changed(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        self.assertEqual(self.error(ReleaseRejected('This LifeOS release does not support the installed Hermes version')),
+                         'This LifeOS release does not support the installed Hermes version '
+                         'Preparation did not change the active installation.')
+
+    def test_stage_failure_reports_the_recorded_worker_refusal(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        from optional.lifeos_release_manager.release_worker import record_failure
+        try:
+            raise ReleaseRejected('LifeOS would change installed Python packages: mcp')
+        except ReleaseRejected as error:
+            record_failure(self.job, error)
+        self.assertEqual(self.error(ReleaseRejected('Release preparation fails at dependency-resolution')),
+                         'LifeOS would change installed Python packages: mcp Preparation did not change the active installation.')
+
+    def test_unexplained_failure_reports_only_that_nothing_changed(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        from optional.lifeos_release_manager.release_programs import publish
+        unchanged = 'Preparation did not change the active installation.'
+        self.assertEqual(self.error(OSError('disk full at /secret/path')), unchanged)
+        self.assertEqual(self.error(ReleaseRejected('Release preparation fails at candidate-review')), unchanged)
+        publish(self.job / 'worker-failure.json', b'{"exception": "KeyError", "frames": []}')
+        self.assertEqual(self.error(KeyError('x')), unchanged)
+        publish(self.job / 'worker-failure.json', b'not json')
+        self.assertEqual(self.error(KeyError('x')), unchanged)
+        publish(self.job / 'worker-failure.json', b'{"message": "readable by others"}', 0o644)
+        self.assertEqual(self.error(KeyError('x')), unchanged)
