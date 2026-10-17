@@ -19,6 +19,8 @@ from .release_operation import validate_plan
 from .release_stage import run_stage, sha
 
 
+DEPENDENCY_RESTORE_ERROR = ('The programs are restored, but Hermes could not rebuild its Python environment. '
+                            'Run hermes pm install to rebuild it.')
 CREATED_UNITS = {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.service'}
 
 
@@ -165,6 +167,19 @@ def _gateway_expected(plan):
     return 'gateway' in plan['services']['created'] or plan['services']['active'].get('gateway', False)
 
 
+def clear_bytecode(request, plan_files):
+    """Remove cached bytecode of the changed Hermes modules so no process can load a stale compiled copy."""
+    source = Path(request['host']['source'])
+    for target in plan_files:
+        target = Path(target)
+        if target.suffix != '.py' or not target.is_relative_to(source):
+            continue
+        cache = target.parent / '__pycache__'
+        if cache.is_dir() and not cache.is_symlink():
+            for compiled in cache.glob(target.stem + '.*.pyc'):
+                compiled.unlink(missing_ok=True)
+
+
 def remove_preview(job):
     preview = job / 'hermes-preview'
     if preview.is_dir() and not preview.is_symlink():
@@ -194,7 +209,11 @@ def _rollback(job, request, plan, services, programs, restore_mount):
     except (ReleaseRejected, OSError, ValueError) as error:
         publish(job / 'dependency-restore-failure.json',
                 (json.dumps({'error': type(error).__name__}) + '\n').encode())
+        restored_dependencies = False
+    else:
+        restored_dependencies = True
     _resume(services)
+    return restored_dependencies
 
 
 def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
@@ -244,13 +263,13 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             _quiesce(services)
             _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
-            _rollback(job, request, plan, services, programs, restore_mount)
+            restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount)
             verify_runtime(request, restored=True)
             from .host_configuration import RECORD, record
             if (profile / RECORD).exists():
                 current = (profile / 'config.yaml').read_bytes()
                 record(profile, current, current)
-            write_state(job, 'rolled_back')
+            write_state(job, 'rolled_back', error=None if restored_dependencies else DEPENDENCY_RESTORE_ERROR)
             remove_preview(job)
             return {'state': 'rolled_back'}
         if not fresh_recovery and sha(profile / 'config.yaml') != request['configuration_sha256']:
@@ -284,6 +303,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             else:
                 programs.apply(checkpoint=checkpoint)
             checkpoint('programs-published')
+            clear_bytecode(request, [entry['target'] for entry in programs._load()['entries']])
             _systemctl('daemon-reload')
             synchronized = synchronize(job, request, label='dependency-synchronization')
             if synchronized['lock_sha256'] != request['dependencies']['lock_sha256']:
@@ -326,8 +346,8 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
                 write_state(job, 'recovery_required',
                             error='The first installation stopped after LifeOS was initialized. Recover it to finish.')
                 raise
-            _rollback(job, request, plan, services, programs, lambda: _restore_mount(job, request, mount))
-            write_state(job, 'rolled_back')
+            restored = _rollback(job, request, plan, services, programs, lambda: _restore_mount(job, request, mount))
+            write_state(job, 'rolled_back', error=None if restored else DEPENDENCY_RESTORE_ERROR)
             raise
     finally:
         _revoke(administration, profile, request)
