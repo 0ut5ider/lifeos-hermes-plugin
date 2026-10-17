@@ -215,6 +215,10 @@ def _program_plan(job, request, selected):
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
     publish(generated / 'config.yaml', _yaml_configuration(profile, native))
+    if request.get('format') == 2:
+        from .host_record import load_record
+        from .inplace_plan import review_changes
+        review_changes(job, selected['entry'], load_record(profile), profile / 'config.yaml', generated / 'config.yaml')
     configuration_check = ('import sys\nfrom argparse import Namespace\n'
         'from hermes_constants import set_hermes_home_override\n'
         'set_hermes_home_override(sys.argv[1])\n'

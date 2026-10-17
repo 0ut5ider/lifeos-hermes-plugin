@@ -189,3 +189,30 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.assertEqual(results[0][0], 409)
         self.assertIn('first installation', results[0][1]['detail'])
         self.assertFalse(Path(request['installed']).exists())
+
+
+class InplaceReviewTests(unittest.TestCase):
+    def test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts(self):
+        from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review
+        from optional.lifeos_release_manager.release_programs import publish
+        with tempfile.TemporaryDirectory() as directory:
+            job = Path(directory)
+            update = {'added': ['hermes_cli/new_hook.py'], 'changed': ['hermes_cli/plugins.py'], 'restored': ['run_agent.py']}
+            publish(job / 'inplace-review.json', json.dumps({'configuration': ['plugins.enabled', 'plugins.entries'],
+                                                             'update': update}).encode())
+            entry = {'label': 'v0.0.1', 'commit': 'a' * 40,
+                     'files': {'hermes_cli/plugins.py': {'stock': 'b' * 64, 'patched': 'c' * 64},
+                               'agent/loop.py': {'stock': 'b' * 64, 'patched': 'd' * 64},
+                               'hermes_cli/new_hook.py': {'stock': None, 'patched': 'e' * 64}},
+                     'known_conflicts': ['The example-relay plugin replaces the delivery hook.']}
+            value = {'host': {'source': '/home/owner/.hermes/hermes-agent'},
+                     'dependencies': {'added': {'tree-sitter': ['0.26.0']}}}
+            plan = {'services': {'roles': ['gateway'], 'created': [], 'consumers': []}}
+            review = inplace_review(job, {'entry': entry}, value, plan)
+        self.assertEqual(review['hermes']['files'], {'modified': ['agent/loop.py', 'hermes_cli/plugins.py'],
+                                                     'added': ['hermes_cli/new_hook.py']})
+        self.assertEqual((review['hermes']['modified'], review['hermes']['added']), (2, 1))
+        self.assertEqual(review['configuration'], ['plugins.enabled', 'plugins.entries'])
+        self.assertEqual(review['update'], update)
+        self.assertEqual(review['known_conflicts'], ['The example-relay plugin replaces the delivery hook.'])
+        self.assertEqual(review['packages'], ['tree-sitter==0.26.0'])

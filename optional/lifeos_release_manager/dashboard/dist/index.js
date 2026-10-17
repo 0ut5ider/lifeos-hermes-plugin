@@ -116,12 +116,29 @@
     return commit ? commit.slice(0, 12) : "unknown";
   }
 
+  function pathList(title, paths) {
+    return h("details", null, h("summary", null, title + " (" + paths.length + ")"),
+      h("ul", null, paths.map(function (path) { return h("li", {key: path}, h("code", null, path)); })));
+  }
+
   function inPlaceReview(review) {
     const hermes = review.hermes;
     const services = review.services;
+    const update = review.update;
+    const conflicts = review.known_conflicts ?? [];
+    const configuration = review.configuration ?? [];
     return h("div", {className: "lifeos-stack"},
       h("p", null, "Hermes " + hermes.label + " (commit " + shortCommit(hermes.commit) + "): " + hermes.modified +
         " files changed and " + hermes.added + " files added in " + hermes.source + "."),
+      hermes.files ? pathList("Changed Hermes files", hermes.files.modified) : null,
+      hermes.files ? pathList("Added Hermes files", hermes.files.added) : null,
+      update ? h("p", null, "Compared with the installed release: " + update.changed.length + " Hermes files change, " +
+        update.added.length + " are added, and " + update.restored.length + " return to their original content.") : null,
+      update && update.changed.length ? pathList("Files that change from the installed release", update.changed) : null,
+      update && update.added.length ? pathList("Files the update adds", update.added) : null,
+      update && update.restored.length ? pathList("Files that return to their original content", update.restored) : null,
+      configuration.length ? pathList("Configuration keys LifeOS changes", configuration)
+        : h("p", null, "Configuration keys LifeOS changes: none"),
       hermes.update_hold ? h("p", {className: "lifeos-help"}, "Hermes updates stay held while LifeOS is installed, so an update can't move these changes onto an untested version.") : null,
       h("p", null, "Python packages added: " + (review.packages.length ? review.packages.join(", ") : "none")),
       h("p", null, "Services that restart: " + (services.restarted.length ? services.restarted.join(", ") : "none")),
@@ -130,7 +147,10 @@
         return h("p", {key: item.pid, className: "lifeos-notice lifeos-caution"}, "Stops the hand-started " + item.role +
           " (process " + item.pid + "); its new user service replaces it.");
       }),
-      h("p", {className: "lifeos-help"}, review.tested_scope));
+      h("p", {className: "lifeos-help"}, review.tested_scope),
+      conflicts.length ? h("div", {className: "lifeos-notice lifeos-caution"}, h("p", null, "Known conflicts:"),
+        h("ul", null, conflicts.map(function (item) { return h("li", {key: item}, item); })))
+        : h("p", {className: "lifeos-help"}, "Known conflicts: none reported for Hermes " + hermes.label + "."));
   }
 
   function compatibilitySection(result, error, busy, check) {

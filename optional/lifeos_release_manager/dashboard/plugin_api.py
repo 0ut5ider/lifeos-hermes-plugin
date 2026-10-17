@@ -169,7 +169,7 @@ def review_release(identifier):
                   'restart_required': plan['services'] is not None,
                   'state': commands.read_private(job / 'status.json')['state']}
         if value.get('format') == 2:
-            result['in_place'] = inplace_review(selected, value, plan)
+            result['in_place'] = inplace_review(job, selected, value, plan)
         return result
     except services.FirstInstallationUnavailable as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
@@ -182,15 +182,22 @@ TESTED_SCOPE = ('Qualified on a single-profile Linux Git installation of Hermes 
                 'their files; LifeOS changes how Hermes dispatches plugin hooks for every plugin.')
 
 
-def inplace_review(selected, value, plan):
-    """Summarize what an in-place operation changes in the owner's Hermes installation."""
+def inplace_review(job, selected, value, plan):
+    """Summarize what an in-place operation changes in the owner's Hermes installation.
+
+    Preparation records the configuration keys and the update difference in the job; the review only reads them.
+    """
     entry = selected['entry']
     files = entry['files']
+    modified = sorted(path for path, item in files.items() if item['stock'] is not None)
+    added = sorted(path for path, item in files.items() if item['stock'] is None)
+    changes = commands.read_private(job / 'inplace-review.json')
     services = plan['services']
     return {'hermes': {'label': entry['label'], 'commit': entry['commit'], 'source': value['host']['source'],
-                       'modified': sum(item['stock'] is not None for item in files.values()),
-                       'added': sum(item['stock'] is None for item in files.values()),
-                       'update_hold': True},
+                       'modified': len(modified), 'added': len(added),
+                       'files': {'modified': modified, 'added': added}, 'update_hold': True},
+            'configuration': changes['configuration'], 'update': changes['update'],
+            'known_conflicts': entry.get('known_conflicts', []),
             'packages': sorted(name + '==' + versions[0] for name, versions in value['dependencies']['added'].items()),
             'services': {'restarted': services['roles'], 'created': services['created'],
                          'replaced': [{'pid': item['pid'], 'command': item['command'], 'role': item['role']}

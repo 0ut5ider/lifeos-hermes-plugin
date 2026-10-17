@@ -173,7 +173,8 @@ test('an in-place review lists the Hermes changes, packages, services, and teste
   const identifier = 'f'.repeat(32);
   const ui = await page(false, [{identifier, version: '0.8.0', state: 'ready'}], compatible, {in_place: {
     hermes: {label: 'v0.21.7', commit: qualified.commit, source: '/home/owner/.hermes/hermes-agent', modified: 69, added: 27,
-      update_hold: true},
+      files: {modified: ['hermes_cli/plugins.py', 'run_agent.py'], added: ['hermes_cli/new_hook.py']}, update_hold: true},
+    configuration: ['plugins.enabled', 'plugins.entries'], update: null, known_conflicts: [],
     packages: ['tree-sitter==0.26.0', 'tree-sitter-bash==0.25.1'],
     services: {restarted: ['gateway'], created: ['dashboard', 'pulse'], replaced: [{pid: 4321, command: 'hermes', role: 'dashboard'}]},
     tested_scope: 'Qualified on a single-profile Linux Git installation of Hermes v0.21.7.'}});
@@ -186,6 +187,34 @@ test('an in-place review lists the Hermes changes, packages, services, and teste
   assert.match(content, /User services created: dashboard, pulse/);
   assert.match(content, /Stops the hand-started dashboard \(process 4321\); its new user service replaces it/);
   assert.match(content, /Qualified on a single-profile Linux Git installation of Hermes v0\.21\.7\./);
+  const review = find(ui.render(), (node) => node.props.className === 'lifeos-review');
+  const lists = findAll(review, (node) => node.type === 'details');
+  assert.deepEqual(lists.map((node) => text(find(node, (child) => child.type === 'summary'))),
+    ['Changed Hermes files (2)', 'Added Hermes files (1)', 'Configuration keys LifeOS changes (2)']);
+  assert.ok(lists.every((node) => !node.props.open), 'Long lists start collapsed');
+  assert.match(text(lists[0]), /hermes_cli\/plugins\.py.*run_agent\.py/);
+  assert.match(text(lists[2]), /plugins\.enabled.*plugins\.entries/);
+  assert.match(content, /Known conflicts: none reported for Hermes v0\.21\.7\./);
+  ui.cleanup();
+});
+
+test('an in-place update review shows the change from the installed release and the known conflicts', async () => {
+  const identifier = 'e'.repeat(32);
+  const ui = await page(true, [{identifier, version: '0.8.1', state: 'ready'}], {...compatible, installed: true}, {in_place: {
+    hermes: {label: 'v0.21.7', commit: qualified.commit, source: '/home/owner/.hermes/hermes-agent', modified: 1, added: 1,
+      files: {modified: ['hermes_cli/plugins.py'], added: ['hermes_cli/new_hook.py']}, update_hold: true},
+    configuration: [], known_conflicts: ['The example-relay plugin replaces the delivery hook.'],
+    update: {added: ['hermes_cli/new_hook.py'], changed: ['hermes_cli/plugins.py'], restored: ['run_agent.py', 'tools/x.py']},
+    packages: [], services: {restarted: ['gateway'], created: [], replaced: []},
+    tested_scope: 'Qualified on a single-profile Linux Git installation of Hermes v0.21.7.'}});
+  await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Review release')).props.onClick();
+  const review = find(ui.render(), (node) => node.props.className === 'lifeos-review');
+  const content = text(review);
+  assert.match(content, /Compared with the installed release: 1 Hermes files change, 1 are added, and 2 return to their original content\./);
+  const summaries = findAll(review, (node) => node.type === 'summary').map(text);
+  assert.ok(summaries.includes('Files that return to their original content (2)'));
+  assert.match(content, /Configuration keys LifeOS changes: none/);
+  assert.match(content, /Known conflicts:.*The example-relay plugin replaces the delivery hook\./);
   ui.cleanup();
 });
 

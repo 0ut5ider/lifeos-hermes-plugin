@@ -152,6 +152,29 @@ def host_entries(job, request, selected, generated):
     return {}, files
 
 
+REVIEW = 'inplace-review.json'
+
+
+def update_difference(record, entry):
+    """Return the host targets an update adds, changes, and returns to their originals; None for a first installation."""
+    if record is None:
+        return None
+    before, after = record['files'], entry['files']
+    return {'added': sorted(set(after) - set(before)),
+            'changed': sorted(path for path in set(after) & set(before) if after[path]['patched'] != before[path]['patched']),
+            'restored': sorted(set(before) - set(after))}
+
+
+def review_changes(job, entry, record, current, generated):
+    """Record for the owner review every configuration key that changes and the update's host difference."""
+    from .host_configuration import _load, changed_paths
+    keys = changed_paths(_load(Path(current).read_bytes()), _load(Path(generated).read_bytes()))
+    value = {'configuration': ['.'.join(map(str, path)) for path, _, _ in keys],
+             'update': update_difference(record, entry)}
+    publish(job / REVIEW, (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
+    return value
+
+
 def transition_unit_files(home, job, units):
     """Map the reviewed stock gateway unit of a transition to its publication source."""
     if 'gateway' not in units:
