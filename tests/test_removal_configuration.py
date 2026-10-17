@@ -87,6 +87,13 @@ assert 'explicitly disabled' in capture.getvalue()
         custom=b'HERMES_WRITE_SAFE_ROOT=/owner/custom\nOTHER=keep\n'
         self.assertEqual(operation.environment(custom,profile,workspace),custom)
 
+    def test_environment_keeps_a_later_owner_line_off_an_unterminated_last_line(self):
+        operation=self.operation();profile=Path('/account/.hermes');workspace=Path('/account/workspace')
+        block=operation.environment_block(profile,workspace)
+        data=b'# REDDIT_CLIENT_SECRET='+block+b'OPENROUTER_API_KEY=synthetic-key\n'
+        self.assertEqual(operation.environment(data,profile,workspace),b'# REDDIT_CLIENT_SECRET=\nOPENROUTER_API_KEY=synthetic-key\n')
+        self.assertEqual(operation.environment(b'# LAST='+block,profile,workspace),b'# LAST=\n')
+
     def test_prepared_environment_survives_actual_stock_startup_sanitizer(self):
         operation=self.operation()
         cases=(b'CUSTOM_API_KEY=synthetic',b'CUSTOM_API_KEY=synthetic\r\n',
