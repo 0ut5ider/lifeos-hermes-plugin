@@ -32,6 +32,27 @@ elif action in {"apply", "recover", "restore"}:
         authorization = administration.issue(configuration, "dashboard:basic:owner", ttl=3600,
                                              binding=administration.job_binding(job, request, action))
     value = cli.launch(profile, sys.argv[2], action, authorization=authorization)
+elif action == "crash":
+    # Admit like the launcher, then run the worker in this process and exit hard at the nth checkpoint hit.
+    import os
+    worker = importlib.import_module("lrm.release_worker")
+    identifier, point, count = sys.argv[2], sys.argv[3], int(sys.argv[4])
+    job, request = cli.operation(profile, identifier)
+    selected, plan = worker.review_operation(job, request)
+    administration = selected["current"].memory_administration()
+    authorization = None
+    if plan["native_mount_required"] and administration.required(selected["installed"], profile):
+        configuration = administration.MemoryConfiguration(profile / "lifeos-memory.json")
+        authorization = administration.issue(configuration, "dashboard:basic:owner", ttl=3600,
+                                             binding=administration.job_binding(job, request, "apply"))
+    worker.admit_operation(job, request, "apply", authorization=authorization)
+    hits = {"count": 0}
+    def checkpoint(name):
+        if name == point:
+            hits["count"] += 1
+            if hits["count"] == count:
+                os._exit(9)
+    value = worker.execute(job, "apply", checkpoint=checkpoint)
 else:
-    raise SystemExit("Choose prepare, status, apply, recover, or restore")
+    raise SystemExit("Choose prepare, status, apply, recover, restore, or crash")
 print(json.dumps(value, indent=2))
