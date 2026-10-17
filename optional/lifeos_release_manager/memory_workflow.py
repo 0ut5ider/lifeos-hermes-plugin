@@ -225,7 +225,7 @@ PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
     'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
 
 
-def _probe(profile, source, expected, *, runtime=None):
+def _probe(profile, source, expected, *, runtime=None, output=None):
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
     code=PROBE_CODE
@@ -237,11 +237,19 @@ def _probe(profile, source, expected, *, runtime=None):
         command=stock_command(command,runtime)
     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
     result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
-    if result.returncode or result.stderr:raise probe_failure(result.stderr)
+    if result.returncode or result.stderr:
+        if output is not None:record_probe_output(output,result.stderr)
+        raise probe_failure(result.stderr)
     return json.loads(result.stdout)
 
 
 PROBE_REFUSAL='MemoryUnavailable: '
+PROBE_OUTPUT_LINES=64
+
+
+def record_probe_output(path, stderr):
+    """Keep the last lines of a failed probe's diagnostics in a private file of the owner's workflow job."""
+    publish(path,('\n'.join(stderr.splitlines()[-PROBE_OUTPUT_LINES:])+'\n').encode())
 
 
 def probe_failure(stderr):
@@ -340,7 +348,7 @@ def execute(profile, identifier, action):
                 elif action=='rollback':result=transition.rollback(signature,account=owner)
                 else:
                     result=transition.apply(signature,account=owner)
-                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected),account=owner)
+                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
             if action=='prepare':publish(job/'review.json',_encoded(result))
             publish(job/'receipt.json',_encoded(result));_state(job,result['state'])
             return result

@@ -103,7 +103,7 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
     from .memory_workflow import _probe
     def probe(expected):
         _runtime(job,plan)
-        proof=_probe(profile,publication.source,expected,runtime=runtime)
+        proof=_probe(profile,publication.source,expected,runtime=runtime,output=job/'probe-output.txt')
         _runtime(job,plan)
         return proof
     result=publication.verify(probe,account=owner)

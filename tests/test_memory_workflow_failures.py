@@ -21,6 +21,15 @@ class ProbeFailureTests(unittest.TestCase):
         self.assertEqual(str(error), 'The fresh Hermes agent cannot verify the reviewed built-in memory '
                                      '(ProviderNotConfiguredError)')
 
+    def test_failed_probe_output_tail_stays_in_a_private_job_file(self):
+        from optional.lifeos_release_manager.memory_workflow import PROBE_OUTPUT_LINES, record_probe_output
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'probe-output.txt'
+            lines = ['line %d' % number for number in range(PROBE_OUTPUT_LINES + 5)]
+            record_probe_output(path, '\n'.join(lines) + '\n')
+            self.assertEqual(path.read_text().splitlines(), lines[-PROBE_OUTPUT_LINES:])
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+
     def test_unrecognized_probe_output_stays_generic(self):
         from optional.lifeos_release_manager.memory_workflow import probe_failure
         for stderr in ('', 'Segmentation fault\n', 'ValueError: synthetic secret value\n'):
