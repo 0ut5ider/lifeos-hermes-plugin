@@ -15,6 +15,15 @@ def _start_time(pid):
     return int(fields[19])
 
 
+def hermes_source():
+    """Return the Hermes checkout that this process imports, or None when Hermes is not importable."""
+    try:
+        import hermes_cli
+    except ImportError:
+        return None
+    return str(Path(hermes_cli.__file__).resolve().parents[1])
+
+
 def directory(profile):
     return Path(profile) / '.lifeos-bridge/registrations'
 
@@ -30,7 +39,7 @@ def write_receipt(profile, mode, *, pid=None):
         for stale in root.glob('*.json'):
             if stale.stem.isdecimal() and not Path('/proc', stale.stem).exists():
                 stale.unlink(missing_ok=True)
-        value = {'pid': pid, 'start_time': _start_time(pid), 'mode': mode}
+        value = {'pid': pid, 'start_time': _start_time(pid), 'mode': mode, 'source': hermes_source()}
         descriptor, name = tempfile.mkstemp(prefix='.registration-', dir=root)
         with os.fdopen(descriptor, 'w') as stream:
             json.dump(value, stream)
@@ -44,7 +53,8 @@ def read_receipt(profile, pid):
     """Return the receipt of the live process ``pid``, or None when it has not registered the bridge."""
     try:
         value = json.loads((directory(profile) / (str(int(pid)) + '.json')).read_text())
-        if value.get('pid') != int(pid) or value.get('start_time') != _start_time(int(pid)) or value.get('mode') not in MODES:
+        if (value.get('pid') != int(pid) or value.get('start_time') != _start_time(int(pid)) or value.get('mode') not in MODES
+                or not isinstance(value.get('source'), (str, type(None)))):
             return None
     except (OSError, ValueError):
         return None

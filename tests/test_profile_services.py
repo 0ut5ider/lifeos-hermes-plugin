@@ -295,6 +295,33 @@ ProfileServices(Path(settings['profile']), Path(settings['installed']), units=se
         self.record('changed-definition', {'after': {role: self.properties(role) for role in self.units},
             'journal': json.loads(self.barrier().journal.read_text())})
 
+    def test_stopped_role_adopts_only_a_reviewed_replacement_definition(self):
+        import hashlib
+        self.barrier().drain()
+        source = Path(self.properties('gateway')['FragmentPath']).resolve()
+        before = hashlib.sha256(source.read_bytes()).hexdigest()
+        source.write_text(source.read_text() + '# Synthetic reviewed stock definition\n')
+        after = hashlib.sha256(source.read_bytes()).hexdigest()
+        self.command('systemctl', '--user', 'daemon-reload')
+        with self.assertRaisesRegex(MemoryUnavailable, 'reviewed'):
+            self.barrier().adopt_definition('gateway', {before})
+        self.assertTrue(self.barrier().adopt_definition('gateway', {before, after}))
+        self.assertFalse(self.barrier().adopt_definition('gateway', {before, after}))
+        self.assertEqual(self.barrier().resume()['state'], 'active')
+        self.assertEqual(self.properties('gateway')['ActiveState'], 'active')
+
+    def test_running_role_refuses_definition_adoption(self):
+        import hashlib
+        self.barrier().drain()
+        self.barrier().resume()
+        source = Path(self.properties('gateway')['FragmentPath']).resolve()
+        source.write_text(source.read_text() + '# Synthetic reviewed stock definition\n')
+        after = hashlib.sha256(source.read_bytes()).hexdigest()
+        self.command('systemctl', '--user', 'daemon-reload')
+        with self.assertRaisesRegex(MemoryUnavailable, 'stopped'):
+            self.barrier().adopt_definition('gateway', {after})
+        self.assertEqual(self.properties('gateway')['ActiveState'], 'active')
+
     def test_definition_change_during_drain_preserves_the_remaining_live_services(self):
         before = {role: self.properties(role) for role in self.units}
         source = Path(before['pulse']['FragmentPath']).resolve()

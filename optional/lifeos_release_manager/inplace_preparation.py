@@ -41,6 +41,38 @@ def host_launcher(source):
     return launcher
 
 
+GATEWAY_UNIT = '.config/systemd/user/hermes-gateway.service'
+TRANSITION_GATEWAY = 'transition-gateway.service'
+
+
+def transition_gateway_unit(python, source, profile, home, job):
+    """Write the gateway unit that stock Hermes generates for ``source`` and return its reviewed hashes.
+
+    A managed runtime's gateway unit runs the managed launcher. The transition replaces it with the
+    unit that ``hermes gateway install`` would write for the stock checkout. A host without a gateway
+    unit keeps none. Another unit that still runs the managed runtime refuses the transition.
+    """
+    for name in ('hermes-dashboard.service', 'com.lifeos.pulse.service'):
+        other = Path(home) / '.config/systemd/user' / name
+        if other.is_file() and '/.lifeos-releases/' in other.read_text(errors='replace'):
+            raise ReleaseRejected('The ' + name + ' unit runs the managed runtime; point it at ~/.local/bin first')
+    existing = Path(home) / GATEWAY_UNIT
+    if not existing.is_file() or existing.is_symlink():
+        return {}
+    environment = {key: value for key, value in os.environ.items()
+                   if key not in {'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME', 'VIRTUAL_ENV'}}
+    environment.update(HOME=str(home), HERMES_HOME=str(profile))
+    script = ('import sys\nsys.path.insert(0, sys.argv[1])\n'
+              'from hermes_cli.gateway import generate_systemd_unit\nsys.stdout.write(generate_systemd_unit())\n')
+    result = subprocess.run([str(python), '-I', '-B', '-c', script, str(source)], capture_output=True, text=True,
+                            env=environment, cwd=str(profile), timeout=120)
+    if result.returncode or '.lifeos-releases' in result.stdout or 'ExecStart=' not in result.stdout:
+        raise ReleaseRejected('Stock Hermes does not generate a gateway unit for the installation')
+    target = Path(job) / TRANSITION_GATEWAY
+    publish(target, result.stdout.encode())
+    return {'gateway': {'before': sha(existing), 'after': sha(target)}}
+
+
 def state_directory(source):
     from pm.environments import install_state_dir
     return install_state_dir(Path(source))
@@ -196,6 +228,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
         'host': {'source': str(source), 'commit': entry['commit'], 'label': entry['label'],
                  'state': result['state'], 'state_directory': str(state_directory(source)),
                  'transition': result['transition'],
+                 'transition_units': transition_gateway_unit(python, source, profile, home, job) if result['transition'] else {},
                  'record_sha256': None if record is None else sha(profile / 'lifeos-host.json')},
         'runtime': {'python': str(python), 'bun': str(bun), 'hermes': str(host_launcher(source)),
                     'source': str(preview), 'reference': str(reference / '.claude'),

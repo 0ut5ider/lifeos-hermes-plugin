@@ -39,6 +39,12 @@ class RegistrationReceiptTests(unittest.TestCase):
         self.assertFalse(dead.exists())
         self.assertEqual(child.returncode, 0)
 
+    def test_receipt_records_the_hermes_checkout_that_the_process_imports(self):
+        import hermes_cli
+        value = write_receipt(self.profile, 'patched')
+        self.assertEqual(value['source'], str(Path(hermes_cli.__file__).resolve().parents[1]))
+        self.assertEqual(read_receipt(self.profile, os.getpid())['source'], value['source'])
+
     def test_unknown_mode_is_refused(self):
         with self.assertRaises(ValueError):
             write_receipt(self.profile, 'complete')

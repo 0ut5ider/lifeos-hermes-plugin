@@ -109,6 +109,98 @@ class TransitionTests(unittest.TestCase):
             with self.subTest(source=source):
                 self.assertIsNone(transition_source(profile, source))
 
+    def test_transition_gateway_unit_is_the_stock_generated_definition(self):
+        import hashlib, sys
+        import hermes_cli
+        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
+        source = Path(hermes_cli.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            profile, job = home / '.hermes', home / 'job'
+            profile.mkdir()
+            job.mkdir()
+            unit = home / '.config/systemd/user/hermes-gateway.service'
+            unit.parent.mkdir(parents=True)
+            unit.write_text('[Service]\nExecStart=' + str(profile / '.lifeos-releases' / ('a' * 32)) + '/hermes/bin gateway run\n')
+            value = transition_gateway_unit(Path(sys.executable), source, profile, home, job)
+            text = (job / 'transition-gateway.service').read_text()
+            self.assertIn("sys.path.insert(0, '" + str(source) + "')", text)
+            self.assertIn('Environment="HERMES_HOME=' + str(profile) + '"', text)
+            self.assertNotIn('.lifeos-releases', text)
+            self.assertEqual(value, {'gateway': {'before': hashlib.sha256(unit.read_bytes()).hexdigest(),
+                                                 'after': hashlib.sha256(text.encode()).hexdigest()}})
+
+    def test_transition_without_a_gateway_unit_replaces_no_unit(self):
+        import sys
+        import hermes_cli
+        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            (home / '.hermes').mkdir()
+            self.assertEqual(transition_gateway_unit(Path(sys.executable), Path(hermes_cli.__file__).resolve().parents[1],
+                                                     home / '.hermes', home, home), {})
+
+    def test_transition_refuses_another_unit_that_runs_the_managed_runtime(self):
+        import sys
+        import hermes_cli
+        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            (home / '.hermes').mkdir()
+            unit = home / '.config/systemd/user/hermes-dashboard.service'
+            unit.parent.mkdir(parents=True)
+            unit.write_text('[Service]\nExecStart=' + str(home / '.hermes/.lifeos-releases' / ('a' * 32)) + '/hermes/bin dashboard\n')
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                transition_gateway_unit(Path(sys.executable), Path(hermes_cli.__file__).resolve().parents[1],
+                                        home / '.hermes', home, home)
+
+    def test_transition_unit_files_publish_only_the_reviewed_unit(self):
+        import hashlib
+        from optional.lifeos_release_manager.inplace_plan import transition_unit_files
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory:
+            home, job = Path(directory), Path(directory) / 'job'
+            job.mkdir()
+            (job / 'transition-gateway.service').write_text('[Service]\n')
+            digest = hashlib.sha256(b'[Service]\n').hexdigest()
+            units = {'gateway': {'before': 'b' * 64, 'after': digest}}
+            self.assertEqual(transition_unit_files(home, job, units),
+                             {home / '.config/systemd/user/hermes-gateway.service': job / 'transition-gateway.service'})
+            (job / 'transition-gateway.service').write_text('[Service]\nExecStart=/other\n')
+            with self.assertRaisesRegex(ReleaseRejected, 'reviewed'):
+                transition_unit_files(home, job, units)
+            self.assertEqual(transition_unit_files(home, job, {}), {})
+
+    def test_gateway_receipt_must_come_from_the_installed_checkout(self):
+        from optional.lifeos_release_manager.inplace_worker import check_receipt
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        request = {'host': {'source': '/home/owner/.hermes/hermes-agent'}}
+        receipt = {'pid': 7, 'start_time': 1, 'mode': 'patched', 'source': '/home/owner/.hermes/hermes-agent'}
+        self.assertEqual(check_receipt(receipt, request), receipt)
+        managed = {**receipt, 'source': '/home/owner/.hermes/.lifeos-releases/' + 'a' * 32 + '/hermes'}
+        for value, message in (({**receipt, 'mode': 'reduced'}, 'patched'), (managed, 'checkout'),
+                               ({key: item for key, item in receipt.items() if key != 'source'}, 'checkout')):
+            with self.subTest(value=value), self.assertRaisesRegex(ReleaseRejected, message):
+                check_receipt(value, request)
+
+    def test_transition_adopts_the_reviewed_units_of_the_bound_roles(self):
+        from optional.lifeos_release_manager.inplace_worker import adopt_units
+        calls = []
+        class Services:
+            units = {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.service'}
+            def status(self):
+                return {'state': 'stopped'}
+            def adopt_definition(self, role, allowed):
+                calls.append((role, allowed))
+        units = {'gateway': {'before': 'b' * 64, 'after': 'a' * 64}}
+        adopt_units(Services(), {'host': {'transition_units': units}})
+        self.assertEqual(calls, [('gateway', {'b' * 64, 'a' * 64})])
+        calls.clear()
+        adopt_units(Services(), {'host': {}})
+        adopt_units(None, {'host': {'transition_units': units}})
+        self.assertEqual(calls, [])
+
     def test_transition_launchers_match_the_stock_forwarders(self):
         from optional.lifeos_release_manager.inplace_plan import transition_launchers
         with tempfile.TemporaryDirectory() as directory:

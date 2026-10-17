@@ -115,11 +115,28 @@ def verify_registration(request, plan):
             raise ReleaseRejected('The gateway does not run after the operation')
         receipt = registration.read_receipt(profile, int(values.get('MainPID') or 0))
         if receipt is not None:
-            if receipt['mode'] != 'patched':
-                raise ReleaseRejected('The restarted gateway loaded the bridge without the patched host hooks')
-            return receipt
+            return check_receipt(receipt, request)
         time.sleep(1)
     raise ReleaseRejected('The restarted gateway did not register the bridge')
+
+
+def check_receipt(receipt, request):
+    """Require a patched registration from the installed Hermes checkout, not from another runtime."""
+    if receipt['mode'] != 'patched':
+        raise ReleaseRejected('The restarted gateway loaded the bridge without the patched host hooks')
+    if receipt.get('source') != str(Path(request['host']['source']).resolve()):
+        raise ReleaseRejected('The restarted gateway runs another Hermes checkout than the installation')
+    return receipt
+
+
+def adopt_units(services, request):
+    """Bind each stopped transition role to whichever reviewed unit file is on disk, managed or stock."""
+    units = request['host'].get('transition_units') or {}
+    if services is None or services.status()['state'] == 'none':
+        return
+    for role, hashes in units.items():
+        if role in services.units:
+            services.adopt_definition(role, {hashes['before'], hashes['after']})
 
 
 OWNED_PLUGINS = ('lifeos', 'lifeos-hook-bridge', 'lifeos-release-manager')
@@ -201,11 +218,13 @@ def _resume(services):
 
 def _rollback(job, request, plan, services, programs, restore_mount):
     """Return the host to its prior programs: mount, programs, dependencies, then services."""
+    adopt_units(services, request)
     _quiesce(services)
     _stop_created(plan)
     restore_mount()
     programs.restore()
     _systemctl('daemon-reload')
+    adopt_units(services, request)
     try:
         synchronize(job, request, label='dependency-restore')
     except (ReleaseRejected, OSError, ValueError) as error:
@@ -263,6 +282,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
                     entry['target']: fingerprint(entry['target']) for entry in manifest['entries']}
                 programs.check_recovery(overrides=overrides)
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
+            adopt_units(services, request)
             _quiesce(services)
             _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
             restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount)
@@ -307,6 +327,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             checkpoint('programs-published')
             clear_bytecode(request, [entry['target'] for entry in programs._load()['entries']])
             _systemctl('daemon-reload')
+            adopt_units(services, request)
             synchronized = synchronize(job, request, label='dependency-synchronization')
             if synchronized['lock_sha256'] != request['dependencies']['lock_sha256']:
                 raise ReleaseRejected('The synchronized dependencies differ from the reviewed resolution')

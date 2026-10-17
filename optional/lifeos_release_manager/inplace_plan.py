@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .host_compatibility import inspect_host, load_manifest
 from .host_record import build_record, check_originals, load_record, originals_path, record_path
-from .inplace_preparation import desired_host_files, host_launcher, host_python
+from .inplace_preparation import GATEWAY_UNIT, TRANSITION_GATEWAY, desired_host_files, host_launcher, host_python
 from .inplace_services import UNITS, ancestors, inventory
 from .integration_package import COMPATIBILITY, validate_integration
 from .release_accounts import account_home
@@ -146,7 +146,18 @@ def host_entries(job, request, selected, generated):
     files[source / '.git' / HOLD] = generated / 'update-hold.json'
     if request['host'].get('transition'):
         files.update(transition_launchers(Path(request['account_home']), source, generated))
+        files.update(transition_unit_files(Path(request['account_home']), job, request['host'].get('transition_units', {})))
     return {}, files
+
+
+def transition_unit_files(home, job, units):
+    """Map the reviewed stock gateway unit of a transition to its publication source."""
+    if 'gateway' not in units:
+        return {}
+    generated = job / TRANSITION_GATEWAY
+    if sha(generated) != units['gateway']['after']:
+        raise ReleaseRejected('The transition gateway unit differs from the reviewed definition')
+    return {home / GATEWAY_UNIT: generated}
 
 
 def transition_launchers(home, source, generated):

@@ -151,6 +151,10 @@ class ProfileServices:
         return Path('/sys/fs/cgroup') / value.lstrip('/')
 
     def _inspect(self, role):
+        values, definition = self._inspect_definition(role)
+        return values, _digest(definition)
+
+    def _inspect_definition(self, role):
         if self.installed.resolve() != self.physical_root:
             raise MemoryUnavailable('The installed profile service root alias changes during the operation')
         output = _run('show', self.units[role], '--property=' + ','.join(PROPERTIES), '--no-pager')
@@ -181,7 +185,7 @@ class ProfileServices:
             if key not in {'ActiveState', 'MainPID', 'ControlGroup', 'ExecStart', 'DropInPaths'}}
         definition['files'] = [_definition_file(path) for path in (values['FragmentPath'], *drop_ins)]
         self._group(values['ControlGroup'])
-        return values, _digest(definition)
+        return values, definition
 
     def _check_definition(self, document, role):
         values, definition = self._inspect(role)
@@ -189,8 +193,8 @@ class ProfileServices:
             raise MemoryUnavailable('The bound profile service definition changes during recovery')
         return values
 
-    def _empty(self, document, role):
-        values = self._check_definition(document, role)
+    def _empty(self, document, role, values=None):
+        values = self._check_definition(document, role) if values is None else values
         if values['ActiveState'] not in {'inactive', 'failed'} or values['MainPID'] != '0':
             raise MemoryUnavailable('The profile service still has an active process')
         groups = {values['ControlGroup'], document['services'][role]['control_group']}
@@ -272,6 +276,34 @@ class ProfileServices:
             self._publish(document)
             self._drain(document)
             return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
+
+    def adopt_definition(self, role, allowed):
+        """Bind a stopped role to a reviewed replacement of its unit file; return whether the binding changed.
+
+        A transition replaces the gateway unit while the gateway is stopped. Its journal keeps the earlier
+        definition, so resume and recovery would refuse the reviewed file without this rebinding.
+        """
+        if role not in self.units or not allowed or any(re.fullmatch('[0-9a-f]{64}', str(value)) is None for value in allowed):
+            raise ValueError('Adopt a reviewed definition only for a bound role')
+        with self._lock():
+            document = self._load()
+            if document is None:
+                raise MemoryUnavailable('The selected profile services have no recovery state')
+            values, current = self._inspect_definition(role)
+            recorded = document['services'][role]['definition']
+            if _digest(current) == recorded:
+                return False
+            if document['state'] != 'stopped':
+                raise MemoryUnavailable('A profile service adopts a new definition only while it is stopped')
+            self._empty(document, role, values)
+            # Only the unit file may differ from the journaled definition, and only between reviewed contents.
+            fragment, drop_ins = current['files'][0], current['files'][1:]
+            earlier = (_digest({**current, 'files': [{**fragment, 'sha256': value}, *drop_ins]}) for value in allowed)
+            if fragment['sha256'] not in allowed or recorded not in earlier:
+                raise MemoryUnavailable('The profile service definition is not a reviewed replacement')
+            document['services'][role]['definition'] = _digest(current)
+            self._publish(document)
+            return True
 
     def verify_stopped(self):
         with self._lock():
