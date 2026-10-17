@@ -39,6 +39,7 @@ STATES = {
     'patched_without_record': 'patched_without_record',
     'dependency_conflict': 'dependency_conflict',
     'host_drift': 'host_drift',
+    'bridge_disabled': 'host_drift',
 }
 
 # Environment variables that would make Git inspect a repository other than the selected source.
@@ -311,7 +312,21 @@ def _result(detected, manifest, reasons, *, qualified=None, dependencies=None, i
     }
 
 
-def _installed_reasons(source, record, head):
+def _bridge_enabled(hermes_home):
+    """Report whether the profile still enables the bridge; Hermes can evict a plugin during a dependency sync."""
+    from ruamel.yaml import YAML
+    try:
+        value = YAML(typ='safe').load((Path(hermes_home) / 'config.yaml').read_text())
+    except (OSError, ValueError):
+        return False
+    plugins = value.get('plugins') if isinstance(value, dict) else None
+    if not isinstance(plugins, dict):
+        return False
+    enabled, disabled = plugins.get('enabled') or [], plugins.get('disabled') or []
+    return 'lifeos-hook-bridge' in enabled and 'lifeos-hook-bridge' not in disabled
+
+
+def _installed_reasons(source, record, head, hermes_home):
     """Compare a host that LifeOS patched with its host record."""
     if record['source'] != str(source) or record['commit'] != head:
         return [_reason('host_drift', 'LifeOS was installed into another Hermes source or version than the one running now.')]
@@ -332,6 +347,9 @@ def _installed_reasons(source, record, head):
     if drifted:
         reasons.insert(0, _reason('host_drift',
             'Some Hermes files that LifeOS patched have changed since installation.', drifted))
+    if not _bridge_enabled(hermes_home):
+        reasons.append(_reason('bridge_disabled',
+            'Hermes no longer enables the LifeOS bridge plugin. A Hermes dependency update can disable a plugin.'))
     return reasons
 
 
@@ -355,7 +373,7 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None
     entry = next((item for item in manifest['hermes'] if item['commit'] == detected['commit']), None)
     shared = _shared(hermes_home)
     if record is not None:
-        reasons.extend(_installed_reasons(source, record, detected['commit']))
+        reasons.extend(_installed_reasons(source, record, detected['commit'], hermes_home))
         reasons.extend([shared] if shared else [])
         if dependencies['conflicts']:
             reasons.append(_reason('dependency_conflict',

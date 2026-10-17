@@ -287,8 +287,11 @@ class HostCompatibilityTests(unittest.TestCase):
 class InstalledHostTests(unittest.TestCase):
     """Hosts that carry a LifeOS host record are classified against the record, not the fresh-install entry."""
 
-    setUp = HostCompatibilityTests.setUp
     patch = HostCompatibilityTests.patch
+
+    def setUp(self):
+        HostCompatibilityTests.setUp(self)
+        self.enable_bridge()
 
     def record(self, **changes):
         from optional.lifeos_release_manager.host_record import build_record
@@ -296,9 +299,20 @@ class InstalledHostTests(unittest.TestCase):
                              operation="e" * 32, version="0.8.0")
         return {**value, **changes}
 
+    def enable_bridge(self, enabled=True):
+        listed = "  - lifeos-hook-bridge\n" if enabled else ""
+        (self.home / "config.yaml").write_text("plugins:\n  enabled:\n  - other\n" + listed)
+
     def inspect_installed(self, record):
         return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
                             search_path=[str(self.packages)], record=record)
+
+    def test_disabled_bridge_on_a_recorded_host_is_drift(self):
+        self.patch()
+        self.enable_bridge(False)
+        result = self.inspect_installed(self.record())
+        self.assertEqual(result["state"], "host_drift")
+        self.assertEqual([reason["code"] for reason in result["reasons"]], ["bridge_disabled"])
 
     def test_recorded_patched_host_is_installed(self):
         self.patch()
