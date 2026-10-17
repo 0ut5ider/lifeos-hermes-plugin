@@ -40,6 +40,17 @@ Build `9f1749d3` adds the post-restart checks (per-unit start time, enabled stat
 
 The first attempt on this build failed in preparation on both hosts, because `scripts/local_release_server.py` imported the plugin package, which the harness does not copy. Commit `9f1749d3` fixes the script.
 
+### Final regression on `7d76fc6c`
+
+| Flow | Result |
+| --- | --- |
+| Managed 0.7.3 to in-place transition on 114 | Applied (`1c0c6613`), receipt from `/home/lifeos-hermes/.hermes/hermes-agent` |
+| Restore of that transition on 114 | Rolled back to the managed runtime, all services active |
+| In-place update on 112 | Applied (`128c506b`), receipt from `/home/owner/.hermes/hermes-agent` |
+| In-place update on 110 from its first-install snapshot | Applied (`b49e4642`), receipt from `/home/owner/.hermes/hermes-agent` |
+
+On 110 after the first installation (snapshot `extras-installed`), the Pulse unit exists and is disabled and inactive. An attempt to install LifeOS again after the verified removal on 110 found that this flow is not supported; the design records the limit.
+
 ### Removal end state on 110
 
 - The Hermes checkout is clean at `71d34bad` (`git status` reports nothing).
