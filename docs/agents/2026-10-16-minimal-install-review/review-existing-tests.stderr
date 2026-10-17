@@ -1,0 +1,70 @@
+test_applies_patch_and_restores_after_failed_runtime_check (tests.test_hermes_install_source.HermesSourceTests.test_applies_patch_and_restores_after_failed_runtime_check) ... ok
+test_applies_prepared_patch_without_changing_ignored_runtime (tests.test_hermes_install_source.HermesSourceTests.test_applies_prepared_patch_without_changing_ignored_runtime) ... ok
+test_failed_restore_reapplies_the_prepared_patch (tests.test_hermes_install_source.HermesSourceTests.test_failed_restore_reapplies_the_prepared_patch) ... ok
+test_prepares_clean_exact_source_with_ordered_patch (tests.test_hermes_install_source.HermesSourceTests.test_prepares_clean_exact_source_with_ordered_patch) ... ok
+test_recovery_refuses_a_finished_host_change (tests.test_hermes_install_source.HermesSourceTests.test_recovery_refuses_a_finished_host_change) ... ok
+test_recovery_returns_an_interrupted_host_change_to_stock (tests.test_hermes_install_source.HermesSourceTests.test_recovery_returns_an_interrupted_host_change_to_stock) ... ok
+test_refuses_modified_or_unsupported_running_source (tests.test_hermes_install_source.HermesSourceTests.test_refuses_modified_or_unsupported_running_source) ... ok
+test_restore_preserves_later_hermes_config_edit (tests.test_hermes_install_source.HermesSourceTests.test_restore_preserves_later_hermes_config_edit) ... ok
+test_restore_request_prevents_duplicate_launch (tests.test_hermes_install_source.HermesSourceTests.test_restore_request_prevents_duplicate_launch) ... ok
+test_start_failure_stops_gateway_before_restoring_code (tests.test_hermes_install_source.HermesSourceTests.test_start_failure_stops_gateway_before_restoring_code) ... ok
+test_applied_preflight_checks_native_overrides_and_retained_programs (tests.test_release_programs.ProgramTransactionTests.test_applied_preflight_checks_native_overrides_and_retained_programs) ... ok
+test_apply_and_resume_preserve_an_edit_between_publications (tests.test_release_programs.ProgramTransactionTests.test_apply_and_resume_preserve_an_edit_between_publications) ... ok
+test_apply_preserves_the_inode_of_an_unchanged_file (tests.test_release_programs.ProgramTransactionTests.test_apply_preserves_the_inode_of_an_unchanged_file) ... ok
+test_candidate_plan_refuses_missing_or_substituted_targets (tests.test_release_programs.ProgramTransactionTests.test_candidate_plan_refuses_missing_or_substituted_targets) ... ok
+test_changed_candidate_refuses_before_any_program_publication (tests.test_release_programs.ProgramTransactionTests.test_changed_candidate_refuses_before_any_program_publication) ... ok
+test_complete_publication_and_restore_keep_later_personal_data (tests.test_release_programs.ProgramTransactionTests.test_complete_publication_and_restore_keep_later_personal_data) ... ok
+test_dependency_directories_keep_internal_links_but_refuse_external_links (tests.test_release_programs.ProgramTransactionTests.test_dependency_directories_keep_internal_links_but_refuse_external_links) ... ok
+test_directory_links_and_overlapping_targets_refuse (tests.test_release_programs.ProgramTransactionTests.test_directory_links_and_overlapping_targets_refuse) ... ok
+test_directory_replacement_preserves_a_later_empty_directory (tests.test_release_programs.ProgramTransactionTests.test_directory_replacement_preserves_a_later_empty_directory) ... ok
+test_interrupted_directory_swap_recovers_after_actual_process_exit (tests.test_release_programs.ProgramTransactionTests.test_interrupted_directory_swap_recovers_after_actual_process_exit) ... ok
+test_launcher_script_quotes_one_command_and_forwards_arguments (tests.test_release_programs.ProgramTransactionTests.test_launcher_script_quotes_one_command_and_forwards_arguments) ... ok
+test_missing_or_changed_before_copy_refuses_before_apply (tests.test_release_programs.ProgramTransactionTests.test_missing_or_changed_before_copy_refuses_before_apply) ... ok
+test_preparation_preserves_a_sealed_or_untrusted_snapshot (tests.test_release_programs.ProgramTransactionTests.test_preparation_preserves_a_sealed_or_untrusted_snapshot) ... ok
+test_preparation_retries_after_process_exit_and_retains_partial_copy (tests.test_release_programs.ProgramTransactionTests.test_preparation_retries_after_process_exit_and_retains_partial_copy) ... ok
+test_recovery_refuses_missing_prior_copy_before_journal_or_target_changes (tests.test_release_programs.ProgramTransactionTests.test_recovery_refuses_missing_prior_copy_before_journal_or_target_changes) ... ok
+test_removed_system_program_restores_and_refuses_a_later_replacement (tests.test_release_programs.ProgramTransactionTests.test_removed_system_program_restores_and_refuses_a_later_replacement) ... ok
+test_restore_preserves_a_later_edit_between_publications (tests.test_release_programs.ProgramTransactionTests.test_restore_preserves_a_later_edit_between_publications) ... ok
+test_restore_refuses_later_program_or_launcher_edits_before_any_restore (tests.test_release_programs.ProgramTransactionTests.test_restore_refuses_later_program_or_launcher_edits_before_any_restore) ... ok
+test_resume_completes_an_interrupted_directory_swap_and_keeps_personal_data (tests.test_release_programs.ProgramTransactionTests.test_resume_completes_an_interrupted_directory_swap_and_keeps_personal_data) ... ok
+test_resume_refuses_later_edits_before_publishing_other_programs (tests.test_release_programs.ProgramTransactionTests.test_resume_refuses_later_edits_before_publishing_other_programs) ... ok
+test_reviewed_entry_digest_refuses_journal_target_substitution (tests.test_release_programs.ProgramTransactionTests.test_reviewed_entry_digest_refuses_journal_target_substitution) ... ok
+test_changed_transformation_input_refuses_before_recording_a_plan (tests.test_release_programs.ReviewedInputTests.test_changed_transformation_input_refuses_before_recording_a_plan) ... ok
+test_exact_transformation_input_admits_the_plan (tests.test_release_programs.ReviewedInputTests.test_exact_transformation_input_admits_the_plan) ... ok
+test_changed_archive_and_symlink_refuse_before_destination_creation (tests.test_stock_hermes.StockHermesTests.test_changed_archive_and_symlink_refuse_before_destination_creation) ... ok
+test_fifo_archive_refuses_without_waiting_for_a_writer (tests.test_stock_hermes.StockHermesTests.test_fifo_archive_refuses_without_waiting_for_a_writer) ... ok
+test_git_archive_selects_the_exact_pinned_stock_commit (tests.test_stock_hermes.StockHermesTests.test_git_archive_selects_the_exact_pinned_stock_commit) ... ok
+test_verified_stock_source_refuses_a_later_source_edit (tests.test_stock_hermes.StockHermesTests.test_verified_stock_source_refuses_a_later_source_edit) ... ok
+test_latest_stable_release_prepares_and_validates_without_changing_upstream (tests.test_latest_hermes.LatestHermesTests.test_latest_stable_release_prepares_and_validates_without_changing_upstream) ... FAIL
+
+======================================================================
+FAIL: test_latest_stable_release_prepares_and_validates_without_changing_upstream (tests.test_latest_hermes.LatestHermesTests.test_latest_stable_release_prepares_and_validates_without_changing_upstream)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_latest_hermes.py", line 30, in test_latest_stable_release_prepares_and_validates_without_changing_upstream
+    self.assertEqual((checks.returncode,checks.stderr),(0,''),checks.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1, 'Traceback (most recent call last):\n [452 chars]'\n') != (0, '')
+
+First differing element 0:
+1
+0
+
++ (0, '')
+- (1,
+-  'Traceback (most recent call last):\n'
+-  '  File "<string>", line 1, in <module>\n'
+-  '    from hermes_cli.plugins import VALID_HOOKS\n'
+-  '  File "/tmp/tmp09g2av1u/hermes/hermes_cli/plugins.py", line 34, in '
+-  '<module>\n'
+-  '    from utils import env_var_enabled\n'
+-  '  File "/tmp/tmp09g2av1u/hermes/utils.py", line 18, in <module>\n'
+-  '    import hermes_yaml as yaml\n'
+-  '  File "/tmp/tmp09g2av1u/hermes/hermes_yaml.py", line 10, in <module>\n'
+-  '    from ruamel.yaml import YAML\n'
+-  "ModuleNotFoundError: No module named 'ruamel'\n") : 
+
+----------------------------------------------------------------------
+Ran 38 tests in 9.412s
+
+FAILED (failures=1)

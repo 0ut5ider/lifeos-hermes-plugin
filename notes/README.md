@@ -8,6 +8,7 @@ Useful entry points:
 
 - [Conditional Hermes patch reduction](2026-10-10-conditional-hermes-patch-reduction.md): earlier 36-to-35 proposal and required checks. The current active count is in the [patch map](../docs/patch-footprint.md).
 - [Setup stylesheet cause](2026-10-16-plugin-setup-styles.md): measured unstyled controls and theme assumptions behind 0.7.2.
+- [Minimal installation payload](2026-10-16-minimal-install-payload.md): archive overhead, reversible patch mechanics, and exact source reconstruction checks.
 - [Direct child inference](2026-09-28-direct-child-inference.md): earlier model-route probe and limits.
 - [Source manifest collision](2026-09-28-source-manifest-runtime-collision.md): why source preparation writes `source-manifest.json`.
 
