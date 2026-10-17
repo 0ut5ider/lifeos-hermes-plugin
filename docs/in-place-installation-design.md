@@ -102,7 +102,7 @@ The plan uses `ProgramTransaction` for every change. It provides fsynced publica
 | `<source>/.git/hermes-update-holds/lifeos.json` | Update hold (section 6) |
 | Native LifeOS files, settings, and dependencies | As today for an update |
 
-Outside the transition (section 10), the account launchers (`~/.local/bin/hermes`, `hermes-agent`, `hermes-acp`) and the service definitions are not changed. A first installation creates only the Pulse unit; it uses the owner's existing gateway and dashboard units (section 7).
+Outside the transition (section 10), the account launchers (`~/.local/bin/hermes`, `hermes-agent`, `hermes-acp`) and the service definitions are not changed. A first installation creates only the Pulse unit, and it neither enables nor starts that unit, as the managed release did. It uses the owner's existing gateway and dashboard units (section 7).
 
 ## 5. Python dependencies
 
@@ -146,6 +146,8 @@ The compatibility check gains an `installed` state. It applies when the record e
 **Removal** keeps the current order: a verified memory provider return, then software removal. The in-place removal plan restores the 69 modified host files from the originals, deletes the 27 added files, removes the bridge and manager directories, removes the LifeOS configuration keys, removes the hold, the host record, and the receipts, and synchronizes the environment without the bridge. It does not prepare a stock runtime or change launchers. The configuration, `.env`, settings-hook, native-file, and service logic in the existing `removal_*` modules is reused; the generation and runtime selection is replaced.
 
 Before and after each operation the worker records an inventory: the other plugins' directory digests, the enabled plugins, and the selected environment's locked packages. Verification requires each item to be unchanged, except the packages that the review adds. `check_preserved` protects the rest of `config.yaml`. It refuses any change under `toolsets`, `mcp_servers`, `model`, `providers`, `custom_providers`, `fallback_model`, `auxiliary`, and `platforms`. These roots have no planned difference, so the review lists them only through the configuration keys. After restart the worker also checks memory authority: `memory.provider` must not change unless the operation owns that change (section 4.2).
+
+Removal keeps the native LifeOS data, `lifeos-memory.json`, and the removal selection, so the owner can roll the removal back. Installing LifeOS again after a verified removal is not supported: preparation refuses while the removal selection exists, and a fresh installation refuses an existing native destination. This limit predates the in-place design. A supported reinstall needs an owner decision on how to reattach or set aside the retained data.
 
 ## 9. Drift reporting
 
