@@ -7,7 +7,7 @@ from pathlib import Path
 from .cli import read_private
 from .release_catalog import ReleaseRejected
 from .release_programs import ProgramTransaction,publish,sync_directory
-from .removal_state import prepared,retained
+from .removal_state import IDENTIFIER,SIGNATURE,prepared,retained
 
 
 def _encoded(value):
@@ -46,12 +46,39 @@ def _archive_marker(profile, job, signature):
     _,_,selected,plan=retained(profile)
     if selected!=job or plan['signature']!=signature:
         raise ReleaseRejected('The current removal marker belongs to another owner review')
+    _retire_marker(profile,job.name)
+
+
+def _retire_marker(profile, workflow):
+    """Move the removal selection into the removal history; the removal can then no longer roll back."""
+    marker=profile/'.lifeos-removal.json'
     history=profile/'.lifeos-removal-history';history.mkdir(mode=0o700,exist_ok=True)
     from .release_catalog import owner_directory
     owner_directory(history)
-    target=history/(job.name+'.json')
+    target=history/(workflow+'.json')
     if target.exists() or target.is_symlink():raise ReleaseRejected('The retained removal history already contains this selection')
     os.rename(marker,target);sync_directory(history);sync_directory(profile)
+
+
+def retire_verified_removal(profile):
+    """Retire the selection of a verified removal before a fresh installation; return whether it did.
+
+    A verified removal keeps its selection so the owner can still roll it back. Installing LifeOS again
+    ends that choice. An unfinished removal keeps its selection, and preparation refuses.
+    """
+    try:
+        marker=read_private(profile/'.lifeos-removal.json',limit=1024)
+        workflow,signature=marker['workflow'],marker['signature']
+        if (not isinstance(workflow,str) or IDENTIFIER.fullmatch(workflow) is None
+                or not isinstance(signature,str) or SIGNATURE.fullmatch(signature) is None):
+            return False
+        operation=read_private(profile/'.lifeos-portability'/workflow/'removal/operation.json')
+    except (OSError,ValueError,KeyError,TypeError):
+        return False
+    if operation.get('signature')!=signature or operation.get('state')!='verified':
+        return False
+    _retire_marker(profile,workflow)
+    return True
 
 
 def execute(profile, job, selected, action, signature, *, owner, source, configuration, installation_lease):

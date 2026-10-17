@@ -221,6 +221,42 @@ class ReleasePreparationTests(unittest.TestCase):
                 'version': '0.4.2-rc.1', 'commit': 'b' * 40}).encode())
             self.assertEqual(status(profile, job.name)['state'], 'preparation_interrupted')
 
+    def _removed_profile(self, directory, state):
+        profile = Path(directory)
+        workflow, signature = 'a' * 32, 'b' * 64
+        publish(profile / '.lifeos-removal.json',
+                json.dumps({'format': 1, 'workflow': workflow, 'signature': signature}).encode())
+        removal = profile / '.lifeos-portability' / workflow / 'removal'
+        removal.mkdir(parents=True, mode=0o700)
+        publish(removal / 'operation.json', json.dumps({'signature': signature, 'state': state}).encode())
+        return profile, workflow
+
+    def test_fresh_installation_archives_a_verified_removal(self):
+        from optional.lifeos_release_manager.cli import prepare
+        class DownloadBoundary(Exception):
+            pass
+        class Catalog:
+            def download_integration(self, directory, version):
+                raise DownloadBoundary()
+        with tempfile.TemporaryDirectory() as directory:
+            profile, workflow = self._removed_profile(directory, 'verified')
+            with admitted_host(), self.assertRaises(DownloadBoundary):
+                prepare(profile, catalog=Catalog(), intent='install')
+            self.assertFalse((profile / '.lifeos-removal.json').exists())
+            self.assertTrue((profile / '.lifeos-removal-history' / (workflow + '.json')).is_file())
+
+    def test_unfinished_removal_or_update_intent_keeps_the_removal_selection(self):
+        from optional.lifeos_release_manager.cli import prepare
+        class NoDownload:
+            def download_integration(self, directory, version):
+                raise AssertionError('Removal overlap reaches a release download')
+        for state, intent in (('verification_required', 'install'), ('verified', 'update')):
+            with self.subTest(state=state, intent=intent), tempfile.TemporaryDirectory() as directory:
+                profile, _ = self._removed_profile(directory, state)
+                with self.assertRaisesRegex(ValueError, 'removal'):
+                    prepare(profile, catalog=NoDownload(), intent=intent)
+                self.assertTrue((profile / '.lifeos-removal.json').is_file())
+
     def test_selected_software_removal_blocks_synchronous_preparation_before_download(self):
         from optional.lifeos_release_manager.cli import prepare
         with tempfile.TemporaryDirectory() as directory:

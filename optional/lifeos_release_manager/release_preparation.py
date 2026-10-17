@@ -45,11 +45,13 @@ def selection(value):
 
 
 @contextmanager
-def preparation_admission(profile):
+def preparation_admission(profile, intent=None):
     profile = profile_directory(profile)
     marker=profile/'.lifeos-removal.json'
     if marker.exists() or marker.is_symlink():
-        raise ReleaseRejected('Recover or roll back the selected software removal before release preparation')
+        from .removal_workflow import retire_verified_removal
+        if intent != 'install' or not retire_verified_removal(profile):
+            raise ReleaseRejected('Recover or roll back the selected software removal before release preparation')
     state = profile / '.lifeos-releases'
     state.mkdir(mode=0o700, exist_ok=True)
     info = state.lstat()
@@ -85,7 +87,7 @@ def queue(profile, value):
     profile = profile_directory(profile)
     home = account_home(profile)
     state = profile / '.lifeos-releases'
-    with preparation_admission(profile) as descriptor:
+    with preparation_admission(profile, value['intent']) as descriptor:
         job = state / uuid4().hex
         job.mkdir(mode=0o700)
         write_state(job, 'preparing')
