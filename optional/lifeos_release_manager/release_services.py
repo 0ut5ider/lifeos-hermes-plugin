@@ -36,15 +36,21 @@ def _service_paths(home, profile, installed):
             raise ReleaseRejected('Managed service paths require physical names without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces')
 
 
-def service_files(request, generated):
+def service_files(request, generated, *, roles=('gateway', 'dashboard', 'pulse')):
+    """Map the selected roles' unit files to publication sources, keeping existing definitions unchanged."""
     home, profile, installed = (Path(request[key]) for key in ('account_home', 'profile', 'installed'))
     _service_paths(home, profile, installed)
     definitions = {
-        'hermes-gateway.service': (profile, [home / '.local/bin/hermes', 'gateway', 'run', '--external-supervisor']),
-        'hermes-dashboard.service': (installed.parent, [home / '.local/bin/hermes', 'dashboard', '--isolated', '--no-open']),
-        'com.lifeos.pulse.service': (installed / 'LIFEOS/PULSE',
+        'gateway': ('hermes-gateway.service', profile,
+            [home / '.local/bin/hermes', 'gateway', 'run', '--external-supervisor']),
+        'dashboard': ('hermes-dashboard.service', installed.parent,
+            [home / '.local/bin/hermes', 'dashboard', '--isolated', '--no-open']),
+        'pulse': ('com.lifeos.pulse.service', installed / 'LIFEOS/PULSE',
             [home / '.local/bin/bun', '--no-install', installed / 'LIFEOS/PULSE/pulse.ts']),
     }
+    if not roles or any(role not in definitions for role in roles):
+        raise ReleaseRejected('Integration services require known roles')
+    definitions = {definitions[role][0]: definitions[role][1:] for role in definitions if role in roles}
     files = {}
     for name, (working, command) in definitions.items():
         target = home / '.config/systemd/user' / name
