@@ -50,7 +50,7 @@ def preparation_admission(profile, intent=None):
     marker=profile/'.lifeos-removal.json'
     if marker.exists() or marker.is_symlink():
         from .removal_workflow import retire_verified_removal
-        if intent != 'install' or not retire_verified_removal(profile):
+        if intent not in {'install', 'update'} or not retire_verified_removal(profile):
             raise ReleaseRejected('Recover or roll back the selected software removal before release preparation')
     state = profile / '.lifeos-releases'
     state.mkdir(mode=0o700, exist_ok=True)
