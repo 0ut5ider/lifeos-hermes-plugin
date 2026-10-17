@@ -11,7 +11,7 @@ import subprocess
 import time
 
 from .cli import read_private, write_state
-from .inplace_services import inventory, replace_with_units
+from .inplace_services import OFFERABLE, UNITS, inventory, replace_with_units
 from .release_catalog import ReleaseRejected, _json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, publish
@@ -21,7 +21,8 @@ from .release_stage import run_stage, sha
 
 DEPENDENCY_RESTORE_ERROR = ('The programs are restored, but Hermes could not rebuild its Python environment. '
                             'Run hermes pm install to rebuild it.')
-CREATED_UNITS = {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.service'}
+# The standard units that an operation may create for a hand-started gateway or dashboard.
+CREATED_UNITS = {role: UNITS[role] for role in OFFERABLE}
 
 
 def _systemctl(*arguments):
@@ -35,7 +36,6 @@ def services_for(job, request, plan, installed, lease):
     roles = plan['services']['roles']
     if not roles:
         return None
-    from .inplace_services import UNITS
     from .release_stage import load_bridge
     return load_bridge(job / 'package/lifeos_hook_bridge').memory_module('profile_services').ProfileServices(
         Path(request['profile']), installed, units={role: UNITS[role] for role in roles}, roles=roles,
@@ -171,7 +171,6 @@ def verify_restart(request, plan, entry, started, drained, configuration_before,
     """
     from .host_capabilities import probe_capabilities
     from .host_configuration import check_memory_provider
-    from .inplace_services import UNITS
     units = UNITS if units is None else units
     created = [role for role in plan['services']['created'] if role in CREATED_UNITS]
     check_restarted([units[role] for role in [*started, *created]], drained)
@@ -302,7 +301,7 @@ def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
         update.release()
 
 
-def _run(job, request, action, current, lease, *, checkpoint, release_update=lambda: None):
+def _run(job, request, action, current, lease, *, checkpoint, release_update):
     from .release_worker import (_fresh_native, _restore_mount, _revoke, check_mount_recovery, check_restore,
                                  record_failure)
     profile = Path(request['profile'])

@@ -273,6 +273,12 @@ class InventorySnapshotTests(unittest.TestCase):
                 inplace_worker.check_inventory(before, inplace_worker.inventory_snapshot(request), {})
 
 
+class CreatedUnitsTests(unittest.TestCase):
+    def test_created_units_are_the_standard_gateway_and_dashboard_units(self):
+        self.assertEqual(inplace_worker.CREATED_UNITS,
+                         {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.service'})
+
+
 class ConsumersStoppedTests(unittest.TestCase):
     def setUp(self):
         folder = tempfile.TemporaryDirectory()
