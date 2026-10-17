@@ -48,6 +48,15 @@ def check_preserved(before_data, after_data):
         raise ReleaseRejected('LifeOS changed protected Hermes settings: ' + ', '.join('.'.join(map(str, path)) for path in changed))
 
 
+def check_memory_provider(before_data, after_data, *, owned):
+    """Refuse a change of the memory provider selection unless the operation owns it, as a fresh installation does."""
+    if owned:
+        return
+    path = ('memory', 'provider')
+    if _get(_load(before_data), path) != _get(_load(after_data), path):
+        raise ReleaseRejected('The operation changed the Hermes memory provider selection (memory.provider)')
+
+
 def record(profile, before_data, after_data):
     """Merge this operation's changed values into the profile record, keeping the earliest before-values."""
     path = Path(profile) / RECORD

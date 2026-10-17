@@ -31,7 +31,8 @@ class InplaceServicesTests(unittest.TestCase):
         path = self.root / self.units[role]
         path.write_text('[Unit]\nDescription=LifeOS synthetic inventory control\n[Service]\nType=simple\n'
                         'Environment=PYTHONPATH=' + str(self.source) + '\n'
-                        'ExecStart=' + sys.executable + ' -c "import time; time.sleep(120)" gateway run\n')
+                        'ExecStart=' + sys.executable + ' -c "import time; time.sleep(120)" gateway run\n'
+                        '[Install]\nWantedBy=default.target\n')
         subprocess.run(['systemctl', '--user', '--quiet', 'link', '--runtime', str(path)], check=True)
         subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
         subprocess.run(['systemctl', '--user', 'start', self.units[role]], check=True)
@@ -55,6 +56,13 @@ class InplaceServicesTests(unittest.TestCase):
         result = inventory(self.source, self.state, units=self.units)
         self.assertEqual(result['bound'], ['gateway'])
         self.assertEqual(result['consumers'], [])
+
+    def test_inventory_records_whether_each_bound_unit_is_enabled(self):
+        self.unit('gateway')
+        self.unit('pulse')
+        subprocess.run(['systemctl', '--user', '--quiet', 'enable', '--runtime', self.units['pulse']], check=True)
+        result = inventory(self.source, self.state, units=self.units)
+        self.assertEqual(result['enabled'], {'gateway': 'linked-runtime', 'pulse': 'enabled-runtime'})
 
     def test_hand_started_dashboard_is_offered_a_unit(self):
         pid = self.process('dashboard', '--no-open')

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from optional.lifeos_release_manager.host_configuration import (
-    ABSENT, changed_paths, check_preserved, record, restore)
+    ABSENT, changed_paths, check_memory_provider, check_preserved, record, restore)
 from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
@@ -27,6 +27,15 @@ class HostConfigurationTests(unittest.TestCase):
             check_preserved(STOCK, INSTALLED.replace(b'default: m1', b'default: m2'))
         with self.assertRaisesRegex(ReleaseRejected, 'platforms.discord.enabled'):
             check_preserved(STOCK, INSTALLED.replace(b'enabled: true', b'enabled: false'))
+
+    def test_memory_provider_must_not_change_unless_the_operation_owns_it(self):
+        builtin = INSTALLED + b'memory:\n  provider: builtin\n'
+        check_memory_provider(builtin, builtin, owned=False)
+        for after in (INSTALLED + b'memory:\n  provider: lifeos\n', INSTALLED, INSTALLED + b'memory: {}\n'):
+            with self.subTest(after=after), self.assertRaisesRegex(ReleaseRejected, 'memory.provider'):
+                check_memory_provider(builtin, after, owned=False)
+        check_memory_provider(builtin, INSTALLED + b'memory:\n  provider: lifeos\n', owned=True)
+        check_memory_provider(INSTALLED, INSTALLED + b'memory:\n  enabled: true\n', owned=False)
 
     def test_record_keeps_the_earliest_before_value_and_skips_owned_plugin_settings(self):
         with tempfile.TemporaryDirectory() as directory:

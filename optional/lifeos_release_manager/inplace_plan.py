@@ -114,6 +114,7 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     launcher = home / '.local/bin/hermes' if request['host'].get('transition') else host_launcher(source)
     result.update(services={'roles': roles, 'created': created, 'consumers': consumers['consumers'],
                             'active': {role: consumers['active'][role] for role in roles},
+                            'enabled': {role: consumers['enabled'][role] for role in roles},
                             'signature': None if services is None or fresh_recovery else services.preview()['signature']},
                   created_roles=tuple(created), launchers=[str(launcher)])
     if fresh:

@@ -129,6 +129,57 @@ def check_receipt(receipt, request):
     return receipt
 
 
+def boot_ticks():
+    """Return the time since boot in the clock ticks that ``/proc/<pid>/stat`` uses for process start times."""
+    return int(time.clock_gettime(time.CLOCK_BOOTTIME) * os.sysconf('SC_CLK_TCK'))
+
+
+def _show(unit, *properties):
+    result = subprocess.run(['systemctl', '--user', 'show', unit, '--property=' + ','.join(properties)],
+                            capture_output=True, text=True, timeout=45)
+    if result.returncode:
+        raise ReleaseRejected('The owner service manager does not report ' + unit)
+    return dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
+
+
+def check_restarted(units, drained):
+    """Require each restarted unit to be active with a main process that started after the drain."""
+    from .consumer_scan import start_time
+    for unit in units:
+        values = _show(unit, 'MainPID', 'ActiveState')
+        pid = int(values.get('MainPID') or 0)
+        try:
+            started = start_time(pid) if pid else None
+        except (FileNotFoundError, ProcessLookupError):
+            started = None
+        if values.get('ActiveState') != 'active' or started is None or started <= drained:
+            raise ReleaseRejected('The ' + unit + ' service does not run a new main process after the operation')
+
+
+def check_enabled(recorded):
+    """Require each bound unit to keep the enablement (``UnitFileState``) recorded at review."""
+    for unit, state in recorded.items():
+        if _show(unit, 'UnitFileState').get('UnitFileState') != state:
+            raise ReleaseRejected('The operation changed whether ' + unit + ' starts with your account')
+
+
+def verify_restart(request, plan, entry, started, drained, configuration_before, *, fresh, python, units=None):
+    """Verify the restarted host: new main processes, kept enablement, host capabilities, and the memory provider.
+
+    ``started`` names the bound roles that the service controller restarted; created units started too.
+    The capability probe runs ``python`` against the installed source in a fresh process.
+    """
+    from .host_capabilities import probe_capabilities
+    from .host_configuration import check_memory_provider
+    from .inplace_services import UNITS
+    units = UNITS if units is None else units
+    created = [role for role in plan['services']['created'] if role in CREATED_UNITS]
+    check_restarted([units[role] for role in [*started, *created]], drained)
+    check_enabled({units[role]: state for role, state in plan['services']['enabled'].items()})
+    probe_capabilities(python, request['host']['source'], entry, environment=service_environment(request))
+    check_memory_provider(configuration_before, (Path(request['profile']) / 'config.yaml').read_bytes(), owned=fresh)
+
+
 def adopt_units(services, request):
     """Bind each stopped transition role to whichever reviewed unit file is on disk, managed or stock."""
     units = request['host'].get('transition_units') or {}
@@ -315,6 +366,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
                     services.drain(signature=plan['services']['signature'])
                 services.verify_stopped()
             _consumers_stopped(request, plan)
+            drained = boot_ticks()
             if fresh_recovery:
                 _restore_mount(job, request, mount)
             for entry in programs._load()['entries']:
@@ -353,10 +405,12 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
             verify_runtime(request)
             # Restarted Hermes processes refuse to boot under a live update marker; the checkout is complete.
             release_update()
-            if services is not None:
-                services.resume()
+            started = services.resume()['services_started'] if services is not None else []
             _start_created(plan)
             receipt = verify_registration(request, plan)
+            from .inplace_preparation import host_python
+            verify_restart(request, plan, selected['entry'], started, drained, configuration_before,
+                           fresh=selected['fresh'], python=host_python(request['host']['source']))
             publish(job / 'registration.json', (json.dumps(receipt) + '\n').encode())
             record(profile, configuration_before, configuration_after)
             write_state(job, 'applied')
