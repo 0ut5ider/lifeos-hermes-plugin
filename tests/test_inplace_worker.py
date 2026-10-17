@@ -185,12 +185,12 @@ class RollbackTests(unittest.TestCase):
         self.request = {'host': {'source': str(self.target.parents[1])}}
         self.plan = {'services': {'created': []}}
 
-    def services(self):
+    def services(self, state='stopped'):
         order, outer = self.order, self
 
         class Services:
             def status(self):
-                return {'state': 'stopped'}
+                return {'state': state}
 
             def quiesce(self):
                 order.append('services-stopped')
@@ -200,14 +200,15 @@ class RollbackTests(unittest.TestCase):
 
         return Services()
 
-    def rollback(self, synchronize):
+    def rollback(self, synchronize, services=None):
         def reload(*arguments):
             self.order.append((' '.join(arguments), self.target.read_text(), self.added.exists()))
         def mount():
             self.order.append(('mount', self.target.read_text()))
         with mock.patch.object(inplace_worker, '_systemctl', side_effect=reload), \
                 mock.patch.object(inplace_worker, 'synchronize', side_effect=synchronize):
-            return inplace_worker._rollback(self.job, self.request, self.plan, self.services(), self.programs, mount)
+            return inplace_worker._rollback(self.job, self.request, self.plan,
+                                            self.services() if services is None else services, self.programs, mount)
 
     def test_rollback_restores_mount_programs_reload_dependencies_then_services(self):
         def synchronize(job, request, *, label):
@@ -217,6 +218,13 @@ class RollbackTests(unittest.TestCase):
         self.assertEqual(self.order, ['services-stopped', ('mount', 'patched\n'), ('daemon-reload', 'stock\n', False),
                                       ('dependency-restore', 'stock\n'), ('services-resumed', 'stock\n', False)])
         self.assertFalse((self.job / 'dependency-restore-failure.json').exists())
+
+    def test_services_without_a_drain_journal_are_neither_stopped_nor_resumed(self):
+        def synchronize(job, request, *, label):
+            return {'lock_sha256': 'a' * 64}
+        self.request['host']['transition_units'] = {'gateway': {'before': 'b' * 64, 'after': 'c' * 64}}
+        self.assertTrue(self.rollback(synchronize, services=self.services('none')))
+        self.assertEqual(self.order, [('mount', 'patched\n'), ('daemon-reload', 'stock\n', False)])
 
     def test_failed_dependency_restore_is_recorded_and_services_still_resume(self):
         def synchronize(job, request, *, label):

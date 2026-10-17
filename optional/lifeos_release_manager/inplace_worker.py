@@ -179,10 +179,15 @@ def verify_restart(request, plan, entry, started, drained, configuration_before,
     check_memory_provider(configuration_before, (Path(request['profile']) / 'config.yaml').read_bytes(), owned=fresh)
 
 
+def _journaled(services):
+    """True when the operation binds services and their drain journal exists, so they were stopped."""
+    return services is not None and services.status()['state'] != 'none'
+
+
 def adopt_units(services, request):
     """Bind each stopped transition role to whichever reviewed unit file is on disk, managed or stock."""
     units = request['host'].get('transition_units') or {}
-    if not units or services is None or services.status()['state'] == 'none':
+    if not units or not _journaled(services):
         return
     # A replaced unit file reports NeedDaemonReload until the manager reloads, and inspection refuses that state.
     _systemctl('daemon-reload')
@@ -259,12 +264,12 @@ def remove_preview(job):
 
 def _quiesce(services):
     """Stop the bound services again when an earlier drain published its journal; otherwise nothing stopped."""
-    if services is not None and services.status()['state'] != 'none':
+    if _journaled(services):
         services.quiesce()
 
 
 def _resume(services):
-    if services is not None and services.status()['state'] != 'none':
+    if _journaled(services):
         services.resume()
 
 
@@ -357,7 +362,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
         inventory_before = inventory_snapshot(request)
         try:
             if services is not None:
-                if fresh_recovery and services.status()['state'] != 'none':
+                if fresh_recovery and _journaled(services):
                     services.quiesce()
                 else:
                     services.drain(signature=plan['services']['signature'])
