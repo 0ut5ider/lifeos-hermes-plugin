@@ -79,5 +79,7 @@ The standalone development lifecycle patch still differs from the distributed pa
 - [Qualification provenance](QUALIFICATION-PROVENANCE.json)
 - [Provenance publication](deployment/provenance-publication.json)
 - [Deployment acceptance](deployment/DEPLOYMENT-ACCEPTANCE.json)
-- [HTTP connection metadata](deployment/daily-http-metadata.json)
+- [HTTP connection metadata summary](deployment/daily-http-metadata.json)
+- [Safe HTTP metadata before apply](deployment/daily-http-before.json)
+- [Safe HTTP metadata after apply](deployment/daily-http-after.json)
 - [Registered HTTP recall](deployment/daily-registered-mcp-after.json)

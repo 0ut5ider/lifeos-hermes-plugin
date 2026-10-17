@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-16",
+  "role": "Independent read-only evidence reviewer for PR39",
+  "model": "Claude Opus 5.5 (claude-opus-5-5), effort high",
+  "pr": 39,
+  "head": "d593fb1d81ab36dedd21a427a9168694d1eb8b66",
+  "base": "origin/main 403c5f48c2e4294cc8fae62b497062a282af001d",
+  "verdict": "NOT CLEAR: 1 medium, 1 low, 1 informational",
+  "commands": [
+    {"cmd": "git rev-parse HEAD origin/main; git merge-base origin/main HEAD; git diff --stat origin/main...HEAD; git log --oneline origin/main..HEAD", "result": "HEAD d593fb1d, base 403c5f48, 56 files, 5 commits"},
+    {"cmd": "python3 -I: json.load on every docs/verification/2026-10-16-release-0.7.3/**/*.json", "result": "33 files parse"},
+    {"cmd": "python3 -I: sha256 of each repository file named in deployment/DEPLOYMENT-ACCEPTANCE.json receipt_sha256", "result": "17 MATCH, 2 DIFF, 2 MISSING (see receipt_hash_check)"},
+    {"cmd": "python3 -I: reformat attempts (indent None/1/2/4, sort_keys, separators, trailing newline) on the two DIFF files", "result": "no match"},
+    {"cmd": "python3 -I: insert \"origin\": \"http://192.168.8.252:9119\" after archive_sha256 in development-public-ui-assets.json, json.dumps(indent=2)+newline", "result": "sha256 f92c30ef... MATCHES the bound hash"},
+    {"cmd": "python3 -I: same insertion for daily with http/https x 192.168.8.253/127.0.0.1/localhost x ports 1..65535 and no port", "result": "no match; daily original not recovered"},
+    {"cmd": "python3 -I: same receipt hash check on docs/verification/2026-10-16-release-0.7.2 DEPLOYMENT-ACCEPTANCE.json", "result": "all retained files MATCH, including both public-ui-assets files (which keep an origin field); daily-http-before/after MISSING there too"},
+    {"cmd": "gh api repos/0ut5ider/lifeos-hermes-plugin/releases/tags/v0.7.3", "result": "id 415471877, not draft, not prerelease, target 70fa8390, 5 assets, digests match receipts"},
+    {"cmd": "gh api --paginate repos/0ut5ider/lifeos-hermes-plugin/releases", "result": "15 releases, 78 assets total, 73 outside v0.7.3; assets created before initial/provenance/deployment uploads: 73/76/77"},
+    {"cmd": "curl release download of DEPLOYMENT-ACCEPTANCE.json, QUALIFICATION-PROVENANCE.json, RELEASE-CERTIFICATE.json into /tmp/pr39-review-dl; cmp with repo copies", "result": "all three byte-identical"},
+    {"cmd": "gh pr view 38 --json state,mergeCommit,headRefOid", "result": "MERGED, merge 403c5f48, head 050a4e19"},
+    {"cmd": "git merge-base --is-ancestor 70fa8390 403c5f48", "result": "ancestor"},
+    {"cmd": "git diff 70fa8390 403c5f48 -- tests/test_memory_owner_job_processes.py", "result": "one comment line replaced by two comment lines, no code change"},
+    {"cmd": "python3 -I link checker over the 10 changed .md files (relative targets, tracked status, heading anchors, U+2014)", "result": "221 relative links, 0 broken, 0 untracked, 0 bad anchors, 0 em dash"},
+    {"cmd": "git grep -n -i 0.7.2 HEAD -- '*.md' excluding dated records, agents, history, CHANGELOG", "result": "six active-guide lines still call the 0.7.2 record the current release record"},
+    {"cmd": "gh pr view 39 --json headRefOid,baseRefName,state", "result": "OPEN, head d593fb1d, base main"}
+  ],
+  "local_digests": {
+    "deployment/DEPLOYMENT-ACCEPTANCE.json": {"sha256": "d52018c34777f764c65e051acf5fcf9f296525372ba7d0d73661b7fee08a51ad", "bytes": 4866},
+    "QUALIFICATION-PROVENANCE.json": {"sha256": "977dfb095cf200d04186a8bdc53936981545900db97c52f1f60a2ae0b7709840", "bytes": 6424},
+    "RELEASE-CERTIFICATE.json": {"sha256": "d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58", "bytes": 4225}
+  },
+  "github_assets_v0.7.3": [
+    {"name": "0.7.3-70fa8390.tgz", "id": 648990111, "size": 288173954, "digest": "sha256:2deae5dcedfef8224959312410a5381baa91312532c968afa5534f19fd2149c8", "created_at": "2026-10-16T23:56:20Z"},
+    {"name": "hermes-dashboard.tgz", "id": 648990772, "size": 1542030, "digest": "sha256:e7c93e754de99b6ec66ae17ae313377dc513104da2776a099c391a7aab347bec", "created_at": "2026-10-16T23:56:39Z"},
+    {"name": "RELEASE-CERTIFICATE.json", "id": 648990829, "size": 4225, "digest": "sha256:d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58", "created_at": "2026-10-16T23:56:41Z"},
+    {"name": "QUALIFICATION-PROVENANCE.json", "id": 649054889, "size": 6424, "digest": "sha256:977dfb095cf200d04186a8bdc53936981545900db97c52f1f60a2ae0b7709840", "created_at": "2026-10-17T00:28:12Z"},
+    {"name": "DEPLOYMENT-ACCEPTANCE.json", "id": 649117428, "size": 4866, "digest": "sha256:d52018c34777f764c65e051acf5fcf9f296525372ba7d0d73661b7fee08a51ad", "created_at": "2026-10-17T00:59:13Z"}
+  ],
+  "asset_count_check": {
+    "total_all_releases": 78,
+    "outside_v0.7.3": 73,
+    "created_before_initial_upload": 73,
+    "created_before_provenance_upload": 76,
+    "created_before_deployment_upload": 77,
+    "receipts": {"release-publication.json": 73, "provenance-publication.json": 76, "deployment-publication.json": 77},
+    "note": "created_at counts show no asset removal or replacement among v0.7.3 initial assets (IDs and digests unchanged). They do not prove byte stability of older releases' assets; only v0.7.3 digests were compared."
+  },
+  "receipt_hash_check": {
+    "MATCH": ["release-publication.json", "development-complete.json", "development-postapply-verification.json", "development-gateway.json", "development-model-reply.json", "development-notification-policy.json", "development-local-checkpoint.json", "development-cli-apply.json", "daily-complete.json", "daily-postapply-verification.json", "daily-gateway.json", "daily-model-reply.json", "daily-notification-policy.json", "daily-local-checkpoint.json", "daily-cli-apply.json", "daily-registered-mcp-after.json", "qualification/primary-boundary.json"],
+    "DIFF": {
+      "deployment/development-public-ui-assets.json": {"bound": "f92c30efaad29bcaab74f15652985aa609fb5327e010683b0e9e81b6d41d8f80", "explained_by": "removed key \"origin\": \"http://192.168.8.252:9119\" after archive_sha256; restoring it reproduces the bound hash exactly"},
+      "deployment/daily-public-ui-assets.json": {"bound": "840c05a20b7e879abe5d673d349a320cc082d4ac5ef99867c3409d7ca9b64686", "explained_by": "not recovered; origin on 192.168.8.253, 127.0.0.1, or localhost over any port does not reproduce it"}
+    },
+    "MISSING_from_repo": {"daily-http-before.json": "2aca9bf235db5b2aa702ae3e53ee4bd3c298654a10762948db13781050d6be40", "daily-http-after.json": "3ea1a1d511a0dcb984c7a9fafd91837de046338832a0ad96c46479e3911f1ec3"},
+    "repo_files_not_bound_by_any_hash": ["deployment/daily-http-metadata.json", "deployment/daily-cli-prepare.json", "deployment/development-cli-prepare.json", "deployment/provenance-publication.json", "deployment/deployment-publication.json"],
+    "precedent_0.7.2": "0.7.2 binds the same set of files with the same two MISSING http before/after files and an unbound daily-http-metadata.json; its public-ui-assets files MATCH and retain origin"
+  },
+  "identity_agreement": {
+    "version": "0.7.3 in VERSION, certificate, provenance, deployment acceptance, all server receipts, HTTP manifests",
+    "program_commit": "70fa8390e86c782bb47e7073c492124970ff68d1 everywhere; v0.7.3 tag object is this commit",
+    "archive_sha256": "2deae5dc... everywhere incl. GitHub asset digest",
+    "archive_bytes": "288173954 in README, package-identity, certificate, deployment acceptance, GitHub size",
+    "source_merge": "403c5f48 is the PR38 merge commit; 70fa8390 is its ancestor"
+  },
+  "timeline_utc": {
+    "initial_assets": "2026-10-16T23:56:20Z to 23:56:41Z",
+    "development_checkpoint": "2026-10-17T00:24:11Z (snapshot_time 1792196651)",
+    "provenance_asset": "2026-10-17T00:28:12Z",
+    "development_model_reply_session": "20261016_202808 (local)",
+    "daily_checkpoint": "2026-10-17T00:54:43Z (snapshot_time 1792198483)",
+    "daily_model_reply_session": "20261016_205815 (local)",
+    "deployment_observed_at": "2026-10-17T00:59:12Z",
+    "deployment_asset": "2026-10-17T00:59:13Z",
+    "order": "development checkpoint and checks precede daily checkpoint; consistent with development_updated_before_daily"
+  },
+  "stale_current_pointers": [
+    "docs/hook-parity.md:4",
+    "docs/installation-workflow.md:5",
+    "docs/memory-portability.md:3",
+    "docs/patch-footprint.md:3",
+    "docs/patch-footprint.md:58",
+    "docs/update-policy.md:5"
+  ],
+  "known_limits_preserved": {
+    "1126_of_1129_not_one_clean_run": true,
+    "no_installed_browser_morning_or_guest_restore_claim": true,
+    "program_commit_and_source_merge": true,
+    "runtime_bytes_match_but_not_all_packaged_bytes": true,
+    "daily_http_7_connections_6_enabled": true,
+    "stale_development_archive_identity_disclosed": true,
+    "daily_http_before_retry_cause_not_measured": true,
+    "both_complete_receipts_pass": true,
+    "cli_native_mount_required_false": true,
+    "initial_certificate_unchanged_pending_flags": true
+  },
+  "link_check": {"files": 10, "relative_links": 221, "broken": 0, "bad_anchors": 0, "em_dash": 0, "external_verified": ["pull/38 (MERGED)", "releases/tag/v0.7.3", "releases/download/v0.7.3/DEPLOYMENT-ACCEPTANCE.json (downloaded, identical)"]}
+}

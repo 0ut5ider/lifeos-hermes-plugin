@@ -1,6 +1,6 @@
 # Memory import, return, and removal
 
-Status: supported in the complete integration. The [current release record](verification/2026-10-16-release-0.7.2/README.md) identifies qualification and deployment. The original portability acceptance remains in the [0.6.0 record](verification/2026-10-15-release-0.6.0/README.md).
+Status: supported in the complete integration. The [current release record](verification/2026-10-16-release-0.7.3/README.md) identifies qualification and deployment. The original portability acceptance remains in the [0.6.0 record](verification/2026-10-15-release-0.6.0/README.md).
 
 Import, export, provider return, and software removal are separate authenticated owner actions. Installation and updates do not run them automatically. Source stores remain intact. Keep source bytes, reviewed items, and private exports outside Git. Remote source access requires its authorized connector; a connector failure does not permit filesystem access to memory records.
 

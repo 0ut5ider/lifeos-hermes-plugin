@@ -2,7 +2,7 @@
 
 Use the release manager for a supported installation. It prepares one qualified package containing Hermes, LifeOS, the bridge, manager, dependencies, dashboard, and public commands. Installing only `lifeos_hook_bridge/` does not provide the complete integration.
 
-The [current release record](verification/2026-10-16-release-0.7.2/README.md) identifies the supported package. [Source preparation](clean-install.md) is a separate development workflow.
+The [current release record](verification/2026-10-16-release-0.7.3/README.md) identifies the supported package. [Source preparation](clean-install.md) is a separate development workflow.
 
 ## Before installation
 

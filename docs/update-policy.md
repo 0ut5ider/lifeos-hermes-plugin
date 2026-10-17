@@ -2,7 +2,7 @@
 
 A supported release is a tested combination of Hermes, LifeOS, bridge, manager, dependencies, and dashboard. Update the complete combination through **LifeOS releases**. The [installation guide](installation-workflow.md) owns the shared preparation and apply instructions.
 
-The [current release record](verification/2026-10-16-release-0.7.2/README.md) supplies the exact package identity. The ordered upstream revisions and patch lists are declared in [`install_source.py`](../lifeos_hook_bridge/install_source.py) and [`prepare_sources.py`](../scripts/prepare_sources.py).
+The [current release record](verification/2026-10-16-release-0.7.3/README.md) supplies the exact package identity. The ordered upstream revisions and patch lists are declared in [`install_source.py`](../lifeos_hook_bridge/install_source.py) and [`prepare_sources.py`](../scripts/prepare_sources.py).
 
 ## Owner update workflow
 
