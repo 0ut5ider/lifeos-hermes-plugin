@@ -114,12 +114,21 @@ def removal_admit(action="apply"):
                           launch=workflow.launch)
 
 
+def workflow_admit(identifier, action="recover"):
+    workflow = _workflow()
+    reviewed = next(item for item in workflow.status(profile, owner=OWNER)["operations"]
+                    if item["identifier"] == identifier)
+    workflow.admit(profile, identifier, action, reviewed["review"]["signature"], owner=OWNER, launch=workflow.launch)
+    return _wait(identifier, FINAL - {"ready"})
+
+
 def workflows():
     return _workflow().status(profile, owner=OWNER)
 
 
 MEMORY_ACTIONS = {"claim": claim, "export": export, "return": provider_return, "removal-prepare": removal_prepare,
-                  "removal-admit": removal_admit, "workflows": workflows}
+                  "removal-admit": removal_admit, "workflow-admit": workflow_admit,
+                  "workflows": workflows}
 if action == "prepare":
     origin = "http://127.0.0.1:8765"
     value = cli.prepare(profile, name="Owner", assistant="Hermes", intent=sys.argv[2],

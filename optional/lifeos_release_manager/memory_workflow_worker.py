@@ -25,7 +25,11 @@ def main():
     try:
         if job.parent.name!='.lifeos-portability':raise ValueError('Use a fixed private memory workflow')
         execute(job.parent.parent,job.name,args.action)
-    except BaseException:
+    except BaseException as error:
+        try:
+            from .release_worker import record_failure
+            record_failure(job,error)
+        except (OSError,ValueError,ImportError):pass
         try:
             admitted,_=_job(job.parent.parent,job.name)
             _state(admitted,'interrupted')

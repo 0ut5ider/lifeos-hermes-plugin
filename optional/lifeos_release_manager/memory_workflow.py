@@ -12,6 +12,7 @@ from uuid import uuid4
 from .cli import profile_directory, read_private
 from .inplace_services import profile_units
 from .release_accounts import account_home
+from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint, publish, sync_directory
 from .release_stage import load_bridge
 
@@ -216,14 +217,18 @@ def launch(job, unit, action):
     if result.returncode:raise RuntimeError('The owner service manager cannot start the memory workflow')
 
 
+# The probe runs isolated (-I), which ignores PYTHONDONTWRITEBYTECODE; bytecode would alter retained recovery code.
+PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
+    'package=types.ModuleType("lifeos_memory_return_probe")\n'
+    'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
+    'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
+    'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
+
+
 def _probe(profile, source, expected, *, runtime=None):
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
-    code=('import importlib,json,types\n'
-        'package=types.ModuleType("lifeos_memory_return_probe")\n'
-        'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
-        'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
-        'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
+    code=PROBE_CODE
     host=host if runtime is None else Path(runtime['source'])
     python=sys.executable if runtime is None else runtime.get('python')
     command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
@@ -232,8 +237,21 @@ def _probe(profile, source, expected, *, runtime=None):
         command=stock_command(command,runtime)
     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
     result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
-    if result.returncode or result.stderr:raise RuntimeError('The actual fresh Hermes agent does not verify the reviewed memory')
+    if result.returncode or result.stderr:raise probe_failure(result.stderr)
     return json.loads(result.stdout)
+
+
+PROBE_REFUSAL='MemoryUnavailable: '
+
+
+def probe_failure(stderr):
+    """Return the probe's own refusal for the owner record; other output can hold arbitrary content."""
+    lines=stderr.strip().splitlines()
+    last=lines[-1] if lines else ''
+    head,found,message=last.partition(PROBE_REFUSAL)
+    if found and head.endswith('memory_access.') and message.startswith('The '):
+        return ReleaseRejected(message)
+    return ReleaseRejected('The actual fresh Hermes agent does not verify the reviewed memory')
 
 
 def _cancel_preparation(source, configuration, job, request, lease):
