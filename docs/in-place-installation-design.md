@@ -59,7 +59,7 @@ The existing operation framework stays: one private job directory per operation 
 6. Download Bun into `job/tools` with the existing pinned tool record.
 7. Build a preview tree: copy the host's tracked files (`git ls-files -z`, reflink where possible) into `job/hermes-preview`, then overlay the staged patched files. The preview runs only preparation checks with the owner's interpreter: `hermes config check` on the generated configuration and the reference LifeOS installation. It never becomes a launcher target, and preparation deletes it after the checks.
 8. For a first installation, install LifeOS into `job/reference-home/.claude` as the current release does.
-9. Build the program plan (section 4.3), prepare the `ProgramTransaction`, and seal the plan. The review payload shows the Hermes version and commit, the 94 host files, the Python packages to add, the configuration keys, and the services that restart.
+9. Build the program plan (section 4.3), prepare the `ProgramTransaction`, and seal the plan. The review payload shows the Hermes version and commit, the 96 host files, the Python packages to add, the configuration keys, and the services that restart.
 
 ### 4.2 Apply (detached worker)
 
@@ -82,7 +82,7 @@ The plan uses `ProgramTransaction` for every change. It provides fsynced publica
 
 | Target | Change |
 | --- | --- |
-| 94 Hermes source files | Stock to patched (26 added files have no before-copy) |
+| 96 Hermes source files | Stock to patched (27 added files have no before-copy) |
 | `<profile>/plugins/lifeos-hook-bridge` | New directory |
 | `<profile>/plugins/lifeos-release-manager` | Replace with the release's manager |
 | `<profile>/config.yaml` | Enable both plugins; set the bridge `lifeos_source_dir` |
@@ -134,7 +134,7 @@ The compatibility check gains an `installed` state. It applies when the record e
 
 **Update LifeOS** and **Update plugin** stage the new patched files from the retained originals. For each target in either release, the desired content is the new patched file, or the original (or absence) when the new release no longer changes that path. The transaction moves from the recorded state to the new state. A Hermes commit change is refused unless the new release has an entry for the new commit and a qualified transition; this design does not implement Hermes version transitions.
 
-**Removal** keeps the current order: a verified memory provider return, then software removal. The in-place removal plan restores the 94 host files from the originals, deletes the added files, removes the bridge and manager directories, removes the LifeOS configuration keys, removes the hold, the host record, and the receipts, and synchronizes the environment without the bridge. It does not prepare a stock runtime or change launchers. The configuration, `.env`, settings-hook, native-file, and service logic in the existing `removal_*` modules is reused; the generation and runtime selection is replaced.
+**Removal** keeps the current order: a verified memory provider return, then software removal. The in-place removal plan restores the 69 modified host files from the originals, deletes the 27 added files, removes the bridge and manager directories, removes the LifeOS configuration keys, removes the hold, the host record, and the receipts, and synchronizes the environment without the bridge. It does not prepare a stock runtime or change launchers. The configuration, `.env`, settings-hook, native-file, and service logic in the existing `removal_*` modules is reused; the generation and runtime selection is replaced.
 
 Before and after each operation the worker records an inventory: enabled plugins and their directories, configured toolsets and MCP servers, the model and provider keys, and the selected environment's package set. The review shows the planned difference; verification requires every item outside the planned difference to be unchanged.
 
@@ -147,7 +147,7 @@ The bridge compares the host identity with `lifeos-host.json` at registration an
 1. Back up the profile, `~/.claude`, `~/.config/LIFEOS`, `~/.local/bin`, and the user units.
 2. Stop the services.
 3. Install stock Hermes `v0.21.7` with `install.sh --commit 71d34bad... --skip-setup` into `~/.hermes/hermes-agent`. `--skip-setup` skips `hermes setup` and `gateway install`. The installer's products stage still runs configuration migration and skills synchronization on the live profile, and its environment build includes the enabled bridge, so the backup in step 1 is required and the rehearsal checks the result. The installer does not repoint launchers that another owner created (`hermes_cli/_launchers.py:505-548`).
-4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally.
+4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally. A managed gateway unit runs the managed launcher, so preparation also generates the unit that `hermes gateway install` writes for the stock checkout (`hermes_cli.gateway.generate_systemd_unit`). The program transaction publishes it with the launchers. The service controller then rebinds the stopped gateway role to the reviewed unit file, so resume, rollback, and recovery accept either the managed or the stock definition. Preparation refuses the transition when another unit still runs the managed runtime. The registration receipt names the Hermes checkout that the gateway imports, and the worker requires the stock checkout.
 5. Verify, then retain the managed job directories until the owner approves their removal.
 
 The transition is rehearsed first on a clone of the development container.

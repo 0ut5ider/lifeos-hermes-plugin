@@ -1,6 +1,6 @@
 # Patch the existing Hermes installation
 
-Decision date: 2026-10-17. Status: accepted architecture, implementation and installed qualification pending.
+Decision date: 2026-10-17. Status: accepted architecture. Implementation and installed qualification on disposable containers complete on `feature/minimal-install-review` (0.8.0-rc.1). Independent review, release publication, and development and daily deployment pending.
 
 The installer must use the owner's existing Hermes installation. It must check compatibility before it offers installation. It must refuse an unsupported installation with a specific reason and leave active programs unchanged.
 
@@ -83,11 +83,12 @@ Existing managed-runtime installations, including development and daily, need a 
 These steps form one release. Passing an early step does not authorize deployment of a partial installer.
 
 1. **Compatibility and bootstrap.** Add the compatibility manifest, read-only detector, and clear page results. Test supported, unsupported, edited, partially patched, shared, and read-only installations. Verify that refusal leaves programs and configuration unchanged.
-   Status 2026-10-17: the detector, manifest generator, command, and page result are implemented on `feature/minimal-install-review`. The [host compatibility record](verification/2026-10-17-host-compatibility/README.md) lists the tests and the read-only results on three real hosts. **Install LifeOS** does not use the result yet; that gate belongs with the in-place transaction.
+   Status 2026-10-17: the detector, manifest generator, command, and page result are implemented on `feature/minimal-install-review`. The [host compatibility record](verification/2026-10-17-host-compatibility/README.md) lists the tests and the read-only results on three real hosts. The in-place **Install LifeOS** and update actions use the result, and the worker repeats the check under the installation lock.
 2. **Component preparation.** Add pinned LifeOS acquisition and verified component caching. Reproduce the exact qualified Hermes and LifeOS source identities. Test changed upstream HEAD, bad hashes, missing components, interrupted downloads, and cache reuse.
 3. **In-place transaction.** Adapt the existing patch machinery to durable file recovery and all-consumer coordination. Test real services, concurrent update admission, later edits, stale review, and interruption at each journal state. Prove that Hermes and its interpreter retain their original locations.
 4. **Update and removal.** Implement qualified patch transitions, upstream update coordination, and original-file restoration. Test idempotent operations, conflicts, failure rollback, service-state restoration, and memory ownership preservation.
 5. **Installed qualification.** Test the GitHub URL and actual dashboard buttons on disposable existing installations with extra tools, plugins, dependencies, and profiles. Include representative incompatible extensions and an existing managed-release transition. Use real services and recovery paths; stubbed callbacks do not satisfy this gate.
+   Status 2026-10-17 for steps 2 to 5: the [in-place qualification record](verification/2026-10-17-inplace-e2e/README.md) lists the container results, including the managed-release transition and its restore. The GitHub plugin URL and the actual dashboard buttons in step 5 remain untested.
 6. **Review and release.** Complete independent review, fix findings, and qualify the exact component release. Update the public installation and recovery guides. Deploy development before daily after the whole release passes.
 
 ## Evidence and implementation gaps

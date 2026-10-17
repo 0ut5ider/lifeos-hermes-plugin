@@ -17,11 +17,11 @@ The [0.7.3 release record](docs/verification/2026-10-16-release-0.7.3/README.md)
 The accepted [in-place installation plan](docs/in-place-installation-plan.md) supersedes the private-runtime recommendation in the architecture review. The installer must preserve the existing Hermes installation and refuse unsupported hosts. Complete and qualify these steps as one release:
 
 - [x] Add the read-only compatibility detector, manifest generator, `hermes lifeos-release compatibility`, and the dashboard result. See the [host compatibility record](docs/verification/2026-10-17-host-compatibility/README.md).
-- [ ] Gate the in-place **Install LifeOS** action on a compatible result, and repeat the check under the installation lock before any change.
-- [ ] Add pinned LifeOS component acquisition and verified cache reuse.
-- [ ] Add durable in-place patch transactions and coordinated consumer restart.
-- [ ] Add qualified patch updates, Hermes updater coordination, and original-file restoration.
-- [ ] Qualify real dashboard installation, recovery, and removal with existing tools and plugins, including the managed-release transition.
+- [x] Gate the in-place **Install LifeOS** action on a compatible result, and repeat the check under the installation lock before any change.
+- [x] Add pinned LifeOS component acquisition and verified cache reuse.
+- [x] Add durable in-place patch transactions and coordinated consumer restart.
+- [x] Add qualified patch updates, Hermes updater coordination, and original-file restoration.
+- [ ] Qualify real dashboard installation, recovery, and removal with existing tools and plugins, including the managed-release transition. The [in-place qualification record](docs/verification/2026-10-17-inplace-e2e/README.md) covers these flows on containers through the release manager functions and a loopback release server. The GitHub plugin URL and the actual dashboard buttons remain untested.
 - [ ] Complete independent review and exact-release qualification before development and daily deployment.
 
 ## Completed capabilities with canonical references
