@@ -21,6 +21,7 @@ worker = importlib.import_module(namespace_name + '.release_worker')
 stage = importlib.import_module(namespace_name + '.release_stage')
 services = importlib.import_module(namespace_name + '.release_services')
 memory_workflow = importlib.import_module(namespace_name + '.memory_workflow')
+host_compatibility = importlib.import_module(namespace_name + '.host_compatibility')
 
 
 def profile():
@@ -117,6 +118,15 @@ def installation():
     existing = any(path.exists() or path.is_symlink() for path in (
         selected / 'integration-release.json', selected / 'lifeos-installation.json', Path.home() / '.claude'))
     return {'installed': existing}
+
+
+@router.get('/compatibility')
+def compatibility():
+    try:
+        value = host_compatibility.check(commands.profile_directory(profile()))
+    except (ValueError, OSError, RuntimeError, ImportError) as error:
+        raise HTTPException(status_code=409, detail='The Hermes compatibility check is unavailable') from error
+    return JSONResponse(value, headers={'Cache-Control': 'no-store'})
 
 
 @router.post('/prepare', status_code=202)

@@ -30,6 +30,7 @@ def configure(parser: argparse.ArgumentParser):
     prepare.add_argument('--version', dest='release_version', help='Select an exact published integration version instead of the latest stable release.')
     prepare.add_argument('--name', default='User', help='Set the name only for a fresh native installation.')
     prepare.add_argument('--assistant', default='Hermes', help='Set the assistant name only for a fresh native installation.')
+    actions.add_parser('compatibility', help='Check, without changes, whether LifeOS can patch this Hermes installation.')
     status = actions.add_parser('status', help='Report release operations under this profile.')
     status.add_argument('identifier', nargs='?')
     for action in ('start', 'recover', 'rollback'):
@@ -287,6 +288,11 @@ def run(args):
     try:
         if args.action == 'prepare':
             value = prepare(profile, args.release_version, name=args.name, assistant=args.assistant)
+        elif args.action == 'compatibility':
+            from .host_compatibility import check
+            value = check(profile)
+            print(json.dumps(value, indent=2))
+            return 0 if value['compatible'] else 1
         elif args.action == 'status':
             value = status(profile, args.identifier)
         else:

@@ -49,6 +49,8 @@ Stock Hermes lacks some required admission, lifecycle, and final-answer controls
 
 The accepted [installation redesign](docs/in-place-installation-plan.md) uses the existing Hermes installation, checks exact compatibility, and applies reversible host patches. It has no replacement-runtime option. Implementation and qualification are pending; the 0.7.3 instructions above still describe the published managed-runtime release.
 
+The development branch includes the first step: a read-only compatibility check. Run `hermes lifeos-release compatibility` or open **Hermes compatibility** on the LifeOS releases page. The check compares the exact Hermes commit, the SHA-256 hash of each of the 94 patch target files, the Git working tree, the installation layout, profiles, and Python dependencies. It reports every blocking reason and changes nothing.
+
 The [Step 1 ledger](docs/parity/step1-acceptance.md) records 152 accepted scenarios. These selected comparisons do not prove equivalence for every possible Claude Code event or handler branch.
 
 ## Lasting memory, experimental

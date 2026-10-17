@@ -16,7 +16,8 @@ The [0.7.3 release record](docs/verification/2026-10-16-release-0.7.3/README.md)
 
 The accepted [in-place installation plan](docs/in-place-installation-plan.md) supersedes the private-runtime recommendation in the architecture review. The installer must preserve the existing Hermes installation and refuse unsupported hosts. Complete and qualify these steps as one release:
 
-- [ ] Add exact compatibility admission and clear bootstrap page results.
+- [x] Add the read-only compatibility detector, manifest generator, `hermes lifeos-release compatibility`, and the dashboard result. See the [host compatibility record](docs/verification/2026-10-17-host-compatibility/README.md).
+- [ ] Gate the in-place **Install LifeOS** action on a compatible result, and repeat the check under the installation lock before any change.
 - [ ] Add pinned LifeOS component acquisition and verified cache reuse.
 - [ ] Add durable in-place patch transactions and coordinated consumer restart.
 - [ ] Add qualified patch updates, Hermes updater coordination, and original-file restoration.

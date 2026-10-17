@@ -2,14 +2,24 @@
 // ABOUTME: Verifies preparation actions and review remain separate from program installation.
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const {find, loadDashboard, settle} = require('./support/dashboard_sdk.cjs');
+const {find, findAll, loadDashboard, settle, text} = require('./support/dashboard_sdk.cjs');
 
-async function page(installed, operations = []) {
+const qualified = {label: 'v0.21.7', commit: '71d34bad1045610252eda02ee79549436896e784'};
+const compatible = {format: 1, compatible: true, state: 'compatible', reasons: [], qualified: 'v0.21.7',
+  supported: [qualified], dependencies: {add: ['tree-sitter==0.26.0'], conflicts: []},
+  detected: {source: '/home/owner/.hermes/hermes-agent', commit: qualified.commit, version: 'v0.21.7',
+    profile: '/home/owner/.hermes', interpreter: '/home/owner/.hermes/hermes-agent/venv/bin/python', python: '3.11.9'}};
+
+async function page(installed, operations = [], compatibility = compatible) {
   const calls = [];
   const sdk = {
     fetchJSON: async (url, options) => {
       calls.push({url, options});
       if (url.endsWith('/installation')) return {installed};
+      if (url.endsWith('/compatibility')) {
+        if (compatibility instanceof Error) throw compatibility;
+        return compatibility;
+      }
       if (url.endsWith('/prepare')) return {identifier: 'a'.repeat(32), state: 'preparing'};
       if (url.endsWith('/review')) return {identifier: url.split('/').at(-2), version: '0.7.3', commit: 'c'.repeat(40),
         package_sha256: 'd'.repeat(64), restart_required: true};
@@ -79,5 +89,64 @@ test('a ready release is reviewed before its separate installation request', asy
   assert.equal(find(ui.render(), (node) => node.type === 'button' && node.children.includes('Install this release')), null);
   assert.ok(find(ui.render(), (node) => node.props.role === 'status' &&
     node.children.includes('Release operation started. Hermes can restart. Refresh this page to check the result.')));
+  ui.cleanup();
+});
+
+test('compatible Hermes shows the detected identity and the packages installation adds', async () => {
+  const ui = await page(false);
+  const section = find(ui.render(), (node) => node.props.id === 'release_compatibility');
+  assert.ok(section);
+  const content = text(section);
+  assert.match(content, /LifeOS can be installed on this Hermes installation\./);
+  assert.match(content, /Detected Hermes: v0\.21\.7 \(commit 71d34bad1045\)/);
+  assert.match(content, /Source: \/home\/owner\/\.hermes\/hermes-agent/);
+  assert.match(content, /Installation adds these Python packages: tree-sitter==0\.26\.0/);
+  assert.equal(ui.calls.filter((item) => item.url.endsWith('/compatibility')).length, 1);
+  ui.cleanup();
+});
+
+test('incompatible Hermes lists every reason, affected files, and the qualified versions', async () => {
+  const paths = Array.from({length: 50}, (_, index) => 'agent/file' + index + '.py');
+  const ui = await page(false, [], {...compatible, compatible: false, state: 'unsupported_version', qualified: null,
+    detected: {...compatible.detected, commit: 'f4795c922c2ef9eef244ea0fb886ad863dc452be', version: 'v0.21.4-588-gf4795c922'},
+    reasons: [
+      {code: 'unsupported_version', message: 'LifeOS has no qualified patch set for this Hermes version.'},
+      {code: 'modified_files', message: 'Hermes source files differ from the qualified upstream version.', paths, count: 72},
+    ]});
+  const section = find(ui.render(), (node) => node.props.id === 'release_compatibility');
+  const content = text(section);
+  assert.match(content, /LifeOS can't be installed on this Hermes installation\./);
+  assert.match(content, /LifeOS has no qualified patch set for this Hermes version\./);
+  assert.match(content, /Hermes source files differ from the qualified upstream version\./);
+  assert.match(content, /agent\/file0\.py/);
+  assert.doesNotMatch(content, /agent\/file10\.py/);
+  assert.match(content, /and 62 more/);
+  assert.match(content, /Qualified Hermes versions: v0\.21\.7 \(commit 71d34bad1045\)/);
+  assert.match(content, /Detected Hermes: v0\.21\.4-588-gf4795c922 \(commit f4795c922c2e\)/);
+  assert.equal(findAll(section, (node) => node.type === 'li').length, 2);
+  ui.cleanup();
+});
+
+test('check again repeats the read-only compatibility request', async () => {
+  const ui = await page(false);
+  await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Check again')).props.onClick();
+  const requests = ui.calls.filter((item) => item.url === '/api/plugins/lifeos-release-manager/compatibility');
+  assert.equal(requests.length, 2);
+  assert.equal(requests.every((item) => item.options === undefined), true);
+  ui.cleanup();
+});
+
+test('an unavailable compatibility check is reported without blocking release status', async () => {
+  const ui = await page(false, [], new Error('The Hermes compatibility check is unavailable'));
+  const content = text(find(ui.render(), (node) => node.props.id === 'release_compatibility'));
+  assert.match(content, /The Hermes compatibility check is unavailable/);
+  assert.ok(find(ui.render(), (node) => node.type === 'button' && node.children.includes('Install LifeOS')));
+  ui.cleanup();
+});
+
+test('a malformed compatibility response is reported instead of breaking the page', async () => {
+  const ui = await page(false, [], {operations: []});
+  const content = text(find(ui.render(), (node) => node.props.id === 'release_compatibility'));
+  assert.match(content, /The Hermes compatibility check returned an unexpected result\./);
   ui.cleanup();
 });

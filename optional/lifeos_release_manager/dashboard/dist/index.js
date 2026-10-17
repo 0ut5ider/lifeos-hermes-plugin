@@ -112,6 +112,46 @@
       }), message ? h("p", {role: "status"}, message) : null));
   }
 
+  function shortCommit(commit) {
+    return commit ? commit.slice(0, 12) : "unknown";
+  }
+
+  function compatibilitySection(result, error, busy, check) {
+    const visible = 10;
+    let body;
+    if (error) {
+      body = [h("p", {key: "error", role: "alert"}, error)];
+    } else if (!result) {
+      body = [h("p", {key: "pending", className: "lifeos-empty"}, "Checking this Hermes installation.")];
+    } else {
+      const detected = result.detected;
+      body = [
+        h("p", {key: "result", className: result.compatible ? "lifeos-notice" : "lifeos-notice lifeos-caution"},
+          result.compatible ? "LifeOS can be installed on this Hermes installation."
+            : "LifeOS can't be installed on this Hermes installation."),
+        result.reasons.length ? h("ul", {key: "reasons"}, result.reasons.map(function (reason) {
+          const paths = reason.paths ?? [];
+          const hidden = (reason.count ?? paths.length) - Math.min(paths.length, visible);
+          return h("li", {key: reason.code}, reason.message,
+            paths.length ? h("p", {className: "lifeos-help"}, h("code", null, paths.slice(0, visible).join(", ")),
+              hidden > 0 ? " and " + hidden + " more" : "") : null);
+        })) : null,
+        h("p", {key: "detected"}, "Detected Hermes: " + (detected.version ?? "unknown") + " (commit " + shortCommit(detected.commit) + ")"),
+        h("p", {key: "source", className: "lifeos-help"}, "Source: " + detected.source),
+        h("p", {key: "supported", className: "lifeos-help"}, "Qualified Hermes versions: " + result.supported.map(function (entry) {
+          return entry.label + " (commit " + shortCommit(entry.commit) + ")";
+        }).join(", ")),
+        result.compatible && result.dependencies.add.length ? h("p", {key: "packages", className: "lifeos-help"},
+          "Installation adds these Python packages: " + result.dependencies.add.join(", ")) : null,
+      ];
+    }
+    return h("section", {id: "release_compatibility", "aria-labelledby": "release_compatibility_title"},
+      h("h2", {id: "release_compatibility_title"}, "Hermes compatibility"),
+      h("p", null, "LifeOS patches your existing Hermes installation. This check doesn't change anything, and the installer repeats it right before it makes any change."),
+      ...body,
+      h("button", {type: "button", disabled: busy, onClick: check}, "Check again"));
+  }
+
   function Releases() {
     const [operations, setOperations] = SDK.hooks.useState([]);
     const [reviewed, setReviewed] = SDK.hooks.useState(null);
@@ -121,6 +161,23 @@
     const [version, setVersion] = SDK.hooks.useState("");
     const [name, setName] = SDK.hooks.useState("User");
     const [assistant, setAssistant] = SDK.hooks.useState("Hermes");
+    const [compatibility, setCompatibility] = SDK.hooks.useState(null);
+    const [compatibilityError, setCompatibilityError] = SDK.hooks.useState("");
+
+    async function checkCompatibility() {
+      try {
+        const result = await SDK.fetchJSON("/api/plugins/lifeos-release-manager/compatibility");
+        if (!result || typeof result.compatible !== "boolean" || !Array.isArray(result.reasons) || !result.detected
+            || !Array.isArray(result.supported) || !result.dependencies || !Array.isArray(result.dependencies.add)) {
+          throw new Error("The Hermes compatibility check returned an unexpected result.");
+        }
+        setCompatibility(result);
+        setCompatibilityError("");
+      } catch (error) {
+        setCompatibility(null);
+        setCompatibilityError(error.message);
+      }
+    }
 
     async function refresh() {
       const result = await SDK.fetchJSON(endpoint);
@@ -140,6 +197,7 @@
         });
       }
       poll();
+      checkCompatibility();
       const timer = setInterval(poll, 5000);
       return function () { active = false; clearInterval(timer); };
     }, []);
@@ -200,10 +258,12 @@
         h("h1", null, "LifeOS releases"),
         h("p", {className: "lifeos-intro"}, "Install or update the complete integration. Prepare a release first, review its contents, then approve installation.")),
       h("nav", {className: "lifeos-navigation", "aria-label": "LifeOS release sections"},
+        h("a", {href: "#release_compatibility"}, "Hermes compatibility"),
         h("a", {href: "#release_prepare"}, "Prepare a release"),
         h("a", {href: "#release_operations"}, "Release operations"),
         installed === true ? h("a", {href: "#memory_workflows"}, "Memory ownership") : null,
         h("a", {href: "/lifeos-bridge"}, "Memory and model settings")),
+      compatibilitySection(compatibility, compatibilityError, busy, checkCompatibility),
       h("section", {id: "release_prepare", "aria-labelledby": "release_prepare_title"},
         h("h2", {id: "release_prepare_title"}, "Prepare a release"),
         h("p", null, "Use these controls or ask Hermes in chat. Preparation does not install the release."),
