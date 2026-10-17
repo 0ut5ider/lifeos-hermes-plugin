@@ -92,6 +92,29 @@ def _stop_created(plan):
                            capture_output=True, text=True, timeout=90)
 
 
+def verify_registration(request, plan):
+    """Require the restarted gateway's main process to register the installed bridge in patched mode."""
+    if 'gateway' not in plan['services']['roles']:
+        return None
+    from .release_stage import load_bridge
+    profile = Path(request['profile'])
+    registration = load_bridge(profile / 'plugins/lifeos-hook-bridge').memory_module('registration')
+    deadline = time.monotonic() + 90
+    while time.monotonic() < deadline:
+        result = subprocess.run(['systemctl', '--user', 'show', 'hermes-gateway.service', '--property=MainPID,ActiveState'],
+                                capture_output=True, text=True, timeout=45)
+        values = dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
+        if values.get('ActiveState') != 'active':
+            return None
+        receipt = registration.read_receipt(profile, int(values.get('MainPID') or 0))
+        if receipt is not None:
+            if receipt['mode'] != 'patched':
+                raise ReleaseRejected('The restarted gateway loaded the bridge without the patched host hooks')
+            return receipt
+        time.sleep(1)
+    raise ReleaseRejected('The restarted gateway did not register the bridge')
+
+
 def remove_preview(job):
     preview = job / 'hermes-preview'
     if preview.is_dir() and not preview.is_symlink():
@@ -216,6 +239,8 @@ def _run(job, request, action, current, lease, *, checkpoint):
             if services is not None:
                 services.resume()
             _start_created(plan)
+            receipt = verify_registration(request, plan)
+            publish(job / 'registration.json', (json.dumps(receipt) + '\n').encode())
             write_state(job, 'applied')
             remove_preview(job)
             return {'state': 'applied'}

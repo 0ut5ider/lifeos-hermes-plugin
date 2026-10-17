@@ -39,7 +39,10 @@ def register(ctx: Any) -> None:
     from .lifeos_installation import selection
     home = selection(profile).home if profile is not None else Path.home()
     settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(home / ".claude/settings.json"))).expanduser()
+    from .registration import write_receipt
     if not settings.is_file():
+        if profile is not None:
+            write_receipt(profile, "inactive")
         return
     def model_tiers() -> dict[str, Any]:
         try:
@@ -77,6 +80,8 @@ def register(ctx: Any) -> None:
         ctx.register_hook("post_tool_call", bridge.post_tool_call)
         ctx.register_hook("on_session_finalize", bridge.session_end)
         ctx.register_hook("api_request_error", bridge.api_request_error)
+        if profile is not None:
+            write_receipt(profile, "reduced")
         return
     ctx.register_hook("pre_command_approval", bridge.command_approval)
     ctx.register_hook("augment_tool_result", bridge.augment_tool_result)
@@ -90,3 +95,5 @@ def register(ctx: Any) -> None:
     ctx.register_hook("on_session_finalize", bridge.session_end)
     ctx.register_hook("api_request_error", bridge.api_request_error)
     ctx.register_hook("on_turn_result", bridge.turn_end)
+    if profile is not None:
+        write_receipt(profile, "patched")
