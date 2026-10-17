@@ -16,7 +16,7 @@ The complete release includes the supported Hermes source, LifeOS source, bridge
 5. For a command-line installation without managed native memory, the owner can run `hermes lifeos-release start IDENTIFIER`. A native mount with managed memory requires the authenticated dashboard owner grant.
 6. Run `hermes lifeos-release status IDENTIFIER` after Hermes restarts. Report the actual state. If it is applied, run `hermes lifeos-version` and report the verified version and commit.
 
-To check whether LifeOS can patch this Hermes installation in place, run `hermes lifeos-release compatibility`. Report the state, the detected version and commit, and each reason. The command changes nothing. Its exit status is 0 only for a compatible installation.
+To check whether LifeOS can patch this Hermes installation in place, run `hermes lifeos-release compatibility`. Report the state, the detected version and commit, and each reason. The command changes nothing. Its exit status is 0 for a compatible installation and for an installation that LifeOS already patched (state `installed`).
 
 An operation in preparation_failed has not selected new programs. An operation in recovery_required needs owner review. Use the dashboard recovery control or `hermes lifeos-release recover IDENTIFIER` when the owner authorizes recovery. An existing installation can select its retained prior programs with the dashboard control or `hermes lifeos-release rollback IDENTIFIER`. The first installation has no prior integration release.
 

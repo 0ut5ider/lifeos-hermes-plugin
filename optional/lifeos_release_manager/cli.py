@@ -292,7 +292,7 @@ def run(args):
             from .host_compatibility import check
             value = check(profile)
             print(json.dumps(value, indent=2))
-            return 0 if value['compatible'] else 1
+            return 0 if value['compatible'] or value['installed'] else 1
         elif args.action == 'status':
             value = status(profile, args.identifier)
         else:

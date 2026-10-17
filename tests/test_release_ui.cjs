@@ -150,3 +150,11 @@ test('a malformed compatibility response is reported instead of breaking the pag
   assert.match(content, /The Hermes compatibility check returned an unexpected result\./);
   ui.cleanup();
 });
+
+test('an installed host is reported as installed rather than incompatible', async () => {
+  const ui = await page(true, [], {...compatible, compatible: false, installed: true, state: 'installed'});
+  const content = text(find(ui.render(), (node) => node.props.id === 'release_compatibility'));
+  assert.match(content, /LifeOS is installed on this Hermes installation\./);
+  assert.doesNotMatch(content, /can't be installed/);
+  ui.cleanup();
+});

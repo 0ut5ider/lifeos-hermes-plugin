@@ -1,6 +1,7 @@
 # ABOUTME: Checks the read-only Hermes compatibility detector against disposable real Git installations.
 # ABOUTME: Covers supported, unsupported, edited, partially patched, shared, and unsupported-layout hosts.
 import hashlib
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -281,6 +282,68 @@ class HostCompatibilityTests(unittest.TestCase):
         result = self.inspect()
         self.assertEqual(result["state"], "shared_installation")
         self.assertEqual(self.codes(result), ["shared_installation", "modified_files", "dependency_conflict"])
+
+
+class InstalledHostTests(unittest.TestCase):
+    """Hosts that carry a LifeOS host record are classified against the record, not the fresh-install entry."""
+
+    setUp = HostCompatibilityTests.setUp
+    patch = HostCompatibilityTests.patch
+
+    def record(self, **changes):
+        from optional.lifeos_release_manager.host_record import build_record
+        value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                             operation="e" * 32, version="0.8.0")
+        return {**value, **changes}
+
+    def inspect_installed(self, record):
+        return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                            search_path=[str(self.packages)], record=record)
+
+    def test_recorded_patched_host_is_installed(self):
+        self.patch()
+        result = self.inspect_installed(self.record())
+        self.assertEqual(result["state"], "installed")
+        self.assertTrue(result["installed"])
+        self.assertFalse(result["compatible"])
+        self.assertEqual(result["reasons"], [])
+        self.assertEqual(result["qualified"], "v0.0.1")
+
+    def test_recorded_host_with_a_reverted_target_is_drift(self):
+        self.patch(added=False)
+        result = self.inspect_installed(self.record())
+        self.assertEqual(result["state"], "host_drift")
+        self.assertEqual(result["reasons"][0]["paths"], ["hermes_cli/new_hook.py"])
+
+    def test_recorded_host_at_another_commit_is_drift(self):
+        self.patch()
+        result = self.inspect_installed(self.record(commit="f" * 40))
+        self.assertEqual(result["state"], "host_drift")
+        self.assertFalse(result["installed"])
+
+    def test_recorded_host_in_another_source_is_drift(self):
+        self.patch()
+        result = self.inspect_installed(self.record(source=str(self.root / "other")))
+        self.assertEqual(result["state"], "host_drift")
+
+    def test_recorded_host_with_an_edit_outside_the_targets_is_modified(self):
+        self.patch()
+        (self.source / "model_tools.py").write_text("TOOLS = ['edited']\n")
+        result = self.inspect_installed(self.record())
+        self.assertEqual(result["state"], "modified_source")
+        self.assertFalse(result["installed"])
+
+    def test_check_reads_the_profile_record(self):
+        from optional.lifeos_release_manager import host_compatibility
+        from optional.lifeos_release_manager.host_record import record_path
+        self.patch()
+        record_path(self.home).write_text(json.dumps(self.record()))
+        record_path(self.home).chmod(0o600)
+        original = host_compatibility.running_source
+        host_compatibility.running_source = lambda: self.source
+        self.addCleanup(setattr, host_compatibility, "running_source", original)
+        self.assertEqual(host_compatibility.check(self.home, manifest=self.manifest,
+                                                  search_path=[str(self.packages)])["state"], "installed")
 
 
 class ManifestTests(unittest.TestCase):

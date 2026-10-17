@@ -38,6 +38,7 @@ STATES = {
     'partially_patched': 'partially_patched',
     'patched_without_record': 'patched_without_record',
     'dependency_conflict': 'dependency_conflict',
+    'host_drift': 'host_drift',
 }
 
 # Environment variables that would make Git inspect a repository other than the selected source.
@@ -295,11 +296,12 @@ def _dependencies(required, search_path):
     return {'add': add, 'conflicts': conflicts}
 
 
-def _result(detected, manifest, reasons, *, qualified=None, dependencies=None):
-    state = STATES[reasons[0]['code']] if reasons else 'compatible'
+def _result(detected, manifest, reasons, *, qualified=None, dependencies=None, installed=False):
+    state = STATES[reasons[0]['code']] if reasons else 'installed' if installed else 'compatible'
     return {
         'format': 1,
-        'compatible': not reasons,
+        'compatible': not reasons and not installed,
+        'installed': not reasons and installed,
         'state': state,
         'reasons': reasons,
         'detected': detected,
@@ -309,8 +311,32 @@ def _result(detected, manifest, reasons, *, qualified=None, dependencies=None):
     }
 
 
-def inspect_host(source, manifest, *, hermes_home, search_path=None):
-    """Classify one Hermes installation against the manifest without writing to it."""
+def _installed_reasons(source, record, head):
+    """Compare a host that LifeOS patched with its host record."""
+    if record['source'] != str(source) or record['commit'] != head:
+        return [_reason('host_drift', 'LifeOS was installed into another Hermes source or version than the one running now.')]
+    tree = _working_tree(source, set(record['files']))
+    if tree is None:
+        return [_reason('git_unavailable', 'Git cannot read the Hermes checkout as this account.')]
+    modified, untracked, hidden = tree
+    _, patched, other = _targets(source, record['files'])
+    reasons = []
+    if modified:
+        reasons.append(_reason('modified_files', 'Hermes source files differ from the qualified upstream version.', modified))
+    if untracked:
+        reasons.append(_reason('untracked_files',
+            'The Hermes source contains files that are not part of the upstream version.', untracked))
+    if hidden:
+        reasons.append(_reason('hidden_changes', 'Git is set to ignore changes to some tracked Hermes files.', hidden))
+    drifted = sorted(set(record['files']) - set(patched))
+    if drifted:
+        reasons.insert(0, _reason('host_drift',
+            'Some Hermes files that LifeOS patched have changed since installation.', drifted))
+    return reasons
+
+
+def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None):
+    """Classify one Hermes installation against the manifest, or against its LifeOS host record, without writing to it."""
     source = Path(source).absolute()
     manifest = load_manifest(manifest)
     dependencies = _dependencies(manifest['dependencies'], sys.path if search_path is None else search_path)
@@ -328,6 +354,15 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None):
     detected['version'] = version.decode().strip()
     entry = next((item for item in manifest['hermes'] if item['commit'] == detected['commit']), None)
     shared = _shared(hermes_home)
+    if record is not None:
+        reasons.extend(_installed_reasons(source, record, detected['commit']))
+        reasons.extend([shared] if shared else [])
+        if dependencies['conflicts']:
+            reasons.append(_reason('dependency_conflict',
+                'An installed Python package has a different version than LifeOS requires.',
+                [item['name'] for item in dependencies['conflicts']]))
+        return _result(detected, manifest, reasons, qualified=record['label'], dependencies=dependencies,
+                       installed=True)
     if entry is None:
         reasons.append(_reason('unsupported_version',
             'LifeOS has no qualified patch set for this Hermes version.'))
@@ -366,6 +401,8 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None):
     return _result(detected, manifest, reasons, qualified=entry and entry['label'], dependencies=dependencies)
 
 
-def check(hermes_home):
+def check(hermes_home, *, manifest=MANIFEST, search_path=None):
     """Inspect the Hermes installation that runs this process, for the dashboard and command line."""
-    return inspect_host(running_source(), load_manifest(), hermes_home=hermes_home)
+    from .host_record import load_record
+    return inspect_host(running_source(), load_manifest(manifest), hermes_home=hermes_home,
+                        search_path=search_path, record=load_record(hermes_home))

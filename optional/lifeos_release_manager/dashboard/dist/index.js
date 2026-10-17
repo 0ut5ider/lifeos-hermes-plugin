@@ -126,8 +126,9 @@
     } else {
       const detected = result.detected;
       body = [
-        h("p", {key: "result", className: result.compatible ? "lifeos-notice" : "lifeos-notice lifeos-caution"},
+        h("p", {key: "result", className: result.compatible || result.installed ? "lifeos-notice" : "lifeos-notice lifeos-caution"},
           result.compatible ? "LifeOS can be installed on this Hermes installation."
+            : result.installed ? "LifeOS is installed on this Hermes installation."
             : "LifeOS can't be installed on this Hermes installation."),
         result.reasons.length ? h("ul", {key: "reasons"}, result.reasons.map(function (reason) {
           const paths = reason.paths ?? [];

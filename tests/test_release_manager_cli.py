@@ -137,7 +137,7 @@ class ReleaseManagerCommandTests(unittest.TestCase):
                 with redirect_stdout(output):
                     code = run(parser.parse_args(['compatibility']))
                 value = json.loads(output.getvalue())
-                self.assertEqual(code, 0 if value['compatible'] else 1)
+                self.assertEqual(code, 0 if value['compatible'] or value['installed'] else 1)
                 self.assertEqual(value['detected']['source'], str(running_source()))
                 self.assertEqual(value['detected']['profile'], str(profile))
                 self.assertEqual(value['supported'], [{'label': 'v0.21.7', 'commit': SUPPORTED_HERMES_COMMIT}])
