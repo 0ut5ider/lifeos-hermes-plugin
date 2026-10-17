@@ -81,6 +81,26 @@ class MemoryTransitionTests(unittest.TestCase):
             fixture.command('systemctl','--user','--quiet','link','--runtime',str(definition))
             fixture.command('systemctl','--user','daemon-reload')
 
+    def test_in_place_host_return_binds_only_the_gateway_and_pulse_units(self):
+        from lifeos_hook_bridge.memory_transition import MemoryTransition
+        units={role:self.services.units[role] for role in ('gateway','pulse')}
+        operation=lambda:MemoryTransition(self.returned.configuration,units=units)
+        dashboard=self.services.properties('dashboard')['MainPID']
+        gateway=self.services.properties('gateway')['MainPID']
+        review=operation().prepare_return(self.returned.fixture.snapshot,self.prepared['signature'],account='dashboard:owner')
+        result=operation().apply(review['signature'],account='dashboard:owner')
+        self.assertEqual(result['state'],'verification_required')
+        self.assertFalse(self.returned.configuration.load()['ownership_enabled'])
+        self.assertEqual(self.services.properties('pulse')['ActiveState'],'inactive')
+        self.assertEqual(self.services.properties('gateway')['ActiveState'],'active')
+        self.assertNotEqual(self.services.properties('gateway')['MainPID'],gateway)
+        self.assertEqual(self.services.properties('dashboard')['MainPID'],dashboard)
+        plan=json.loads((self.profile/'.lifeos-memory-transition/plan.json').read_bytes())
+        self.assertEqual(plan['units'],units)
+        rolled=operation().rollback(review['signature'],account='dashboard:owner')
+        self.assertEqual(rolled['state'],'rolled_back')
+        self.assertEqual(self.services.properties('dashboard')['MainPID'],dashboard)
+
     def test_interrupted_return_resumes_and_later_builtin_edit_blocks_rollback(self):
         review=self.prepare()
         def checkpoint(point):

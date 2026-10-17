@@ -34,7 +34,9 @@ class MemoryTransition:
         if operation_id is not None and (not isinstance(operation_id,str) or re.fullmatch('[0-9a-f]{32}',operation_id) is None):
             raise ValueError('Provider transition requires a server-issued operation identifier')
         self.operation_id=operation_id
-        self.units=ProfileServices(self.profile,self.installed,units=units).units
+        # An in-place host passes only the units it has; their roles become the bound service set.
+        self.units=ProfileServices(self.profile,self.installed,units=units,
+            roles=None if units is None else tuple(units)).units
         self.directory=self.profile/'.lifeos-memory-transition'
 
     @contextmanager
@@ -47,7 +49,8 @@ class MemoryTransition:
             if selected['root']!=str(self.installed):
                 raise MemoryUnavailable('The selected native store changes during provider return')
             self.directory.mkdir(mode=0o700,exist_ok=True);_directory(self.directory,private=True)
-            services=ProfileServices(self.profile,self.installed,units=self.units,installation_lease=lease)
+            services=ProfileServices(self.profile,self.installed,units=self.units,roles=tuple(self.units),
+                installation_lease=lease)
             operation=MemoryReturn(self.configuration,installation_lease=lease,verify_writers=services.verify_stopped,
                 operation_id=self.operation_id)
             yield services,operation
@@ -194,7 +197,7 @@ class MemoryTransition:
                 desired='disabled' if plan['pulse_enablement'] in {'enabled','enabled-runtime'} else plan['pulse_enablement']
                 self._enabled(desired,plan['pulse_enablement']);services.verify_stopped()
                 self._state(signature,'restarting')
-                services.resume(roles=['dashboard','gateway'])
+                services.resume(roles=[role for role in ('dashboard','gateway') if role in self.units])
                 checkpoint('restarted')
                 self._state(signature,'verification_required')
             return self._receipt(signature,'verification_required')
