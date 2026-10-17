@@ -1,0 +1,24 @@
+...E
+======================================================================
+ERROR: test_running_bun_outside_reviewed_service_groups_refuses (test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_consumers.py", line 171, in processes
+    executable=os.readlink(process/'exe').removesuffix(' (deleted)').encode()
+               ~~~~~~~~~~~^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2145/exe'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_consumers.py", line 45, in test_running_bun_outside_reviewed_service_groups_refuses
+    self.operation().processes(self.profile,self.installed,groups=group)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_consumers.py", line 181, in processes
+    raise ReleaseRejected('The account process boundary cannot be verified') from error
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The account process boundary cannot be verified
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.073s
+
+FAILED (errors=1)

@@ -1,0 +1,67 @@
+..E.EEEE.............
+======================================================================
+ERROR: test_reviewed_hand_started_dashboard_is_stopped_for_its_created_unit (test_inplace_worker.ConsumersStoppedTests.test_reviewed_hand_started_dashboard_is_stopped_for_its_created_unit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 300, in test_reviewed_hand_started_dashboard_is_stopped_for_its_created_unit
+    inplace_worker._consumers_stopped(self.request, {'services': {'created': ['dashboard'], 'consumers': consumers}})
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_worker.py", line 73, in _consumers_stopped
+    _terminate(replace_with_units(plan['services']['consumers'], created))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_worker.py", line 68, in _terminate
+    raise ReleaseRejected('A hand-started Hermes process does not stop; close it and recover the operation')
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: A hand-started Hermes process does not stop; close it and recover the operation
+
+======================================================================
+ERROR: test_gateway_that_did_not_run_before_may_stay_stopped (test_inplace_worker.RegistrationTests.test_gateway_that_did_not_run_before_may_stay_stopped)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 360, in test_gateway_that_did_not_run_before_may_stay_stopped
+    self.assertIsNone(self.verify({'services': {'roles': ['gateway'], 'created': [], 'active': {'gateway': False}}}))
+                      ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 346, in verify
+    return inplace_worker.verify_registration(self.request, plan, unit=self.units['gateway'])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: verify_registration() got an unexpected keyword argument 'unit'
+
+======================================================================
+ERROR: test_patched_receipt_from_the_installed_checkout_is_returned (test_inplace_worker.RegistrationTests.test_patched_receipt_from_the_installed_checkout_is_returned)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 350, in test_patched_receipt_from_the_installed_checkout_is_returned
+    receipt = self.verify()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 346, in verify
+    return inplace_worker.verify_registration(self.request, plan, unit=self.units['gateway'])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: verify_registration() got an unexpected keyword argument 'unit'
+
+======================================================================
+ERROR: test_profile_without_a_gateway_role_needs_no_receipt (test_inplace_worker.RegistrationTests.test_profile_without_a_gateway_role_needs_no_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 365, in test_profile_without_a_gateway_role_needs_no_receipt
+    self.assertIsNone(self.verify({'services': {'roles': [], 'created': [], 'active': {}}}))
+                      ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 346, in verify
+    return inplace_worker.verify_registration(self.request, plan, unit=self.units['gateway'])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: verify_registration() got an unexpected keyword argument 'unit'
+
+======================================================================
+ERROR: test_reduced_registration_is_refused (test_inplace_worker.RegistrationTests.test_reduced_registration_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 356, in test_reduced_registration_is_refused
+    self.verify()
+    ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 346, in verify
+    return inplace_worker.verify_registration(self.request, plan, unit=self.units['gateway'])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: verify_registration() got an unexpected keyword argument 'unit'
+
+----------------------------------------------------------------------
+Ran 21 tests in 56.325s
+
+FAILED (errors=5)
+exit=1

@@ -1,0 +1,44 @@
+...F.......FF..
+======================================================================
+FAIL: test_live_synchronous_preparation_records_its_process_before_download (test_release_preparation.ReleasePreparationTests.test_live_synchronous_preparation_records_its_process_before_download)
+----------------------------------------------------------------------
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/agent-scratch/pr40-phase2-base/tests/test_release_preparation.py", line 101, in test_live_synchronous_preparation_records_its_process_before_download
+    with self.assertRaisesRegex(ValueError, 'Synthetic download boundary'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Synthetic download boundary" does not match "LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version."
+
+======================================================================
+FAIL: test_synchronous_preparation_can_retry_after_an_expired_preparation (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_can_retry_after_an_expired_preparation)
+----------------------------------------------------------------------
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/agent-scratch/pr40-phase2-base/tests/test_release_preparation.py", line 88, in test_synchronous_preparation_can_retry_after_an_expired_preparation
+    with self.assertRaisesRegex(ValueError, 'Synthetic retry reaches download'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Synthetic retry reaches download" does not match "LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version."
+
+======================================================================
+FAIL: test_synchronous_preparation_holds_the_same_lease_as_the_dashboard (test_release_preparation.ReleasePreparationTests.test_synchronous_preparation_holds_the_same_lease_as_the_dashboard)
+----------------------------------------------------------------------
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/agent-scratch/pr40-phase2-base/tests/test_release_preparation.py", line 41, in test_synchronous_preparation_holds_the_same_lease_as_the_dashboard
+    with self.assertRaisesRegex(ValueError, 'Synthetic download boundary'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Synthetic download boundary" does not match "LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version."
+
+----------------------------------------------------------------------
+Ran 15 tests in 3.530s
+
+FAILED (failures=3)

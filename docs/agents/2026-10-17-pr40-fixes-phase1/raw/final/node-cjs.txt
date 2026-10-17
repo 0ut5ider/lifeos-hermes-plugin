@@ -1,0 +1,413 @@
+TAP version 13
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+  ---
+  duration_ms: 24.272898
+  type: 'test'
+  ...
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+  ---
+  duration_ms: 2.774308
+  type: 'test'
+  ...
+# Subtest: missing LifeOS shows preparation without active model settings
+ok 3 - missing LifeOS shows preparation without active model settings
+  ---
+  duration_ms: 3.136132
+  type: 'test'
+  ...
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+  ---
+  duration_ms: 3.093711
+  type: 'test'
+  ...
+# Subtest: a host change waiting for a dashboard restart hides stale Hermes controls
+ok 5 - a host change waiting for a dashboard restart hides stale Hermes controls
+  ---
+  duration_ms: 3.20839
+  type: 'test'
+  ...
+# Subtest: an interrupted Hermes patch change offers recovery
+ok 6 - an interrupted Hermes patch change offers recovery
+  ---
+  duration_ms: 1.759395
+  type: 'test'
+  ...
+# Subtest: installation actions post once, stay busy, then report their result
+ok 7 - installation actions post once, stay busy, then report their result
+  ---
+  duration_ms: 14.664312
+  type: 'test'
+  ...
+# Subtest: installation action failures report the reason and release the busy state
+ok 8 - installation action failures report the reason and release the busy state
+  ---
+  duration_ms: 15.61994
+  type: 'test'
+  ...
+# Subtest: installation refresh failures keep actions busy and clear the previous status
+ok 9 - installation refresh failures keep actions busy and clear the previous status
+  ---
+  duration_ms: 3.559853
+  type: 'test'
+  ...
+# Subtest: each store shows its state, names, and the reason for a failure
+ok 10 - each store shows its state, names, and the reason for a failure
+  ---
+  duration_ms: 16.230287
+  type: 'test'
+  ...
+# Subtest: starting a store sends only the two names and shows the running preparation
+ok 11 - starting a store sends only the two names and shows the running preparation
+  ---
+  duration_ms: 2.668967
+  type: 'test'
+  ...
+# Subtest: remove is offered for every store and confirms by identifier
+ok 12 - remove is offered for every store and confirms by identifier
+  ---
+  duration_ms: 1.685215
+  type: 'test'
+  ...
+# Subtest: while an installation operation runs the start control is disabled
+ok 13 - while an installation operation runs the start control is disabled
+  ---
+  duration_ms: 2.009617
+  type: 'test'
+  ...
+# Subtest: a reviewed store can be selected and a selected store offers return
+ok 14 - a reviewed store can be selected and a selected store offers return
+  ---
+  duration_ms: 2.395164
+  type: 'test'
+  ...
+# Subtest: an interrupted selection offers recovery
+ok 15 - an interrupted selection offers recovery
+  ---
+  duration_ms: 2.139885
+  type: 'test'
+  ...
+# Subtest: each store change reports its notice and reloads both statuses
+ok 16 - each store change reports its notice and reloads both statuses
+  ---
+  duration_ms: 8.934547
+  type: 'test'
+  ...
+# Subtest: a refused store change shows the reason, skips reload, and enables controls
+ok 17 - a refused store change shows the reason, skips reload, and enables controls
+  ---
+  duration_ms: 2.40951
+  type: 'test'
+  ...
+# Subtest: memory status explains reviewed activation without engineering gates
+ok 18 - memory status explains reviewed activation without engineering gates
+  ---
+  duration_ms: 19.663086
+  type: 'test'
+  ...
+# Subtest: agent correction guidance requires active memory ownership
+ok 19 - agent correction guidance requires active memory ownership
+  ---
+  duration_ms: 2.569658
+  type: 'test'
+  ...
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 20 - pending changes show their target and exact revision for manual decisions
+  ---
+  duration_ms: 5.459888
+  type: 'test'
+  ...
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 21 - conflicted proposal remains visible and edit decisions send the owner draft
+  ---
+  duration_ms: 2.963541
+  type: 'test'
+  ...
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 22 - valid minimal revoked grants do not break the preferences page
+  ---
+  duration_ms: 2.143391
+  type: 'test'
+  ...
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 23 - owner search displays references and new connections default to read-only project access
+  ---
+  duration_ms: 3.535777
+  type: 'test'
+  ...
+# Subtest: connection form is replaced by an installation note without the sharing component
+ok 24 - connection form is replaced by an installation note without the sharing component
+  ---
+  duration_ms: 2.729453
+  type: 'test'
+  ...
+# Subtest: a disabled connection with a remaining SSH entry offers removal only with the component
+ok 25 - a disabled connection with a remaining SSH entry offers removal only with the component
+  ---
+  duration_ms: 3.009539
+  type: 'test'
+  ...
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 26 - source adoption previews historical records and sends exact project assignments
+  ---
+  duration_ms: 3.19285
+  type: 'test'
+  ...
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 27 - source adoption retains a conflicted preview and reuses its request identifier
+  ---
+  duration_ms: 2.93151
+  type: 'test'
+  ...
+# Subtest: an unconfigured installation offers the owner claim and shows the claimed state
+ok 28 - an unconfigured installation offers the owner claim and shows the claimed state
+  ---
+  duration_ms: 3.774033
+  type: 'test'
+  ...
+# Subtest: connection changes refresh memory status and report each outcome
+ok 29 - connection changes refresh memory status and report each outcome
+  ---
+  duration_ms: 4.142097
+  type: 'test'
+  ...
+# Subtest: connection refresh failures keep controls busy until the reason is shown
+ok 30 - connection refresh failures keep controls busy until the reason is shown
+  ---
+  duration_ms: 1.992613
+  type: 'test'
+  ...
+# Subtest: review refusals report their reason and keep the proposal list unloaded
+ok 31 - review refusals report their reason and keep the proposal list unloaded
+  ---
+  duration_ms: 3.315164
+  type: 'test'
+  ...
+# Subtest: a committed decision reports a failed pending-change refresh
+ok 32 - a committed decision reports a failed pending-change refresh
+  ---
+  duration_ms: 1.785626
+  type: 'test'
+  ...
+# Subtest: a committed adoption reports a failed memory status refresh
+ok 33 - a committed adoption reports a failed memory status refresh
+  ---
+  duration_ms: 1.359932
+  type: 'test'
+  ...
+# Subtest: import shows source provenance and never publishes before plan approval
+ok 34 - import shows source provenance and never publishes before plan approval
+  ---
+  duration_ms: 13.845414
+  type: 'test'
+  ...
+# Subtest: an authorization refusal clears private review text and approval controls
+ok 35 - an authorization refusal clears private review text and approval controls
+  ---
+  duration_ms: 2.156738
+  type: 'test'
+  ...
+# Subtest: reverse export shows capacity and retains every item until the owner chooses
+ok 36 - reverse export shows capacity and retains every item until the owner chooses
+  ---
+  duration_ms: 2.779589
+  type: 'test'
+  ...
+# Subtest: published import queues ownership review without applying the cutover
+ok 37 - published import queues ownership review without applying the cutover
+  ---
+  duration_ms: 3.298061
+  type: 'test'
+  ...
+# Subtest: profile file upload encodes each chosen file and reviews the uploaded source
+ok 38 - profile file upload encodes each chosen file and reviews the uploaded source
+  ---
+  duration_ms: 4.058807
+  type: 'test'
+  ...
+# Subtest: portable bundle upload encodes the chosen file and reviews the uploaded source
+ok 39 - portable bundle upload encodes the chosen file and reviews the uploaded source
+  ---
+  duration_ms: 3.082499
+  type: 'test'
+  ...
+# Subtest: a verified export prepares provider return with the reviewed prompt
+ok 40 - a verified export prepares provider return with the reviewed prompt
+  ---
+  duration_ms: 4.35274
+  type: 'test'
+  ...
+# Subtest: HTTP setup recommends Tailscale Serve and retains explicit grants
+ok 41 - HTTP setup recommends Tailscale Serve and retains explicit grants
+  ---
+  duration_ms: 14.939898
+  type: 'test'
+  ...
+# Subtest: OAuth requests require owner approval and display the callback
+ok 42 - OAuth requests require owner approval and display the callback
+  ---
+  duration_ms: 2.614363
+  type: 'test'
+  ...
+# Subtest: the owner can clear unused OAuth registrations without revoking connections
+ok 43 - the owner can clear unused OAuth registrations without revoking connections
+  ---
+  duration_ms: 2.61288
+  type: 'test'
+  ...
+# Subtest: waiting approval explains required permissions and keeps manual tokens separate
+ok 44 - waiting approval explains required permissions and keeps manual tokens separate
+  ---
+  duration_ms: 1.727335
+  type: 'test'
+  ...
+# Subtest: HTTP settings, denial, and revocation retain their explicit API contracts
+ok 45 - HTTP settings, denial, and revocation retain their explicit API contracts
+  ---
+  duration_ms: 2.711649
+  type: 'test'
+  ...
+# Subtest: permission editing cannot implicitly submit the manual-token form
+ok 46 - permission editing cannot implicitly submit the manual-token form
+  ---
+  duration_ms: 1.57274
+  type: 'test'
+  ...
+# Subtest: optional HTTP permissions extend the approved grant
+ok 47 - optional HTTP permissions extend the approved grant
+  ---
+  duration_ms: 2.639801
+  type: 'test'
+  ...
+# Subtest: complete removal requires explicit Discord acknowledgment and queues the exact verified return
+ok 48 - complete removal requires explicit Discord acknowledgment and queues the exact verified return
+  ---
+  duration_ms: 10.40465
+  type: 'test'
+  ...
+# Subtest: a ready removal has distinct software application and recovery instructions
+ok 49 - a ready removal has distinct software application and recovery instructions
+  ---
+  duration_ms: 2.281867
+  type: 'test'
+  ...
+# Subtest: a ready activation discloses the local account profile and exact model route
+ok 50 - a ready activation discloses the local account profile and exact model route
+  ---
+  duration_ms: 3.002455
+  type: 'test'
+  ...
+# Subtest: fresh page offers Install LifeOS and queues preparation without applying programs
+ok 51 - fresh page offers Install LifeOS and queues preparation without applying programs
+  ---
+  duration_ms: 15.486595
+  type: 'test'
+  ...
+# Subtest: installed page offers both update actions for the complete integration
+ok 52 - installed page offers both update actions for the complete integration
+  ---
+  duration_ms: 4.125786
+  type: 'test'
+  ...
+# Subtest: recovery blocks preparation and each operation has a visible identifier
+ok 53 - recovery blocks preparation and each operation has a visible identifier
+  ---
+  duration_ms: 2.077616
+  type: 'test'
+  ...
+# Subtest: a ready release is reviewed before its separate installation request
+ok 54 - a ready release is reviewed before its separate installation request
+  ---
+  duration_ms: 2.522687
+  type: 'test'
+  ...
+# Subtest: compatible Hermes shows the detected identity and the packages installation adds
+ok 55 - compatible Hermes shows the detected identity and the packages installation adds
+  ---
+  duration_ms: 3.421457
+  type: 'test'
+  ...
+# Subtest: incompatible Hermes lists every reason, affected files, and the qualified versions
+ok 56 - incompatible Hermes lists every reason, affected files, and the qualified versions
+  ---
+  duration_ms: 2.391978
+  type: 'test'
+  ...
+# Subtest: check again repeats the read-only compatibility request
+ok 57 - check again repeats the read-only compatibility request
+  ---
+  duration_ms: 1.793032
+  type: 'test'
+  ...
+# Subtest: an unavailable compatibility check is reported without blocking release status
+ok 58 - an unavailable compatibility check is reported without blocking release status
+  ---
+  duration_ms: 1.853768
+  type: 'test'
+  ...
+# Subtest: a malformed compatibility response is reported instead of breaking the page
+ok 59 - a malformed compatibility response is reported instead of breaking the page
+  ---
+  duration_ms: 1.937167
+  type: 'test'
+  ...
+# Subtest: an installed host is reported as installed rather than incompatible
+ok 60 - an installed host is reported as installed rather than incompatible
+  ---
+  duration_ms: 1.97029
+  type: 'test'
+  ...
+# Subtest: an incompatible host disables Install LifeOS and explains why
+ok 61 - an incompatible host disables Install LifeOS and explains why
+  ---
+  duration_ms: 1.979197
+  type: 'test'
+  ...
+# Subtest: an in-place review lists the Hermes changes, packages, services, and tested scope before installation
+ok 62 - an in-place review lists the Hermes changes, packages, services, and tested scope before installation
+  ---
+  duration_ms: 2.698595
+  type: 'test'
+  ...
+# Subtest: an in-place update review shows the change from the installed release and the known conflicts
+ok 63 - an in-place update review shows the change from the installed release and the known conflicts
+  ---
+  duration_ms: 3.200804
+  type: 'test'
+  ...
+# Subtest: a managed runtime shows the move to the stock Hermes installation
+ok 64 - a managed runtime shows the move to the stock Hermes installation
+  ---
+  duration_ms: 1.482327
+  type: 'test'
+  ...
+# Subtest: lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+ok 65 - lifeos_hook_bridge/dashboard declares a bundled, scoped, accessible stylesheet
+  ---
+  duration_ms: 1.84925
+  type: 'test'
+  ...
+# Subtest: optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+ok 66 - optional/lifeos_release_manager/dashboard declares a bundled, scoped, accessible stylesheet
+  ---
+  duration_ms: 1.272084
+  type: 'test'
+  ...
+# Subtest: Bridge and release pages expose labelled navigation and scoped roots
+ok 67 - Bridge and release pages expose labelled navigation and scoped roots
+  ---
+  duration_ms: 8.214169
+  type: 'test'
+  ...
+1..67
+# tests 67
+# suites 0
+# pass 67
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 144.735162
+node exit=0

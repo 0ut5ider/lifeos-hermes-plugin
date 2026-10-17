@@ -1,0 +1,98 @@
+EEEEEEEEE
+======================================================================
+ERROR: test_patched_test_environment_hermes_exposes_the_bridge_capabilities (test_host_capabilities.RealHermesTests.test_patched_test_environment_hermes_exposes_the_bridge_capabilities)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 81, in test_patched_test_environment_hermes_exposes_the_bridge_capabilities
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_stock_hermes_is_refused (test_host_capabilities.RealHermesTests.test_stock_hermes_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 94, in test_stock_hermes_is_refused
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_missing_patched_hook_is_refused_with_its_name (test_host_capabilities.SmallSourceTests.test_missing_patched_hook_is_refused_with_its_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 46, in test_missing_patched_hook_is_refused_with_its_name
+    self.probe(entry(hooks=('pre_turn_stop', 'on_turn_result')))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_other_interpreter_version_is_refused (test_host_capabilities.SmallSourceTests.test_other_interpreter_version_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 65, in test_other_interpreter_version_is_refused
+    self.probe(entry(python='2.7'))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_other_middleware_api_version_is_refused (test_host_capabilities.SmallSourceTests.test_other_middleware_api_version_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 51, in test_other_middleware_api_version_is_refused
+    self.probe(entry())
+    ~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_patched_source_passes_and_reports_what_it_found (test_host_capabilities.SmallSourceTests.test_patched_source_passes_and_reports_what_it_found)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 38, in test_patched_source_passes_and_reports_what_it_found
+    result = self.probe(entry())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_probe_ignores_an_inherited_python_path (test_host_capabilities.SmallSourceTests.test_probe_ignores_an_inherited_python_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 75, in test_probe_ignores_an_inherited_python_path
+    self.assertIn('pre_turn_stop', self.probe(entry())['hooks'])
+                                   ~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_source_that_cannot_import_its_hooks_is_refused (test_host_capabilities.SmallSourceTests.test_source_that_cannot_import_its_hooks_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 61, in test_source_that_cannot_import_its_hooks_is_refused
+    self.probe(entry())
+    ~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+======================================================================
+ERROR: test_source_without_the_middleware_version_is_refused (test_host_capabilities.SmallSourceTests.test_source_without_the_middleware_version_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 56, in test_source_without_the_middleware_version_is_refused
+    self.probe(entry())
+    ~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_capabilities.py", line 34, in probe
+    from optional.lifeos_release_manager.host_capabilities import probe_capabilities
+ModuleNotFoundError: No module named 'optional.lifeos_release_manager.host_capabilities'
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.012s
+
+FAILED (errors=9)
+exit=1

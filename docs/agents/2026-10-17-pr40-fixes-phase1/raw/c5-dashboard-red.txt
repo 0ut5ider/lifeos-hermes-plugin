@@ -1,0 +1,15 @@
+.sF....
+======================================================================
+FAIL: test_malformed_host_record_is_reported_as_drift_with_its_reason (test_release_dashboard.ReleaseDashboardTests.test_malformed_host_record_is_reported_as_drift_with_its_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_dashboard.py", line 118, in test_malformed_host_record_is_reported_as_drift_with_its_reason
+    self.assertEqual(code, 200)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 409 != 200
+
+----------------------------------------------------------------------
+Ran 7 tests in 3.165s
+
+FAILED (failures=1, skipped=1)
+exit=1

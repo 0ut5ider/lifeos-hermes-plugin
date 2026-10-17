@@ -1,0 +1,22 @@
+............EE
+======================================================================
+ERROR: test_review_records_every_configuration_key_and_the_update_difference (test_inplace_plan.ReviewTests.test_review_records_every_configuration_key_and_the_update_difference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_plan.py", line 253, in test_review_records_every_configuration_key_and_the_update_difference
+    from optional.lifeos_release_manager.inplace_plan import review_changes
+ImportError: cannot import name 'review_changes' from 'optional.lifeos_release_manager.inplace_plan' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_plan.py)
+
+======================================================================
+ERROR: test_update_difference_lists_added_changed_and_restored_targets (test_inplace_plan.ReviewTests.test_update_difference_lists_added_changed_and_restored_targets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_plan.py", line 240, in test_update_difference_lists_added_changed_and_restored_targets
+    from optional.lifeos_release_manager.inplace_plan import update_difference
+ImportError: cannot import name 'update_difference' from 'optional.lifeos_release_manager.inplace_plan' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_plan.py)
+
+----------------------------------------------------------------------
+Ran 14 tests in 3.359s
+
+FAILED (errors=2)
+exit=1

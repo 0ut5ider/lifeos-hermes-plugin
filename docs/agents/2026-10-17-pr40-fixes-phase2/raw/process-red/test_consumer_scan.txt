@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_consumer_scan (unittest.loader._FailedTest.test_consumer_scan)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_consumer_scan
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/unittest/loader.py", line 433, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/unittest/loader.py", line 374, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_consumer_scan.py", line 11, in <module>
+    from optional.lifeos_release_manager.consumer_scan import parent, process_names, source_consumers, start_time
+ImportError: cannot import name 'parent' from 'optional.lifeos_release_manager.consumer_scan' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/consumer_scan.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

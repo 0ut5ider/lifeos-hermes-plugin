@@ -1,0 +1,746 @@
+EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE..E
+======================================================================
+ERROR: test_added_target_already_present_is_partial (test_host_compatibility.HostCompatibilityTests.test_added_target_already_present_is_partial)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 170, in test_added_target_already_present_is_partial
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_additional_profiles_are_refused_as_shared_installation (test_host_compatibility.HostCompatibilityTests.test_additional_profiles_are_refused_as_shared_installation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 202, in test_additional_profiles_are_refused_as_shared_installation
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_change_hidden_from_git_status_is_refused (test_host_compatibility.HostCompatibilityTests.test_change_hidden_from_git_status_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 158, in test_change_hidden_from_git_status_is_refused
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_conflicting_installed_dependency_is_refused (test_host_compatibility.HostCompatibilityTests.test_conflicting_installed_dependency_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 189, in test_conflicting_installed_dependency_is_refused
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_directory_that_is_not_hermes_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_directory_that_is_not_hermes_is_unsupported_layout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 279, in test_directory_that_is_not_hermes_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_edit_inside_patch_target_is_refused_by_file_hash (test_host_compatibility.HostCompatibilityTests.test_edit_inside_patch_target_is_refused_by_file_hash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 139, in test_edit_inside_patch_target_is_refused_by_file_hash
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_edit_outside_patch_targets_is_refused_with_its_path (test_host_compatibility.HostCompatibilityTests.test_edit_outside_patch_targets_is_refused_with_its_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 133, in test_edit_outside_patch_targets_is_refused_with_its_path
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_every_independent_refusal_is_reported (test_host_compatibility.HostCompatibilityTests.test_every_independent_refusal_is_reported)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 296, in test_every_independent_refusal_is_reported
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_exact_qualified_clean_installation_is_compatible (test_host_compatibility.HostCompatibilityTests.test_exact_qualified_clean_installation_is_compatible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 102, in test_exact_qualified_clean_installation_is_compatible
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_fully_patched_installation_without_record_is_refused (test_host_compatibility.HostCompatibilityTests.test_fully_patched_installation_without_record_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 176, in test_fully_patched_installation_without_record_is_refused
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_group_writable_patch_target_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_group_writable_patch_target_is_unsupported_layout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 263, in test_group_writable_patch_target_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_group_writable_source_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_group_writable_source_is_unsupported_layout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 257, in test_group_writable_source_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_ignored_files_do_not_block_installation (test_host_compatibility.HostCompatibilityTests.test_ignored_files_do_not_block_installation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 153, in test_ignored_files_do_not_block_installation
+    self.assertEqual(self.inspect()["state"], "compatible")
+                     ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_inspection_changes_no_source_or_git_file (test_host_compatibility.HostCompatibilityTests.test_inspection_changes_no_source_or_git_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 116, in test_inspection_changes_no_source_or_git_file
+    self.inspect()
+    ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_installation_without_git_directory_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_installation_without_git_directory_is_unsupported_layout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 215, in test_installation_without_git_directory_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_interpreter_other_than_the_qualified_one_is_refused (test_host_compatibility.HostCompatibilityTests.test_interpreter_other_than_the_qualified_one_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 285, in test_interpreter_other_than_the_qualified_one_is_refused
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_linked_worktree_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_linked_worktree_is_unsupported_layout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 223, in test_linked_worktree_is_unsupported_layout
+    result = inspect_host(linked, load_manifest(self.manifest), hermes_home=self.home,
+                                  ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_matching_installed_dependency_needs_no_addition (test_host_compatibility.HostCompatibilityTests.test_matching_installed_dependency_needs_no_addition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 196, in test_matching_installed_dependency_needs_no_addition
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_packaged_install_stamp_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_packaged_install_stamp_is_unsupported_layout) (value='{"distribution": "docker", "updateMechanism": "external"}\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 251, in test_packaged_install_stamp_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_packaged_install_stamp_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_packaged_install_stamp_is_unsupported_layout) (value='{"distribution": "nix", "updateMechanism": "self"}\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 251, in test_packaged_install_stamp_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_packaged_install_stamp_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_packaged_install_stamp_is_unsupported_layout) (value='{"distribution": null, "updateMechanism": "electron-updater"}\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 251, in test_packaged_install_stamp_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_packaged_install_stamp_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_packaged_install_stamp_is_unsupported_layout) (value='not json\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 251, in test_packaged_install_stamp_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_partially_patched_installation_is_refused (test_host_compatibility.HostCompatibilityTests.test_partially_patched_installation_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 164, in test_partially_patched_installation_is_refused
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_read_only_source_is_unsupported_layout (test_host_compatibility.HostCompatibilityTests.test_read_only_source_is_unsupported_layout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 273, in test_read_only_source_is_unsupported_layout
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_selected_named_profile_is_refused_as_shared_installation (test_host_compatibility.HostCompatibilityTests.test_selected_named_profile_is_refused_as_shared_installation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 209, in test_selected_named_profile_is_refused_as_shared_installation
+    result = inspect_host(self.source, load_manifest(self.manifest), hermes_home=named,
+                                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_self_updating_git_install_stamp_is_compatible (test_host_compatibility.HostCompatibilityTests.test_self_updating_git_install_stamp_is_compatible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 242, in test_self_updating_git_install_stamp_is_compatible
+    self.assertEqual(self.inspect()["state"], "compatible")
+                     ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_symbolic_link_at_patch_target_is_modified_source (test_host_compatibility.HostCompatibilityTests.test_symbolic_link_at_patch_target_is_modified_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 183, in test_symbolic_link_at_patch_target_is_modified_source
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_unknown_commit_reports_detected_and_supported_versions (test_host_compatibility.HostCompatibilityTests.test_unknown_commit_reports_detected_and_supported_versions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 123, in test_unknown_commit_reports_detected_and_supported_versions
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_untracked_source_file_is_refused (test_host_compatibility.HostCompatibilityTests.test_untracked_source_file_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 145, in test_untracked_source_file_is_refused
+    result = self.inspect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 84, in inspect
+    return inspect_host(self.source, load_manifest(self.manifest), hermes_home=self.home,
+                                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_check_reads_the_profile_record (test_host_compatibility.InstalledHostTests.test_check_reads_the_profile_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 368, in test_check_reads_the_profile_record
+    record_path(self.home).write_text(json.dumps(self.record()))
+                                                 ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_disabled_bridge_on_a_recorded_host_is_drift (test_host_compatibility.InstalledHostTests.test_disabled_bridge_on_a_recorded_host_is_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 327, in test_disabled_bridge_on_a_recorded_host_is_drift
+    result = self.inspect_installed(self.record())
+                                    ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_recorded_host_at_another_commit_is_drift (test_host_compatibility.InstalledHostTests.test_recorded_host_at_another_commit_is_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 348, in test_recorded_host_at_another_commit_is_drift
+    result = self.inspect_installed(self.record(commit="f" * 40))
+                                    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_recorded_host_in_another_source_is_drift (test_host_compatibility.InstalledHostTests.test_recorded_host_in_another_source_is_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 354, in test_recorded_host_in_another_source_is_drift
+    result = self.inspect_installed(self.record(source=str(self.root / "other")))
+                                    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_recorded_host_with_a_reverted_target_is_drift (test_host_compatibility.InstalledHostTests.test_recorded_host_with_a_reverted_target_is_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 342, in test_recorded_host_with_a_reverted_target_is_drift
+    result = self.inspect_installed(self.record())
+                                    ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_recorded_host_with_an_edit_outside_the_targets_is_modified (test_host_compatibility.InstalledHostTests.test_recorded_host_with_an_edit_outside_the_targets_is_modified)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 360, in test_recorded_host_with_an_edit_outside_the_targets_is_modified
+    result = self.inspect_installed(self.record())
+                                    ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_recorded_patched_host_is_installed (test_host_compatibility.InstalledHostTests.test_recorded_patched_host_is_installed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 333, in test_recorded_patched_host_is_installed
+    result = self.inspect_installed(self.record())
+                                    ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 312, in record
+    value = build_record(self.home, self.source, load_manifest(self.manifest)["hermes"][0],
+                                                 ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_accepts_known_conflicts (test_host_compatibility.ManifestTests.test_accepts_known_conflicts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 391, in test_accepts_known_conflicts
+    self.assertEqual(load_manifest(value)["hermes"][0]["known_conflicts"],
+                     ~~~~~~~~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_accepts_valid_manifest (test_host_compatibility.ManifestTests.test_accepts_valid_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility.py", line 386, in test_accepts_valid_manifest
+    self.assertEqual(load_manifest(self.valid())["hermes"][0]["label"], "v1")
+                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 126, in load_manifest
+    _entry(entry)
+    ~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 71, in _entry
+    _reject('Each Hermes entry requires a label, commit, patches, and files')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/host_compatibility.py", line 55, in _reject
+    raise ManifestRejected(message)
+optional.lifeos_release_manager.host_compatibility.ManifestRejected: Each Hermes entry requires a label, commit, patches, and files
+
+======================================================================
+ERROR: test_host_compatibility_manifest (unittest.loader._FailedTest.test_host_compatibility_manifest)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_host_compatibility_manifest
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/unittest/loader.py", line 433, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/home/outsider/.cache/lifeos-daily-promotion-20261014/test-home/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/unittest/loader.py", line 374, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_host_compatibility_manifest.py", line 14, in <module>
+    from scripts.build_host_compatibility import (ManifestBuildError, bridge_capabilities, build_entry, build_manifest,
+                                                  plugin_dependencies)
+ImportError: cannot import name 'bridge_capabilities' from 'scripts.build_host_compatibility' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/build_host_compatibility.py)
+
+
+----------------------------------------------------------------------
+Ran 38 tests in 0.745s
+
+FAILED (errors=39)
+exit=1

@@ -1,0 +1,36 @@
+5d357559 docs(install): record the regression on the fixes
+9f1749d3 fix(scripts): run the release server standalone
+1cc14cc6 docs(changelog): list the review fixes for 0.8.0
+e03f5f77 docs(design): match the in-place design to the code
+e10a0d00 refactor(in-place): share unit and launcher checks
+dc53953c docs(code): mark the private Hermes APIs in use
+df6514df refactor(manager): make shared helpers public
+41587e02 refactor(services): derive roles from the units
+c1e2538e refactor(review): drop the constant update hold flag
+51c80537 refactor(cli): share the end of both preparations
+e0b86c6a refactor(compatibility): build each reason once
+52693db6 refactor(release): name the runtime directory once
+bce5d0ae refactor(release): hash files and trees one way
+fcd99762 refactor(worker): name the drained services check
+2e2f7aa1 refactor(plan): use the staged files directly
+76b4965c test(preparation): admit the host before download
+2c7238ad refactor(worker): derive created units from UNITS
+8657b6fa refactor(manager): read process records in one place
+7fc7272c refactor(worker): record a rollback configuration
+7af8a31f refactor(programs): read journal entries publicly
+8c18ee2b docs: map the in-place modules and builders
+19df1267 fix(dashboard): skip a late compatibility result
+272a990c fix(scripts): describe two release scripts in help
+703452b3 docs(cli): describe the managed preparation
+5dd731c0 test(release): move the account check boundary
+e967166e style(compatibility): describe a damaged record plainly
+747884d0 test(release): cover the builder and refusal text
+4dc879e5 test(worker): cover rollback, registration, consumers
+798fd606 feat(review): list host files, keys, and conflicts
+f7d302bf feat(bridge): report host drift in lifeos-version
+7275da91 fix(compatibility): report a damaged host record
+6ed9e263 feat(worker): verify the host after restart
+42e3b4c3 feat(compatibility): probe host capabilities
+5f1f8a2c feat(compatibility): qualify interpreter, capabilities
+f9bc5172 fix(preparation): check compatibility first
+0a328d42 fix(removal): tolerate a missing update hold
