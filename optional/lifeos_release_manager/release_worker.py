@@ -111,6 +111,10 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
 
 def recovery_bridge(job, profile):
     request = read_private(job / 'request.json')
+    if request.get('format') == 2:
+        # One bridge copy owns the lease, services, mount, and grants of an in-place operation: its own package.
+        validate_operation_package(job, request)
+        return load_bridge(job / 'package/lifeos_hook_bridge')
     plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
     if plan is not None and plan['fresh']:
         validate_operation_package(job, request)
