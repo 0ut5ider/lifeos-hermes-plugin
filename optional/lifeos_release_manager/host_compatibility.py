@@ -371,15 +371,12 @@ def _bridge_enabled(hermes_home):
     return BRIDGE in enabled and BRIDGE not in disabled
 
 
-def _installed_reasons(source, record, head, hermes_home):
-    """Compare a host that LifeOS patched with its host record."""
-    if record['source'] != str(source) or record['commit'] != head:
-        return [_reason('host_drift', 'LifeOS was installed into another Hermes source or version than the one running now.')]
-    tree = _working_tree(source, set(record['files']))
-    if tree is None:
-        return [_reason('git_unavailable', 'Git cannot read the Hermes checkout as this account.')]
-    modified, untracked, hidden = tree
-    _, patched, other = _targets(source, record['files'])
+def _git_unavailable():
+    return _reason('git_unavailable', 'Git cannot read the Hermes checkout as this account.')
+
+
+def _tree_reasons(modified, untracked, hidden):
+    """Return the reasons for edited, untracked, and Git-hidden source files, in that order."""
     reasons = []
     if modified:
         reasons.append(_reason('modified_files', 'Hermes source files differ from the qualified upstream version.', modified))
@@ -388,6 +385,30 @@ def _installed_reasons(source, record, head, hermes_home):
             'The Hermes source contains files that are not part of the upstream version.', untracked))
     if hidden:
         reasons.append(_reason('hidden_changes', 'Git is set to ignore changes to some tracked Hermes files.', hidden))
+    return reasons
+
+
+def _dependency_reasons(dependencies):
+    if not dependencies['conflicts']:
+        return []
+    return [_reason('dependency_conflict', 'An installed Python package has a different version than LifeOS requires.',
+                    [item['name'] for item in dependencies['conflicts']])]
+
+
+def _present(*reasons):
+    """Return the reasons that apply; a check that passes returns None."""
+    return [reason for reason in reasons if reason]
+
+
+def _installed_reasons(source, record, head, hermes_home):
+    """Compare a host that LifeOS patched with its host record."""
+    if record['source'] != str(source) or record['commit'] != head:
+        return [_reason('host_drift', 'LifeOS was installed into another Hermes source or version than the one running now.')]
+    tree = _working_tree(source, set(record['files']))
+    if tree is None:
+        return [_git_unavailable()]
+    _, patched, other = _targets(source, record['files'])
+    reasons = _tree_reasons(*tree)
     drifted = sorted(set(record['files']) - set(patched))
     if drifted:
         reasons.insert(0, _reason('host_drift',
@@ -414,8 +435,7 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None
     head = _git(source, 'rev-parse', '--verify', 'HEAD^{commit}')
     version = _git(source, 'describe', '--tags', '--always')
     if head is None or version is None:
-        return _result(detected, manifest, [_reason('git_unavailable',
-            'Git cannot read the Hermes checkout as this account.')], dependencies=dependencies)
+        return _result(detected, manifest, [_git_unavailable()], dependencies=dependencies)
     detected['commit'] = head.decode().strip()
     detected['version'] = version.decode().strip()
     entry = next((item for item in manifest['hermes'] if item['commit'] == detected['commit']), None)
@@ -423,50 +443,34 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None
     interpreter = _interpreter(entry, python or '.'.join(map(str, sys.version_info[:2])))
     if record is not None:
         reasons.extend(_installed_reasons(source, record, detected['commit'], hermes_home))
-        reasons.extend([interpreter] if interpreter else [])
-        reasons.extend([shared] if shared else [])
-        if dependencies['conflicts']:
-            reasons.append(_reason('dependency_conflict',
-                'An installed Python package has a different version than LifeOS requires.',
-                [item['name'] for item in dependencies['conflicts']]))
+        reasons.extend(_present(interpreter, shared))
+        reasons.extend(_dependency_reasons(dependencies))
         return _result(detected, manifest, reasons, qualified=record['label'], dependencies=dependencies,
                        installed=True)
     if entry is None:
         reasons.append(_reason('unsupported_version',
             'LifeOS has no qualified patch set for this Hermes version.'))
-        reasons.extend([shared] if shared else [])
+        reasons.extend(_present(shared))
     else:
-        reasons.extend([interpreter] if interpreter else [])
+        reasons.extend(_present(interpreter))
         exposed = _exposed_targets(source, entry['files'])
         if exposed:
             reasons.append(_reason('shared_write_access',
                 'Another account owns or can write to some Hermes files that LifeOS changes.', exposed))
-        reasons.extend([shared] if shared else [])
+        reasons.extend(_present(shared))
         tree = _working_tree(source, set(entry['files']))
         if tree is None:
-            return _result(detected, manifest, [_reason('git_unavailable',
-                'Git cannot read the Hermes checkout as this account.')], dependencies=dependencies)
+            return _result(detected, manifest, [_git_unavailable()], dependencies=dependencies)
         modified, untracked, hidden = tree
         stock, patched, other = _targets(source, entry['files'])
-        if modified or other:
-            reasons.append(_reason('modified_files',
-                'Hermes source files differ from the qualified upstream version.', modified + other))
-        if untracked:
-            reasons.append(_reason('untracked_files',
-                'The Hermes source contains files that are not part of the upstream version.', untracked))
-        if hidden:
-            reasons.append(_reason('hidden_changes',
-                'Git is set to ignore changes to some tracked Hermes files.', hidden))
+        reasons.extend(_tree_reasons(modified + other, untracked, hidden))
         if not other and stock and patched:
             reasons.append(_reason('partially_patched',
                 'Some LifeOS changes are already present. The installation is incomplete.', patched))
         if not other and patched and not stock:
             reasons.append(_reason('patched_without_record',
                 'LifeOS changes are present, but this installation has no LifeOS installation record.'))
-    if dependencies['conflicts']:
-        reasons.append(_reason('dependency_conflict',
-            'An installed Python package has a different version than LifeOS requires.',
-            [item['name'] for item in dependencies['conflicts']]))
+    reasons.extend(_dependency_reasons(dependencies))
     return _result(detected, manifest, reasons, qualified=entry and entry['label'], dependencies=dependencies)
 
 

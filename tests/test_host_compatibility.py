@@ -289,6 +289,40 @@ class HostCompatibilityTests(unittest.TestCase):
         self.assertIn("Python 3.9", result["reasons"][0]["message"])
         self.assertIn("Python " + PYTHON, result["reasons"][0]["message"])
 
+    def test_fresh_reasons_keep_their_order_and_text(self):
+        (self.home / "profiles/work").mkdir(parents=True)
+        (self.source / "model_tools.py").write_text("TOOLS = ['edited']\n")
+        (self.source / "hermes_cli/plugins.py").write_text(STOCK_PLUGINS + "# local\n")
+        (self.source / "hermes_cli/extra.py").write_text("")
+        git("update-index", "--skip-worktree", "run_agent.py", cwd=self.source)
+        self.install_package("tree-sitter", "0.25.0")
+        self.manifest["hermes"][0]["python"] = "3.9"
+        result = self.inspect()
+        self.assertEqual([(reason["code"], reason["message"], reason.get("paths")) for reason in result["reasons"]], [
+            ("unsupported_interpreter", "LifeOS qualifies Hermes v0.0.1 with Python 3.9. This Hermes runs Python "
+             + PYTHON + ".", None),
+            ("shared_installation", result["reasons"][1]["message"], ["work"]),
+            ("modified_files", "Hermes source files differ from the qualified upstream version.",
+             ["hermes_cli/plugins.py", "model_tools.py"]),
+            ("untracked_files", "The Hermes source contains files that are not part of the upstream version.",
+             ["hermes_cli/extra.py"]),
+            ("hidden_changes", "Git is set to ignore changes to some tracked Hermes files.", ["run_agent.py"]),
+            ("dependency_conflict", "An installed Python package has a different version than LifeOS requires.",
+             ["tree-sitter"])])
+
+    def test_unreadable_git_is_reported_at_each_step(self):
+        from unittest import mock
+        from optional.lifeos_release_manager import host_compatibility
+        message = "Git cannot read the Hermes checkout as this account."
+        with mock.patch.object(host_compatibility, "_working_tree", return_value=None):
+            result = self.inspect()
+        self.assertEqual([(reason["code"], reason["message"]) for reason in result["reasons"]],
+                         [("git_unavailable", message)])
+        with mock.patch.object(host_compatibility, "_git", return_value=None):
+            result = self.inspect()
+        self.assertEqual([(reason["code"], reason["message"]) for reason in result["reasons"]],
+                         [("git_unavailable", message)])
+
     def test_every_independent_refusal_is_reported(self):
         (self.home / "profiles/work").mkdir(parents=True)
         (self.source / "model_tools.py").write_text("TOOLS = ['edited']\n")
@@ -302,6 +336,7 @@ class InstalledHostTests(unittest.TestCase):
     """Hosts that carry a LifeOS host record are classified against the record, not the fresh-install entry."""
 
     patch = HostCompatibilityTests.patch
+    install_package = HostCompatibilityTests.install_package
 
     def setUp(self):
         HostCompatibilityTests.setUp(self)
@@ -327,6 +362,41 @@ class InstalledHostTests(unittest.TestCase):
         result = self.inspect_installed(self.record())
         self.assertEqual(result["state"], "host_drift")
         self.assertEqual([reason["code"] for reason in result["reasons"]], ["bridge_disabled"])
+
+    def test_installed_reasons_keep_their_order_and_text(self):
+        self.patch(added=False)
+        self.enable_bridge(False)
+        (self.home / "profiles/work").mkdir(parents=True)
+        (self.source / "model_tools.py").write_text("TOOLS = ['edited']\n")
+        (self.source / "hermes_cli/extra.py").write_text("")
+        git("update-index", "--skip-worktree", "run_agent.py", cwd=self.source)
+        self.install_package("tree-sitter", "0.25.0")
+        self.manifest["hermes"][0]["python"] = "3.9"
+        result = self.inspect_installed(self.record())
+        self.assertEqual([(reason["code"], reason["message"], reason.get("paths")) for reason in result["reasons"]], [
+            ("host_drift", "Some Hermes files that LifeOS patched have changed since installation.",
+             ["hermes_cli/new_hook.py"]),
+            ("modified_files", "Hermes source files differ from the qualified upstream version.", ["model_tools.py"]),
+            ("untracked_files", "The Hermes source contains files that are not part of the upstream version.",
+             ["hermes_cli/extra.py"]),
+            ("hidden_changes", "Git is set to ignore changes to some tracked Hermes files.", ["run_agent.py"]),
+            ("bridge_disabled", "Hermes no longer enables the LifeOS bridge plugin. A Hermes dependency update can "
+             "disable a plugin.", None),
+            ("unsupported_interpreter", "LifeOS qualifies Hermes v0.0.1 with Python 3.9. This Hermes runs Python "
+             + PYTHON + ".", None),
+            ("shared_installation", result["reasons"][6]["message"], ["work"]),
+            ("dependency_conflict", "An installed Python package has a different version than LifeOS requires.",
+             ["tree-sitter"])])
+        self.assertTrue(result["installed"] is False and result["state"] == "host_drift")
+
+    def test_installed_host_with_unreadable_git_is_reported(self):
+        from unittest import mock
+        from optional.lifeos_release_manager import host_compatibility
+        self.patch()
+        with mock.patch.object(host_compatibility, "_working_tree", return_value=None):
+            result = self.inspect_installed(self.record())
+        self.assertEqual([(reason["code"], reason["message"]) for reason in result["reasons"]],
+                         [("git_unavailable", "Git cannot read the Hermes checkout as this account.")])
 
     def test_recorded_patched_host_is_installed(self):
         self.patch()
