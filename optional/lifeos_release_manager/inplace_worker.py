@@ -44,7 +44,8 @@ def synchronize(job, request, *, label):
     output.unlink(missing_ok=True)
     source = request['host']['source']
     environment = {**service_environment(request), 'PYTHONPATH': source}
-    run_stage([request['runtime']['python'], '-B', job / 'worker/dependency_plan.py', 'synchronize', source, output],
+    from .inplace_preparation import host_python
+    run_stage([host_python(source), '-B', job / 'worker/dependency_plan.py', 'synchronize', source, output],
               job, label, environment=environment)
     return _json(output.read_bytes())
 
@@ -94,7 +95,7 @@ def _stop_created(plan):
 
 def verify_registration(request, plan):
     """Require the restarted gateway's main process to register the installed bridge in patched mode."""
-    if 'gateway' not in plan['services']['roles']:
+    if 'gateway' not in plan['services']['roles'] and 'gateway' not in plan['services']['created']:
         return None
     from .release_stage import load_bridge
     profile = Path(request['profile'])
@@ -104,8 +105,10 @@ def verify_registration(request, plan):
         result = subprocess.run(['systemctl', '--user', 'show', 'hermes-gateway.service', '--property=MainPID,ActiveState'],
                                 capture_output=True, text=True, timeout=45)
         values = dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
-        if values.get('ActiveState') != 'active':
-            return None
+        if values.get('ActiveState') not in {'active', 'activating'}:
+            if values.get('ActiveState') == 'inactive' and not _gateway_expected(plan):
+                return None
+            raise ReleaseRejected('The gateway does not run after the operation')
         receipt = registration.read_receipt(profile, int(values.get('MainPID') or 0))
         if receipt is not None:
             if receipt['mode'] != 'patched':
@@ -157,16 +160,31 @@ def check_inventory(before, after, added):
         raise ReleaseRejected('The operation changed Python packages outside the review: ' + ', '.join(changed + unexpected))
 
 
+def _gateway_expected(plan):
+    """The gateway must run afterwards when it ran before the operation or the operation created its unit."""
+    return 'gateway' in plan['services']['created'] or plan['services']['active'].get('gateway', False)
+
+
 def remove_preview(job):
     preview = job / 'hermes-preview'
     if preview.is_dir() and not preview.is_symlink():
         shutil.rmtree(preview)
 
 
+def _quiesce(services):
+    """Stop the bound services again when an earlier drain published its journal; otherwise nothing stopped."""
+    if services is not None and services.status()['state'] != 'none':
+        services.quiesce()
+
+
+def _resume(services):
+    if services is not None and services.status()['state'] != 'none':
+        services.resume()
+
+
 def _rollback(job, request, plan, services, programs, restore_mount):
     """Return the host to its prior programs: mount, programs, dependencies, then services."""
-    if services is not None:
-        services.quiesce()
+    _quiesce(services)
     _stop_created(plan)
     restore_mount()
     programs.restore()
@@ -176,8 +194,7 @@ def _rollback(job, request, plan, services, programs, restore_mount):
     except (ReleaseRejected, OSError, ValueError) as error:
         publish(job / 'dependency-restore-failure.json',
                 (json.dumps({'error': type(error).__name__}) + '\n').encode())
-    if services is not None:
-        services.resume()
+    _resume(services)
 
 
 def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
@@ -187,12 +204,12 @@ def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
     if not update.acquire():
         raise ReleaseRejected('A Hermes update is running; wait for it to finish, then recover the operation')
     try:
-        return _run(job, request, action, current, lease, checkpoint=checkpoint)
+        return _run(job, request, action, current, lease, checkpoint=checkpoint, release_update=update.release)
     finally:
         update.release()
 
 
-def _run(job, request, action, current, lease, *, checkpoint):
+def _run(job, request, action, current, lease, *, checkpoint, release_update=lambda: None):
     from .release_worker import (_fresh_native, _restore_mount, _revoke, check_mount_recovery, check_restore,
                                  record_failure)
     profile = Path(request['profile'])
@@ -225,6 +242,8 @@ def _run(job, request, action, current, lease, *, checkpoint):
                     entry['target']: fingerprint(entry['target']) for entry in manifest['entries']}
                 programs.check_recovery(overrides=overrides)
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
+            _quiesce(services)
+            _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
             _rollback(job, request, plan, services, programs, restore_mount)
             verify_runtime(request, restored=True)
             from .host_configuration import RECORD, record
@@ -252,8 +271,7 @@ def _run(job, request, action, current, lease, *, checkpoint):
                 else:
                     services.drain(signature=plan['services']['signature'])
                 services.verify_stopped()
-            if not fresh_recovery:
-                _consumers_stopped(request, plan)
+            _consumers_stopped(request, plan)
             if fresh_recovery:
                 _restore_mount(job, request, mount)
             for entry in programs._load()['entries']:
@@ -288,6 +306,8 @@ def _run(job, request, action, current, lease, *, checkpoint):
             check_preserved(configuration_before, configuration_after)
             check_inventory(inventory_before, inventory_snapshot(request), request['dependencies']['added'])
             verify_runtime(request)
+            # Restarted Hermes processes refuse to boot under a live update marker; the checkout is complete.
+            release_update()
             if services is not None:
                 services.resume()
             _start_created(plan)
@@ -300,8 +320,7 @@ def _run(job, request, action, current, lease, *, checkpoint):
         except BaseException as error:
             record_failure(job, error)
             if selected['fresh'] and native_started:
-                if services is not None:
-                    services.quiesce()
+                _quiesce(services)
                 _stop_created(plan)
                 _restore_mount(job, request, mount)
                 write_state(job, 'recovery_required',

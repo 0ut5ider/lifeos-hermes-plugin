@@ -218,7 +218,11 @@ def _program_plan(job, request, selected):
         'step_migrate_config()\n'
         'from hermes_cli.config import config_command\n'
         'config_command(Namespace(config_command="check"))\n')
-    run_stage([request['runtime']['python'], '-B', '-c', configuration_check, str(generated)],
+    python = request['runtime']['python']
+    if request.get('format') == 2:
+        from .inplace_preparation import host_python
+        python = host_python(request['host']['source'])
+    run_stage([python, '-B', '-c', configuration_check, str(generated)],
         job, 'program-configuration', environment=_environment(generated, home=job,
             source=Path(request['runtime']['source'])))
     files[profile / 'config.yaml'] = generated / 'config.yaml'

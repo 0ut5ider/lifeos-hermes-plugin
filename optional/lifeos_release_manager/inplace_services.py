@@ -44,18 +44,19 @@ def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset(), oper
     gateway or dashboard outside its unit can be replaced by a created unit when the owner accepts.
     Any other consumer, such as an interactive CLI session, must be closed before the operation.
     """
-    bound, groups = [], set()
+    bound, groups, active = [], set(), {}
     for role, unit in units.items():
         values = _properties(unit)
         if values.get('LoadState') == 'loaded' and values.get('FragmentPath'):
             bound.append(role)
+            active[role] = values.get('ActiveState') == 'active'
             if values.get('ControlGroup'):
                 groups.add(values['ControlGroup'])
     consumers = [item for item in source_consumers(source, state_dir, excluded_pids=excluded_pids, excluded_groups=groups)
                  if not (item['pid'] in operators and item['role'] == 'other')]
     offers = sorted({item['role'] for item in consumers if item['role'] in OFFERABLE and item['role'] not in bound})
     blocking = [item for item in consumers if item['role'] not in offers]
-    return {'bound': bound, 'consumers': consumers, 'offers': offers, 'blocking': blocking}
+    return {'bound': bound, 'active': active, 'consumers': consumers, 'offers': offers, 'blocking': blocking}
 
 
 def replace_with_units(admitted, created):

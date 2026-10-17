@@ -281,7 +281,11 @@ def launch_worker(profile, identifier, action, *, authorization=None):
     manifest = validate_operation_package(job, request)
     validate_files(job / 'worker', manifest['manager_files'], forbid_bytecode=True)
     admit_operation(job, request, action, authorization=authorization)
-    command = [request['runtime']['python'], '-B', str(job / 'worker/release_worker.py'), str(job), '--action', action]
+    python = request['runtime']['python']
+    if request.get('format') == 2:
+        from .inplace_preparation import host_python
+        python = str(host_python(request['host']['source']))
+    command = [python, '-B', str(job / 'worker/release_worker.py'), str(job), '--action', action]
     environment = {'HOME': request['account_home'], 'HERMES_HOME': request['profile'],
         'PATH': os.environ.get('PATH', os.defpath), 'PYTHONDONTWRITEBYTECODE': '1'}
     if read_private(job / 'plan.json')['services']:

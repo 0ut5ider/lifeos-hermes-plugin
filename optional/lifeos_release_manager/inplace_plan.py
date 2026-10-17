@@ -48,10 +48,12 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     validate_integration(package, request['certificate'])
     if sha(job / 'download' / archive_name(request)) != request['package_sha256']:
         raise ReleaseRejected('The integration archive changes before selection')
-    expected = {'python': str(host_python(source)), 'bun': str(job / 'tools/bun'), 'hermes': str(host_launcher(source)),
+    # The host interpreter moves to a new environment generation at every dependency synchronization,
+    # so it is resolved from the host whenever it is used and is not a fixed path.
+    expected = {'bun': str(job / 'tools/bun'), 'hermes': str(host_launcher(source)),
                 'source': str(job / 'hermes-preview'), 'reference': str(job / 'reference-home/.claude'),
                 'lifeos': str(job / 'lifeos'), 'host_files': str(job / 'host')}
-    if request['runtime'] != expected:
+    if {key: value for key, value in request['runtime'].items() if key != 'python'} != expected:
         raise ReleaseRejected('The prepared runtime changes its fixed paths')
     if runtime_source_fingerprint(job / 'hermes-preview') != request['runtime_fingerprint']:
         raise ReleaseRejected('The prepared preview changes before selection')
@@ -59,12 +61,15 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     host = inspect_host(source, load_manifest(package / COMPATIBILITY), hermes_home=profile, record=load_record(profile))
     record_file = record_path(profile)
     record_digest = sha(record_file) if record_file.exists() else None
-    if (host['state'] != request['host']['state'] or host['detected']['source'] != str(source)
-            or host['detected']['commit'] != request['host']['commit'] or record_digest != request['host']['record_sha256']):
+    if host['detected']['source'] != str(source) or host['detected']['commit'] != request['host']['commit']:
         raise ReleaseRejected('The Hermes installation changes after preparation; prepare the operation again')
-    from .dependency_plan import selected_lock
-    if sha(selected_lock(source)) != request['dependencies']['seed_sha256']:
-        raise ReleaseRejected('The Hermes Python environment changes after preparation; prepare the operation again')
+    # Forward recovery finds a partly published host; the program journal checks each file's identity instead.
+    if not fresh_recovery:
+        if host['state'] != request['host']['state'] or record_digest != request['host']['record_sha256']:
+            raise ReleaseRejected('The Hermes installation changes after preparation; prepare the operation again')
+        from .dependency_plan import selected_lock
+        if sha(selected_lock(source)) != request['dependencies']['seed_sha256']:
+            raise ReleaseRejected('The Hermes Python environment changes after preparation; prepare the operation again')
     entry = next((item for item in load_manifest(package / COMPATIBILITY)['hermes']
                   if item['commit'] == request['host']['commit']), None)
     if entry is None:
@@ -93,7 +98,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
         raise ReleaseRejected('Fresh installation requires an empty native destination without existing personal data')
     # The command or preparation process that runs this review is the operator, not a consumer to stop.
     consumers = inventory(source, Path(request['host']['state_directory']), operators=ancestors())
-    if consumers['blocking']:
+    # Forward recovery repeats the consumer stop in the worker; the services may already be stopped.
+    if consumers['blocking'] and not fresh_recovery:
         names = ', '.join(item['command'] + ' (' + str(item['pid']) + ')' for item in consumers['blocking'])
         raise ReleaseRejected('Close these Hermes processes before the operation: ' + names)
     roles = [role for role in ('gateway', 'dashboard', 'pulse') if role in consumers['bound']]
@@ -106,7 +112,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
     # A transition verifies through the account launcher that the existing services start.
     launcher = home / '.local/bin/hermes' if request['host'].get('transition') else host_launcher(source)
     result.update(services={'roles': roles, 'created': created, 'consumers': consumers['consumers'],
-                            'signature': None if services is None else services.preview()['signature']},
+                            'active': {role: consumers['active'][role] for role in roles},
+                            'signature': None if services is None or fresh_recovery else services.preview()['signature']},
                   created_roles=tuple(created), launchers=[str(launcher)])
     if fresh:
         result['native_changes'] = True
