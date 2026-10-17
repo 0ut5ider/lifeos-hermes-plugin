@@ -97,7 +97,7 @@ def _stop_created(plan):
                            capture_output=True, text=True, timeout=90)
 
 
-def verify_registration(request, plan):
+def verify_registration(request, plan, *, unit=CREATED_UNITS['gateway']):
     """Require the restarted gateway's main process to register the installed bridge in patched mode."""
     if 'gateway' not in plan['services']['roles'] and 'gateway' not in plan['services']['created']:
         return None
@@ -106,7 +106,7 @@ def verify_registration(request, plan):
     registration = load_bridge(profile / 'plugins/lifeos-hook-bridge').memory_module('registration')
     deadline = time.monotonic() + 90
     while time.monotonic() < deadline:
-        result = subprocess.run(['systemctl', '--user', 'show', 'hermes-gateway.service', '--property=MainPID,ActiveState'],
+        result = subprocess.run(['systemctl', '--user', 'show', unit, '--property=MainPID,ActiveState'],
                                 capture_output=True, text=True, timeout=45)
         values = dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
         if values.get('ActiveState') not in {'active', 'activating'}:
