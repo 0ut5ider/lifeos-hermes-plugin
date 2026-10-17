@@ -29,7 +29,7 @@ def payloads(directory, tag, origin):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description='Serve one local integration release through a loopback imitation of the GitHub release API.')
     parser.add_argument('--directory', type=Path, required=True, help='Directory with the certificate and archive.')
     parser.add_argument('--tag', required=True)
     parser.add_argument('--port', type=int, default=8765)

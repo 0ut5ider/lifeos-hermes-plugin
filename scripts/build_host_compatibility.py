@@ -133,7 +133,7 @@ def build_manifest(entries: list[dict], plugin: Path) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description='Build the Hermes compatibility manifest from an exact stock Hermes archive.')
     parser.add_argument('--stock-archive', type=Path, required=True,
                         help='The qualified stock-hermes.tgz created by git archive at the supported commit.')
     parser.add_argument('--label', required=True, help='The Hermes version shown to the owner, such as v0.21.7.')
