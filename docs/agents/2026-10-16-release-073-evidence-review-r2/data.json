@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-16",
+  "role": "independent evidence reviewer, round 2",
+  "model": "claude-opus-5-5",
+  "question": "Do the provenance fixes at 3008300f close round 1 findings F1 to F4 without changing the immutable initial certificate?",
+  "head": "3008300fd5ca4b25243a36a49d1545b6a39a4d24",
+  "verdict": "CLEAR",
+  "findings": [],
+  "certificate": {
+    "sha256": "d4b002d377ccfda5375bd6cfb4fdb1bbc49f5e8cc9c1be2fa7df54386f65ef58",
+    "bytes": 4225,
+    "git_changed_since_2fa3d516": false
+  },
+  "receipt_repo_equals_cache_copy": true,
+  "decompressed_digests": {
+    "archive-integration-70fa8390.stderr": {"gz": "a34f741d6a10f7bb9d74803e2710aa38edc6a837cc7b4a9fcb2d09727bfce2d8", "raw": "f3d817c84afedccd8b8da7180182e1f762126d6a625107d7e67c5e183a9585fc", "bytes": 213465},
+    "socket-provenance-long.txt": {"gz": "b7fc4130afca9d4936f48feb4fe32baefbbe5f83183bedf647ef9316fe46b6e4", "raw": "79e394618a0d28f219a7724119a945369d1736a19df96d96b499a6af345268d9", "bytes": 994},
+    "socket-provenance-short.txt": {"gz": "22fdc1b908071d065ad828bc20304aa298ce3c13af68aa41c5d0f09aec5b4de4", "raw": "d6a7c68072d2fe1f7d5cf777cc0f9e9d53f62e683764299c1dd5233588eb80da", "bytes": 6779},
+    "boundary-source-map.json": {"gz": "44164c5ab754a7f4891e2dcc3290f2de580f7c99a19e8aba5a2d52c61100760d", "raw": "e0f110176332fe02ca30adadbe290e060440f18c03ca7f10b6d8a4a6e916979b", "bytes": 123222},
+    "account-boundary-operator.py": {"gz": "b5af28db5781bc77e8230fdfbaa579cc0ed5ae340c92ef37d021cf416f2eb68e", "raw": "fcbf0e4b23e5271e49408d55a7ae7c89d2db2d5c657ee0a3e2a57e5b003e595e", "bytes": 6108},
+    "boundary-replay.stderr": {"gz": "0d47c4698140341b5b38ccaaaec8e3dcd0d67d4518c6486f16f4b51c0aeaa6fb", "raw": "f7296c0f19e3ad545a097bce98a439c7bb863dba45c753361eb6e7526917afd5", "bytes": 1460},
+    "socket-path-short.txt": {"gz": "d03fae768cc4a098f97ad769a13ad56e93ee9ce5007fb16484043a378be5fe8c", "raw": "8e9a48fd1fbb7cbc0e8e72e20a1baa9d18fefab1adbf40811d28c85e75aa7ca5", "bytes": 6779},
+    "socket-path-long.txt": {"gz": "d74bbc1125fea160d045367e5c5aecdf64e78bb3198b8c7489f379a99093e384", "raw": "d722b96263e906b3ce45af70c98ee97f1f6aecb4d992ed9b0ab9de88209a40ad", "bytes": 994}
+  },
+  "F1": {
+    "status": "CLOSED",
+    "log_lines": {"1173": "Ran 1129 tests in 1818.461s", "1175": "FAILED (failures=1, errors=2)"},
+    "skipped_mentions": 0
+  },
+  "F2": {
+    "status": "CLOSED",
+    "long_output": "OSError: AF_UNIX path too long at tests/test_profile_backup.py:376; Ran 1 test; FAILED (errors=1)",
+    "short_output": "35 ok lines; Ran 35 tests; OK",
+    "new_vs_original_outputs_diff": "elapsed time line only",
+    "tmpdir_characters": [69, 34],
+    "long_tmpdir_and_cwd_equal_full_run_record": true,
+    "st_dev_measured_2026_10_16": {"/home/outsider/.cache/lifeos-release-0.7.3-20261016/qualification-tmp": 38, "/home/outsider/.cache/q73-20261016": 38},
+    "warnings_in_outputs": 0
+  },
+  "F3": {
+    "status": "CLOSED",
+    "git_version": "2.56.0",
+    "git_archive_99e18c44_tests_lifeos_hook_bridge_optional_sha256": "5b5b3610b0975052e007eb1c8719ffa92d160a228a7e8bbead0e488a22b597ea",
+    "cache_boundary_source_tar_sha256": "5b5b3610b0975052e007eb1c8719ffa92d160a228a7e8bbead0e488a22b597ea",
+    "source_map_entries": 787,
+    "source_map_equals_git_tree_99e18c44": true,
+    "source_map_canonical_digest": "e0f110176332fe02ca30adadbe290e060440f18c03ca7f10b6d8a4a6e916979b",
+    "source_map_vs_70fa8390_tree_differences": ["tests/test_memory_owner_job_processes.py"],
+    "git_diff_99e18c44_70fa8390_outside_docs_notes": ["tests/test_memory_owner_job_processes.py"],
+    "boundary_import_closure_equal_to_70fa8390": {
+      "optional/lifeos_release_manager/release_programs.py": true,
+      "optional/lifeos_release_manager/removal_preparation.py": true,
+      "optional/lifeos_release_manager/removal_consumers.py": true,
+      "lifeos_hook_bridge/profile_services.py": true,
+      "tests/test_profile_services.py": true
+    },
+    "references_to_test_memory_owner_job_processes_in_code_paths": 0,
+    "primary_boundary_six_hashes_equal_map": true,
+    "operator": {"account": "lifeos-073-test", "hermes_source_line_49": "/home/outsider/.cache/lifeos-release-0.7.3-20261016/packages/0.7.3-99e18c44/hermes", "argv_equals_primary_boundary_command": true, "cache_copy_sha256_equal": true},
+    "raw_output_equals_cache_primary_boundary_stderr": true,
+    "hermes": {
+      "qualified_archive_0.7.3-70fa8390.tgz_sha256": "2deae5dcedfef8224959312410a5381baa91312532c968afa5534f19fd2149c8",
+      "candidate_archive_0.7.3-99e18c44.tgz_sha256": "76b6d2fd2ca0e050ad4edc403dbba4510fdc23950f86eab5fcf231d9c070ef63",
+      "map_from_qualified_archive": {"files": 18270, "digest": "803aae81395079099f6f665fb3cdbe127d5961dcb337895ac838f92eb41ef061"},
+      "map_from_candidate_archive": {"files": 18270, "digest": "803aae81395079099f6f665fb3cdbe127d5961dcb337895ac838f92eb41ef061"},
+      "map_from_extracted_candidate_hermes_dir": {"files": 18270, "digest": "803aae81395079099f6f665fb3cdbe127d5961dcb337895ac838f92eb41ef061"},
+      "reconstruction_script": "/tmp/r2-scripts/hermes_map.py (regular hermes/ members, .git components excluded, executable = any x bit, sha256 of json.dumps(indent=2, sort_keys=True) plus newline)"
+    }
+  },
+  "F4": {
+    "status": "CLOSED",
+    "log_categories": {"1136": "ERROR test_profile_backup.ProfileBackupScopeTests.test_regenerable_and_runtime_entries_are_excluded_and_recorded", "1145": "ERROR test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses", "1164": "FAIL test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted"},
+    "cause_lines": {"1151": "PermissionError: [Errno 13] Permission denied: '/proc/814420/exe'", "1170": "refused_process: sshd-session"},
+    "certificate_line_45_unchanged": true
+  },
+  "contributing_md_line_75_added": "Bind raw test logs, replay commands and environments, and complete replay source hashes in the qualification evidence.",
+  "text_checks": {"em_dash": 0, "trailing_whitespace": 0, "receipt_valid_json": true},
+  "observations": [
+    "O1: socket replays omit -W error::ResourceWarning used by the full run; outputs contain no warnings.",
+    "O2: socket receipts record argv, cwd, TMPDIR, not the full environment; same convention as the full-run record.",
+    "O3: tar digest depends on the git archive implementation; the 787-entry map binds files independently.",
+    "O4: round 1 N1 on inherited non-dumpable wording still applies; supplement gives per-case measured causes."
+  ]
+}
