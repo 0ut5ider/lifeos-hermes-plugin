@@ -7,13 +7,10 @@ import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from optional.lifeos_release_manager.release_catalog import REPOSITORY
+# Qualification copies this script to a test host without the plugin package, so it keeps its own copy;
+# tests/test_local_release_server.py requires it to equal release_catalog.REPOSITORY.
+REPOSITORY = '0ut5ider/lifeos-hermes-plugin'
 
 
 def payloads(directory, tag, origin):
