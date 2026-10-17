@@ -11,12 +11,13 @@ import subprocess
 import time
 
 from .cli import write_state
-from .inplace_services import OFFERABLE, UNITS, inventory, replace_with_units
+from .inplace_services import OFFERABLE, UNITS, inventory, replace_with_units, show
 from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, publish
 from .release_operation import validate_plan
 from .release_stage import run_stage, sha
+from .removal_configuration import PLUGINS as OWNED_PLUGINS
 
 
 DEPENDENCY_RESTORE_ERROR = ('The programs are restored, but Hermes could not rebuild its Python environment. '
@@ -134,19 +135,11 @@ def boot_ticks():
     return int(time.clock_gettime(time.CLOCK_BOOTTIME) * os.sysconf('SC_CLK_TCK'))
 
 
-def _show(unit, *properties):
-    result = subprocess.run(['systemctl', '--user', 'show', unit, '--property=' + ','.join(properties)],
-                            capture_output=True, text=True, timeout=45)
-    if result.returncode:
-        raise ReleaseRejected('The owner service manager does not report ' + unit)
-    return dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
-
-
 def check_restarted(units, drained):
     """Require each restarted unit to be active with a main process that started after the drain."""
     from .consumer_scan import start_time
     for unit in units:
-        values = _show(unit, 'MainPID', 'ActiveState')
+        values = show(unit, 'MainPID', 'ActiveState')
         pid = int(values.get('MainPID') or 0)
         try:
             started = start_time(pid) if pid else None
@@ -159,7 +152,7 @@ def check_restarted(units, drained):
 def check_enabled(recorded):
     """Require each bound unit to keep the enablement (``UnitFileState``) recorded at review."""
     for unit, state in recorded.items():
-        if _show(unit, 'UnitFileState').get('UnitFileState') != state:
+        if show(unit, 'UnitFileState').get('UnitFileState') != state:
             raise ReleaseRejected('The operation changed whether ' + unit + ' starts with your account')
 
 
@@ -194,9 +187,6 @@ def adopt_units(services, request):
     for role, hashes in units.items():
         if role in services.units:
             services.adopt_definition(role, {hashes['before'], hashes['after']})
-
-
-OWNED_PLUGINS = ('lifeos', 'lifeos-hook-bridge', 'lifeos-release-manager')
 
 
 def _tree_digest(root):

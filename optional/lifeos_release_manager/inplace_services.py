@@ -14,13 +14,17 @@ UNITS = {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.ser
 OFFERABLE = ('gateway', 'dashboard')
 
 
-def _properties(unit):
-    result = subprocess.run(['systemctl', '--user', 'show', unit, '--no-pager',
-                             '--property=LoadState,ActiveState,ControlGroup,FragmentPath,UnitFileState'],
+def show(unit, *properties):
+    """Return the selected ``systemctl --user show`` properties of ``unit``."""
+    result = subprocess.run(['systemctl', '--user', 'show', unit, '--no-pager', '--property=' + ','.join(properties)],
                             capture_output=True, text=True, timeout=45)
     if result.returncode or result.stderr:
-        raise ReleaseRejected('The owner service manager does not report the Hermes services')
+        raise ReleaseRejected('The owner service manager does not report ' + unit)
     return dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
+
+
+def _properties(unit):
+    return show(unit, 'LoadState', 'ActiveState', 'ControlGroup', 'FragmentPath', 'UnitFileState')
 
 
 def _loaded(values):
