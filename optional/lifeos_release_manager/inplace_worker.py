@@ -115,6 +115,48 @@ def verify_registration(request, plan):
     raise ReleaseRejected('The restarted gateway did not register the bridge')
 
 
+OWNED_PLUGINS = ('lifeos', 'lifeos-hook-bridge', 'lifeos-release-manager')
+
+
+def _tree_digest(root):
+    import hashlib
+    digest = hashlib.sha256()
+    for path in sorted(Path(root).rglob('*')):
+        if '__pycache__' in path.parts or path.suffix == '.pyc':
+            continue
+        digest.update(path.relative_to(root).as_posix().encode() + b'\0')
+        if path.is_symlink():
+            digest.update(b'link\0' + os.readlink(path).encode())
+        elif path.is_file():
+            digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()
+
+
+def inventory_snapshot(request):
+    """Record the other plugins, their enablement, and the locked packages that the operation must keep."""
+    from ruamel.yaml import YAML
+    from .dependency_plan import locked_packages, selected_lock
+    profile = Path(request['profile'])
+    plugins = profile / 'plugins'
+    directories = {path.name: _tree_digest(path) for path in sorted(plugins.iterdir())
+                   if path.name not in OWNED_PLUGINS and path.is_dir()} if plugins.is_dir() else {}
+    configuration = YAML(typ='safe').load((profile / 'config.yaml').read_text()) or {}
+    selected = (configuration.get('plugins') or {}) if isinstance(configuration, dict) else {}
+    enabled = sorted(name for name in selected.get('enabled') or [] if name not in OWNED_PLUGINS)
+    return {'plugins': directories, 'enabled': enabled,
+            'packages': locked_packages(selected_lock(Path(request['host']['source'])))}
+
+
+def check_inventory(before, after, added):
+    """Refuse when the operation changed another plugin, its enablement, or an existing package version."""
+    if before['plugins'] != after['plugins'] or before['enabled'] != after['enabled']:
+        raise ReleaseRejected('The operation changed another Hermes plugin or its enablement')
+    changed = [name for name, versions in before['packages'].items() if after['packages'].get(name) != versions]
+    unexpected = sorted(set(after['packages']) - set(before['packages']) - set(added))
+    if changed or unexpected:
+        raise ReleaseRejected('The operation changed Python packages outside the review: ' + ', '.join(changed + unexpected))
+
+
 def remove_preview(job):
     preview = job / 'hermes-preview'
     if preview.is_dir() and not preview.is_symlink():
@@ -185,6 +227,10 @@ def _run(job, request, action, current, lease, *, checkpoint):
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             _rollback(job, request, plan, services, programs, restore_mount)
             verify_runtime(request, restored=True)
+            from .host_configuration import RECORD, record
+            if (profile / RECORD).exists():
+                current = (profile / 'config.yaml').read_bytes()
+                record(profile, current, current)
             write_state(job, 'rolled_back')
             remove_preview(job)
             return {'state': 'rolled_back'}
@@ -197,6 +243,8 @@ def _run(job, request, action, current, lease, *, checkpoint):
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
         native_started = fresh_recovery
+        configuration_before = (profile / 'config.yaml').read_bytes()
+        inventory_before = inventory_snapshot(request)
         try:
             if services is not None:
                 if fresh_recovery and services.status()['state'] != 'none':
@@ -235,12 +283,17 @@ def _run(job, request, action, current, lease, *, checkpoint):
                     baseline_data=(json.dumps(baseline) + '\n').encode(),
                     binding=administration.job_binding(job, request, action), retain_for_rollback=True)
             checkpoint('native-mounted')
+            from .host_configuration import check_preserved, record
+            configuration_after = (profile / 'config.yaml').read_bytes()
+            check_preserved(configuration_before, configuration_after)
+            check_inventory(inventory_before, inventory_snapshot(request), request['dependencies']['added'])
             verify_runtime(request)
             if services is not None:
                 services.resume()
             _start_created(plan)
             receipt = verify_registration(request, plan)
             publish(job / 'registration.json', (json.dumps(receipt) + '\n').encode())
+            record(profile, configuration_before, configuration_after)
             write_state(job, 'applied')
             remove_preview(job)
             return {'state': 'applied'}

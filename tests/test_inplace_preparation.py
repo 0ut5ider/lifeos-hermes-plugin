@@ -81,3 +81,18 @@ class StockSourceTests(unittest.TestCase):
             self.assertEqual((result / 'hermes_cli/plugins.py').read_text(), 'original\n')
             self.assertEqual((result / 'hermes_cli/other.py').read_text(), 'stock and untouched\n')
             self.assertFalse((result / 'hermes_cli/new.py').exists())
+
+
+class InventoryTests(unittest.TestCase):
+    def test_inventory_changes_outside_the_review_are_refused(self):
+        from optional.lifeos_release_manager.inplace_worker import check_inventory
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        before = {'plugins': {'weather': 'a'}, 'enabled': ['weather'], 'packages': {'mcp': ['2.0.0']}}
+        after = {'plugins': {'weather': 'a'}, 'enabled': ['weather'],
+                 'packages': {'mcp': ['2.0.0'], 'tree-sitter': ['0.26.0']}}
+        check_inventory(before, after, {'tree-sitter': ['0.26.0']})
+        for changed in ({**after, 'plugins': {'weather': 'b'}}, {**after, 'enabled': []},
+                        {**after, 'packages': {'mcp': ['2.1.0'], 'tree-sitter': ['0.26.0']}},
+                        {**after, 'packages': {**after['packages'], 'six': ['1.0']}}):
+            with self.subTest(changed=changed), self.assertRaises(ReleaseRejected):
+                check_inventory(before, changed, {'tree-sitter': ['0.26.0']})
