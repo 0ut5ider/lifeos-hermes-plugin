@@ -1,25 +1,17 @@
-# Install the complete LifeOS integration
+# Install LifeOS into your Hermes
 
-Use the release manager for a supported installation. It prepares one qualified package containing Hermes, LifeOS, the bridge, manager, dependencies, dashboard, and public commands. Installing only `lifeos_hook_bridge/` does not provide the complete integration.
+LifeOS installs into the Hermes you already run. The release manager plugin checks that your Hermes is a supported version, downloads the LifeOS integration (about 2 MB plus the pinned LifeOS source), and patches your Hermes checkout in place. It never replaces Hermes, its Python environment, or your other plugins and tools.
 
-The [current release record](verification/2026-10-16-release-0.7.3/README.md) identifies the supported package. [Source preparation](clean-install.md) is a separate development workflow.
+The [0.7.x managed-runtime guide](history/2026-10-17-managed-installation-workflow.md) describes the earlier complete-package releases. [Source preparation](clean-install.md) is a separate development workflow.
 
-The accepted [installation redesign](in-place-installation-plan.md) will patch a compatible existing Hermes installation and refuse unsupported hosts. It will not offer a replacement runtime. That redesign is not implemented or qualified. This guide describes the published 0.7.3 workflow.
+## What a supported Hermes looks like
 
-## Before installation
+- Hermes `v0.21.7` (commit `71d34bad`), installed with the official installer as a Git checkout that your account owns.
+- No local edits to the Hermes source. Files that Git ignores, such as the Python environment, are fine.
+- One profile. Named profiles under `~/.hermes/profiles` share the source and are not supported yet.
+- Linux with systemd user services. The stock gateway unit from `hermes gateway install` is supported.
 
-Configure a working model in Hermes. The installer preserves that model and the configured LifeOS tier mapping. Have an authenticated Hermes dashboard owner account available.
-
-The supported managed first-installation path runs on Linux with systemd user services. The dashboard service must:
-
-- Run as the intended Hermes account, with its account home as the working directory.
-- Use that account's `~/.local/bin/hermes` launcher.
-- Declare the physical selected profile in `HERMES_HOME`, without an environment file.
-- Use `UMask=0077` for private profile and recovery files.
-
-Use physical account-home, profile, and native installation paths without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces. The manager verifies the service definition and running profile before it changes programs. A foreground dashboard or foreign service binding does not satisfy this managed path.
-
-Keep a private backup before enabling memory or changing an existing installation. Profile backups and whole-guest backups have different coverage; see [recovery boundaries](update-policy.md#recovery-and-rollback).
+Open **LifeOS releases** (or run `hermes lifeos-release compatibility`) to see the result for your installation. The check reads your Hermes and changes nothing. When it refuses, it names the reason: a different Hermes version, changed files, extra profiles, a dependency conflict, or an unsupported layout. Upstream Hermes moves quickly; a newer Hermes needs a LifeOS release that qualifies it.
 
 ## Install the release manager
 
@@ -30,54 +22,50 @@ Keep a private backup before enabling memory or changing an existing installatio
    https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager
    ```
 
-3. Enable **lifeos-release-manager**.
-4. Restart the Hermes dashboard so it loads the plugin API and page.
-5. Open **LifeOS releases**, at `/lifeos-releases`.
+3. Enable **lifeos-release-manager**, then restart the Hermes dashboard so it loads the plugin page.
+4. Open **LifeOS releases**, at `/lifeos-releases`.
 
-The web form installs the default branch. It has no revision field. A GitHub tree URL does not select a commit.
-
-Hermes can report a CAUTION verdict because the manager runs processes and manages user services. Read the findings against the selected source before confirming. The native **Force reinstall** control can confirm a trusted source, but it also replaces an existing manager directory. Do not use it without inspecting an existing installation and retaining its recovery path. Never disable the scanner to make installation pass.
-
-For a pinned command-line bootstrap, use the full 40-character program commit from the selected release record:
+Hermes can report a CAUTION verdict because the manager runs processes and manages user services. Read the findings against the selected source before you confirm. For a pinned command-line install, use the full program commit from the release record:
 
 ```bash
 hermes plugins install 'https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager' --ref FULL_RELEASE_COMMIT
 hermes plugins enable lifeos-release-manager
 ```
 
-Hermes does not accept a tag for `--ref`. Restart the dashboard after bootstrap or replacement. Older managers can refuse newer package plans; use the manager from the selected qualified release when a bootstrap is required.
+## Prepare, review, and apply
 
-## Prepare and apply a release
+1. Check that **Hermes compatibility** says LifeOS can be installed.
+2. Select **Install LifeOS** and enter the user and assistant display names.
+3. Wait for preparation. It downloads the release, fetches the pinned LifeOS commit, stages the Hermes patches, and resolves the bridge's Python packages against your environment. Nothing in your installation changes.
+4. Select **Review release**. The review lists:
+   - the Hermes files that change (69 changed and 27 added for `v0.21.7`) and the update hold;
+   - the Python packages that are added (`tree-sitter` and `tree-sitter-bash`; preparation refuses when an existing package would change);
+   - the services that restart, and any user service that is created;
+   - the tested scope.
+5. Select **Install this release**.
 
-1. Select **Install LifeOS**.
-2. Enter the user and assistant display names for a fresh store.
-3. Leave the version empty for the latest stable package, or enter an exact published version.
-4. Wait for the detached preparation to finish. The running installation remains selected during preparation.
-5. Select **Review release** for the prepared operation.
-6. Check its exact version, program commit, and package hash.
-7. Select **Install this release**.
-8. After the dashboard returns, check the operation state and installed version:
+The worker then stops every Hermes process that uses the source, patches the files with a journal, adds the packages through Hermes's own environment manager, installs LifeOS, restarts the services, and checks that the restarted gateway loaded LifeOS with the patched hooks. Any failure restores the earlier files, configuration, and environment.
 
-   ```bash
-   hermes lifeos-release status IDENTIFIER
-   hermes lifeos-version
-   ```
+If the dashboard or gateway runs by hand rather than as a user service, the review offers to create its standard user service and stops the hand-started process during installation. Close any interactive Hermes sessions first; the installer refuses to patch files that a running session uses.
 
-Use the returned operation identifier in place of `IDENTIFIER`. An `applied` operation and a verified installed identity establish installation. `queued`, `preparing`, or `applying` states do not establish success.
+Check the result:
 
-The installer keeps existing model choices and personal data. A fresh installation creates missing gateway and Pulse service definitions but leaves those services disabled and inactive. Configure and verify messaging, owner authority, and selected jobs before starting them. Existing installation updates verify and drain all three services.
+```bash
+hermes lifeos-release status IDENTIFIER
+hermes lifeos-version
+```
+
+An `applied` operation and a `verified` version establish installation.
+
+## While LifeOS is installed
+
+`hermes update` refuses with a LifeOS hold message, because an update would move the patches onto an untested Hermes version. Update LifeOS from the releases page instead. When a LifeOS release supports a newer Hermes, its notes say how to move.
+
+The releases page reports `host_drift` if a patched Hermes file changes or Hermes disables the bridge plugin. LifeOS does not repair drift silently.
 
 ## Ask Hermes to install or update
 
-The manager registers the [`lifeos-release` skill](../optional/lifeos_release_manager/skills/lifeos-release/SKILL.md). Ask Hermes to install LifeOS, update it, check its version, or recover an interrupted operation. Hermes can prepare the complete package:
-
-```bash
-hermes lifeos-release prepare --name 'Your name' --assistant 'Your assistant'
-```
-
-For an existing installation, use `hermes lifeos-release prepare`. Add `--version X.Y.Z` only when selecting an exact published version.
-
-The authenticated owner still reviews and applies the operation in the dashboard. A native mount under managed memory requires that owner grant. The command-line `start` action is limited to installations that do not require managed native-memory authorization.
+The manager registers the [`lifeos-release` skill](../optional/lifeos_release_manager/skills/lifeos-release/SKILL.md). Ask Hermes to check compatibility, install LifeOS, update it, or recover an interrupted operation. The owner still reviews and applies each operation in the dashboard, because LifeOS's native memory mount needs the owner's grant.
 
 ## Choose memory ownership separately
 
@@ -101,12 +89,19 @@ Review sources before importing them. Do not import unwanted material solely to 
 
 A separate owner review controls imports, remote readers, and return to Hermes. See [memory portability](memory-portability.md) and [HTTP MCP setup](http-memory-mcp.md). For Discord, verify the actual private audience before memory activation; see [Discord setup](discord-setup.md).
 
-## Updates and interruptions
+## Updates, interruptions, and removal
 
-**Update LifeOS** and **Update plugin** both prepare the complete qualified integration. They follow the same review and apply flow. A preparation does not overwrite running programs, and duplicate preparations are refused while one is active.
+**Update LifeOS** and **Update plugin** download the newer integration and move the patched files from the recorded state to the new one. They follow the same review and apply flow. **Restore prior programs** returns to the previous release.
 
-If an operation is interrupted, keep its directory and journals. Use its current status and the offered recovery controls. The [update policy](update-policy.md) describes recovery, expired rollback, and qualification. Do not run independent upstream updates over a managed package.
+If an operation is interrupted, keep its directory and journals and use the offered recovery control. A first installation that stopped after LifeOS was initialized finishes forward; any other operation rolls back.
 
-## Earlier component installation
+Complete removal follows a verified return to built-in memory. It restores the original Hermes files from the copies kept at installation, removes the update hold and the LifeOS plugins, returns the configuration values that LifeOS changed (keeping any you changed since), and rebuilds the Python environment without the bridge. It disables Discord, because stock Hermes lacks LifeOS's private-channel restrictions. See [update policy](update-policy.md) for recovery boundaries.
 
-The [dated installation snapshot](history/2026-10-16-installation-workflow.md) preserves the earlier bridge-first controls, reduced stock-Hermes behavior, and component mounting design. Those controls remain implementation references. They do not replace this complete-package installation path.
+## Moving from a managed 0.7.x installation
+
+A 0.7.x installation runs Hermes from a private runtime under `~/.hermes/.lifeos-releases`. To move to an in-place installation:
+
+1. Back up the account, or take a guest snapshot.
+2. Install stock Hermes `v0.21.7` with the official installer and `--skip-setup`. Your profile, configuration, Discord settings, and memory stay where they are.
+3. Update the release manager plugin, then open **LifeOS releases**. It shows that the next update moves LifeOS to the stock installation.
+4. Prepare, review, and apply **Update LifeOS**. The operation patches the stock checkout and points `hermes`, `hermes-agent`, and `hermes-acp` at it. Restoring it returns to the managed runtime.

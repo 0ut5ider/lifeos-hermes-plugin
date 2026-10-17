@@ -1,6 +1,6 @@
 # LifeOS plugin for Hermes
 
-Run LifeOS hooks, lasting memory, and the main Pulse dashboard through Hermes. The integration also provides owner-reviewed installation, complete-package updates, memory import and return, and optional HTTP access for other agents.
+Run LifeOS hooks, lasting memory, and the main Pulse dashboard through Hermes. The integration also provides owner-reviewed installation into your existing Hermes, updates, memory import and return, and optional HTTP access for other agents.
 
 **Stable release: [0.7.3](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.7.3).** The [release record](docs/verification/2026-10-16-release-0.7.3/README.md) identifies its exact package, review, tests, deployment, and limits. [VERSION](VERSION) identifies the source version; [CHANGELOG.md](CHANGELOG.md) records changes.
 
@@ -16,9 +16,9 @@ Run LifeOS hooks, lasting memory, and the main Pulse dashboard through Hermes. T
 | Find a specific guide or historical decision | [Documentation index](docs/README.md) |
 | Check unfinished product work | [TODO.md](TODO.md) |
 
-## Install and update complete releases from Hermes
+## Install LifeOS into your Hermes
 
-Start with a configured Hermes model and an authenticated owner dashboard running as a Linux systemd user service. The dashboard service must use the account home as its working directory, a private `UMask=0077`, and the selected physical `HERMES_HOME`.
+LifeOS installs into the Hermes you already run. It checks your Hermes version first, patches your existing checkout in place, and leaves your other plugins, tools, models, and data where they are. A release download is about 2 MB.
 
 In the Hermes **Plugins** page, install this GitHub subdirectory URL:
 
@@ -26,30 +26,24 @@ In the Hermes **Plugins** page, install this GitHub subdirectory URL:
 https://github.com/0ut5ider/lifeos-hermes-plugin.git#optional/lifeos_release_manager
 ```
 
-Enable the manager and restart the dashboard. Open **LifeOS releases**. Select **Install LifeOS**, supply the user and assistant names, and leave the release version empty for the latest stable package. When preparation finishes, select **Review release**, check its version, commit, and package hash, then select **Install this release**.
+Enable the manager and restart the dashboard. Open **LifeOS releases** and read **Hermes compatibility**. When it says LifeOS can be installed, select **Install LifeOS**, wait for preparation, select **Review release** to see exactly what changes, then select **Install this release**.
 
-**Update LifeOS** and **Update plugin** prepare the same complete qualified integration, including Hermes, LifeOS, the bridge, release manager, dependencies, and dashboard. Preparation preserves the running installation. Only the reviewed apply action changes active programs.
+While LifeOS is installed, `hermes update` is held: an update would carry the patches onto an untested Hermes version. Update LifeOS from the releases page instead. You can also ask Hermes to check compatibility or prepare an update through its `lifeos-release` skill; the owner still reviews and applies in the dashboard.
 
-You can also ask Hermes to install or update LifeOS. Its `lifeos-release` skill prepares the package and directs the installation owner to the authenticated review. Memory ownership requires its own owner review and activation. Installation does not import personal data or select lasting-memory ownership automatically.
-
-After an applied operation, check its actual identity:
+After an applied operation, check its identity:
 
 ```bash
-hermes lifeos-release status
+hermes lifeos-release compatibility
 hermes lifeos-version
 ```
 
-The [installation guide](docs/installation-workflow.md) covers service prerequisites, scanner confirmation, command-line use, and activation. The [update policy](docs/update-policy.md) covers recovery, rollback, and qualification.
+The [installation guide](docs/installation-workflow.md) covers supported layouts, the review, recovery, removal, and moving from a managed 0.7.x installation. The [update policy](docs/update-policy.md) covers recovery and qualification.
 
 ## Compatibility target
 
-The qualified 0.7.3 package targets Hermes `v0.21.7`, base commit `71d34bad1045610252eda02ee79549436896e784`, and LifeOS base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. It includes ten Hermes patch groups and twenty-five LifeOS patches. [Source declarations](lifeos_hook_bridge/install_source.py) and the [patch map](docs/patch-footprint.md) define the supported combination.
+This release supports Hermes `v0.21.7` (commit `71d34bad1045610252eda02ee79549436896e784`) installed with the official installer as a single-profile Git checkout, and LifeOS `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. It applies eleven Hermes patch groups (96 files) and twenty-five LifeOS patches. The [compatibility manifest](optional/lifeos_release_manager/host-compatibility.json), [source declarations](lifeos_hook_bridge/install_source.py), and [patch map](docs/patch-footprint.md) define the supported combination.
 
-Stock Hermes lacks some required admission, lifecycle, and final-answer controls. Installing only the bridge does not supply the full integration. A newer upstream commit needs a port and behavior qualification before it can replace the supported combination.
-
-The accepted [installation redesign](docs/in-place-installation-plan.md) uses the existing Hermes installation, checks exact compatibility, and applies reversible host patches. It has no replacement-runtime option. Implementation and qualification are pending; the 0.7.3 instructions above still describe the published managed-runtime release.
-
-The development branch includes the first step: a read-only compatibility check. Run `hermes lifeos-release compatibility` or open **Hermes compatibility** on the LifeOS releases page. The check compares the exact Hermes commit, the SHA-256 hash of each of the 94 patch target files, the Git working tree, the installation layout, profiles, and Python dependencies. It reports every blocking reason and changes nothing.
+Any other Hermes version is refused with its reason. Stock Hermes lacks some required admission, lifecycle, and final-answer controls, so the bridge alone does not supply the full integration. A newer upstream Hermes needs a ported and qualified patch set. The [installation plan](docs/in-place-installation-plan.md) and [design](docs/in-place-installation-design.md) record why LifeOS patches the existing installation instead of replacing it.
 
 The [Step 1 ledger](docs/parity/step1-acceptance.md) records 152 accepted scenarios. These selected comparisons do not prove equivalence for every possible Claude Code event or handler branch.
 
