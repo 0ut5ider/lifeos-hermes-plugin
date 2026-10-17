@@ -492,7 +492,7 @@ def check(hermes_home, *, manifest=MANIFEST, search_path=None):
     try:
         record = load_record(hermes_home)
     except HostRecordRejected as error:
-        # A damaged record is drift: the host can no longer be compared with what LifeOS installed.
+        # A damaged record is drift: nothing can compare the host with what LifeOS installed.
         result = inspect_host(source, manifest, hermes_home=hermes_home, search_path=search_path)
         reason = _reason('invalid_host_record', str(error) + ': ' + str(record_path(hermes_home)) + '.')
         result.update(state='host_drift', compatible=False, installed=False, reasons=[reason, *result['reasons']])
