@@ -1,0 +1,9 @@
+Pure-logic check of ProfileServices.adopt_definition's substitution test with KillMode differing.
+Journaled definition: KillMode=control-group (release_services.py template, same text in the 0.7.3 package
+optional/lifeos_release_manager/release_services.py line 66). Current definition: KillMode=mixed
+(hermes_cli/gateway.py generate_systemd_unit). Both fragment hashes in `allowed`.
+
+Output:
+  fragment in allowed: True | recorded in earlier: False
+
+So adopt_definition raises "The profile service definition is not a reviewed replacement".

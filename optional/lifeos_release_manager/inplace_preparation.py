@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 
-from .host_compatibility import check, load_manifest
+from .host_compatibility import check, load_manifest, running_source
 from .host_patches import stage_host_files
 from .host_record import check_originals, load_record
 from .integration_package import COMPATIBILITY, validate_integration
@@ -45,19 +45,59 @@ GATEWAY_UNIT = '.config/systemd/user/hermes-gateway.service'
 TRANSITION_GATEWAY = 'transition-gateway.service'
 
 
+MANAGED_RUNTIME = '/.lifeos-releases/'
+
+
+def _unit_texts(home, name):
+    """Return ``{path: text}`` for a user unit and its drop-ins."""
+    directory = Path(home) / '.config/systemd/user'
+    paths = [directory / name, *sorted((directory / (name + '.d')).glob('*.conf'))]
+    return {path: path.read_text(errors='replace') for path in paths if path.is_file()}
+
+
+def _service_value(text, key, default):
+    """Return the last ``key=`` value of a unit text, as systemd applies the last assignment."""
+    values = [line.split('=', 1)[1].strip() for line in text.splitlines() if line.strip().startswith(key + '=')]
+    return values[-1] if values else default
+
+
+def managed_service_launchers(job, home):
+    """Return the service launchers that the active managed release published outside ``~/.local/bin``.
+
+    A managed release rewrites the launcher that each service unit runs into a forwarder to its runtime.
+    The transition must repoint those launchers to the stock checkout as well. A launcher that no longer
+    forwards to the managed release refuses the transition, because its owner changed it.
+    """
+    from .release_catalog import _json
+    account = Path(home) / '.local/bin'
+    launchers = []
+    for value in _json((Path(job) / 'plan.json').read_bytes()).get('launchers', []):
+        path = Path(value)
+        if not path.is_absolute() or path.parent == account:
+            continue
+        if path.is_symlink() or not path.is_file() or str(job) not in path.read_text(errors='replace'):
+            raise ReleaseRejected('The service launcher ' + str(path) + ' no longer runs the managed release')
+        launchers.append(str(path))
+    return sorted(launchers)
+
+
 def transition_gateway_unit(python, source, profile, home, job):
     """Write the gateway unit that stock Hermes generates for ``source`` and return its reviewed hashes.
 
-    A managed runtime's gateway unit runs the managed launcher. The transition replaces it with the
-    unit that ``hermes gateway install`` would write for the stock checkout. A host without a gateway
-    unit keeps none. Another unit that still runs the managed runtime refuses the transition.
+    A managed runtime's gateway unit can run the managed launcher. The transition replaces such a unit
+    with the unit that ``hermes gateway install`` would write for the stock checkout. A unit that runs
+    the account launcher needs no replacement, because the transition repoints that launcher. A drop-in
+    or another unit that still runs the managed runtime refuses the transition, as does a replacement
+    whose stop behaviour or working directory differs, because the service controller binds those.
     """
-    for name in ('hermes-dashboard.service', 'com.lifeos.pulse.service'):
-        other = Path(home) / '.config/systemd/user' / name
-        if other.is_file() and '/.lifeos-releases/' in other.read_text(errors='replace'):
-            raise ReleaseRejected('The ' + name + ' unit runs the managed runtime; point it at ~/.local/bin first')
+    for name in ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service'):
+        for path, text in _unit_texts(home, name).items():
+            if MANAGED_RUNTIME in text and not (name == 'hermes-gateway.service' and path.name == name):
+                raise ReleaseRejected('The ' + path.name + ' unit runs the managed runtime; point it at ~/.local/bin first')
     existing = Path(home) / GATEWAY_UNIT
-    if not existing.is_file() or existing.is_symlink():
+    if existing.is_symlink():
+        raise ReleaseRejected('The gateway unit must be a regular file before the transition')
+    if not existing.is_file() or MANAGED_RUNTIME not in existing.read_text(errors='replace'):
         return {}
     environment = {key: value for key, value in os.environ.items()
                    if key not in {'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME', 'VIRTUAL_ENV'}}
@@ -66,8 +106,14 @@ def transition_gateway_unit(python, source, profile, home, job):
               'from hermes_cli.gateway import generate_systemd_unit\nsys.stdout.write(generate_systemd_unit())\n')
     result = subprocess.run([str(python), '-I', '-B', '-c', script, str(source)], capture_output=True, text=True,
                             env=environment, cwd=str(profile), timeout=120)
-    if result.returncode or '.lifeos-releases' in result.stdout or 'ExecStart=' not in result.stdout:
-        raise ReleaseRejected('Stock Hermes does not generate a gateway unit for the installation')
+    if result.returncode or MANAGED_RUNTIME in result.stdout or 'ExecStart=' not in result.stdout:
+        detail = (result.stderr.strip().splitlines() or [''])[-1][:300]
+        raise ReleaseRejected('Stock Hermes does not generate a gateway unit for the installation' + (': ' + detail if detail else ''))
+    current = existing.read_text(errors='replace')
+    for key, default in (('KillMode', 'control-group'), ('WorkingDirectory', '')):
+        if _service_value(current, key, default) != _service_value(result.stdout, key, default):
+            raise ReleaseRejected('The stock gateway unit changes ' + key + '; install the stock unit with '
+                                  '`hermes gateway install` before the transition')
     target = Path(job) / TRANSITION_GATEWAY
     publish(target, result.stdout.encode())
     return {'gateway': {'before': sha(existing), 'after': sha(target)}}
@@ -229,6 +275,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
                  'state': result['state'], 'state_directory': str(state_directory(source)),
                  'transition': result['transition'],
                  'transition_units': transition_gateway_unit(python, source, profile, home, job) if result['transition'] else {},
+                 'transition_launchers': managed_service_launchers(running_source().parent, home) if result['transition'] else [],
                  'record_sha256': None if record is None else sha(profile / 'lifeos-host.json')},
         'runtime': {'python': str(python), 'bun': str(bun), 'hermes': str(host_launcher(source)),
                     'source': str(preview), 'reference': str(reference / '.claude'),

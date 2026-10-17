@@ -132,8 +132,10 @@ def check_receipt(receipt, request):
 def adopt_units(services, request):
     """Bind each stopped transition role to whichever reviewed unit file is on disk, managed or stock."""
     units = request['host'].get('transition_units') or {}
-    if services is None or services.status()['state'] == 'none':
+    if not units or services is None or services.status()['state'] == 'none':
         return
+    # A replaced unit file reports NeedDaemonReload until the manager reloads, and inspection refuses that state.
+    _systemctl('daemon-reload')
     for role, hashes in units.items():
         if role in services.units:
             services.adopt_definition(role, {hashes['before'], hashes['after']})

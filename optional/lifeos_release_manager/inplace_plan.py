@@ -145,7 +145,8 @@ def host_entries(job, request, selected, generated):
     publish(generated / 'update-hold.json', (json.dumps({'holder': 'LifeOS', 'message': HOLD_MESSAGE}) + '\n').encode())
     files[source / '.git' / HOLD] = generated / 'update-hold.json'
     if request['host'].get('transition'):
-        files.update(transition_launchers(Path(request['account_home']), source, generated))
+        files.update(transition_launchers(Path(request['account_home']), source, generated,
+                                          services=request['host'].get('transition_launchers', [])))
         files.update(transition_unit_files(Path(request['account_home']), job, request['host'].get('transition_units', {})))
     return {}, files
 
@@ -160,8 +161,12 @@ def transition_unit_files(home, job, units):
     return {home / GATEWAY_UNIT: generated}
 
 
-def transition_launchers(home, source, generated):
-    """Point the account commands at the stock checkout, with the same forwarders Hermes itself publishes."""
+def transition_launchers(home, source, generated, *, services=()):
+    """Point the account commands and the managed service launchers at the stock checkout.
+
+    The account commands get the same forwarders Hermes itself publishes. Each service launcher that the
+    managed release published gets the ``hermes`` forwarder.
+    """
     import shlex
     commands = {'hermes': [source / '.hermes/bin/hermes'],
                 'hermes-agent': [source / '.hermes/bin/hermes', '--run-module', 'run_agent'],
@@ -171,4 +176,6 @@ def transition_launchers(home, source, generated):
         script = generated / ('launcher-' + name)
         publish(script, ('#!/bin/sh\nexec ' + ' '.join(shlex.quote(str(part)) for part in command) + ' "$@"\n').encode(), 0o755)
         files[home / '.local/bin' / name] = script
+    for service in services:
+        files[Path(service)] = generated / 'launcher-hermes'
     return files

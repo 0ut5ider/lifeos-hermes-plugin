@@ -1,0 +1,708 @@
+diff --git a/lifeos_hook_bridge/memory_transition_probe.py b/lifeos_hook_bridge/memory_transition_probe.py
+index 27b46aa7..3c3bf2e3 100644
+--- a/lifeos_hook_bridge/memory_transition_probe.py
++++ b/lifeos_hook_bridge/memory_transition_probe.py
+@@ -69,8 +69,9 @@ def verify_builtin(expected):
+                 'files':{name:metadata for name,(_,metadata) in captured.items()}}
+     except MemoryUnavailable:
+         raise
+-    except Exception:
+-        raise MemoryUnavailable('The fresh Hermes agent cannot verify the reviewed built-in memory') from None
++    except Exception as error:
++        raise MemoryUnavailable('The fresh Hermes agent cannot verify the reviewed built-in memory ('
++                                + type(error).__name__ + ')') from None
+     finally:
+         with redirect_stdout(diagnostics),redirect_stderr(diagnostics):
+             if agent is not None:agent.close()
+diff --git a/lifeos_hook_bridge/profile_services.py b/lifeos_hook_bridge/profile_services.py
+index b641567d..8a007604 100644
+--- a/lifeos_hook_bridge/profile_services.py
++++ b/lifeos_hook_bridge/profile_services.py
+@@ -26,10 +26,15 @@ PROPERTIES = ('Id', 'LoadState', 'ActiveState', 'MainPID', 'ControlGroup', 'Work
+     'FragmentPath', 'DropInPaths', 'ExecStart', 'KillMode', 'RootDirectory', 'RootImage', 'NeedDaemonReload')
+ 
+ 
++# A unit can take its whole TimeoutStopSec (the stock gateway sets 70s) before systemd kills it.
++TRANSITION_TIMEOUT = 300
++
++
+ def _run(*arguments):
++    timeout = TRANSITION_TIMEOUT if arguments and arguments[0] in {'stop', 'start', 'restart'} else 45
+     try:
+         result = subprocess.run(['systemctl', '--user', *arguments], text=True,
+-            capture_output=True, timeout=45)
++            capture_output=True, timeout=timeout)
+     except (OSError, subprocess.TimeoutExpired) as error:
+         raise MemoryUnavailable('The owner service manager does not complete the selected operation') from error
+     if result.returncode or result.stderr:
+@@ -146,6 +151,10 @@ class ProfileServices:
+         return Path('/sys/fs/cgroup') / value.lstrip('/')
+ 
+     def _inspect(self, role):
++        values, definition = self._inspect_definition(role)
++        return values, _digest(definition)
++
++    def _inspect_definition(self, role):
+         if self.installed.resolve() != self.physical_root:
+             raise MemoryUnavailable('The installed profile service root alias changes during the operation')
+         output = _run('show', self.units[role], '--property=' + ','.join(PROPERTIES), '--no-pager')
+@@ -176,7 +185,7 @@ class ProfileServices:
+             if key not in {'ActiveState', 'MainPID', 'ControlGroup', 'ExecStart', 'DropInPaths'}}
+         definition['files'] = [_definition_file(path) for path in (values['FragmentPath'], *drop_ins)]
+         self._group(values['ControlGroup'])
+-        return values, _digest(definition)
++        return values, definition
+ 
+     def _check_definition(self, document, role):
+         values, definition = self._inspect(role)
+@@ -184,8 +193,8 @@ class ProfileServices:
+             raise MemoryUnavailable('The bound profile service definition changes during recovery')
+         return values
+ 
+-    def _empty(self, document, role):
+-        values = self._check_definition(document, role)
++    def _empty(self, document, role, values=None):
++        values = self._check_definition(document, role) if values is None else values
+         if values['ActiveState'] not in {'inactive', 'failed'} or values['MainPID'] != '0':
+             raise MemoryUnavailable('The profile service still has an active process')
+         groups = {values['ControlGroup'], document['services'][role]['control_group']}
+@@ -268,6 +277,34 @@ class ProfileServices:
+             self._drain(document)
+             return {'state': 'stopped', 'services_stopped': list(self.stop_order), 'owner_turn_verified': False}
+ 
++    def adopt_definition(self, role, allowed):
++        """Bind a stopped role to a reviewed replacement of its unit file; return whether the binding changed.
++
++        A transition replaces the gateway unit while the gateway is stopped. Its journal keeps the earlier
++        definition, so resume and recovery would refuse the reviewed file without this rebinding.
++        """
++        if role not in self.units or not allowed or any(re.fullmatch('[0-9a-f]{64}', str(value)) is None for value in allowed):
++            raise ValueError('Adopt a reviewed definition only for a bound role')
++        with self._lock():
++            document = self._load()
++            if document is None:
++                raise MemoryUnavailable('The selected profile services have no recovery state')
++            values, current = self._inspect_definition(role)
++            recorded = document['services'][role]['definition']
++            if _digest(current) == recorded:
++                return False
++            if document['state'] != 'stopped':
++                raise MemoryUnavailable('A profile service adopts a new definition only while it is stopped')
++            self._empty(document, role, values)
++            # Only the unit file may differ from the journaled definition, and only between reviewed contents.
++            fragment, drop_ins = current['files'][0], current['files'][1:]
++            earlier = (_digest({**current, 'files': [{**fragment, 'sha256': value}, *drop_ins]}) for value in allowed)
++            if fragment['sha256'] not in allowed or recorded not in earlier:
++                raise MemoryUnavailable('The profile service definition is not a reviewed replacement')
++            document['services'][role]['definition'] = _digest(current)
++            self._publish(document)
++            return True
++
+     def verify_stopped(self):
+         with self._lock():
+             document = self._load()
+diff --git a/lifeos_hook_bridge/registration.py b/lifeos_hook_bridge/registration.py
+index 9e371567..23b9b4a9 100644
+--- a/lifeos_hook_bridge/registration.py
++++ b/lifeos_hook_bridge/registration.py
+@@ -15,6 +15,16 @@ def _start_time(pid):
+     return int(fields[19])
+ 
+ 
++def hermes_source():
++    """Return the Hermes checkout that this process imports, or None when Hermes is not importable."""
++    try:
++        import hermes_cli
++    except ImportError:
++        return None
++    module = getattr(hermes_cli, '__file__', None)
++    return str(Path(module).resolve().parents[1]) if module else None
++
++
+ def directory(profile):
+     return Path(profile) / '.lifeos-bridge/registrations'
+ 
+@@ -30,7 +40,7 @@ def write_receipt(profile, mode, *, pid=None):
+         for stale in root.glob('*.json'):
+             if stale.stem.isdecimal() and not Path('/proc', stale.stem).exists():
+                 stale.unlink(missing_ok=True)
+-        value = {'pid': pid, 'start_time': _start_time(pid), 'mode': mode}
++        value = {'pid': pid, 'start_time': _start_time(pid), 'mode': mode, 'source': hermes_source()}
+         descriptor, name = tempfile.mkstemp(prefix='.registration-', dir=root)
+         with os.fdopen(descriptor, 'w') as stream:
+             json.dump(value, stream)
+@@ -44,7 +54,8 @@ def read_receipt(profile, pid):
+     """Return the receipt of the live process ``pid``, or None when it has not registered the bridge."""
+     try:
+         value = json.loads((directory(profile) / (str(int(pid)) + '.json')).read_text())
+-        if value.get('pid') != int(pid) or value.get('start_time') != _start_time(int(pid)) or value.get('mode') not in MODES:
++        if (value.get('pid') != int(pid) or value.get('start_time') != _start_time(int(pid)) or value.get('mode') not in MODES
++                or not isinstance(value.get('source'), (str, type(None)))):
+             return None
+     except (OSError, ValueError):
+         return None
+diff --git a/optional/lifeos_release_manager/inplace_plan.py b/optional/lifeos_release_manager/inplace_plan.py
+index 89f56192..111212da 100644
+--- a/optional/lifeos_release_manager/inplace_plan.py
++++ b/optional/lifeos_release_manager/inplace_plan.py
+@@ -8,7 +8,7 @@ from pathlib import Path
+ 
+ from .host_compatibility import inspect_host, load_manifest
+ from .host_record import build_record, check_originals, load_record, originals_path, record_path
+-from .inplace_preparation import desired_host_files, host_launcher, host_python
++from .inplace_preparation import GATEWAY_UNIT, TRANSITION_GATEWAY, desired_host_files, host_launcher, host_python
+ from .inplace_services import UNITS, ancestors, inventory
+ from .integration_package import COMPATIBILITY, validate_integration
+ from .release_accounts import account_home
+@@ -146,9 +146,20 @@ def host_entries(job, request, selected, generated):
+     files[source / '.git' / HOLD] = generated / 'update-hold.json'
+     if request['host'].get('transition'):
+         files.update(transition_launchers(Path(request['account_home']), source, generated))
++        files.update(transition_unit_files(Path(request['account_home']), job, request['host'].get('transition_units', {})))
+     return {}, files
+ 
+ 
++def transition_unit_files(home, job, units):
++    """Map the reviewed stock gateway unit of a transition to its publication source."""
++    if 'gateway' not in units:
++        return {}
++    generated = job / TRANSITION_GATEWAY
++    if sha(generated) != units['gateway']['after']:
++        raise ReleaseRejected('The transition gateway unit differs from the reviewed definition')
++    return {home / GATEWAY_UNIT: generated}
++
++
+ def transition_launchers(home, source, generated):
+     """Point the account commands at the stock checkout, with the same forwarders Hermes itself publishes."""
+     import shlex
+diff --git a/optional/lifeos_release_manager/inplace_preparation.py b/optional/lifeos_release_manager/inplace_preparation.py
+index 6b2b1291..e08dbc03 100644
+--- a/optional/lifeos_release_manager/inplace_preparation.py
++++ b/optional/lifeos_release_manager/inplace_preparation.py
+@@ -41,6 +41,38 @@ def host_launcher(source):
+     return launcher
+ 
+ 
++GATEWAY_UNIT = '.config/systemd/user/hermes-gateway.service'
++TRANSITION_GATEWAY = 'transition-gateway.service'
++
++
++def transition_gateway_unit(python, source, profile, home, job):
++    """Write the gateway unit that stock Hermes generates for ``source`` and return its reviewed hashes.
++
++    A managed runtime's gateway unit runs the managed launcher. The transition replaces it with the
++    unit that ``hermes gateway install`` would write for the stock checkout. A host without a gateway
++    unit keeps none. Another unit that still runs the managed runtime refuses the transition.
++    """
++    for name in ('hermes-dashboard.service', 'com.lifeos.pulse.service'):
++        other = Path(home) / '.config/systemd/user' / name
++        if other.is_file() and '/.lifeos-releases/' in other.read_text(errors='replace'):
++            raise ReleaseRejected('The ' + name + ' unit runs the managed runtime; point it at ~/.local/bin first')
++    existing = Path(home) / GATEWAY_UNIT
++    if not existing.is_file() or existing.is_symlink():
++        return {}
++    environment = {key: value for key, value in os.environ.items()
++                   if key not in {'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME', 'VIRTUAL_ENV'}}
++    environment.update(HOME=str(home), HERMES_HOME=str(profile))
++    script = ('import sys\nsys.path.insert(0, sys.argv[1])\n'
++              'from hermes_cli.gateway import generate_systemd_unit\nsys.stdout.write(generate_systemd_unit())\n')
++    result = subprocess.run([str(python), '-I', '-B', '-c', script, str(source)], capture_output=True, text=True,
++                            env=environment, cwd=str(profile), timeout=120)
++    if result.returncode or '.lifeos-releases' in result.stdout or 'ExecStart=' not in result.stdout:
++        raise ReleaseRejected('Stock Hermes does not generate a gateway unit for the installation')
++    target = Path(job) / TRANSITION_GATEWAY
++    publish(target, result.stdout.encode())
++    return {'gateway': {'before': sha(existing), 'after': sha(target)}}
++
++
+ def state_directory(source):
+     from pm.environments import install_state_dir
+     return install_state_dir(Path(source))
+@@ -196,6 +228,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
+         'host': {'source': str(source), 'commit': entry['commit'], 'label': entry['label'],
+                  'state': result['state'], 'state_directory': str(state_directory(source)),
+                  'transition': result['transition'],
++                 'transition_units': transition_gateway_unit(python, source, profile, home, job) if result['transition'] else {},
+                  'record_sha256': None if record is None else sha(profile / 'lifeos-host.json')},
+         'runtime': {'python': str(python), 'bun': str(bun), 'hermes': str(host_launcher(source)),
+                     'source': str(preview), 'reference': str(reference / '.claude'),
+diff --git a/optional/lifeos_release_manager/inplace_worker.py b/optional/lifeos_release_manager/inplace_worker.py
+index 70d8973e..1ada7f14 100644
+--- a/optional/lifeos_release_manager/inplace_worker.py
++++ b/optional/lifeos_release_manager/inplace_worker.py
+@@ -115,13 +115,30 @@ def verify_registration(request, plan):
+             raise ReleaseRejected('The gateway does not run after the operation')
+         receipt = registration.read_receipt(profile, int(values.get('MainPID') or 0))
+         if receipt is not None:
+-            if receipt['mode'] != 'patched':
+-                raise ReleaseRejected('The restarted gateway loaded the bridge without the patched host hooks')
+-            return receipt
++            return check_receipt(receipt, request)
+         time.sleep(1)
+     raise ReleaseRejected('The restarted gateway did not register the bridge')
+ 
+ 
++def check_receipt(receipt, request):
++    """Require a patched registration from the installed Hermes checkout, not from another runtime."""
++    if receipt['mode'] != 'patched':
++        raise ReleaseRejected('The restarted gateway loaded the bridge without the patched host hooks')
++    if receipt.get('source') != str(Path(request['host']['source']).resolve()):
++        raise ReleaseRejected('The restarted gateway runs another Hermes checkout than the installation')
++    return receipt
++
++
++def adopt_units(services, request):
++    """Bind each stopped transition role to whichever reviewed unit file is on disk, managed or stock."""
++    units = request['host'].get('transition_units') or {}
++    if services is None or services.status()['state'] == 'none':
++        return
++    for role, hashes in units.items():
++        if role in services.units:
++            services.adopt_definition(role, {hashes['before'], hashes['after']})
++
++
+ OWNED_PLUGINS = ('lifeos', 'lifeos-hook-bridge', 'lifeos-release-manager')
+ 
+ 
+@@ -201,11 +218,13 @@ def _resume(services):
+ 
+ def _rollback(job, request, plan, services, programs, restore_mount):
+     """Return the host to its prior programs: mount, programs, dependencies, then services."""
++    adopt_units(services, request)
+     _quiesce(services)
+     _stop_created(plan)
+     restore_mount()
+     programs.restore()
+     _systemctl('daemon-reload')
++    adopt_units(services, request)
+     try:
+         synchronize(job, request, label='dependency-restore')
+     except (ReleaseRejected, OSError, ValueError) as error:
+@@ -263,6 +282,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
+                     entry['target']: fingerprint(entry['target']) for entry in manifest['entries']}
+                 programs.check_recovery(overrides=overrides)
+             write_state(job, 'recovering' if action == 'recover' else 'restoring')
++            adopt_units(services, request)
+             _quiesce(services)
+             _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
+             restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount)
+@@ -307,6 +327,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update=lam
+             checkpoint('programs-published')
+             clear_bytecode(request, [entry['target'] for entry in programs._load()['entries']])
+             _systemctl('daemon-reload')
++            adopt_units(services, request)
+             synchronized = synchronize(job, request, label='dependency-synchronization')
+             if synchronized['lock_sha256'] != request['dependencies']['lock_sha256']:
+                 raise ReleaseRejected('The synchronized dependencies differ from the reviewed resolution')
+diff --git a/optional/lifeos_release_manager/memory_workflow.py b/optional/lifeos_release_manager/memory_workflow.py
+index d0b6f8f3..6633eb7b 100644
+--- a/optional/lifeos_release_manager/memory_workflow.py
++++ b/optional/lifeos_release_manager/memory_workflow.py
+@@ -12,6 +12,7 @@ from uuid import uuid4
+ from .cli import profile_directory, read_private
+ from .inplace_services import profile_units
+ from .release_accounts import account_home
++from .release_catalog import ReleaseRejected
+ from .release_programs import fingerprint, publish, sync_directory
+ from .release_stage import load_bridge
+ 
+@@ -216,14 +217,18 @@ def launch(job, unit, action):
+     if result.returncode:raise RuntimeError('The owner service manager cannot start the memory workflow')
+ 
+ 
+-def _probe(profile, source, expected, *, runtime=None):
++# The probe runs isolated (-I), which ignores PYTHONDONTWRITEBYTECODE; bytecode would alter retained recovery code.
++PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
++    'package=types.ModuleType("lifeos_memory_return_probe")\n'
++    'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
++    'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
++    'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
++
++
++def _probe(profile, source, expected, *, runtime=None, output=None):
+     from hermes_cli import _launchers
+     host=Path(_launchers.__file__).resolve().parents[1]
+-    code=('import importlib,json,types\n'
+-        'package=types.ModuleType("lifeos_memory_return_probe")\n'
+-        'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
+-        'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
+-        'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
++    code=PROBE_CODE
+     host=host if runtime is None else Path(runtime['source'])
+     python=sys.executable if runtime is None else runtime.get('python')
+     command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
+@@ -232,10 +237,31 @@ def _probe(profile, source, expected, *, runtime=None):
+         command=stock_command(command,runtime)
+     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
+     result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
+-    if result.returncode or result.stderr:raise RuntimeError('The actual fresh Hermes agent does not verify the reviewed memory')
++    if result.returncode or result.stderr:
++        if output is not None:record_probe_output(output,result.stderr)
++        raise probe_failure(result.stderr)
+     return json.loads(result.stdout)
+ 
+ 
++PROBE_REFUSAL='MemoryUnavailable: '
++PROBE_OUTPUT_LINES=64
++
++
++def record_probe_output(path, stderr):
++    """Keep the last lines of a failed probe's diagnostics in a private file of the owner's workflow job."""
++    publish(path,('\n'.join(stderr.splitlines()[-PROBE_OUTPUT_LINES:])+'\n').encode())
++
++
++def probe_failure(stderr):
++    """Return the probe's own refusal for the owner record; other output can hold arbitrary content."""
++    lines=stderr.strip().splitlines()
++    last=lines[-1] if lines else ''
++    head,found,message=last.partition(PROBE_REFUSAL)
++    if found and head.endswith('memory_access.') and message.startswith('The '):
++        return ReleaseRejected(message)
++    return ReleaseRejected('The actual fresh Hermes agent does not verify the reviewed memory')
++
++
+ def _cancel_preparation(source, configuration, job, request, lease):
+     owner=request['owner'];selected=request['selection'];profile=configuration.path.parent.absolute()
+     if selected['kind']=='removal':
+@@ -322,7 +348,7 @@ def execute(profile, identifier, action):
+                 elif action=='rollback':result=transition.rollback(signature,account=owner)
+                 else:
+                     result=transition.apply(signature,account=owner)
+-                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected),account=owner)
++                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
+             if action=='prepare':publish(job/'review.json',_encoded(result))
+             publish(job/'receipt.json',_encoded(result));_state(job,result['state'])
+             return result
+diff --git a/optional/lifeos_release_manager/memory_workflow_worker.py b/optional/lifeos_release_manager/memory_workflow_worker.py
+index ede803fe..9daf8211 100644
+--- a/optional/lifeos_release_manager/memory_workflow_worker.py
++++ b/optional/lifeos_release_manager/memory_workflow_worker.py
+@@ -25,7 +25,11 @@ def main():
+     try:
+         if job.parent.name!='.lifeos-portability':raise ValueError('Use a fixed private memory workflow')
+         execute(job.parent.parent,job.name,args.action)
+-    except BaseException:
++    except BaseException as error:
++        try:
++            from .release_worker import record_failure
++            record_failure(job,error)
++        except (OSError,ValueError,ImportError):pass
+         try:
+             admitted,_=_job(job.parent.parent,job.name)
+             _state(admitted,'interrupted')
+diff --git a/optional/lifeos_release_manager/removal_configuration.py b/optional/lifeos_release_manager/removal_configuration.py
+index 0589c50c..b8aca382 100644
+--- a/optional/lifeos_release_manager/removal_configuration.py
++++ b/optional/lifeos_release_manager/removal_configuration.py
+@@ -79,6 +79,9 @@ def environment(data, profile, workspace):
+     block=environment_block(profile,workspace)
+     if data.count(block)>1:raise ReleaseRejected('The owned environment block is ambiguous')
+     from hermes_cli.config import _sanitize_env_lines
+-    try:lines=io.StringIO(data.replace(block,b'').decode('utf-8-sig'),newline=None).readlines()
++    # The block starts with its own line break; a later owner line must not join an unterminated line before it.
++    before,found,after=data.partition(block)
++    separator=b'\n' if found and after and before and not before.endswith((b'\n',b'\r')) else b''
++    try:lines=io.StringIO((before+separator+after).decode('utf-8-sig'),newline=None).readlines()
+     except UnicodeError as error:raise ReleaseRejected('The current environment requires valid UTF-8 before removal') from error
+     return ''.join(_sanitize_env_lines(lines)).encode()
+diff --git a/optional/lifeos_release_manager/removal_workflow.py b/optional/lifeos_release_manager/removal_workflow.py
+index db1ab367..5304ebf5 100644
+--- a/optional/lifeos_release_manager/removal_workflow.py
++++ b/optional/lifeos_release_manager/removal_workflow.py
+@@ -103,7 +103,7 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
+     from .memory_workflow import _probe
+     def probe(expected):
+         _runtime(job,plan)
+-        proof=_probe(profile,publication.source,expected,runtime=runtime)
++        proof=_probe(profile,publication.source,expected,runtime=runtime,output=job/'probe-output.txt')
+         _runtime(job,plan)
+         return proof
+     result=publication.verify(probe,account=owner)
+diff --git a/tests/test_bridge_registration.py b/tests/test_bridge_registration.py
+index 7d7e0e5d..bbf8df2b 100644
+--- a/tests/test_bridge_registration.py
++++ b/tests/test_bridge_registration.py
+@@ -39,6 +39,19 @@ class RegistrationReceiptTests(unittest.TestCase):
+         self.assertFalse(dead.exists())
+         self.assertEqual(child.returncode, 0)
+ 
++    def test_receipt_records_the_hermes_checkout_that_the_process_imports(self):
++        import hermes_cli
++        value = write_receipt(self.profile, 'patched')
++        self.assertEqual(value['source'], str(Path(hermes_cli.__file__).resolve().parents[1]))
++        self.assertEqual(read_receipt(self.profile, os.getpid())['source'], value['source'])
++
++    def test_receipt_without_an_importable_checkout_file_records_no_source(self):
++        import types
++        from unittest import mock
++        with mock.patch.dict(sys.modules, {'hermes_cli': types.ModuleType('hermes_cli')}):
++            value = write_receipt(self.profile, 'reduced')
++        self.assertIsNone(value['source'])
++
+     def test_unknown_mode_is_refused(self):
+         with self.assertRaises(ValueError):
+             write_receipt(self.profile, 'complete')
+diff --git a/tests/test_inplace_preparation.py b/tests/test_inplace_preparation.py
+index 43250426..7ca8cfb4 100644
+--- a/tests/test_inplace_preparation.py
++++ b/tests/test_inplace_preparation.py
+@@ -109,6 +109,98 @@ class TransitionTests(unittest.TestCase):
+             with self.subTest(source=source):
+                 self.assertIsNone(transition_source(profile, source))
+ 
++    def test_transition_gateway_unit_is_the_stock_generated_definition(self):
++        import hashlib, sys
++        import hermes_cli
++        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
++        source = Path(hermes_cli.__file__).resolve().parents[1]
++        with tempfile.TemporaryDirectory() as directory:
++            home = Path(directory)
++            profile, job = home / '.hermes', home / 'job'
++            profile.mkdir()
++            job.mkdir()
++            unit = home / '.config/systemd/user/hermes-gateway.service'
++            unit.parent.mkdir(parents=True)
++            unit.write_text('[Service]\nExecStart=' + str(profile / '.lifeos-releases' / ('a' * 32)) + '/hermes/bin gateway run\n')
++            value = transition_gateway_unit(Path(sys.executable), source, profile, home, job)
++            text = (job / 'transition-gateway.service').read_text()
++            self.assertIn("sys.path.insert(0, '" + str(source) + "')", text)
++            self.assertIn('Environment="HERMES_HOME=' + str(profile) + '"', text)
++            self.assertNotIn('.lifeos-releases', text)
++            self.assertEqual(value, {'gateway': {'before': hashlib.sha256(unit.read_bytes()).hexdigest(),
++                                                 'after': hashlib.sha256(text.encode()).hexdigest()}})
++
++    def test_transition_without_a_gateway_unit_replaces_no_unit(self):
++        import sys
++        import hermes_cli
++        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
++        with tempfile.TemporaryDirectory() as directory:
++            home = Path(directory)
++            (home / '.hermes').mkdir()
++            self.assertEqual(transition_gateway_unit(Path(sys.executable), Path(hermes_cli.__file__).resolve().parents[1],
++                                                     home / '.hermes', home, home), {})
++
++    def test_transition_refuses_another_unit_that_runs_the_managed_runtime(self):
++        import sys
++        import hermes_cli
++        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
++        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++        with tempfile.TemporaryDirectory() as directory:
++            home = Path(directory)
++            (home / '.hermes').mkdir()
++            unit = home / '.config/systemd/user/hermes-dashboard.service'
++            unit.parent.mkdir(parents=True)
++            unit.write_text('[Service]\nExecStart=' + str(home / '.hermes/.lifeos-releases' / ('a' * 32)) + '/hermes/bin dashboard\n')
++            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
++                transition_gateway_unit(Path(sys.executable), Path(hermes_cli.__file__).resolve().parents[1],
++                                        home / '.hermes', home, home)
++
++    def test_transition_unit_files_publish_only_the_reviewed_unit(self):
++        import hashlib
++        from optional.lifeos_release_manager.inplace_plan import transition_unit_files
++        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++        with tempfile.TemporaryDirectory() as directory:
++            home, job = Path(directory), Path(directory) / 'job'
++            job.mkdir()
++            (job / 'transition-gateway.service').write_text('[Service]\n')
++            digest = hashlib.sha256(b'[Service]\n').hexdigest()
++            units = {'gateway': {'before': 'b' * 64, 'after': digest}}
++            self.assertEqual(transition_unit_files(home, job, units),
++                             {home / '.config/systemd/user/hermes-gateway.service': job / 'transition-gateway.service'})
++            (job / 'transition-gateway.service').write_text('[Service]\nExecStart=/other\n')
++            with self.assertRaisesRegex(ReleaseRejected, 'reviewed'):
++                transition_unit_files(home, job, units)
++            self.assertEqual(transition_unit_files(home, job, {}), {})
++
++    def test_gateway_receipt_must_come_from_the_installed_checkout(self):
++        from optional.lifeos_release_manager.inplace_worker import check_receipt
++        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++        request = {'host': {'source': '/home/owner/.hermes/hermes-agent'}}
++        receipt = {'pid': 7, 'start_time': 1, 'mode': 'patched', 'source': '/home/owner/.hermes/hermes-agent'}
++        self.assertEqual(check_receipt(receipt, request), receipt)
++        managed = {**receipt, 'source': '/home/owner/.hermes/.lifeos-releases/' + 'a' * 32 + '/hermes'}
++        for value, message in (({**receipt, 'mode': 'reduced'}, 'patched'), (managed, 'checkout'),
++                               ({key: item for key, item in receipt.items() if key != 'source'}, 'checkout')):
++            with self.subTest(value=value), self.assertRaisesRegex(ReleaseRejected, message):
++                check_receipt(value, request)
++
++    def test_transition_adopts_the_reviewed_units_of_the_bound_roles(self):
++        from optional.lifeos_release_manager.inplace_worker import adopt_units
++        calls = []
++        class Services:
++            units = {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.service'}
++            def status(self):
++                return {'state': 'stopped'}
++            def adopt_definition(self, role, allowed):
++                calls.append((role, allowed))
++        units = {'gateway': {'before': 'b' * 64, 'after': 'a' * 64}}
++        adopt_units(Services(), {'host': {'transition_units': units}})
++        self.assertEqual(calls, [('gateway', {'b' * 64, 'a' * 64})])
++        calls.clear()
++        adopt_units(Services(), {'host': {}})
++        adopt_units(None, {'host': {'transition_units': units}})
++        self.assertEqual(calls, [])
++
+     def test_transition_launchers_match_the_stock_forwarders(self):
+         from optional.lifeos_release_manager.inplace_plan import transition_launchers
+         with tempfile.TemporaryDirectory() as directory:
+diff --git a/tests/test_memory_workflow_failures.py b/tests/test_memory_workflow_failures.py
+new file mode 100644
+index 00000000..7f523089
+--- /dev/null
++++ b/tests/test_memory_workflow_failures.py
+@@ -0,0 +1,74 @@
++# ABOUTME: Checks that a stopped memory workflow keeps a private record of why it stopped.
++# ABOUTME: Covers the fresh-agent probe refusal text and the detached worker's failure record.
++import json
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++
++from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++
++
++class ProbeFailureTests(unittest.TestCase):
++    def test_probe_refusal_keeps_the_probe_message(self):
++        from optional.lifeos_release_manager.memory_workflow import probe_failure
++        stderr = ('Traceback (most recent call last):\n  File "<string>", line 6, in <module>\n'
++                  'lifeos_memory_return_probe.memory_access.MemoryUnavailable: The fresh Hermes agent cannot '
++                  'verify the reviewed built-in memory (ProviderNotConfiguredError)\n')
++        error = probe_failure(stderr)
++        self.assertIsInstance(error, ReleaseRejected)
++        self.assertEqual(str(error), 'The fresh Hermes agent cannot verify the reviewed built-in memory '
++                                     '(ProviderNotConfiguredError)')
++
++    def test_failed_probe_output_tail_stays_in_a_private_job_file(self):
++        from optional.lifeos_release_manager.memory_workflow import PROBE_OUTPUT_LINES, record_probe_output
++        with tempfile.TemporaryDirectory() as directory:
++            path = Path(directory) / 'probe-output.txt'
++            lines = ['line %d' % number for number in range(PROBE_OUTPUT_LINES + 5)]
++            record_probe_output(path, '\n'.join(lines) + '\n')
++            self.assertEqual(path.read_text().splitlines(), lines[-PROBE_OUTPUT_LINES:])
++            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
++
++    def test_unrecognized_probe_output_stays_generic(self):
++        from optional.lifeos_release_manager.memory_workflow import probe_failure
++        for stderr in ('', 'Segmentation fault\n', 'ValueError: synthetic secret value\n'):
++            with self.subTest(stderr=stderr):
++                self.assertEqual(str(probe_failure(stderr)),
++                                 'The actual fresh Hermes agent does not verify the reviewed memory')
++
++
++class ProbeBytecodeTests(unittest.TestCase):
++    def test_isolated_probe_writes_no_bytecode_into_the_retained_bridge(self):
++        from optional.lifeos_release_manager.memory_workflow import PROBE_CODE
++        with tempfile.TemporaryDirectory() as directory:
++            bridge = Path(directory) / 'bridge'
++            bridge.mkdir()
++            (bridge / 'helper.py').write_text('VALUE = 1\n')
++            (bridge / 'memory_transition_probe.py').write_text(
++                'from .helper import VALUE\n\ndef verify_builtin(expected):\n    return {"value": VALUE}\n')
++            result = subprocess.run([sys.executable, '-I', '-c', 'import sys\n' + PROBE_CODE, str(bridge)],
++                                    input='{}', capture_output=True, text=True, timeout=60)
++            self.assertEqual((result.returncode, result.stderr), (0, ''))
++            self.assertEqual(json.loads(result.stdout), {'value': 1})
++            self.assertEqual(list(bridge.rglob('__pycache__')), [])
++
++
++class WorkerFailureTests(unittest.TestCase):
++    def test_stopped_worker_records_the_refusal_in_its_private_job(self):
++        with tempfile.TemporaryDirectory() as directory:
++            job = Path(directory) / '.lifeos-portability' / ('a' * 32)
++            job.mkdir(parents=True, mode=0o700)
++            worker = Path('optional/lifeos_release_manager/memory_workflow_worker.py').resolve()
++            result = subprocess.run([sys.executable, '-B', str(worker), str(job), 'apply'],
++                                    capture_output=True, text=True, timeout=60)
++            self.assertEqual(result.returncode, 1)
++            self.assertEqual(result.stderr, 'The memory workflow stopped. The owner can review its private recovery state.\n')
++            failure = json.loads((job / 'worker-failure.json').read_text())
++            self.assertTrue(failure['exception'])
++            self.assertTrue(failure['frames'])
++            self.assertEqual((job / 'worker-failure.json').stat().st_mode & 0o077, 0)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tests/test_profile_services.py b/tests/test_profile_services.py
+index c044c763..a72a148d 100644
+--- a/tests/test_profile_services.py
++++ b/tests/test_profile_services.py
+@@ -204,6 +204,24 @@ class ProfileServicesTests(unittest.TestCase):
+         self.assertEqual(barrier.resume()['services_started'], ['gateway'])
+         self.assertNotEqual(self.properties('gateway')['MainPID'], before['gateway']['MainPID'])
+ 
++    def test_drain_waits_for_a_unit_that_needs_its_whole_stop_timeout(self):
++        from lifeos_hook_bridge.profile_services import ProfileServices
++        unit = self.units['pulse']
++        self.command('systemctl', '--user', 'stop', unit)
++        path = self.home / 'units' / unit
++        path.write_text('[Unit]\nDescription=LifeOS synthetic slow-stopping control\n[Service]\nType=simple\n'
++            'WorkingDirectory=' + str(self.directories['pulse']) + '\n'
++            'ExecStart=' + json.dumps(sys.executable) + ' -c "import signal,time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(600)"\n'
++            'KillMode=control-group\nTimeoutStopSec=46s\nRestart=no\n')
++        self.command('systemctl', '--user', 'daemon-reload')
++        self.command('systemctl', '--user', 'start', unit)
++        barrier = ProfileServices(self.profile, self.installed, units={'pulse': unit}, roles=('pulse',))
++        started = time.monotonic()
++        self.assertEqual(barrier.drain(signature=barrier.preview()['signature'])['state'], 'stopped')
++        self.assertGreater(time.monotonic() - started, 45)
++        self.assertEqual(barrier.resume()['services_started'], ['pulse'])
++        self.command('systemctl', '--user', 'kill', '--signal=SIGKILL', unit)
++
+     def test_selected_roles_refuse_unknown_or_mismatched_bindings(self):
+         from lifeos_hook_bridge.profile_services import ProfileServices
+         for roles, units in ((('gateway', 'mail'), {'gateway': self.units['gateway']}),
+@@ -277,6 +295,33 @@ ProfileServices(Path(settings['profile']), Path(settings['installed']), units=se
+         self.record('changed-definition', {'after': {role: self.properties(role) for role in self.units},
+             'journal': json.loads(self.barrier().journal.read_text())})
+ 
++    def test_stopped_role_adopts_only_a_reviewed_replacement_definition(self):
++        import hashlib
++        self.barrier().drain()
++        source = Path(self.properties('gateway')['FragmentPath']).resolve()
++        before = hashlib.sha256(source.read_bytes()).hexdigest()
++        source.write_text(source.read_text() + '# Synthetic reviewed stock definition\n')
++        after = hashlib.sha256(source.read_bytes()).hexdigest()
++        self.command('systemctl', '--user', 'daemon-reload')
++        with self.assertRaisesRegex(MemoryUnavailable, 'reviewed'):
++            self.barrier().adopt_definition('gateway', {before})
++        self.assertTrue(self.barrier().adopt_definition('gateway', {before, after}))
++        self.assertFalse(self.barrier().adopt_definition('gateway', {before, after}))
++        self.assertEqual(self.barrier().resume()['state'], 'active')
++        self.assertEqual(self.properties('gateway')['ActiveState'], 'active')
++
++    def test_running_role_refuses_definition_adoption(self):
++        import hashlib
++        self.barrier().drain()
++        self.barrier().resume()
++        source = Path(self.properties('gateway')['FragmentPath']).resolve()
++        source.write_text(source.read_text() + '# Synthetic reviewed stock definition\n')
++        after = hashlib.sha256(source.read_bytes()).hexdigest()
++        self.command('systemctl', '--user', 'daemon-reload')
++        with self.assertRaisesRegex(MemoryUnavailable, 'stopped'):
++            self.barrier().adopt_definition('gateway', {after})
++        self.assertEqual(self.properties('gateway')['ActiveState'], 'active')
++
+     def test_definition_change_during_drain_preserves_the_remaining_live_services(self):
+         before = {role: self.properties(role) for role in self.units}
+         source = Path(before['pulse']['FragmentPath']).resolve()
+diff --git a/tests/test_removal_configuration.py b/tests/test_removal_configuration.py
+index da68ede6..f667ca2c 100644
+--- a/tests/test_removal_configuration.py
++++ b/tests/test_removal_configuration.py
+@@ -87,6 +87,13 @@ assert 'explicitly disabled' in capture.getvalue()
+         custom=b'HERMES_WRITE_SAFE_ROOT=/owner/custom\nOTHER=keep\n'
+         self.assertEqual(operation.environment(custom,profile,workspace),custom)
+ 
++    def test_environment_keeps_a_later_owner_line_off_an_unterminated_last_line(self):
++        operation=self.operation();profile=Path('/account/.hermes');workspace=Path('/account/workspace')
++        block=operation.environment_block(profile,workspace)
++        data=b'# REDDIT_CLIENT_SECRET='+block+b'OPENROUTER_API_KEY=synthetic-key\n'
++        self.assertEqual(operation.environment(data,profile,workspace),b'# REDDIT_CLIENT_SECRET=\nOPENROUTER_API_KEY=synthetic-key\n')
++        self.assertEqual(operation.environment(b'# LAST='+block,profile,workspace),b'# LAST=\n')
++
+     def test_prepared_environment_survives_actual_stock_startup_sanitizer(self):
+         operation=self.operation()
+         cases=(b'CUSTOM_API_KEY=synthetic',b'CUSTOM_API_KEY=synthetic\r\n',
