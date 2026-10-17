@@ -2,7 +2,7 @@
 
 This guide prepares source trees for isolated development and tests. For a supported installation, use the [complete-package workflow](installation-workflow.md).
 
-**Known source-copy discrepancy:** `scripts/prepare_sources.py` reads `patches/`, while the managed builder reads `lifeos_hook_bridge/patches/`. At the documentation audit checkpoint, their `hermes-session-lifecycle.patch` files differ. The development copy lacks the distributed Discord mirror-policy and webhook-threading additions. Resolve and verify that [tracked discrepancy](../TODO.md#documentation-audit-follow-ups) before treating this helper's output as equivalent to qualified managed source. The published 0.7.2 package uses the distributed copy.
+**Patch copies:** `scripts/prepare_sources.py` reads `patches/`, while the release builders read `lifeos_hook_bridge/patches/`. The two copies are byte-identical, and `tests/test_patch_bundle.py` checks that. The development copy of `hermes-session-lifecycle.patch` once lacked the distributed Discord mirror-policy and webhook-threading additions; the [documentation audit follow-up](../TODO.md#documentation-audit-follow-ups) records the synchronization. The published 0.7.2 package uses the distributed copy.
 
 Run the preparation command from the plugin repository. Supply local Git repositories that contain the pinned upstream base commits:
 
