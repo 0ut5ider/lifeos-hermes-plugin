@@ -36,7 +36,7 @@ def returned(profile, identifier, signature, *, owner, source, configuration, in
     return {'return_identifier':identifier,'return_signature':signature,'native_signature':inner['target_signature']}
 
 
-def software(profile, installed, generation, native, runtime, generated, *, workspace, pulse):
+def software(profile, installed, generation, native, runtime, generated, *, workspace, pulse, recorded=None):
     from .release_programs import launcher_script,publish
     from .removal_configuration import configuration,environment
     from .removal_consumers import hooks
@@ -52,7 +52,7 @@ def software(profile, installed, generation, native, runtime, generated, *, work
     expected.update(native.get('before',{}));expected.update(generation['launchers'])
     if 'bun_identity' in generation:expected[generation['bun']]=generation['bun_identity']
     publish(generated/'settings.json',native['settings']);files[installed/'settings.json']=generated/'settings.json'
-    publish(generated/'config.yaml',configuration(_input(profile/'config.yaml',expected),installed))
+    publish(generated/'config.yaml',configuration(_input(profile/'config.yaml',expected),installed,recorded))
     files[profile/'config.yaml']=generated/'config.yaml'
     path=profile/'.env'
     if path.exists() or path.is_symlink():
@@ -182,8 +182,9 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             data,metadata=mount._read(profile/name)
             if data is not None and metadata['mode'] & 0o077:
                 raise ReleaseRejected('The current configuration and environment require private owner permissions')
+        recorded=inplace_removal.recorded_configuration(profile) if inplace else None
         directories,files,dependencies,expected=software(profile,installed,generation,native,runtime_root,generated,
-            workspace=workspace,pulse=pulse)
+            workspace=workspace,pulse=pulse,recorded=recorded)
         if inplace:
             host_directories,host_files,host_expected=inplace_removal.host_plan(profile,generation['record'],
                 generation['originals'],stage)
@@ -207,6 +208,11 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
                 'operation':record['operation']},service_units=units)
             runtime=inplace_removal.runtime(plan)
             stock_commit=record['commit']
+            if recorded is not None:
+                from ruamel.yaml import YAML
+                from .host_configuration import restore
+                _,retained_keys=restore(YAML(typ='safe').load((profile/'config.yaml').read_text()) or {},recorded)
+                plan['configuration_retained']=retained_keys
         else:
             plan.update(stock_runtime=runtime,stock_runtime_source=runtime_source_fingerprint(runtime_root/'hermes'),
                 stock_runtime_manifest_sha256=sha(runtime_root/'manifest.json'),
@@ -224,7 +230,8 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         return {'state':'ready','signature':signature,'kind':'removal','application_verified':False,
             'native_data_retained':True,'builtin_memory_retained':True,'discord_disabled':True,
             'stock_commit':stock_commit,'stock_patches':0,
-            'program_targets':len(programs._load()['entries']),'recovery_command':str(stage/'recover')}
+            'program_targets':len(programs._load()['entries']),'recovery_command':str(stage/'recover'),
+            'configuration_retained':plan.get('configuration_retained',[])}
 
 
 def _recovery_command(profile, job, runtime):

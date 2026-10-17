@@ -28,13 +28,17 @@ def _mapping(config, name):
     return value
 
 
-def configuration(data, installed):
+def configuration(data, installed, recorded=None):
     yaml=YAML();yaml.preserve_quotes=True
     try:value=yaml.load(data.decode())
     except (YAMLError,UnicodeError,RecursionError) as error:
         raise ReleaseRejected('The current Hermes configuration cannot be removed safely') from error
     if not isinstance(value,dict) or getattr(value,'merge',None):
         raise ReleaseRejected('Removal requires an explicit current configuration mapping')
+    if recorded is not None:
+        # Values LifeOS changed return to their pre-installation values unless the owner changed them since.
+        from .host_configuration import restore
+        value,_=restore(value,recorded)
     memory=_mapping(value,'memory')
     if (memory.get('provider','builtin') not in (None,'builtin') or memory.get('memory_enabled',True) is not True
             or memory.get('user_profile_enabled',True) is not True):

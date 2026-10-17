@@ -10,6 +10,7 @@ import shutil
 
 from .cli import profile_directory, read_private
 from .host_compatibility import inspect_host, load_manifest
+from .host_configuration import RECORD as CONFIGURATION_RECORD
 from .host_record import HostRecordRejected, check_originals, load_record, originals_path, record_path
 from .inplace_plan import HOLD
 from .integration_package import COMPATIBILITY, validate_integration
@@ -34,8 +35,10 @@ def _refusal(result):
 def installed_host(profile, record, manifest):
     """Verify that the recorded host still carries exactly the LifeOS patches; return the retained originals."""
     result = inspect_host(record['source'], manifest, hermes_home=profile, record=record)
-    if result['state'] != 'installed':
-        raise ReleaseRejected('Removal refuses the current Hermes installation: ' + _refusal(result))
+    # A bridge that Hermes evicted is a reason to remove LifeOS, not a reason to refuse removal.
+    reasons = [reason for reason in result['reasons'] if reason['code'] != 'bridge_disabled']
+    if reasons or not (result['installed'] or result['state'] == 'host_drift'):
+        raise ReleaseRejected('Removal refuses the current Hermes installation: ' + _refusal({**result, 'reasons': reasons}))
     try:
         return check_originals(record)
     except HostRecordRejected as error:
@@ -116,6 +119,9 @@ def host_plan(profile, record, originals, stage):
     retained = originals_path(profile).parent
     owned = {originals_path(profile) / relative for relative, hashes in record['files'].items()
              if hashes['stock'] is not None}
+    configuration_record = profile / CONFIGURATION_RECORD
+    if configuration_record.is_file() and not configuration_record.is_symlink():
+        owned.add(configuration_record)
     found = set()
     for path in retained.rglob('*'):
         if path.is_symlink() or not (path.is_dir() or path.is_file()):
@@ -190,4 +196,18 @@ def synchronize(stage, plan, label):
     value = {**_json(output.read_bytes()), 'removed': sorted(set(before) - set(after)),
              'added': sorted(set(after) - set(before))}
     publish(stage / (label + '-packages.json'), (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
+    return value
+
+
+def recorded_configuration(profile):
+    """Return the record of configuration values LifeOS changed, or None for an installation without one."""
+    path = Path(profile) / CONFIGURATION_RECORD
+    if not path.is_file() or path.is_symlink():
+        return None
+    try:
+        value = json.loads(path.read_bytes())
+    except ValueError as error:
+        raise ReleaseRejected('The LifeOS configuration record is unreadable') from error
+    if not isinstance(value, dict) or value.get('format') != 1 or not isinstance(value.get('values'), list):
+        raise ReleaseRejected('The LifeOS configuration record has an invalid structure')
     return value
