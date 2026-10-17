@@ -2,7 +2,7 @@
 
 Run LifeOS hooks, lasting memory, and the main Pulse dashboard through Hermes. The integration also provides owner-reviewed installation, complete-package updates, memory import and return, and optional HTTP access for other agents.
 
-**Stable release: [0.7.2](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.7.2).** The [release record](docs/verification/2026-10-16-release-0.7.2/README.md) identifies its exact package, review, tests, deployment, and limits. [VERSION](VERSION) identifies the source version; [CHANGELOG.md](CHANGELOG.md) records changes.
+**Stable release: [0.7.3](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.7.3).** The [release record](docs/verification/2026-10-16-release-0.7.3/README.md) identifies its exact package, review, tests, deployment, and limits. [VERSION](VERSION) identifies the source version; [CHANGELOG.md](CHANGELOG.md) records changes.
 
 ## Start here
 
@@ -43,7 +43,7 @@ The [installation guide](docs/installation-workflow.md) covers service prerequis
 
 ## Compatibility target
 
-The qualified 0.7.2 package targets Hermes `v0.21.7`, base commit `71d34bad1045610252eda02ee79549436896e784`, and LifeOS base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. It includes ten Hermes patch groups and twenty-five LifeOS patches. [Source declarations](lifeos_hook_bridge/install_source.py) and the [patch map](docs/patch-footprint.md) define the supported combination.
+The qualified 0.7.3 package targets Hermes `v0.21.7`, base commit `71d34bad1045610252eda02ee79549436896e784`, and LifeOS base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. It includes ten Hermes patch groups and twenty-five LifeOS patches. [Source declarations](lifeos_hook_bridge/install_source.py) and the [patch map](docs/patch-footprint.md) define the supported combination.
 
 Stock Hermes lacks some required admission, lifecycle, and final-answer controls. Installing only the bridge does not supply the full integration. A newer upstream commit needs a port and behavior qualification before it can replace the supported combination.
 
@@ -73,7 +73,7 @@ Use `NEXT-dev.N` for development packages and `NEXT-rc.N` for acceptance candida
 
 The [codebase map](docs/codebase.md) gives source entry points and focused tests. [Verification records](docs/verification/README.md) retain dated results, failures, and acceptance limits. [Agent reports](docs/agents/README.md) retain independent review evidence. Earlier narrative status is preserved in the [dated README snapshot](docs/history/2026-10-16-readme.md).
 
-For 0.7.2, all 42 interface tests pass. The archive run passes 1,122 of 1,124 cases on the workstation. The two process-inspection cases refuse in that environment; all eight exact-archive boundary cases pass in an isolated service-account guest. This is coverage across two environments. The release record distinguishes fresh checks from inherited 0.7.1 evidence.
+For 0.7.3, all 57 interface tests and 51 focused Python tests pass. The complete archive executes 1,129 cases. The workstation passes 1,126 cases; the three environment-specific cases pass in separate boundary and backup-module replays. This is coverage across environments. The release record retains the failed attempts, measured causes, and inherited-check limits.
 
 Discord voice input, spoken replies, and Content media processing remain [deferred work](TODO.md).
 

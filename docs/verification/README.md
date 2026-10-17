@@ -6,7 +6,8 @@ Use this index to locate evidence for a claim. Each dated directory describes th
 
 | Record | Scope |
 | --- | --- |
-| [0.7.2 release and deployment](2026-10-16-release-0.7.2/README.md) | Current complete package, setup interface, review, exact-archive checks, and both server updates |
+| [0.7.3 release and deployment](2026-10-16-release-0.7.3/README.md) | Current complete package, cleanup, reviews, qualification, and both server updates |
+| [0.7.2 release and deployment](2026-10-16-release-0.7.2/README.md) | Setup interface, review, qualification, and both server updates |
 | [0.7.1 release](2026-10-16-release-0.7.1/README.md) | Notification-first Discord admission correction and retained native/runtime qualification |
 | [HTTP memory acceptance](2026-10-16-http-memory/README.md) | Authorization, owner-approved connections, actual harnesses, and Tailscale HTTPS |
 | [0.6.0 release](2026-10-15-release-0.6.0/README.md) | Qualified memory portability/removal and public GitHub installation |
@@ -32,6 +33,6 @@ A component test proves its asserted local contract. A native or paired test pro
 
 Read the certificate and record together. An initial qualification certificate can say promotion is not yet verified; a later immutable deployment receipt records promotion. Preserve both checkpoints. Inherited evidence applies only to the unchanged inputs identified by the release comparison. A candidate preview or older test run is not a later installed result.
 
-For 0.7.2, 1,122 of 1,124 archive integration cases pass on the workstation. Two process-inspection cases refuse there. All eight exact-archive boundary cases pass under the isolated service account. The release does not claim one clean full run, a new automatic morning observation, or a new whole-guest restore.
+For 0.7.3, the complete archive executes 1,129 cases. The workstation passes 1,126 cases. Two process-inspection cases refuse there; all eight associated cases pass under an isolated service account. One socket fixture exceeds the long temporary pathname limit; all 35 backup cases pass with a short private temporary directory. The record retains both attempts and their measured limits. It does not claim one clean full run, a new automatic morning observation, or a new whole-guest restore.
 
 Use `git ls-files docs/verification` to inventory retained evidence. Start with the relevant README and its linked safe receipts. Do not read every fixture snapshot as active documentation. Some dated operators and daily profile files are package inputs; check the builder and callers before moving them.

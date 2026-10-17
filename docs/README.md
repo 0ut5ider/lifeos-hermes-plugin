@@ -28,7 +28,7 @@ Start with the task you need to complete. Active guides describe the supported i
 
 ## Check a release claim
 
-The [0.7.2 record](verification/2026-10-16-release-0.7.2/README.md) is the current qualified release reference. It links the initial certificate, archive identity, independent review, installed verification, and deployment receipt. The [verification index](verification/README.md) identifies earlier release milestones and explains evidence limits.
+The [0.7.3 record](verification/2026-10-16-release-0.7.3/README.md) is the current qualified release reference. It links the initial certificate, archive identity, independent review, installed verification, and deployment receipt. The [verification index](verification/README.md) identifies earlier release milestones and explains evidence limits.
 
 A dated `PROGRESS.json`, candidate report, or test count describes that checkpoint. It cannot establish the current installed version. Use the installed `hermes lifeos-version` result and the matching deployment record. Keep release assets and original receipts immutable.
 
