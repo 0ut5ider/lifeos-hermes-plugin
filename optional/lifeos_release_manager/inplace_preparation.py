@@ -16,7 +16,7 @@ from .integration_package import COMPATIBILITY, validate_integration
 from .release_accounts import account_home
 from .release_catalog import ReleaseCatalog, ReleaseRejected, _json, extract_package
 from .release_programs import publish
-from .release_stage import _environment, load_bridge, run_stage, runtime_source_fingerprint, sha
+from .release_stage import _environment, load_bridge, run_stage, runtime_source_fingerprint, sha, user_runtime_directory
 from .release_tools import prepare_bun
 
 
@@ -205,7 +205,7 @@ def resolve_dependencies(job, python, source, profile, bridge):
     """Lock the bridge with the enabled plugins in a throwaway workspace under the host interpreter."""
     output = job / 'dependency-resolution.json'
     environment = {**_environment(Path(profile), home=account_home(profile), source=Path(source)),
-                   'XDG_RUNTIME_DIR': '/run/user/' + str(os.getuid())}
+                   'XDG_RUNTIME_DIR': user_runtime_directory()}
     run_stage([python, '-B', Path(__file__).with_name('dependency_plan.py'), 'resolve', source, profile, bridge,
                job / 'dependency-workspace', output], job, 'dependency-resolution', environment=environment)
     return _json(output.read_bytes())

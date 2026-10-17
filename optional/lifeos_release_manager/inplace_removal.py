@@ -190,14 +190,14 @@ def synchronize(stage, plan, label):
     from .dependency_plan import locked_packages, selected_lock
     from .inplace_preparation import host_python
     from .release_accounts import account_home
-    from .release_stage import _environment, run_stage
+    from .release_stage import _environment, run_stage, user_runtime_directory
     source, profile = Path(plan['host']['source']), Path(plan['profile'])
     before = locked_packages(selected_lock(source))
     output = stage / (label + '.json')
     output.unlink(missing_ok=True)
     environment = {**_environment(profile, home=account_home(profile), source=source),
-                   'XDG_RUNTIME_DIR': '/run/user/' + str(os.getuid()),
-                   'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/' + str(os.getuid()) + '/bus'}
+                   'XDG_RUNTIME_DIR': user_runtime_directory(),
+                   'DBUS_SESSION_BUS_ADDRESS': 'unix:path=' + user_runtime_directory() + '/bus'}
     run_stage([host_python(source), '-B', stage / 'recovery-manager/dependency_plan.py', 'synchronize', source, output],
               stage, label, environment=environment)
     after = locked_packages(selected_lock(source))

@@ -19,7 +19,7 @@ from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, _
 from .release_accounts import account_home
 from .release_programs import publish
 from .release_stage import (load_bridge, prepare_runtime, sha, validate_package, runtime_source_fingerprint,
-                            validate_files, run_stage, _environment)
+                            validate_files, run_stage, _environment, user_runtime_directory)
 
 IDENTIFIER = re.compile('[0-9a-f]{32}')
 
@@ -195,8 +195,8 @@ def prepare_plan(job, request, files):
     validate_files(job / 'worker', files, forbid_bytecode=True)
     environment = _environment(Path(request['profile']), home=Path(request['account_home']),
                                source=Path(request['runtime']['source']))
-    environment.update(XDG_RUNTIME_DIR='/run/user/' + str(os.getuid()),
-                       DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(os.getuid()) + '/bus')
+    environment.update(XDG_RUNTIME_DIR=user_runtime_directory(),
+                       DBUS_SESSION_BUS_ADDRESS='unix:path=' + user_runtime_directory() + '/bus')
     run_stage([request['runtime']['python'], '-B', job / 'worker/release_worker.py', job,
                '--action', 'prepare'], job, 'candidate-review', environment=environment)
 

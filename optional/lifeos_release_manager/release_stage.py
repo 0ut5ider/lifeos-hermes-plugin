@@ -173,6 +173,11 @@ def validate_package(package, certificate):
     return manifest
 
 
+def user_runtime_directory():
+    """Return this account's systemd runtime directory, which holds the user manager and session bus sockets."""
+    return '/run/user/' + str(os.getuid())
+
+
 def _environment(profile, *, home, source=None):
     environment = {key: value for key, value in os.environ.items()
         if key in {'PATH', 'LANG', 'LC_ALL', 'TZ', 'SSL_CERT_FILE', 'SSL_CERT_DIR'}}

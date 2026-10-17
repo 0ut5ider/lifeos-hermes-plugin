@@ -288,3 +288,9 @@ class ReleaseStageTests(unittest.TestCase):
             (root / 'DAILY-CANDIDATE.json').write_text(json.dumps({'head': 'a' * 40, 'version': '0.4.0'}))
             with self.assertRaisesRegex(ReleaseRejected, 'dependency closure'):
                 validate_package(root, {'format': 1, 'status': 'QUALIFIED', 'program_commit': 'a' * 40, 'version': '0.4.0'})
+
+
+class UserRuntimeDirectoryTests(unittest.TestCase):
+    def test_runtime_directory_is_the_account_systemd_runtime_directory(self):
+        from optional.lifeos_release_manager.release_stage import user_runtime_directory
+        self.assertEqual(user_runtime_directory(), '/run/user/' + str(os.getuid()))

@@ -12,7 +12,7 @@ from .release_catalog import ReleaseRejected
 from .release_accounts import account_home
 from .release_baseline import reviewed_baseline
 from .release_programs import fingerprint
-from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint
+from .release_stage import load_bridge, sha, validate_package, runtime_source_fingerprint, user_runtime_directory
 
 
 def inspect_operation(job, request, *, installation_lease=None, fresh_recovery=False):
@@ -114,8 +114,8 @@ def existing_native(selected, request, native):
 
 def service_environment(request):
     environment = dict(os.environ, HOME=request['account_home'], HERMES_HOME=request['profile'],
-        XDG_RUNTIME_DIR='/run/user/' + str(os.getuid()),
-        DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(os.getuid()) + '/bus',
+        XDG_RUNTIME_DIR=user_runtime_directory(),
+        DBUS_SESSION_BUS_ADDRESS='unix:path=' + user_runtime_directory() + '/bus',
         PYTHONDONTWRITEBYTECODE='1')
     environment['PATH'] = str(Path(request['runtime']['bun']).parent) + os.pathsep + environment.get('PATH', os.defpath)
     if request.get('format') == 2:

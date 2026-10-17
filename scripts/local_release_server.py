@@ -7,8 +7,13 @@ import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
+import sys
 
-REPOSITORY = '0ut5ider/lifeos-hermes-plugin'
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from optional.lifeos_release_manager.release_catalog import REPOSITORY
 
 
 def payloads(directory, tag, origin):

@@ -367,7 +367,8 @@ def _bridge_enabled(hermes_home):
     if not isinstance(plugins, dict):
         return False
     enabled, disabled = plugins.get('enabled') or [], plugins.get('disabled') or []
-    return 'lifeos-hook-bridge' in enabled and 'lifeos-hook-bridge' not in disabled
+    from .dependency_plan import BRIDGE
+    return BRIDGE in enabled and BRIDGE not in disabled
 
 
 def _installed_reasons(source, record, head, hermes_home):
