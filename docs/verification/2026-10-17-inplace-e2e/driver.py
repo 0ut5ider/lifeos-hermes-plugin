@@ -1,0 +1,37 @@
+# ABOUTME: Drives in-place preparation and actions through the installed release manager for qualification.
+# ABOUTME: Uses the loopback release server instead of GitHub, and issues the owner grant as the dashboard does.
+import importlib, json, sys, types
+from pathlib import Path
+
+directory = Path.home() / ".hermes/plugins/lifeos-release-manager"
+namespace = types.ModuleType("lrm")
+namespace.__path__ = [str(directory)]
+sys.modules["lrm"] = namespace
+cli = importlib.import_module("lrm.cli")
+catalog = importlib.import_module("lrm.release_catalog")
+profile = Path.home() / ".hermes"
+action = sys.argv[1]
+if action == "prepare":
+    origin = "http://127.0.0.1:8765"
+    value = cli.prepare(profile, name="Owner", assistant="Hermes", intent=sys.argv[2],
+                        catalog=catalog.ReleaseCatalog(api_origin=origin, asset_origin=origin))
+elif action == "status":
+    value = cli.status(profile, *sys.argv[2:3])
+elif action in {"apply", "recover", "restore"}:
+    worker = importlib.import_module("lrm.release_worker")
+    job, request = cli.operation(profile, sys.argv[2])
+    if action == "apply":
+        selected, plan = worker.review_operation(job, request)
+    else:
+        plan = worker.validate_plan(job, request)
+        selected = {"installed": Path(request["installed"]), "current": worker.recovery_bridge(job, profile)}
+    administration = selected["current"].memory_administration()
+    authorization = None
+    if plan["native_mount_required"] and administration.required(selected["installed"], profile):
+        configuration = administration.MemoryConfiguration(profile / "lifeos-memory.json")
+        authorization = administration.issue(configuration, "dashboard:basic:owner", ttl=3600,
+                                             binding=administration.job_binding(job, request, action))
+    value = cli.launch(profile, sys.argv[2], action, authorization=authorization)
+else:
+    raise SystemExit("Choose prepare, status, apply, recover, or restore")
+print(json.dumps(value, indent=2))
