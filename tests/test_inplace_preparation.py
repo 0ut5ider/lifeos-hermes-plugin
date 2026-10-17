@@ -59,3 +59,25 @@ class PreviewTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class StockSourceTests(unittest.TestCase):
+    def test_originals_and_untouched_host_files_form_the_stock_source(self):
+        from optional.lifeos_release_manager.inplace_preparation import stock_source
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'host/hermes_cli').mkdir(parents=True)
+            (root / 'host/hermes_cli/plugins.py').write_text('patched by the recorded release\n')
+            (root / 'host/hermes_cli/other.py').write_text('stock and untouched\n')
+            (root / 'originals/hermes_cli').mkdir(parents=True)
+            (root / 'originals/hermes_cli/plugins.py').write_text('original\n')
+            entry = {'files': {'hermes_cli/plugins.py': {'stock': 'a', 'patched': 'b'},
+                               'hermes_cli/other.py': {'stock': 'c', 'patched': 'd'},
+                               'hermes_cli/new.py': {'stock': None, 'patched': 'e'}}}
+            record = {'files': {'hermes_cli/plugins.py': {'stock': 'a', 'patched': 'b'},
+                                'hermes_cli/new.py': {'stock': None, 'patched': 'e'}}}
+            originals = {'hermes_cli/plugins.py': root / 'originals/hermes_cli/plugins.py'}
+            result = stock_source(root / 'host', record, originals, entry, root / 'stock')
+            self.assertEqual((result / 'hermes_cli/plugins.py').read_text(), 'original\n')
+            self.assertEqual((result / 'hermes_cli/other.py').read_text(), 'stock and untouched\n')
+            self.assertFalse((result / 'hermes_cli/new.py').exists())

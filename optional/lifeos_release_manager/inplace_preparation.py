@@ -16,7 +16,7 @@ from .integration_package import COMPATIBILITY, validate_integration
 from .release_accounts import account_home
 from .release_catalog import ReleaseCatalog, ReleaseRejected, _json, extract_package
 from .release_programs import publish
-from .release_stage import _environment, load_bridge, run_stage, sha
+from .release_stage import _environment, load_bridge, run_stage, runtime_source_fingerprint, sha
 from .release_tools import prepare_bun
 
 
@@ -60,6 +60,29 @@ def desired_host_files(entry, staged, record=None, originals=None):
     return desired
 
 
+def stock_source(source, record, originals, entry, destination):
+    """Assemble the stock files of ``entry`` for an installed host: retained originals, plus unpatched host files.
+
+    A target that the recorded release did not change is still stock on the host, so it is read from there;
+    staging verifies every copied file against its stock hash.
+    """
+    destination = Path(destination)
+    destination.mkdir(mode=0o700)
+    for relative, hashes in entry['files'].items():
+        if hashes['stock'] is None:
+            continue
+        if relative in originals:
+            origin = originals[relative]
+        elif relative in record['files']:
+            raise ReleaseRejected('The host record and the release disagree about an original Hermes file: ' + relative)
+        else:
+            origin = Path(source) / relative
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(origin, target)
+    return destination
+
+
 def build_preview(source, desired, destination):
     """Copy the tracked Hermes files, then overlay the desired host files, for preparation checks only."""
     source, destination = Path(source), Path(destination)
@@ -88,16 +111,26 @@ def build_preview(source, desired, destination):
     return destination
 
 
+def resolve_dependencies(job, python, source, profile, bridge):
+    """Lock the bridge with the enabled plugins in a throwaway workspace under the host interpreter."""
+    output = job / 'dependency-resolution.json'
+    environment = {**_environment(Path(profile), home=account_home(profile), source=Path(source)),
+                   'XDG_RUNTIME_DIR': '/run/user/' + str(os.getuid())}
+    run_stage([python, '-B', Path(__file__).with_name('dependency_plan.py'), 'resolve', source, profile, bridge,
+               job / 'dependency-workspace', output], job, 'dependency-resolution', environment=environment)
+    return _json(output.read_bytes())
+
+
 def prepare_inplace(profile, job, version=None, *, name, assistant, intent, catalog=None):
     """Prepare the reviewed in-place request in ``job``; the active installation is not changed."""
     profile, job = Path(profile), Path(job)
     home = account_home(profile)
+    downloaded = (catalog or ReleaseCatalog()).download_integration(job / 'download', version)
     result = check(profile)
     record = load_record(profile)
     if result['state'] not in {'compatible', 'installed'}:
         raise ReleaseRejected('LifeOS cannot be installed on this Hermes installation: ' + _first_reason(result))
     source = Path(result['detected']['source'])
-    downloaded = (catalog or ReleaseCatalog()).download_integration(job / 'download', version)
     certificate = downloaded['certificate']
     package = job / 'package'
     extract_package(downloaded['archive'], package)
@@ -125,7 +158,8 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
     originals = None
     if record is not None:
         originals = check_originals(record)
-        staged = stage_host_files(Path(record['originals']), entry, patches, job / 'host')
+        staged = stage_host_files(stock_source(source, record, originals, entry, job / 'host-source'),
+                                  entry, patches, job / 'host')
     else:
         staged = stage_host_files(source, entry, patches, job / 'host')
     desired = desired_host_files(entry, staged, record, originals)
@@ -137,6 +171,9 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
                       dependencies['bun_version'])
     python = host_python(source)
     preview = build_preview(source, desired, job / 'hermes-preview')
+    dependencies = resolve_dependencies(job, python, source, profile, package / 'lifeos_hook_bridge')
+    if dependencies['changed']:
+        raise ReleaseRejected('LifeOS would change installed Python packages: ' + ', '.join(sorted(dependencies['changed'])))
     reference = job / 'reference-home'
     reference.mkdir(mode=0o700)
     script = ('import importlib.util,sys\nfrom pathlib import Path\n'
@@ -161,6 +198,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
                     'source': str(preview), 'reference': str(reference / '.claude'),
                     'lifeos': str(job / 'lifeos'), 'host_files': str(job / 'host')},
         'name': name, 'assistant': assistant, 'lifeos_tree_sha256': lifeos['tree_sha256'],
+        'runtime_fingerprint': runtime_source_fingerprint(preview), 'dependencies': dependencies,
     }
     publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
     shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker',

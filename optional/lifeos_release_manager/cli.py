@@ -119,44 +119,62 @@ def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, 
         if read_private(job / 'status.json')['state'] != 'preparing' or (job / 'request.json').exists():
             raise ReleaseRejected('The preparation already starts or completes')
     try:
-        downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
-        package = job / 'package'
-        extract_package(downloaded['archive'], package)
-        manifest = validate_package(package, downloaded['certificate'])
-        source = load_bridge(package / 'lifeos_hook_bridge')
-        names = source.memory_module('fresh_store')
-        names._name(name.strip())
-        names._name(assistant.strip())
-        selected = source.memory_module('lifeos_installation').selection(profile)
-        if not selected.installed.exists():
-            from .release_services import require_fresh_services
-            require_fresh_services(source)
-        if intent == 'install' and (selected.installed.exists() or selected.installed.is_symlink()):
-            raise ReleaseRejected('Use an update for the existing LifeOS installation')
-        if intent in {'update', 'plugin'} and not selected.installed.is_dir():
-            raise ReleaseRejected('Install LifeOS before requesting an update')
-        runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
-        request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
-            'account_home': str(home), 'installed': str(selected.installed),
-            'version': manifest['version'], 'commit': manifest['head'],
-            'package_sha256': sha(downloaded['archive']), 'certificate': downloaded['certificate'],
-            'configuration_sha256': sha(profile / 'config.yaml'),
-            'runtime': runtime, 'runtime_fingerprint': runtime_source_fingerprint(Path(runtime['source'])),
-            'runtime_metadata_sha256': sha(job / 'manifest.json'),
-            'python_lock_sha256': sha(package / 'python-runtime/uv.lock'),
-            'name': name.strip(), 'assistant': assistant.strip()}
-        publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
-        shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker',
-                        ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-        prepare_plan(job, request, manifest['manager_files'])
-        if read_private(job / 'status.json')['state'] != 'ready':
-            raise ReleaseRejected('The candidate does not complete its program review')
-        return {'identifier': job.name, 'state': 'ready', 'version': request['version'],
-            'commit': request['commit'], 'package_sha256': request['package_sha256'], 'active_unchanged': True,
-            'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + job.name}
+        return _prepare_inplace_operation(profile, job, version, name=name, assistant=assistant,
+                                          catalog=catalog, intent=intent)
     except BaseException:
         write_state(job, 'preparation_failed', error='Preparation did not change the active installation.')
         raise
+
+
+def _prepare_managed_package(profile, home, job, version, *, name, assistant, catalog=None, intent=None):
+    """Prepare a format 1 complete-runtime release. Commands no longer call this preparation."""
+    downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
+    package = job / 'package'
+    extract_package(downloaded['archive'], package)
+    manifest = validate_package(package, downloaded['certificate'])
+    source = load_bridge(package / 'lifeos_hook_bridge')
+    names = source.memory_module('fresh_store')
+    names._name(name.strip())
+    names._name(assistant.strip())
+    selected = source.memory_module('lifeos_installation').selection(profile)
+    if not selected.installed.exists():
+        from .release_services import require_fresh_services
+        require_fresh_services(source)
+    if intent == 'install' and (selected.installed.exists() or selected.installed.is_symlink()):
+        raise ReleaseRejected('Use an update for the existing LifeOS installation')
+    if intent in {'update', 'plugin'} and not selected.installed.is_dir():
+        raise ReleaseRejected('Install LifeOS before requesting an update')
+    runtime = prepare_runtime(job, package, Path(downloaded['dashboard']), profile)
+    request = {'format': 1, 'identifier': job.name, 'profile': str(profile),
+        'account_home': str(home), 'installed': str(selected.installed),
+        'version': manifest['version'], 'commit': manifest['head'],
+        'package_sha256': sha(downloaded['archive']), 'certificate': downloaded['certificate'],
+        'configuration_sha256': sha(profile / 'config.yaml'),
+        'runtime': runtime, 'runtime_fingerprint': runtime_source_fingerprint(Path(runtime['source'])),
+        'runtime_metadata_sha256': sha(job / 'manifest.json'),
+        'python_lock_sha256': sha(package / 'python-runtime/uv.lock'),
+        'name': name.strip(), 'assistant': assistant.strip()}
+    publish(job / 'request.json', (json.dumps(request, indent=2) + '\n').encode())
+    shutil.copytree(package / 'optional/lifeos_release_manager', job / 'worker',
+                    ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+    prepare_plan(job, request, manifest['manager_files'])
+    if read_private(job / 'status.json')['state'] != 'ready':
+        raise ReleaseRejected('The candidate does not complete its program review')
+    return {'identifier': job.name, 'state': 'ready', 'version': request['version'],
+        'commit': request['commit'], 'package_sha256': request['package_sha256'], 'active_unchanged': True,
+        'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + job.name}
+
+
+def _prepare_inplace_operation(profile, job, version, *, name, assistant, catalog=None, intent=None):
+    from .inplace_preparation import prepare_inplace
+    request, manifest = prepare_inplace(profile, job, version, name=name.strip(), assistant=assistant.strip(),
+                                        intent=intent or 'install', catalog=catalog)
+    prepare_plan(job, request, manifest['manager_files'])
+    if read_private(job / 'status.json')['state'] != 'ready':
+        raise ReleaseRejected('The candidate does not complete its program review')
+    return {'identifier': job.name, 'state': 'ready', 'version': request['version'],
+        'commit': request['commit'], 'package_sha256': request['package_sha256'], 'active_unchanged': True,
+        'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + job.name}
 
 
 def prepare_plan(job, request, files):
@@ -245,7 +263,8 @@ def launch_worker(profile, identifier, action, *, authorization=None):
     from .release_worker import admit_operation
     from .release_operation import record_worker
     job, request = operation(profile, identifier)
-    manifest = validate_package(job / 'package', request['certificate'])
+    from .release_worker import validate_operation_package
+    manifest = validate_operation_package(job, request)
     validate_files(job / 'worker', manifest['manager_files'], forbid_bytecode=True)
     admit_operation(job, request, action, authorization=authorization)
     command = [request['runtime']['python'], '-B', str(job / 'worker/release_worker.py'), str(job), '--action', action]

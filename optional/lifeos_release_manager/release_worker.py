@@ -113,8 +113,7 @@ def recovery_bridge(job, profile):
     request = read_private(job / 'request.json')
     plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
     if plan is not None and plan['fresh']:
-        from .release_stage import validate_package
-        validate_package(job / 'package', request['certificate'])
+        validate_operation_package(job, request)
         return load_bridge(job / 'package/lifeos_hook_bridge')
     active = profile / 'plugins/lifeos-hook-bridge'
     if active.is_dir():
@@ -130,9 +129,17 @@ def recovery_bridge(job, profile):
         if plan is None or not plan['fresh']:
             raise ReleaseRejected('The retained bridge does not match its recorded identity')
     candidate = job / 'package/lifeos_hook_bridge'
-    from .release_stage import validate_package
-    validate_package(job / 'package', request['certificate'])
+    validate_operation_package(job, request)
     return load_bridge(candidate)
+
+
+def validate_operation_package(job, request):
+    """Validate the operation's extracted package against its certificate; return the package manifest."""
+    if request.get('format') == 2:
+        from .integration_package import validate_integration
+        return validate_integration(job / 'package', request['certificate'])
+    from .release_stage import validate_package
+    return validate_package(job / 'package', request['certificate'])
 
 
 def _yaml_configuration(profile, native):
@@ -175,7 +182,7 @@ def _yaml_configuration(profile, native):
 def _program_plan(job, request, selected):
     profile, installed = selected['profile'], selected['installed']
     package = selected['package']
-    native = package / 'lifeos/LifeOS/install'
+    native = selected.get('native', package / 'lifeos/LifeOS/install')
     generated = job / 'generated'
     generated.mkdir(mode=0o700, exist_ok=True)
     if (generated.resolve() != generated or generated.stat().st_uid != os.getuid()
@@ -184,17 +191,23 @@ def _program_plan(job, request, selected):
     files, dependencies = {}, {}
     directories = {selected['bridge']: package / 'lifeos_hook_bridge',
                    profile / 'plugins/lifeos-release-manager': package / 'optional/lifeos_release_manager'}
-    launch = generated / 'hermes'
-    publish(launch, launcher_script(request['runtime']['hermes']), 0o700)
-    for path in selected['launchers']:
-        files[path] = launch
-    commands = _json((job / 'manifest.json').read_bytes())['runtime']['commands']
-    for name in ('hermes', 'hermes-agent', 'hermes-acp'):
-        if commands.get(name) != 'bin/' + name:
-            raise ReleaseRejected('The prepared runtime changes a native command path')
-        command = generated / name
-        publish(command, launcher_script(str(job / commands[name])), 0o700)
-        files[Path(request['account_home']) / '.local/bin' / name] = command
+    if request.get('format') == 2:
+        from .inplace_plan import host_entries
+        host_directories, host_files = host_entries(job, request, selected, generated)
+        directories.update(host_directories)
+        files.update(host_files)
+    else:
+        launch = generated / 'hermes'
+        publish(launch, launcher_script(request['runtime']['hermes']), 0o700)
+        for path in selected['launchers']:
+            files[path] = launch
+        commands = _json((job / 'manifest.json').read_bytes())['runtime']['commands']
+        for name in ('hermes', 'hermes-agent', 'hermes-acp'):
+            if commands.get(name) != 'bin/' + name:
+                raise ReleaseRejected('The prepared runtime changes a native command path')
+            command = generated / name
+            publish(command, launcher_script(str(job / commands[name])), 0o700)
+            files[Path(request['account_home']) / '.local/bin' / name] = command
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
     publish(generated / 'config.yaml', _yaml_configuration(profile, native))
@@ -210,9 +223,10 @@ def _program_plan(job, request, selected):
             source=Path(request['runtime']['source'])))
     files[profile / 'config.yaml'] = generated / 'config.yaml'
     current = selected['current']
-    if selected['fresh']:
+    created = selected.get('created_roles', ('gateway', 'dashboard', 'pulse') if selected['fresh'] else ())
+    if created:
         from .release_services import service_files
-        files.update(service_files(request, generated))
+        files.update(service_files(request, generated, roles=created))
     if not selected['fresh']:
         drift = current.memory_module('version_drift')
         previous = selected['reviewed_baseline']
@@ -249,14 +263,22 @@ def _program_plan(job, request, selected):
             baseline['created_at'] = previous['created_at']
             publish(generated / 'baseline.json', (json.dumps(baseline, indent=2) + '\n').encode())
             files[selected['baseline']] = generated / 'baseline.json'
-    manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
     certificate = request['certificate']
-    receipt = {'format': 1, 'version': request['version'], 'commit': request['commit'],
-        'package_sha256': request['package_sha256'],
-        'plugin_files': {name.removeprefix('lifeos_hook_bridge/'): value for name, value in manifest['plugin_files'].items()},
-        'upstream': {'hermes': certificate['hermes_base'], 'lifeos': certificate['lifeos_base']},
-        'patches': {'hermes': certificate['hermes_patch_count'], 'lifeos': certificate['lifeos_patch_count']},
-        'operators': manifest.get('operators', {})}
+    if request.get('format') == 2:
+        manifest = json.loads((package / 'INTEGRATION.json').read_bytes())
+        receipt = {'format': 1, 'version': request['version'], 'commit': request['commit'],
+            'package_sha256': request['package_sha256'], 'plugin_files': manifest['plugin_files'],
+            'upstream': {'hermes': request['host']['commit'], 'lifeos': certificate['lifeos']['commit']},
+            'patches': {'hermes': len(selected['entry']['patches']), 'lifeos': len(selected['candidate'].LIFEOS_PATCHES)},
+            'operators': {}}
+    else:
+        manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
+        receipt = {'format': 1, 'version': request['version'], 'commit': request['commit'],
+            'package_sha256': request['package_sha256'],
+            'plugin_files': {name.removeprefix('lifeos_hook_bridge/'): value for name, value in manifest['plugin_files'].items()},
+            'upstream': {'hermes': certificate['hermes_base'], 'lifeos': certificate['lifeos_base']},
+            'patches': {'hermes': certificate['hermes_patch_count'], 'lifeos': certificate['lifeos_patch_count']},
+            'operators': manifest.get('operators', {})}
     publish(generated / 'integration-release.json', (json.dumps(receipt, indent=2) + '\n').encode())
     files[profile / 'integration-release.json'] = generated / 'integration-release.json'
     return directories, files, dependencies
@@ -333,6 +355,9 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             raise ReleaseRejected('Recover the selected software removal before another release worker')
         request = read_private(job / 'request.json')
         validate_admission(job, request, action)
+        if request.get('format') == 2:
+            from .inplace_worker import run
+            return run(job, request, action, current, lease, checkpoint=checkpoint)
         plan = validate_plan(job, request)
         fresh_recovery = action == 'recover' and plan['fresh']
         if action == 'apply':
@@ -416,7 +441,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                 mounted_module = importlib.reload(current.memory_module('mount_transaction'))
                 mount = mounted_module.MountTransaction(selected['installed'], profile, selected['baseline'])
                 drift = current.memory_module('version_drift')
-                baseline = drift.create_baseline(selected['package'] / 'lifeos/LifeOS/install', selected['installed'])
+                baseline = drift.create_baseline(selected['native'], selected['installed'])
                 prior = sha(mount.journal) if mount.journal.is_file() else None
                 publish(job / 'mount-intent.json', (json.dumps({'prior_journal_sha256': prior, 'action': action}) + '\n').encode())
                 mount.execute(environment, request['runtime']['bun'], request['runtime']['hermes'],
