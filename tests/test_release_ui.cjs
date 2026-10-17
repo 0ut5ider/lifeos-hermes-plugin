@@ -194,7 +194,7 @@ test('an in-place review lists the Hermes changes, packages, services, and teste
   const identifier = 'f'.repeat(32);
   const ui = await page(false, [{identifier, version: '0.8.0', state: 'ready'}], compatible, {in_place: {
     hermes: {label: 'v0.21.7', commit: qualified.commit, source: '/home/owner/.hermes/hermes-agent', modified: 69, added: 27,
-      files: {modified: ['hermes_cli/plugins.py', 'run_agent.py'], added: ['hermes_cli/new_hook.py']}, update_hold: true},
+      files: {modified: ['hermes_cli/plugins.py', 'run_agent.py'], added: ['hermes_cli/new_hook.py']}},
     configuration: ['plugins.enabled', 'plugins.entries'], update: null, known_conflicts: [],
     packages: ['tree-sitter==0.26.0', 'tree-sitter-bash==0.25.1'],
     services: {restarted: ['gateway'], created: ['dashboard', 'pulse'], replaced: [{pid: 4321, command: 'hermes', role: 'dashboard'}]},
@@ -223,7 +223,7 @@ test('an in-place update review shows the change from the installed release and 
   const identifier = 'e'.repeat(32);
   const ui = await page(true, [{identifier, version: '0.8.1', state: 'ready'}], {...compatible, installed: true}, {in_place: {
     hermes: {label: 'v0.21.7', commit: qualified.commit, source: '/home/owner/.hermes/hermes-agent', modified: 1, added: 1,
-      files: {modified: ['hermes_cli/plugins.py'], added: ['hermes_cli/new_hook.py']}, update_hold: true},
+      files: {modified: ['hermes_cli/plugins.py'], added: ['hermes_cli/new_hook.py']}},
     configuration: [], known_conflicts: ['The example-relay plugin replaces the delivery hook.'],
     update: {added: ['hermes_cli/new_hook.py'], changed: ['hermes_cli/plugins.py'], restored: ['run_agent.py', 'tools/x.py']},
     packages: [], services: {restarted: ['gateway'], created: [], replaced: []},

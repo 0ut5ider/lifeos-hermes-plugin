@@ -139,7 +139,7 @@
       update && update.restored.length ? pathList("Files that return to their original content", update.restored) : null,
       configuration.length ? pathList("Configuration keys LifeOS changes", configuration)
         : h("p", null, "Configuration keys LifeOS changes: none"),
-      hermes.update_hold ? h("p", {className: "lifeos-help"}, "Hermes updates stay held while LifeOS is installed, so an update can't move these changes onto an untested version.") : null,
+      h("p", {className: "lifeos-help"}, "Hermes updates stay held while LifeOS is installed, so an update can't move these changes onto an untested version."),
       h("p", null, "Python packages added: " + (review.packages.length ? review.packages.join(", ") : "none")),
       h("p", null, "Services that restart: " + (services.restarted.length ? services.restarted.join(", ") : "none")),
       services.created.length ? h("p", null, "User services created: " + services.created.join(", ")) : null,

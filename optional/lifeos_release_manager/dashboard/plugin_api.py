@@ -195,7 +195,7 @@ def inplace_review(job, selected, value, plan):
     services = plan['services']
     return {'hermes': {'label': entry['label'], 'commit': entry['commit'], 'source': value['host']['source'],
                        'modified': len(modified), 'added': len(added),
-                       'files': {'modified': modified, 'added': added}, 'update_hold': True},
+                       'files': {'modified': modified, 'added': added}},
             'configuration': changes['configuration'], 'update': changes['update'],
             'known_conflicts': entry.get('known_conflicts', []),
             'packages': sorted(name + '==' + versions[0] for name, versions in value['dependencies']['added'].items()),

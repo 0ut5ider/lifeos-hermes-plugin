@@ -212,6 +212,7 @@ class InplaceReviewTests(unittest.TestCase):
         self.assertEqual(review['hermes']['files'], {'modified': ['agent/loop.py', 'hermes_cli/plugins.py'],
                                                      'added': ['hermes_cli/new_hook.py']})
         self.assertEqual((review['hermes']['modified'], review['hermes']['added']), (2, 1))
+        self.assertNotIn('update_hold', review['hermes'])
         self.assertEqual(review['configuration'], ['plugins.enabled', 'plugins.entries'])
         self.assertEqual(review['update'], update)
         self.assertEqual(review['known_conflicts'], ['The example-relay plugin replaces the delivery hook.'])
