@@ -62,10 +62,10 @@ def _definition(physical):
 
 def coordinator(profile, job):
     from .cli import read_private
-    from .memory_workflow import _job
+    from .memory_workflow import workflow_job
     from .release_programs import fingerprint
     job=Path(job).absolute()
-    fixed,request=_job(profile,job.name)
+    fixed,request=workflow_job(profile,job.name)
     if fixed!=job or request['selection']['kind']!='removal':
         raise ReleaseRejected('The removal coordinator belongs to another workflow')
     launch=job/'launch.json'

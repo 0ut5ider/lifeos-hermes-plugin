@@ -9,7 +9,7 @@ import tomllib
 import unittest
 
 from optional.lifeos_release_manager.release_stage import load_bridge
-from optional.lifeos_release_manager.release_worker import _fresh_native
+from optional.lifeos_release_manager.release_worker import initialize_native
 
 REFERENCE = os.environ.get('LIFEOS_MANAGED_REFERENCE')
 ORIGINALS = os.environ.get('LIFEOS_MANAGED_TEMPLATE_ORIGINALS')
@@ -25,7 +25,7 @@ class FreshReleaseTests(unittest.TestCase):
             initialization.prepare(selected['candidate'].memory_module('fresh_store'))
             (initialization.seed / 'user/unreviewed.txt').write_text('Synthetic changed seed')
             with self.assertRaisesRegex(ValueError, 'prepared user'):
-                _fresh_native(job, request, selected)
+                initialize_native(job, request, selected)
             self.assertFalse(initialization.user.exists())
             self.assertFalse(selected['installed'].exists())
 
@@ -57,7 +57,7 @@ class FreshReleaseTests(unittest.TestCase):
     def test_fresh_install_sets_native_identity_and_empties_shipped_personal_templates(self):
         with tempfile.TemporaryDirectory() as temp:
             job, request, selected = self.fixture(Path(temp))
-            _fresh_native(job, request, selected)
+            initialize_native(job, request, selected)
             installed = selected['installed']
             user = installed / 'LIFEOS/USER'
             values = tomllib.loads((user / 'CONFIG/LIFEOS_CONFIG.toml').read_text())
@@ -78,7 +78,7 @@ class FreshReleaseTests(unittest.TestCase):
             user.mkdir(parents=True)
             (user / 'keep.txt').write_text('Synthetic later data')
             with self.assertRaises(ValueError):
-                _fresh_native(job, request, selected)
+                initialize_native(job, request, selected)
             self.assertEqual((user / 'keep.txt').read_text(), 'Synthetic later data')
             self.assertFalse(selected['installed'].exists())
 
@@ -90,14 +90,14 @@ class FreshReleaseTests(unittest.TestCase):
                 def terminate(point):
                     if point == 'user-published':
                         os._exit(73)
-                _fresh_native(job, request, selected, checkpoint=terminate)
+                initialize_native(job, request, selected, checkpoint=terminate)
                 os._exit(74)
             _, result = os.waitpid(child, 0)
             self.assertEqual(os.waitstatus_to_exitcode(result), 73)
             user = selected['installed'].parent / '.config/LIFEOS/USER'
             personal = user / 'later-synthetic-data.txt'
             personal.write_text('Synthetic data added after interruption')
-            _fresh_native(job, request, selected)
+            initialize_native(job, request, selected)
             self.assertEqual(personal.read_text(), 'Synthetic data added after interruption')
             self.assertTrue(selected['installed'].is_dir())
             self.assertEqual((selected['installed'] / 'LIFEOS/MEMORY').resolve(), user / 'MEMORY')
@@ -108,14 +108,14 @@ class FreshReleaseTests(unittest.TestCase):
                 job, request, selected = self.fixture(Path(temp))
                 child = os.fork()
                 if child == 0:
-                    _fresh_native(job, request, selected,
+                    initialize_native(job, request, selected,
                         checkpoint=lambda point: os._exit(73) if point == phase else None)
                     os._exit(74)
                 _, result = os.waitpid(child, 0)
                 self.assertEqual(os.waitstatus_to_exitcode(result), 73)
-                _fresh_native(job, request, selected)
+                initialize_native(job, request, selected)
                 program = selected['installed'] / 'settings.json'
                 program.write_text('{"synthetic_later_edit":true}')
                 with self.assertRaisesRegex(ValueError, 'later program edit'):
-                    _fresh_native(job, request, selected)
+                    initialize_native(job, request, selected)
                 self.assertEqual(program.read_text(), '{"synthetic_later_edit":true}')

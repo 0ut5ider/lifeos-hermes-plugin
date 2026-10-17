@@ -14,9 +14,9 @@ from .host_patches import stage_host_files
 from .host_record import check_originals, load_record
 from .integration_package import COMPATIBILITY, validate_integration
 from .release_accounts import account_home
-from .release_catalog import ReleaseCatalog, ReleaseRejected, _json, extract_package
+from .release_catalog import ReleaseCatalog, ReleaseRejected, parse_json, extract_package
 from .release_programs import publish
-from .release_stage import _environment, load_bridge, run_stage, runtime_source_fingerprint, sha, user_runtime_directory
+from .release_stage import stage_environment, load_bridge, run_stage, runtime_source_fingerprint, sha, user_runtime_directory
 from .release_tools import prepare_bun
 
 
@@ -75,10 +75,10 @@ def managed_service_launchers(job, home):
     forwards to the running managed release refuses the transition: its owner changed it, or a service
     still runs an older managed release after an update.
     """
-    from .release_catalog import _json
+    from .release_catalog import parse_json
     account = Path(home) / '.local/bin'
     try:
-        recorded = _json((Path(job) / 'plan.json').read_bytes())['launchers']
+        recorded = parse_json((Path(job) / 'plan.json').read_bytes())['launchers']
     except (OSError, ValueError, KeyError, TypeError):
         raise ReleaseRejected('The running managed release has no plan record of its service launchers') from None
     launchers = []
@@ -204,11 +204,11 @@ def build_preview(source, desired, destination):
 def resolve_dependencies(job, python, source, profile, bridge):
     """Lock the bridge with the enabled plugins in a throwaway workspace under the host interpreter."""
     output = job / 'dependency-resolution.json'
-    environment = {**_environment(Path(profile), home=account_home(profile), source=Path(source)),
+    environment = {**stage_environment(Path(profile), home=account_home(profile), source=Path(source)),
                    'XDG_RUNTIME_DIR': user_runtime_directory()}
     run_stage([python, '-B', Path(__file__).with_name('dependency_plan.py'), 'resolve', source, profile, bridge,
                job / 'dependency-workspace', output], job, 'dependency-resolution', environment=environment)
-    return _json(output.read_bytes())
+    return parse_json(output.read_bytes())
 
 
 def prepare_inplace(profile, job, version=None, *, name, assistant, intent, catalog=None):
@@ -257,7 +257,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
     desired = desired_host_files(entry, staged, record, originals)
     lifeos = bridge.prepare_lifeos(certificate['lifeos']['upstream'], job / 'lifeos', certificate['lifeos']['commit'],
                                    patches, bridge.LIFEOS_PATCHES, expected_tree=certificate['lifeos']['tree_sha256'])
-    dependencies = _json((package / 'lifeos_hook_bridge/dependency_locks/catalog.json').read_bytes())
+    dependencies = parse_json((package / 'lifeos_hook_bridge/dependency_locks/catalog.json').read_bytes())
     (job / 'tools').mkdir(mode=0o700)
     bun = prepare_bun(job / 'tools', package / 'optional/lifeos_release_manager/release-tools.json',
                       dependencies['bun_version'])
@@ -276,7 +276,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
         'source=importlib.util.module_from_spec(spec);spec.loader.exec_module(source)\n'
         'source.install_lifeos(Path(sys.argv[2]),Path(sys.argv[3])/".claude",Path(sys.argv[3])/"failed",'
         'sys.argv[4],source.SUPPORTED_LIFEOS_COMMIT,Path(sys.argv[1])/"patches",source.LIFEOS_PATCHES)\n')
-    environment = _environment(job / 'reference-profile', home=reference, source=preview)
+    environment = stage_environment(job / 'reference-profile', home=reference, source=preview)
     (job / 'reference-profile').mkdir(mode=0o700)
     environment['PATH'] = str(job / 'tools') + os.pathsep + environment.get('PATH', os.defpath)
     run_stage([python, '-B', '-c', script, package / 'lifeos_hook_bridge', job / 'lifeos', reference, bun],

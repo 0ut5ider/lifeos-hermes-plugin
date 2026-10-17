@@ -17,7 +17,7 @@ PROTECTED_ROOTS = ('model', 'providers', 'custom_providers', 'fallback_model', '
 RECORD = '.lifeos-host/configuration.json'
 
 
-def _load(data):
+def parse_configuration(data):
     from ruamel.yaml import YAML
     value = YAML(typ='safe').load(data) if data else {}
     if value is None:
@@ -42,7 +42,7 @@ def changed_paths(before, after, prefix=()):
 
 def check_preserved(before_data, after_data):
     """Refuse a configuration change under a protected root, such as the model or a messaging platform."""
-    changed = [path for path, _, _ in changed_paths(_load(before_data), _load(after_data))
+    changed = [path for path, _, _ in changed_paths(parse_configuration(before_data), parse_configuration(after_data))
                if path[0] in PROTECTED_ROOTS]
     if changed:
         raise ReleaseRejected('LifeOS changed protected Hermes settings: ' + ', '.join('.'.join(map(str, path)) for path in changed))
@@ -53,7 +53,7 @@ def check_memory_provider(before_data, after_data, *, owned):
     if owned:
         return
     path = ('memory', 'provider')
-    if _get(_load(before_data), path) != _get(_load(after_data), path):
+    if _get(parse_configuration(before_data), path) != _get(parse_configuration(after_data), path):
         raise ReleaseRejected('The operation changed the Hermes memory provider selection (memory.provider)')
 
 
@@ -62,10 +62,10 @@ def record(profile, before_data, after_data):
     path = Path(profile) / RECORD
     existing = json.loads(path.read_text()) if path.exists() else {'format': 1, 'values': []}
     values = {tuple(item['path']): item for item in existing['values']}
-    after = _load(after_data)
+    after = parse_configuration(after_data)
     for key, item in values.items():
         item['installed'] = _get(after, key)
-    for key, left, right in changed_paths(_load(before_data), after):
+    for key, left, right in changed_paths(parse_configuration(before_data), after):
         if key[0] in OWNED_ROOTS or any(key[:len(recorded)] == recorded for recorded in values):
             continue
         values[key] = {'path': list(key), 'before': left, 'installed': right}

@@ -104,11 +104,11 @@ RemovalPublication(Path(settings['profile']),settings['signature']).apply(accoun
         publish(self.profile/'memories/USER.md',b'Synthetic reviewed user entry.')
         publish(self.profile/'SOUL.md',b'Synthetic ordinary Hermes prompt.')
         self.operation().apply(account='dashboard:owner')
-        from optional.lifeos_release_manager.memory_workflow import _probe
+        from optional.lifeos_release_manager.memory_workflow import run_transition_probe
         source=self.policy.stage/'recovery-bridge'
         from optional.lifeos_release_manager.release_stage import load_bridge
         loaded=load_bridge(source)
-        result=self.operation().verify(lambda expected:_probe(self.profile,loaded,expected,
+        result=self.operation().verify(lambda expected:run_transition_probe(self.profile,loaded,expected,
             runtime=json.loads((runtime/'runtime.json').read_bytes())),account='dashboard:owner')
         self.assertEqual(result['state'],'verified');self.assertTrue(result['application_verified'])
         self.assertNotIn('lifeos-release-manager',result['verification']['active_plugins'])

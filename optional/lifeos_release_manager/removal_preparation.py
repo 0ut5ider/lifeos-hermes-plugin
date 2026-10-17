@@ -7,12 +7,12 @@ from .release_catalog import ReleaseRejected
 
 
 def returned(profile, identifier, signature, *, owner, source, configuration, installation_lease=None):
-    from .memory_workflow import _job
+    from .memory_workflow import workflow_job
     profile=Path(profile).absolute()
     value=configuration.load();configuration.check_owner(value,owner)
     if value.get('ownership_enabled') is not False:
         raise ReleaseRejected('Return to built-in memory before complete software removal')
-    job,request=_job(profile,identifier)
+    job,request=workflow_job(profile,identifier)
     receipt=read_private(job/'receipt.json');review=read_private(job/'review.json')
     if (request['owner']!=owner or request['selection']['kind']!='return'
             or read_private(job/'status.json')['state']!='verified'
@@ -83,7 +83,7 @@ def _encoded(value):
     return json.dumps(value,sort_keys=True,separators=(',',':')).encode()
 
 
-def _consumers(profile, installed, services, *, workflow=None, source=None):
+def check_consumers(profile, installed, services, *, workflow=None, source=None):
     from . import removal_consumers
     admitted=services._admission()
     known=set()
@@ -111,7 +111,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
     import hashlib
     import shutil
     from .cli import profile_directory
-    from .release_catalog import _directory
+    from .release_catalog import owner_directory
     from .release_programs import ProgramTransaction,fingerprint,publish
     from .release_stage import prepare_runtime,runtime_source_fingerprint,sha,validate_files
     from . import inplace_removal,removal_generation,removal_inventory,removal_ownership
@@ -122,7 +122,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
     from .removal_runtime import identity as runtime_identity,launchers
     if selected.get('disable_discord') is not True:
         raise ReleaseRejected('Complete removal requires explicit review of Discord disablement')
-    profile=profile_directory(profile);job=_directory(job)
+    profile=profile_directory(profile);job=owner_directory(job)
     if job.parent!=profile/'.lifeos-portability':raise ReleaseRejected('Removal preparation requires its fixed profile workflow')
     lock=source.memory_module('installation_lock').installation_lock
     with lock(profile,lease=installation_lease) as lease:
@@ -145,7 +145,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         units=profile_units(profile) if inplace else None
         services=source.memory_module('profile_services').ProfileServices(profile,installed,units=units,
             installation_lease=lease)
-        _consumers(profile,installed,services,workflow=job,source=host)
+        check_consumers(profile,installed,services,workflow=job,source=host)
         removal_ownership.guard(profile,installed,bridge=source)
         pulse=removal_ownership.pulse(profile,installed)
         package=generation['package']
@@ -168,7 +168,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
             validate_files(stage/name,files,forbid_bytecode=True)
         binding=returned(profile,selected['identifier'],selected['signature'],owner=owner,
             source=source,configuration=configuration,installation_lease=lease)
-        _consumers(profile,installed,services,workflow=job,source=host)
+        check_consumers(profile,installed,services,workflow=job,source=host)
         guard_identity=removal_ownership.guard(profile,installed,bridge=source)
         pulse_identity=fingerprint(pulse)
         if removal_ownership.pulse(profile,installed)!=pulse:

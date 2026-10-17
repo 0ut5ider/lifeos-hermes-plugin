@@ -167,8 +167,8 @@ def update_difference(record, entry):
 
 def review_changes(job, entry, record, current, generated):
     """Record for the owner review every configuration key that changes and the update's host difference."""
-    from .host_configuration import _load, changed_paths
-    keys = changed_paths(_load(Path(current).read_bytes()), _load(Path(generated).read_bytes()))
+    from .host_configuration import parse_configuration, changed_paths
+    keys = changed_paths(parse_configuration(Path(current).read_bytes()), parse_configuration(Path(generated).read_bytes()))
     value = {'configuration': ['.'.join(map(str, path)) for path, _, _ in keys],
              'update': update_difference(record, entry)}
     publish(job / REVIEW, (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())

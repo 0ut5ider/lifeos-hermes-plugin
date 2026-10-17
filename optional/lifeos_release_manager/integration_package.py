@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .release_catalog import ReleaseRejected, _directory, _json
+from .release_catalog import ReleaseRejected, owner_directory, parse_json
 from .release_stage import load_bridge, read_manifest, sha, validate_files
 
 
@@ -27,7 +27,7 @@ def file_map(root):
 def _manager_version(manager):
     from ruamel.yaml import YAML
     declared = YAML(typ='safe').load((manager / 'plugin.yaml').read_text())
-    dashboard = _json((manager / 'dashboard/manifest.json').read_bytes())
+    dashboard = parse_json((manager / 'dashboard/manifest.json').read_bytes())
     if not isinstance(declared, dict) or not isinstance(dashboard, dict) or declared.get('version') != dashboard.get('version'):
         raise ReleaseRejected('The release manager version declarations differ')
     return declared['version']
@@ -35,11 +35,11 @@ def _manager_version(manager):
 
 def validate_integration(package, certificate):
     """Return the package manifest when the extracted package is exactly the certified integration."""
-    package = _directory(package)
+    package = owner_directory(package)
     if {path.name for path in package.iterdir()} != TOP_LEVEL or {
             path.name for path in (package / 'optional').iterdir()} != {'lifeos_release_manager'}:
         raise ReleaseRejected('The integration package has missing or additional top-level entries')
-    manifest = _json(read_manifest(package / MANIFEST_NAME))
+    manifest = parse_json(read_manifest(package / MANIFEST_NAME))
     expected = {'format', 'version', 'head', 'plugin_files', 'manager_files', 'host_compatibility_sha256', 'lifeos'}
     if not isinstance(manifest, dict) or set(manifest) != expected or manifest['format'] != 2:
         raise ReleaseRejected('The integration package manifest has an invalid structure')

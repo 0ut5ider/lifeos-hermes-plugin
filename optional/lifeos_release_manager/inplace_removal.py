@@ -14,7 +14,7 @@ from .host_configuration import RECORD as CONFIGURATION_RECORD
 from .host_record import HostRecordRejected, check_originals, load_record, originals_path, record_path
 from .inplace_plan import HOLD
 from .integration_package import COMPATIBILITY, validate_integration
-from .release_catalog import ReleaseRejected, _json
+from .release_catalog import ReleaseRejected, parse_json
 from .release_programs import fingerprint, publish
 from .release_stage import validate_files, sha
 
@@ -190,18 +190,18 @@ def synchronize(stage, plan, label):
     from .dependency_plan import locked_packages, selected_lock
     from .inplace_preparation import host_python
     from .release_accounts import account_home
-    from .release_stage import _environment, run_stage, user_runtime_directory
+    from .release_stage import stage_environment, run_stage, user_runtime_directory
     source, profile = Path(plan['host']['source']), Path(plan['profile'])
     before = locked_packages(selected_lock(source))
     output = stage / (label + '.json')
     output.unlink(missing_ok=True)
-    environment = {**_environment(profile, home=account_home(profile), source=source),
+    environment = {**stage_environment(profile, home=account_home(profile), source=source),
                    'XDG_RUNTIME_DIR': user_runtime_directory(),
                    'DBUS_SESSION_BUS_ADDRESS': 'unix:path=' + user_runtime_directory() + '/bus'}
     run_stage([host_python(source), '-B', stage / 'recovery-manager/dependency_plan.py', 'synchronize', source, output],
               stage, label, environment=environment)
     after = locked_packages(selected_lock(source))
-    value = {**_json(output.read_bytes()), 'removed': sorted(set(before) - set(after)),
+    value = {**parse_json(output.read_bytes()), 'removed': sorted(set(before) - set(after)),
              'added': sorted(set(after) - set(before))}
     publish(stage / (label + '-packages.json'), (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
     return value

@@ -84,7 +84,7 @@ async def prepare_memory_workflow(request: Request, account: str = Depends(owner
             raise HTTPException(status_code=413,detail='Use a bounded reviewed memory workflow')
         data.extend(chunk)
     if request.query_params:raise HTTPException(status_code=400,detail='Use the reviewed memory workflow fields')
-    try:selection=memory_workflow.selection(commands._json(data))
+    try:selection=memory_workflow.selection(commands.parse_json(data))
     except ValueError as error:raise HTTPException(status_code=400,detail=str(error)) from error
     try:
         return await run_in_threadpool(memory_workflow.queue,profile(),selection,owner=account,launch=memory_workflow.launch)
@@ -97,7 +97,7 @@ async def prepare_memory_workflow(request: Request, account: str = Depends(owner
 @router.post('/memory-workflows/{identifier}/{action}',status_code=202)
 async def apply_memory_workflow(identifier: str, action: str, request: Request, account: str = Depends(owner)):
     body=await request.body()
-    try:value=commands._json(body) if len(body)<=1024 else None
+    try:value=commands.parse_json(body) if len(body)<=1024 else None
     except ValueError:value=None
     if (action not in {'apply','recover','rollback'} or not isinstance(value,dict) or set(value)!={'signature'}
             or not isinstance(value['signature'],str) or memory_workflow.SIGNATURE.fullmatch(value['signature']) is None
@@ -135,7 +135,7 @@ async def prepare(request: Request):
     if request.query_params or len(body) > 4096:
         raise HTTPException(status_code=400, detail='Use a bounded release selection')
     try:
-        value = preparation.selection(commands._json(body))
+        value = preparation.selection(commands.parse_json(body))
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
     try:

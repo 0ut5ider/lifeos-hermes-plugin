@@ -47,15 +47,15 @@ def _archive_marker(profile, job, signature):
     if selected!=job or plan['signature']!=signature:
         raise ReleaseRejected('The current removal marker belongs to another owner review')
     history=profile/'.lifeos-removal-history';history.mkdir(mode=0o700,exist_ok=True)
-    from .release_catalog import _directory
-    _directory(history)
+    from .release_catalog import owner_directory
+    owner_directory(history)
     target=history/(job.name+'.json')
     if target.exists() or target.is_symlink():raise ReleaseRejected('The retained removal history already contains this selection')
     os.rename(marker,target);sync_directory(history);sync_directory(profile)
 
 
 def execute(profile, job, selected, action, signature, *, owner, source, configuration, installation_lease):
-    from .removal_preparation import prepare,returned,_consumers
+    from .removal_preparation import prepare,returned,check_consumers
     from .removal_publication import RemovalPublication
     profile,job=Path(profile),Path(job)
     if action=='prepare':
@@ -89,7 +89,7 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
             configuration=configuration,installation_lease=installation_lease)
         services=source.memory_module('profile_services').ProfileServices(profile,Path(plan['root']),units=units,
             installation_lease=installation_lease)
-        _consumers(profile,Path(plan['root']),services,workflow=job,source=host)
+        check_consumers(profile,Path(plan['root']),services,workflow=job,source=host)
         ProgramTransaction(job/'removal/programs',expected_entries_sha256=plan['program_entries_sha256']).check_prepared()
         publish(marker,_encoded({'format':1,'workflow':job.name,'signature':signature}))
     else:
@@ -100,10 +100,10 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
         result=publication.rollback(account=owner);_archive_marker(profile,job,signature)
         return result
     publication.apply(account=owner)
-    from .memory_workflow import _probe
+    from .memory_workflow import run_transition_probe
     def probe(expected):
         _runtime(job,plan)
-        proof=_probe(profile,publication.source,expected,runtime=runtime,output=job/'probe-output.txt')
+        proof=run_transition_probe(profile,publication.source,expected,runtime=runtime,output=job/'probe-output.txt')
         _runtime(job,plan)
         return proof
     result=publication.verify(probe,account=owner)

@@ -15,11 +15,11 @@ import sys
 from uuid import uuid4
 from threading import Thread
 
-from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, _json
+from .release_catalog import ReleaseCatalog, ReleaseRejected, extract_package, parse_json
 from .release_accounts import account_home
 from .release_programs import publish
 from .release_stage import (load_bridge, prepare_runtime, sha, validate_package, runtime_source_fingerprint,
-                            validate_files, run_stage, _environment, user_runtime_directory)
+                            validate_files, run_stage, stage_environment, user_runtime_directory)
 
 IDENTIFIER = re.compile('[0-9a-f]{32}')
 
@@ -57,7 +57,7 @@ def read_private(path, *, limit=2 * 1024 * 1024):
         if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077
                 or info.st_size > limit):
             raise ReleaseRejected('The operation requires a bounded private owner file')
-        return _json(stream.read(limit + 1))
+        return parse_json(stream.read(limit + 1))
 
 
 def job_directory(profile, identifier):
@@ -193,7 +193,7 @@ def _ready_operation(job, request, files):
 
 def prepare_plan(job, request, files):
     validate_files(job / 'worker', files, forbid_bytecode=True)
-    environment = _environment(Path(request['profile']), home=Path(request['account_home']),
+    environment = stage_environment(Path(request['profile']), home=Path(request['account_home']),
                                source=Path(request['runtime']['source']))
     environment.update(XDG_RUNTIME_DIR=user_runtime_directory(),
                        DBUS_SESSION_BUS_ADDRESS='unix:path=' + user_runtime_directory() + '/bus')

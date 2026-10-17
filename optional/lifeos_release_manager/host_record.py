@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import stat
 
-from .host_compatibility import ManifestRejected, _entry, _relative_path
+from .host_compatibility import ManifestRejected, validate_entry, validate_relative_path
 
 
 RECORD_NAME = 'lifeos-host.json'
@@ -43,7 +43,7 @@ def validate_record(value, profile):
     if type(value['format']) is not int or value['format'] != 1:
         raise HostRecordRejected('The LifeOS host record format is unsupported')
     try:
-        _entry({key: value[key] for key in ('label', 'commit', 'patches', 'files')})
+        validate_entry({key: value[key] for key in ('label', 'commit', 'patches', 'files')})
     except ManifestRejected as error:
         raise HostRecordRejected('The LifeOS host record has invalid file identities') from error
     source = value['source']
@@ -82,7 +82,7 @@ def check_originals(record):
     root = Path(record['originals'])
     originals = {}
     for relative, hashes in record['files'].items():
-        _relative_path(relative)
+        validate_relative_path(relative)
         if hashes['stock'] is None:
             continue
         path = root / relative

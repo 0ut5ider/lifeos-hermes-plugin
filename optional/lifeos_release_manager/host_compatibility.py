@@ -59,7 +59,7 @@ def _reject(message):
     raise ManifestRejected(message)
 
 
-def _relative_path(value):
+def validate_relative_path(value):
     if not isinstance(value, str) or not value or '\\' in value or '\0' in value:
         _reject('Compatibility paths require relative POSIX text')
     path = PurePosixPath(value)
@@ -70,7 +70,7 @@ def _relative_path(value):
     return value
 
 
-def _entry(value):
+def validate_entry(value):
     if not isinstance(value, dict) or set(value) != {'label', 'commit', 'patches', 'files'}:
         _reject('Each Hermes entry requires a label, commit, patches, and files')
     label = value['label']
@@ -90,7 +90,7 @@ def _entry(value):
     if not isinstance(files, dict) or not files:
         _reject('Each Hermes entry requires its patch target hashes')
     for path, hashes in files.items():
-        _relative_path(path)
+        validate_relative_path(path)
         if not isinstance(hashes, dict) or set(hashes) != {'stock', 'patched'}:
             _reject('Each patch target requires stock and patched hashes')
         stock, patched = hashes['stock'], hashes['patched']
@@ -126,7 +126,7 @@ def _qualified_entry(value):
     required = {'label', 'commit', 'patches', 'files', 'python', 'capabilities'}
     if not isinstance(value, dict) or not required <= set(value) <= required | {'known_conflicts'}:
         _reject('Each Hermes entry requires a label, commit, patches, files, python, and capabilities')
-    _entry({key: value[key] for key in ('label', 'commit', 'patches', 'files')})
+    validate_entry({key: value[key] for key in ('label', 'commit', 'patches', 'files')})
     if not isinstance(value['python'], str) or PYTHON_VERSION.fullmatch(value['python']) is None:
         _reject('Each Hermes entry requires its Python major and minor version')
     _capabilities(value['capabilities'])

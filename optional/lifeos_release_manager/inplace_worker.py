@@ -12,7 +12,7 @@ import time
 
 from .cli import read_private, write_state
 from .inplace_services import OFFERABLE, UNITS, inventory, replace_with_units
-from .release_catalog import ReleaseRejected, _json
+from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, publish
 from .release_operation import validate_plan
@@ -51,7 +51,7 @@ def synchronize(job, request, *, label):
     from .inplace_preparation import host_python
     run_stage([host_python(source), '-B', job / 'worker/dependency_plan.py', 'synchronize', source, output],
               job, label, environment=environment)
-    return _json(output.read_bytes())
+    return parse_json(output.read_bytes())
 
 
 def _terminate(processes):
@@ -306,7 +306,7 @@ def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
 
 
 def _run(job, request, action, current, lease, *, checkpoint, release_update):
-    from .release_worker import (_fresh_native, _restore_mount, _revoke, check_mount_recovery, check_restore,
+    from .release_worker import (initialize_native, restore_native_mount, revoke_authorization, check_mount_recovery, check_restore,
                                  record_failure)
     profile = Path(request['profile'])
     plan = validate_plan(job, request)
@@ -327,7 +327,7 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
         environment.update(PATH=service_environment(request)['PATH'])
     programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
     mount = current.memory_module('mount_transaction').MountTransaction(selected['installed'], profile, selected['baseline'])
-    restore_mount = lambda: _restore_mount(job, request, mount)
+    restore_mount = lambda: restore_native_mount(job, request, mount)
     try:
         if action != 'apply' and not fresh_recovery:
             manifest = check_mount_recovery(job, request, mount)
@@ -351,8 +351,8 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
         if not fresh_recovery and sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
         if not fresh_recovery:
-            from .release_worker import _program_plan
-            directories, files, dependencies = _program_plan(job, request, selected)
+            from .release_worker import program_plan
+            directories, files, dependencies = program_plan(job, request, selected)
             programs.check_plan(directories=directories, files=files, dependencies=dependencies)
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
@@ -369,12 +369,12 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
             _consumers_stopped(request, plan)
             drained = boot_ticks()
             if fresh_recovery:
-                _restore_mount(job, request, mount)
+                restore_native_mount(job, request, mount)
             for entry in programs.entries():
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
                 native_started = True
-                _fresh_native(job, request, selected, checkpoint=checkpoint)
+                initialize_native(job, request, selected, checkpoint=checkpoint)
             if fresh_recovery:
                 programs.resume(checkpoint=checkpoint)
             else:
@@ -422,12 +422,12 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
             if selected['fresh'] and native_started:
                 _quiesce(services)
                 _stop_created(plan)
-                _restore_mount(job, request, mount)
+                restore_native_mount(job, request, mount)
                 write_state(job, 'recovery_required',
                             error='The first installation stopped after LifeOS was initialized. Recover it to finish.')
                 raise
-            restored = _rollback(job, request, plan, services, programs, lambda: _restore_mount(job, request, mount))
+            restored = _rollback(job, request, plan, services, programs, lambda: restore_native_mount(job, request, mount))
             write_state(job, 'rolled_back', error=None if restored else DEPENDENCY_RESTORE_ERROR)
             raise
     finally:
-        _revoke(administration, profile, request)
+        revoke_authorization(administration, profile, request)

@@ -36,14 +36,14 @@ def _unique_pairs(pairs):
     return value
 
 
-def _json(data):
+def parse_json(data):
     try:
         return json.loads(data, object_pairs_hook=_unique_pairs)
     except (UnicodeError, ValueError, RecursionError) as error:
         raise ReleaseRejected('Release metadata is invalid') from error
 
 
-def _directory(path):
+def owner_directory(path):
     path = Path(path).absolute()
     info = path.lstat()
     if (path.resolve() != path or not path.is_dir() or info.st_uid != os.getuid()
@@ -54,7 +54,7 @@ def _directory(path):
 
 def extract_package(archive, destination, *, max_bytes=MAX_EXTRACTED_BYTES):
     destination = Path(destination).absolute()
-    _directory(destination.parent)
+    owner_directory(destination.parent)
     if destination.exists() or destination.is_symlink():
         raise ReleaseRejected('The package destination already exists')
     staging = Path(tempfile.mkdtemp(prefix='.release-', dir=destination.parent))
@@ -103,7 +103,7 @@ class ReleaseCatalog:
             data = response.read(limit + 1)
         if len(data) > limit:
             raise ReleaseRejected('Release metadata exceeds its size limit')
-        return _json(data)
+        return parse_json(data)
 
     def _asset(self, value, *, tag):
         if not isinstance(value, dict):
@@ -168,12 +168,12 @@ class ReleaseCatalog:
 
     def _certificate(self, assets, directory):
         directory = Path(directory).absolute()
-        _directory(directory.parent)
+        owner_directory(directory.parent)
         directory.mkdir(mode=0o700)
         certificate_asset = assets['RELEASE-CERTIFICATE.json']
         if certificate_asset['size'] > 512 * 1024:
             raise ReleaseRejected('The release certificate exceeds its size limit')
-        return directory, _json(self._download(certificate_asset, directory).read_bytes())
+        return directory, parse_json(self._download(certificate_asset, directory).read_bytes())
 
     def download(self, directory, version=None):
         tag, assets = self._release(version)

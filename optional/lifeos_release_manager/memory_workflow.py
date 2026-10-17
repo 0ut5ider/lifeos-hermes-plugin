@@ -52,7 +52,7 @@ def _source(profile, *, workflow=None):
         source,configuration,_,_=retained(profile)
         return source,configuration
     if workflow is not None:
-        job,request=_job(profile,workflow)
+        job,request=workflow_job(profile,workflow)
         review_path=job/'review.json'
         if request['selection']['kind']=='removal' and (review_path.exists() or review_path.is_symlink()):
             review=read_private(review_path)
@@ -81,7 +81,7 @@ def _removal_binding(profile, identifier, kind):
             raise RuntimeError('Complete or recover the selected software removal first')
 
 
-def _state(job, state):
+def write_workflow_state(job, state):
     publish(job/'status.json',_encoded({'identifier':job.name,'state':state}))
 
 
@@ -91,7 +91,7 @@ def _review(job, request):
         'application_verified':False}
 
 
-def _job(profile, identifier):
+def workflow_job(profile, identifier):
     if not isinstance(identifier,str) or IDENTIFIER.fullmatch(identifier) is None:
         raise ValueError('Choose a server-issued memory workflow identifier')
     profile=profile_directory(profile)
@@ -116,7 +116,7 @@ def status(profile, *, owner):
     source.memory_module('memory_backup')._directory(root,private=True)
     operations=[]
     for path in sorted(root.iterdir()):
-        job,request=_job(profile,path.name)
+        job,request=workflow_job(profile,path.name)
         if request['owner']!=owner:continue
         value=read_private(job/'status.json')
         value={**value,'kind':request['selection']['kind']}
@@ -141,7 +141,7 @@ def queue(profile, value, *, owner, launch):
         identifier=uuid4().hex;job=preparing/identifier;job.mkdir(mode=0o700)
         request={'version':1,'identifier':identifier,'profile':str(profile),'owner':owner,
             'bridge':fingerprint(profile/'plugins/lifeos-hook-bridge'),'selection':value}
-        publish(job/'request.json',_encoded(request));_state(job,'queued')
+        publish(job/'request.json',_encoded(request));write_workflow_state(job,'queued')
         os.rename(job,root/identifier);sync_directory(root);sync_directory(preparing)
     return admit(profile,identifier,'prepare',None,owner=owner,launch=launch)
 
@@ -150,7 +150,7 @@ def admit(profile, identifier, action, signature, *, owner, launch):
     if action not in {'prepare','apply','recover','rollback'}:raise ValueError('Choose a reviewed memory workflow action')
     profile=profile_directory(profile);source,configuration=_source(profile)
     with source.memory_module('installation_lock').installation_lock(profile):
-        job,request=_job(profile,identifier)
+        job,request=workflow_job(profile,identifier)
         configuration.check_owner(configuration.load(),owner)
         _removal_binding(profile,identifier,request['selection']['kind'])
         if request['owner']!=owner or _bridge_identity(source)!=request['bridge']:
@@ -182,10 +182,10 @@ def admit(profile, identifier, action, signature, *, owner, launch):
         publish(job/'admission.json',_encoded({'binding':binding,'authorization':str(grant)}))
         if previous is not None:administration.revoke(configuration,previous['authorization'])
         publish(job/'launch.json',_encoded({'unit':unit}))
-        _state(job,{'prepare':'preparing','apply':'applying','recover':'recovering','rollback':'rolling_back'}[action])
+        write_workflow_state(job,{'prepare':'preparing','apply':'applying','recover':'recovering','rollback':'rolling_back'}[action])
         try:launch(job,unit,action)
         except BaseException:
-            administration.revoke(configuration,grant);_state(job,'interrupted');raise
+            administration.revoke(configuration,grant);write_workflow_state(job,'interrupted');raise
         return {'identifier':identifier,'state':'queued','action':action}
 
 
@@ -225,7 +225,7 @@ PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
     'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
 
 
-def _probe(profile, source, expected, *, runtime=None, output=None):
+def run_transition_probe(profile, source, expected, *, runtime=None, output=None):
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
     code=PROBE_CODE
@@ -305,7 +305,7 @@ def execute(profile, identifier, action):
     profile=profile_directory(profile);source,configuration=_source(profile,workflow=identifier)
     lock=source.memory_module('installation_lock').installation_lock
     with lock(profile,wait=True) as lease:
-        job,request=_job(profile,identifier)
+        job,request=workflow_job(profile,identifier)
         _removal_binding(profile,identifier,request['selection']['kind'])
         if _bridge_identity(source)!=request['bridge']:
             raise PermissionError('The reviewed memory workflow code changes before execution')
@@ -348,8 +348,8 @@ def execute(profile, identifier, action):
                 elif action=='rollback':result=transition.rollback(signature,account=owner)
                 else:
                     result=transition.apply(signature,account=owner)
-                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
+                    result=transition.verify(signature,lambda expected:run_transition_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
             if action=='prepare':publish(job/'review.json',_encoded(result))
-            publish(job/'receipt.json',_encoded(result));_state(job,result['state'])
+            publish(job/'receipt.json',_encoded(result));write_workflow_state(job,result['state'])
             return result
         finally:administration.revoke(configuration,admission['authorization'])

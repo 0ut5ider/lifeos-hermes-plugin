@@ -21,10 +21,10 @@ if not __package__:
     __package__ = namespace.__name__
 
 from .cli import operation, read_private, write_state
-from .release_catalog import ReleaseRejected, _json
+from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, launcher_script, publish
-from .release_stage import load_bridge, sha, run_stage, _environment
+from .release_stage import load_bridge, sha, run_stage, stage_environment
 from .release_operation import (action_state, operation_lock, seal_plan,
     validate_admission, validate_plan, write_admission, request_digest)
 from .release_operation import worker_running, OperationBusy
@@ -51,7 +51,7 @@ def _review_operation(job, request, *, installation_lease=None, preparing=False)
     if programs.journal.is_file():
         programs.check_prepared()
     else:
-        directories, files, dependencies = _program_plan(job, request, selected)
+        directories, files, dependencies = program_plan(job, request, selected)
         programs.prepare(directories=directories, files=files, dependencies=dependencies)
     plan['program_entries_sha256'] = programs.entries_digest()
     seal_plan(job, request, plan, preparing=preparing)
@@ -182,7 +182,7 @@ def _yaml_configuration(profile, native):
     return rendered.getvalue().encode()
 
 
-def _program_plan(job, request, selected):
+def program_plan(job, request, selected):
     profile, installed = selected['profile'], selected['installed']
     package = selected['package']
     native = selected.get('native', package / 'lifeos/LifeOS/install')
@@ -204,7 +204,7 @@ def _program_plan(job, request, selected):
         publish(launch, launcher_script(request['runtime']['hermes']), 0o700)
         for path in selected['launchers']:
             files[path] = launch
-        commands = _json((job / 'manifest.json').read_bytes())['runtime']['commands']
+        commands = parse_json((job / 'manifest.json').read_bytes())['runtime']['commands']
         for name in ('hermes', 'hermes-agent', 'hermes-acp'):
             if commands.get(name) != 'bin/' + name:
                 raise ReleaseRejected('The prepared runtime changes a native command path')
@@ -230,7 +230,7 @@ def _program_plan(job, request, selected):
         from .inplace_preparation import host_python
         python = host_python(request['host']['source'])
     run_stage([python, '-B', '-c', configuration_check, str(generated)],
-        job, 'program-configuration', environment=_environment(generated, home=job,
+        job, 'program-configuration', environment=stage_environment(generated, home=job,
             source=Path(request['runtime']['source'])))
     files[profile / 'config.yaml'] = generated / 'config.yaml'
     current = selected['current']
@@ -295,7 +295,7 @@ def _program_plan(job, request, selected):
     return directories, files, dependencies
 
 
-def _fresh_native(job, request, selected, *, checkpoint=lambda point: None):
+def initialize_native(job, request, selected, *, checkpoint=lambda point: None):
     from .release_initialization import NativeInitialization
     helpers = selected['candidate'].memory_module('fresh_store')
     return NativeInitialization(job, request, selected['installed']).execute(helpers, checkpoint=checkpoint)
@@ -409,18 +409,18 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             if services is not None:
                 services.quiesce()
-            _restore_mount(job, request, mount)
+            restore_native_mount(job, request, mount)
             programs.restore()
             if services is not None:
                 services.resume()
             verify_runtime(request, restored=True)
             write_state(job, 'rolled_back')
-            _revoke(administration, profile, request)
+            revoke_authorization(administration, profile, request)
             return {'state': 'rolled_back'}
         if not fresh_recovery and sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
         if not fresh_recovery:
-            directories, files, dependencies = _program_plan(job, request, selected)
+            directories, files, dependencies = program_plan(job, request, selected)
             programs.check_plan(directories=directories, files=files, dependencies=dependencies)
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
@@ -438,11 +438,11 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                     from .release_services import check_dashboard_writers
                     check_dashboard_writers(profile)
             if fresh_recovery:
-                _restore_mount(job, request, mount)
+                restore_native_mount(job, request, mount)
             for entry in programs.entries():
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
-                _fresh_native(job, request, selected, checkpoint=checkpoint)
+                initialize_native(job, request, selected, checkpoint=checkpoint)
             if fresh_recovery:
                 programs.resume(checkpoint=checkpoint)
             else:
@@ -471,7 +471,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             record_failure(job, error)
             if services is not None:
                 services.quiesce()
-            _restore_mount(job, request, mount)
+            restore_native_mount(job, request, mount)
             if selected['fresh']:
                 write_state(job, 'recovery_required', error='The prepared first installation requires recovery. User data is preserved.')
                 if services is not None:
@@ -483,10 +483,10 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             write_state(job, 'rolled_back')
             raise
         finally:
-            _revoke(administration, profile, request)
+            revoke_authorization(administration, profile, request)
 
 
-def _revoke(administration, profile, request):
+def revoke_authorization(administration, profile, request):
     authorization = request.get('memory_authorization')
     if authorization is not None:
         administration.revoke(administration.MemoryConfiguration(profile / 'lifeos-memory.json'), authorization)
@@ -596,7 +596,7 @@ def check_restore(job, request, plan, mount):
     programs.check_applied(overrides=overrides)
 
 
-def _restore_mount(job, request, mount):
+def restore_native_mount(job, request, mount):
     if _restore_mount_manifest(job, request, mount.journal) is None:
         return
     candidate = load_bridge(job / 'package/lifeos_hook_bridge')

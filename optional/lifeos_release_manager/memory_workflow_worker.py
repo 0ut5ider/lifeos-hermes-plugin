@@ -13,7 +13,7 @@ if not __package__:
     sys.modules[package.__name__]=package
     __package__=package.__name__
 
-from .memory_workflow import execute, _job, _state
+from .memory_workflow import execute, workflow_job, write_workflow_state
 
 
 def main():
@@ -31,8 +31,8 @@ def main():
             record_failure(job,error)
         except (OSError,ValueError,ImportError):pass
         try:
-            admitted,_=_job(job.parent.parent,job.name)
-            _state(admitted,'interrupted')
+            admitted,_=workflow_job(job.parent.parent,job.name)
+            write_workflow_state(admitted,'interrupted')
         except (OSError,ValueError,RuntimeError):pass
         print('The memory workflow stopped. The owner can review its private recovery state.',file=sys.stderr)
         return 1
