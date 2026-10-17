@@ -141,7 +141,7 @@ def _preparation_error(job, error):
 
 
 def _prepare_managed_package(profile, home, job, version, *, name, assistant, catalog=None, intent=None):
-    """Prepare a format 1 complete-runtime release. Commands no longer call this preparation."""
+    """Prepare a format 1 release that publishes a complete managed runtime beside the profile."""
     downloaded = (catalog or ReleaseCatalog()).download(job / 'download', version)
     package = job / 'package'
     extract_package(downloaded['archive'], package)
