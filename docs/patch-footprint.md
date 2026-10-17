@@ -16,6 +16,7 @@ The qualified bundle uses ten Hermes patch groups and twenty-five LifeOS patches
 | `hermes-cron-bootstrap.patch` | Installation-bound scheduled worker startup |
 | `hermes-required-middleware.patch` | Required admission before model requests, exact user text, and rejection of asynchronous required callbacks |
 | `hermes-web-result-status.patch` | External Safety delivery after successful and partial web extraction |
+| `hermes-update-hold.patch` | Generic update holds: `hermes update` refuses while an integration that patches the checkout holds it |
 
 The additional native patches bind configuration audit rows to their actual source, detect shell-quoted literal write targets, honor the Pulse hook switch, and publish concurrent evaluation state through separate temporary files. The system-surface patch retains the latest observed criterion detail in the visible system line. The full declared order is in `scripts/prepare_sources.py`.
 

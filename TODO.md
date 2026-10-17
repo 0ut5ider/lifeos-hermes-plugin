@@ -4,7 +4,7 @@ The [0.7.3 release record](docs/verification/2026-10-16-release-0.7.3/README.md)
 
 ## Documentation audit follow-ups
 
-- [ ] Synchronize `hermes-session-lifecycle.patch` between development and distributed copies, then verify both preparation paths produce the same intended source. The current development copy lacks the distributed Discord mirror-policy and webhook-threading changes. See the [source preparation limit](docs/clean-install.md).
+- [x] Synchronize `hermes-session-lifecycle.patch` between development and distributed copies. On 2026-10-17 the development copy in `patches/` was replaced with the canonical copy in `lifeos_hook_bridge/patches/`, and `tests/test_patch_bundle.py` passes.
 - [ ] Add and verify an explicit dashboard ownership-activation path for a genuinely empty or no-import review. The current UI hides **Review publication plan** when there are no decisions. Do not require unwanted imports or manual journal edits. See the [current activation path and limit](docs/installation-workflow.md#choose-memory-ownership-separately).
 
 ## Deferred product work

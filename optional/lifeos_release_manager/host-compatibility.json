@@ -170,6 +170,10 @@
           "patched": "24f011dc9878a1362a02b52956f49a01e911c5a2eb382ef07b0a2d97c61bc63a",
           "stock": null
         },
+        "hermes_cli/update_contract.py": {
+          "patched": "d959d352bbc47dd952b2f33fa7be945482de392c9446ac52920bdad3256118ca",
+          "stock": "f60e5cddeb58a4a37dd55d2606764649fbd9deba1d8588ac5ab65a0f3f6bc5eb"
+        },
         "model_tools.py": {
           "patched": "251924ea8448f68e244cb3888cc8891b8777a0910512a130c3045bb496f02f44",
           "stock": "872ca571c17379c8df19c0bcf639919bb0cb3a2706efc08e4dc6a1f3d8789662"
@@ -288,6 +292,10 @@
         },
         "tests/hermes_cli/test_stop_policy_dispatch.py": {
           "patched": "b537172188b089db251f32401ca260f5747729c67bf82d19334a459af074eaa7",
+          "stock": null
+        },
+        "tests/hermes_cli/test_update_hold.py": {
+          "patched": "635cd48f4e0a544d319407768f1fee922628ddf93ccafe3d6feba1660e19f98d",
           "stock": null
         },
         "tests/plugins/test_transform_tool_result_hook.py": {
@@ -440,6 +448,10 @@
         {
           "name": "hermes-web-result-status.patch",
           "sha256": "c470449f4db70a45a19eb3e1d74907090a501d86d0a91c2eb23fe3005a73d77b"
+        },
+        {
+          "name": "hermes-update-hold.patch",
+          "sha256": "7bd053583bc7951019c3818c7d1980c4489f3f0bf5048fd3a6303796a20222e1"
         }
       ]
     }

@@ -102,7 +102,9 @@ GROUPS = {'hermes-plugin-events.patch': ('hermes_cli/plugins.py',
                                       'tests/hermes_cli/test_required_middleware.py'),
  'hermes-web-result-status.patch': ('agent/display.py',
                                     'agent/tool_guardrails.py',
-                                    'agent/tool_result_classification.py')}
+                                    'agent/tool_result_classification.py'),
+ 'hermes-update-hold.patch': ('hermes_cli/update_contract.py',
+                              'tests/hermes_cli/test_update_hold.py')}
 
 
 def rebuild(source: Path, output: Path) -> None:

@@ -37,6 +37,7 @@ HERMES_PATCHES = (
     "hermes-cron-bootstrap.patch",
     "hermes-required-middleware.patch",
     "hermes-web-result-status.patch",
+    "hermes-update-hold.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",

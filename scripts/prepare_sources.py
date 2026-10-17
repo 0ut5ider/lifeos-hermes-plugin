@@ -29,6 +29,7 @@ SOURCES = {
             "hermes-cron-bootstrap.patch",
             "hermes-required-middleware.patch",
             "hermes-web-result-status.patch",
+            "hermes-update-hold.patch",
         ),
     },
     "lifeos": {
