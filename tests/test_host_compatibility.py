@@ -252,6 +252,13 @@ class HostCompatibilityTests(unittest.TestCase):
         self.assertEqual(result["state"], "unsupported_layout")
         self.assertIn("shared_write_access", self.codes(result))
 
+    def test_group_writable_patch_target_is_unsupported_layout(self):
+        (self.source / "hermes_cli/plugins.py").chmod(0o664)
+        result = self.inspect()
+        self.assertEqual(result["state"], "unsupported_layout")
+        self.assertEqual(result["reasons"][0]["code"], "shared_write_access")
+        self.assertEqual(result["reasons"][0]["paths"], ["hermes_cli/plugins.py"])
+
     def test_read_only_source_is_unsupported_layout(self):
         self.source.chmod(0o555)
         self.addCleanup(self.source.chmod, 0o755)

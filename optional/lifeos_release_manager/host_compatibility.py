@@ -235,6 +235,22 @@ def _targets(source, files):
     return stock, patched, other
 
 
+def _exposed_targets(source, files):
+    """Return patch targets, or the directories that receive added files, outside this account's sole control."""
+    exposed = []
+    for path in files:
+        target = source / path
+        if target.is_symlink():
+            continue
+        try:
+            info = (target if target.exists() else target.parent).lstat()
+        except FileNotFoundError:
+            continue
+        if info.st_uid != os.getuid() or info.st_mode & 0o022:
+            exposed.append(path)
+    return exposed
+
+
 def _working_tree(source, targets):
     """Return tracked edits, untracked files, and Git-hidden paths outside the patch targets."""
     status = _git(source, 'status', '--porcelain=v1', '-z', '--untracked-files=all', '--ignore-submodules=none')
@@ -317,6 +333,10 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None):
             'LifeOS has no qualified patch set for this Hermes version.'))
         reasons.extend([shared] if shared else [])
     else:
+        exposed = _exposed_targets(source, entry['files'])
+        if exposed:
+            reasons.append(_reason('shared_write_access',
+                'Another account owns or can write to some Hermes files that LifeOS changes.', exposed))
         reasons.extend([shared] if shared else [])
         tree = _working_tree(source, set(entry['files']))
         if tree is None:
