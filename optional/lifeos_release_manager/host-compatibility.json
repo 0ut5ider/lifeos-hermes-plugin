@@ -20,6 +20,16 @@
   "format": 1,
   "hermes": [
     {
+      "capabilities": {
+        "hooks": [
+          "augment_tool_result",
+          "on_turn_result",
+          "pre_command_approval",
+          "pre_prompt_admission",
+          "pre_turn_stop"
+        ],
+        "middleware_api": 1
+      },
       "commit": "71d34bad1045610252eda02ee79549436896e784",
       "files": {
         "agent/auxiliary_client.py": {
@@ -453,7 +463,8 @@
           "name": "hermes-update-hold.patch",
           "sha256": "7bd053583bc7951019c3818c7d1980c4489f3f0bf5048fd3a6303796a20222e1"
         }
-      ]
+      ],
+      "python": "3.14"
     }
   ]
 }

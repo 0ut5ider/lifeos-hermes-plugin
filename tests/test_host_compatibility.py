@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -14,6 +15,8 @@ from optional.lifeos_release_manager.host_compatibility import inspect_host, loa
 STOCK_PLUGINS = "VALID_HOOKS = {'pre_tool_call'}\n"
 PATCHED_PLUGINS = "VALID_HOOKS = {'pre_tool_call', 'pre_turn_stop'}\n"
 ADDED_HOOK = "ENABLED = True\n"
+PYTHON = "%d.%d" % sys.version_info[:2]
+CAPABILITIES = {"hooks": ["pre_turn_stop"], "middleware_api": 1}
 
 
 def git(*args, cwd):
@@ -69,6 +72,8 @@ class HostCompatibilityTests(unittest.TestCase):
                     "hermes_cli/plugins.py": {"stock": digest(STOCK_PLUGINS), "patched": digest(PATCHED_PLUGINS)},
                     "hermes_cli/new_hook.py": {"stock": None, "patched": digest(ADDED_HOOK)},
                 },
+                "python": PYTHON,
+                "capabilities": CAPABILITIES,
             }],
             "dependencies": [{"name": "tree-sitter", "version": "0.26.0"}],
         }
@@ -275,6 +280,15 @@ class HostCompatibilityTests(unittest.TestCase):
         self.assertEqual(result["state"], "unsupported_layout")
         self.assertIn("not_hermes_source", self.codes(result))
 
+    def test_interpreter_other_than_the_qualified_one_is_refused(self):
+        self.manifest["hermes"][0]["python"] = "3.9"
+        result = self.inspect()
+        self.assertEqual(result["state"], "unsupported_version")
+        self.assertFalse(result["compatible"])
+        self.assertEqual(self.codes(result), ["unsupported_interpreter"])
+        self.assertIn("Python 3.9", result["reasons"][0]["message"])
+        self.assertIn("Python " + PYTHON, result["reasons"][0]["message"])
+
     def test_every_independent_refusal_is_reported(self):
         (self.home / "profiles/work").mkdir(parents=True)
         (self.source / "model_tools.py").write_text("TOOLS = ['edited']\n")
@@ -364,11 +378,37 @@ class ManifestTests(unittest.TestCase):
     def valid(self):
         return {"format": 1, "hermes": [{"label": "v1", "commit": "a" * 40,
             "patches": [{"name": "host.patch", "sha256": "b" * 64}],
-            "files": {"hermes_cli/x.py": {"stock": "c" * 64, "patched": "d" * 64}}}],
+            "files": {"hermes_cli/x.py": {"stock": "c" * 64, "patched": "d" * 64}},
+            "python": "3.14", "capabilities": {"hooks": ["pre_turn_stop", "on_turn_result"], "middleware_api": 1}}],
             "dependencies": [{"name": "tree-sitter", "version": "0.26.0"}]}
 
     def test_accepts_valid_manifest(self):
         self.assertEqual(load_manifest(self.valid())["hermes"][0]["label"], "v1")
+
+    def test_accepts_known_conflicts(self):
+        value = self.valid()
+        value["hermes"][0]["known_conflicts"] = ["The example-relay plugin replaces the same delivery hook."]
+        self.assertEqual(load_manifest(value)["hermes"][0]["known_conflicts"],
+                         ["The example-relay plugin replaces the same delivery hook."])
+
+    def test_refuses_malformed_qualification(self):
+        cases = []
+        value = self.valid(); del value["hermes"][0]["python"]; cases.append(value)
+        value = self.valid(); del value["hermes"][0]["capabilities"]; cases.append(value)
+        for python in ("3", "3.14.7", 3.14, "python3.14", ""):
+            value = self.valid(); value["hermes"][0]["python"] = python; cases.append(value)
+        for capabilities in ({"hooks": ["pre_turn_stop"]}, {"hooks": [], "middleware_api": 1},
+                             {"hooks": ["Pre-Turn"], "middleware_api": 1}, {"hooks": ["a", "a"], "middleware_api": 1},
+                             {"hooks": "pre_turn_stop", "middleware_api": 1}, {"hooks": ["a"], "middleware_api": "1"},
+                             {"hooks": ["a"], "middleware_api": True}, {"hooks": ["a"], "middleware_api": 0},
+                             {"hooks": ["a"], "middleware_api": 1, "extra": 1}):
+            value = self.valid(); value["hermes"][0]["capabilities"] = capabilities; cases.append(value)
+        for conflicts in ("text", [""], ["x" * 301], ["line\nbreak"], [1], ["same", "same"]):
+            value = self.valid(); value["hermes"][0]["known_conflicts"] = conflicts; cases.append(value)
+        value = self.valid(); value["hermes"][0]["other"] = True; cases.append(value)
+        for value in cases:
+            with self.subTest(value=value["hermes"][0]), self.assertRaises(ManifestRejected):
+                load_manifest(value)
 
     def test_refuses_malformed_entries(self):
         cases = []

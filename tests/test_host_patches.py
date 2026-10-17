@@ -62,7 +62,7 @@ class HostPatchStageTests(unittest.TestCase):
                 "hermes_cli/plugins.py": {"stock": digest(STOCK), "patched": digest(PATCHED)},
                 "hermes_cli/new_hook.py": {"stock": None, "patched": digest(ADDED)},
                 "scripts/run_tests.sh": {"stock": digest(SCRIPT), "patched": digest(SCRIPT_PATCHED)},
-            }}]})["hermes"][0]
+            }, "python": "3.14", "capabilities": {"hooks": ["pre_turn_stop"], "middleware_api": 1}}]})["hermes"][0]
         self.destination = self.root / "job/host"
         self.destination.parent.mkdir()
 

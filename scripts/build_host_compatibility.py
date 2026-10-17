@@ -1,5 +1,5 @@
 # ABOUTME: Builds the Hermes compatibility manifest from an exact stock Hermes archive and the patch set.
-# ABOUTME: Records stock and patched SHA-256 hashes for every file the patches change or add.
+# ABOUTME: Records stock and patched hashes of every changed file, the pinned interpreter, and required capabilities.
 
 from __future__ import annotations
 
@@ -18,11 +18,14 @@ REPOSITORY = Path(__file__).resolve().parents[1]
 if str(REPOSITORY) not in sys.path:
     sys.path.insert(0, str(REPOSITORY))
 
+from lifeos_hook_bridge import PATCHED_HOOKS
 from lifeos_hook_bridge.install_source import HERMES_PATCHES, SUPPORTED_HERMES_COMMIT
 from optional.lifeos_release_manager.host_compatibility import MANIFEST, load_manifest
 
 
 PIN = re.compile(r'([A-Za-z0-9][A-Za-z0-9._-]*)==([0-9][0-9A-Za-z.+!_-]*)')
+# The bridge's memory provider requires middleware API version 1 (lifeos_hook_bridge/memory_provider.py).
+MIDDLEWARE_API = 1
 
 
 class ManifestBuildError(RuntimeError):
@@ -52,7 +55,25 @@ def _archive_commit(archive: Path) -> str:
     return commit
 
 
-def build_entry(archive: Path, patches: Path, names: tuple[str, ...], label: str, commit: str) -> dict:
+def bridge_capabilities() -> dict:
+    """Return the host capabilities the bridge requires: its patched hooks and the middleware API version."""
+    return {'hooks': sorted(PATCHED_HOOKS), 'middleware_api': MIDDLEWARE_API}
+
+
+def _python(source: Path) -> str:
+    """Return the major.minor version of the interpreter that Hermes pins in ``pm/lock.json``."""
+    try:
+        version = json.loads((source / 'pm/lock.json').read_text())['packages']['python']['version']
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise ManifestBuildError('The stock archive does not pin its Python interpreter in pm/lock.json') from error
+    match = re.match(r'([0-9]+\.[0-9]+)\.', version) if isinstance(version, str) else None
+    if match is None:
+        raise ManifestBuildError('The stock archive pins an unreadable Python version: ' + repr(version))
+    return match.group(1)
+
+
+def build_entry(archive: Path, patches: Path, names: tuple[str, ...], label: str, commit: str, *,
+                capabilities: dict, known_conflicts: list[str] | None = None) -> dict:
     """Apply the ordered patches to the stock archive and record each changed file's hashes."""
     if _archive_commit(archive) != commit:
         raise ManifestBuildError('The stock archive was built from another commit')
@@ -62,6 +83,7 @@ def build_entry(archive: Path, patches: Path, names: tuple[str, ...], label: str
         with tarfile.open(archive, 'r:*') as stream:
             stream.extractall(source, filter='data')
         before = _files(source)
+        python = _python(source)
         environment = {**os.environ, 'GIT_CEILING_DIRECTORIES': directory}
         identities = []
         for name in names:
@@ -80,7 +102,11 @@ def build_entry(archive: Path, patches: Path, names: tuple[str, ...], label: str
              for path, value in sorted(after.items()) if before.get(path) != value}
     if any(value['patched'] == 'symlink' for value in files.values()):
         raise ManifestBuildError('The patches create a symbolic link')
-    return {'label': label, 'commit': commit, 'patches': identities, 'files': files}
+    entry = {'label': label, 'commit': commit, 'patches': identities, 'files': files, 'python': python,
+             'capabilities': capabilities}
+    if known_conflicts:
+        entry['known_conflicts'] = list(known_conflicts)
+    return entry
 
 
 def plugin_dependencies(plugin: Path) -> list[dict]:
@@ -111,10 +137,13 @@ def main() -> None:
     parser.add_argument('--stock-archive', type=Path, required=True,
                         help='The qualified stock-hermes.tgz created by git archive at the supported commit.')
     parser.add_argument('--label', required=True, help='The Hermes version shown to the owner, such as v0.21.7.')
+    parser.add_argument('--known-conflict', action='append', dest='known_conflicts',
+                        help='A known conflict that the releases page shows for this Hermes version; repeat for each.')
     parser.add_argument('--output', type=Path, default=MANIFEST)
     arguments = parser.parse_args()
     entry = build_entry(arguments.stock_archive, REPOSITORY / 'lifeos_hook_bridge/patches', HERMES_PATCHES,
-                        arguments.label, SUPPORTED_HERMES_COMMIT)
+                        arguments.label, SUPPORTED_HERMES_COMMIT, capabilities=bridge_capabilities(),
+                        known_conflicts=arguments.known_conflicts)
     manifest = build_manifest([entry], REPOSITORY / 'lifeos_hook_bridge/plugin.yaml')
     arguments.output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
 

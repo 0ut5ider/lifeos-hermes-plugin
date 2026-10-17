@@ -8,9 +8,11 @@ import subprocess
 import tempfile
 import unittest
 
+from lifeos_hook_bridge import PATCHED_HOOKS
 from lifeos_hook_bridge.install_source import HERMES_PATCHES, SUPPORTED_HERMES_COMMIT
 from optional.lifeos_release_manager.host_compatibility import MANIFEST, load_manifest
-from scripts.build_host_compatibility import ManifestBuildError, build_entry, build_manifest, plugin_dependencies
+from scripts.build_host_compatibility import (ManifestBuildError, bridge_capabilities, build_entry, build_manifest,
+                                              plugin_dependencies)
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -34,9 +36,12 @@ class ManifestBuildTests(unittest.TestCase):
         git("init", "-q", "-b", "main", cwd=source)
         (source / "hermes_cli/plugins.py").write_text("VALID_HOOKS = {'pre_tool_call'}\n")
         (source / "model_tools.py").write_text("TOOLS = []\n")
+        (source / "pm").mkdir()
+        (source / "pm/lock.json").write_text(json.dumps({"packages": {"python": {"version": "3.14.7+20260901"}}}))
         git("add", ".", cwd=source)
         git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "base", cwd=source)
         self.commit = git("rev-parse", "HEAD", cwd=source)
+        self.source = source
         self.archive = self.root / "stock-hermes.tgz"
         with self.archive.open("wb") as output:
             subprocess.run(["git", "archive", "--format=tar.gz", self.commit], cwd=source, stdout=output, check=True)
@@ -52,9 +57,14 @@ class ManifestBuildTests(unittest.TestCase):
         (source / "model_tools.py").write_text("TOOLS = ['second']\n")
         (self.patches / "second.patch").write_text(git("diff", cwd=source) + "\n")
         git("checkout", "--", ".", cwd=source)
+        self.capabilities = {"hooks": ["pre_turn_stop"], "middleware_api": 1}
+
+    def build(self, names=("host.patch",), **options):
+        return build_entry(self.archive, self.patches, names, "v0.0.1", self.commit,
+                           capabilities=self.capabilities, **options)
 
     def test_entry_records_stock_and_patched_hashes_of_every_changed_file(self):
-        entry = build_entry(self.archive, self.patches, ("host.patch", "second.patch"), "v0.0.1", self.commit)
+        entry = self.build(("host.patch", "second.patch"))
         self.assertEqual(entry["commit"], self.commit)
         self.assertEqual(entry["label"], "v0.0.1")
         self.assertEqual([patch["name"] for patch in entry["patches"]], ["host.patch", "second.patch"])
@@ -66,15 +76,37 @@ class ManifestBuildTests(unittest.TestCase):
             "model_tools.py": {"stock": digest(b"TOOLS = []\n"), "patched": digest(b"TOOLS = ['second']\n")},
         })
 
+    def test_entry_declares_the_pinned_interpreter_and_the_capabilities(self):
+        entry = self.build()
+        self.assertEqual(entry["python"], "3.14")
+        self.assertEqual(entry["capabilities"], self.capabilities)
+        self.assertNotIn("known_conflicts", entry)
+
+    def test_entry_records_known_conflicts_when_given(self):
+        entry = self.build(known_conflicts=["The example-relay plugin replaces the delivery hook."])
+        self.assertEqual(entry["known_conflicts"], ["The example-relay plugin replaces the delivery hook."])
+
+    def test_archive_without_an_interpreter_pin_is_refused(self):
+        (self.source / "pm/lock.json").unlink()
+        git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qam", "drop", cwd=self.source)
+        self.commit = git("rev-parse", "HEAD", cwd=self.source)
+        with self.archive.open("wb") as output:
+            subprocess.run(["git", "archive", "--format=tar.gz", self.commit], cwd=self.source, stdout=output, check=True)
+        with self.assertRaisesRegex(ManifestBuildError, "Python"):
+            self.build()
+
+    def test_bridge_capabilities_name_the_patched_hooks(self):
+        self.assertEqual(bridge_capabilities(), {"hooks": sorted(PATCHED_HOOKS), "middleware_api": 1})
+
     def test_archive_from_another_commit_is_refused(self):
         with self.assertRaisesRegex(ManifestBuildError, "commit"):
-            build_entry(self.archive, self.patches, ("host.patch",), "v0.0.1", "f" * 40)
+            build_entry(self.archive, self.patches, ("host.patch",), "v0.0.1", "f" * 40, capabilities=self.capabilities)
 
     def test_patch_that_does_not_apply_is_refused(self):
         (self.patches / "broken.patch").write_text((self.patches / "host.patch").read_text().replace(
             "pre_tool_call'}", "missing'}", 1))
         with self.assertRaisesRegex(ManifestBuildError, "broken.patch"):
-            build_entry(self.archive, self.patches, ("broken.patch",), "v0.0.1", self.commit)
+            self.build(("broken.patch",))
 
     def test_plugin_dependencies_require_exact_pins(self):
         plugin = self.root / "plugin.yaml"
@@ -88,7 +120,7 @@ class ManifestBuildTests(unittest.TestCase):
     def test_built_manifest_passes_validation(self):
         plugin = self.root / "plugin.yaml"
         plugin.write_text("name: bridge\npython_dependencies:\n  - tree-sitter==0.26.0\n")
-        entry = build_entry(self.archive, self.patches, ("host.patch",), "v0.0.1", self.commit)
+        entry = self.build()
         manifest = build_manifest([entry], plugin)
         self.assertEqual(load_manifest(manifest), manifest)
 
@@ -105,6 +137,9 @@ class ShippedManifestTests(unittest.TestCase):
         self.assertEqual(self.entry["patches"], [{"name": name, "sha256": digest((patches / name).read_bytes())}
                                                  for name in HERMES_PATCHES])
 
+    def test_declares_the_bridge_capabilities(self):
+        self.assertEqual(self.entry["capabilities"], bridge_capabilities())
+
     def test_binds_the_bridge_dependencies(self):
         self.assertEqual(self.manifest["dependencies"],
                          plugin_dependencies(REPOSITORY / "lifeos_hook_bridge/plugin.yaml"))
@@ -114,7 +149,8 @@ class ShippedManifestTests(unittest.TestCase):
         if not archive:
             self.skipTest("Set LIFEOS_STOCK_HERMES_ARCHIVE to the qualified stock-hermes.tgz to rebuild the entry")
         entry = build_entry(Path(archive), REPOSITORY / "lifeos_hook_bridge/patches", HERMES_PATCHES,
-                            self.entry["label"], SUPPORTED_HERMES_COMMIT)
+                            self.entry["label"], SUPPORTED_HERMES_COMMIT, capabilities=bridge_capabilities(),
+                            known_conflicts=self.entry.get("known_conflicts"))
         self.assertEqual(entry, self.entry)
         self.assertEqual(MANIFEST.read_text(), json.dumps(self.manifest, indent=2, sort_keys=True) + "\n")
 

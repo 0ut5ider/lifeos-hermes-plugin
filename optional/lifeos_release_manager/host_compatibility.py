@@ -19,6 +19,8 @@ COMMIT = re.compile('[0-9a-f]{40}')
 SHA256 = re.compile('[0-9a-f]{64}')
 PACKAGE = re.compile('[A-Za-z0-9][A-Za-z0-9._-]*')
 EXACT_VERSION = re.compile('[0-9][0-9A-Za-z.+!_-]*')
+PYTHON_VERSION = re.compile('[0-9]+\\.[0-9]+')
+HOOK = re.compile('[a-z][a-z0-9_]*')
 PATH_LIMIT = 50
 
 # Each refusal code maps to the state reported to the owner. Their order is the reporting priority.
@@ -31,6 +33,7 @@ STATES = {
     'read_only_source': 'unsupported_layout',
     'git_unavailable': 'unsupported_layout',
     'unsupported_version': 'unsupported_version',
+    'unsupported_interpreter': 'unsupported_version',
     'shared_installation': 'shared_installation',
     'modified_files': 'modified_source',
     'untracked_files': 'modified_source',
@@ -99,6 +102,38 @@ def _entry(value):
     return value
 
 
+def _capabilities(value):
+    if not isinstance(value, dict) or set(value) != {'hooks', 'middleware_api'}:
+        _reject('Each Hermes entry requires its hook and middleware capabilities')
+    hooks = value['hooks']
+    if (not isinstance(hooks, list) or not hooks or len(set(map(str, hooks))) != len(hooks)
+            or any(not isinstance(hook, str) or HOOK.fullmatch(hook) is None for hook in hooks)):
+        _reject('Each Hermes entry requires distinct hook names')
+    if type(value['middleware_api']) is not int or value['middleware_api'] < 1:
+        _reject('Each Hermes entry requires a middleware API version')
+
+
+def _known_conflicts(value):
+    if (not isinstance(value, list) or len(value) > 20 or len(set(map(str, value))) != len(value)
+            or any(not isinstance(item, str) or not item.strip() or len(item) > 300
+                   or any(ord(c) < 32 for c in item) for item in value)):
+        _reject('Known conflicts require distinct bounded sentences')
+
+
+def _qualified_entry(value):
+    """Validate a manifest entry: the host identity, the interpreter, the capabilities, and any known conflicts."""
+    required = {'label', 'commit', 'patches', 'files', 'python', 'capabilities'}
+    if not isinstance(value, dict) or not required <= set(value) <= required | {'known_conflicts'}:
+        _reject('Each Hermes entry requires a label, commit, patches, files, python, and capabilities')
+    _entry({key: value[key] for key in ('label', 'commit', 'patches', 'files')})
+    if not isinstance(value['python'], str) or PYTHON_VERSION.fullmatch(value['python']) is None:
+        _reject('Each Hermes entry requires its Python major and minor version')
+    _capabilities(value['capabilities'])
+    if 'known_conflicts' in value:
+        _known_conflicts(value['known_conflicts'])
+    return value
+
+
 def _dependency(value):
     if (not isinstance(value, dict) or set(value) != {'name', 'version'}
             or not isinstance(value['name'], str) or PACKAGE.fullmatch(value['name']) is None
@@ -123,7 +158,7 @@ def load_manifest(source=MANIFEST):
     if not isinstance(value['hermes'], list) or not value['hermes']:
         _reject('The compatibility manifest requires at least one qualified Hermes entry')
     for entry in value['hermes']:
-        _entry(entry)
+        _qualified_entry(entry)
     if len({entry['commit'] for entry in value['hermes']}) != len(value['hermes']):
         _reject('Each qualified Hermes commit appears once')
     if not isinstance(value['dependencies'], list):
@@ -312,6 +347,14 @@ def _result(detected, manifest, reasons, *, qualified=None, dependencies=None, i
     }
 
 
+def _interpreter(entry, running):
+    """Refuse an interpreter other than the one the release qualifies for this Hermes version."""
+    if entry is None or entry['python'] == running:
+        return None
+    return _reason('unsupported_interpreter', 'LifeOS qualifies Hermes ' + entry['label'] + ' with Python '
+                   + entry['python'] + '. This Hermes runs Python ' + running + '.')
+
+
 def _bridge_enabled(hermes_home):
     """Report whether the profile still enables the bridge; Hermes can evict a plugin during a dependency sync."""
     from ruamel.yaml import YAML
@@ -353,8 +396,11 @@ def _installed_reasons(source, record, head, hermes_home):
     return reasons
 
 
-def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None):
-    """Classify one Hermes installation against the manifest, or against its LifeOS host record, without writing to it."""
+def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None, python=None):
+    """Classify one Hermes installation against the manifest, or against its LifeOS host record, without writing to it.
+
+    ``python`` is the major.minor version of the interpreter that runs Hermes; it defaults to this interpreter.
+    """
     source = Path(source).absolute()
     manifest = load_manifest(manifest)
     dependencies = _dependencies(manifest['dependencies'], sys.path if search_path is None else search_path)
@@ -372,8 +418,10 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None
     detected['version'] = version.decode().strip()
     entry = next((item for item in manifest['hermes'] if item['commit'] == detected['commit']), None)
     shared = _shared(hermes_home)
+    interpreter = _interpreter(entry, python or '.'.join(map(str, sys.version_info[:2])))
     if record is not None:
         reasons.extend(_installed_reasons(source, record, detected['commit'], hermes_home))
+        reasons.extend([interpreter] if interpreter else [])
         reasons.extend([shared] if shared else [])
         if dependencies['conflicts']:
             reasons.append(_reason('dependency_conflict',
@@ -386,6 +434,7 @@ def inspect_host(source, manifest, *, hermes_home, search_path=None, record=None
             'LifeOS has no qualified patch set for this Hermes version.'))
         reasons.extend([shared] if shared else [])
     else:
+        reasons.extend([interpreter] if interpreter else [])
         exposed = _exposed_targets(source, entry['files'])
         if exposed:
             reasons.append(_reason('shared_write_access',

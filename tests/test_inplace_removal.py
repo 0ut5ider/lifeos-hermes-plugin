@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -56,7 +57,8 @@ class InplaceRemovalPlanTests(unittest.TestCase):
             'label': 'v0.0.1', 'commit': commit, 'patches': [{'name': 'host.patch', 'sha256': 'e' * 64}],
             'files': {'hermes_cli/plugins.py': {'stock': digest(STOCK), 'patched': digest(PATCHED)},
                       'scripts/tool.sh': {'stock': digest(STOCK_TOOL), 'patched': digest(PATCHED_TOOL)},
-                      'hermes_cli/new_hook.py': {'stock': None, 'patched': digest(ADDED)}}}]})
+                      'hermes_cli/new_hook.py': {'stock': None, 'patched': digest(ADDED)}},
+            'python': '%d.%d' % sys.version_info[:2], 'capabilities': {'hooks': ['pre_turn_stop'], 'middleware_api': 1}}]})
         self.record = build_record(self.profile, self.source, self.manifest['hermes'][0], operation='a' * 32,
                                    version='0.8.0')
         retained = originals_path(self.profile)
@@ -199,7 +201,8 @@ class InplaceRemovalSelectionTests(unittest.TestCase):
         from optional.lifeos_release_manager.host_compatibility import load_manifest
         from optional.lifeos_release_manager.host_record import build_record, record_path
         entry = {'label': 'v0.0.1', 'commit': 'b' * 40, 'patches': [{'name': 'host.patch', 'sha256': 'e' * 64}],
-                 'files': {'hermes_cli/plugins.py': {'stock': 'c' * 64, 'patched': 'd' * 64}}}
+                 'files': {'hermes_cli/plugins.py': {'stock': 'c' * 64, 'patched': 'd' * 64}},
+                 'python': '3.14', 'capabilities': {'hooks': ['pre_turn_stop'], 'middleware_api': 1}}
         load_manifest({'format': 1, 'dependencies': [], 'hermes': [entry]})
         source = self.profile / 'hermes-agent'
         record = build_record(self.profile, source, entry, operation='a' * 32, version='0.8.0')
