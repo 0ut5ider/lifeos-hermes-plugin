@@ -280,6 +280,26 @@ class TransitionTests(unittest.TestCase):
             with self.assertRaisesRegex(ReleaseRejected, 'workspace'):
                 managed_service_launchers(job, home)
 
+    def test_service_value_reads_only_the_service_section(self):
+        from optional.lifeos_release_manager.inplace_preparation import _service_value
+        text = '[Unit]\nKillMode=mixed\n[Service]\nExecStart=/bin/true\n[Install]\nWorkingDirectory=/tmp\n'
+        self.assertEqual(_service_value(text, 'KillMode', 'control-group'), 'control-group')
+        self.assertEqual(_service_value(text, 'WorkingDirectory', ''), '')
+        self.assertEqual(_service_value('[Service]\nKillMode=mixed\nKillMode=process\n', 'KillMode', 'control-group'), 'process')
+
+    def test_managed_release_without_a_launcher_record_refuses(self):
+        import json
+        from optional.lifeos_release_manager.inplace_preparation import managed_service_launchers
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory:
+            job = Path(directory) / 'job'
+            job.mkdir()
+            with self.assertRaisesRegex(ReleaseRejected, 'plan record'):
+                managed_service_launchers(job, Path(directory))
+            (job / 'plan.json').write_text(json.dumps({}))
+            with self.assertRaisesRegex(ReleaseRejected, 'plan record'):
+                managed_service_launchers(job, Path(directory))
+
     def test_transition_publishes_a_stock_forwarder_at_each_service_launcher(self):
         from optional.lifeos_release_manager.inplace_plan import transition_launchers
         with tempfile.TemporaryDirectory() as directory:

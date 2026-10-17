@@ -53,6 +53,26 @@ These runs exercise the in-place release on disposable Proxmox containers. They 
 5. **Workflow failures left no cause.** The detached worker discarded the exception. Fixed in `812735d6` (`worker-failure.json`) and `d904d158` (`probe-output.txt`).
 6. **Return verification failed once after an update.** A second attempt verified. The run predates the probe-output fix, so the cause is unknown.
 
+## Defects found by review and the development host
+
+The [independent review](../../agents/2026-10-17-inplace-fixes-review/inplace-fixes-review.md) and a read-only inspection of the development host found these transition defects. Commit `8d009e25` fixes them. The transition and its restore on 114 pass again on that build.
+
+7. **Adoption before reload.** A replaced unit file reports `NeedDaemonReload=yes` until the manager reloads, and service inspection refuses that state. A failure between publication and reload would leave the host in `recovery_required`. The worker now reloads before adoption.
+8. **Template gateway units.** A fresh managed installation writes its gateway unit with `KillMode=control-group` and the account launcher. Stock Hermes writes `KillMode=mixed`, so adoption would refuse the replacement after publication. Preparation now keeps a unit that runs the account launcher. It refuses a replacement that changes `KillMode` or `WorkingDirectory`, a symlinked unit, and a drop-in that runs the managed runtime.
+9. **Service launchers outside `~/.local/bin`.** On the development host, the gateway and dashboard units run `~/workspace/hermes-agent/.hermes/bin/hermes`. The managed release rewrote that file into a forwarder to its runtime. The transition now publishes a stock forwarder at each launcher in the managed job's `plan.json`.
+
+The layout of defect 9 is not rehearsed on a container. The daily host uses only `~/.local/bin/hermes` and template units, which the 114 rehearsal does not reproduce exactly either (114 has a stock-format unit).
+
+## Unit tests
+
+The suite ran per module (429 modules) on this branch, while commits `7511580d` to `8d009e25` landed, with the prepared sources from the 0.7.3 package and its pinned Bun locks. 81 modules failed. The same 81 modules ran on `origin/main` (`06ea5746`) in the same environment:
+
+- 79 fail there as well. Most need fixture variables that this environment does not set (`LIFEOS_HARVEST_CONTROL_SOURCE`, `LIFEOS_FRESHNESS_CONTROL_SOURCE`, a separate memory test interpreter). Two call `hermes_cli.plugins.unload_plugins`, which Hermes `v0.21.7` does not have.
+- `test_memory_local_refresh_lifetime` passes alone on this branch; it failed under the parallel run.
+- `test_release_accounts` drove the replaced managed preparation. Commit `29c8d94c` points it at the in-place preparation.
+
+These results do not cover the suites that need the missing fixtures.
+
 ## Test-host conditions
 
 - The fresh-agent probe constructs a real `AIAgent`, so it needs a configured provider credential. The 110 fixture had none; the runs added a synthetic `OPENROUTER_API_KEY` to `.env`. No model call runs.

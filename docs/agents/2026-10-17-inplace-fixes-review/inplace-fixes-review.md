@@ -110,3 +110,64 @@ Focused files pass (`focused-tests.txt`): `test_inplace_preparation.py` 13, `tes
 
 - Crash recovery on a transition host (the matrix ran on 112, a fresh install). Finding 1 lives there.
 - A transition from a host whose gateway unit came from the LifeOS template. Host 114's unit was in stock format (its `ExecStart` carried the managed checkout path, which is what defect 2 described). Finding 2 lives there.
+
+## Round 2 (commits 8d009e25 and 29c8d94c)
+
+Reviewed 2026-10-17 by the same independent reviewer (Claude Fable 5.1). Raw data: `round2-diff.patch`, `round2-focused-tests.txt` (`test_inplace_preparation.py` 19 tests, `test_release_accounts.py` 8 tests, all pass).
+
+### Round 1 findings: status
+
+- Finding 1 (NeedDaemonReload): fixed. `adopt_units` (`inplace_worker.py` lines 132 to 142) runs `daemon-reload` before adoption when the request has transition units. It is the first call in `_rollback` and in the recover branch, so the reload precedes `_quiesce` and `programs.restore()` as well. When `transition_units` is empty no unit file is in the transaction, so skipping the reload is correct.
+- Finding 2 (KillMode): fixed. `transition_gateway_unit` (`inplace_preparation.py` lines 85 to 119) returns `{}` unless the gateway fragment contains `/.lifeos-releases/`, and refuses a replacement whose `KillMode` or `WorkingDirectory` text differs. The refusal now happens before publication, so the stuck state is unreachable from this cause. See R2-2 for the one gap in the text comparison.
+- Finding 3 (symlink): fixed, refused at preparation.
+- Finding 4 (drop-ins): fixed. `_unit_texts` scans the fragment and `<unit>.d/*.conf` for all three units, with the gateway fragment exempt because it is the file being replaced.
+- Finding 5 (stderr): fixed, last stderr line, capped at 300 characters, appended to the refusal.
+- Finding 6 (90 s timeouts): not addressed; still minor.
+
+### Answers to the three questions
+
+(a) Reading `running_source().parent / plan.json` is sound for the decision it makes. `transition_source` (`host_compatibility.py` lines 421 to 433) already derives the transition itself from `running_source()`, and it requires the shape `<profile>/.lifeos-releases/<32 hex>/hermes`, so `running_source().parent` is a managed job directory by construction. The running source can differ from the active managed job in one way: a stale process, for example a gateway that was not restarted after a managed update, or a hand-started shell from an older job. In that case the launchers on disk forward to the newer job, `str(job) not in path.read_text()` is true, and `managed_service_launchers` refuses. The failure direction is safe; only the message is wrong (R2-4). The reverse direction, accepting launchers that forward elsewhere, cannot happen because the content check binds each launcher to this job. Two gaps are in R2-3.
+
+(b) Mechanically, publishing a forwarder into the workspace checkout's `.hermes/bin/hermes` is fine for `ProgramTransaction`: the entry is a regular file, `before` is the managed forwarder with its mode, `after` is the stock forwarder (mode 0755 from `publish`), `_check_publication` refuses at apply when the owner changed the file after preparation, and `restore()` writes the managed forwarder back with the recorded mode. `.hermes/` is ignored by the Hermes checkout (`.gitignore` line 174), so the workspace's `git status` stays clean. The problem is ownership: that path belongs to the workspace checkout's own Hermes, which rewrites `.hermes/bin` launchers on `hermes update` and on launch-time self-heal (`.gitignore` lines 264 to 266 say so, and `_launchers.py` `_owns_launcher` will not recognise the stock forwarder as its own). See R2-1.
+
+(c) The text comparison can disagree with systemd in both directions, but only one direction matters. False refusals (text differs, systemd equal): `WorkingDirectory=~`, `%h/...`, a `-` or `!` prefix, a quoted value, a continuation line. All of these refuse a transition that would have worked; the message points the owner to `hermes gateway install`, which rewrites the unit in the stock form, so the owner can get past it. False acceptance (text equal, systemd differs): `_service_value` ignores section headers, so a `KillMode=` line under `[Unit]` or `[Install]` is counted although systemd ignores it (R2-2). Drop-ins do not create a disagreement: `_service_value` reads only the fragment, and a drop-in applies to both the existing and the replacement unit equally.
+
+### Findings
+
+#### R2-1. should-fix (medium): the workspace checkout's own Hermes will overwrite the published forwarder
+
+Files: `inplace_plan.py` lines 164 to 181 (`transition_launchers`, `services` loop), `inplace_preparation.py` lines 65 to 82 (`managed_service_launchers`).
+
+Scenario: on the development host, the transition publishes `exec ~/.hermes/hermes-agent/.hermes/bin/hermes "$@"` at `~/workspace/hermes-agent/.hermes/bin/hermes`. Later, Adrian runs anything that executes the workspace checkout's own Python entry points (`install.sh`, `uv run hermes`, `python -m hermes_cli.main update` from that checkout). Hermes rewrites `.hermes/bin/hermes` with its own launcher. From the next gateway restart, `hermes-gateway.service` and `hermes-dashboard.service` run the workspace checkout, not the installation; no LifeOS code notices until the next operation runs `check_receipt`. A later restore of the transition refuses with `Program recovery preserves a later artifact edit` (`release_programs.py` line 364) because the target no longer matches `after`.
+
+The managed release already lived with this risk for the same file, so the transition does not make it worse; it keeps a known trap on a host where the checkout is actively developed. Options, in order of preference:
+
+1. Refuse at preparation with the same instruction the code gives for other units: "point `hermes-gateway.service` and `hermes-dashboard.service` at `~/.local/bin/hermes`", and let the owner edit the two `ExecStart` lines once. After that, `~/.local/bin/hermes` is the only launcher the transition manages, and the workspace checkout is left alone. This is one owner step and removes the class of problem.
+2. Keep the publication, and document in the design (section 10) that running the workspace checkout's installer or updater detaches the services from the installation until the owner re-runs the transition or edits the units.
+
+#### R2-2. minor: `_service_value` ignores unit sections
+
+File: `inplace_preparation.py` lines 58 to 61. A `KillMode=` or `WorkingDirectory=` line outside `[Service]` is counted although systemd ignores it. Example: existing unit has `[Unit]\nKillMode=mixed` and no `KillMode` under `[Service]` (systemd default `control-group`); the generated unit has `KillMode=mixed` under `[Service]`; the texts compare equal, the transition proceeds, and `adopt_definition` refuses after publication, which is the stuck chain from round 1 finding 2. This needs an owner-authored mis-sectioned key, so it is unlikely. Fix: track the current `[section]` while scanning and consider lines only inside `[Service]`.
+
+#### R2-3. minor: two silent paths in `managed_service_launchers`
+
+File: `inplace_preparation.py` lines 65 to 82.
+
+- A missing `plan.json` raises `FileNotFoundError` from `_json(...read_bytes())`. `cli.prepare` records `preparation_failed` with the generic reason instead of a refusal text. Fix: catch `OSError` and raise `ReleaseRejected('The managed release has no plan record')`.
+- A `plan.json` without `launchers` yields `[]`, so nothing is repointed; the units keep forwarding to the managed job and `check_receipt` rolls the operation back after the restart. Every managed plan this code base writes has `launchers` (`release_worker.py` line 46), so this is defensive only. Fix: refuse when the key is missing rather than defaulting to `[]`.
+
+#### R2-4. minor: the stale-process refusal blames the owner
+
+File: `inplace_preparation.py` line 80. When the preparing process imports an older managed job (see answer a), the message says the launcher "no longer runs the managed release" and the docstring says "its owner changed it". The likelier cause is a gateway that was not restarted after a managed update. Fix: name both causes in the message, or compare against the job that `~/.local/bin/hermes` forwards to and report which job each side names.
+
+#### R2-5. minor: the rewritten account test asserts little
+
+File: `tests/test_release_accounts.py` lines 123 to 153 (commit 29c8d94c). The test now stops at `download_integration` and asserts that `account_home` was called once with the profile and that the selection bytes are unchanged. It no longer checks that the request records `account_home`, `installed`, or `profile`, because the request is written after the download. That coverage is lost rather than moved. The in-place request fields are exercised indirectly by the container runs; a unit test would need a catalog stub that returns a package, which `ReleaseStageTests().package` already provides for the managed path.
+
+### Checked and found no problem
+
+- `adopt_units`: the reload runs under the same conditions as the adoption and before every `_quiesce` and `programs.restore()` that follows it. `_systemctl('daemon-reload')` raising inside `_rollback` aborts the rollback, but the same call already sat at line 226 with the same effect.
+- `transition_gateway_unit`: the `/.lifeos-releases/` test on the gateway fragment matches how a managed `hermes gateway install` writes the unit (host 114) and leaves template units (`~/.local/bin/hermes`) alone, which `transition_launchers` repoints. The `KillMode` default `control-group` matches systemd's default. The generated unit always sets `WorkingDirectory`, so a template unit without one refuses, which is correct because `ProfileServices` binds the working directory.
+- `managed_service_launchers`: `plan.json` launchers come from the gateway and dashboard `ExecStart` executables, restricted to regular files under the account home (`release_plan.py` lines 71 to 82), so the `hermes` forwarder is the right content for each. The `~/.local/bin` exclusion compares the unresolved parent, and `plan.json` stores the path as systemd reported it, so the exclusion holds for the paths this code base writes.
+- `transition_launchers(services=...)`: several targets share `generated/launcher-hermes`; `ProgramTransaction.prepare` copies the source per entry (`incoming-<index>`), so sharing is fine.
+- Tests: the new tests cover the account-launcher unit, the KillMode refusal, the drop-in refusal, the symlink refusal, the reload before adoption, launcher selection with a changed launcher, and forwarder publication. They do not cover R2-2 (mis-sectioned key) or R2-3.

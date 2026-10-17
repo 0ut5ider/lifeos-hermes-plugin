@@ -56,8 +56,14 @@ def _unit_texts(home, name):
 
 
 def _service_value(text, key, default):
-    """Return the last ``key=`` value of a unit text, as systemd applies the last assignment."""
-    values = [line.split('=', 1)[1].strip() for line in text.splitlines() if line.strip().startswith(key + '=')]
+    """Return the last ``key=`` value in the ``[Service]`` section, as systemd applies the last assignment."""
+    section, values = None, []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith('[') and stripped.endswith(']'):
+            section = stripped
+        elif section == '[Service]' and stripped.startswith(key + '='):
+            values.append(stripped.split('=', 1)[1].strip())
     return values[-1] if values else default
 
 
@@ -66,17 +72,23 @@ def managed_service_launchers(job, home):
 
     A managed release rewrites the launcher that each service unit runs into a forwarder to its runtime.
     The transition must repoint those launchers to the stock checkout as well. A launcher that no longer
-    forwards to the managed release refuses the transition, because its owner changed it.
+    forwards to the running managed release refuses the transition: its owner changed it, or a service
+    still runs an older managed release after an update.
     """
     from .release_catalog import _json
     account = Path(home) / '.local/bin'
+    try:
+        recorded = _json((Path(job) / 'plan.json').read_bytes())['launchers']
+    except (OSError, ValueError, KeyError, TypeError):
+        raise ReleaseRejected('The running managed release has no plan record of its service launchers') from None
     launchers = []
-    for value in _json((Path(job) / 'plan.json').read_bytes()).get('launchers', []):
+    for value in recorded:
         path = Path(value)
         if not path.is_absolute() or path.parent == account:
             continue
         if path.is_symlink() or not path.is_file() or str(job) not in path.read_text(errors='replace'):
-            raise ReleaseRejected('The service launcher ' + str(path) + ' no longer runs the managed release')
+            raise ReleaseRejected('The service launcher ' + str(path) + ' does not run the managed release '
+                                  + Path(job).name + '. Restart the Hermes services, or restore the launcher, then prepare again')
         launchers.append(str(path))
     return sorted(launchers)
 
