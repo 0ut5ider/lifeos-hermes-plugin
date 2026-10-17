@@ -322,3 +322,25 @@ class TransitionTests(unittest.TestCase):
             for target, source in files.items():
                 self.assertEqual(source.read_text(), '#!/bin/sh\n' + expected[target.name])
                 self.assertEqual(source.stat().st_mode & 0o777, 0o755)
+
+
+class PreparationOrderTests(unittest.TestCase):
+    def test_compatibility_refusal_comes_before_any_download(self):
+        from optional.lifeos_release_manager.inplace_preparation import prepare_inplace
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        downloads = []
+
+        class Catalog:
+            def download_integration(self, destination, version):
+                downloads.append(destination)
+                raise AssertionError('Preparation downloads before the compatibility check')
+
+        with tempfile.TemporaryDirectory() as directory:
+            profile, job = Path(directory) / '.hermes', Path(directory) / 'job'
+            profile.mkdir(mode=0o700)
+            job.mkdir(mode=0o700)
+            # The test interpreter imports Hermes from an extracted archive, which is not a Git checkout.
+            with self.assertRaisesRegex(ReleaseRejected, 'cannot be installed on this Hermes installation'):
+                prepare_inplace(profile, job, name='User', assistant='Hermes', intent='install', catalog=Catalog())
+            self.assertEqual(downloads, [])
+            self.assertFalse((job / 'download').exists())

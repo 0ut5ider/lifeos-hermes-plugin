@@ -215,11 +215,11 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
     """Prepare the reviewed in-place request in ``job``; the active installation is not changed."""
     profile, job = Path(profile), Path(job)
     home = account_home(profile)
-    downloaded = (catalog or ReleaseCatalog()).download_integration(job / 'download', version)
     result = check(profile)
-    record = load_record(profile)
     if result['state'] not in {'compatible', 'installed'}:
         raise ReleaseRejected('LifeOS cannot be installed on this Hermes installation: ' + _first_reason(result))
+    record = load_record(profile)
+    downloaded = (catalog or ReleaseCatalog()).download_integration(job / 'download', version)
     source = Path(result['detected']['source'])
     certificate = downloaded['certificate']
     package = job / 'package'
