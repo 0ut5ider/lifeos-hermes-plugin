@@ -114,7 +114,7 @@
       "ran": 38, "passed": 37, "failed": 1,
       "failure": "tests.test_latest_hermes: prepare and validate passed; the post-prepare import check failed with ModuleNotFoundError: No module named 'ruamel' because system python3 lacks Hermes dependencies. Environment limit, not a code finding.",
       "fixtures": "LIFEOS_LATEST_HERMES_SOURCE was a disposable clean clone of the packaged Hermes .git at base; LIFEOS_TEST_PYTHON=python3 (3.14.8)",
-      "logs": ["review-existing-tests.stderr", "review-existing-tests.stdout"]
+      "logs": ["review-existing-tests.stderr.gz", "review-existing-tests.stdout"]
     },
     "raw_logs": ["review-measure-raw.json", "review-git-experiments-raw.json", "review-hermes-changed-files.json", "scripts/measure.py", "scripts/git_experiments.py", "review-commands.md"]
   },

@@ -120,7 +120,7 @@ E9 simulates Git behavior only. I did not run the Hermes updater.
 
 ### Existing tests
 
-38 tests ran across `test_hermes_install_source` (10), `test_release_programs` (23), `test_stock_hermes` (4), and `test_latest_hermes` (1). 37 pass. `test_latest_hermes` passed its prepare and validate steps against a disposable clean clone at the base, then failed its import check with `ModuleNotFoundError: No module named 'ruamel'`, because system `python3` lacks Hermes dependencies. That is an environment limit. Logs: `review-existing-tests.stderr`. The in-place tests use a synthetic Git repository and callable stubs for stop, start, and verify. They prove the journal logic, not real service or process behavior.
+38 tests ran across `test_hermes_install_source` (10), `test_release_programs` (23), `test_stock_hermes` (4), and `test_latest_hermes` (1). 37 pass. `test_latest_hermes` passed its prepare and validate steps against a disposable clean clone at the base, then failed its import check with `ModuleNotFoundError: No module named 'ruamel'`, because system `python3` lacks Hermes dependencies. That is an environment limit. Logs: `review-existing-tests.stderr.gz`. The in-place tests use a synthetic Git repository and callable stubs for stop, start, and verify. They prove the journal logic, not real service or process behavior.
 
 ## 5. Options comparison
 
