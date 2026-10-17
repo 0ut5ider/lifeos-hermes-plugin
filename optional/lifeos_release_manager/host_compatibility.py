@@ -42,6 +42,7 @@ STATES = {
     'patched_without_record': 'patched_without_record',
     'dependency_conflict': 'dependency_conflict',
     'host_drift': 'host_drift',
+    'invalid_host_record': 'host_drift',
     'bridge_disabled': 'host_drift',
 }
 
@@ -485,9 +486,17 @@ def transition_source(hermes_home, source=None):
 
 def check(hermes_home, *, manifest=MANIFEST, search_path=None):
     """Inspect the Hermes installation that runs this process, or the stock checkout that replaces a managed runtime."""
-    from .host_record import load_record
+    from .host_record import HostRecordRejected, load_record, record_path
     target = transition_source(hermes_home)
-    result = inspect_host(target or running_source(), load_manifest(manifest), hermes_home=hermes_home,
-                          search_path=search_path, record=load_record(hermes_home))
+    source, manifest = target or running_source(), load_manifest(manifest)
+    try:
+        record = load_record(hermes_home)
+    except HostRecordRejected as error:
+        # A damaged record is drift: the host can no longer be compared with what LifeOS installed.
+        result = inspect_host(source, manifest, hermes_home=hermes_home, search_path=search_path)
+        reason = _reason('invalid_host_record', str(error) + ': ' + str(record_path(hermes_home)) + '.')
+        result.update(state='host_drift', compatible=False, installed=False, reasons=[reason, *result['reasons']])
+    else:
+        result = inspect_host(source, manifest, hermes_home=hermes_home, search_path=search_path, record=record)
     result['transition'] = target is not None
     return result

@@ -70,6 +70,8 @@ def load_record(profile):
                     or info.st_size > 2 * 1024 * 1024):
                 raise HostRecordRejected('The LifeOS host record requires a bounded owner file')
             value = json.loads(stream.read())
+    except HostRecordRejected:
+        raise
     except (OSError, ValueError) as error:
         raise HostRecordRejected('The LifeOS host record is unreadable') from error
     return validate_record(value, profile)

@@ -111,6 +111,15 @@ class ReleaseDashboardTests(unittest.TestCase):
             'partially_patched', 'patched_without_record', 'shared_installation', 'dependency_conflict'))
         self.assertFalse((self.profile / '.lifeos-releases').exists())
 
+    def test_malformed_host_record_is_reported_as_drift_with_its_reason(self):
+        (self.profile / 'lifeos-host.json').write_text('{not json')
+        (self.profile / 'lifeos-host.json').chmod(0o600)
+        code, value = self.request(self.owner, path='/compatibility')
+        self.assertEqual(code, 200)
+        self.assertEqual(value['state'], 'host_drift')
+        self.assertEqual(value['reasons'][0]['code'], 'invalid_host_record')
+        self.assertIn('lifeos-host.json', value['reasons'][0]['message'])
+
     def test_mutations_reject_foreign_origin_and_client_supplied_fields(self):
         path = '/operations/' + ('a' * 32) + '/review'
         self.assertEqual(self.request(self.owner, path=path, method='POST', origin='https://other.invalid')[0], 403)

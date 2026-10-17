@@ -373,6 +373,27 @@ class InstalledHostTests(unittest.TestCase):
         self.assertEqual(host_compatibility.check(self.home, manifest=self.manifest,
                                                   search_path=[str(self.packages)])["state"], "installed")
 
+    def test_damaged_record_is_drift_that_names_the_record(self):
+        from optional.lifeos_release_manager import host_compatibility
+        from optional.lifeos_release_manager.host_record import record_path
+        self.patch()
+        original = host_compatibility.running_source
+        host_compatibility.running_source = lambda: self.source
+        self.addCleanup(setattr, host_compatibility, "running_source", original)
+        path = record_path(self.home)
+        for content, mode in (("{not json", 0o600), (json.dumps(self.record()), 0o660),
+                              (json.dumps({**self.record(), "extra": 1}), 0o600), (" " * (3 * 1024 * 1024), 0o600)):
+            with self.subTest(content=content[:20], mode=oct(mode)):
+                path.write_text(content)
+                path.chmod(mode)
+                result = host_compatibility.check(self.home, manifest=self.manifest, search_path=[str(self.packages)])
+                self.assertEqual(result["state"], "host_drift")
+                self.assertFalse(result["compatible"])
+                self.assertFalse(result["installed"])
+                self.assertEqual(result["reasons"][0]["code"], "invalid_host_record")
+                self.assertIn("lifeos-host.json", result["reasons"][0]["message"])
+                self.assertEqual(result["detected"]["source"], str(self.source))
+
 
 class ManifestTests(unittest.TestCase):
     def valid(self):
