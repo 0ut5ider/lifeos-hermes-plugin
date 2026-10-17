@@ -6,7 +6,8 @@ V=$(cd "$(dirname "$0")" && pwd); export TARGET=root@192.168.8.237 E2E_DIR=$HOME
 cases=("artifact-published 60" "programs-published 1" "dependencies-synchronized 1" "native-mounted 1")
 for item in "${cases[@]}"; do
   set -- $item; point=$1; count=$2; name=$point-$count
-  ssh root@192.168.8.101 'pct stop 112; pct rollback 112 base; pct start 112' >/dev/null 2>&1; sleep 10
+  # A rollback seconds after a container stops can hang ZFS on this host (OpenZFS #15422); let the stop settle.
+  ssh root@192.168.8.101 'pct stop 112; sleep 60; pct rollback 112 base && pct start 112' >/dev/null 2>&1; until ssh -o ConnectTimeout=5 $TARGET true 2>/dev/null; do sleep 3; done
   ssh $TARGET 'loginctl enable-linger owner; systemctl start user@1000.service' >/dev/null 2>&1
   if [ -z "${built:-}" ]; then $V/redeploy.sh >/dev/null; built=1; else NOBUILD=1 $V/redeploy.sh >/dev/null; fi
   {
