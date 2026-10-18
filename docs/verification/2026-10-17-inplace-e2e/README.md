@@ -122,6 +122,18 @@ Findings from this run, none of which blocks the transition:
 7. The LifeOS Bridge page still shows the managed-release text "Prepare latest LifeOS update" on an in-place installation.
 8. The review did not offer a unit for the hand-started dashboard that served the request.
 
+## Release candidate 0.8.0-rc.4 before publication
+
+Build: program commit `5125f322`. Two builds gave archive SHA-256 `4490994d37966d9e1d344673a82e55fb292565457378269b82bdf40ad67e08b7`. rc.4 adds the dependency synchronization of the provider return.
+
+| Flow | Result |
+| --- | --- |
+| Managed 0.7.3 to in-place transition on 114 | Applied (`07a1cebb`), receipt from `/home/lifeos-hermes/.hermes/hermes-agent` |
+| Restore of that transition on 114 | Rolled back to the managed runtime, all services active |
+| Interrupted first installation on 112, 4 checkpoints | All 4 recovered to `applied`, no host drift ([results](crash-results/)) |
+
+The unit suite ran per module on `5125f322`. 356 of 435 modules pass. The [79 failing modules](rc4-suite-failing-modules.txt) are the modules that also fail on `origin/main` with the same environment.
+
 ## Published 0.8.0-rc.3 through the dashboard on 112
 
 Date: 2026-10-18. Starting state: 112 at its `base` snapshot. The dashboard login (`HERMES_DASHBOARD_BASIC_AUTH_*`) was only in `~/.hermes/.env`, not in `config.yaml`. A synthetic `OPENROUTER_API_KEY` let Hermes resolve the model provider. The dashboard ran by hand: `hermes dashboard --host 0.0.0.0 --no-open`. The release manager came from the GitHub URL at `--ref 20c6b077`.
