@@ -15,6 +15,7 @@
 - Record the configuration values that LifeOS changes. Removal restores them unless the owner changed them later.
 - Remove an in-place installation: restore the original Hermes files, delete the added files, and keep memory, `.env` owner lines, and third-party plugins. Removal still works when the Hermes update hold is already gone.
 - Move a managed 0.7.x installation to in-place, including its gateway unit, and restore it to the managed runtime on request.
+- Refuse the move while a Hermes unit runs a managed forwarder outside `~/.local/bin`. Point the unit at `~/.local/bin/hermes` first.
 - Keep a private failure record for stopped memory workflows and failed fresh-agent probes.
 
 ## 0.7.3 (2026-10-16)

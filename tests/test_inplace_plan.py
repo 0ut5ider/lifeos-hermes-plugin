@@ -110,7 +110,7 @@ class InplaceJob(unittest.TestCase):
             configuration_sha256=sha(self.profile / 'config.yaml'),
             host={'source': str(self.source), 'commit': self.commit, 'label': 'v0.0.1', 'state': 'compatible',
                   'state_directory': str(self.job / 'installs-state'), 'transition': False, 'transition_units': {},
-                  'transition_launchers': [], 'record_sha256': None},
+                  'record_sha256': None},
             runtime={'python': sys.executable, 'bun': str(self.job / 'tools/bun'), 'hermes': str(launcher),
                      'source': str(preview), 'reference': str(self.job / 'reference-home/.claude'),
                      'lifeos': str(self.job / 'lifeos'), 'host_files': str(self.job / 'host')},

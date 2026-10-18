@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from .host_compatibility import check, load_manifest, running_source
+from .host_compatibility import check, load_manifest
 from .host_patches import stage_host_files
 from .host_record import check_originals, load_record
 from .integration_package import COMPATIBILITY, validate_integration
@@ -66,30 +66,30 @@ def _service_value(text, key, default):
     return values[-1] if values else default
 
 
-def managed_service_launchers(job, home):
-    """Return the service launchers that the active managed release published outside ``~/.local/bin``.
+SERVICE_UNITS = ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service')
 
-    A managed release rewrites the launcher that each service unit runs into a forwarder to its runtime.
-    The transition must repoint those launchers to the stock checkout as well. A launcher that no longer
-    forwards to the running managed release refuses the transition: its owner changed it, or a service
-    still runs an older managed release after an update.
+
+def check_service_launchers(home):
+    """Refuse a transition while a Hermes unit runs a managed forwarder outside ``~/.local/bin``.
+
+    The transition repoints only the account launchers. A forwarder elsewhere, such as one inside another
+    Hermes checkout, would keep running the managed runtime, and its own checkout can rewrite it later.
+    A unit that runs the managed runtime directly is left to ``transition_gateway_unit``.
     """
-    from .release_catalog import parse_json
+    import shlex
     account = Path(home) / '.local/bin'
-    try:
-        recorded = parse_json((Path(job) / 'plan.json').read_bytes())['launchers']
-    except (OSError, ValueError, KeyError, TypeError):
-        raise ReleaseRejected('The running managed release has no plan record of its service launchers') from None
-    launchers = []
-    for value in recorded:
-        path = Path(value)
-        if not path.is_absolute() or path.parent == account:
+    for name in SERVICE_UNITS:
+        texts = _unit_texts(home, name)
+        command = [value for value in (_service_value(text, 'ExecStart', '') for text in texts.values()) if value]
+        try:
+            executable = Path(shlex.split(command[-1])[0].lstrip('-@+!:')) if command else None
+        except (ValueError, IndexError):
+            executable = None
+        if executable is None or executable.parent == account or MANAGED_RUNTIME in str(executable):
             continue
-        if path.is_symlink() or not path.is_file() or str(job) not in path.read_text(errors='replace'):
-            raise ReleaseRejected('The service launcher ' + str(path) + ' does not run the managed release '
-                                  + Path(job).name + '. Restart the Hermes services, or restore the launcher, then prepare again')
-        launchers.append(str(path))
-    return sorted(launchers)
+        if executable.is_file() and MANAGED_RUNTIME in executable.read_text(errors='replace'):
+            raise ReleaseRejected('The ' + name + ' unit runs ' + str(executable) + ', which forwards to the managed '
+                                  'runtime. Point the unit at ~/.local/bin/hermes, then prepare again')
 
 
 def transition_gateway_unit(python, source, profile, home, job):
@@ -101,10 +101,11 @@ def transition_gateway_unit(python, source, profile, home, job):
     or another unit that still runs the managed runtime refuses the transition, as does a replacement
     whose stop behaviour or working directory differs, because the service controller binds those.
     """
-    for name in ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service'):
+    for name in SERVICE_UNITS:
         for path, text in _unit_texts(home, name).items():
             if MANAGED_RUNTIME in text and not (name == 'hermes-gateway.service' and path.name == name):
                 raise ReleaseRejected('The ' + path.name + ' unit runs the managed runtime; point it at ~/.local/bin first')
+    check_service_launchers(home)
     existing = Path(home) / GATEWAY_UNIT
     if existing.is_symlink():
         raise ReleaseRejected('The gateway unit must be a regular file before the transition')
@@ -289,7 +290,6 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
                  'state': result['state'], 'state_directory': str(state_directory(source)),
                  'transition': result['transition'],
                  'transition_units': transition_gateway_unit(python, source, profile, home, job) if result['transition'] else {},
-                 'transition_launchers': managed_service_launchers(running_source().parent, home) if result['transition'] else [],
                  'record_sha256': None if record is None else sha(profile / 'lifeos-host.json')},
         'runtime': {'python': str(python), 'bun': str(bun), 'hermes': str(host_launcher(source)),
                     'source': str(preview), 'reference': str(reference / '.claude'),

@@ -262,23 +262,46 @@ class TransitionTests(unittest.TestCase):
         adopt_units(None, {'host': {'transition_units': units}})
         self.assertEqual(calls, [])
 
-    def test_transition_repoints_the_service_launchers_of_the_managed_release(self):
-        import json
-        from optional.lifeos_release_manager.inplace_preparation import managed_service_launchers
+    def test_transition_refuses_a_unit_that_runs_another_managed_forwarder(self):
+        from optional.lifeos_release_manager.inplace_preparation import check_service_launchers
         from optional.lifeos_release_manager.release_catalog import ReleaseRejected
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory)
-            job = home / '.hermes/.lifeos-releases' / ('a' * 32)
-            job.mkdir(parents=True)
+            units = home / '.config/systemd/user'
+            units.mkdir(parents=True)
             workspace = home / 'workspace/hermes-agent/.hermes/bin/hermes'
             workspace.parent.mkdir(parents=True)
-            workspace.write_text('#!/bin/sh\nexec ' + str(job) + '/bin/hermes "$@"\n')
+            workspace.write_text('#!/bin/sh\nexec ' + str(home) + '/.hermes/.lifeos-releases/' + 'a' * 32 + '/bin/hermes "$@"\n')
             account = home / '.local/bin/hermes'
-            (job / 'plan.json').write_text(json.dumps({'launchers': [str(workspace), str(account)]}))
-            self.assertEqual(managed_service_launchers(job, home), [str(workspace)])
-            workspace.write_text('#!/bin/sh\nexec /usr/bin/hermes "$@"\n')
-            with self.assertRaisesRegex(ReleaseRejected, 'workspace'):
-                managed_service_launchers(job, home)
+            account.parent.mkdir(parents=True)
+            account.write_text(workspace.read_text())
+            dashboard = units / 'hermes-dashboard.service'
+            dashboard.write_text('[Service]\nExecStart=' + str(workspace) + ' dashboard\n')
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service.*~/.local/bin/hermes'):
+                check_service_launchers(home)
+            # The transition repoints the account launcher, so a unit that runs it passes.
+            dashboard.write_text('[Service]\nExecStart=' + str(account) + ' dashboard\n')
+            check_service_launchers(home)
+            # The last assignment counts, including one in a drop-in.
+            (units / 'hermes-dashboard.service.d').mkdir()
+            (units / 'hermes-dashboard.service.d/exec.conf').write_text('[Service]\nExecStart=\nExecStart=-' + str(workspace) + ' dashboard\n')
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                check_service_launchers(home)
+
+    def test_transition_accepts_units_that_run_other_programs(self):
+        from optional.lifeos_release_manager.inplace_preparation import check_service_launchers
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            units = home / '.config/systemd/user'
+            units.mkdir(parents=True)
+            stock = home / 'hermes-agent/.hermes/bin/hermes'
+            stock.parent.mkdir(parents=True)
+            stock.write_text('#!/bin/sh\nexec python -m hermes_cli "$@"\n')
+            (units / 'hermes-dashboard.service').write_text('[Service]\nExecStart=' + str(stock) + ' dashboard\n')
+            # A gateway unit that runs the managed runtime directly gets the stock unit instead.
+            (units / 'hermes-gateway.service').write_text('[Service]\nExecStart=' + str(home) + '/.hermes/.lifeos-releases/' + 'a' * 32 + '/bin/hermes gateway run\n')
+            (units / 'com.lifeos.pulse.service').write_text('[Service]\nExecStart=/missing/program\n')
+            check_service_launchers(home)
 
     def test_service_value_reads_only_the_service_section(self):
         from optional.lifeos_release_manager.inplace_preparation import _service_value
@@ -286,29 +309,6 @@ class TransitionTests(unittest.TestCase):
         self.assertEqual(_service_value(text, 'KillMode', 'control-group'), 'control-group')
         self.assertEqual(_service_value(text, 'WorkingDirectory', ''), '')
         self.assertEqual(_service_value('[Service]\nKillMode=mixed\nKillMode=process\n', 'KillMode', 'control-group'), 'process')
-
-    def test_managed_release_without_a_launcher_record_refuses(self):
-        import json
-        from optional.lifeos_release_manager.inplace_preparation import managed_service_launchers
-        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
-        with tempfile.TemporaryDirectory() as directory:
-            job = Path(directory) / 'job'
-            job.mkdir()
-            with self.assertRaisesRegex(ReleaseRejected, 'plan record'):
-                managed_service_launchers(job, Path(directory))
-            (job / 'plan.json').write_text(json.dumps({}))
-            with self.assertRaisesRegex(ReleaseRejected, 'plan record'):
-                managed_service_launchers(job, Path(directory))
-
-    def test_transition_publishes_a_stock_forwarder_at_each_service_launcher(self):
-        from optional.lifeos_release_manager.inplace_plan import transition_launchers
-        with tempfile.TemporaryDirectory() as directory:
-            generated = Path(directory)
-            service = '/home/owner/workspace/hermes-agent/.hermes/bin/hermes'
-            files = transition_launchers(Path('/home/owner'), Path('/home/owner/.hermes/hermes-agent'), generated,
-                                         services=[service])
-            self.assertEqual(files[Path(service)].read_text(),
-                             '#!/bin/sh\nexec /home/owner/.hermes/hermes-agent/.hermes/bin/hermes "$@"\n')
 
     def test_transition_launchers_match_the_stock_forwarders(self):
         from optional.lifeos_release_manager.inplace_plan import transition_launchers
