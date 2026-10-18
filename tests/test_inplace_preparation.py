@@ -456,6 +456,36 @@ class TransitionTests(unittest.TestCase):
                 self.assertEqual(source.stat().st_mode & 0o777, 0o755)
 
 
+class IntentTests(unittest.TestCase):
+    def check(self, intent, *, fresh=False, recorded=False, transition=False):
+        from optional.lifeos_release_manager.inplace_preparation import check_intent
+        check_intent(intent, fresh=fresh, recorded=recorded, transition=transition)
+
+    def test_explicit_intents_must_match_the_host(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        self.check('install', fresh=True)
+        self.check('update')
+        self.check('plugin', recorded=True)
+        self.check('update', transition=True)
+        with self.assertRaisesRegex(ReleaseRejected, 'Use an update'):
+            self.check('install')
+        with self.assertRaisesRegex(ReleaseRejected, 'Use an update'):
+            self.check('install', fresh=True, recorded=True)
+        with self.assertRaisesRegex(ReleaseRejected, 'Install LifeOS before'):
+            self.check('update', fresh=True)
+        with self.assertRaisesRegex(ReleaseRejected, 'Moving from a managed runtime'):
+            self.check('update', transition=True, recorded=True)
+
+    def test_without_an_intent_the_host_selects_the_operation(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        # The command line prepares whatever the host needs: an installation, an update, or the move.
+        self.check(None, fresh=True)
+        self.check(None, recorded=True)
+        self.check(None, transition=True)
+        with self.assertRaisesRegex(ReleaseRejected, 'Moving from a managed runtime'):
+            self.check(None, transition=True, fresh=True)
+
+
 class PreparationOrderTests(unittest.TestCase):
     def test_compatibility_refusal_comes_before_any_download(self):
         from optional.lifeos_release_manager.inplace_preparation import prepare_inplace

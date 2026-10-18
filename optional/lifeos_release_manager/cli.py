@@ -177,7 +177,7 @@ def _prepare_managed_package(profile, home, job, version, *, name, assistant, ca
 def _prepare_inplace_operation(profile, job, version, *, name, assistant, catalog=None, intent=None):
     from .inplace_preparation import prepare_inplace
     request, manifest = prepare_inplace(profile, job, version, name=name.strip(), assistant=assistant.strip(),
-                                        intent=intent or 'install', catalog=catalog)
+                                        intent=intent, catalog=catalog)
     return _ready_operation(job, request, manifest['manager_files'])
 
 

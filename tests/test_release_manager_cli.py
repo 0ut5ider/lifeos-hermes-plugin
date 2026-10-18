@@ -198,7 +198,7 @@ class PreparedOperationTests(unittest.TestCase):
         from optional.lifeos_release_manager import cli, inplace_preparation
         reviewed = []
         def prepare_inplace(profile, job, version, **options):
-            self.assertEqual(options, {'name': 'User', 'assistant': 'Hermes', 'intent': 'install', 'catalog': None})
+            self.assertEqual(options, {'name': 'User', 'assistant': 'Hermes', 'intent': None, 'catalog': None})
             return self.request, {'manager_files': {'cli.py': 'e' * 64}}
         def prepare_plan(job, request, files):
             reviewed.append((job, request, files))

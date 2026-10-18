@@ -17,6 +17,7 @@
 - Move a managed 0.7.x installation to in-place, including its gateway unit, and restore it to the managed runtime on request.
 - Refuse the move while a Hermes unit runs the managed runtime through a program other than the account commands in `~/.local/bin`. Point the unit at `~/.local/bin/hermes` first.
 - Keep a private failure record for stopped memory workflows and failed fresh-agent probes.
+- Let `hermes lifeos-release prepare` prepare an update or the managed-runtime move. In 0.8.0-rc.1 it prepared only a first installation.
 
 ## 0.7.3 (2026-10-16)
 

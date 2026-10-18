@@ -254,6 +254,20 @@ def resolve_dependencies(job, python, source, profile, bridge):
     return parse_json(output.read_bytes())
 
 
+def check_intent(intent, *, fresh, recorded, transition):
+    """Refuse an operation that does not match the host; without an intent the host selects the operation.
+
+    ``fresh`` is a host without native LifeOS, ``recorded`` one with an in-place host record, and
+    ``transition`` one that runs a managed release. The dashboard passes the owner's chosen action.
+    """
+    if intent == 'install' and (not fresh or recorded):
+        raise ReleaseRejected('Use an update for the existing LifeOS installation')
+    if transition and (fresh or recorded or intent == 'install'):
+        raise ReleaseRejected('Moving from a managed runtime requires the installed managed release and an update')
+    if intent in {'update', 'plugin'} and fresh:
+        raise ReleaseRejected('Install LifeOS before requesting an update')
+
+
 def prepare_inplace(profile, job, version=None, *, name, assistant, intent, catalog=None):
     """Prepare the reviewed in-place request in ``job``; the active installation is not changed."""
     profile, job = Path(profile), Path(job)
@@ -278,12 +292,7 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
     names._name(assistant)
     selected = bridge.memory_module('lifeos_installation').selection(profile)
     fresh = not selected.installed.exists() and not selected.installed.is_symlink()
-    if intent == 'install' and (not fresh or record is not None):
-        raise ReleaseRejected('Use an update for the existing LifeOS installation')
-    if result['transition'] and (fresh or record is not None or intent == 'install'):
-        raise ReleaseRejected('Moving from a managed runtime requires the installed managed release and an update')
-    if intent in {'update', 'plugin'} and fresh:
-        raise ReleaseRejected('Install LifeOS before requesting an update')
+    check_intent(intent, fresh=fresh, recorded=record is not None, transition=result['transition'])
     if fresh:
         from .release_services import require_fresh_services
         require_fresh_services(bridge)
