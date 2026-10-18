@@ -441,16 +441,16 @@ class HostSynchronizerTests(unittest.TestCase):
             profile.mkdir(mode=0o700)
             self.assertIsNone(host_synchronizer(profile, Path(directory), label='dependency-return'))
 
-    def test_synchronization_failure_names_the_return(self):
+    def test_synchronization_failure_uses_the_caller_message(self):
         from unittest import mock
         from optional.lifeos_release_manager import inplace_worker
         from optional.lifeos_release_manager.release_catalog import ReleaseRejected
         with tempfile.TemporaryDirectory() as directory, \
                 mock.patch.object(inplace_worker, 'run_stage', side_effect=ReleaseRejected('stage failed')), \
                 mock.patch('optional.lifeos_release_manager.inplace_preparation.host_python', return_value=Path('/python')):
-            with self.assertRaisesRegex(ReleaseRejected, 'dependencies cannot synchronize for dependency-return'):
+            with self.assertRaisesRegex(ReleaseRejected, '^The services stay stopped$'):
                 inplace_worker.synchronize_source(Path(directory), '/home/owner/.hermes/hermes-agent', {},
-                                                  label='dependency-return', failure='dependencies cannot synchronize for ')
+                                                  label='dependency-return', failure='The services stay stopped')
 
 
 if __name__ == '__main__':

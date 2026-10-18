@@ -46,7 +46,7 @@ def services_for(job, request, plan, installed, lease):
 def synchronize_source(job, source, environment, *, label, failure=None):
     """Commit the dependency generation for the current configuration of ``source`` under its interpreter.
 
-    The stage output goes to ``job``. ``failure`` replaces the release-preparation refusal with the caller's message.
+    The stage output goes to ``job`` under ``label``. ``failure`` replaces the release-preparation refusal.
     """
     output = job / (label + '.json')
     output.unlink(missing_ok=True)
@@ -57,7 +57,7 @@ def synchronize_source(job, source, environment, *, label, failure=None):
     except ReleaseRejected:
         if failure is None:
             raise
-        raise ReleaseRejected(failure + label) from None
+        raise ReleaseRejected(failure) from None
     return parse_json(output.read_bytes())
 
 
@@ -83,7 +83,8 @@ def host_synchronizer(profile, job, *, label):
                        DBUS_SESSION_BUS_ADDRESS='unix:path=' + user_runtime_directory() + '/bus',
                        PYTHONDONTWRITEBYTECODE='1')
     return lambda: synchronize_source(job, record['source'], environment, label=label,
-                                      failure='The Hermes dependencies cannot synchronize for ')
+                                      failure='The Hermes dependencies cannot synchronize, so the Hermes services stay '
+                                              'stopped. Recover the memory workflow, or restore the previous provider settings.')
 
 
 def _terminate(processes):
