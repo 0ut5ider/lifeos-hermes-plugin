@@ -16,6 +16,12 @@ class PortabilityDashboardTests(unittest.TestCase):
         self.assertEqual(self.fixture.request(self.fixture.other,path='/memory-workflows')[0],403)
         self.assertEqual(self.fixture.request(self.fixture.owner,path='/memory-workflows'),(200,{'operations':[]}))
 
+    def test_status_before_the_claim_names_the_claim(self):
+        (self.fixture.profile/'lifeos-memory.json').unlink()
+        code,result=self.fixture.request(self.fixture.owner,path='/memory-workflows')
+        self.assertEqual(code,409)
+        self.assertIn('Claim this LifeOS installation on the LifeOS Bridge page',result['detail'])
+
     def test_preparation_refuses_paths_accounts_and_foreign_origin(self):
         for selection in ({'kind':'return','snapshot':'/tmp/private'},
                           {'kind':'activation','account':'dashboard:basic:owner'},

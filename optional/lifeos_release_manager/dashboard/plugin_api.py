@@ -73,6 +73,10 @@ def memory_workflows(account: str = Depends(owner)):
     try:
         return JSONResponse(memory_workflow.status(profile(),owner=account),headers={'Cache-Control':'no-store'})
     except (ValueError,OSError,RuntimeError) as error:
+        selected=profile()
+        if not (selected/'lifeos-memory.json').exists() and not (selected/'lifeos-memory.json').is_symlink():
+            raise HTTPException(status_code=409,detail='Claim this LifeOS installation on the LifeOS Bridge page '
+                                'before memory workflows') from error
         raise HTTPException(status_code=409,detail='Memory workflow status is unavailable under this profile') from error
 
 
