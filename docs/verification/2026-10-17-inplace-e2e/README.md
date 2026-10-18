@@ -122,6 +122,18 @@ Findings from this run, none of which blocks the transition:
 7. The LifeOS Bridge page still shows the managed-release text "Prepare latest LifeOS update" on an in-place installation.
 8. The review did not offer a unit for the hand-started dashboard that served the request.
 
+## Release candidate 0.8.0-rc.2 before publication
+
+Build: program commit `27c12e85`. Two builds gave archive SHA-256 `331be84e5246c5a9d40a6f232064fe832211a0235d59647c5f92299ae3e5589c`. The runs used that archive through the loopback server.
+
+| Flow | Result |
+| --- | --- |
+| Managed 0.7.3 to in-place transition on 114 | Applied (`173e8684`), receipt from `/home/lifeos-hermes/.hermes/hermes-agent` |
+| Restore of that transition on 114 | Rolled back to the managed runtime, all services active |
+| Interrupted first installation on 112, 4 checkpoints | All 4 recovered to `applied`, `verified`, no host drift ([results](crash-results/)) |
+
+The unit suite ran per module on `27c12e85` with `PATH` including Bun, `LIFEOS_HERMES_SOURCE`, `LIFEOS_MEMORY_SOURCE`, and `LIFEOS_STOCK_HERMES_ARCHIVE`, four modules at a time. 355 of 435 modules pass. The [80 failing modules](rc2-suite-failing-modules.txt) ran again on `origin/main` (`06ea5746`) with the same environment. 79 fail there too: 56 lack evidence-source variables such as `LIFEOS_HARVEST_CONTROL_SOURCE`, and two need a readable `/proc/<pid>/exe` for an SSH session process. `test_memory_local_refresh_lifetime` failed only under the parallel load: its 25-second wait for a native process expired. It passes three times out of three when it runs alone.
+
 ## Unit tests
 
 The suite ran per module (429 modules) on this branch, while commits `7511580d` to `8d009e25` landed, with the prepared sources from the 0.7.3 package and its pinned Bun locks. 81 modules failed. The same 81 modules ran on `origin/main` (`06ea5746`) in the same environment:
