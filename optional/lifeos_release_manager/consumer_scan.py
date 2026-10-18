@@ -23,12 +23,20 @@ def _references(data, roots):
     return False
 
 
+def _commands(words, names):
+    """Return the positions of ``names`` that are command words, not the value of a preceding ``--option``."""
+    def text(word):
+        return word.decode(errors='replace') if isinstance(word, bytes) else word
+    return [index for index, word in enumerate(words) if word in names
+            and not (index and text(words[index - 1]).startswith('--') and '=' not in text(words[index - 1]))]
+
+
 def _role(arguments):
     """Classify a Hermes command line as the dashboard, the gateway, or another consumer."""
     words = arguments.split(b'\0')
-    if b'dashboard' in words or b'serve' in words:
+    if _commands(words, (b'dashboard', b'serve')):
         return 'dashboard'
-    if b'gateway' in words and b'run' in words:
+    if _commands(words, (b'gateway',)) and b'run' in words:
         return 'gateway'
     return 'other'
 
@@ -45,7 +53,7 @@ def dashboard_options(pid):
     """
     from .release_catalog import ReleaseRejected
     words = [word.decode(errors='replace') for word in Path('/proc', str(pid), 'cmdline').read_bytes().split(b'\0')[:-1]]
-    commands = [index for index, word in enumerate(words) if word in ('dashboard', 'serve')]
+    commands = _commands(words, ('dashboard', 'serve'))
     if not commands:
         return {}
     rest, options, index = words[commands[0] + 1:], {}, 0

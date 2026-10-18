@@ -113,6 +113,7 @@ class DashboardOptionTests(unittest.TestCase):
         self.assertEqual(self.options('dashboard', '--host=::1', '--port=8080'), {'host': '::1', 'port': 8080})
         self.assertEqual(self.options('--host', '0.0.0.0', 'dashboard'), {})
         self.assertEqual(self.options('dashboard', '--no-open'), {})
+        self.assertEqual(self.options('--name', 'dashboard', '--host', '0.0.0.0'), {})
         # serve runs the same server headless.
         self.assertEqual(self.options('serve', '--host', '0.0.0.0', '--port', '9200'), {'host': '0.0.0.0', 'port': 9200})
         # The defaults are the address of a unit without options.
@@ -156,3 +157,7 @@ class ConsumerRoleTests(unittest.TestCase):
         self.assertEqual(_role(b'hermes\0gateway\0run\0'), 'gateway')
         self.assertEqual(_role(b'hermes\0chat\0'), 'other')
         self.assertEqual(_role(b'hermes\0gateway\0status\0'), 'other')
+        # A command word that is the value of an option names no command.
+        self.assertEqual(_role(b'hermes\0lifeos-release\0prepare\0--name\0dashboard\0'), 'other')
+        self.assertEqual(_role(b'hermes\0chat\0--title\0gateway\0run\0'), 'other')
+        self.assertEqual(_role(b'hermes\0-p\0default\0serve\0--port\09119\0'), 'dashboard')
