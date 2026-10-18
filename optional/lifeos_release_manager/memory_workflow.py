@@ -359,9 +359,14 @@ def execute(profile, identifier, action):
                         installation_lease=lease,operation_id=identifier)
                     review=returned.prepare(snapshot,selected['signature'],selected['plan_signature'],prompt=selected['prompt'],account=owner)
                     result={**transition.prepare_return(snapshot,review['signature'],account=owner),'prompt':review['prompt']}
-                elif action=='rollback':result=transition.rollback(signature,account=owner)
+                elif action=='rollback':
+                    from .inplace_worker import host_synchronizer
+                    result=transition.rollback(signature,account=owner,
+                        synchronize=host_synchronizer(profile,job,label='dependency-return-rollback'))
                 else:
-                    result=transition.apply(signature,account=owner)
+                    from .inplace_worker import host_synchronizer
+                    result=transition.apply(signature,account=owner,
+                        synchronize=host_synchronizer(profile,job,label='dependency-return'))
                     result=transition.verify(signature,lambda expected:run_transition_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
             if action=='prepare':publish(job/'review.json',_encoded(result))
             publish(job/'receipt.json',_encoded(result));write_workflow_state(job,result['state'])

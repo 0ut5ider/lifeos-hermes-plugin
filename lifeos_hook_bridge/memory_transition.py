@@ -173,7 +173,8 @@ class MemoryTransition:
             _,state=self._load(signature,account)
             return self._receipt(signature,state)
 
-    def apply(self, signature, *, account=None, checkpoint=lambda point:None):
+    def apply(self, signature, *, account=None, checkpoint=lambda point:None, synchronize=None):
+        """Return to built-in memory; ``synchronize`` commits the dependency environment before services restart."""
         with self._lock(account) as (services,operation):
             plan,state=self._load(signature,account)
             if state in {'verification_required','verified'}:return self._receipt(signature,state)
@@ -195,13 +196,14 @@ class MemoryTransition:
                 self._state(signature,'configured');checkpoint('configured')
                 desired='disabled' if plan['pulse_enablement'] in {'enabled','enabled-runtime'} else plan['pulse_enablement']
                 self._enabled(desired,plan['pulse_enablement']);services.verify_stopped()
+                if synchronize is not None:synchronize()
                 self._state(signature,'restarting')
                 services.resume(roles=[role for role in ('dashboard','gateway') if role in self.units])
                 checkpoint('restarted')
                 self._state(signature,'verification_required')
             return self._receipt(signature,'verification_required')
 
-    def rollback(self, signature, *, account=None):
+    def rollback(self, signature, *, account=None, synchronize=None):
         with self._lock(account) as (services,operation):
             plan,state=self._load(signature,account)
             if state=='rolled_back':return self._receipt(signature,state)
@@ -215,6 +217,7 @@ class MemoryTransition:
                 self._state(signature,'restoring');services.quiesce();services.verify_stopped()
                 operation.rollback(Path(plan['snapshot']),plan['return_signature'],account=account)
                 self._enabled(plan['pulse_enablement'],plan['pulse_enablement'])
+                if synchronize is not None:synchronize()
                 services.resume(roles=plan['original_roles'],activate=True)
                 self._state(signature,'rolled_back')
             return self._receipt(signature,'rolled_back')

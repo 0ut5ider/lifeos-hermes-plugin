@@ -433,5 +433,25 @@ class ReviewedServicesTests(unittest.TestCase):
                 check_reviewed_services(self.services(), fresh)
 
 
+class HostSynchronizerTests(unittest.TestCase):
+    def test_only_an_in_place_host_synchronizes_its_dependencies(self):
+        from optional.lifeos_release_manager.inplace_worker import host_synchronizer
+        with tempfile.TemporaryDirectory() as directory:
+            profile = Path(directory) / '.hermes'
+            profile.mkdir(mode=0o700)
+            self.assertIsNone(host_synchronizer(profile, Path(directory), label='dependency-return'))
+
+    def test_synchronization_failure_names_the_return(self):
+        from unittest import mock
+        from optional.lifeos_release_manager import inplace_worker
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(inplace_worker, 'run_stage', side_effect=ReleaseRejected('stage failed')), \
+                mock.patch('optional.lifeos_release_manager.inplace_preparation.host_python', return_value=Path('/python')):
+            with self.assertRaisesRegex(ReleaseRejected, 'dependencies cannot synchronize for dependency-return'):
+                inplace_worker.synchronize_source(Path(directory), '/home/owner/.hermes/hermes-agent', {},
+                                                  label='dependency-return', failure='dependencies cannot synchronize for ')
+
+
 if __name__ == '__main__':
     unittest.main()

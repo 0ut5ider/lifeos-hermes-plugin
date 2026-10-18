@@ -43,16 +43,47 @@ def services_for(job, request, plan, installed, lease):
         installation_lease=lease, first_installation=plan['fresh'])
 
 
-def synchronize(job, request, *, label):
-    """Commit the dependency generation for the current configuration under the host interpreter."""
+def synchronize_source(job, source, environment, *, label, failure=None):
+    """Commit the dependency generation for the current configuration of ``source`` under its interpreter.
+
+    The stage output goes to ``job``. ``failure`` replaces the release-preparation refusal with the caller's message.
+    """
     output = job / (label + '.json')
     output.unlink(missing_ok=True)
-    source = request['host']['source']
-    environment = {**service_environment(request), 'PYTHONPATH': source}
     from .inplace_preparation import host_python
-    run_stage([host_python(source), '-B', job / 'worker/dependency_plan.py', 'synchronize', source, output],
-              job, label, environment=environment)
+    try:
+        run_stage([host_python(source), '-B', Path(__file__).with_name('dependency_plan.py'), 'synchronize', source,
+                   output], job, label, environment={**environment, 'PYTHONPATH': source})
+    except ReleaseRejected:
+        if failure is None:
+            raise
+        raise ReleaseRejected(failure + label) from None
     return parse_json(output.read_bytes())
+
+
+def synchronize(job, request, *, label):
+    """Commit the dependency generation for the current configuration under the host interpreter."""
+    return synchronize_source(job, request['host']['source'], service_environment(request), label=label)
+
+
+def host_synchronizer(profile, job, *, label):
+    """Return a callable that synchronizes an in-place host's dependencies, or None for another installation.
+
+    A provider return changes which plugins Hermes enables. Synchronizing before the services restart keeps
+    Hermes from finishing the environment itself at gateway launch, under the update lock.
+    """
+    from .host_record import load_record
+    from .release_accounts import account_home
+    from .release_stage import user_runtime_directory
+    record = load_record(profile)
+    if record is None:
+        return None
+    environment = dict(os.environ, HOME=str(account_home(profile)), HERMES_HOME=str(profile),
+                       XDG_RUNTIME_DIR=user_runtime_directory(),
+                       DBUS_SESSION_BUS_ADDRESS='unix:path=' + user_runtime_directory() + '/bus',
+                       PYTHONDONTWRITEBYTECODE='1')
+    return lambda: synchronize_source(job, record['source'], environment, label=label,
+                                      failure='The Hermes dependencies cannot synchronize for ')
 
 
 def _terminate(processes):

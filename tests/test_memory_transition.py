@@ -44,6 +44,16 @@ class MemoryTransitionTests(unittest.TestCase):
         self.assertTrue(self.returned.configuration.load()['ownership_enabled'])
         for role in self.services.units:self.assertEqual(self.services.properties(role)['ActiveState'],'active')
 
+    def test_dependencies_synchronize_after_publication_and_before_services_restart(self):
+        # The restarted gateway must find a current environment, or Hermes runs its own completion under the update lock.
+        review=self.prepare();seen=[]
+        def synchronize():
+            seen.append((self.returned.configuration.load()['ownership_enabled'],
+                         tuple(self.services.properties(role)['ActiveState'] for role in ('dashboard','gateway'))))
+        self.operation().apply(review['signature'],account='dashboard:owner',synchronize=synchronize)
+        self.operation().rollback(review['signature'],account='dashboard:owner',synchronize=synchronize)
+        self.assertEqual(seen,[(False,('inactive','inactive')),(True,('inactive','inactive'))])
+
     def test_changed_profile_refuses_before_services_stop(self):
         review=self.prepare()
         pids={role:self.services.properties(role)['MainPID'] for role in self.services.units}
