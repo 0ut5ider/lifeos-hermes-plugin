@@ -20,7 +20,6 @@
 - Let `hermes lifeos-release prepare` prepare an update or the managed-runtime move. In 0.8.0-rc.1 it prepared only a first installation.
 - Find Hermes processes that the stock launcher started without a re-execution, such as a hand-started dashboard or an interactive session. 0.8.0-rc.1 missed them, patched files beneath them, and offered no unit.
 - Give the unit that replaces a hand-started dashboard the same `--host` and `--port`. Refuse when hand-started dashboards listen on different addresses.
-- Show in the review the services of the prepared plan, including the replacement of the dashboard that serves the review.
 - Find Bun in the account's `~/.local/bin` when the dashboard's `PATH` lacks it.
 - Tell the owner to claim the installation when the releases page cannot show memory workflows before the claim.
 - Record the login of the dashboard password provider that authorized a removal, and check the standalone recovery password against it. 0.8.0-rc.1 read the login only from `config.yaml` and refused removal on hosts that set it through the environment.

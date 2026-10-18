@@ -206,15 +206,13 @@ def inplace_review(job, selected, value, plan):
     """Summarize what an in-place operation changes in the owner's Hermes installation.
 
     Preparation records the configuration keys and the update difference in the job; the review only reads them.
-    The services come from the prepared plan, which the worker applies: this dashboard process cannot see
-    itself as a hand-started consumer, so a plan computed here would hide its own replacement.
     """
     entry = selected['entry']
     files = entry['files']
     modified = sorted(path for path, item in files.items() if item['stock'] is not None)
     added = sorted(path for path, item in files.items() if item['stock'] is None)
     changes = commands.read_private(job / 'inplace-review.json')
-    services = commands.read_private(job / 'plan.json')['services']
+    services = plan['services']
     return {'hermes': {'label': entry['label'], 'commit': entry['commit'], 'source': value['host']['source'],
                        'modified': len(modified), 'added': len(added),
                        'files': {'modified': modified, 'added': added}},
