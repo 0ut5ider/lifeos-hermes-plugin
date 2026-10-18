@@ -21,6 +21,7 @@
 - Find Hermes processes that the stock launcher started without a re-execution, such as a hand-started dashboard or an interactive session. 0.8.0-rc.1 missed them, patched files beneath them, and offered no unit.
 - Give the unit that replaces a hand-started dashboard the same `--host` and `--port`. Refuse when hand-started dashboards listen on different addresses.
 - Count the hand-started dashboard that serves the review as a consumer that its new unit replaces. In 0.8.0-rc.2 the review re-sealed a plan without it, and the installation rolled back.
+- Refuse an apply before any service stops when the services to stop, create, or replace differ from the reviewed plan.
 - Find Bun in the account's `~/.local/bin` when the dashboard's `PATH` lacks it.
 - Tell the owner to claim the installation when the releases page cannot show memory workflows before the claim.
 - Record the login of the dashboard password provider that authorized a removal, and check the standalone recovery password against it. 0.8.0-rc.1 read the login only from `config.yaml` and refused removal on hosts that set it through the environment.

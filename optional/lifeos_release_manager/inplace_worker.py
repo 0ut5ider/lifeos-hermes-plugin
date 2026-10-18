@@ -69,6 +69,21 @@ def _terminate(processes):
     raise ReleaseRejected('A hand-started Hermes process does not stop; close it and recover the operation')
 
 
+def check_reviewed_services(reviewed, current):
+    """Refuse an apply whose services differ from the reviewed plan before any service stops.
+
+    The worker stops, creates, and replaces exactly what the owner reviewed; a host that changed since,
+    or a plan sealed by another process that saw different consumers, refuses here instead of rolling back.
+    """
+    def identity(value):
+        if value is None:
+            return None
+        return (sorted(value['roles']), sorted(value['created']),
+                sorted((item['pid'], item['start_time'], item['role']) for item in value['consumers']))
+    if identity(reviewed) != identity(current):
+        raise ReleaseRejected('The Hermes services changed after review; prepare the operation again')
+
+
 def _consumers_stopped(request, plan):
     created = [role for role in plan['services']['created'] if role in CREATED_UNITS]
     _terminate(replace_with_units(plan['services']['consumers'], created))
@@ -303,6 +318,8 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
     fresh_recovery = action == 'recover' and plan['fresh']
     if action == 'apply' or fresh_recovery:
         selected = inspect_operation(job, request, installation_lease=lease, fresh_recovery=fresh_recovery)
+        if action == 'apply':
+            check_reviewed_services(plan['services'], selected['services'])
     else:
         if str(current.memory_module('lifeos_installation').selection(profile).installed) != request['installed']:
             raise ReleaseRejected('The recovery changes its selected native installation')

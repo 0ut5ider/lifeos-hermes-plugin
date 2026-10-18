@@ -413,5 +413,25 @@ class RegistrationTests(SyntheticUnits):
         self.assertIsNone(self.verify({'services': {'roles': [], 'created': [], 'active': {}}}))
 
 
+class ReviewedServicesTests(unittest.TestCase):
+    def services(self, **changes):
+        value = {'roles': ['gateway'], 'created': ['dashboard', 'pulse'], 'signature': 's' * 64,
+                 'consumers': [{'pid': 41, 'start_time': 7, 'command': 'python3', 'role': 'dashboard'}],
+                 'active': {'gateway': True}, 'enabled': {'gateway': 'enabled'}}
+        value.update(changes)
+        return value
+
+    def test_apply_refuses_services_that_differ_from_the_review(self):
+        from optional.lifeos_release_manager.inplace_worker import check_reviewed_services
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        check_reviewed_services(self.services(), self.services())
+        check_reviewed_services(None, None)
+        for fresh in (self.services(created=['pulse']), self.services(roles=['gateway', 'dashboard']),
+                      self.services(consumers=[]), None,
+                      self.services(consumers=[{'pid': 41, 'start_time': 8, 'command': 'python3', 'role': 'dashboard'}])):
+            with self.subTest(fresh=fresh), self.assertRaisesRegex(ReleaseRejected, 'changed after review'):
+                check_reviewed_services(self.services(), fresh)
+
+
 if __name__ == '__main__':
     unittest.main()
