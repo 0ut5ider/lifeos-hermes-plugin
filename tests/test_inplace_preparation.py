@@ -342,7 +342,7 @@ class TransitionTests(unittest.TestCase):
                 self._check(home, {'hermes-dashboard.service': {
                     'LoadState': 'loaded', 'ExecStart': self._entry(str(account) + ' dashboard'),
                     'ExecStartPre': self._entry(str(workspace) + ' version')}})
-            # Stock Hermes writes its stop commands with the same launcher as the start command.
+            # Every other command of a unit counts too; stock Hermes writes its stop commands with the start launcher.
             for key in ('ExecCondition', 'ExecStartPost', 'ExecReload', 'ExecStop', 'ExecStopPost'):
                 with self.subTest(key=key), self.assertRaisesRegex(ReleaseRejected, 'hermes-gateway.service'):
                     self._check(home, {'hermes-gateway.service': {

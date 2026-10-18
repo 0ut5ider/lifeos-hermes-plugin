@@ -1,0 +1,398 @@
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/r2-1-refusal-review-round3.md b/docs/agents/2026-10-18-r2-1-refusal-review/r2-1-refusal-review-round3.md
+new file mode 100644
+index 00000000..a41faed0
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/r2-1-refusal-review-round3.md
+@@ -0,0 +1,94 @@
++# R2-1 refusal review, round 3
++
++- Date: 2026-10-18
++- Role: code reviewer
++- Model: Claude Opus 5.5 (claude-opus-5-5)
++- Question: Does commit 5d746bfc (`git diff adaa6b8a..5d746bfc` on `feature/minimal-install-review`) close round 2 findings N1 to N5? Does it add defects or false refusals on the daily, development, and CT 114 layouts? Is `_check_replaced_drop_ins` (any `Exec` line in a drop-in of a replaced unit refuses) a real false-refusal risk? Do the docs and the coding standards match?
++
++Raw data in `raw-round3/`:
++
++- `r3-tests-*.txt`: the requested test runs, including the run without a user bus.
++- `ct114-systemctl-show.txt`: read-only `systemctl --user show` of the three units on CT 114 (systemd 255), including the stop commands.
++- `stock-gateway-stop-commands.txt`: `ExecStop`, `ExecStopPost`, `ExecReload` in the pinned stock Hermes `hermes_cli/gateway.py`.
++- `probe_round3.py`, `probe-round3-output.txt`: `check_service_launchers` through the real `show()` and `parse_show()`. Only `subprocess.run` is replaced. Programs and drop-ins are real files.
++- `mutant_round3.sh`, `mutant-round3.txt`: one source mutation at a time against `TransitionTests` and `ParseShowTests`.
++
++## Tests
++
++| Module | Result |
++| --- | --- |
++| `test_inplace_preparation.py` | 27 tests, OK |
++| `test_inplace_preparation.py`, no user bus (`env -u DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR=/nonexistent`) | 27 tests, OK |
++| `test_inplace_services.py` | 9 tests, OK |
++| `test_inplace_plan.py` | 14 tests, OK |
++| `test_inplace_worker.py` | 24 tests, OK |
++
++Mutations (`mutant-round3.txt`): the tests catch `replaced=()` always, removal of the drop-in check, the old ` ;` argv regex, no quote stripping, `ExecStart` only, last entry only, and a last-wins `parse_show`. Removing `ExecStartPost` from `UNIT_COMMANDS` passes all tests (finding M2).
++
++## Round 2 findings
++
++| Round 2 | Status | Evidence |
++| --- | --- | --- |
++| N1 older tests read the real user manager | Closed | `TransitionTests.setUp` patches `inplace_services.show`. The run without a user bus passes. No other test module calls `transition_gateway_unit` or `check_service_launchers`. |
++| N2 last ExecStart only; Pre/Post unchecked | Closed for start commands | `parse_show` keeps each repeated line. Probe: `two ExecStart, forwarder in first -> REFUSED`, `dashboard ExecStartPre on forwarder -> REFUSED`. Stop commands are still unchecked (M1). |
++| N3 argv stops at first ` ; `, quoted tokens | Closed for the cheap cases | Regex now ends at ` ; ignore_errors=`. Tokens lose surrounding quotes. Probe: `nfs-server style ... -> REFUSED`. `$HOME/...` inside a shell string still passes, which round 2 accepted as a gap. |
++| N4 replaced gateway drop-in sets ExecStart | Closed | `_check_replaced_drop_ins`. Hermetic wiring test `test_transition_gateway_unit_checks_the_drop_ins_of_a_replaced_unit`; the `replaced=()` mutation now fails it. |
++| N5 daemon-reload hint, duplicate unit lists | Closed | Message adds `systemctl --user daemon-reload`. `SERVICE_UNITS` removed; `transition_gateway_unit` uses `inplace_services.UNITS`. `import re` is at module level. |
++
++`parse_show` change and other callers: `inplace_worker.py:142,155` and `_properties` request only single-valued properties, so the join does not change them.
++
++## Host layouts
++
++- CT 114 (stock-format managed gateway, replaced, no drop-ins): `DropInPaths=` is empty for all three units (`ct114-systemctl-show.txt`). Dashboard runs `~/.local/bin/hermes`, Pulse runs `~/.local/bin/bun`. Probe: `CT 114 layout, gateway replaced -> accepted`. systemd 255 omits empty `ExecStartPre`/`ExecStartPost` and prints no stderr, so `show()` does not raise.
++- Daily (template units on `~/.local/bin/hermes`, Pulse on bun, `backup-privacy.conf` with `UMask=0077`, dashboard `daily-text.conf`, Fedora's global `10-timeout-abort.conf`): gateway not replaced, so the drop-in text check does not run. Probe: `daily layout -> accepted`.
++- Development after the owner repoints ExecStart: accepted (probe), but see M1.
++- `_check_replaced_drop_ins` false-refusal risk: it runs only for a replaced gateway. On the known hosts that is CT 114, which has no drop-ins. A Fedora host adds `/usr/lib/systemd/user/service.d/10-timeout-abort.conf` to `DropInPaths`; it contains only `TimeoutStopFailureMode=abort`, and the probe accepts it. A drop-in with `ExecStop=`, `ExecReload=`, `ExecSearchPath=`, or `ExecPaths=` refuses (probe), even with a harmless target. No known host has one. I judge this not a real risk on these hosts. Comment lines (`#`, `;`) do not match.
++
++## Findings
++
++### M1 (Medium, blocking) Stop commands of a non-replaced gateway are not checked
++
++`optional/lifeos_release_manager/inplace_preparation.py:72` (`UNIT_COMMANDS = ('ExecStartPre', 'ExecStart', 'ExecStartPost')`).
++
++Stock Hermes writes the gateway unit with three commands on the same launcher (`hermes_cli/gateway.py:3332, 3346, 3347` in both the pinned stock archive and the integration source):
++
++```
++ExecStart=<root>/.hermes/bin/hermes gateway run
++ExecStop=-<root>/.hermes/bin/hermes --run-module gateway.systemd_stop_mark
++ExecStopPost=-<root>/.hermes/bin/hermes --run-module gateway.cgroup_cleanup
++```
++
++CT 114 confirms the format on a real host: its gateway reports `ExecStop` and `ExecStopPost` on the same managed launcher as `ExecStart` (`ct114-systemctl-show.txt`). On CT 114 this is harmless, because the fragment names `/.lifeos-releases/` and preparation replaces it.
++
++Scenario on development: the gateway unit runs `~/workspace/hermes-agent/.hermes/bin/hermes`, which is `installation_command`'s form for a stock-installed unit of that checkout, so it carries the same forwarder in `ExecStop` and `ExecStopPost`. The fragment does not name `/.lifeos-releases/`, so the gateway is not replaced. The refusal message tells the owner to "Point the unit at ~/.local/bin/hermes". The brief describes exactly that edit ("gateway and dashboard ExecStart are pointed at ~/.local/bin/hermes"). After that edit, preparation accepts (probe: `dev layout, ExecStart repointed, ExecStop/ExecStopPost still on checkout forwarder -> accepted`). After the transition, each gateway stop runs `systemd_stop_mark` and `cgroup_cleanup` from the managed 0.7.x runtime through the forwarder. If the managed runtime is removed later, both commands fail silently because of the `-` prefix. This is the R2-1 failure class for the stop path.
++
++Assumption: I did not inspect the development host's unit. The conclusion holds if its gateway unit was written by `hermes gateway install` from the workspace checkout. Check with `systemctl --user show hermes-gateway -p ExecStop -p ExecStopPost` on development.
++
++Fix: add `ExecStop`, `ExecStopPost`, `ExecReload`, and `ExecCondition` to `UNIT_COMMANDS`. On the known hosts this adds no refusal: CT 114 dashboard and Pulse have no stop commands, CT 114 gateway is replaced, `ExecReload=/bin/kill` is not a forwarder, and template units (`release_services.py:71`) write only `ExecStart`. Add a test for a stop command on the forwarder. The refusal message could say "Point every command of the unit at ~/.local/bin/hermes". The commit subject "check every command a Hermes unit runs" is not true until this is done.
++
++### M2 (Low) No test covers ExecStartPost
++
++Mutation `no ExecStartPost` passes all tests. `test_transition_checks_every_command_of_a_unit` covers multiple `ExecStart` and `ExecStartPre` only. One more `assertRaises` with `ExecStartPost` closes it, and the same test pattern fits M1.
++
++### M3 (Info)
++
++- Design section 10 step 4 says preparation reads "each gateway, dashboard, and Pulse command" and exempts "a gateway unit that preparation replaces". It does not say that a replaced gateway refuses a drop-in that sets a command. One sentence would match the code. The CHANGELOG line still matches.
++- `docs/verification/2026-10-17-inplace-e2e/README.md` row 93 quotes the refusal text of that run up to "managed runtime.". The new message only adds text after that point, so the record stays correct.
++- `_check_replaced_drop_ins` treats every `Exec*` key as a command, including the sandbox options `ExecSearchPath=` and `ExecPaths=`. No known host uses them. A pattern such as `^\s*Exec(Start|Stop|Reload|Condition)` would be exact; this is optional.
++- `DropInPaths` is split on whitespace, so a drop-in path with a space would refuse as unreadable. No known host has one.
++- Test lines reach 165 characters (`tests/test_inplace_services.py:121-122`, several in `tests/test_inplace_preparation.py`). The product file already has six lines over 120, so this is style only.
++
++## Docs and standards
++
++- ABOUTME headers are present in all four touched files and in the raw scripts.
++- Names (`parse_show`, `_command_programs`, `_check_replaced_drop_ins`, `UNIT_COMMANDS`) are clear. Comments and docstrings describe behaviour, not history.
++- The diff contains no em dashes or en dashes.
++- The mock boundary (the service manager's text, parsed by the real `parse_show`) is now closer to the real interface than in round 2. File checks stay real.
++
++## Review priorities for Adrian
++
++1. M1: add the stop and reload commands to `UNIT_COMMANDS` with one test. First confirm the development gateway's `ExecStop` and `ExecStopPost` with the command above. This is one constant, one message, and one test.
++2. M2: one assertion for `ExecStartPost`.
++3. M3: one sentence in design section 10 step 4.
++
++VERDICT: NOT CLEAN
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/ct114-systemctl-show.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/ct114-systemctl-show.txt
+new file mode 100644
+index 00000000..6e825aa8
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/ct114-systemctl-show.txt
+@@ -0,0 +1,28 @@
++== hermes-gateway
++ExecStart={ path=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes ; argv[]=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes gateway run ; ignore_errors=no ; start_time=[Sun 2026-10-18 14:51:18 UTC] ; stop_time=[n/a] ; pid=91608 ; code=(null) ; status=0/0 }
++LoadState=loaded
++FragmentPath=/home/lifeos-hermes/.config/systemd/user/hermes-gateway.service
++DropInPaths=
++== hermes-dashboard
++ExecStart={ path=/home/lifeos-hermes/.local/bin/hermes ; argv[]=/home/lifeos-hermes/.local/bin/hermes dashboard --isolated --no-open ; ignore_errors=no ; start_time=[Sun 2026-10-18 14:51:18 UTC] ; stop_time=[n/a] ; pid=91596 ; code=(null) ; status=0/0 }
++LoadState=loaded
++FragmentPath=/home/lifeos-hermes/.config/systemd/user/hermes-dashboard.service
++DropInPaths=
++== com.lifeos.pulse
++ExecStart={ path=/home/lifeos-hermes/.local/bin/bun ; argv[]=/home/lifeos-hermes/.local/bin/bun --no-install /home/lifeos-hermes/.claude/LIFEOS/PULSE/pulse.ts ; ignore_errors=no ; start_time=[Sun 2026-10-18 14:51:18 UTC] ; stop_time=[n/a] ; pid=91601 ; code=(null) ; status=0/0 }
++LoadState=loaded
++FragmentPath=/home/lifeos-hermes/.config/systemd/user/com.lifeos.pulse.service
++DropInPaths=
++systemd 255 (255.4-1ubuntu8)
++ls: cannot access '/usr/lib/systemd/user/service.d': No such file or directory
++ls: cannot access '/etc/systemd/user/service.d': No such file or directory
++ls: cannot access '/home/lifeos-hermes/.config/systemd/user/service.d': No such file or directory
++== hermes-gateway
++ExecReload={ path=/bin/kill ; argv[]=/bin/kill -USR1 $MAINPID ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
++ExecStop={ path=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes ; argv[]=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes --run-module gateway.systemd_stop_mark ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
++ExecStopPost={ path=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes ; argv[]=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes --run-module gateway.cgroup_cleanup ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
++KillMode=mixed
++== hermes-dashboard
++KillMode=control-group
++== com.lifeos.pulse
++KillMode=control-group
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/mutant-round3.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/mutant-round3.txt
+new file mode 100644
+index 00000000..91725abe
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/mutant-round3.txt
+@@ -0,0 +1,9 @@
++baseline (no change) -> OK
++always replaced=() -> FAILED (failures=1)
++no drop-in check for replaced unit -> FAILED (failures=1, errors=1)
++argv regex stops at first ' ;' -> FAILED (failures=1)
++no quote stripping -> FAILED (failures=1)
++only ExecStart -> FAILED (failures=1)
++no ExecStartPost -> OK
++only last entry per key -> FAILED (failures=1)
++parse_show last wins -> FAILED (failures=2)
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/mutant_round3.sh b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/mutant_round3.sh
+new file mode 100755
+index 00000000..de150f71
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/mutant_round3.sh
+@@ -0,0 +1,30 @@
++#!/bin/bash
++# ABOUTME: Applies one source mutation at a time to a scratch copy of the plugin and runs the transition tests.
++# ABOUTME: A mutation that leaves the tests passing marks a gap in the tests.
++set -u
++SRC=/home/outsider/Projects/Hermes_agent/LifeOS_plugin
++W=$HOME/agent-scratch/r3-mutants
++PY=/home/outsider/.cache/lifeos-daily-promotion-20261014/frozen-test-environment/bin/python
++H=/home/outsider/.cache/lifeos-release-0.7.3-20261016/archive-integration-wgrx453d/package/hermes
++mutate() {
++  rm -rf $W; mkdir -p $W; cp -r $SRC/optional $SRC/tests $W/
++  $PY - "$W/optional/lifeos_release_manager/$1" "$2" "$3" <<'PY'
++import sys
++path, old, new = sys.argv[1:]
++text = open(path).read()
++assert old in text, old
++open(path, 'w').write(text.replace(old, new, 1))
++PY
++  out=$(cd $W && TMPDIR=$HOME/agent-scratch/tmp LIFEOS_HERMES_SOURCE=$H PYTHONPATH=$W:$H $PY -B -m unittest discover -s tests -p "test_inplace_[ps]*.py" -k TransitionTests -k ParseShowTests 2>&1 | tail -1)
++  echo "$4 -> $out"
++}
++mutate inplace_preparation.py "FORWARDER_BYTES = 1024 * 1024" "FORWARDER_BYTES = 1024 * 1024" "baseline (no change)"
++mutate inplace_preparation.py "check_service_launchers(home, replaced=('gateway',) if replace else ())" "check_service_launchers(home, replaced=())" "always replaced=()"
++mutate inplace_preparation.py "            _check_replaced_drop_ins(unit, values)
++" "" "no drop-in check for replaced unit"
++mutate inplace_preparation.py " ; ignore_errors=', entry)" " ;', entry)" "argv regex stops at first ' ;'"
++mutate inplace_preparation.py "part.strip('\\'\"')" "part" "no quote stripping"
++mutate inplace_preparation.py "UNIT_COMMANDS = ('ExecStartPre', 'ExecStart', 'ExecStartPost')" "UNIT_COMMANDS = ('ExecStart',)" "only ExecStart"
++mutate inplace_preparation.py "UNIT_COMMANDS = ('ExecStartPre', 'ExecStart', 'ExecStartPost')" "UNIT_COMMANDS = ('ExecStartPre', 'ExecStart')" "no ExecStartPost"
++mutate inplace_preparation.py "for entry in values.get(key, '').splitlines():" "for entry in values.get(key, '').splitlines()[-1:]:" "only last entry per key"
++mutate inplace_services.py "values[key] = values[key] + '\\n' + value if key in values else value" "values[key] = value" "parse_show last wins"
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/probe-round3-output.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/probe-round3-output.txt
+new file mode 100644
+index 00000000..c79d2c84
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/probe-round3-output.txt
+@@ -0,0 +1,14 @@
++CT 114 layout, gateway replaced -> accepted
++CT 114 layout, gateway not replaced (expect refusal) -> REFUSED: The hermes-gateway.service unit runs <home>/.hermes/.lifeos-releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/hermes/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
++CT 114 layout on Fedora with global 10-timeout-abort.conf, replaced -> accepted
++daily layout -> accepted
++dev layout, ExecStart repointed, ExecStop/ExecStopPost still on checkout forwarder -> accepted
++dashboard ExecStartPre on forwarder -> REFUSED: The hermes-dashboard.service unit runs <home>/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
++nfs-server style: sh -c with " ; " then forwarder -> REFUSED: The hermes-dashboard.service unit runs <home>/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
++two ExecStart, forwarder in first -> REFUSED: The hermes-dashboard.service unit runs <home>/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
++replaced gateway, drop-in ExecStart forwarder -> REFUSED: The hermes-gateway.service drop-in <home>/.config/systemd/user/hermes-gateway.service.d/override.conf sets a command, and the transition replaces that unit. Remove the command from the drop-in, then prepare again.
++replaced gateway, drop-in ExecStop only (account launcher) -> REFUSED: The hermes-gateway.service drop-in <home>/.config/systemd/user/hermes-gateway.service.d/override.conf sets a command, and the transition replaces that unit. Remove the command from the drop-in, then prepare again.
++replaced gateway, drop-in ExecSearchPath sandbox option -> REFUSED: The hermes-gateway.service drop-in <home>/.config/systemd/user/hermes-gateway.service.d/override.conf sets a command, and the transition replaces that unit. Remove the command from the drop-in, then prepare again.
++replaced gateway, drop-in UMask only -> accepted
++replaced gateway, drop-in with commented Exec -> accepted
++replaced gateway, unreadable drop-in path -> REFUSED: Preparation cannot read the hermes-gateway.service drop-in /nonexistent/x.conf
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/probe_round3.py b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/probe_round3.py
+new file mode 100644
+index 00000000..42d5a2db
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/probe_round3.py
+@@ -0,0 +1,80 @@
++# ABOUTME: Probes check_service_launchers at 5d746bfc with systemctl show text through the real show() parser.
++# ABOUTME: Only subprocess.run inside inplace_services is replaced; unit programs and drop-ins are real temporary files.
++import subprocess, tempfile
++from pathlib import Path
++from unittest import mock
++from optional.lifeos_release_manager import inplace_services
++from optional.lifeos_release_manager.inplace_preparation import check_service_launchers
++from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++
++def entry(key, path, argv, ignore='no'):
++    return (key + '={ path=' + path + ' ; argv[]=' + argv + ' ; ignore_errors=' + ignore +
++            ' ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }\n')
++
++def run(label, home, outputs, replaced=()):
++    def fake(arguments, **kwargs):
++        unit = arguments[3]
++        text = outputs.get(unit, 'LoadState=not-found\nDropInPaths=\n')
++        return subprocess.CompletedProcess(arguments, 0, text, '')
++    with mock.patch.object(inplace_services.subprocess, 'run', side_effect=fake):
++        try:
++            check_service_launchers(home, replaced=replaced)
++            print(label, '-> accepted')
++        except ReleaseRejected as error:
++            print(label, '-> REFUSED:', error)
++
++with tempfile.TemporaryDirectory() as directory:
++    home = Path(directory)
++    managed = str(home) + '/.hermes/.lifeos-releases/' + 'a' * 32 + '/hermes/.hermes/bin/hermes'
++    ws = home / 'workspace/hermes-agent/.hermes/bin/hermes'
++    ws.parent.mkdir(parents=True); ws.write_text('#!/bin/sh\nexec ' + managed + ' "$@"\n')
++    acct = home / '.local/bin/hermes'; acct.parent.mkdir(parents=True); acct.write_text(ws.read_text())
++    bun = home / '.local/bin/bun'; bun.write_bytes(b'\0' * (2 * 1024 * 1024))
++    pulse = home / '.claude/LIFEOS/PULSE/pulse.ts'; pulse.parent.mkdir(parents=True); pulse.write_text('console.log(1)\n')
++    D = 'hermes-dashboard.service'; G = 'hermes-gateway.service'; P = 'com.lifeos.pulse.service'
++    dropdir = home / '.config/systemd/user'
++    for name in (G, D, P):
++        (dropdir / (name + '.d')).mkdir(parents=True)
++    fedora = home / 'usr-lib-service.d-10-timeout-abort.conf'; fedora.write_text('[Service]\nTimeoutStopFailureMode=abort\n')
++    privacy = {name: dropdir / (name + '.d/backup-privacy.conf') for name in (G, D, P)}
++    for path in privacy.values():
++        path.write_text('[Service]\nUMask=0077\n')
++    text = dropdir / (D + '.d/daily-text.conf'); text.write_text('[Service]\nWorkingDirectory=%h/.hermes\nEnvironment=HERMES_HOME=%h/.hermes\n')
++    def drops(*paths):
++        return 'DropInPaths=' + ' '.join(str(p) for p in paths) + '\n'
++
++    # CT 114 as captured in ct114-systemctl-show.txt, with the home rewritten.
++    ct114 = {G: entry('ExecStart', managed, managed + ' gateway run') + 'LoadState=loaded\nDropInPaths=\n',
++             D: entry('ExecStart', str(acct), str(acct) + ' dashboard --isolated --no-open') + 'LoadState=loaded\nDropInPaths=\n',
++             P: entry('ExecStart', str(bun), str(bun) + ' --no-install ' + str(pulse)) + 'LoadState=loaded\nDropInPaths=\n'}
++    run('CT 114 layout, gateway replaced', home, ct114, replaced=('gateway',))
++    run('CT 114 layout, gateway not replaced (expect refusal)', home, ct114)
++    ct114_fedora = dict(ct114, **{G: ct114[G].replace('DropInPaths=\n', drops(fedora))})
++    run('CT 114 layout on Fedora with global 10-timeout-abort.conf, replaced', home, ct114_fedora, replaced=('gateway',))
++
++    daily = {G: 'LoadState=loaded\n' + drops(fedora, privacy[G]) + entry('ExecStart', str(acct), str(acct) + ' gateway run --external-supervisor'),
++             D: 'LoadState=loaded\n' + drops(fedora, privacy[D], text) + entry('ExecStart', str(acct), str(acct) + ' dashboard --isolated --no-open'),
++             P: 'LoadState=loaded\n' + drops(fedora, privacy[P]) + entry('ExecStart', str(bun), str(bun) + ' --no-install ' + str(pulse))}
++    run('daily layout', home, daily)
++
++    # Development host after the owner repoints ExecStart only; the stock-format gateway keeps
++    # ExecStop and ExecStopPost on the checkout forwarder, as hermes_cli/gateway.py:3345-3347 writes them.
++    dev = dict(daily)
++    dev[G] = (daily[G] + entry('ExecStop', str(ws), str(ws) + ' --run-module gateway.systemd_stop_mark', 'yes')
++              + entry('ExecStopPost', str(ws), str(ws) + ' --run-module gateway.cgroup_cleanup', 'yes')
++              + entry('ExecReload', '/bin/kill', '/bin/kill -USR1 $MAINPID'))
++    run('dev layout, ExecStart repointed, ExecStop/ExecStopPost still on checkout forwarder', home, dev)
++
++    run('dashboard ExecStartPre on forwarder', home, {D: 'LoadState=loaded\n' + drops() + entry('ExecStartPre', str(ws), str(ws) + ' version', 'yes') + entry('ExecStart', str(acct), str(acct) + ' dashboard')})
++    run('nfs-server style: sh -c with " ; " then forwarder', home, {D: 'LoadState=loaded\n' + drops() + entry('ExecStart', '/bin/sh', '/bin/sh -c true ; exec ' + str(ws) + ' dashboard')})
++    run('two ExecStart, forwarder in first', home, {D: 'LoadState=loaded\n' + drops() + entry('ExecStart', str(ws), str(ws) + ' dashboard') + entry('ExecStart', '/bin/true', '/bin/true')})
++
++    def replaced_with(body):
++        path = dropdir / (G + '.d/override.conf'); path.write_text(body)
++        return {G: ct114[G].replace('DropInPaths=\n', drops(path))}
++    run('replaced gateway, drop-in ExecStart forwarder', home, replaced_with('[Service]\nExecStart=\nExecStart=' + str(ws) + ' gateway run\n'), replaced=('gateway',))
++    run('replaced gateway, drop-in ExecStop only (account launcher)', home, replaced_with('[Service]\nExecStop=%h/.local/bin/hermes gateway stop\n'), replaced=('gateway',))
++    run('replaced gateway, drop-in ExecSearchPath sandbox option', home, replaced_with('[Service]\nExecSearchPath=/usr/bin\n'), replaced=('gateway',))
++    run('replaced gateway, drop-in UMask only', home, replaced_with('[Service]\nUMask=0077\n'), replaced=('gateway',))
++    run('replaced gateway, drop-in with commented Exec', home, replaced_with('[Service]\n# ExecStart=/x\n;ExecStart=/x\n'), replaced=('gateway',))
++    run('replaced gateway, unreadable drop-in path', home, {G: ct114[G].replace('DropInPaths=\n', 'DropInPaths=/nonexistent/x.conf\n')}, replaced=('gateway',))
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_plan.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_plan.txt
+new file mode 100644
+index 00000000..2da7ca16
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_plan.txt
+@@ -0,0 +1,5 @@
++..............
++----------------------------------------------------------------------
++Ran 14 tests in 2.553s
++
++OK
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_preparation-no-user-bus.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_preparation-no-user-bus.txt
+new file mode 100644
+index 00000000..1e0121ca
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_preparation-no-user-bus.txt
+@@ -0,0 +1,5 @@
++...........................
++----------------------------------------------------------------------
++Ran 27 tests in 5.775s
++
++OK
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_preparation.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_preparation.txt
+new file mode 100644
+index 00000000..b5237a1a
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_preparation.txt
+@@ -0,0 +1,5 @@
++...........................
++----------------------------------------------------------------------
++Ran 27 tests in 5.354s
++
++OK
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_services.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_services.txt
+new file mode 100644
+index 00000000..04e10c93
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_services.txt
+@@ -0,0 +1,5 @@
++.........
++----------------------------------------------------------------------
++Ran 9 tests in 7.554s
++
++OK
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_worker.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_worker.txt
+new file mode 100644
+index 00000000..886402df
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/r3-tests-test_inplace_worker.txt
+@@ -0,0 +1,5 @@
++........................
++----------------------------------------------------------------------
++Ran 24 tests in 27.478s
++
++OK
+diff --git a/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/stock-gateway-stop-commands.txt b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/stock-gateway-stop-commands.txt
+new file mode 100644
+index 00000000..ea255d8e
+--- /dev/null
++++ b/docs/agents/2026-10-18-r2-1-refusal-review/raw-round3/stock-gateway-stop-commands.txt
+@@ -0,0 +1,3 @@
++3345:ExecReload=/bin/kill -USR1 $MAINPID
++3346:ExecStop=-{_systemd_command(stop_mark)}
++3347:ExecStopPost=-{_systemd_command(cleanup)}
+diff --git a/docs/in-place-installation-design.md b/docs/in-place-installation-design.md
+index ed1fab66..e722bd21 100644
+--- a/docs/in-place-installation-design.md
++++ b/docs/in-place-installation-design.md
+@@ -164,7 +164,7 @@ No drift report compares `memory.provider`. The worker checks it after restart (
+ 1. Back up the profile, `~/.claude`, `~/.config/LIFEOS`, `~/.local/bin`, and the user units.
+ 2. Stop the services.
+ 3. Install stock Hermes `v0.21.7` with `install.sh --commit 71d34bad... --skip-setup` into `~/.hermes/hermes-agent`. `--skip-setup` skips `hermes setup` and `gateway install`. The installer's products stage still runs configuration migration and skills synchronization on the live profile, and its environment build includes the enabled bridge, so the backup in step 1 is required and the rehearsal checks the result. The installer does not repoint launchers that another owner created (`hermes_cli/_launchers.py:505-548`).
+-4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally. A managed gateway unit runs the managed launcher, so preparation also generates the unit that `hermes gateway install` writes for the stock checkout (`hermes_cli.gateway.generate_systemd_unit`). The program transaction publishes it with the launchers. Preparation reads each gateway, dashboard, and Pulse command from `systemctl --user show`. It refuses the transition while such a command runs the managed runtime through a program other than the three account commands, except a gateway unit that preparation replaces. Another Hermes checkout can own such a forwarder, for example `~/workspace/hermes-agent/.hermes/bin/hermes` on development, and that checkout can rewrite it later. The owner points the unit at `~/.local/bin/hermes` first (review item R2-1, decided by the owner on 2026-10-18). The service controller then rebinds the stopped gateway role to the reviewed unit file, so resume, rollback, and recovery accept either the managed or the stock definition. Preparation refuses the transition when another unit still runs the managed runtime. The registration receipt names the Hermes checkout that the gateway imports, and the worker requires the stock checkout.
++4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally. A managed gateway unit runs the managed launcher, so preparation also generates the unit that `hermes gateway install` writes for the stock checkout (`hermes_cli.gateway.generate_systemd_unit`). The program transaction publishes it with the launchers. Preparation reads every start, reload, and stop command of the gateway, dashboard, and Pulse units from `systemctl --user show`. It refuses the transition while such a command runs the managed runtime through a program other than the three account commands. A gateway unit that preparation replaces is exempt, but a drop-in that sets one of its commands refuses, because the drop-in stays after the replacement. Another Hermes checkout can own such a forwarder, for example `~/workspace/hermes-agent/.hermes/bin/hermes` on development, and that checkout can rewrite it later. The owner points the unit at `~/.local/bin/hermes` first (review item R2-1, decided by the owner on 2026-10-18). The service controller then rebinds the stopped gateway role to the reviewed unit file, so resume, rollback, and recovery accept either the managed or the stock definition. Preparation refuses the transition when another unit still runs the managed runtime. The registration receipt names the Hermes checkout that the gateway imports, and the worker requires the stock checkout.
+ 5. Verify, then retain the managed job directories until the owner approves their removal.
+ 
+ The transition is rehearsed first on a clone of the development container.
+diff --git a/optional/lifeos_release_manager/inplace_preparation.py b/optional/lifeos_release_manager/inplace_preparation.py
+index c7e1fc48..f7488726 100644
+--- a/optional/lifeos_release_manager/inplace_preparation.py
++++ b/optional/lifeos_release_manager/inplace_preparation.py
+@@ -69,7 +69,7 @@ def _service_value(text, key, default):
+ 
+ ACCOUNT_COMMANDS = ('hermes', 'hermes-agent', 'hermes-acp')
+ FORWARDER_BYTES = 1024 * 1024
+-UNIT_COMMANDS = ('ExecStartPre', 'ExecStart', 'ExecStartPost')
++UNIT_COMMANDS = ('ExecCondition', 'ExecStartPre', 'ExecStart', 'ExecStartPost', 'ExecReload', 'ExecStop', 'ExecStopPost')
+ 
+ 
+ def _runs_managed_runtime(path):
+diff --git a/tests/test_inplace_preparation.py b/tests/test_inplace_preparation.py
+index b26ac25b..7ce758ca 100644
+--- a/tests/test_inplace_preparation.py
++++ b/tests/test_inplace_preparation.py
+@@ -342,6 +342,12 @@ class TransitionTests(unittest.TestCase):
+                 self._check(home, {'hermes-dashboard.service': {
+                     'LoadState': 'loaded', 'ExecStart': self._entry(str(account) + ' dashboard'),
+                     'ExecStartPre': self._entry(str(workspace) + ' version')}})
++            # Stock Hermes writes its stop commands with the same launcher as the start command.
++            for key in ('ExecCondition', 'ExecStartPost', 'ExecReload', 'ExecStop', 'ExecStopPost'):
++                with self.subTest(key=key), self.assertRaisesRegex(ReleaseRejected, 'hermes-gateway.service'):
++                    self._check(home, {'hermes-gateway.service': {
++                        'LoadState': 'loaded', 'ExecStart': self._entry(str(account) + ' gateway run'),
++                        key: self._entry(str(workspace) + ' gateway stop')}})
+             # systemd prints arguments without quotes, so an argument can contain " ; ".
+             with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                 self._check(home, {'hermes-dashboard.service': '/bin/sh -c "true ; exec ' + str(workspace) + '"'})

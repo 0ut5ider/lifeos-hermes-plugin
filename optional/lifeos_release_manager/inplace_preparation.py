@@ -129,7 +129,7 @@ def check_service_launchers(home, *, replaced=()):
                     path = Path(value)
                     if path.is_absolute() and path not in account and _runs_managed_runtime(path):
                         raise ReleaseRejected('The ' + unit + ' unit runs ' + value + ', which runs the managed '
-                                              'runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user '
+                                              'runtime. Point every command of the unit at ~/.local/bin/hermes, run `systemctl --user '
                                               'daemon-reload`, then prepare again.')
 
 
