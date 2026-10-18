@@ -192,6 +192,23 @@ class ReleaseDashboardTests(unittest.TestCase):
 
 
 class InplaceReviewTests(unittest.TestCase):
+    def test_review_shows_the_prepared_services_that_the_dashboard_cannot_see_itself_in(self):
+        # The review runs in the dashboard process, and the scan never reports the process it runs in.
+        from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review
+        from optional.lifeos_release_manager.release_programs import publish
+        with tempfile.TemporaryDirectory() as directory:
+            job = Path(directory)
+            publish(job / 'inplace-review.json', json.dumps({'configuration': [], 'update': None}).encode())
+            prepared = {'services': {'roles': ['gateway'], 'created': ['dashboard', 'pulse'],
+                                     'consumers': [{'pid': 41, 'start_time': 7, 'command': 'python3', 'role': 'dashboard'}]}}
+            publish(job / 'plan.json', json.dumps(prepared).encode())
+            live = {'services': {'roles': ['gateway'], 'created': ['pulse'], 'consumers': []}}
+            entry = {'label': 'v0.0.1', 'commit': 'a' * 40, 'files': {}}
+            value = {'host': {'source': '/home/owner/.hermes/hermes-agent'}, 'dependencies': {'added': {}}}
+            review = inplace_review(job, {'entry': entry}, value, live)
+        self.assertEqual(review['services'], {'restarted': ['gateway'], 'created': ['dashboard', 'pulse'],
+                                              'replaced': [{'pid': 41, 'command': 'python3', 'role': 'dashboard'}]})
+
     def test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts(self):
         from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review
         from optional.lifeos_release_manager.release_programs import publish
@@ -208,6 +225,7 @@ class InplaceReviewTests(unittest.TestCase):
             value = {'host': {'source': '/home/owner/.hermes/hermes-agent'},
                      'dependencies': {'added': {'tree-sitter': ['0.26.0']}}}
             plan = {'services': {'roles': ['gateway'], 'created': [], 'consumers': []}}
+            publish(job / 'plan.json', json.dumps(plan).encode())
             review = inplace_review(job, {'entry': entry}, value, plan)
         self.assertEqual(review['hermes']['files'], {'modified': ['agent/loop.py', 'hermes_cli/plugins.py'],
                                                      'added': ['hermes_cli/new_hook.py']})
