@@ -122,6 +122,16 @@ Findings from this run, none of which blocks the transition:
 7. The LifeOS Bridge page still shows the managed-release text "Prepare latest LifeOS update" on an in-place installation.
 8. The review did not offer a unit for the hand-started dashboard that served the request.
 
+## Published 0.8.0-rc.4 through the dashboard on 112
+
+Date: 2026-10-18. Same starting state as the rc.3 run: `base` snapshot, the dashboard login only in `.env`, a hand-started dashboard on `0.0.0.0`, and the release manager from the GitHub URL at `--ref 5125f322`.
+
+| Step | Result |
+| --- | --- |
+| Install `0.8.0-rc.4` | The review listed the dashboard unit and the stop of the hand-started dashboard. Applied (`7ad34358`). |
+| Claim, reverse export, provider return | The return verified on the first attempt (`66c1d135`). The workflow ran its `dependency-return` synchronization; the gateway log shows no Hermes source-update completion. |
+| Removal | Verified (`bddb3e81`): clean checkout at `71d34bad`, no host record, `weather-test` kept, gateway and dashboard unit active. |
+
 ## Release candidate 0.8.0-rc.4 before publication
 
 Build: program commit `5125f322`. Two builds gave archive SHA-256 `4490994d37966d9e1d344673a82e55fb292565457378269b82bdf40ad67e08b7`. rc.4 adds the dependency synchronization of the provider return.
