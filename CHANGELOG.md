@@ -18,6 +18,7 @@
 - Refuse the move while a Hermes unit runs the managed runtime through a program other than the account commands in `~/.local/bin`. Point the unit at `~/.local/bin/hermes` first.
 - Keep a private failure record for stopped memory workflows and failed fresh-agent probes.
 - Let `hermes lifeos-release prepare` prepare an update or the managed-runtime move. In 0.8.0-rc.1 it prepared only a first installation.
+- Find Hermes processes that the stock launcher started without a re-execution, such as a hand-started dashboard or an interactive session. 0.8.0-rc.1 missed them, patched files beneath them, and offered no unit.
 
 ## 0.7.3 (2026-10-16)
 

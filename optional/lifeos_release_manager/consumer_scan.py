@@ -7,12 +7,16 @@ from pathlib import Path
 
 
 def _references(data, roots):
-    """True when ``data`` names a root itself or a path below it, not a sibling with the same prefix."""
+    """True when ``data`` names a root itself or a path below it, not a sibling with the same prefix.
+
+    A path ends at a separator, the end of an argument or variable, or a closing quote: the stock
+    launcher passes the checkout inside Python code as a quoted string.
+    """
     for root in roots:
         start = data.find(root)
         while start >= 0:
             end = start + len(root)
-            if end == len(data) or data[end:end + 1] in (b'/', b'\0', b':', b' ', b'='):
+            if end == len(data) or data[end:end + 1] in (b'/', b'\0', b':', b' ', b'=', b"'", b'"'):
                 return True
             start = data.find(root, start + 1)
     return False

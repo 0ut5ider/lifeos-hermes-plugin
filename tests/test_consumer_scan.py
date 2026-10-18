@@ -46,6 +46,22 @@ class ConsumerScanTests(unittest.TestCase):
         pid = self.start(cwd=self.source)
         self.assertIn(pid, self.scan())
 
+    def test_process_started_by_the_stock_launcher_is_found(self):
+        # The stock launcher passes the checkout inside Python code, quoted, and need not re-execute.
+        for quote in ("'", '"'):
+            code = 'import sys, time; sys.path.insert(0, ' + quote + str(self.source) + quote + '); time.sleep(60)'
+            process = subprocess.Popen([sys.executable, '-I', '-c', code, 'dashboard'], cwd=self.root)
+            self.addCleanup(process.wait)
+            self.addCleanup(process.kill)
+            deadline = time.monotonic() + 5
+            while not Path('/proc', str(process.pid), 'cmdline').read_bytes() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            with self.subTest(quote=quote):
+                self.assertIn(process.pid, self.scan())
+        sibling = 'import time; print(' + repr(str(self.source) + '-other') + '); time.sleep(60)'
+        pid = self.start(arguments=(sibling,), cwd=self.root)
+        self.assertNotIn(pid, self.scan())
+
     def test_unrelated_process_and_sibling_paths_are_ignored(self):
         sibling = self.root / 'hermes-agent-other'
         sibling.mkdir()
