@@ -122,6 +122,18 @@ Findings from this run, none of which blocks the transition:
 7. The LifeOS Bridge page still shows the managed-release text "Prepare latest LifeOS update" on an in-place installation.
 8. The review did not offer a unit for the hand-started dashboard that served the request.
 
+## Published 0.8.0-rc.3 through the dashboard on 112
+
+Date: 2026-10-18. Starting state: 112 at its `base` snapshot. The dashboard login (`HERMES_DASHBOARD_BASIC_AUTH_*`) was only in `~/.hermes/.env`, not in `config.yaml`. A synthetic `OPENROUTER_API_KEY` let Hermes resolve the model provider. The dashboard ran by hand: `hermes dashboard --host 0.0.0.0 --no-open`. The release manager came from the GitHub URL at `--ref 20c6b077`.
+
+| Step | Result |
+| --- | --- |
+| Install `0.8.0-rc.3` from the releases page | The review listed "User services created: dashboard, pulse" and "Stops the hand-started dashboard (process 911)". Applied (`5c29297d`). The created `hermes-dashboard.service` runs `hermes dashboard --isolated --no-open --host 0.0.0.0` and serves the page. The hand-started process is gone. |
+| Claim and reverse export on the LifeOS Bridge page | Claimed; memory check `ok`; exported |
+| Provider return | First run `interrupted`: the fresh-agent check reported "an update is still running" because the restarted gateway was finishing the environment itself. **Recover memory workflow** verified it. Commit `2118971a` fixes the cause. |
+| Removal | Preparation recorded the login of the running password provider in the signed plan (mode 0600). Removal verified (`406a4ec9`): clean checkout at `71d34bad`, no host record, `weather-test` kept, gateway and the dashboard unit active. |
+| Standalone recovery command, `rollback` | A wrong password refused with exit 1. The right password started the rollback; LifeOS returned (`rolled_back`, host record and patched files back). |
+
 ## Release candidate 0.8.0-rc.3 before publication
 
 Build: program commit `20c6b077`. Two builds gave archive SHA-256 `e4ffb904d39aad4d1189c3e0fbc3a6367802dfc812debeedff17d0f85ab7be6e`. rc.3 follows a failed dashboard test of the published rc.2 on 112: the review re-sealed a plan that missed the hand-started dashboard serving it, and the worker refused and rolled back. The checkout, units, and plugins stayed unchanged.
