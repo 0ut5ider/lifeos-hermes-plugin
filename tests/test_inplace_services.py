@@ -70,6 +70,18 @@ class InplaceServicesTests(unittest.TestCase):
         self.assertEqual(result['offers'], ['dashboard'])
         self.assertEqual(result['blocking'], [])
         self.assertEqual([item['pid'] for item in result['consumers']], [pid])
+        self.assertEqual(result['dashboard_options'], {})
+
+    def test_offered_dashboard_unit_keeps_the_hand_started_address(self):
+        self.process('dashboard', '--host', '0.0.0.0', '--port=9119', '--no-open')
+        result = inventory(self.source, self.state, units=self.units)
+        self.assertEqual(result['dashboard_options'], {'host': '0.0.0.0', 'port': 9119})
+
+    def test_dashboards_with_different_addresses_block(self):
+        self.process('dashboard', '--host', '0.0.0.0')
+        self.process('dashboard', '--port', '9200')
+        with self.assertRaisesRegex(ReleaseRejected, 'different addresses'):
+            inventory(self.source, self.state, units=self.units)
 
     def test_hand_started_dashboard_with_its_unit_present_blocks(self):
         self.unit('dashboard')

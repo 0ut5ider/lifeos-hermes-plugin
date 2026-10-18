@@ -115,7 +115,8 @@ def inspect_inplace(job, request, *, installation_lease=None, fresh_recovery=Fal
                             'active': {role: consumers['active'][role] for role in roles},
                             'enabled': {role: consumers['enabled'][role] for role in roles},
                             'signature': None if services is None or fresh_recovery else services.preview()['signature']},
-                  created_roles=tuple(created), launchers=[str(launcher)])
+                  created_roles=tuple(created), launchers=[str(launcher)],
+                  dashboard_options=consumers['dashboard_options'] if 'dashboard' in created else {})
     if fresh:
         result['native_changes'] = True
     else:

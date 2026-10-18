@@ -36,15 +36,19 @@ def _service_paths(home, profile, installed):
             raise ReleaseRejected('Managed service paths require physical names without whitespace, dollar signs, quotes, backslashes, semicolons, or closing braces')
 
 
-def service_files(request, generated, *, roles=('gateway', 'dashboard', 'pulse')):
-    """Map the selected roles' unit files to publication sources, keeping existing definitions unchanged."""
+def service_files(request, generated, *, roles=('gateway', 'dashboard', 'pulse'), dashboard=None):
+    """Map the selected roles' unit files to publication sources, keeping existing definitions unchanged.
+
+    ``dashboard`` holds the reviewed ``host`` and ``port`` of a hand-started dashboard that a created unit replaces.
+    """
     home, profile, installed = (Path(request[key]) for key in ('account_home', 'profile', 'installed'))
     _service_paths(home, profile, installed)
     definitions = {
         'gateway': ('hermes-gateway.service', profile,
             [home / '.local/bin/hermes', 'gateway', 'run', '--external-supervisor']),
         'dashboard': ('hermes-dashboard.service', installed.parent,
-            [home / '.local/bin/hermes', 'dashboard', '--isolated', '--no-open']),
+            [home / '.local/bin/hermes', 'dashboard', '--isolated', '--no-open',
+             *(item for name in ('host', 'port') if name in (dashboard or {}) for item in ('--' + name, dashboard[name]))]),
         'pulse': ('com.lifeos.pulse.service', installed / 'LIFEOS/PULSE',
             [home / '.local/bin/bun', '--no-install', installed / 'LIFEOS/PULSE/pulse.ts']),
     }

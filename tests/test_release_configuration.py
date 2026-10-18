@@ -30,6 +30,26 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual(result.stdout + result.stderr, '')
 
+    def test_created_dashboard_unit_listens_on_the_reviewed_address(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
+            for path in (profile, generated, installed / 'LIFEOS/PULSE', root / '.local/bin'):
+                path.mkdir(parents=True, mode=0o700)
+            program = root / '.local/bin/hermes'
+            program.write_text('#!/bin/sh\nexit 0\n')
+            program.chmod(0o700)
+            request = {'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}
+            files = service_files(request, generated, roles=('dashboard',), dashboard={'host': '0.0.0.0', 'port': 9119})
+            text = next(iter(files.values())).read_text()
+            self.assertIn('ExecStart="' + str(program) + '" "dashboard" "--isolated" "--no-open" "--host" "0.0.0.0" "--port" "9119"\n', text)
+            result = subprocess.run(['systemd-analyze', '--user', 'verify', *map(str, files.values())],
+                capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            files = service_files(request, root / 'generated', roles=('dashboard',))
+            self.assertIn('"--no-open"\n', next(iter(files.values())).read_text())
+
     def test_selected_service_roles_generate_only_their_units(self):
         from optional.lifeos_release_manager.release_services import service_files
         with tempfile.TemporaryDirectory() as temp:

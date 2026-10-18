@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+import re
 
 
 def _references(data, roots):
@@ -30,6 +31,42 @@ def _role(arguments):
     if b'gateway' in words and b'run' in words:
         return 'gateway'
     return 'other'
+
+
+DASHBOARD_HOST = re.compile(r'[A-Za-z0-9._:\[\]-]{1,253}')
+
+
+def dashboard_options(pid):
+    """Return the ``--host`` and ``--port`` that a hand-started dashboard runs with.
+
+    The unit that replaces it must listen on the same address, or the owner loses the dashboard.
+    Only these two options are read; the rest of the command line stays private.
+    """
+    from .release_catalog import ReleaseRejected
+    words = [word.decode(errors='replace') for word in Path('/proc', str(pid), 'cmdline').read_bytes().split(b'\0')[:-1]]
+    if 'dashboard' not in words:
+        return {}
+    rest, options, index = words[words.index('dashboard') + 1:], {}, 0
+    refused = ReleaseRejected('A hand-started dashboard runs with an address that its unit cannot keep. '
+                              'Start it with a plain --host and --port, then prepare again')
+    while index < len(rest):
+        for name in ('host', 'port'):
+            flag = '--' + name
+            if rest[index] == flag:
+                if index + 1 >= len(rest):
+                    raise refused
+                options[name] = rest[index + 1]
+                index += 1
+            elif rest[index].startswith(flag + '='):
+                options[name] = rest[index].split('=', 1)[1]
+        index += 1
+    if 'host' in options and DASHBOARD_HOST.fullmatch(options['host']) is None:
+        raise refused
+    if 'port' in options:
+        if not options['port'].isdecimal() or not 0 < int(options['port']) < 65536:
+            raise refused
+        options['port'] = int(options['port'])
+    return options
 
 
 def stat_fields(pid):

@@ -84,6 +84,32 @@ class ConsumerScanTests(unittest.TestCase):
         self.assertNotIn('do-not-report', repr(item))
 
 
+class DashboardOptionTests(unittest.TestCase):
+    def options(self, *arguments):
+        from optional.lifeos_release_manager.consumer_scan import dashboard_options
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)', *arguments])
+        self.addCleanup(process.wait)
+        self.addCleanup(process.kill)
+        deadline = time.monotonic() + 5
+        while not Path('/proc', str(process.pid), 'cmdline').read_bytes() and time.monotonic() < deadline:
+            time.sleep(0.01)
+        return dashboard_options(process.pid)
+
+    def test_only_the_address_options_after_the_dashboard_command_are_read(self):
+        self.assertEqual(self.options('dashboard', '--host', '0.0.0.0', '--port', '9119', '--skip-build'),
+                         {'host': '0.0.0.0', 'port': 9119})
+        self.assertEqual(self.options('dashboard', '--host=::1', '--port=8080'), {'host': '::1', 'port': 8080})
+        self.assertEqual(self.options('--host', '0.0.0.0', 'dashboard'), {})
+        self.assertEqual(self.options('dashboard', '--no-open'), {})
+
+    def test_unusable_address_options_refuse(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        for arguments in (('dashboard', '--port', '0'), ('dashboard', '--port', 'http'), ('dashboard', '--host', 'a b'),
+                          ('dashboard', '--host'), ('dashboard', '--host', '$(id)')):
+            with self.subTest(arguments=arguments), self.assertRaisesRegex(ReleaseRejected, 'address'):
+                self.options(*arguments)
+
+
 class ProcessIdentityTests(unittest.TestCase):
     def test_start_time_and_parent_come_from_the_kernel_process_record(self):
         from optional.lifeos_release_manager.release_operation import process_stamp

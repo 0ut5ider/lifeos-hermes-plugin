@@ -237,7 +237,7 @@ def program_plan(job, request, selected):
     created = selected.get('created_roles', ('gateway', 'dashboard', 'pulse') if selected['fresh'] else ())
     if created:
         from .release_services import service_files
-        files.update(service_files(request, generated, roles=created))
+        files.update(service_files(request, generated, roles=created, dashboard=selected.get('dashboard_options')))
     if not selected['fresh']:
         drift = current.memory_module('version_drift')
         previous = selected['reviewed_baseline']

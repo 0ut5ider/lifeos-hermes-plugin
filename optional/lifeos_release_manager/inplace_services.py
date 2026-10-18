@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import subprocess
 
-from .consumer_scan import parent, source_consumers, start_time
+from .consumer_scan import dashboard_options, parent, source_consumers, start_time
 from .release_catalog import ReleaseRejected
 
 
@@ -79,8 +79,17 @@ def inventory(source, state_dir, *, units=UNITS, excluded_pids=frozenset(), oper
                  if not (item['pid'] in operators and item['role'] == 'other')]
     offers = sorted({item['role'] for item in consumers if item['role'] in OFFERABLE and item['role'] not in bound})
     blocking = [item for item in consumers if item['role'] not in offers]
+    addresses = []
+    for item in consumers:
+        if item['role'] == 'dashboard' and 'dashboard' in offers:
+            try:
+                addresses.append(dashboard_options(item['pid']))
+            except (FileNotFoundError, ProcessLookupError):
+                continue
+    if len({tuple(sorted(value.items())) for value in addresses}) > 1:
+        raise ReleaseRejected('Hand-started dashboards run with different addresses; close all but one, then prepare again')
     return {'bound': bound, 'active': active, 'enabled': enabled, 'consumers': consumers, 'offers': offers,
-            'blocking': blocking}
+            'blocking': blocking, 'dashboard_options': addresses[0] if addresses else {}}
 
 
 def profile_units(profile, *, units=UNITS):
