@@ -89,7 +89,7 @@ def check_service_launchers(home):
             continue
         if executable.is_file() and MANAGED_RUNTIME in executable.read_text(errors='replace'):
             raise ReleaseRejected('The ' + name + ' unit runs ' + str(executable) + ', which forwards to the managed '
-                                  'runtime. Point the unit at ~/.local/bin/hermes, then prepare again')
+                                  'runtime. Point the unit at ~/.local/bin/hermes, then prepare again.')
 
 
 def transition_gateway_unit(python, source, profile, home, job):
