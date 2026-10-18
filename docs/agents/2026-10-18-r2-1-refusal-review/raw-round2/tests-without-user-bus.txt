@@ -1,0 +1,40 @@
+    values = show(unit, 'LoadState', 'ExecStart')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_services.py", line 22, in show
+    raise ReleaseRejected('The owner service manager does not report ' + unit)
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The owner service manager does not report hermes-gateway.service
+
+======================================================================
+ERROR: test_transition_without_a_gateway_unit_replaces_no_unit (test_inplace_preparation.TransitionTests.test_transition_without_a_gateway_unit_replaces_no_unit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_preparation.py", line 143, in test_transition_without_a_gateway_unit_replaces_no_unit
+    self.assertEqual(transition_gateway_unit(Path(sys.executable), Path(hermes_cli.__file__).resolve().parents[1],
+                     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                             home / '.hermes', home, home), {})
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_preparation.py", line 132, in transition_gateway_unit
+    check_service_launchers(home, replaced=('gateway',) if replace else ())
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_preparation.py", line 100, in check_service_launchers
+    values = show(unit, 'LoadState', 'ExecStart')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_services.py", line 22, in show
+    raise ReleaseRejected('The owner service manager does not report ' + unit)
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The owner service manager does not report hermes-gateway.service
+
+======================================================================
+FAIL: test_transition_refuses_a_managed_unit_whose_kill_mode_differs_from_stock (test_inplace_preparation.TransitionTests.test_transition_refuses_a_managed_unit_whose_kill_mode_differs_from_stock)
+----------------------------------------------------------------------
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The owner service manager does not report hermes-dashboard.service
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_preparation.py", line 192, in test_transition_refuses_a_managed_unit_whose_kill_mode_differs_from_stock
+    with self.assertRaisesRegex(ReleaseRejected, 'KillMode'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "KillMode" does not match "The owner service manager does not report hermes-dashboard.service"
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.962s
+
+FAILED (failures=1, errors=3)

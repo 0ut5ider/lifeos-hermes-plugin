@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 
@@ -66,9 +67,9 @@ def _service_value(text, key, default):
     return values[-1] if values else default
 
 
-SERVICE_UNITS = ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service')
 ACCOUNT_COMMANDS = ('hermes', 'hermes-agent', 'hermes-acp')
 FORWARDER_BYTES = 1024 * 1024
+UNIT_COMMANDS = ('ExecStartPre', 'ExecStart', 'ExecStartPost')
 
 
 def _runs_managed_runtime(path):
@@ -83,6 +84,26 @@ def _runs_managed_runtime(path):
         raise ReleaseRejected('Preparation cannot read ' + str(path) + ', which a Hermes unit runs') from None
 
 
+def _command_programs(entry):
+    """Return the program and the arguments of one command that ``systemctl show`` reports."""
+    paths = re.findall(r'\bpath=([^ ;}]+)', entry)
+    arguments = [part.strip('\'"') for value in re.findall(r'\bargv\[\]=(.*?) ; ignore_errors=', entry)
+                 for part in value.split()]
+    return paths + arguments
+
+
+def _check_replaced_drop_ins(unit, values):
+    """Refuse a drop-in that sets a command for a unit the transition replaces, because the drop-in stays."""
+    for value in values.get('DropInPaths', '').split():
+        try:
+            text = Path(value).read_text(errors='replace')
+        except OSError:
+            raise ReleaseRejected('Preparation cannot read the ' + unit + ' drop-in ' + value) from None
+        if re.search(r'^\s*Exec', text, re.MULTILINE):
+            raise ReleaseRejected('The ' + unit + ' drop-in ' + value + ' sets a command, and the transition replaces '
+                                  'that unit. Remove the command from the drop-in, then prepare again.')
+
+
 def check_service_launchers(home, *, replaced=()):
     """Refuse a transition while a Hermes unit still runs the managed runtime after it.
 
@@ -91,25 +112,25 @@ def check_service_launchers(home, *, replaced=()):
     would keep running the managed runtime, and its own checkout can rewrite it later. The service manager
     reports each command after drop-ins and specifiers apply.
     """
-    import re
     from .inplace_services import UNITS, show
     account = {Path(home) / '.local/bin' / name for name in ACCOUNT_COMMANDS}
     for role, unit in UNITS.items():
-        if role in replaced:
-            continue
-        values = show(unit, 'LoadState', 'ExecStart')
+        values = show(unit, 'LoadState', 'DropInPaths', *UNIT_COMMANDS)
         if values.get('LoadState') != 'loaded':
             continue
-        command = values.get('ExecStart', '')
-        paths = re.findall(r'\bpath=([^ ;}]+)', command)
-        if not paths:
+        if role in replaced:
+            _check_replaced_drop_ins(unit, values)
+            continue
+        if not re.search(r'\bpath=', values.get('ExecStart', '')):
             raise ReleaseRejected('The service manager reports no command for ' + unit)
-        arguments = [part for value in re.findall(r'\bargv\[\]=(.*?) ;', command) for part in value.split()]
-        for value in paths + arguments:
-            path = Path(value)
-            if path.is_absolute() and path not in account and _runs_managed_runtime(path):
-                raise ReleaseRejected('The ' + unit + ' unit runs ' + value + ', which runs the managed runtime. '
-                                      'Point the unit at ~/.local/bin/hermes, then prepare again.')
+        for key in UNIT_COMMANDS:
+            for entry in values.get(key, '').splitlines():
+                for value in _command_programs(entry):
+                    path = Path(value)
+                    if path.is_absolute() and path not in account and _runs_managed_runtime(path):
+                        raise ReleaseRejected('The ' + unit + ' unit runs ' + value + ', which runs the managed '
+                                              'runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user '
+                                              'daemon-reload`, then prepare again.')
 
 
 def transition_gateway_unit(python, source, profile, home, job):
@@ -121,7 +142,8 @@ def transition_gateway_unit(python, source, profile, home, job):
     or another unit that still runs the managed runtime refuses the transition, as does a replacement
     whose stop behaviour or working directory differs, because the service controller binds those.
     """
-    for name in SERVICE_UNITS:
+    from .inplace_services import UNITS
+    for name in UNITS.values():
         for path, text in _unit_texts(home, name).items():
             if MANAGED_RUNTIME in text and not (name == 'hermes-gateway.service' and path.name == name):
                 raise ReleaseRejected('The ' + path.name + ' unit runs the managed runtime; point it at ~/.local/bin first')

@@ -20,7 +20,21 @@ def show(unit, *properties):
                             capture_output=True, text=True, timeout=45)
     if result.returncode or result.stderr:
         raise ReleaseRejected('The owner service manager does not report ' + unit)
-    return dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
+    return parse_show(result.stdout)
+
+
+def parse_show(output):
+    """Return ``systemctl show`` output as ``{property: value}``.
+
+    systemd prints a repeated property, such as ``ExecStart`` for each command, on several lines; the value
+    keeps each of them on its own line.
+    """
+    values = {}
+    for line in output.splitlines():
+        if '=' in line:
+            key, value = line.split('=', 1)
+            values[key] = values[key] + '\n' + value if key in values else value
+    return values
 
 
 def _properties(unit):

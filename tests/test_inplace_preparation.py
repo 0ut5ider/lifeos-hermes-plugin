@@ -101,6 +101,12 @@ class InventoryTests(unittest.TestCase):
 
 
 class TransitionTests(unittest.TestCase):
+    def setUp(self):
+        # The account that runs the tests has its own service manager; the host here has no Hermes units.
+        patcher = mock.patch('optional.lifeos_release_manager.inplace_services.show', side_effect=self._show({}))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     def test_only_a_managed_job_runtime_has_a_transition_target(self):
         from optional.lifeos_release_manager.host_compatibility import transition_source
         profile = Path('/home/owner/.hermes')
@@ -277,16 +283,29 @@ class TransitionTests(unittest.TestCase):
         return home, managed, workspace, account
 
     @staticmethod
-    def _show(commands):
-        """Answer ``systemctl --user show`` in the service manager's format for each unit's command."""
+    def _entry(command):
+        path, *arguments = command.split(' ', 1)
+        return ('{ path=' + path + ' ; argv[]=' + ' '.join([path, *arguments]) + ' ; ignore_errors=no ; '
+                'start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }')
+
+    @classmethod
+    def _show(cls, units):
+        """Answer ``systemctl --user show`` with the service manager's text for each unit.
+
+        Each unit maps to a command, a list of ``ExecStart`` commands, None for a unit without one, or a dict
+        of property values.
+        """
+        from optional.lifeos_release_manager.inplace_services import parse_show
         def show(unit, *properties):
-            if unit not in commands:
-                return {'LoadState': 'not-found', 'ExecStart': ''}
-            if commands[unit] is None:
-                return {'LoadState': 'loaded', 'ExecStart': ''}
-            path, *arguments = commands[unit].split()
-            return {'LoadState': 'loaded', 'ExecStart': '{ path=' + path + ' ; argv[]=' + ' '.join([path, *arguments])
-                    + ' ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }'}
+            value = units.get(unit, {'LoadState': 'not-found'})
+            if value is None or isinstance(value, (str, list)):
+                commands = [] if value is None else [value] if isinstance(value, str) else value
+                value = {'LoadState': 'loaded', 'ExecStart': [cls._entry(command) for command in commands]}
+            lines = []
+            for key in properties:
+                entries = value.get(key, '')
+                lines += [key + '=' + entry for entry in (entries if isinstance(entries, list) else [entries])] or [key + '=']
+            return parse_show('\n'.join(lines) + '\n')
         return show
 
     def _check(self, home, commands, **options):
@@ -311,6 +330,36 @@ class TransitionTests(unittest.TestCase):
             other.write_text(account.read_text())
             with self.assertRaisesRegex(ReleaseRejected, 'hermes-dev'):
                 self._check(home, {'hermes-dashboard.service': str(other) + ' dashboard'})
+
+    def test_transition_checks_every_command_of_a_unit(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory:
+            home, managed, workspace, account = self._launcher_host(directory)
+            # A unit with several start commands lists each on its own line.
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                self._check(home, {'hermes-dashboard.service': [str(workspace) + ' dashboard', '/bin/true']})
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                self._check(home, {'hermes-dashboard.service': {
+                    'LoadState': 'loaded', 'ExecStart': self._entry(str(account) + ' dashboard'),
+                    'ExecStartPre': self._entry(str(workspace) + ' version')}})
+            # systemd prints arguments without quotes, so an argument can contain " ; ".
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                self._check(home, {'hermes-dashboard.service': '/bin/sh -c "true ; exec ' + str(workspace) + '"'})
+            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                self._check(home, {'hermes-dashboard.service': "/bin/sh -c exec '" + str(workspace) + "'"})
+
+    def test_a_replaced_unit_refuses_a_drop_in_that_sets_a_command(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory:
+            home, managed, workspace, account = self._launcher_host(directory)
+            drop_in = home / 'exec.conf'
+            drop_in.write_text('[Service]\nExecStart=\nExecStart=%h/workspace/hermes-agent/.hermes/bin/hermes gateway run\n')
+            gateway = {'LoadState': 'loaded', 'DropInPaths': str(drop_in), 'ExecStart': self._entry(str(workspace) + ' gateway run')}
+            with self.assertRaisesRegex(ReleaseRejected, 'drop-in .*exec.conf sets a command'):
+                self._check(home, {'hermes-gateway.service': gateway}, replaced=('gateway',))
+            drop_in.write_text('[Service]\nEnvironment=HERMES_HOME=%h/.hermes\n')
+            self._check(home, {'hermes-gateway.service': dict(gateway, ExecStart=self._entry(managed + ' gateway run'))},
+                        replaced=('gateway',))
 
     def test_transition_refuses_a_unit_that_runs_the_managed_runtime_unless_replaced(self):
         from optional.lifeos_release_manager.release_catalog import ReleaseRejected
@@ -362,6 +411,22 @@ class TransitionTests(unittest.TestCase):
                         'hermes-dashboard.service': str(workspace) + ' dashboard'}
             with mock.patch('optional.lifeos_release_manager.inplace_services.show', side_effect=self._show(commands)):
                 with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
+                    transition_gateway_unit(Path('/missing/python'), home / 'source', home / '.hermes', home, home / 'job')
+
+    def test_transition_gateway_unit_checks_the_drop_ins_of_a_replaced_unit(self):
+        from optional.lifeos_release_manager.inplace_preparation import transition_gateway_unit
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory:
+            home, managed, workspace, account = self._launcher_host(directory)
+            units = home / '.config/systemd/user'
+            (units / 'hermes-gateway.service.d').mkdir(parents=True)
+            (units / 'hermes-gateway.service').write_text('[Service]\nExecStart=' + managed + ' gateway run\n')
+            drop_in = units / 'hermes-gateway.service.d/exec.conf'
+            drop_in.write_text('[Service]\nExecStart=\nExecStart=' + str(workspace) + ' gateway run\n')
+            gateway = {'LoadState': 'loaded', 'DropInPaths': str(drop_in), 'ExecStart': self._entry(str(workspace) + ' gateway run')}
+            with mock.patch('optional.lifeos_release_manager.inplace_services.show',
+                            side_effect=self._show({'hermes-gateway.service': gateway})):
+                with self.assertRaisesRegex(ReleaseRejected, 'sets a command'):
                     transition_gateway_unit(Path('/missing/python'), home / 'source', home / '.hermes', home, home / 'job')
 
     def test_service_value_reads_only_the_service_section(self):

@@ -1,0 +1,12 @@
+daily-like template units on account launcher and bun -> accepted
+direct forwarder -> REFUSED: The hermes-dashboard.service unit runs /home/outsider/agent-scratch/tmp/tmpolb8uvwg/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+sh -c with forwarder after " ; " -> accepted
+sh -c with forwarder before " ; " -> REFUSED: The hermes-dashboard.service unit runs /home/outsider/agent-scratch/tmp/tmpolb8uvwg/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+sh -c with quoted forwarder -> accepted
+sh -c with $HOME forwarder -> accepted
+oneshot, forwarder in first of two ExecStart lines -> accepted
+argument --path=<forwarder> (word boundary match) -> REFUSED: The hermes-dashboard.service unit runs /home/outsider/agent-scratch/tmp/tmpolb8uvwg/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+account launcher as symlink target elsewhere -> accepted
+false refusal: small data argument naming the runtime -> REFUSED: The hermes-dashboard.service unit runs /home/outsider/agent-scratch/tmp/tmpolb8uvwg/notes.txt, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+loaded with ExecStart empty -> REFUSED: The service manager reports no command for hermes-dashboard.service
+LoadState=bad-setting -> accepted

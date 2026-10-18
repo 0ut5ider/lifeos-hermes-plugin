@@ -114,5 +114,19 @@ class InplaceServicesTests(unittest.TestCase):
             replace_with_units(changed, ['dashboard'])
 
 
+class ParseShowTests(unittest.TestCase):
+    def test_a_repeated_property_keeps_each_value_on_its_own_line(self):
+        from optional.lifeos_release_manager.inplace_services import parse_show
+        output = ('LoadState=loaded\n'
+                  'ExecStart={ path=/bin/true ; argv[]=/bin/true ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }\n'
+                  'ExecStart={ path=/bin/echo ; argv[]=/bin/echo a=b ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }\n'
+                  'DropInPaths=\n')
+        values = parse_show(output)
+        self.assertEqual(values['LoadState'], 'loaded')
+        self.assertEqual(values['DropInPaths'], '')
+        self.assertEqual([line.split(' ; ')[0] for line in values['ExecStart'].splitlines()],
+                         ['{ path=/bin/true', '{ path=/bin/echo'])
+
+
 if __name__ == '__main__':
     unittest.main()

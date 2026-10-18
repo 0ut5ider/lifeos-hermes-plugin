@@ -1,0 +1,18 @@
+/usr/lib/systemd/system/unbound-anchor.service:9:ExecStart=/bin/bash -c 'if [ "$DISABLE_UNBOUND_ANCHOR" = "yes" ] || [ -f /run/unbound/anchor-disable ]; then echo "Updates of root keys with unbound-anchor is disabled"; else /usr/sbin/unbound-anchor $UNBOUND_ANCHOR_OPTIONS; fi'
+/usr/lib/systemd/system/flatpak-add-fedora-repos.service:9:ExecStart=/usr/bin/flatpak remote-add --system --if-not-exists --title "Fedora Flatpaks" fedora oci+https://registry.fedoraproject.org
+/usr/lib/systemd/system/flatpak-add-fedora-repos.service:10:ExecStart=/usr/bin/flatpak remote-add --system --if-not-exists --disable --title "Fedora Flatpaks (testing)" fedora-testing oci+https://registry.fedoraproject.org#testing
+/usr/lib/systemd/system/flatpak-add-fedora-repos.service:11:ExecStartPost=/usr/bin/touch /var/lib/flatpak/.fedora-initialized
+/usr/lib/systemd/system/nfs-server.service:25:ExecStartPre=-/usr/sbin/exportfs -r
+/usr/lib/systemd/system/nfs-server.service:26:ExecStart=/bin/sh -c '/usr/sbin/nfsdctl autostart || /usr/sbin/rpc.nfsd'
+/usr/lib/systemd/system/nfs-server.service:27:ExecStart=-/bin/sh -c 'if systemctl -q is-active gssproxy; then systemctl reload gssproxy ; fi'
+---
+LoadState=loaded
+ExecStart={ path=/usr/bin/flatpak ; argv[]=/usr/bin/flatpak remote-add --system --if-not-exists --title Fedora Flatpaks fedora oci+https://registry.fedoraproject.org ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/bin/flatpak ; argv[]=/usr/bin/flatpak remote-add --system --if-not-exists --disable --title Fedora Flatpaks (testing) fedora-testing oci+https://registry.fedoraproject.org#testing ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+---
+LoadState=loaded
+ExecStart={ path=/bin/bash ; argv[]=/bin/bash -c if [ "$DISABLE_UNBOUND_ANCHOR" = "yes" ] || [ -f /run/unbound/anchor-disable ]; then echo "Updates of root keys with unbound-anchor is disabled"; else /usr/sbin/unbound-anchor $UNBOUND_ANCHOR_OPTIONS; fi ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+---
+LoadState=loaded
+ExecStart={ path=/bin/sh ; argv[]=/bin/sh -c /usr/sbin/nfsdctl autostart || /usr/sbin/rpc.nfsd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/sh ; argv[]=/bin/sh -c if systemctl -q is-active gssproxy; then systemctl reload gssproxy ; fi ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
