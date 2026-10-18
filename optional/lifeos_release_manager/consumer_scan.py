@@ -100,10 +100,12 @@ def source_consumers(source, state_dir, *, excluded_pids=frozenset(), excluded_g
     Hermes puts the checkout on every process's ``PYTHONPATH`` and runs it from an environment generation
     below its install state directory, so the environment, command line, executable, and working
     directory together identify each consumer. Processes in ``excluded_groups`` (control groups of
-    services that the caller has stopped or owns) and in ``excluded_pids`` are skipped, as is this process.
+    services that the caller has stopped or owns) and in ``excluded_pids`` are skipped. This process is
+    skipped too unless it is a dashboard or gateway: a hand-started dashboard that serves the review is
+    a consumer that its new unit replaces.
     """
     roots = tuple(str(Path(path).absolute()).encode() for path in (source, state_dir))
-    skipped = {os.getpid(), *excluded_pids}
+    skipped = set(excluded_pids)
     found = []
     for process in Path('/proc').iterdir():
         if not process.name.isdecimal() or int(process.name) in skipped:
@@ -116,7 +118,7 @@ def source_consumers(source, state_dir, *, excluded_pids=frozenset(), excluded_g
             if groups and groups <= set(excluded_groups):
                 continue
             arguments = (process / 'cmdline').read_bytes()
-            if not arguments:
+            if not arguments or int(process.name) == os.getpid() and _role(arguments) == 'other':
                 continue
             evidence = [arguments]
             # Non-dumpable programs such as ssh-agent hide their environment and links even from their owner.

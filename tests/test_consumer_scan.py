@@ -75,6 +75,18 @@ class ConsumerScanTests(unittest.TestCase):
         self.addCleanup(os.environ.pop, 'LIFEOS_SCAN_SELF')
         self.assertNotIn(os.getpid(), self.scan())
 
+    def test_a_dashboard_that_runs_the_scan_reports_itself(self):
+        # The dashboard serves the review, so it must appear as the hand-started consumer that its unit replaces.
+        code = ('import os, sys; sys.path.insert(0, sys.argv[3]); '
+                'from optional.lifeos_release_manager.consumer_scan import source_consumers; '
+                'print([item["role"] for item in source_consumers(sys.argv[1], sys.argv[2]) if item["pid"] == os.getpid()])')
+        root = Path(__file__).resolve().parents[1]
+        for role, expected in (('dashboard', "['dashboard']"), ('chat', '[]')):
+            result = subprocess.run([sys.executable, '-c', code, str(self.source), str(self.state), str(root), role],
+                                    env={**os.environ, 'PYTHONPATH': str(self.source)}, capture_output=True, text=True, timeout=30)
+            with self.subTest(role=role):
+                self.assertEqual(result.stdout.strip(), expected, result.stderr)
+
     def test_result_names_the_command_without_its_arguments_or_environment(self):
         pid = self.start(environment={'PYTHONPATH': str(self.source), 'SECRET_TOKEN': 'do-not-report'})
         item = next(item for item in source_consumers(self.source, self.state) if item['pid'] == pid)
