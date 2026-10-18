@@ -24,8 +24,10 @@ The accepted [in-place installation plan](docs/in-place-installation-plan.md) su
 - [x] Add durable in-place patch transactions and coordinated consumer restart.
 - [x] Add qualified patch updates, Hermes updater coordination, and original-file restoration.
 - [ ] Qualify real dashboard installation, recovery, and removal with existing tools and plugins, including the managed-release transition. The [in-place qualification record](docs/verification/2026-10-17-inplace-e2e/README.md) covers these flows on containers through the release manager functions and a loopback release server. On 2026-10-18 the published `v0.8.0-rc.1` passed the GitHub plugin URL (command line with `--ref`) and the dashboard install, return, and removal buttons on a container; that record lists eight findings. The Plugins page URL install waits for the merge to `main`.
-- [ ] Complete independent review and exact-release qualification before daily deployment. The development host runs `0.8.0-rc.1` in place since 2026-10-18 ([record](docs/verification/2026-10-18-dev-inplace-transition/README.md)).
-- [ ] Fix the findings of the 0.8.0-rc.1 dashboard test before the next candidate, including the removal login read from `config.yaml` only, which the development host does not satisfy.
+- [ ] Complete independent review and exact-release qualification before daily deployment. The development host runs `0.8.0-rc.4` in place since 2026-10-18 ([record](docs/verification/2026-10-18-dev-inplace-transition/README.md)).
+- [x] Fix the findings of the 0.8.0-rc.1 dashboard test. 0.8.0-rc.4 passed the dashboard install, return, and removal on a container without a recovery.
+- [ ] Rehearse the daily host layout on a container before daily moves: template units, and the shared lifeos-memory MCP endpoint and its agent grants after the transition.
+- [ ] Decide the proposed reinstall after removal (design section 8).
 
 ## Completed capabilities with canonical references
 

@@ -37,6 +37,17 @@ The owner approved the move of the development host only. The daily host stays o
 | Discord | `connected`; the gateway reports code `71d34bad`, version `0.21.7` |
 | Dashboard | answers on port 9119 |
 
+## Update to 0.8.0-rc.4
+
+Later on 2026-10-18 the development host updated in place from `0.8.0-rc.1` to [`v0.8.0-rc.4`](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.8.0-rc.4) (program commit `5125f322`).
+
+1. Proxmox snapshot `lifeos-080rc4-pre-update-20261018`.
+2. `hermes plugins install '<repository>.git#optional/lifeos_release_manager' --ref 5125f322... --force` installed the `0.8.0-rc.4` manager. The compatibility check reported `installed`.
+3. `hermes lifeos-release prepare --version 0.8.0-rc.4`, with no intent, prepared the update (`94e102f2`). The rc.1 command line had refused this. The review listed no host file change, one configuration key (the bridge source path), and the gateway, dashboard, and Pulse roles.
+4. `hermes lifeos-release start 94e102f231214c41b42ae11ee9b447a6` applied it.
+
+Result: `applied`; receipt from `/home/lifeos-hermes/.hermes/hermes-agent` in patched mode; the three services active; `hermes lifeos-version` reports `0.8.0-rc.4`, `verified`, and no host drift; `.env` unchanged; `config.yaml` changed only in the bridge source path; `hermes update` refused with the hold; Discord `connected`.
+
 ## Retained for rollback
 
 - The Proxmox snapshot and the backup directory.
