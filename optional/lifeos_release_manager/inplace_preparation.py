@@ -69,7 +69,7 @@ def _service_value(text, key, default):
 
 ACCOUNT_COMMANDS = ('hermes', 'hermes-agent', 'hermes-acp')
 FORWARDER_BYTES = 1024 * 1024
-UNIT_COMMANDS = ('ExecStartPre', 'ExecStart', 'ExecStartPost')
+UNIT_COMMANDS = ('ExecCondition', 'ExecStartPre', 'ExecStart', 'ExecStartPost', 'ExecReload', 'ExecStop', 'ExecStopPost')
 
 
 def _runs_managed_runtime(path):

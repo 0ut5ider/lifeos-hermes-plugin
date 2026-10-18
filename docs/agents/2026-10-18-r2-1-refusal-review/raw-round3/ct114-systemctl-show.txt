@@ -1,0 +1,28 @@
+== hermes-gateway
+ExecStart={ path=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes ; argv[]=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes gateway run ; ignore_errors=no ; start_time=[Sun 2026-10-18 14:51:18 UTC] ; stop_time=[n/a] ; pid=91608 ; code=(null) ; status=0/0 }
+LoadState=loaded
+FragmentPath=/home/lifeos-hermes/.config/systemd/user/hermes-gateway.service
+DropInPaths=
+== hermes-dashboard
+ExecStart={ path=/home/lifeos-hermes/.local/bin/hermes ; argv[]=/home/lifeos-hermes/.local/bin/hermes dashboard --isolated --no-open ; ignore_errors=no ; start_time=[Sun 2026-10-18 14:51:18 UTC] ; stop_time=[n/a] ; pid=91596 ; code=(null) ; status=0/0 }
+LoadState=loaded
+FragmentPath=/home/lifeos-hermes/.config/systemd/user/hermes-dashboard.service
+DropInPaths=
+== com.lifeos.pulse
+ExecStart={ path=/home/lifeos-hermes/.local/bin/bun ; argv[]=/home/lifeos-hermes/.local/bin/bun --no-install /home/lifeos-hermes/.claude/LIFEOS/PULSE/pulse.ts ; ignore_errors=no ; start_time=[Sun 2026-10-18 14:51:18 UTC] ; stop_time=[n/a] ; pid=91601 ; code=(null) ; status=0/0 }
+LoadState=loaded
+FragmentPath=/home/lifeos-hermes/.config/systemd/user/com.lifeos.pulse.service
+DropInPaths=
+systemd 255 (255.4-1ubuntu8)
+ls: cannot access '/usr/lib/systemd/user/service.d': No such file or directory
+ls: cannot access '/etc/systemd/user/service.d': No such file or directory
+ls: cannot access '/home/lifeos-hermes/.config/systemd/user/service.d': No such file or directory
+== hermes-gateway
+ExecReload={ path=/bin/kill ; argv[]=/bin/kill -USR1 $MAINPID ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStop={ path=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes ; argv[]=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes --run-module gateway.systemd_stop_mark ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStopPost={ path=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes ; argv[]=/home/lifeos-hermes/.hermes/.lifeos-releases/48d42b0719aa4923a6bc97390ee15ec0/hermes/.hermes/bin/hermes --run-module gateway.cgroup_cleanup ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+KillMode=mixed
+== hermes-dashboard
+KillMode=control-group
+== com.lifeos.pulse
+KillMode=control-group

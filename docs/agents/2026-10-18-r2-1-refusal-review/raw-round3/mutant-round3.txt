@@ -1,0 +1,9 @@
+baseline (no change) -> OK
+always replaced=() -> FAILED (failures=1)
+no drop-in check for replaced unit -> FAILED (failures=1, errors=1)
+argv regex stops at first ' ;' -> FAILED (failures=1)
+no quote stripping -> FAILED (failures=1)
+only ExecStart -> FAILED (failures=1)
+no ExecStartPost -> OK
+only last entry per key -> FAILED (failures=1)
+parse_show last wins -> FAILED (failures=2)

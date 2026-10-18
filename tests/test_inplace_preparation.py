@@ -342,6 +342,12 @@ class TransitionTests(unittest.TestCase):
                 self._check(home, {'hermes-dashboard.service': {
                     'LoadState': 'loaded', 'ExecStart': self._entry(str(account) + ' dashboard'),
                     'ExecStartPre': self._entry(str(workspace) + ' version')}})
+            # Stock Hermes writes its stop commands with the same launcher as the start command.
+            for key in ('ExecCondition', 'ExecStartPost', 'ExecReload', 'ExecStop', 'ExecStopPost'):
+                with self.subTest(key=key), self.assertRaisesRegex(ReleaseRejected, 'hermes-gateway.service'):
+                    self._check(home, {'hermes-gateway.service': {
+                        'LoadState': 'loaded', 'ExecStart': self._entry(str(account) + ' gateway run'),
+                        key: self._entry(str(workspace) + ' gateway stop')}})
             # systemd prints arguments without quotes, so an argument can contain " ; ".
             with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
                 self._check(home, {'hermes-dashboard.service': '/bin/sh -c "true ; exec ' + str(workspace) + '"'})
