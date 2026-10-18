@@ -67,29 +67,49 @@ def _service_value(text, key, default):
 
 
 SERVICE_UNITS = ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service')
+ACCOUNT_COMMANDS = ('hermes', 'hermes-agent', 'hermes-acp')
+FORWARDER_BYTES = 1024 * 1024
 
 
-def check_service_launchers(home):
-    """Refuse a transition while a Hermes unit runs a managed forwarder outside ``~/.local/bin``.
+def _runs_managed_runtime(path):
+    """True when ``path`` is in the managed runtime or is a small script that names it."""
+    if MANAGED_RUNTIME in str(path):
+        return True
+    try:
+        if not path.is_file() or path.stat().st_size > FORWARDER_BYTES:
+            return False
+        return MANAGED_RUNTIME.encode() in path.read_bytes()
+    except OSError:
+        raise ReleaseRejected('Preparation cannot read ' + str(path) + ', which a Hermes unit runs') from None
 
-    The transition repoints only the account launchers. A forwarder elsewhere, such as one inside another
-    Hermes checkout, would keep running the managed runtime, and its own checkout can rewrite it later.
-    A unit that runs the managed runtime directly is left to ``transition_gateway_unit``.
+
+def check_service_launchers(home, *, replaced=()):
+    """Refuse a transition while a Hermes unit still runs the managed runtime after it.
+
+    The transition repoints only the account commands in ``~/.local/bin`` and replaces the units in
+    ``replaced``. Any other program that a unit runs, such as a forwarder inside another Hermes checkout,
+    would keep running the managed runtime, and its own checkout can rewrite it later. The service manager
+    reports each command after drop-ins and specifiers apply.
     """
-    import shlex
-    account = Path(home) / '.local/bin'
-    for name in SERVICE_UNITS:
-        texts = _unit_texts(home, name)
-        command = [value for value in (_service_value(text, 'ExecStart', '') for text in texts.values()) if value]
-        try:
-            executable = Path(shlex.split(command[-1])[0].lstrip('-@+!:')) if command else None
-        except (ValueError, IndexError):
-            executable = None
-        if executable is None or executable.parent == account or MANAGED_RUNTIME in str(executable):
+    import re
+    from .inplace_services import UNITS, show
+    account = {Path(home) / '.local/bin' / name for name in ACCOUNT_COMMANDS}
+    for role, unit in UNITS.items():
+        if role in replaced:
             continue
-        if executable.is_file() and MANAGED_RUNTIME in executable.read_text(errors='replace'):
-            raise ReleaseRejected('The ' + name + ' unit runs ' + str(executable) + ', which forwards to the managed '
-                                  'runtime. Point the unit at ~/.local/bin/hermes, then prepare again.')
+        values = show(unit, 'LoadState', 'ExecStart')
+        if values.get('LoadState') != 'loaded':
+            continue
+        command = values.get('ExecStart', '')
+        paths = re.findall(r'\bpath=([^ ;}]+)', command)
+        if not paths:
+            raise ReleaseRejected('The service manager reports no command for ' + unit)
+        arguments = [part for value in re.findall(r'\bargv\[\]=(.*?) ;', command) for part in value.split()]
+        for value in paths + arguments:
+            path = Path(value)
+            if path.is_absolute() and path not in account and _runs_managed_runtime(path):
+                raise ReleaseRejected('The ' + unit + ' unit runs ' + value + ', which runs the managed runtime. '
+                                      'Point the unit at ~/.local/bin/hermes, then prepare again.')
 
 
 def transition_gateway_unit(python, source, profile, home, job):
@@ -105,11 +125,12 @@ def transition_gateway_unit(python, source, profile, home, job):
         for path, text in _unit_texts(home, name).items():
             if MANAGED_RUNTIME in text and not (name == 'hermes-gateway.service' and path.name == name):
                 raise ReleaseRejected('The ' + path.name + ' unit runs the managed runtime; point it at ~/.local/bin first')
-    check_service_launchers(home)
     existing = Path(home) / GATEWAY_UNIT
     if existing.is_symlink():
         raise ReleaseRejected('The gateway unit must be a regular file before the transition')
-    if not existing.is_file() or MANAGED_RUNTIME not in existing.read_text(errors='replace'):
+    replace = existing.is_file() and MANAGED_RUNTIME in existing.read_text(errors='replace')
+    check_service_launchers(home, replaced=('gateway',) if replace else ())
+    if not replace:
         return {}
     environment = {key: value for key, value in os.environ.items()
                    if key not in {'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME', 'VIRTUAL_ENV'}}
