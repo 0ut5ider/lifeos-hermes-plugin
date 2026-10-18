@@ -89,6 +89,7 @@ These steps form one release. Passing an early step does not authorize deploymen
 4. **Update and removal.** Implement qualified patch transitions, upstream update coordination, and original-file restoration. Test idempotent operations, conflicts, failure rollback, service-state restoration, and memory ownership preservation.
 5. **Installed qualification.** Test the GitHub URL and actual dashboard buttons on disposable existing installations with extra tools, plugins, dependencies, and profiles. Include representative incompatible extensions and an existing managed-release transition. Use real services and recovery paths; stubbed callbacks do not satisfy this gate.
    Status 2026-10-17 for steps 2 to 5: the [in-place qualification record](verification/2026-10-17-inplace-e2e/README.md) lists the container results, including the managed-release transition and its restore. The GitHub plugin URL and the actual dashboard buttons in step 5 remain untested.
+   Status 2026-10-18: the published `v0.8.0-rc.1` passed the GitHub plugin URL and the dashboard buttons on a container (same record). The development host moved to the in-place release ([record](verification/2026-10-18-dev-inplace-transition/README.md)). Daily stays on managed 0.7.3.
 6. **Review and release.** Complete independent review, fix findings, and qualify the exact component release. Update the public installation and recovery guides. Deploy development before daily after the whole release passes.
 
 ## Evidence and implementation gaps
