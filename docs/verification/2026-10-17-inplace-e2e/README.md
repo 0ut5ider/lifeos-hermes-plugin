@@ -82,9 +82,19 @@ The [independent review](../../agents/2026-10-17-inplace-fixes-review/inplace-fi
 
 7. **Adoption before reload.** A replaced unit file reports `NeedDaemonReload=yes` until the manager reloads, and service inspection refuses that state. A failure between publication and reload would leave the host in `recovery_required`. The worker now reloads before adoption.
 8. **Template gateway units.** A fresh managed installation writes its gateway unit with `KillMode=control-group` and the account launcher. Stock Hermes writes `KillMode=mixed`, so adoption would refuse the replacement after publication. Preparation now keeps a unit that runs the account launcher. It refuses a replacement that changes `KillMode` or `WorkingDirectory`, a symlinked unit, and a drop-in that runs the managed runtime.
-9. **Service launchers outside `~/.local/bin`.** On the development host, the gateway and dashboard units run `~/workspace/hermes-agent/.hermes/bin/hermes`. The managed release rewrote that file into a forwarder to its runtime. The 0.8.0-rc.1 candidate first published a stock forwarder at each launcher in the managed job's `plan.json`. After review item R2-1, preparation refuses such a unit instead, and the owner points it at `~/.local/bin/hermes`.
+9. **Service launchers outside `~/.local/bin`.** On the development host, the gateway and dashboard units run `~/workspace/hermes-agent/.hermes/bin/hermes`. The managed release rewrote that file into a forwarder to its runtime. The 0.8.0-rc.1 candidate first published a stock forwarder at each launcher in the managed job's `plan.json`. After review item R2-1, preparation refuses such a unit instead, and the owner points it at `~/.local/bin/hermes`. Preparation reads each unit command from `systemctl --user show`, so drop-ins and specifiers apply.
 
-The layout of defect 9 is not rehearsed on a container. The daily host uses only `~/.local/bin/hermes` and template units, which the 114 rehearsal does not reproduce exactly either (114 has a stock-format unit).
+### Service launcher refusal on 114, build `80057d6d`
+
+The rehearsal copied the managed account forwarder to `~/workspace/hermes-agent/.hermes/bin/hermes` and pointed the dashboard unit at it with a drop-in that uses `%h`.
+
+| Step | Result |
+| --- | --- |
+| Transition with the dashboard on the workspace forwarder | `preparation_failed`: "The hermes-dashboard.service unit runs /home/lifeos-hermes/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime." |
+| Transition after removal of the drop-in (dashboard on `~/.local/bin/hermes`) | Applied (`e4678b03`), receipt from `/home/lifeos-hermes/.hermes/hermes-agent` |
+| Restore of that transition | Rolled back to the managed runtime, all services active |
+
+The daily host uses only `~/.local/bin/hermes` and template units, which the 114 rehearsal does not reproduce exactly (114 has a stock-format gateway unit).
 
 ## Unit tests
 

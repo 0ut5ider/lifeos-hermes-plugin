@@ -1,0 +1,12 @@
+baseline: workspace forwarder                           REFUSED: The hermes-dashboard.service unit runs ~/workspace/hermes-agent/.hermes/bin/hermes, which forwards to the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+quoted like stock Hermes                                REFUSED: The hermes-dashboard.service unit runs ~/workspace/hermes-agent/.hermes/bin/hermes, which forwards to the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+line continuation                                       accepted
+spaces around =                                         accepted
+%h specifier                                            accepted
+other forwarder in ~/.local/bin                         accepted
+symlink elsewhere to account launcher                   REFUSED: The hermes-dashboard.service unit runs ~/opt/hermes, which forwards to the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+prefix drop-in hermes-.service.d                        accepted
+type drop-in service.d                                  accepted
+drop-in reset only (unit cannot load)                   REFUSED: The hermes-dashboard.service unit runs ~/workspace/hermes-agent/.hermes/bin/hermes, which forwards to the managed runtime. Point the unit at ~/.local/bin/hermes, then prepare again.
+/bin/sh -c wrapper                                      accepted
+unterminated quote                                      accepted
