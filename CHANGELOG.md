@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-0.8.0-rc.2 installs LifeOS into the owner's existing Hermes installation instead of a separate managed runtime.
+0.8.0-rc.3 installs LifeOS into the owner's existing Hermes installation instead of a separate managed runtime.
 
 - Check the Hermes installation before any change: `hermes lifeos-release compatibility` and the releases page compare every target file with the qualified stock and patched hashes. Preparation runs this check before it downloads anything.
 - Refuse a Hermes that runs another Python version than the release qualifies, and report a damaged `lifeos-host.json` as host drift that names the file.
