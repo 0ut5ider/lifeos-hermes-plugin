@@ -122,6 +122,18 @@ Findings from this run, none of which blocks the transition:
 7. The LifeOS Bridge page still shows the managed-release text "Prepare latest LifeOS update" on an in-place installation.
 8. The review did not offer a unit for the hand-started dashboard that served the request.
 
+## Release candidate 0.8.0-rc.3 before publication
+
+Build: program commit `20c6b077`. Two builds gave archive SHA-256 `e4ffb904d39aad4d1189c3e0fbc3a6367802dfc812debeedff17d0f85ab7be6e`. rc.3 follows a failed dashboard test of the published rc.2 on 112: the review re-sealed a plan that missed the hand-started dashboard serving it, and the worker refused and rolled back. The checkout, units, and plugins stayed unchanged.
+
+| Flow | Result |
+| --- | --- |
+| Managed 0.7.3 to in-place transition on 114 | Applied (`6f897340`), receipt from `/home/lifeos-hermes/.hermes/hermes-agent` |
+| Restore of that transition on 114 | Rolled back to the managed runtime, all services active |
+| Interrupted first installation on 112, 4 checkpoints | All 4 recovered to `applied`, no host drift ([results](crash-results/)) |
+
+The unit suite ran per module on `20c6b077` with the environment of the rc.2 run. 356 of 435 modules pass. The [79 failing modules](rc3-suite-failing-modules.txt) are the modules that also fail on `origin/main` with that environment.
+
 ## Release candidate 0.8.0-rc.2 before publication
 
 Build: program commit `27c12e85`. Two builds gave archive SHA-256 `331be84e5246c5a9d40a6f232064fe832211a0235d59647c5f92299ae3e5589c`. The runs used that archive through the loopback server.
