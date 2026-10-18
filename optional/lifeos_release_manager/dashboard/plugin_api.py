@@ -68,13 +68,27 @@ def owner(request: Request):
 router = APIRouter(dependencies=[Depends(owner)])
 
 
+def dashboard_login(account):
+    """Return the running password provider's login when it authenticated ``account``.
+
+    Standalone removal recovery checks the owner's password after the dashboard plugin is gone, so the
+    removal records the login that this dashboard actually verifies. Hermes keeps it only on the provider.
+    """
+    from hermes_cli.dashboard_auth.registry import get_provider
+    provider=get_provider('basic')
+    username,password_hash=getattr(provider,'_username',None),getattr(provider,'_password_hash',None)
+    if not isinstance(username,str) or not isinstance(password_hash,str) or account!='dashboard:basic:'+username:
+        raise HTTPException(status_code=403,detail='Complete removal requires the password-authenticated dashboard owner')
+    return {'username':username,'password_hash':password_hash}
+
+
 @router.get('/memory-workflows')
 def memory_workflows(account: str = Depends(owner)):
     try:
         return JSONResponse(memory_workflow.status(profile(),owner=account),headers={'Cache-Control':'no-store'})
     except (ValueError,OSError,RuntimeError) as error:
         selected=profile()
-        if not (selected/'lifeos-memory.json').exists() and not (selected/'lifeos-memory.json').is_symlink():
+        if not any((selected/name).exists() or (selected/name).is_symlink() for name in ('lifeos-memory.json','.lifeos-removal.json')):
             raise HTTPException(status_code=409,detail='Claim this LifeOS installation on the LifeOS Bridge page '
                                 'before memory workflows') from error
         raise HTTPException(status_code=409,detail='Memory workflow status is unavailable under this profile') from error
@@ -90,8 +104,10 @@ async def prepare_memory_workflow(request: Request, account: str = Depends(owner
     if request.query_params:raise HTTPException(status_code=400,detail='Use the reviewed memory workflow fields')
     try:selection=memory_workflow.selection(commands.parse_json(data))
     except ValueError as error:raise HTTPException(status_code=400,detail=str(error)) from error
+    login=dashboard_login(account) if selection['kind']=='removal' else None
     try:
-        return await run_in_threadpool(memory_workflow.queue,profile(),selection,owner=account,launch=memory_workflow.launch)
+        return await run_in_threadpool(memory_workflow.queue,profile(),selection,owner=account,launch=memory_workflow.launch,
+                                       login=login)
     except PermissionError as error:
         raise HTTPException(status_code=403,detail='The installation owner must authorize this memory workflow') from error
     except (ValueError,OSError,RuntimeError) as error:

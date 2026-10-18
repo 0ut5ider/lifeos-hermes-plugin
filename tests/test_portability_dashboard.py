@@ -22,6 +22,17 @@ class PortabilityDashboardTests(unittest.TestCase):
         self.assertEqual(code,409)
         self.assertIn('Claim this LifeOS installation on the LifeOS Bridge page',result['detail'])
 
+    def test_removal_records_the_login_of_the_running_password_provider(self):
+        from fastapi import HTTPException
+        from plugins.dashboard_auth.basic import _verify_password
+        from optional.lifeos_release_manager.dashboard.plugin_api import dashboard_login
+        login=dashboard_login('dashboard:basic:owner')
+        self.assertEqual(set(login),{'username','password_hash'})
+        self.assertEqual(login['username'],'owner')
+        self.assertTrue(_verify_password('synthetic-password',login['password_hash']))
+        with self.assertRaises(HTTPException) as refused:dashboard_login('dashboard:basic:other')
+        self.assertEqual(refused.exception.status_code,403)
+
     def test_preparation_refuses_paths_accounts_and_foreign_origin(self):
         for selection in ({'kind':'return','snapshot':'/tmp/private'},
                           {'kind':'activation','account':'dashboard:basic:owner'},

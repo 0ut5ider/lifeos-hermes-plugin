@@ -99,7 +99,12 @@ def workflow_job(profile, identifier):
     if job.resolve()!=job or not job.is_dir() or job.stat().st_uid!=os.getuid() or job.stat().st_mode & 0o077:
         raise ValueError('The memory workflow requires private profile storage')
     request=read_private(job/'request.json')
-    if (set(request)!={'version','identifier','profile','owner','bridge','selection'} or request['version']!=1
+    keys={'version','identifier','profile','owner','bridge','selection'}
+    # A removal records its owner's dashboard login; preparation requires it, status and recovery do not.
+    if isinstance(request,dict) and 'login' in request and isinstance(request.get('selection'),dict) \
+            and request['selection'].get('kind')=='removal':
+        keys.add('login')
+    if (set(request)!=keys or request['version']!=1
             or request['identifier']!=identifier or request['profile']!=str(profile)
             or not isinstance(request['owner'],str) or not request['owner'].startswith('dashboard:')):
         raise ValueError('The memory workflow belongs to another profile')
@@ -126,8 +131,11 @@ def status(profile, *, owner):
     return {'operations':operations}
 
 
-def queue(profile, value, *, owner, launch):
+def queue(profile, value, *, owner, launch, login=None):
+    """Queue a reviewed memory workflow; a removal records the dashboard password ``login`` of its owner."""
     value=selection(value);profile=profile_directory(profile)
+    if value['kind']!='removal' and login is not None:
+        raise ValueError('Only removal records a dashboard login')
     source,configuration=_source(profile)
     configuration.check_owner(configuration.load(),owner)
     with source.memory_module('installation_lock').installation_lock(profile):
@@ -138,9 +146,13 @@ def queue(profile, value, *, owner, launch):
         source.memory_module('memory_backup')._directory(root,private=True)
         preparing=profile/'.lifeos-portability-preparations';preparing.mkdir(mode=0o700,exist_ok=True)
         source.memory_module('memory_backup')._directory(preparing,private=True)
+        if value['kind']=='removal':
+            from .removal_recovery import recovery_login
+            login=recovery_login(login,owner)
         identifier=uuid4().hex;job=preparing/identifier;job.mkdir(mode=0o700)
         request={'version':1,'identifier':identifier,'profile':str(profile),'owner':owner,
             'bridge':fingerprint(profile/'plugins/lifeos-hook-bridge'),'selection':value}
+        if login is not None:request['login']=login
         publish(job/'request.json',_encoded(request));write_workflow_state(job,'queued')
         os.rename(job,root/identifier);sync_directory(root);sync_directory(preparing)
     return admit(profile,identifier,'prepare',None,owner=owner,launch=launch)
@@ -327,7 +339,7 @@ def execute(profile, identifier, action):
             elif selected['kind']=='removal':
                 from .removal_workflow import execute as remove
                 result=remove(profile,job,selected,action,signature,owner=owner,source=source,
-                    configuration=configuration,installation_lease=lease)
+                    configuration=configuration,installation_lease=lease,login=request.get('login'))
             elif selected['kind']=='activation':
                 activation=source.memory_module('memory_activation').MemoryActivation(configuration,
                     units=profile_units(profile),installation_lease=lease,operation_id=identifier)

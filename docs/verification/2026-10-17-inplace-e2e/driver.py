@@ -93,12 +93,19 @@ def provider_return():
     return result
 
 
+def _dashboard_login():
+    """Return the test host's dashboard login from config.yaml, as the dashboard's password provider holds it."""
+    from ruamel.yaml import YAML
+    basic = YAML(typ="safe").load((profile / "config.yaml").read_text())["dashboard"]["basic_auth"]
+    return {"username": basic["username"], "password_hash": basic["password_hash"]}
+
+
 def removal_prepare():
     state = json.loads(STATE.read_text())
     workflow = _workflow()
     queued = workflow.queue(profile, {"kind": "removal", "identifier": state["return_identifier"],
                                       "signature": state["return_signature"], "disable_discord": True},
-                            owner=OWNER, launch=workflow.launch)
+                            owner=OWNER, launch=workflow.launch, login=_dashboard_login())
     # Return at once: removal refuses while any process with the Hermes source on its path is running,
     # so the shell waits for the result by reading the workflow status file.
     _remember(removal_identifier=queued["identifier"])

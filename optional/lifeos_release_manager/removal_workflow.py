@@ -54,13 +54,13 @@ def _archive_marker(profile, job, signature):
     os.rename(marker,target);sync_directory(history);sync_directory(profile)
 
 
-def execute(profile, job, selected, action, signature, *, owner, source, configuration, installation_lease):
+def execute(profile, job, selected, action, signature, *, owner, source, configuration, installation_lease, login=None):
     from .removal_preparation import prepare,returned,check_consumers
     from .removal_publication import RemovalPublication
     profile,job=Path(profile),Path(job)
     if action=='prepare':
         return prepare(profile,job,selected,owner=owner,source=source,configuration=configuration,
-            installation_lease=installation_lease)
+            installation_lease=installation_lease,login=login)
     retained_source,retained_configuration,fixed,plan=prepared(profile,job.name,signature)
     retained_configuration.check_owner(retained_configuration.load(),owner)
     if (fixed!=job or plan['owner']!=owner or plan.get('return_identifier')!=selected['identifier']

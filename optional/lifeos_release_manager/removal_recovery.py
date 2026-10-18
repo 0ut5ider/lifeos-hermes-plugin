@@ -2,6 +2,7 @@
 # ABOUTME: Issues the same exact owner workflow grant after the active manager has been removed.
 import getpass
 from pathlib import Path
+import re
 import secrets
 import sys
 import types
@@ -12,94 +13,29 @@ if not __package__:
     sys.modules[package.__name__]=package
     __package__=package.__name__
 
-from ruamel.yaml import YAML
-
 from .release_catalog import ReleaseRejected
 
 
-LOGIN_VARIABLES={'username':'HERMES_DASHBOARD_BASIC_AUTH_USERNAME','password_hash':'HERMES_DASHBOARD_BASIC_AUTH_PASSWORD_HASH',
-    'password':'HERMES_DASHBOARD_BASIC_AUTH_PASSWORD'}
-LOGIN_FILE_BYTES=1024*1024
+SCRYPT_HASH=re.compile(r'scrypt\$[1-9][0-9]*\$[1-9][0-9]*\$[1-9][0-9]*\$[A-Za-z0-9+/]+={0,2}\$[A-Za-z0-9+/]+={0,2}')
 
 
-def _private_bytes(path):
-    """Return the bytes of an owner-only login source, refusing a shared or changing file."""
-    from .release_programs import ProgramConflict, fingerprint
-    try:
-        identity=fingerprint(path)
-    except ProgramConflict:
-        identity=None
-    if identity is None or identity['type']!='file' or identity['mode'] & 0o077 or Path(path).stat().st_size>LOGIN_FILE_BYTES:
-        raise ReleaseRejected('Standalone recovery requires the private current dashboard configuration')
-    data=Path(path).read_bytes()
-    if fingerprint(path)!=identity:raise ReleaseRejected('The current dashboard configuration changes during authentication')
-    return data
+def recovery_login(value, owner):
+    """Return the dashboard password login that authorizes standalone recovery for ``owner``.
 
-
-def _environment_file(path):
-    import io
-    from dotenv import dotenv_values
-    return {key:value for key,value in dotenv_values(stream=io.StringIO(_private_bytes(path).decode())).items()
-            if key in LOGIN_VARIABLES.values() and isinstance(value,str)}
-
-
-def dashboard_unit_environment():
-    """Return the dashboard unit's ``Environment=`` assignments and ``EnvironmentFiles=`` paths, or nothing."""
-    import shlex
-    from .inplace_services import show
-    try:
-        values=show('hermes-dashboard.service','LoadState','Environment','EnvironmentFiles')
-    except ReleaseRejected:
-        return [],[]
-    if values.get('LoadState')!='loaded':
-        return [],[]
-    files=[Path(line.rsplit(' (ignore_errors=',1)[0]) for line in values.get('EnvironmentFiles','').splitlines() if line]
-    return shlex.split(values.get('Environment','')),files
-
-
-def _unit_login(unit):
-    assignments,files=unit()
-    found={}
-    for item in assignments:
-        key,_,value=item.partition('=')
-        if key in LOGIN_VARIABLES.values():found[key]=value
-    # systemd applies environment files after Environment= assignments.
-    for path in files:
-        found.update(_environment_file(path))
-    return found
-
-
-def basic_settings(profile,*,unit=None):
-    """Return the dashboard password login as the dashboard resolves it.
-
-    Hermes loads the profile ``.env`` over the unit environment, and a non-empty environment value wins
-    over ``dashboard.basic_auth`` in ``config.yaml``. A plaintext environment password replaces any hash.
+    Removal preparation records the login of the running dashboard password provider, the one that
+    authenticated the owner, so recovery never re-reads configuration that the removal can change.
     """
-    from plugins.dashboard_auth.basic import hash_password
-    profile=Path(profile)
-    path=profile/'config.yaml'
-    value=YAML(typ='safe').load(_private_bytes(path))
-    configured=value.get('dashboard',{}).get('basic_auth',{}) if isinstance(value,dict) else {}
-    if not isinstance(configured,dict):configured={}
-    layers=[_environment_file(profile/'.env')] if (profile/'.env').exists() else []
-    layers.append(_unit_login(unit or dashboard_unit_environment))
-    def environment(name):
-        return next((layer[name].strip() for layer in layers if isinstance(layer.get(name),str) and layer[name].strip()),'')
-    def configuration(key):
-        return configured[key].strip() if isinstance(configured.get(key),str) else ''
-    username=environment(LOGIN_VARIABLES['username']) or configuration('username')
-    plaintext=environment(LOGIN_VARIABLES['password'])
-    password_hash=(hash_password(plaintext) if plaintext else environment(LOGIN_VARIABLES['password_hash'])
-        or configuration('password_hash') or (hash_password(configuration('password')) if configuration('password') else ''))
-    if not username or not password_hash:
+    if (not isinstance(value,dict) or set(value)!={'username','password_hash'}
+            or not isinstance(value['username'],str) or not value['username'] or len(value['username'])>256
+            or not isinstance(value['password_hash'],str) or SCRYPT_HASH.fullmatch(value['password_hash']) is None
+            or owner!='dashboard:basic:'+value['username']):
         raise ReleaseRejected('Complete removal currently requires a password-authenticated dashboard recovery owner')
-    return {'username':username,'password_hash':password_hash}
+    return value
 
 
-def authenticate(profile, username, password, owner):
+def authenticate(login, username, password, owner):
     from plugins.dashboard_auth.basic import BasicAuthProvider
-    settings=basic_settings(profile)
-    provider=BasicAuthProvider(username=settings['username'],password_hash=settings['password_hash'],
+    provider=BasicAuthProvider(username=login['username'],password_hash=login['password_hash'],
         secret=secrets.token_bytes(32),ttl_seconds=60)
     session=provider.complete_password_login(username=username,password=password)
     account='dashboard:'+session.provider+':'+session.user_id
@@ -124,7 +60,7 @@ def main():
         print('This action changes software only. It retains current Hermes memory and native data.')
         username=input('Dashboard username: ')
         password=getpass.getpass('Dashboard password: ')
-        owner=authenticate(args.profile,username,password,plan['owner'])
+        owner=authenticate(recovery_login(plan.get('recovery_login'),plan['owner']),username,password,plan['owner'])
         del password
         result=memory_workflow.admit(args.profile,args.identifier,args.action,args.signature,
             owner=owner,launch=memory_workflow.launch)

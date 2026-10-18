@@ -107,7 +107,7 @@ def check_consumers(profile, installed, services, *, workflow=None, source=None)
         raise ReleaseRejected('The admitted removal coordinator changes during consumer inspection')
 
 
-def prepare(profile, job, selected, *, owner, source, configuration, installation_lease=None):
+def prepare(profile, job, selected, *, owner, source, configuration, installation_lease=None, login=None):
     import hashlib
     import shutil
     from .cli import profile_directory
@@ -117,7 +117,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
     from . import inplace_removal,removal_generation,removal_inventory,removal_ownership
     from .host_record import record_path
     from .inplace_services import profile_units
-    from .removal_recovery import basic_settings
+    from .removal_recovery import recovery_login
     from .removal_services import RemovalServices
     from .removal_runtime import identity as runtime_identity,launchers
     if selected.get('disable_discord') is not True:
@@ -133,9 +133,7 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         inplace=record_path(profile).exists() or record_path(profile).is_symlink()
         generation=(inplace_removal.selected if inplace else removal_generation.selected)(profile,installed,bridge=source)
         host=generation['record']['source'] if inplace else None
-        settings=basic_settings(profile)
-        if owner!='dashboard:basic:'+settings['username']:
-            raise ReleaseRejected('The current dashboard password account must own standalone removal recovery')
+        login=recovery_login(login,owner)
         root=profile/'.lifeos-releases'
         for sibling in root.iterdir():
             if not sibling.is_dir() or not (sibling/'status.json').is_file():continue
@@ -200,7 +198,8 @@ def prepare(profile, job, selected, *, owner, source, configuration, installatio
         plan={'format':1,'profile':str(profile),'root':str(installed),'identifier':job.name,'owner':owner,
             'workspace':str(workspace),'bridge_files':generation['bridge_files'],'manager_files':generation['manager_files'],
             'owner_policy_sha256':hashlib.sha256(encoded_policy).hexdigest(),'program_entries_sha256':programs.entries_digest(),
-            'service_signature':service_signature,'generation':generation['job'].name,'disable_discord':True,**binding}
+            'service_signature':service_signature,'generation':generation['job'].name,'disable_discord':True,
+            'recovery_login':login,**binding}
         if inplace:
             record=generation['record']
             plan.update(host={'source':record['source'],'commit':record['commit'],'label':record['label'],

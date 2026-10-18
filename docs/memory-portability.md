@@ -43,6 +43,7 @@ For complete software removal:
 2. Acknowledge that removal disables Discord because stock Hermes lacks the integration's private-channel restrictions.
 3. Select **Prepare complete LifeOS removal**.
 4. Save the displayed standalone recovery command before applying. The manager page disappears after removal.
+   The command asks for the dashboard username and password. It checks them against the dashboard login that authorized this removal, so a later password change does not apply to it.
 5. Review the exact software changes and select **Remove reviewed LifeOS software**.
 
 Use **Recover memory workflow**, **Restore previous provider settings**, or **Restore integration software** only when offered for the operation's actual state. If the page is unavailable, use the retained standalone recovery path and its owner authentication. Preserve the journal and later edits.
