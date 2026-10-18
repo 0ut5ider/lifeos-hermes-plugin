@@ -23,12 +23,19 @@ def _references(data, roots):
     return False
 
 
+# Hermes v0.21.7 top-level options that take no value (hermes_cli/_parser.py, _add_top_level_flags).
+FLAGS = frozenset(('--version', '--no-restore-cwd', '--worktree', '--accept-hooks', '--yolo', '--pass-session-id',
+                   '--ignore-user-config', '--ignore-rules', '--safe-mode', '--tui', '--native', '--tui-native', '--cli'))
+
+
 def _commands(words, names):
     """Return the positions of ``names`` that are command words, not the value of a preceding ``--option``."""
     def text(word):
         return word.decode(errors='replace') if isinstance(word, bytes) else word
+    def takes_value(word):
+        return word.startswith('--') and '=' not in word and word not in FLAGS
     return [index for index, word in enumerate(words) if word in names
-            and not (index and text(words[index - 1]).startswith('--') and '=' not in text(words[index - 1]))]
+            and not (index and takes_value(text(words[index - 1])))]
 
 
 def _role(arguments):

@@ -161,3 +161,6 @@ class ConsumerRoleTests(unittest.TestCase):
         self.assertEqual(_role(b'hermes\0lifeos-release\0prepare\0--name\0dashboard\0'), 'other')
         self.assertEqual(_role(b'hermes\0chat\0--title\0gateway\0run\0'), 'other')
         self.assertEqual(_role(b'hermes\0-p\0default\0serve\0--port\09119\0'), 'dashboard')
+        # Hermes's top-level on/off flags take no value, so the command that follows them still counts.
+        self.assertEqual(_role(b'hermes\0--accept-hooks\0gateway\0run\0'), 'gateway')
+        self.assertEqual(_role(b'hermes\0--yolo\0dashboard\0'), 'dashboard')
