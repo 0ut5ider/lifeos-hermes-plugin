@@ -1,0 +1,140 @@
+16:503:_LOOPBACK_HOST_VALUES: frozenset = frozenset({"localhost", "127.0.0.1", "::1"})
+17:506:def _dashboard_public_hosts() -> frozenset[str]:
+18:507:    """Return the exact hostname declared by ``dashboard.public_url``.
+19:516:        hostname = urllib.parse.urlparse(public_url).hostname if public_url else None
+22:522:def should_require_auth(host: str, allow_public: bool = False) -> bool:
+23:525:    RFC1918 / CGNAT / link-local are deliberately PUBLIC — a hostile LAN device
+24:529:    return host not in _LOOPBACK_HOST_VALUES
+26:534:    trusted_public_hosts: Optional[frozenset[str]] = None,
+28:541:    if trusted_public_hosts is None:
+29:542:        trusted_public_hosts = _dashboard_public_hosts()
+30:543:    return should_require_auth(host) or any(h not in _LOOPBACK_HOST_VALUES for h in trusted_public_hosts)
+32:562:        host in _LOOPBACK_HOST_VALUES
+45:605:    trusted_public_hosts: frozenset[str] = frozenset(),
+47:612:    - Exact operator-declared public hosts (with or without port suffix)
+48:613:    - Any host when bound to 0.0.0.0 (explicit opt-in to non-loopback,
+51:621:    if host_only in trusted_public_hosts or bound_host in {"0.0.0.0", "::"}:
+53:625:        return host_only in _LOOPBACK_HOST_VALUES
+59:635:        request.headers.get("host", ""), bound_host, getattr(app.state, "trusted_public_hosts", frozenset())
+60:642:                    "bound hostname or the configured public hostname."
+65:1090:    if host in _LOOPBACK_HOST_VALUES:
+optional/lifeos_release_manager/release_programs.py:147:    def entries_digest(self):
+optional/lifeos_release_manager/release_programs.py-148-        return self._entries_digest(self.entries())
+optional/lifeos_release_manager/release_programs.py-149-
+optional/lifeos_release_manager/release_programs.py-150-    def check_plan(self, *, directories, files, dependencies=None):
+optional/lifeos_release_manager/release_programs.py-151-        dependencies = {} if dependencies is None else dependencies
+optional/lifeos_release_manager/release_programs.py-152-        expected = {}
+optional/lifeos_release_manager/release_programs.py-153-        for kind, sources, links in (('directory', directories, False), ('file', files, False),
+optional/lifeos_release_manager/release_programs.py-154-                                     ('directory', dependencies, True)):
+optional/lifeos_release_manager/release_programs.py-155-            for target, source in sources.items():
+optional/lifeos_release_manager/release_programs.py-156-                target = str(Path(target).absolute())
+optional/lifeos_release_manager/release_programs.py-157-                if target in expected:
+optional/lifeos_release_manager/release_programs.py-158-                    raise ProgramConflict('The candidate program plan repeats a target')
+optional/lifeos_release_manager/release_programs.py-159-                expected[target] = {'source': None if source is None else str(Path(source).absolute()),
+commit 1c6b58f9cdc9ba6e92740ea00df201d17b936456
+Author: Adrian <adrian@construkted.com>
+Date:   Sun Oct 18 12:40:25 2026 -0400
+
+    fix(inplace): keep a replaced dashboard's address
+    
+    With hand-started dashboards now detected, preparation creates a
+    standard dashboard unit and stops the hand-started process. That
+    unit listened on 127.0.0.1, so a dashboard started with --host
+    0.0.0.0 lost remote access, and with it the releases page. The scan
+    now reads only --host and --port from the hand-started dashboard,
+    validates them, and the created unit uses them. Dashboards on
+    different addresses refuse.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/tests/test_consumer_scan.py b/tests/test_consumer_scan.py
+index fa0d5f8b..892b7f62 100644
+--- a/tests/test_consumer_scan.py
++++ b/tests/test_consumer_scan.py
+@@ -84,6 +84,32 @@ class ConsumerScanTests(unittest.TestCase):
+         self.assertNotIn('do-not-report', repr(item))
+ 
+ 
++class DashboardOptionTests(unittest.TestCase):
++    def options(self, *arguments):
++        from optional.lifeos_release_manager.consumer_scan import dashboard_options
++        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)', *arguments])
++        self.addCleanup(process.wait)
++        self.addCleanup(process.kill)
++        deadline = time.monotonic() + 5
++        while not Path('/proc', str(process.pid), 'cmdline').read_bytes() and time.monotonic() < deadline:
++            time.sleep(0.01)
++        return dashboard_options(process.pid)
++
++    def test_only_the_address_options_after_the_dashboard_command_are_read(self):
++        self.assertEqual(self.options('dashboard', '--host', '0.0.0.0', '--port', '9119', '--skip-build'),
++                         {'host': '0.0.0.0', 'port': 9119})
++        self.assertEqual(self.options('dashboard', '--host=::1', '--port=8080'), {'host': '::1', 'port': 8080})
++        self.assertEqual(self.options('--host', '0.0.0.0', 'dashboard'), {})
++        self.assertEqual(self.options('dashboard', '--no-open'), {})
++
++    def test_unusable_address_options_refuse(self):
++        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
++        for arguments in (('dashboard', '--port', '0'), ('dashboard', '--port', 'http'), ('dashboard', '--host', 'a b'),
++                          ('dashboard', '--host'), ('dashboard', '--host', '$(id)')):
++            with self.subTest(arguments=arguments), self.assertRaisesRegex(ReleaseRejected, 'address'):
++                self.options(*arguments)
++
++
+ class ProcessIdentityTests(unittest.TestCase):
+     def test_start_time_and_parent_come_from_the_kernel_process_record(self):
+         from optional.lifeos_release_manager.release_operation import process_stamp
+diff --git a/tests/test_inplace_services.py b/tests/test_inplace_services.py
+index 4c683e67..c4c783c7 100644
+--- a/tests/test_inplace_services.py
++++ b/tests/test_inplace_services.py
+@@ -70,6 +70,18 @@ class InplaceServicesTests(unittest.TestCase):
+         self.assertEqual(result['offers'], ['dashboard'])
+         self.assertEqual(result['blocking'], [])
+         self.assertEqual([item['pid'] for item in result['consumers']], [pid])
++        self.assertEqual(result['dashboard_options'], {})
++
++    def test_offered_dashboard_unit_keeps_the_hand_started_address(self):
++        self.process('dashboard', '--host', '0.0.0.0', '--port=9119', '--no-open')
++        result = inventory(self.source, self.state, units=self.units)
++        self.assertEqual(result['dashboard_options'], {'host': '0.0.0.0', 'port': 9119})
++
++    def test_dashboards_with_different_addresses_block(self):
++        self.process('dashboard', '--host', '0.0.0.0')
++        self.process('dashboard', '--port', '9200')
++        with self.assertRaisesRegex(ReleaseRejected, 'different addresses'):
++            inventory(self.source, self.state, units=self.units)
+ 
+     def test_hand_started_dashboard_with_its_unit_present_blocks(self):
+         self.unit('dashboard')
+diff --git a/tests/test_release_configuration.py b/tests/test_release_configuration.py
+index 29f2b021..4d1d7efb 100644
+--- a/tests/test_release_configuration.py
++++ b/tests/test_release_configuration.py
+@@ -30,6 +30,26 @@ class ReleaseConfigurationTests(unittest.TestCase):
+             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+             self.assertEqual(result.stdout + result.stderr, '')
+ 
++    def test_created_dashboard_unit_listens_on_the_reviewed_address(self):
++        from optional.lifeos_release_manager.release_services import service_files
++        with tempfile.TemporaryDirectory() as temp:
++            root = Path(temp)
++            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
++            for path in (profile, generated, installed / 'LIFEOS/PULSE', root / '.local/bin'):
++                path.mkdir(parents=True, mode=0o700)
++            program = root / '.local/bin/hermes'
++            program.write_text('#!/bin/sh\nexit 0\n')
++            program.chmod(0o700)
++            request = {'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}
++            files = service_files(request, generated, roles=('dashboard',), dashboard={'host': '0.0.0.0', 'port': 9119})
++            text = next(iter(files.values())).read_text()
++            self.assertIn('ExecStart="' + str(program) + '" "dashboard" "--isolated" "--no-open" "--host" "0.0.0.0" "--port" "9119"\n', text)
++            result = subprocess.run(['systemd-analyze', '--user', 'verify', *map(str, files.values())],
++                capture_output=True, text=True, timeout=30)
++            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
++            files = service_files(request, root / 'generated', roles=('dashboard',))
++            self.assertIn('"--no-open"\n', next(iter(files.values())).read_text())
++
+     def test_selected_service_roles_generate_only_their_units(self):
+         from optional.lifeos_release_manager.release_services import service_files
+         with tempfile.TemporaryDirectory() as temp:

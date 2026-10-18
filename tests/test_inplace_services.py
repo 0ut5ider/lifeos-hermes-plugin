@@ -73,9 +73,9 @@ class InplaceServicesTests(unittest.TestCase):
         self.assertEqual(result['dashboard_options'], {})
 
     def test_offered_dashboard_unit_keeps_the_hand_started_address(self):
-        self.process('dashboard', '--host', '0.0.0.0', '--port=9119', '--no-open')
+        self.process('dashboard', '--host', '0.0.0.0', '--port=9200', '--no-open')
         result = inventory(self.source, self.state, units=self.units)
-        self.assertEqual(result['dashboard_options'], {'host': '0.0.0.0', 'port': 9119})
+        self.assertEqual(result['dashboard_options'], {'host': '0.0.0.0', 'port': 9200})
 
     def test_dashboards_with_different_addresses_block(self):
         self.process('dashboard', '--host', '0.0.0.0')

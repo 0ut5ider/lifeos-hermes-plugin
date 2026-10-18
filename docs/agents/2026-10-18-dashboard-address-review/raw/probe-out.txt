@@ -1,0 +1,12 @@
+['serve', '--host', '0.0.0.0', '--port', '9119'] dashboard -> {}
+['-p', 'default', 'dashboard', '--port', '9119', '--host', '0.0.0.0', '--open-profile', 'work'] dashboard -> {'port': 9119, 'host': '0.0.0.0'}
+['dashboard', '--ho', '0.0.0.0'] dashboard -> {}
+['dashboard', '--host', '0.0.0.0', '--host', '127.0.0.1'] dashboard -> {'host': '127.0.0.1'}
+['dashboard', '--host=::'] dashboard -> {'host': '::'}
+['dashboard', '--host', '[::1]'] dashboard -> {'host': '[::1]'}
+['dashboard', '--host', '%h'] dashboard -> ReleaseRejected: A hand-started dashboard runs with an address that its unit 
+['dashboard', '--host='] dashboard -> ReleaseRejected: A hand-started dashboard runs with an address that its unit 
+['dashboard', '--port', '+9119'] dashboard -> ReleaseRejected: A hand-started dashboard runs with an address that its unit 
+['dashboard', '--port', '９１１９'] dashboard -> {'port': 9119}
+['dashboard', '--host', '-x'] dashboard -> {'host': '-x'}
+['dashboard', '--host', '127.0.0.1'] dashboard -> {'host': '127.0.0.1'}

@@ -96,16 +96,21 @@ class DashboardOptionTests(unittest.TestCase):
         return dashboard_options(process.pid)
 
     def test_only_the_address_options_after_the_dashboard_command_are_read(self):
-        self.assertEqual(self.options('dashboard', '--host', '0.0.0.0', '--port', '9119', '--skip-build'),
-                         {'host': '0.0.0.0', 'port': 9119})
+        self.assertEqual(self.options('dashboard', '--host', '0.0.0.0', '--port', '9200', '--skip-build'),
+                         {'host': '0.0.0.0', 'port': 9200})
         self.assertEqual(self.options('dashboard', '--host=::1', '--port=8080'), {'host': '::1', 'port': 8080})
         self.assertEqual(self.options('--host', '0.0.0.0', 'dashboard'), {})
         self.assertEqual(self.options('dashboard', '--no-open'), {})
+        # serve runs the same server headless.
+        self.assertEqual(self.options('serve', '--host', '0.0.0.0', '--port', '9200'), {'host': '0.0.0.0', 'port': 9200})
+        # The defaults are the address of a unit without options.
+        self.assertEqual(self.options('dashboard', '--host', '127.0.0.1', '--port', '9119'), {})
 
     def test_unusable_address_options_refuse(self):
         from optional.lifeos_release_manager.release_catalog import ReleaseRejected
         for arguments in (('dashboard', '--port', '0'), ('dashboard', '--port', 'http'), ('dashboard', '--host', 'a b'),
-                          ('dashboard', '--host'), ('dashboard', '--host', '$(id)')):
+                          ('dashboard', '--host'), ('dashboard', '--host', '$(id)'),
+                          ('dashboard', '--ho', '0.0.0.0'), ('serve', '--por=9200')):
             with self.subTest(arguments=arguments), self.assertRaisesRegex(ReleaseRejected, 'address'):
                 self.options(*arguments)
 

@@ -1,5 +1,5 @@
 # ABOUTME: Finds this account's processes that use a Hermes source checkout or its environment generations.
-# ABOUTME: Reports process IDs and command names only; it never exports arguments or environment values.
+# ABOUTME: Reports process IDs and command names, plus a dashboard's --host and --port; never environment values.
 from __future__ import annotations
 
 import os
@@ -37,19 +37,24 @@ DASHBOARD_HOST = re.compile(r'[A-Za-z0-9._:\[\]-]{1,253}')
 
 
 def dashboard_options(pid):
-    """Return the ``--host`` and ``--port`` that a hand-started dashboard runs with.
+    """Return the ``--host`` and ``--port`` that a hand-started dashboard or ``serve`` runs with.
 
     The unit that replaces it must listen on the same address, or the owner loses the dashboard.
-    Only these two options are read; the rest of the command line stays private.
+    Only these two options are read; the rest of the command line stays private. The defaults,
+    which a unit without options also uses, are left out, and a shortened option refuses.
     """
     from .release_catalog import ReleaseRejected
     words = [word.decode(errors='replace') for word in Path('/proc', str(pid), 'cmdline').read_bytes().split(b'\0')[:-1]]
-    if 'dashboard' not in words:
+    commands = [index for index, word in enumerate(words) if word in ('dashboard', 'serve')]
+    if not commands:
         return {}
-    rest, options, index = words[words.index('dashboard') + 1:], {}, 0
+    rest, options, index = words[commands[0] + 1:], {}, 0
     refused = ReleaseRejected('A hand-started dashboard runs with an address that its unit cannot keep. '
                               'Start it with a plain --host and --port, then prepare again')
     while index < len(rest):
+        written = rest[index].split('=', 1)[0]
+        if any(flag != written and flag.startswith(written) and len(written) > 2 for flag in ('--host', '--port')):
+            raise refused
         for name in ('host', 'port'):
             flag = '--' + name
             if rest[index] == flag:
@@ -66,7 +71,7 @@ def dashboard_options(pid):
         if not options['port'].isdecimal() or not 0 < int(options['port']) < 65536:
             raise refused
         options['port'] = int(options['port'])
-    return options
+    return {name: value for name, value in options.items() if value != {'host': '127.0.0.1', 'port': 9119}[name]}
 
 
 def stat_fields(pid):
