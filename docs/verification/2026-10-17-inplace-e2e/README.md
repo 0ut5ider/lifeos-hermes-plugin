@@ -96,6 +96,32 @@ The rehearsal copied the managed account forwarder to `~/workspace/hermes-agent/
 
 The daily host uses only `~/.local/bin/hermes` and template units, which the 114 rehearsal does not reproduce exactly (114 has a stock-format gateway unit).
 
+## Published prerelease, GitHub URL, and dashboard buttons on 112
+
+Date: 2026-10-18. Release: [`v0.8.0-rc.1`](https://github.com/0ut5ider/lifeos-hermes-plugin/releases/tag/v0.8.0-rc.1), program commit `a0fbeb48`, archive SHA-256 `5036e428...2653`. Two builds from that commit gave the same archive hash. Before publication, the archive passed the transition and its restore on 114 through the loopback server (`a5d1f2c8`).
+
+Starting state: 112 rolled back to its `base` snapshot (stock `v0.21.7`, gateway unit, `weather-test`, custom model, MCP server, no LifeOS). The dashboard ran by hand on `0.0.0.0:9119` with a test password login. A synthetic `OPENROUTER_API_KEY` let Hermes resolve the configured model provider; no model request ran.
+
+| Step | How | Result |
+| --- | --- | --- |
+| Install the release manager | `hermes plugins install '<repository>.git#optional/lifeos_release_manager' --ref a0fbeb48... --force` | Installed `0.8.0-rc.1`. The scanner gives a CAUTION verdict, so the command needs `--force`. |
+| Compatibility | Releases page | "LifeOS can be installed", `v0.21.7`, two added Python packages |
+| Install | Version `0.8.0-rc.1`, **Install LifeOS**, **Review release**, **Install this release** | Applied (`87742d32`). The prepared package hash matches the published asset. Receipt from `/home/owner/.hermes/hermes-agent` in patched mode. `hermes lifeos-version` reports `verified` and no host drift. `hermes update` refuses with the hold. |
+| Claim and export | LifeOS Bridge page: **Claim**, **Review reverse export**, **Create reviewed export** | Claimed and exported |
+| Provider return | **Prepare return to built-in Hermes**, then **Apply reviewed provider return** | First run `interrupted`: the fresh-agent check could not resolve the model provider before the synthetic key existed. **Recover memory workflow** then verified it. |
+| Removal | Acknowledgement, **Prepare complete LifeOS removal**, **Remove reviewed LifeOS software** | Verified (`22558182`). The checkout is clean at `71d34bad`, the hold and host record are gone, `weather-test` remains, and the gateway runs stock Hermes. |
+
+Findings from this run, none of which blocks the transition:
+
+1. The Hermes **Plugins** page has no field for a Git ref. A URL install there takes the default branch, so it installs the 0.8.0 manager only after this branch merges. Before that, use the command line with `--ref`.
+2. The release manager accepts only an authenticated dashboard session. A dashboard bound to `127.0.0.1` does not attach password sessions, so the releases page needs a non-loopback bind with a login provider.
+3. Complete removal reads the dashboard login from `config.yaml` (`dashboard.basic_auth`). A login supplied only through environment variables refuses removal preparation with "Complete removal currently requires a password-authenticated dashboard recovery owner". The development host supplies its login through an `EnvironmentFile`.
+4. Provider return and removal need a model provider that Hermes can resolve, although no model request runs.
+5. Before the owner claims the installation, the releases page reports "Memory workflow status is unavailable under this profile" instead of pointing to the claim.
+6. Memory administration finds `bun` through `PATH` only. A dashboard started without `~/.local/bin` on `PATH` reports "No such file or directory: 'bun'". Other callers fall back to `~/.local/bin/bun`.
+7. The LifeOS Bridge page still shows the managed-release text "Prepare latest LifeOS update" on an in-place installation.
+8. The review did not offer a unit for the hand-started dashboard that served the request.
+
 ## Unit tests
 
 The suite ran per module (429 modules) on this branch, while commits `7511580d` to `8d009e25` landed, with the prepared sources from the 0.7.3 package and its pinned Bun locks. 81 modules failed. The same 81 modules ran on `origin/main` (`06ea5746`) in the same environment:
