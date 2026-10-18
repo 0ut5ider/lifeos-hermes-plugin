@@ -33,6 +33,8 @@ For reverse export and return:
 7. Review the prepared return and select **Apply reviewed provider return**.
 8. Verify the resulting provider and fresh Hermes session before proceeding with removal.
 
+The return verifies a fresh Hermes agent before it reports `verified`. That check resolves the configured model provider, so Hermes must have a provider with its credentials, even though the check sends no model request. Without one, the return stops as `interrupted` with `ProviderNotConfiguredError`; configure the provider, then select **Recover memory workflow**.
+
 To use preserved Hermes entries, select those occurrences in the export review. Review any newer LifeOS facts separately. The return uses the reviewed current files; it does not silently restore an old profile backup.
 
 For complete software removal:

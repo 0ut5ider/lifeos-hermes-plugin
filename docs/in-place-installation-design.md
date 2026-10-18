@@ -149,6 +149,15 @@ Before and after each operation the worker records an inventory: the other plugi
 
 Removal keeps the native LifeOS data, `lifeos-memory.json`, and the removal selection, so the owner can roll the removal back. Installing LifeOS again after a verified removal is not supported: preparation refuses while the removal selection exists, and a fresh installation refuses an existing native destination. This limit predates the in-place design. A supported reinstall needs an owner decision on how to reattach or set aside the retained data.
 
+**Proposed reinstall (awaiting owner approval, not implemented).** Installing LifeOS again after a verified removal reattaches the retained data by default:
+
+1. Preparation recognizes a verified removal selection with its retained native tree and `lifeos-memory.json`. It runs the install plan for the host files, the bridge, and the configuration, and the existing-native plan for the native tree, as an update does. A retained tree from an older LifeOS commit moves to the pinned commit through that update path.
+2. Preparation refuses, and changes nothing, when the retained tree fails the native format checks of the release. The refusal names **Set aside retained data**.
+3. The apply retires the removal selection only in its final commit step. Until then, a failure rolls back to the removed state, and the removal rollback stays available.
+4. Memory stays on the built-in provider that the return selected. LifeOS memory ownership needs a new reviewed import activation. Discord stays disabled until the owner enables it.
+
+**Set aside retained data** is a separate owner action. It moves the retained native tree, `lifeos-memory.json`, and the portability records into `<profile>/.lifeos-set-aside/<date>/`, deletes nothing, and makes the next installation fresh.
+
 ## 9. Drift reporting
 
 Three places report drift:
