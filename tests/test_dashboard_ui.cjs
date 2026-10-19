@@ -337,15 +337,15 @@ test("a host change waiting for a dashboard restart hides stale Hermes controls"
     node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce"))), null);
 });
 
-function inPlaceBridge(update) {
+function inPlaceBridge(update, hostPatch = { state: "none" }, installation = {}) {
   return loadDashboard("bridge", {
     fetchJSON: (url) => {
       if (url.endsWith("/installation/update")) return Promise.resolve(update);
-      if (url.endsWith("/installation/host-patch")) return Promise.resolve({ state: "none" });
+      if (url.endsWith("/installation/host-patch")) return Promise.resolve(hostPatch);
       if (url.endsWith("/installation")) return Promise.resolve({
         lifeos: "installed", version: "7.40.4", hermes: "patched_hooks_present", in_place: true,
         candidate_ready: true, candidate_newer: true, candidate_commit: "a".repeat(40), candidate_patch_count: 9,
-        setup_baseline_exists: true,
+        setup_baseline_exists: true, ...installation,
       });
       if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
       if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
@@ -375,6 +375,37 @@ test("an in-place installation still shows and recovers an interrupted bridge up
   assert.ok(find(view, (node) => node.type === "p" && text(node) === "LifeOS update: interrupted"));
   assert.ok(find(view, (node) => node.type === "button" && node.children.includes("Restore interrupted update")));
   assert.ok(find(view, (node) => node.props?.id === "lifeos_update_pointer"));
+});
+
+test("an in-place installation hides the bridge Hermes patch and setup controls", async () => {
+  const stock = { hermes: "stock", hermes_candidate_ready: true, hermes_candidate_commit: "b".repeat(40),
+    hermes_candidate_patch_count: 19 };
+  let render = inPlaceBridge({ state: "none" }, { state: "none" }, stock);
+  await settle();
+  let view = render();
+  for (const label of ["Prepare tested Hermes extension", "Apply tested Hermes extension"]) {
+    assert.equal(find(view, (node) => node.type === "button" && node.children.includes(label)), null, label);
+  }
+  assert.equal(find(view, (node) => node.type === "p" && text(node).startsWith("Candidate base")), null);
+  render = inPlaceBridge({ state: "none" }, { state: "none" }, { setup_baseline_exists: false });
+  await settle();
+  view = render();
+  assert.equal(find(view, (node) => node.type === "button" && node.children.includes("Finish LifeOS setup")), null);
+  assert.equal(find(view, (node) => node.type === "p" && text(node).startsWith("Finish setup")), null);
+  assert.match(text(find(view, (node) => node.props?.id === "lifeos_update_pointer")),
+    /^This installation gets LifeOS updates from the LifeOS releases page\.$/);
+});
+
+test("an in-place installation keeps an old bridge Hermes patch job visible and actionable", async () => {
+  let render = inPlaceBridge({ state: "none" }, { state: "applied", snapshot: "/jobs/patch-1" });
+  await settle();
+  assert.ok(find(render(), (node) => node.type === "button" && node.children.includes("Restore previous Hermes")));
+  render = inPlaceBridge({ state: "none" }, { state: "interrupted", transaction_state: "applying", snapshot: "/jobs/patch-1" });
+  await settle();
+  assert.ok(find(render(), (node) => node.type === "button" && node.children.includes("Recover interrupted Hermes change")));
+  render = inPlaceBridge({ state: "none" }, { state: "restore_failed", error: "Gateway stop failed" });
+  await settle();
+  assert.ok(find(render(), (node) => node.type === "p" && text(node) === "Hermes patch job: restore_failed. Gateway stop failed"));
 });
 
 test("an interrupted Hermes patch change offers recovery", async () => {

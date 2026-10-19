@@ -822,7 +822,8 @@ def _candidate_path():
     return INSTALL_CANDIDATE.with_name(selected)
 
 
-# The release manager pins the LifeOS tree of an in-place installation; a bridge update would drift from it.
+# The release manager pins the LifeOS tree, the Hermes checkout, and the native mount of an in-place installation;
+# a bridge update, Hermes patch, or setup would drift from it.
 IN_PLACE_UPDATES = "This installation gets LifeOS updates from the LifeOS releases page at /lifeos-releases."
 
 
@@ -950,6 +951,7 @@ def finalize_installation(account: str = Depends(_memory_account)):
 
 
 def _finalize_installation(account: str):
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before finishing setup")
     if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
@@ -973,6 +975,7 @@ def _finalize_installation(account: str):
 
 @router.post("/installation/prepare-hermes", dependencies=[Depends(_fixed_mount_request)])
 def prepare_hermes_installation():
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before preparing the Hermes extension")
     if HERMES_CANDIDATE.exists() or HERMES_CANDIDATE.is_symlink():
@@ -1388,6 +1391,7 @@ def apply_hermes_installation():
 
 
 def _apply_hermes_installation():
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before patching Hermes")
     previous = get_host_patch_status()
@@ -1417,6 +1421,7 @@ def restore_hermes_installation():
 def _restore_hermes_installation():
     previous = get_host_patch_status()
     if previous["state"] != "applied":
+        _refuse_in_place_update()
         raise HTTPException(status_code=409, detail="There is no applied Hermes patch to restore")
     snapshot = Path(previous["snapshot"])
     requested = False
@@ -1439,6 +1444,7 @@ def recover_hermes_installation():
 def _recover_hermes_installation():
     previous = get_host_patch_status()
     if previous["state"] != "interrupted":
+        _refuse_in_place_update()
         raise HTTPException(status_code=409, detail="There is no interrupted Hermes patch change to recover")
     snapshot = Path(previous["snapshot"])
     try:
