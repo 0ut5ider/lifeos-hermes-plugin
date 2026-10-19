@@ -95,6 +95,17 @@ A separate owner review controls imports, remote readers, and return to Hermes. 
 
 If an operation is interrupted, keep its directory and journals and use the offered recovery control. A first installation that stopped after LifeOS was initialized finishes forward; any other operation rolls back.
 
+A hard stop (power loss, an out-of-memory kill, `systemctl --user stop`) while the patched Hermes files are being written can leave Hermes unable to load its plugins. Hermes still starts, but `hermes lifeos-release` then reports that `lifeos-release` is not a `hermes` command, and the dashboard may be down. In that case, start the same recovery from the operation's own copy of the release manager. Replace `IDENTIFIER` with the operation identifier (the directory name under `~/.hermes/.lifeos-releases/`). The commands assume the default profile `~/.hermes` with its Hermes checkout at `~/.hermes/hermes-agent`; change both paths if yours differ.
+
+```sh
+cd ~/.hermes/hermes-agent
+PYTHON=$(python3 -B -c 'from pathlib import Path; from pm.environments import project_python; print(project_python(Path.cwd()))')
+cd ~/.hermes/.lifeos-releases/IDENTIFIER/worker
+HERMES_HOME=~/.hermes PYTHONPATH=~/.hermes/hermes-agent "$PYTHON" -B -c 'import importlib, sys, types; from pathlib import Path; package = types.ModuleType("lifeos_recovery"); package.__path__ = [str(Path.cwd())]; sys.modules[package.__name__] = package; print(importlib.import_module("lifeos_recovery.cli").launch(Path(sys.argv[1]), sys.argv[2], "recover"))' ~/.hermes IDENTIFIER
+```
+
+This runs exactly what `hermes lifeos-release recover IDENTIFIER` runs, without loading the Hermes plugins. It prints the queued recovery. When the recovery finishes, the Hermes files are whole again, and `hermes lifeos-release status IDENTIFIER` works. If the operation needs your grant for the native memory mount, the command stops with a `PermissionError`, because that grant comes only from the authenticated dashboard; `hermes lifeos-release recover` refuses the same operation.
+
 Complete removal follows a verified return to built-in memory. It restores the original Hermes files from the copies kept at installation, removes the update hold and the LifeOS plugins, returns the configuration values that LifeOS changed (keeping any you changed since), and rebuilds the Python environment without the bridge. It disables Discord, because stock Hermes lacks LifeOS's private-channel restrictions. See [update policy](update-policy.md) for recovery boundaries.
 
 ## Moving from a managed 0.7.x installation
