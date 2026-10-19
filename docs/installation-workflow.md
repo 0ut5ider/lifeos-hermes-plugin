@@ -91,7 +91,7 @@ A separate owner review controls imports, remote readers, and return to Hermes. 
 
 ## Updates, interruptions, and removal
 
-**Update LifeOS** and **Update plugin** download the newer integration and move the patched files from the recorded state to the new one. They follow the same review and apply flow. **Restore prior programs** returns to the previous release.
+**Update LifeOS** and **Update plugin** download the newer integration and move the patched files from the recorded state to the new one. They follow the same review and apply flow. **Restore prior programs** returns to the previous release. It keeps the configuration changes you made since, such as a new model. If you changed a value that the operation itself set, restore names that key and refuses until you set it back.
 
 If an operation is interrupted, keep its directory and journals and use the offered recovery control. A first installation that stopped after LifeOS was initialized finishes forward; any other operation rolls back.
 
@@ -106,13 +106,13 @@ HERMES_HOME=~/.hermes PYTHONPATH=~/.hermes/hermes-agent "$PYTHON" -B -c 'import 
 
 This runs exactly what `hermes lifeos-release recover IDENTIFIER` runs, without loading the Hermes plugins. It prints the queued recovery. When the recovery finishes, the Hermes files are whole again, and `hermes lifeos-release status IDENTIFIER` works. If the operation needs your grant for the native memory mount, the command stops with a `PermissionError`, because that grant comes only from the authenticated dashboard; `hermes lifeos-release recover` refuses the same operation.
 
-Complete removal follows a verified return to built-in memory. It restores the original Hermes files from the copies kept at installation, removes the update hold and the LifeOS plugins, returns the configuration values that LifeOS changed (keeping any you changed since), and rebuilds the Python environment without the bridge. It disables Discord, because stock Hermes lacks LifeOS's private-channel restrictions. See [update policy](update-policy.md) for recovery boundaries.
+Complete removal follows a verified return to built-in memory. It restores the original Hermes files from the copies kept at installation, removes the update hold and the LifeOS plugins, returns the configuration values that LifeOS changed (keeping any you changed since), and rebuilds the Python environment without the bridge. It disables Discord, because stock Hermes lacks LifeOS's private-channel restrictions. Removal deletes `~/.local/bin/bun`. If you had your own Bun at that path before you installed LifeOS, install it again after removal. See [update policy](update-policy.md) for recovery boundaries.
 
 ## Moving from a managed 0.7.x installation
 
 A 0.7.x installation runs Hermes from a private runtime under `~/.hermes/.lifeos-releases`. To move to an in-place installation:
 
 1. Back up the account, or take a guest snapshot.
-2. Install stock Hermes `v0.21.7` with the official installer and `--skip-setup`. Your profile, configuration, Discord settings, and memory stay where they are.
+2. Install stock Hermes `v0.21.7` with the official installer and `--skip-setup`. Your profile, configuration, Discord settings, and memory stay where they are. The installer can add a `_config_version` line to `config.yaml`; it changes no setting.
 3. Update the release manager plugin, then open **LifeOS releases**. It shows that the next update moves LifeOS to the stock installation.
 4. Prepare, review, and apply **Update LifeOS**. The operation patches the stock checkout and points `hermes`, `hermes-agent`, and `hermes-acp` at it. Restoring it returns to the managed runtime.
