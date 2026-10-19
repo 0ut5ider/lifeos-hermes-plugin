@@ -1,5 +1,6 @@
 # ABOUTME: Publishes a reviewed software removal under the owner, native writer, and service barriers.
 # ABOUTME: Resumes interrupted program changes, synchronizes an in-place host environment, and keeps later memory.
+from contextlib import contextmanager
 import json
 from pathlib import Path
 
@@ -76,6 +77,24 @@ class RemovalPublication:
             # A rollback continues to restore the services; recovery can repeat the synchronization.
             publish(self.stage/(label+'-failure.json'),json.dumps({'error':type(error).__name__}).encode())
 
+    @contextmanager
+    def _update_lock(self):
+        """Hold the Hermes checkout update lock of an in-place host; yield its release, or a no-op without a host.
+
+        The source moves between its patched and stock files and the update hold is deleted under this lock. A
+        restarted Hermes service may complete its own environment under the same lock, so the caller releases it before
+        the services restart.
+        """
+        if 'host' not in self.plan:
+            yield lambda:None;return
+        # hermes_cli.update_lock is no LifeOS patch target, so the host source provides it in both states.
+        from hermes_cli.update_lock import UpdateLock
+        update=UpdateLock(install_root=Path(self.plan['host']['source']))
+        if not update.acquire():
+            raise ReleaseRejected('A Hermes update is running; wait for it to finish, then recover the removal')
+        try:yield update.release
+        finally:update.release()
+
     def apply(self, *, account, checkpoint=lambda point:None):
         lock=self.source.memory_module('installation_lock').installation_lock
         program_lock=self.source.memory_module('program_lock')
@@ -85,23 +104,25 @@ class RemovalPublication:
             if state in {'verification_required','verified'}:
                 self.programs.check_applied();self.services.verify(self.plan['service_signature'])
                 return self._receipt(state)
-            self._host_files()
-            if state=='ready':self.programs.check_prepared()
-            else:self.programs.check_recovery()
-            self._state('draining');self.services.stop(self.plan['service_signature']);checkpoint('drained')
-            with self.configuration._lock(),barrier(self.importer.memory) as connection:
-                self._owner(account)
-                if self.importer._target_signature(connection)!=self.plan['native_signature']:
-                    raise ReleaseRejected('Native facts change after the reviewed reverse export')
-                self.services.verify_stopped(self.plan['service_signature'])
-                self._state('publishing');self.programs.resume(checkpoint=checkpoint)
-                self.programs.check_applied();checkpoint('programs-published')
-                self._synchronize('dependency-removal',required=True);checkpoint('dependencies-synchronized')
-                self._owner(account)
-                if self.importer._target_signature(connection)!=self.plan['native_signature']:
-                    raise ReleaseRejected('Native data changes during software removal')
-                self._state('restarting');self.services.resume(self.plan['service_signature']);checkpoint('restarted')
-                self._state('verification_required')
+            with self._update_lock() as release_update:
+                self._host_files()
+                if state=='ready':self.programs.check_prepared()
+                else:self.programs.check_recovery()
+                self._state('draining');self.services.stop(self.plan['service_signature']);checkpoint('drained')
+                with self.configuration._lock(),barrier(self.importer.memory) as connection:
+                    self._owner(account)
+                    if self.importer._target_signature(connection)!=self.plan['native_signature']:
+                        raise ReleaseRejected('Native facts change after the reviewed reverse export')
+                    self.services.verify_stopped(self.plan['service_signature'])
+                    self._state('publishing');self.programs.resume(checkpoint=checkpoint)
+                    self.programs.check_applied();checkpoint('programs-published')
+                    self._synchronize('dependency-removal',required=True);checkpoint('dependencies-synchronized')
+                    self._owner(account)
+                    if self.importer._target_signature(connection)!=self.plan['native_signature']:
+                        raise ReleaseRejected('Native data changes during software removal')
+                    self._state('restarting');release_update()
+                    self.services.resume(self.plan['service_signature']);checkpoint('restarted')
+                    self._state('verification_required')
             return self._receipt('verification_required')
 
     def rollback(self, *, account, checkpoint=lambda point:None):
@@ -110,15 +131,17 @@ class RemovalPublication:
         with lock(self.profile,lease=self.lease),program_lock.exclusive(self.profile,600):
             self._owner(account);state=self._load()
             if state=='rolled_back':return self._receipt(state)
-            self._host_files()
-            self.programs.check_recovery()
-            self._state('restoring');self.services.stop(self.plan['service_signature']);checkpoint('drained')
-            with self.configuration._lock(),barrier(self.importer.memory):
-                self._owner(account);self.services.verify_stopped(self.plan['service_signature'])
-                self.programs.restore();checkpoint('programs-restored')
-                self._synchronize('dependency-restore',required=False)
-                self._owner(account);self.services.resume(self.plan['service_signature'],restored=True)
-                self._state('rolled_back')
+            with self._update_lock() as release_update:
+                self._host_files()
+                self.programs.check_recovery()
+                self._state('restoring');self.services.stop(self.plan['service_signature']);checkpoint('drained')
+                with self.configuration._lock(),barrier(self.importer.memory):
+                    self._owner(account);self.services.verify_stopped(self.plan['service_signature'])
+                    self.programs.restore();checkpoint('programs-restored')
+                    self._synchronize('dependency-restore',required=False)
+                    self._owner(account);release_update()
+                    self.services.resume(self.plan['service_signature'],restored=True)
+                    self._state('rolled_back')
             return self._receipt('rolled_back')
 
     def verify(self, probe, *, account):
