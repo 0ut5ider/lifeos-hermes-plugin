@@ -309,13 +309,16 @@ def _resume(services):
         services.resume()
 
 
-def _rollback(job, request, plan, services, programs, restore_mount):
-    """Return the host to its prior programs: mount, programs, dependencies, then services."""
+def _rollback(job, request, plan, services, programs, restore_mount, *, replacements=None):
+    """Return the host to its prior programs: mount, programs, dependencies, then services.
+
+    ``replacements`` holds the recorded configuration restore of an owner restore (see ``ProgramTransaction.restore``).
+    """
     adopt_units(services, request)
     _quiesce(services)
     _stop_created(plan)
     restore_mount()
-    programs.restore()
+    programs.restore(replacements=replacements)
     _systemctl('daemon-reload')
     adopt_units(services, request)
     try:
@@ -344,7 +347,7 @@ def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
 
 def _run(job, request, action, current, lease, *, checkpoint, release_update):
     from .release_worker import (initialize_native, restore_native_mount, revoke_authorization, check_mount_recovery, check_restore,
-                                 record_failure)
+                                 record_failure, record_configuration_restore, recorded_configuration_restore)
     profile = Path(request['profile'])
     plan = validate_plan(job, request)
     fresh_recovery = action == 'recover' and plan['fresh']
@@ -371,16 +374,20 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
         if action != 'apply' and not fresh_recovery:
             manifest = check_mount_recovery(job, request, mount)
             if action == 'restore':
-                check_restore(job, request, plan, mount)
+                record_configuration_restore(job, check_restore(job, request, plan, mount))
+                replacements = recorded_configuration_restore(job, request)
             else:
+                # Recovery of an interrupted restore publishes the configuration that the restore recorded.
+                replacements = recorded_configuration_restore(job, request)
                 overrides = {} if manifest is None or manifest['state'] == 'rolled_back' else {
                     entry['target']: fingerprint(entry['target']) for entry in manifest['entries']}
-                programs.check_recovery(overrides=overrides)
+                programs.check_recovery(overrides=overrides, replacements=replacements)
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             adopt_units(services, request)
             _quiesce(services)
             _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
-            restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount)
+            restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount,
+                                              replacements=replacements)
             verify_runtime(request, restored=True)
             from .host_configuration import record_restored
             record_restored(profile)

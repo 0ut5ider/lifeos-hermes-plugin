@@ -248,8 +248,10 @@ def status(profile, identifier=None):
             from .release_operation import validate_plan, operation_lock, OperationBusy, worker_running
             plan = validate_plan(job, request)
             if value['state'] == 'applied':
-                from .release_worker import restore_available
-                value['restore_available'] = restore_available(job, request, plan)
+                from .release_worker import restore_status
+                value['restore_available'], refusal = restore_status(job, request, plan)
+                if refusal is not None:
+                    value['restore_refusal'] = refusal
             if value['state'] in {'applying', 'recovering', 'restoring', 'recovery_required'} or value['state'].startswith('queued-'):
                 try:
                     with operation_lock(job, name='launch.lock'), operation_lock(job):
@@ -320,6 +322,7 @@ def spawn_worker(job, command, environment, cwd):
 
 def run(args):
     from hermes_constants import get_hermes_home
+    from .host_configuration import ConfigurationConflict
     sys.dont_write_bytecode = True
     profile = get_hermes_home()
     try:
@@ -336,6 +339,8 @@ def run(args):
             value = launch(profile, args.identifier, {'start': 'apply', 'recover': 'recover', 'rollback': 'restore'}[args.action])
     except PermissionError:
         value = {'status': 'rejected', 'message': 'The installation owner must approve native mounting in the authenticated release dashboard.'}
+    except ConfigurationConflict as error:
+        value = {'status': 'rejected', 'message': str(error)}
     except (ValueError, OSError, RuntimeError, KeyError, ImportError, subprocess.SubprocessError):
         value = {'status': 'rejected', 'message': 'The complete release operation is unavailable under this profile. Check its safe status and private preparation logs.'}
     print(json.dumps(value, indent=2))

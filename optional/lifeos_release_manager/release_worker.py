@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import io
 import importlib
 import json
@@ -568,32 +570,117 @@ def check_mount_recovery(job, request, mount):
 
 
 def restore_available(job, request, plan):
+    return restore_status(job, request, plan)[0]
+
+
+def restore_status(job, request, plan):
+    """Return ``(available, refusal)``; ``refusal`` is the owner message of a configuration conflict, or None.
+
+    The check covers the receipt, the retained native mount, and the configuration keys that a restore returns.
+    """
+    from .host_configuration import ConfigurationConflict
     if plan['fresh']:
-        return False
+        return False, None
     try:
         profile = Path(request['profile'])
         receipt = read_private(profile / 'integration-release.json')
         if not isinstance(receipt, dict) or any(receipt.get(key) != request[key]
                 for key in ('version', 'commit', 'package_sha256')):
-            return False
+            return False, None
+        manifest = None
         if plan['native_mount_required']:
             manifest = _restore_mount_manifest(job, request, profile / '.lifeos-mount/operation.json', required=True)
             _retained_mount(manifest, profile)
-        return True
+        restore_configuration(job, request, ProgramTransaction(job / 'program-snapshot',
+            expected_entries_sha256=plan['program_entries_sha256']), manifest)
+        return True, None
+    except ConfigurationConflict as error:
+        return False, str(error)
     except (ValueError, OSError, RuntimeError, KeyError, TypeError):
-        return False
+        return False, None
 
 
 def check_restore(job, request, plan, mount):
+    """Refuse a restore before any service stops; return the configuration replacement of an in-place restore."""
     manifest = _restore_mount_manifest(job, request, mount.journal, required=plan['native_mount_required'])
+    programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
+    replacement = restore_configuration(job, request, programs, manifest)
     overrides = {}
     if manifest is not None:
         _retained_mount(manifest, Path(request['profile']))
         mount.check_completed()
         overrides = {entry['target']: {'type': 'file', 'mode': entry['after']['mode'],
                                       'sha256': entry['after']['digest']} for entry in manifest['entries']}
-    programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
+    if replacement is not None:
+        overrides[replacement['target']] = replacement['current']
     programs.check_applied(overrides=overrides)
+    return replacement
+
+
+CONFIGURATION_RESTORE = 'configuration-restore.json'
+
+
+def restore_configuration(job, request, programs, manifest):
+    """Return the config.yaml restore of an in-place operation that keeps the owner's later changes, or None.
+
+    The restore returns only the values that the operation changed. A value the owner changed again refuses.
+    A completed native mount restores config.yaml by its bytes, so a later edit refuses with its own message.
+    """
+    if request.get('format') != 2:
+        return None
+    from .host_configuration import ConfigurationConflict, restore_operation
+    target = Path(request['profile']) / 'config.yaml'
+    if manifest is not None and manifest['state'] == 'committed':
+        mounted = [entry for entry in manifest['entries'] if entry['target'] == str(target)]
+        if mounted:
+            if (fingerprint(target) or {}).get('sha256') != mounted[0]['after']['digest']:
+                raise ConfigurationConflict('config.yaml changed after this operation mounted LifeOS. A restore after a '
+                    'native mount cannot keep later configuration changes. Undo the changes, or use complete removal.')
+            return None
+    for index, entry in enumerate(programs.entries()):
+        if entry['target'] == str(target) and entry['before'] is not None and entry['after'] is not None:
+            break
+    else:
+        return None
+    current = fingerprint(target)
+    if current is None:
+        return None
+    data = target.read_bytes()
+    before = (programs.snapshot / ('before-' + str(index))).read_bytes()
+    after = (programs.snapshot / ('incoming-' + str(index))).read_bytes()
+    if any(hashlib.sha256(value).hexdigest() != expected for value, expected in
+           ((data, current['sha256']), (before, entry['before']['sha256']), (after, entry['after']['sha256']))):
+        raise ReleaseRejected('The profile configuration or its retained copies change during the restore check')
+    restored = restore_operation(before, after, data)
+    return {'target': str(target), 'current': current, 'data': restored,
+            'restored': {'type': 'file', 'mode': entry['before']['mode'], 'sha256': hashlib.sha256(restored).hexdigest()}}
+
+
+def record_configuration_restore(job, replacement):
+    """Make the computed configuration restore durable before publication, so recovery publishes the same bytes."""
+    path = job / CONFIGURATION_RESTORE
+    if replacement is None:
+        path.unlink(missing_ok=True)
+        return
+    value = {'format': 1, 'target': replacement['target'], 'current': replacement['current'],
+             'restored': replacement['restored'], 'data': base64.b64encode(replacement['data']).decode()}
+    publish(path, (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
+
+
+def recorded_configuration_restore(job, request):
+    """Return the replacements map of an interrupted restore's recorded configuration restore."""
+    path = job / CONFIGURATION_RESTORE
+    if not path.is_file():
+        return {}
+    value = read_private(path)
+    if (not isinstance(value, dict) or set(value) != {'format', 'target', 'current', 'restored', 'data'}
+            or value['format'] != 1 or value['target'] != str(Path(request['profile']) / 'config.yaml')
+            or not isinstance(value['data'], str)):
+        raise ReleaseRejected('The recorded configuration restore has an invalid structure')
+    data = base64.b64decode(value['data'], validate=True)
+    if not isinstance(value['restored'], dict) or value['restored'].get('sha256') != hashlib.sha256(data).hexdigest():
+        raise ReleaseRejected('The recorded configuration restore changed')
+    return {value['target']: {'current': value['current'], 'restored': value['restored'], 'data': data}}
 
 
 def restore_native_mount(job, request, mount):

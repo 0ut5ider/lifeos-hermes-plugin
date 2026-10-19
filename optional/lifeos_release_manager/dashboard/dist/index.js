@@ -346,6 +346,7 @@
             h("h3", null, "Release " + (operation.version ?? "preparation") + ": " + operation.state),
             h("p", {className: "lifeos-help"}, "Operation: " + operation.identifier),
             operation.error ? h("p", {role: "status"}, operation.error) : null,
+            operation.restore_refusal ? h("p", {className: "lifeos-help"}, operation.restore_refusal) : null,
             h("div", {className: "lifeos-actions"},
               operation.state === "ready" ? h("button", {type: "button", className: "lifeos-primary", disabled: busy,
                 onClick: function () { return action(operation.identifier, "review"); }}, "Review release") : null,

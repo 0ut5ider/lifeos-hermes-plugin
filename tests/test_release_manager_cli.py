@@ -123,6 +123,24 @@ class ReleaseManagerCommandTests(unittest.TestCase):
             finally:
                 reset_hermes_home_override(token)
 
+    def test_rollback_configuration_conflict_reports_its_message(self):
+        from unittest import mock
+        from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+        from optional.lifeos_release_manager import cli
+        from optional.lifeos_release_manager.host_configuration import ConfigurationConflict
+        message = 'You changed configuration values after this operation that it also changed: model.default.'
+        with tempfile.TemporaryDirectory() as temp:
+            token = set_hermes_home_override(Path(temp))
+            try:
+                parser = argparse.ArgumentParser()
+                configure(parser)
+                output = io.StringIO()
+                with redirect_stdout(output), mock.patch.object(cli, 'launch', side_effect=ConfigurationConflict(message)):
+                    self.assertEqual(run(parser.parse_args(['rollback', 'a' * 32])), 1)
+                self.assertEqual(json.loads(output.getvalue()), {'status': 'rejected', 'message': message})
+            finally:
+                reset_hermes_home_override(token)
+
     def test_compatibility_reports_the_running_hermes_without_creating_release_state(self):
         from hermes_constants import set_hermes_home_override, reset_hermes_home_override
         from lifeos_hook_bridge.install_source import SUPPORTED_HERMES_COMMIT

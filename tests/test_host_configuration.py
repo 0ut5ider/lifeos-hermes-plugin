@@ -5,7 +5,8 @@ import tempfile
 import unittest
 
 from optional.lifeos_release_manager.host_configuration import (
-    ABSENT, RECORD, changed_paths, check_memory_provider, check_preserved, record, record_restored, restore)
+    ABSENT, RECORD, ConfigurationConflict, changed_paths, check_memory_provider, check_preserved, record, record_restored,
+    restore, restore_operation)
 from optional.lifeos_release_manager.release_catalog import ReleaseRejected
 
 
@@ -70,6 +71,30 @@ class HostConfigurationTests(unittest.TestCase):
         self.assertEqual(restored['skills']['external_dirs'], ['/c/skills', '/owner/extra'])
         self.assertEqual(restored['model'], {'default': 'm9'})
         self.assertEqual(conflicts, ['skills.external_dirs'])
+
+
+    def test_operation_restore_keeps_later_owner_changes_and_returns_the_changed_values(self):
+        before = b'# owner notes\nmodel:\n  default: m1\nplugins:\n  enabled: [other]\n  entries:\n    lifeos-hook-bridge:\n      settings:\n        lifeos_source_dir: /old\n'
+        after = before.replace(b'/old', b'/new').replace(b'[other]', b'[other, lifeos-hook-bridge]')
+        self.assertEqual(restore_operation(before, after, after), before)
+        later = after.replace(b'default: m1', b'default: m2')
+        restored = restore_operation(before, after, later)
+        self.assertIn(b'# owner notes', restored)
+        self.assertEqual(restored, before.replace(b'default: m1', b'default: m2'))
+
+    def test_operation_restore_removes_values_the_operation_added(self):
+        before = b'model:\n  default: m1\n'
+        after = before + b'approvals:\n  mode: manual\n'
+        self.assertEqual(restore_operation(before, after, after.replace(b'm1', b'm2')), b'model:\n  default: m2\n')
+
+    def test_operation_restore_refuses_a_value_the_owner_changed_again(self):
+        before = b'model:\n  default: m1\nplugins:\n  enabled: [other]\n'
+        after = before.replace(b'[other]', b'[other, lifeos-hook-bridge]')
+        later = after.replace(b'lifeos-hook-bridge]', b'lifeos-hook-bridge, extra]')
+        with self.assertRaisesRegex(ConfigurationConflict, r'plugins\.enabled') as raised:
+            restore_operation(before, after, later)
+        self.assertIsInstance(raised.exception, ReleaseRejected)
+        self.assertIn('then restore again', str(raised.exception))
 
 
 if __name__ == '__main__':
