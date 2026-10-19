@@ -74,6 +74,16 @@ test('recovery blocks preparation and each operation has a visible identifier', 
   ui.cleanup();
 });
 
+test('an applied operation whose restore is refused explains why instead of offering restore', async () => {
+  const refusal = 'You changed configuration values after this operation that it also changed: model.default.';
+  const ui = await page(true, [{identifier: 'c'.repeat(32), version: '0.8.0', state: 'applied',
+    restore_available: false, restore_refusal: refusal}]);
+  const tree = ui.render();
+  assert.equal(find(tree, (node) => node.type === 'button' && node.children.includes('Restore prior programs')), null);
+  assert.ok(find(tree, (node) => node.type === 'p' && node.children.includes(refusal)));
+  ui.cleanup();
+});
+
 test('a ready release is reviewed before its separate installation request', async () => {
   const identifier = 'e'.repeat(32);
   const ui = await page(true, [{identifier, version: '0.7.3', state: 'ready'}]);

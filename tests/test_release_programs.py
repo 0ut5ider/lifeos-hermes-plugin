@@ -14,6 +14,43 @@ class ProgramTransactionTests(unittest.TestCase):
                          b'#!/bin/sh\nexec \'/owner home/it\'"\'"\'s/hermes\' "$@"\n')
         with self.assertRaises(TypeError):launcher_script(Path('/opt/hermes/bin/hermes'))
 
+    def replacement_transaction(self, root):
+        import hashlib
+        configuration=root/'config.yaml';other=root/'other';source=root/'source';selected=root/'selected'
+        configuration.write_text('prior');other.write_text('prior other');source.write_text('installed');selected.write_text('selected other')
+        tx=ProgramTransaction(root/'snapshot');tx.prepare(directories={},files={configuration:source,other:selected});tx.apply()
+        configuration.write_text('owner edit')
+        data=b'merged'
+        replacement={'current':fingerprint(configuration),'data':data,
+                     'restored':{'type':'file','mode':fingerprint(configuration)['mode'],'sha256':hashlib.sha256(data).hexdigest()}}
+        return tx,configuration,other,{str(configuration):replacement}
+
+    def test_restore_publishes_a_computed_replacement_for_a_later_edited_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            tx,configuration,other,replacements=self.replacement_transaction(Path(temp))
+            with self.assertRaises(ProgramConflict):tx.restore()
+            self.assertEqual(configuration.read_text(),'owner edit')
+            tx.restore(replacements=replacements)
+            self.assertEqual((configuration.read_text(),other.read_text()),('merged','prior other'))
+
+    def test_interrupted_replacement_restore_recovers_with_the_same_replacement(self):
+        from unittest import mock
+        from optional.lifeos_release_manager import release_programs
+        publish=release_programs.publish
+        def interrupt(*arguments,**options):raise OSError('Synthetic interruption')
+        def interrupted_publication(path,*arguments,**options):
+            return interrupt() if Path(path).name=='config.yaml' else publish(path,*arguments,**options)
+        for stage,patched,expected in (('before-publication',lambda:mock.patch.object(release_programs,'publish',interrupted_publication),'owner edit'),
+                                       ('after-publication',lambda:mock.patch.object(ProgramTransaction,'_check_targets',interrupt),'merged')):
+            with self.subTest(stage=stage),tempfile.TemporaryDirectory() as temp:
+                tx,configuration,other,replacements=self.replacement_transaction(Path(temp))
+                with patched(),self.assertRaises(OSError):tx.restore(replacements=replacements)
+                self.assertEqual(configuration.read_text(),expected)
+                with self.assertRaises(ProgramConflict):tx.check_recovery()
+                tx.check_recovery(replacements=replacements)
+                tx.restore(replacements=replacements)
+                self.assertEqual((configuration.read_text(),other.read_text()),('merged','prior other'))
+
     def test_missing_or_changed_before_copy_refuses_before_apply(self):
         for changed in (False,True):
             with self.subTest(changed=changed),tempfile.TemporaryDirectory() as temp:

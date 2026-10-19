@@ -23,6 +23,7 @@ services = importlib.import_module(namespace_name + '.release_services')
 memory_workflow = importlib.import_module(namespace_name + '.memory_workflow')
 host_compatibility = importlib.import_module(namespace_name + '.host_compatibility')
 consumer_scan = importlib.import_module(namespace_name + '.consumer_scan')
+host_configuration = importlib.import_module(namespace_name + '.host_configuration')
 
 
 def profile():
@@ -254,6 +255,8 @@ def apply_release(identifier, action, account):
         return result
     except PermissionError as error:
         raise HTTPException(status_code=403, detail='The installation owner must authorize native mounting') from error
+    except host_configuration.ConfigurationConflict as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     except (ValueError, OSError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='The release operation is unavailable under the current profile') from error
     finally:

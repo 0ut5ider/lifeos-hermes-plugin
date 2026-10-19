@@ -30,7 +30,7 @@ hermes lifeos-release recover IDENTIFIER
 hermes lifeos-release rollback IDENTIFIER
 ```
 
-Rollback requires the current release identity, retained programs, and native mount to match the operation. Later program edits, a later remount, or another release can expire that rollback. Use the current `restore_available` result. Do not assume an older applied operation is still restorable.
+Rollback requires the current release identity, retained programs, and native mount to match the operation. Later program edits, a later remount, or another release can expire that rollback. Use the current `restore_available` result. Do not assume an older applied operation is still restorable. An in-place restore keeps later `config.yaml` changes and returns only the keys that the operation changed. When the owner changed one of those keys again, `restore_refusal` names the key, and the restore refuses before any service stops. A restore after a native LifeOS mount still requires `config.yaml` unchanged since the operation.
 
 If interruption stops the dashboard, use the retained qualified command from that operation. If the installed manager directory is missing, an operator must use the retained worker and verified journal. Do not recreate directories, edit the plan, or erase the operation to make a control reappear.
 

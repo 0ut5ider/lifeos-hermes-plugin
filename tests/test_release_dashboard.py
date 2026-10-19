@@ -191,6 +191,24 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.assertFalse(Path(request['installed']).exists())
 
 
+class RestoreRefusalTests(unittest.TestCase):
+    def test_configuration_conflict_reaches_the_owner(self):
+        from unittest import mock
+        from fastapi import HTTPException
+        from optional.lifeos_release_manager.dashboard import plugin_api
+        ConfigurationConflict = plugin_api.host_configuration.ConfigurationConflict
+        message = 'You changed configuration values after this operation that it also changed: model.default.'
+        current = type('Current', (), {'memory_administration': lambda self: None})()
+        with mock.patch.object(plugin_api, 'profile', return_value=Path('/profile')), \
+                mock.patch.object(plugin_api.commands, 'operation', return_value=(Path('/job'), {'installed': '/installed'})), \
+                mock.patch.object(plugin_api.worker, 'validate_plan', return_value={'native_mount_required': False}), \
+                mock.patch.object(plugin_api.worker, 'recovery_bridge', return_value=current), \
+                mock.patch.object(plugin_api.commands, 'launch', side_effect=ConfigurationConflict(message)), \
+                self.assertRaises(HTTPException) as raised:
+            plugin_api.apply_release('a' * 32, 'restore', 'owner')
+        self.assertEqual((raised.exception.status_code, raised.exception.detail), (409, message))
+
+
 class InplaceReviewTests(unittest.TestCase):
     def test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts(self):
         from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review

@@ -449,6 +449,138 @@ class ReviewedServicesTests(unittest.TestCase):
                 check_reviewed_services(self.services(), fresh)
 
 
+class ConfigurationRestoreTests(unittest.TestCase):
+    """Restores an applied in-place operation after the owner changed config.yaml, through the worker's restore path."""
+
+    BEFORE = (b'# owner notes\nmodel:\n  default: m1\nplugins:\n  entries:\n    lifeos-hook-bridge:\n'
+              b'      settings:\n        lifeos_source_dir: /old\n')
+
+    def setUp(self):
+        from optional.lifeos_release_manager.cli import write_state
+        from optional.lifeos_release_manager.release_operation import seal_plan
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.root = Path(folder.name)
+        self.profile = self.root / '.hermes'
+        self.job = self.profile / '.lifeos-releases' / ('a' * 32)
+        self.job.mkdir(parents=True, mode=0o700)
+        os.chmod(self.profile, 0o700)
+        os.chmod(self.profile / '.lifeos-releases', 0o700)
+        self.configuration = self.profile / 'config.yaml'
+        self.configuration.write_bytes(self.BEFORE)
+        self.receipt = self.profile / 'integration-release.json'
+        self.receipt.write_text('{"version": "0.7.3"}\n')
+        generated = self.job / 'generated'
+        generated.mkdir(mode=0o700)
+        self.request = {'format': 2, 'identifier': self.job.name, 'profile': str(self.profile),
+                        'installed': str(self.root / 'installed'), 'version': '0.8.0', 'commit': 'b' * 40,
+                        'package_sha256': 'c' * 64, 'host': {'source': str(self.root / 'source')},
+                        'account_home': str(self.root), 'runtime': {'bun': str(self.root / 'bin/bun')}}
+        publish(generated / 'config.yaml', self.BEFORE.replace(b'/old', b'/new'))
+        publish(generated / 'integration-release.json',
+                json.dumps({key: self.request[key] for key in ('version', 'commit', 'package_sha256')}).encode())
+        programs = ProgramTransaction(self.job / 'program-snapshot')
+        programs.prepare(directories={}, files={self.configuration: generated / 'config.yaml',
+                                               self.receipt: generated / 'integration-release.json'})
+        programs.apply()
+        publish(self.job / 'request.json', json.dumps(self.request).encode())
+        write_state(self.job, 'ready')
+        self.plan = {'fresh': False, 'native_mount_required': False, 'services': {'roles': [], 'created': []},
+                     'program_entries_sha256': programs.entries_digest()}
+        seal_plan(self.job, self.request, self.plan)
+        write_state(self.job, 'applied')
+        self.order = []
+
+    def current(self):
+        installed, profile = self.root / 'installed', self.profile
+
+        class Module:
+            def selection(self, profile):
+                return type('Selection', (), {'installed': installed})()
+
+            def default_baseline_path(self, parent):
+                return parent / 'baseline.json'
+
+            def MountTransaction(self, installed, profile, baseline):
+                return type('Mount', (), {'journal': profile / '.lifeos-mount/operation.json'})()
+
+        class Current:
+            def memory_module(self, name):
+                return Module()
+
+            def memory_administration(self):
+                return None
+
+        return Current()
+
+    def run_action(self, action):
+        def record(name):
+            return lambda *arguments, **options: self.order.append(name)
+        with mock.patch.object(inplace_worker, '_quiesce', side_effect=record('services-stopped')), \
+                mock.patch.object(inplace_worker, '_consumers_stopped', side_effect=record('consumers-stopped')), \
+                mock.patch.object(inplace_worker, '_systemctl'), \
+                mock.patch.object(inplace_worker, 'synchronize', return_value={'lock_sha256': 'a' * 64}), \
+                mock.patch.object(inplace_worker, 'verify_runtime'):
+            return inplace_worker._run(self.job, self.request, action, self.current(), None,
+                                       checkpoint=lambda point: None, release_update=lambda: None)
+
+    def status(self):
+        from optional.lifeos_release_manager.cli import status
+        return status(self.profile, self.job.name)
+
+    def test_restore_keeps_a_later_unrelated_owner_change(self):
+        self.configuration.write_bytes(self.configuration.read_bytes().replace(b'default: m1', b'default: m2'))
+        self.assertTrue(self.status()['restore_available'])
+        self.assertNotIn('restore_refusal', self.status())
+        self.assertEqual(self.run_action('restore'), {'state': 'rolled_back'})
+        self.assertEqual(self.configuration.read_bytes(), self.BEFORE.replace(b'default: m1', b'default: m2'))
+        self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
+
+    def test_restore_refuses_before_services_stop_when_the_owner_changed_a_key_of_the_operation(self):
+        from optional.lifeos_release_manager.host_configuration import ConfigurationConflict
+        changed = self.configuration.read_bytes().replace(b'/new', b'/owner')
+        self.configuration.write_bytes(changed)
+        value = self.status()
+        self.assertFalse(value['restore_available'])
+        self.assertIn('plugins.entries.lifeos-hook-bridge.settings.lifeos_source_dir', value['restore_refusal'])
+        with self.assertRaisesRegex(ConfigurationConflict, r'lifeos-hook-bridge\.settings\.lifeos_source_dir.*restore again'):
+            self.run_action('restore')
+        self.assertEqual(self.order, [])
+        self.assertEqual(self.configuration.read_bytes(), changed)
+        self.assertEqual(self.status()['state'], 'applied')
+
+    def test_interrupted_restore_recovers_with_the_recorded_configuration(self):
+        from optional.lifeos_release_manager import release_programs
+        publish_program = release_programs.publish
+        def interrupted(path, *arguments, **options):
+            if Path(path) == self.configuration:
+                raise OSError('Synthetic interruption')
+            return publish_program(path, *arguments, **options)
+        self.configuration.write_bytes(self.configuration.read_bytes().replace(b'default: m1', b'default: m2'))
+        with mock.patch.object(release_programs, 'publish', interrupted), self.assertRaises(OSError):
+            self.run_action('restore')
+        self.assertEqual(self.status()['state'], 'restoring')
+        self.assertTrue((self.job / 'configuration-restore.json').is_file())
+        self.assertEqual(self.run_action('recover'), {'state': 'rolled_back'})
+        self.assertEqual(self.configuration.read_bytes(), self.BEFORE.replace(b'default: m1', b'default: m2'))
+        self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
+
+
+    def test_a_native_mount_or_a_managed_operation_keeps_the_byte_check(self):
+        import hashlib
+        from optional.lifeos_release_manager import release_worker
+        from optional.lifeos_release_manager.host_configuration import ConfigurationConflict
+        programs = ProgramTransaction(self.job / 'program-snapshot', expected_entries_sha256=self.plan['program_entries_sha256'])
+        mounted = self.configuration.read_bytes()
+        manifest = {'state': 'committed', 'entries': [{'target': str(self.configuration),
+                    'after': {'mode': 0o600, 'digest': hashlib.sha256(mounted).hexdigest()}}]}
+        self.assertIsNone(release_worker.restore_configuration(self.job, self.request, programs, manifest))
+        self.configuration.write_bytes(mounted.replace(b'default: m1', b'default: m2'))
+        with self.assertRaisesRegex(ConfigurationConflict, 'mounted LifeOS'):
+            release_worker.restore_configuration(self.job, self.request, programs, manifest)
+        self.assertIsNone(release_worker.restore_configuration(self.job, {**self.request, 'format': 1}, programs, None))
+        self.assertIsNotNone(release_worker.restore_configuration(self.job, self.request, programs, None))
+
 class HostSynchronizerTests(unittest.TestCase):
     def test_only_an_in_place_host_synchronizes_its_dependencies(self):
         from optional.lifeos_release_manager.inplace_worker import host_synchronizer

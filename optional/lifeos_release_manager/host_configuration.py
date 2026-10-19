@@ -1,5 +1,5 @@
 # ABOUTME: Records which Hermes configuration values LifeOS changed and checks that it left the rest alone.
-# ABOUTME: Removal restores recorded values only where the owner has not changed them since installation.
+# ABOUTME: Removal and an in-place restore return changed values only where the owner has not changed them since.
 from __future__ import annotations
 
 import copy
@@ -15,6 +15,10 @@ OWNED_ROOTS = ('plugins',)
 PROTECTED_ROOTS = ('model', 'providers', 'custom_providers', 'fallback_model', 'auxiliary', 'mcp_servers',
                    'toolsets', 'platforms')
 RECORD = '.lifeos-host/configuration.json'
+
+
+class ConfigurationConflict(ReleaseRejected):
+    """The owner changed a configuration value after an operation that also changed it."""
 
 
 def parse_configuration(data):
@@ -107,3 +111,33 @@ def restore(current, recorded):
         else:
             parent[path[-1]] = copy.deepcopy(item['before'])
     return result, conflicts
+
+
+def restore_operation(before_data, after_data, current_data):
+    """Return ``current_data`` with each value that an operation changed from ``before_data`` to ``after_data`` restored.
+
+    The owner's later changes to other values stay. A changed value that the owner changed again refuses.
+    """
+    if current_data == after_data:
+        return before_data
+    import io
+    from ruamel.yaml import YAML
+    yaml = YAML()
+    yaml.preserve_quotes = True
+    def load(data):
+        value = yaml.load(data) if data else {}
+        if value is None:
+            return {}
+        if not isinstance(value, dict):
+            raise ReleaseRejected('The Hermes configuration is not a mapping')
+        return value
+    values = [{'path': list(path), 'before': left, 'installed': right}
+              for path, left, right in changed_paths(load(before_data), load(after_data))]
+    result, conflicts = restore(load(current_data), {'values': values})
+    if conflicts:
+        raise ConfigurationConflict('You changed configuration values after this operation that it also changed: '
+                                    + ', '.join(conflicts) + '. Set them back to the values the operation installed, '
+                                    'then restore again.')
+    rendered = io.StringIO()
+    yaml.dump(result, rendered)
+    return rendered.getvalue().encode()
