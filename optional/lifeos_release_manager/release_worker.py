@@ -20,7 +20,7 @@ if not __package__:
     sys.modules[namespace.__name__] = namespace
     __package__ = namespace.__name__
 
-from .cli import operation, read_private, write_state
+from .cli import operation, owner_message, read_private, write_state
 from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, launcher_script, publish
@@ -496,9 +496,10 @@ def record_failure(job, error):
     frames = [{'file': frame.filename, 'line': frame.lineno, 'function': frame.name}
               for frame in traceback.extract_tb(error.__traceback__)]
     value = {'exception': type(error).__name__, 'frames': frames}
-    if isinstance(error, ReleaseRejected):
-        # Release refusals are written for the owner and carry no credentials or command text.
-        value['message'] = str(error)
+    message = owner_message(error)
+    if message is not None:
+        # Release refusals and LifeOS service refusals are written for the owner.
+        value['message'] = message
     publish(job / 'worker-failure.json', (json.dumps(value) + '\n').encode())
 
 

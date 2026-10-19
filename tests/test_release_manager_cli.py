@@ -249,6 +249,27 @@ class PreparationErrorTests(unittest.TestCase):
         self.assertEqual(self.error(ReleaseRejected('Release preparation fails at dependency-resolution')),
                          'LifeOS would change installed Python packages: mcp Preparation did not change the active installation.')
 
+    def memory_unavailable(self, message):
+        from optional.lifeos_release_manager.release_stage import load_bridge
+        bridge = load_bridge(Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge')
+        return bridge.memory_module('memory_access').MemoryUnavailable(message)
+
+    def test_stage_failure_reports_the_recorded_service_controller_refusal(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        from optional.lifeos_release_manager.release_worker import record_failure
+        message = 'Profile services require a stable active or inactive state before draining'
+        try:
+            raise self.memory_unavailable(message)
+        except RuntimeError as error:
+            record_failure(self.job, error)
+        self.assertEqual(self.error(ReleaseRejected('Release preparation fails at candidate-review')),
+                         message + ' Preparation did not change the active installation.')
+
+    def test_service_controller_refusal_explains_itself(self):
+        message = 'Profile services require a stable active or inactive state before draining'
+        self.assertEqual(self.error(self.memory_unavailable(message)),
+                         message + ' Preparation did not change the active installation.')
+
     def test_unexplained_failure_reports_only_that_nothing_changed(self):
         from optional.lifeos_release_manager.release_catalog import ReleaseRejected
         from optional.lifeos_release_manager.release_programs import publish
