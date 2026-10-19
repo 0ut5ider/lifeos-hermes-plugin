@@ -147,10 +147,17 @@
         return h("p", {key: item.pid, className: "lifeos-notice lifeos-caution"}, "Stops the hand-started " + item.role +
           " (process " + item.pid + "); its new user service replaces it.");
       }),
+      services.dashboard_address ? h("p", null, "The dashboard user service listens on " +
+        dashboardAddress(services.dashboard_address) + ".") : null,
       h("p", {className: "lifeos-help"}, review.tested_scope),
       conflicts.length ? h("div", {className: "lifeos-notice lifeos-caution"}, h("p", null, "Known conflicts:"),
         h("ul", null, conflicts.map(function (item) { return h("li", {key: item}, item); })))
         : h("p", {className: "lifeos-help"}, "Known conflicts: none reported for Hermes " + hermes.label + "."));
+  }
+
+  function dashboardAddress(address) {
+    const host = address.host.includes(":") && !address.host.startsWith("[") ? "[" + address.host + "]" : address.host;
+    return host + ":" + address.port;
   }
 
   function compatibilitySection(result, error, busy, check) {

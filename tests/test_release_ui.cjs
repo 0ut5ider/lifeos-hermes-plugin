@@ -197,7 +197,8 @@ test('an in-place review lists the Hermes changes, packages, services, and teste
       files: {modified: ['hermes_cli/plugins.py', 'run_agent.py'], added: ['hermes_cli/new_hook.py']}},
     configuration: ['plugins.enabled', 'plugins.entries'], update: null, known_conflicts: [],
     packages: ['tree-sitter==0.26.0', 'tree-sitter-bash==0.25.1'],
-    services: {restarted: ['gateway'], created: ['dashboard', 'pulse'], replaced: [{pid: 4321, command: 'hermes', role: 'dashboard'}]},
+    services: {restarted: ['gateway'], created: ['dashboard', 'pulse'], replaced: [{pid: 4321, command: 'hermes', role: 'dashboard'}],
+      dashboard_address: {host: '0.0.0.0', port: 9119}},
     tested_scope: 'Qualified on a single-profile Linux Git installation of Hermes v0.21.7.'}});
   await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Review release')).props.onClick();
   const content = text(find(ui.render(), (node) => node.props.className === 'lifeos-review'));
@@ -207,6 +208,7 @@ test('an in-place review lists the Hermes changes, packages, services, and teste
   assert.match(content, /Services that restart: gateway/);
   assert.match(content, /User services created: dashboard, pulse/);
   assert.match(content, /Stops the hand-started dashboard \(process 4321\); its new user service replaces it/);
+  assert.match(content, /The dashboard user service listens on 0\.0\.0\.0:9119\./);
   assert.match(content, /Qualified on a single-profile Linux Git installation of Hermes v0\.21\.7\./);
   const review = find(ui.render(), (node) => node.props.className === 'lifeos-review');
   const lists = findAll(review, (node) => node.type === 'details');
@@ -226,7 +228,7 @@ test('an in-place update review shows the change from the installed release and 
       files: {modified: ['hermes_cli/plugins.py'], added: ['hermes_cli/new_hook.py']}},
     configuration: [], known_conflicts: ['The example-relay plugin replaces the delivery hook.'],
     update: {added: ['hermes_cli/new_hook.py'], changed: ['hermes_cli/plugins.py'], restored: ['run_agent.py', 'tools/x.py']},
-    packages: [], services: {restarted: ['gateway'], created: [], replaced: []},
+    packages: [], services: {restarted: ['gateway'], created: [], replaced: [], dashboard_address: null},
     tested_scope: 'Qualified on a single-profile Linux Git installation of Hermes v0.21.7.'}});
   await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Review release')).props.onClick();
   const review = find(ui.render(), (node) => node.props.className === 'lifeos-review');
@@ -235,7 +237,21 @@ test('an in-place update review shows the change from the installed release and 
   const summaries = findAll(review, (node) => node.type === 'summary').map(text);
   assert.ok(summaries.includes('Files that return to their original content (2)'));
   assert.match(content, /Configuration keys LifeOS changes: none/);
+  assert.doesNotMatch(content, /listens on/);
   assert.match(content, /Known conflicts:.*The example-relay plugin replaces the delivery hook\./);
+  ui.cleanup();
+});
+
+test('an in-place review writes an IPv6 dashboard address with brackets', async () => {
+  const identifier = 'd'.repeat(32);
+  const ui = await page(false, [{identifier, version: '0.8.0', state: 'ready'}], compatible, {in_place: {
+    hermes: {label: 'v0.21.7', commit: qualified.commit, source: '/home/owner/.hermes/hermes-agent', modified: 0, added: 0},
+    configuration: [], update: null, known_conflicts: [], packages: [],
+    services: {restarted: [], created: ['dashboard'], replaced: [], dashboard_address: {host: '::', port: 9200}},
+    tested_scope: 'Qualified.'}});
+  await find(ui.render(), (node) => node.type === 'button' && node.children.includes('Review release')).props.onClick();
+  const content = text(find(ui.render(), (node) => node.props.className === 'lifeos-review'));
+  assert.match(content, /The dashboard user service listens on \[::\]:9200\./);
   ui.cleanup();
 });
 

@@ -217,3 +217,25 @@ class InplaceReviewTests(unittest.TestCase):
         self.assertEqual(review['update'], update)
         self.assertEqual(review['known_conflicts'], ['The example-relay plugin replaces the delivery hook.'])
         self.assertEqual(review['packages'], ['tree-sitter==0.26.0'])
+        self.assertIsNone(review['services']['dashboard_address'])
+
+    def review_services(self, dashboard_options):
+        from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review
+        from optional.lifeos_release_manager.release_programs import publish
+        with tempfile.TemporaryDirectory() as directory:
+            job = Path(directory)
+            publish(job / 'inplace-review.json', json.dumps({'configuration': [], 'update': None}).encode())
+            entry = {'label': 'v0.0.1', 'commit': 'a' * 40, 'files': {}}
+            value = {'host': {'source': '/home/owner/.hermes/hermes-agent'}, 'dependencies': {'added': {}}}
+            consumer = {'pid': 4321, 'command': 'hermes', 'role': 'dashboard'}
+            plan = {'services': {'roles': [], 'created': ['dashboard'], 'consumers': [consumer]}}
+            return inplace_review(job, {'entry': entry, 'dashboard_options': dashboard_options}, value, plan)['services']
+
+    def test_review_shows_the_address_the_created_dashboard_unit_keeps(self):
+        services = self.review_services({'host': '0.0.0.0', 'port': 9200})
+        self.assertEqual(services['dashboard_address'], {'host': '0.0.0.0', 'port': 9200})
+        self.assertEqual(services['replaced'], [{'pid': 4321, 'command': 'hermes', 'role': 'dashboard'}])
+
+    def test_review_shows_the_hermes_default_address_when_no_options_were_recorded(self):
+        self.assertEqual(self.review_services({})['dashboard_address'], {'host': '127.0.0.1', 'port': 9119})
+        self.assertEqual(self.review_services({'host': '0.0.0.0'})['dashboard_address'], {'host': '0.0.0.0', 'port': 9119})
