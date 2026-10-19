@@ -228,8 +228,42 @@ class HostEntriesTests(InplaceJob):
         _, (_, files) = self.entries()
         self.assertEqual(files[self.source / 'run_agent.py'], retained / 'run_agent.py')
         self.assertIsNone(files[self.source / 'hermes_cli/old_hook.py'])
-        self.assertEqual(files[retained / 'run_agent.py'], retained / 'run_agent.py')
+        self.assertIsNone(files[retained / 'run_agent.py'])
         self.assertEqual(files[retained / 'hermes_cli/plugins.py'], self.job / 'host/stock/hermes_cli/plugins.py')
+
+    def test_added_targets_publish_before_the_targets_that_import_them(self):
+        _, (_, files) = self.entries()
+        order = list(files)
+        self.assertLess(order.index(self.source / 'hermes_cli/new_hook.py'), order.index(self.source / 'hermes_cli/plugins.py'))
+
+    def test_update_that_drops_a_target_removes_its_original_and_leaves_removal_admissible(self):
+        from optional.lifeos_release_manager.host_record import build_record, load_record, originals_path, record_path
+        from optional.lifeos_release_manager.inplace_removal import host_plan
+        from optional.lifeos_release_manager.release_programs import ProgramTransaction
+        previous = {**self.entry, 'files': {**self.entry['files'],
+                    'run_agent.py': {'stock': digest(''), 'patched': digest('patched\n')}}}
+        publish(record_path(self.profile), json.dumps(build_record(
+            self.profile, self.source, previous, operation='b' * 32, version='0.7.9')).encode())
+        retained = originals_path(self.profile)
+        for relative, text in (('hermes_cli/plugins.py', STOCK), ('run_agent.py', '')):
+            (retained / relative).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            publish(retained / relative, text.encode())
+        (self.source / 'run_agent.py').write_text('patched\n')
+        _, (directories, files) = self.entries()
+        programs = ProgramTransaction(self.job / 'program-snapshot')
+        programs.prepare(directories=directories, files=files)
+        for entry in programs.entries():
+            Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        programs.apply()
+        self.assertEqual((self.source / 'run_agent.py').read_text(), '')
+        self.assertFalse((retained / 'run_agent.py').exists())
+        stage = self.home / 'stage'
+        stage.mkdir(mode=0o700)
+        record = load_record(self.profile)
+        host_plan(self.profile, record, {'hermes_cli/plugins.py': retained / 'hermes_cli/plugins.py'}, stage)
+        programs.restore()
+        self.assertEqual((retained / 'run_agent.py').read_text(), '')
+        self.assertEqual((self.source / 'run_agent.py').read_text(), 'patched\n')
 
 
 class ReviewTests(InplaceJob):

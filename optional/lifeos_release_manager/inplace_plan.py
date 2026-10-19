@@ -132,14 +132,17 @@ def host_entries(job, request, selected, generated):
     originals = check_originals(record) if record is not None else None
     staged = selected['staged']
     desired = desired_host_files(entry, staged, record, originals)
-    files = {source / relative: path for relative, path in desired.items()}
+    # An added module publishes before the patched files that import it, and restoration runs in reverse.
+    added = [relative for relative, value in staged.items() if value['stock'] is None]
+    files = {source / relative: desired[relative] for relative in (*added, *(item for item in desired if item not in added))}
     retained = originals_path(profile)
     for relative, value in staged.items():
         if value['stock'] is not None:
             files[retained / relative] = value['stock']
     if record is not None:
+        # A target the new release drops is already back at its original, so its retained copy is deleted after it.
         for relative, path in originals.items():
-            files.setdefault(retained / relative, path)
+            files.setdefault(retained / relative, path if relative in staged else None)
     value = build_record(profile, source, entry, operation=job.name, version=request['version'])
     publish(generated / 'lifeos-host.json', (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
     files[record_path(profile)] = generated / 'lifeos-host.json'
