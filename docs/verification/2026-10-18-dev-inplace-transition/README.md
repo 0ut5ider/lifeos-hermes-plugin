@@ -55,4 +55,4 @@ Result: `applied`; receipt from `/home/lifeos-hermes/.hermes/hermes-agent` in pa
 
 ## Known limits on this host
 
-- Complete removal reads the dashboard login from `config.yaml`. This host supplies it through `EnvironmentFile=.../dashboard-auth.env`, so removal preparation would refuse until the login is also in `config.yaml`. See the [container record](../2026-10-17-inplace-e2e/README.md#published-prerelease-github-url-and-dashboard-buttons-on-112).
+- With `0.8.0-rc.1`, complete removal read the dashboard login only from `config.yaml`, and this host supplies the login through `EnvironmentFile=.../dashboard-auth.env`. Since `0.8.0-rc.3`, the removal plan records the login of the dashboard that authorizes the removal, so this limit does not apply to `0.8.0-rc.4`. See the [container record](../2026-10-17-inplace-e2e/README.md).
