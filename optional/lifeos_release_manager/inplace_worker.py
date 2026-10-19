@@ -14,7 +14,7 @@ from .cli import write_state
 from .inplace_services import OFFERABLE, UNITS, inventory, replace_with_units, show
 from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime
-from .release_programs import ProgramTransaction, fingerprint, publish
+from .release_programs import ProgramConflict, ProgramTransaction, fingerprint, publish
 from .release_operation import validate_plan
 from .release_stage import run_stage, sha
 from .removal_configuration import PLUGINS as OWNED_PLUGINS
@@ -349,7 +349,8 @@ def run(job, request, action, current, lease, *, checkpoint=lambda point: None):
 
 def _run(job, request, action, current, lease, *, checkpoint, release_update):
     from .release_worker import (initialize_native, restore_native_mount, revoke_authorization, check_mount_recovery, check_restore,
-                                 record_failure, record_configuration_restore, recorded_configuration_restore)
+                                 record_failure, record_configuration_restore, recorded_configuration_restore,
+                                 CONFIGURATION_RESTORE)
     profile = Path(request['profile'])
     plan = validate_plan(job, request)
     fresh_recovery = action == 'recover' and plan['fresh']
@@ -380,6 +381,13 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
                 replacements = recorded_configuration_restore(job, request)
             else:
                 # Recovery of an interrupted restore publishes the configuration that the restore recorded.
+                # A restore records it before it publishes anything, so without a record the programs are
+                # still applied, and the recovery records the restore now. An interrupted apply refuses here.
+                if not (job / CONFIGURATION_RESTORE).is_file():
+                    try:
+                        record_configuration_restore(job, check_restore(job, request, plan, mount))
+                    except ProgramConflict:
+                        pass
                 replacements = recorded_configuration_restore(job, request)
                 overrides = {} if manifest is None or manifest['state'] == 'rolled_back' else {
                     entry['target']: fingerprint(entry['target']) for entry in manifest['entries']}

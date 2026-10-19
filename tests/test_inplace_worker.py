@@ -566,6 +566,15 @@ class ConfigurationRestoreTests(unittest.TestCase):
         self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
 
 
+    def test_a_restore_interrupted_before_its_configuration_record_recovers(self):
+        self.configuration.write_bytes(self.configuration.read_bytes().replace(b'default: m1', b'default: m2'))
+        from optional.lifeos_release_manager.cli import write_state
+        write_state(self.job, 'queued-restore')
+        self.assertFalse((self.job / 'configuration-restore.json').exists())
+        self.assertEqual(self.run_action('recover'), {'state': 'rolled_back'})
+        self.assertEqual(self.configuration.read_bytes(), self.BEFORE.replace(b'default: m1', b'default: m2'))
+        self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
+
     def test_a_native_mount_or_a_managed_operation_keeps_the_byte_check(self):
         import hashlib
         from optional.lifeos_release_manager import release_worker
