@@ -309,7 +309,7 @@ def _resume(services):
         services.resume()
 
 
-def _rollback(job, request, plan, services, programs, restore_mount):
+def _rollback(job, request, plan, services, programs, restore_mount, *, release_update):
     """Return the host to its prior programs: mount, programs, dependencies, then services."""
     adopt_units(services, request)
     _quiesce(services)
@@ -326,6 +326,8 @@ def _rollback(job, request, plan, services, programs, restore_mount):
         restored_dependencies = False
     else:
         restored_dependencies = True
+    # Restarted Hermes processes refuse to boot under a live update marker; the checkout is complete.
+    release_update()
     _resume(services)
     return restored_dependencies
 
@@ -380,7 +382,8 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
             adopt_units(services, request)
             _quiesce(services)
             _consumers_stopped(request, {**plan, 'services': {**plan['services'], 'consumers': [], 'created': []}})
-            restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount)
+            restored_dependencies = _rollback(job, request, plan, services, programs, restore_mount,
+                                              release_update=release_update)
             verify_runtime(request, restored=True)
             from .host_configuration import record_restored
             record_restored(profile)
@@ -465,7 +468,8 @@ def _run(job, request, action, current, lease, *, checkpoint, release_update):
                 write_state(job, 'recovery_required',
                             error='The first installation stopped after LifeOS was initialized. Recover it to finish.')
                 raise
-            restored = _rollback(job, request, plan, services, programs, lambda: restore_native_mount(job, request, mount))
+            restored = _rollback(job, request, plan, services, programs, lambda: restore_native_mount(job, request, mount),
+                                 release_update=release_update)
             write_state(job, 'rolled_back', error=None if restored else DEPENDENCY_RESTORE_ERROR)
             raise
     finally:
