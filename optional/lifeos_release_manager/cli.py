@@ -126,12 +126,21 @@ def _prepare(profile, version=None, *, name, assistant, catalog=None, job=None, 
         raise
 
 
+def owner_message(error):
+    """Return the text of a release refusal or a LifeOS service refusal, written for the owner; None otherwise."""
+    # Each loaded bridge has its own memory_access module, so the refusal class is matched by its name.
+    if isinstance(error, ReleaseRejected) or any(kind.__name__ == 'MemoryUnavailable' and kind.__module__.endswith('.memory_access')
+                                                 for kind in type(error).__mro__):
+        return str(error)
+    return None
+
+
 def _preparation_error(job, error):
     """Return the owner-facing reason for a failed preparation; refusals explain themselves."""
-    reason = None
-    if isinstance(error, ReleaseRejected) and not str(error).startswith('Release preparation fails at '):
-        reason = str(error)
-    elif (job / 'worker-failure.json').is_file():
+    reason = owner_message(error)
+    if reason is not None and reason.startswith('Release preparation fails at '):
+        reason = None
+    if reason is None and (job / 'worker-failure.json').is_file():
         try:
             reason = read_private(job / 'worker-failure.json').get('message')
         except (ValueError, OSError):

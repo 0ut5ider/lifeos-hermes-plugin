@@ -26,6 +26,11 @@
 - Find Bun in the account's `~/.local/bin` when the dashboard's `PATH` lacks it.
 - Tell the owner to claim the installation when the releases page cannot show memory workflows before the claim.
 - Record the login of the dashboard password provider that authorized a removal, and check the standalone recovery password against it. 0.8.0-rc.1 read the login only from `config.yaml` and refused removal on hosts that set it through the environment.
+- Delete the kept original of a Hermes file that an update stops patching, so the next complete removal no longer refuses.
+- Publish the Hermes files that LifeOS adds before the patched files that import them, and document a recovery command for a Hermes that cannot load its plugins.
+- Release the Hermes update lock before a rollback restarts the services, so a failed dependency restore no longer leaves them unable to boot.
+- Show the reason when preparation stops on a LifeOS service refusal, for example a gateway unit in the failed state.
+- Tell the owner to prepare the operation again, not to recover it, when a hand-started Hermes process does not stop.
 
 ## 0.7.3 (2026-10-16)
 
