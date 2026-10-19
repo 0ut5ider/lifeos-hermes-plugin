@@ -5,8 +5,10 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 import unittest
+from unittest import mock
 
 import test_removal_state as policy_fixture
 import test_removal_services as services_fixture
@@ -96,6 +98,80 @@ RemovalPublication(Path(settings['profile']),settings['signature']).apply(accoun
         with self.assertRaises(ValueError):self.operation().apply(account='dashboard:owner')
         self.assertEqual({role:self.service.fixture.properties(role)['MainPID'] for role in self.service.fixture.units},pids)
         self.assertTrue(self.policy.configuration.path.exists())
+
+    def host(self):
+        """Bind the plan to a disposable Hermes Git checkout so that removal runs as an in-place removal."""
+        directory=tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR'));self.addCleanup(directory.cleanup)
+        source=Path(directory.name)/'hermes';source.mkdir()
+        subprocess.run(['git','init','-q',str(source)],check=True,capture_output=True)
+        self.policy.plan['host']={'source':str(source),'commit':'b'*40}
+        data=json.dumps(self.policy.plan,sort_keys=True,separators=(',',':')).encode()
+        self.signature=hashlib.sha256(data).hexdigest();publish(self.stage/'plan.json',data)
+        publish(self.profile/'.lifeos-removal.json',json.dumps({'format':1,'workflow':self.policy.job.name,'signature':self.signature}).encode())
+        publish(self.stage/'operation.json',json.dumps({'signature':self.signature,'state':'ready'}).encode())
+        environment=mock.patch.dict(os.environ,{'HERMES_HOME':str(self.profile)});environment.start();self.addCleanup(environment.stop)
+        from hermes_cli.update_lock import checkout_lock_held
+        events=[]
+        def synchronize(stage,plan,label):
+            events.append((label,checkout_lock_held(source)))
+            return {}
+        synchronizer=mock.patch('optional.lifeos_release_manager.inplace_removal.synchronize',synchronize)
+        synchronizer.start();self.addCleanup(synchronizer.stop)
+        resume=self.controller.resume
+        def restart(*arguments,**options):
+            events.append(('resume',checkout_lock_held(source)))
+            return resume(*arguments,**options)
+        self.controller.resume=restart
+        return source,events
+
+    def other_update(self, source):
+        """Hold the Hermes checkout update lock from another process, as a concurrent hermes update does."""
+        code='import sys\nfrom hermes_cli.update_lock import UpdateLock\nlock=UpdateLock(install_root=sys.argv[1])\nprint(lock.acquire(),flush=True)\nsys.stdin.read()\n'
+        process=subprocess.Popen([sys.executable,'-B','-c',code,str(source)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,text=True)
+        def finish():
+            if process.poll() is None:process.stdin.close();process.wait(timeout=30);process.stdout.close()
+        self.addCleanup(finish)
+        self.assertEqual(process.stdout.readline(),'True\n')
+        return finish
+
+    def test_in_place_removal_holds_the_update_lock_until_the_services_restart(self):
+        source,events=self.host()
+        from hermes_cli.update_lock import checkout_lock_held
+        def checkpoint(point):events.append((point,checkout_lock_held(source)))
+        result=self.operation().apply(account='dashboard:owner',checkpoint=checkpoint)
+        self.assertEqual(result['state'],'verification_required')
+        self.assertIn(('drained',True),events);self.assertIn(('programs-published',True),events)
+        self.assertIn(('dependency-removal',True),events);self.assertIn(('dependencies-synchronized',True),events)
+        self.assertIn(('resume',False),events);self.assertNotIn(('resume',True),events)
+        self.assertFalse(checkout_lock_held(source))
+        events.clear()
+        result=self.operation().rollback(account='dashboard:owner',checkpoint=checkpoint)
+        self.assertEqual(result['state'],'rolled_back')
+        self.assertIn(('drained',True),events);self.assertIn(('programs-restored',True),events)
+        self.assertIn(('dependency-restore',True),events)
+        self.assertIn(('resume',False),events);self.assertNotIn(('resume',True),events)
+        self.assertFalse(checkout_lock_held(source))
+
+    def test_running_hermes_update_refuses_removal_rollback_and_recovery_before_service_stop(self):
+        source,events=self.host()
+        from hermes_cli.update_lock import checkout_lock_held
+        pids={role:self.service.fixture.properties(role)['MainPID'] for role in self.service.fixture.units}
+        finish=self.other_update(source)
+        for action in (self.operation().apply,self.operation().rollback):
+            with self.assertRaisesRegex(ValueError,'A Hermes update is running'):action(account='dashboard:owner')
+        self.assertEqual({role:self.service.fixture.properties(role)['MainPID'] for role in self.service.fixture.units},pids)
+        self.assertEqual(json.loads((self.stage/'operation.json').read_bytes())['state'],'ready')
+        self.assertTrue(self.program.exists());self.assertEqual(events,[])
+        finish()
+        def checkpoint(point):
+            if point=='programs-published':raise InterruptedError('Synthetic removal interruption')
+        with self.assertRaises(InterruptedError):self.operation().apply(account='dashboard:owner',checkpoint=checkpoint)
+        self.assertFalse(checkout_lock_held(source))
+        self.other_update(source);events.clear()
+        for action in (self.operation().apply,self.operation().rollback):
+            with self.assertRaisesRegex(ValueError,'A Hermes update is running'):action(account='dashboard:owner')
+        self.assertEqual(json.loads((self.stage/'operation.json').read_bytes())['state'],'publishing')
+        self.assertFalse(self.program.exists());self.assertEqual(events,[])
 
     def test_removed_software_verifies_through_actual_fresh_stock_constructor(self):
         runtime=Path(os.environ.get('LIFEOS_STOCK_RUNTIME','/home/outsider/.cache/lifeos-memory-portability-20261015/stock-full-9b204dad/runtime'))
