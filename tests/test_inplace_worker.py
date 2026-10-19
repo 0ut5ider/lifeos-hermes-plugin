@@ -237,6 +237,20 @@ class RollbackTests(unittest.TestCase):
                          {'error': 'ReleaseRejected'})
 
 
+class TerminateTests(unittest.TestCase):
+    def test_process_that_outlives_the_deadline_asks_for_a_new_preparation(self):
+        child = subprocess.Popen([sys.executable, '-c', 'import signal, sys, time\n'
+                                  'signal.signal(signal.SIGTERM, signal.SIG_IGN)\nprint(flush=True)\ntime.sleep(60)'],
+                                 stdout=subprocess.PIPE)
+        self.addCleanup(child.wait)
+        self.addCleanup(child.kill)
+        child.stdout.readline()
+        with mock.patch.object(inplace_worker.time, 'monotonic', side_effect=[0, 31]), \
+                self.assertRaisesRegex(ReleaseRejected, '^A hand-started Hermes process does not stop; '
+                                                        'close it, then prepare the operation again$'):
+            inplace_worker._terminate([{'pid': child.pid}])
+
+
 class BytecodeTests(unittest.TestCase):
     def test_only_the_cached_bytecode_of_changed_source_modules_is_removed(self):
         with tempfile.TemporaryDirectory() as directory:

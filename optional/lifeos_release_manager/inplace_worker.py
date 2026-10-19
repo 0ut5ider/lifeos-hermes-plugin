@@ -98,7 +98,7 @@ def _terminate(processes):
         if not any(Path('/proc', str(item['pid'])).exists() for item in processes):
             return
         time.sleep(0.2)
-    raise ReleaseRejected('A hand-started Hermes process does not stop; close it and recover the operation')
+    raise ReleaseRejected('A hand-started Hermes process does not stop; close it, then prepare the operation again')
 
 
 def check_reviewed_services(reviewed, current):
