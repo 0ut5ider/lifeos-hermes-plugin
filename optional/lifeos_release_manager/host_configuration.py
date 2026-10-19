@@ -121,11 +121,14 @@ def restore_operation(before_data, after_data, current_data):
     if current_data == after_data:
         return before_data
     import io
-    from ruamel.yaml import YAML
+    from ruamel.yaml import YAML, YAMLError
     yaml = YAML()
     yaml.preserve_quotes = True
     def load(data):
-        value = yaml.load(data) if data else {}
+        try:
+            value = yaml.load(data) if data else {}
+        except YAMLError as error:
+            raise ReleaseRejected('config.yaml cannot be read for the restore: ' + type(error).__name__) from error
         if value is None:
             return {}
         if not isinstance(value, dict):

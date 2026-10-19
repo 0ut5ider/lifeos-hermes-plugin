@@ -91,7 +91,7 @@ A separate owner review controls imports, remote readers, and return to Hermes. 
 
 ## Updates, interruptions, and removal
 
-**Update LifeOS** and **Update plugin** download the newer integration and move the patched files from the recorded state to the new one. They follow the same review and apply flow. **Restore prior programs** returns to the previous release. It keeps the configuration changes you made since, such as a new model. If you changed a value that the operation itself set, restore names that key and refuses until you set it back.
+**Update LifeOS** and **Update plugin** download the newer integration and move the patched files from the recorded state to the new one. They follow the same review and apply flow. **Restore prior programs** returns to the previous release. It keeps the configuration changes you made since, such as a new model. If you changed a value that the operation itself set, restore names that key and refuses until you set it back. An operation that also installed the native LifeOS files into your profile restores only while `config.yaml` is unchanged since that operation.
 
 If an operation is interrupted, keep its directory and journals and use the offered recovery control. A first installation that stopped after LifeOS was initialized finishes forward; any other operation rolls back.
 

@@ -97,5 +97,12 @@ class HostConfigurationTests(unittest.TestCase):
         self.assertIn('then restore again', str(raised.exception))
 
 
+    def test_operation_restore_refuses_a_configuration_that_cannot_be_read(self):
+        before = b'model:\n  default: m1\n'
+        after = before + b'approvals:\n  mode: manual\n'
+        later = after + b'model:\n  default: m2\n'
+        with self.assertRaisesRegex(ReleaseRejected, 'config.yaml cannot be read'):
+            restore_operation(before, after, later)
+
 if __name__ == '__main__':
     unittest.main()
