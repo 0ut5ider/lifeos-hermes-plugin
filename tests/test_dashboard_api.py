@@ -491,15 +491,17 @@ class DashboardApiTests(unittest.TestCase):
             self.assertEqual(self.actions, [])
             self.assertEqual(api.get_host_patch_status(), {"state": "none"})
 
-    def test_in_place_installation_keeps_an_old_bridge_hermes_patch_job_actionable(self):
+    def test_in_place_installation_refuses_restore_and_recovers_an_old_bridge_hermes_patch_job(self):
         with tempfile.TemporaryDirectory() as directory:
             api = self.host_patch_api(Path(directory))
             (api.HERMES_HOME / "lifeos-host.json").write_text("{}")
             snapshot = self.host_patch_job(api, {"state": "applied"})
-            self.assertEqual(api.restore_hermes_installation(), {"state": "restoring", "snapshot": str(snapshot)})
-            self.assertEqual(self.actions, [("request_restore", snapshot), ("restore", snapshot)])
+            with self.assertRaises(api.HTTPException) as refused:
+                api.restore_hermes_installation()
+            self.assertEqual((refused.exception.status_code, refused.exception.detail), (409, api.IN_PLACE_UPDATES))
+            self.assertEqual(self.actions, [])
+            self.assertEqual(api.get_host_patch_status()["state"], "applied")
             (snapshot / "manifest.json").write_text(json.dumps({"state": "applying", "unit": "lifeos-bridge-apply-1"}))
-            self.actions.clear()
             with patch.object(api.subprocess, "run", return_value=types.SimpleNamespace(returncode=3, stdout="inactive")):
                 self.assertEqual(api.recover_hermes_installation(), {"state": "recovering", "snapshot": str(snapshot)})
             self.assertEqual(self.actions, [("recover", snapshot)])

@@ -1419,9 +1419,9 @@ def restore_hermes_installation():
 
 
 def _restore_hermes_installation():
+    _refuse_in_place_update()
     previous = get_host_patch_status()
     if previous["state"] != "applied":
-        _refuse_in_place_update()
         raise HTTPException(status_code=409, detail="There is no applied Hermes patch to restore")
     snapshot = Path(previous["snapshot"])
     requested = False

@@ -1260,7 +1260,7 @@
         hostPatch?.state === "applied" ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, "Hermes extension is active. Full LifeOS hook parity remains unverified."),
           hostPatch.error ? h("p", { role: "status" }, hostPatch.error) : null,
-          h("button", {
+          installation?.in_place ? null : h("button", {
             type: "button", disabled: installationBusy, onClick: restoreHermes,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, "Restore previous Hermes")) : null,

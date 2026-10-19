@@ -396,10 +396,12 @@ test("an in-place installation hides the bridge Hermes patch and setup controls"
     /^This installation gets LifeOS updates from the LifeOS releases page\.$/);
 });
 
-test("an in-place installation keeps an old bridge Hermes patch job visible and actionable", async () => {
-  let render = inPlaceBridge({ state: "none" }, { state: "applied", snapshot: "/jobs/patch-1" });
+test("an in-place installation shows an old bridge Hermes patch job and offers only its recovery", async () => {
+  let render = inPlaceBridge({ state: "none" }, { state: "applied", snapshot: "/jobs/patch-1", error: "Restore failed earlier" });
   await settle();
-  assert.ok(find(render(), (node) => node.type === "button" && node.children.includes("Restore previous Hermes")));
+  assert.equal(find(render(), (node) => node.type === "button" && node.children.includes("Restore previous Hermes")), null);
+  assert.ok(find(render(), (node) => node.type === "p" && text(node).startsWith("Hermes extension is active.")));
+  assert.ok(find(render(), (node) => node.type === "p" && text(node) === "Restore failed earlier"));
   render = inPlaceBridge({ state: "none" }, { state: "interrupted", transaction_state: "applying", snapshot: "/jobs/patch-1" });
   await settle();
   assert.ok(find(render(), (node) => node.type === "button" && node.children.includes("Recover interrupted Hermes change")));
