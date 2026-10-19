@@ -49,6 +49,8 @@ def _role(arguments):
 
 
 DASHBOARD_HOST = re.compile(r'[A-Za-z0-9._:\[\]-]{1,253}')
+# The address that Hermes's dashboard and serve commands listen on without options.
+DASHBOARD_DEFAULTS = {'host': '127.0.0.1', 'port': 9119}
 
 
 def dashboard_options(pid):
@@ -86,7 +88,7 @@ def dashboard_options(pid):
         if not options['port'].isdecimal() or not 0 < int(options['port']) < 65536:
             raise refused
         options['port'] = int(options['port'])
-    return {name: value for name, value in options.items() if value != {'host': '127.0.0.1', 'port': 9119}[name]}
+    return {name: value for name, value in options.items() if value != DASHBOARD_DEFAULTS[name]}
 
 
 def stat_fields(pid):

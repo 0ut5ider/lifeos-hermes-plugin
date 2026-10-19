@@ -22,6 +22,7 @@ stage = importlib.import_module(namespace_name + '.release_stage')
 services = importlib.import_module(namespace_name + '.release_services')
 memory_workflow = importlib.import_module(namespace_name + '.memory_workflow')
 host_compatibility = importlib.import_module(namespace_name + '.host_compatibility')
+consumer_scan = importlib.import_module(namespace_name + '.consumer_scan')
 
 
 def profile():
@@ -221,7 +222,9 @@ def inplace_review(job, selected, value, plan):
             'packages': sorted(name + '==' + versions[0] for name, versions in value['dependencies']['added'].items()),
             'services': {'restarted': services['roles'], 'created': services['created'],
                          'replaced': [{'pid': item['pid'], 'command': item['command'], 'role': item['role']}
-                                      for item in services['consumers'] if item['role'] in services['created']]},
+                                      for item in services['consumers'] if item['role'] in services['created']],
+                         'dashboard_address': {**consumer_scan.DASHBOARD_DEFAULTS, **selected['dashboard_options']}
+                         if 'dashboard' in services['created'] else None},
             'tested_scope': TESTED_SCOPE.format(label=entry['label'])}
 
 
