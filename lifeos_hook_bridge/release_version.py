@@ -98,11 +98,17 @@ def _digest(path):
         return hashlib.file_digest(stream,'sha256').hexdigest()
 
 
+def host_recorded(profile):
+    """Return whether the profile has an in-place host record, which marks an in-place installation."""
+    path=Path(profile)/HOST_RECORD
+    return path.exists() or path.is_symlink()
+
+
 def host_status(profile):
     """Compare each Hermes file that LifeOS patched with its recorded hash; None without an in-place record."""
-    path=Path(profile)/HOST_RECORD
-    if not path.exists() and not path.is_symlink():
+    if not host_recorded(profile):
         return None
+    path=Path(profile)/HOST_RECORD
     try:
         record=_host_record(path)
     except OSError:

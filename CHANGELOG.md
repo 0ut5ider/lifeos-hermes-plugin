@@ -21,6 +21,7 @@
 - Find Hermes processes that the stock launcher started without a re-execution, such as a hand-started dashboard or an interactive session. 0.8.0-rc.1 missed them, patched files beneath them, and offered no unit.
 - Give the unit that replaces a hand-started dashboard the same `--host` and `--port`. Refuse when hand-started dashboards listen on different addresses.
 - Show in the review the address that a created dashboard unit listens on, such as `0.0.0.0:9119`.
+- Point LifeOS updates on an in-place installation to the releases page: the LifeOS Bridge page hides its own update controls, and its update routes refuse with HTTP 409 except to recover an interrupted update.
 - Count the hand-started dashboard that serves the review as a consumer that its new unit replaces. In 0.8.0-rc.2 the review re-sealed a plan without it, and the installation rolled back.
 - Refuse an apply before any service stops when the services to stop, create, or replace differ from the reviewed plan.
 - Synchronize the Hermes dependencies when a provider return or its rollback changes the enabled plugins, before the services restart. Before, the restarted gateway finished the environment itself under the Hermes update lock, and the return's fresh-agent check failed until a recovery.

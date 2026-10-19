@@ -1178,21 +1178,23 @@
         installation?.lifeos === "installed" ? h("p", null,
           "LifeOS " + installation.version + " is installed.") : null,
         installation?.lifeos === "installed" && installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
-          h("p", null, "Updates use a tested LifeOS commit and compatibility patch set. The worker stages dependencies and hook registrations, restarts Hermes, then verifies the installed result."),
-          (!installation.candidate_ready || lifeosUpdate?.state === "applied") ? h("button", {
+          installation.in_place ? h("p", { id: "lifeos_update_pointer" }, "This installation gets LifeOS updates from the ",
+            h("a", { href: "/lifeos-releases" }, "LifeOS releases page"), ".")
+            : h("p", null, "Updates use a tested LifeOS commit and compatibility patch set. The worker stages dependencies and hook registrations, restarts Hermes, then verifies the installed result."),
+          !installation.in_place && (!installation.candidate_ready || lifeosUpdate?.state === "applied") ? h("button", {
             type: "button", disabled: installationBusy || ["queued", "preparing", "applying"].includes(lifeosUpdate?.state),
             onClick: prepareLifeOS,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Preparing..." : lifeosUpdate?.state === "applied" ? "Check for newer supported LifeOS" : "Prepare latest LifeOS update") : null,
-          installation.candidate_ready ? h("p", null,
+          !installation.in_place && installation.candidate_ready ? h("p", null,
             "Prepared commit " + installation.candidate_commit + " with " + installation.candidate_patch_count + " compatibility patches.") : null,
-          installation.candidate_ready && (["none", "failed", "rolled_back"].includes(lifeosUpdate?.state)
+          !installation.in_place && installation.candidate_ready && (["none", "failed", "rolled_back"].includes(lifeosUpdate?.state)
             || (lifeosUpdate?.state === "applied" && installation.candidate_newer)) ? h("button", {
             type: "button", disabled: installationBusy, onClick: applyLifeOSUpdate,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Starting..." : "Apply prepared LifeOS update") : null,
           lifeosUpdate?.state === "applied" ? h("p", { role: "status" }, "LifeOS update applied and verified.") : null,
-          lifeosUpdate?.state === "applied" ? h("div", { className: "space-y-2" },
+          !installation.in_place && lifeosUpdate?.state === "applied" ? h("div", { className: "space-y-2" },
             h("p", null, "Restore the program version saved before this update. Memory and audit data in the same external user directory stay current. Restore stops if its directory links, user data inside the program directory, or Hermes configuration have changed. Your conversations stay in Hermes."),
             h("button", { type: "button", disabled: installationBusy, onClick: restoreLifeOSUpdate,
               className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Restore previous LifeOS version")) : null,

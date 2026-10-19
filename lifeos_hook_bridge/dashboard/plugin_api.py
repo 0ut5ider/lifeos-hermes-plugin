@@ -822,6 +822,15 @@ def _candidate_path():
     return INSTALL_CANDIDATE.with_name(selected)
 
 
+# The release manager pins the LifeOS tree of an in-place installation; a bridge update would drift from it.
+IN_PLACE_UPDATES = "This installation gets LifeOS updates from the LifeOS releases page at /lifeos-releases."
+
+
+def _refuse_in_place_update():
+    if install_module.memory_module('release_version').host_recorded(HERMES_HOME):
+        raise HTTPException(status_code=409, detail=IN_PLACE_UPDATES)
+
+
 @router.get("/installation")
 def get_installation():
     from hermes_cli.plugins import VALID_HOOKS
@@ -882,11 +891,13 @@ def get_installation():
         "hermes_candidate_patch_count": len(host_candidate["patches"]) if host_candidate else None,
         "hermes_candidate_error": host_candidate_error,
         "setup_baseline_exists": BASELINE_PATH.is_file(),
+        "in_place": install_module.memory_module('release_version').host_recorded(HERMES_HOME),
     }
 
 
 @router.post("/installation/prepare", dependencies=[Depends(_fixed_mount_request)])
 def prepare_installation():
+    _refuse_in_place_update()
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         if (INSTALLED_ROOT.is_symlink() or not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file()
                 or not BASELINE_PATH.is_file()):
@@ -1049,6 +1060,7 @@ def apply_lifeos_update(account: str = Depends(_memory_account)):
 
 
 def _apply_lifeos_update(account: str):
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not BASELINE_PATH.is_file():
         raise HTTPException(status_code=409, detail="An installed LifeOS and VersionDrift baseline are required")
     previous = get_lifeos_update_status()
@@ -1111,6 +1123,7 @@ def _recover_lifeos_update_locked(account: str):
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
         "stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"
     }:
+        _refuse_in_place_update()
         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
     return _resume_lifeos_update(previous, account, 'recover')
 
@@ -1126,6 +1139,7 @@ def _restore_lifeos_update(account: str):
 
 
 def _restore_lifeos_update_locked(account: str):
+    _refuse_in_place_update()
     previous = get_lifeos_update_status()
     if previous['state'] != 'applied' or previous.get('transaction_state') != 'applied':
         raise HTTPException(status_code=409, detail='There is no applied LifeOS update to restore')
