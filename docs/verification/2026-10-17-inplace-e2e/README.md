@@ -132,6 +132,19 @@ Date: 2026-10-18. Same starting state as the rc.3 run: `base` snapshot, the dash
 | Claim, reverse export, provider return | The return verified on the first attempt (`66c1d135`). The workflow ran its `dependency-return` synchronization; the gateway log shows no Hermes source-update completion. |
 | Removal | Verified (`bddb3e81`): clean checkout at `71d34bad`, no host record, `weather-test` kept, gateway and dashboard unit active. |
 
+## Release candidate 0.8.0-rc.5 before publication
+
+Build: program commit `448688b7`. Two builds gave archive SHA-256 `537a328bd494862cf1584c3b891ab0018b37dd0e8f0cc2831fcc30cd096d53ea`. rc.5 fixes the findings of the whole-release review (`docs/agents/2026-10-19-release-review-*`) and of the follow-up review of the fixes (`docs/agents/2026-10-19-rc5-review-*`).
+
+| Flow | Result |
+| --- | --- |
+| Managed 0.7.3 to in-place transition on 114 | Applied (`7e394090`), receipt from `/home/lifeos-hermes/.hermes/hermes-agent` |
+| Owner edit after the transition on 114 | `model.default` changed in `config.yaml`; status offered the restore with no refusal |
+| Restore of that transition on 114 | Rolled back to the managed runtime, all services active, the owner's `model.default` kept, the bridge source path back at the managed job |
+| Interrupted first installation on 112, 4 checkpoints | All 4 recovered to `verified`, no host drift ([results](crash-results/)) |
+
+The unit suite ran per module on `e91c0af3` (the rc.5 fixes before the last two fixes and the version change). 355 of 435 modules pass. The [80 failing modules](rc5-suite-failing-modules.txt) are the 79 modules that also fail on `origin/main` with the same environment, plus `test_memory_activation`. That module timed out while it drained real user units under the four-way parallel load. It passes alone (7 tests), and rc.5 does not change its code. After the run, the test modules of the last fixes passed: `test_host_configuration` 10, `test_inplace_worker` 33, `test_release_programs` 26, `test_release_operation` 18.
+
 ## Release candidate 0.8.0-rc.4 before publication
 
 Build: program commit `5125f322`. Two builds gave archive SHA-256 `4490994d37966d9e1d344673a82e55fb292565457378269b82bdf40ad67e08b7`. rc.4 adds the dependency synchronization of the provider return.
