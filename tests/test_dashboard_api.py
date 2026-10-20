@@ -335,6 +335,84 @@ class DashboardApiTests(unittest.TestCase):
             self.assertEqual(result["state"], "recovering")
             self.assertEqual(launched, [(job, "recover")])
 
+    def staged_update_api(self, root):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        api.INSTALLED_ROOT = root / ".claude"
+        (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+        (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+        (api.INSTALLED_ROOT / "settings.json").write_text("{}")
+        api.HERMES_HOME = root / ".hermes"
+        api.HERMES_HOME.mkdir()
+        api.BASELINE_PATH = root / "baseline.json"
+        (root / "prior/LifeOS/install").mkdir(parents=True)
+        api.BASELINE_PATH.write_text(json.dumps({"source_root": str(root / "prior/LifeOS/install"),
+                                                 "installed_root": str(api.INSTALLED_ROOT.resolve()), "source_commit": "a" * 40}))
+        api.INSTALL_CANDIDATE = root / "candidate"
+        api.INSTALL_CANDIDATE.mkdir()
+        api.LIFEOS_UPDATE_ROOT = root / "jobs"
+        api.LIFEOS_UPDATE_ROOT.mkdir()
+        api.validate_prepared_lifeos = lambda _: {"upstream_commit": "b" * 40, "patches": []}
+        api.load_baseline = lambda path, installed: json.loads(path.read_text())
+        api.prepare_latest_lifeos = lambda target: self.fail("An in-place installation must not prepare a bridge update")
+        self.launched = []
+        api._launch_lifeos_update = lambda job, action="apply": self.launched.append((job, action))
+        return api
+
+    def test_in_place_installation_refuses_bridge_lifeos_updates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.staged_update_api(Path(directory))
+            (api.HERMES_HOME / "lifeos-host.json").write_text("{}")
+            refusals = {"prepare": api.prepare_installation, "apply": api.apply_lifeos_update,
+                        "restore": lambda: api._restore_lifeos_update("dashboard:basic:synthetic-owner"),
+                        "recover": lambda: api._recover_lifeos_update("dashboard:basic:synthetic-owner")}
+            for name, route in refusals.items():
+                with self.subTest(route=name), self.assertRaises(api.HTTPException) as refused:
+                    route()
+                self.assertEqual(refused.exception.status_code, 409)
+                self.assertEqual(refused.exception.detail, api.IN_PLACE_UPDATES)
+            self.assertEqual(list(api.LIFEOS_UPDATE_ROOT.iterdir()), [])
+            self.assertEqual(self.launched, [])
+            self.assertEqual(api.get_lifeos_update_status(), {"state": "none"})
+            self.assertIn("releases page", api.IN_PLACE_UPDATES)
+
+    def test_in_place_installation_still_recovers_an_interrupted_bridge_update(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.staged_update_api(Path(directory))
+            (api.HERMES_HOME / "lifeos-host.json").write_text("{}")
+            job = api.LIFEOS_UPDATE_ROOT / "update-one"
+            (job / "snapshot").mkdir(parents=True)
+            (job / "request.json").write_text("{}")
+            (job / "status.json").write_text(json.dumps({"state": "applying", "unit": "lifeos-bridge-update-test"}))
+            (job / "snapshot/manifest.json").write_text(json.dumps({"state": "swapped"}))
+            with patch.object(api.subprocess, "run", return_value=types.SimpleNamespace(returncode=3, stdout="inactive")):
+                self.assertEqual(api.get_lifeos_update_status()["state"], "interrupted")
+                result = api._recover_lifeos_update("dashboard:basic:synthetic-owner")
+            self.assertEqual(result["state"], "recovering")
+            self.assertEqual(self.launched, [(job, "recover")])
+
+    def test_managed_installation_keeps_bridge_lifeos_updates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.staged_update_api(Path(directory))
+            with self.assertRaises(api.HTTPException) as restore:
+                api._restore_lifeos_update("dashboard:basic:synthetic-owner")
+            self.assertEqual(restore.exception.detail, "There is no applied LifeOS update to restore")
+            with self.assertRaises(api.HTTPException) as recover:
+                api._recover_lifeos_update("dashboard:basic:synthetic-owner")
+            self.assertEqual(recover.exception.detail, "There is no interrupted LifeOS swap to recover")
+            result = api.apply_lifeos_update()
+            self.assertEqual(result["state"], "queued")
+            self.assertEqual(self.launched, [(Path(result["job"]), "apply")])
+
+    def test_installation_status_reports_an_in_place_installation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.staged_update_api(Path(directory))
+            host = types.ModuleType("hermes_cli.plugins")
+            host.VALID_HOOKS = set()
+            with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"), "hermes_cli.plugins": host}):
+                self.assertFalse(api.get_installation()["in_place"])
+                (api.HERMES_HOME / "lifeos-host.json").write_text("{}")
+                self.assertTrue(api.get_installation()["in_place"])
+
     def test_stages_host_patch_and_launches_detached_worker(self):
         api = self.load_api(lambda *_: [], lambda *_: [])
         with tempfile.TemporaryDirectory() as directory:
@@ -368,6 +446,81 @@ class DashboardApiTests(unittest.TestCase):
                                              api.HERMES_HOME / "config.yaml"))
             self.assertTrue(any(command[0] == "systemd-run" for command in commands))
             self.assertEqual(api.get_host_patch_status()["state"], "staged")
+
+    def host_patch_api(self, root):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        api.INSTALLED_ROOT = root / ".claude"
+        (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+        (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+        (api.INSTALLED_ROOT / "settings.json").write_text("{}")
+        api.HERMES_HOME = root / ".hermes"
+        api.HERMES_HOME.mkdir()
+        (api.HERMES_HOME / "config.yaml").write_text("model: local\n")
+        api.BASELINE_PATH = root / "baseline.json"
+        api.HERMES_CANDIDATE = root / "hermes-candidate"
+        api.HOST_SOURCE = root / "source"
+        api.HOST_SOURCE.mkdir()
+        api.HOST_PATCH_ROOT = root / "patch-jobs"
+        self.actions = []
+        api.prepare_supported_hermes = lambda source, candidate: self.actions.append(("prepare", source)) or {"patches": []}
+        api.stage_supported_hermes_patch = lambda *arguments: self.fail("An in-place installation must not stage a Hermes patch")
+        api.finalize_prepared_lifeos = lambda *arguments, **options: self.actions.append(("finalize",)) or {"mounted": True}
+        api.request_hermes_restore = lambda snapshot: self.actions.append(("request_restore", snapshot))
+        api._launch_host_patch = lambda snapshot, action: self.actions.append((action, snapshot))
+        return api
+
+    def host_patch_job(self, api, manifest):
+        snapshot = api.HOST_PATCH_ROOT / "patch-1"
+        snapshot.mkdir(parents=True)
+        (snapshot / "manifest.json").write_text(json.dumps(manifest))
+        return snapshot
+
+    def test_in_place_installation_refuses_bridge_hermes_patches_and_setup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.host_patch_api(Path(directory))
+            (api.HERMES_HOME / "lifeos-host.json").write_text("{}")
+            refusals = {"prepare-hermes": api.prepare_hermes_installation, "apply-hermes": api.apply_hermes_installation,
+                        "restore-hermes": api.restore_hermes_installation, "recover-hermes": api.recover_hermes_installation,
+                        "finalize": lambda: api._finalize_installation("dashboard:basic:synthetic-owner")}
+            for name, route in refusals.items():
+                with self.subTest(route=name), self.assertRaises(api.HTTPException) as refused:
+                    route()
+                self.assertEqual(refused.exception.status_code, 409)
+                self.assertEqual(refused.exception.detail, api.IN_PLACE_UPDATES)
+            self.assertFalse(api.HOST_PATCH_ROOT.exists())
+            self.assertEqual(self.actions, [])
+            self.assertEqual(api.get_host_patch_status(), {"state": "none"})
+
+    def test_in_place_installation_refuses_restore_and_recovers_an_old_bridge_hermes_patch_job(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.host_patch_api(Path(directory))
+            (api.HERMES_HOME / "lifeos-host.json").write_text("{}")
+            snapshot = self.host_patch_job(api, {"state": "applied"})
+            with self.assertRaises(api.HTTPException) as refused:
+                api.restore_hermes_installation()
+            self.assertEqual((refused.exception.status_code, refused.exception.detail), (409, api.IN_PLACE_UPDATES))
+            self.assertEqual(self.actions, [])
+            self.assertEqual(api.get_host_patch_status()["state"], "applied")
+            (snapshot / "manifest.json").write_text(json.dumps({"state": "applying", "unit": "lifeos-bridge-apply-1"}))
+            with patch.object(api.subprocess, "run", return_value=types.SimpleNamespace(returncode=3, stdout="inactive")):
+                self.assertEqual(api.recover_hermes_installation(), {"state": "recovering", "snapshot": str(snapshot)})
+            self.assertEqual(self.actions, [("recover", snapshot)])
+
+    def test_managed_installation_keeps_bridge_hermes_patches_and_setup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            api = self.host_patch_api(Path(directory))
+            with self.assertRaises(api.HTTPException) as restore:
+                api.restore_hermes_installation()
+            self.assertEqual(restore.exception.detail, "There is no applied Hermes patch to restore")
+            with self.assertRaises(api.HTTPException) as recover:
+                api.recover_hermes_installation()
+            self.assertEqual(recover.exception.detail, "There is no interrupted Hermes patch change to recover")
+            self.assertEqual(api.prepare_hermes_installation(), {"patches": []})
+            api.finalize_installation()
+            snapshot = self.host_patch_job(api, {"state": "applied"})
+            self.assertEqual(api.restore_hermes_installation()["state"], "restoring")
+            self.assertEqual(self.actions, [("prepare", api.HOST_SOURCE), ("finalize",),
+                                            ("request_restore", snapshot), ("restore", snapshot)])
 
     def test_interrupted_host_change_reports_and_launches_recovery(self):
         api = self.load_api(lambda *_: [], lambda *_: [])

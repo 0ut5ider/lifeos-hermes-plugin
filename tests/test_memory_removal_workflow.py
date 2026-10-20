@@ -24,6 +24,18 @@ class MemoryRemovalWorkflowTests(unittest.TestCase):
 
     def launch(self,*args):self.launched.append(args)
 
+    def test_only_a_removal_request_carries_a_login(self):
+        login={'username':'owner','password_hash':'scrypt$16384$8$1$c2FsdA==$ZGs='}
+        publish(self.job/'request.json',json.dumps({**self.request,'login':login}).encode())
+        self.assertEqual(memory_workflow.workflow_job(self.profile,self.job.name)[1]['login'],login)
+        other={**self.request,'selection':{'kind':'return','identifier':'c'*32,'signature':'d'*64,
+            'plan_signature':'e'*64,'prompt':'Synthetic prompt'},'login':login}
+        publish(self.job/'request.json',json.dumps(other).encode())
+        with self.assertRaisesRegex(ValueError,'another profile'):memory_workflow.workflow_job(self.profile,self.job.name)
+        with self.assertRaisesRegex(ValueError,'Only removal'):
+            memory_workflow.queue(self.profile,{'kind':'return','identifier':'c'*32,'signature':'d'*64,
+                'plan_signature':'e'*64,'prompt':'Synthetic prompt'},owner='dashboard:owner',launch=self.launch,login=login)
+
     def test_removal_selection_is_bounded_and_requires_explicit_discord_disablement(self):
         self.assertEqual(memory_workflow.selection(self.selection),self.selection)
         for value in ({**self.selection,'path':'/synthetic/owner'}, {**self.selection,'disable_discord':False},

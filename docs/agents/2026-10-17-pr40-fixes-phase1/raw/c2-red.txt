@@ -1,0 +1,19 @@
+...F..................
+======================================================================
+FAIL: test_compatibility_refusal_comes_before_any_download (test_inplace_preparation.PreparationOrderTests.test_compatibility_refusal_comes_before_any_download)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_preparation.py", line 344, in test_compatibility_refusal_comes_before_any_download
+    prepare_inplace(profile, job, name='User', assistant='Hermes', intent='install', catalog=Catalog())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/inplace_preparation.py", line 218, in prepare_inplace
+    downloaded = (catalog or ReleaseCatalog()).download_integration(job / 'download', version)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_preparation.py", line 336, in download_integration
+    raise AssertionError('Preparation downloads before the compatibility check')
+AssertionError: Preparation downloads before the compatibility check
+
+----------------------------------------------------------------------
+Ran 22 tests in 5.102s
+
+FAILED (failures=1)
+exit=1

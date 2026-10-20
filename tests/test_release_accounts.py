@@ -122,9 +122,8 @@ class ReleaseAccountTests(unittest.TestCase):
 
     def test_cli_preparation_records_account_and_preserves_native_selection(self):
         from lifeos_hook_bridge import lifeos_installation
-        from optional.lifeos_release_manager import cli
-        from test_release_stage import ReleaseStageTests
-        class PlanningBoundary(Exception):
+        from optional.lifeos_release_manager import cli, inplace_preparation
+        class DownloadBoundary(Exception):
             pass
         for relative in ('.hermes', '.hermes/profiles/work'):
             with self.subTest(profile=relative), tempfile.TemporaryDirectory() as temporary:
@@ -136,34 +135,22 @@ class ReleaseAccountTests(unittest.TestCase):
                 lifeos_installation.publish(profile, native_home, owner / 'workspace')
                 selection_bytes = (profile / lifeos_installation.SETTING).read_bytes()
                 (profile / 'config.yaml').write_text('model: synthetic\n')
-                catalog_root = owner / 'catalog'
-                catalog_root.mkdir(mode=0o700)
-                _, certificate, _, archive = ReleaseStageTests().package(catalog_root)
+                accounts = []
+                original = inplace_preparation.account_home
+                def recorded_account(selected_profile):
+                    accounts.append(original(selected_profile))
+                    return accounts[-1]
                 class Catalog:
-                    def download(self, directory, version):
-                        directory.mkdir(mode=0o700)
-                        retained = directory / archive.name
-                        shutil.copy2(archive, retained)
-                        return {'archive': retained, 'certificate': certificate, 'dashboard': owner / 'dashboard.tgz'}
-                source = SimpleNamespace(memory_module={
-                    'fresh_store': SimpleNamespace(_name=lambda value: value),
-                    'lifeos_installation': lifeos_installation}.__getitem__)
-                captured = {}
-                def prepare_runtime(job, package, dashboard, selected_profile):
-                    (job / 'manifest.json').write_text('{}')
-                    return {'source': str(catalog_root)}
-                def stop_planning(job, request, files):
-                    captured.update(cli.read_private(job / 'request.json'))
-                    raise PlanningBoundary()
+                    def download_integration(self, directory, version):
+                        raise DownloadBoundary()
                 with patch.dict(os.environ, HOME=str(native_home)), \
-                        patch.object(cli, 'load_bridge', return_value=source), \
-                        patch.object(cli, 'prepare_runtime', side_effect=prepare_runtime), \
-                        patch.object(cli, 'prepare_plan', side_effect=stop_planning):
-                    with self.assertRaises(PlanningBoundary):
+                        patch.object(inplace_preparation, 'account_home', side_effect=recorded_account):
+                    # The test interpreter's Hermes is not an admitted host, so the compatibility check refuses
+                    # before any download; the account is already selected at that point.
+                    with self.assertRaisesRegex(ReleaseRejected, 'cannot be installed on this Hermes installation'):
                         cli.prepare(profile, catalog=Catalog(), intent='update')
-                self.assertEqual(captured['account_home'], str(owner))
-                self.assertEqual(captured['installed'], str(native_home / '.claude'))
-                self.assertEqual(captured['profile'], str(profile))
+                # The in-place request records this account; the native service HOME does not select it.
+                self.assertEqual(accounts, [owner])
                 self.assertEqual((profile / lifeos_installation.SETTING).read_bytes(), selection_bytes)
 
     def test_standard_profile_keeps_account_home_under_native_service_home(self):

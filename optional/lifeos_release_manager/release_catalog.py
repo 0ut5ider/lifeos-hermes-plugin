@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 REPOSITORY = '0ut5ider/lifeos-hermes-plugin'
+LIFEOS_UPSTREAM = 'https://github.com/danielmiessler/LifeOS.git'
 MAX_ARCHIVE_BYTES = 1024 * 1024 * 1024
 MAX_EXTRACTED_BYTES = 5 * MAX_ARCHIVE_BYTES
 MAX_MEMBERS = 100000
@@ -35,14 +36,14 @@ def _unique_pairs(pairs):
     return value
 
 
-def _json(data):
+def parse_json(data):
     try:
         return json.loads(data, object_pairs_hook=_unique_pairs)
     except (UnicodeError, ValueError, RecursionError) as error:
         raise ReleaseRejected('Release metadata is invalid') from error
 
 
-def _directory(path):
+def owner_directory(path):
     path = Path(path).absolute()
     info = path.lstat()
     if (path.resolve() != path or not path.is_dir() or info.st_uid != os.getuid()
@@ -53,7 +54,7 @@ def _directory(path):
 
 def extract_package(archive, destination, *, max_bytes=MAX_EXTRACTED_BYTES):
     destination = Path(destination).absolute()
-    _directory(destination.parent)
+    owner_directory(destination.parent)
     if destination.exists() or destination.is_symlink():
         raise ReleaseRejected('The package destination already exists')
     staging = Path(tempfile.mkdtemp(prefix='.release-', dir=destination.parent))
@@ -102,7 +103,7 @@ class ReleaseCatalog:
             data = response.read(limit + 1)
         if len(data) > limit:
             raise ReleaseRejected('Release metadata exceeds its size limit')
-        return _json(data)
+        return parse_json(data)
 
     def _asset(self, value, *, tag):
         if not isinstance(value, dict):
@@ -141,7 +142,8 @@ class ReleaseCatalog:
         finally:
             temporary.unlink(missing_ok=True)
 
-    def download(self, directory, version=None):
+    def _release(self, version):
+        """Return the tag and exact asset identities of the selected published release."""
         if version is not None and (not isinstance(version, str) or VERSION.fullmatch(version) is None):
             raise ReleaseRejected('Choose an exact integration version')
         selector = 'latest' if version is None else 'tags/v' + version
@@ -160,16 +162,24 @@ class ReleaseCatalog:
             if asset['name'] in assets:
                 raise ReleaseRejected('The selected release has duplicate assets')
             assets[asset['name']] = asset
-        if 'RELEASE-CERTIFICATE.json' not in assets or 'hermes-dashboard.tgz' not in assets:
-            raise ReleaseRejected('The complete integration assets are missing')
+        if 'RELEASE-CERTIFICATE.json' not in assets:
+            raise ReleaseRejected('The release certificate is missing')
+        return tag, assets
+
+    def _certificate(self, assets, directory):
         directory = Path(directory).absolute()
-        _directory(directory.parent)
+        owner_directory(directory.parent)
         directory.mkdir(mode=0o700)
         certificate_asset = assets['RELEASE-CERTIFICATE.json']
         if certificate_asset['size'] > 512 * 1024:
             raise ReleaseRejected('The release certificate exceeds its size limit')
-        certificate_path = self._download(certificate_asset, directory)
-        certificate = _json(certificate_path.read_bytes())
+        return directory, parse_json(self._download(certificate_asset, directory).read_bytes())
+
+    def download(self, directory, version=None):
+        tag, assets = self._release(version)
+        if 'hermes-dashboard.tgz' not in assets:
+            raise ReleaseRejected('The complete integration assets are missing')
+        directory, certificate = self._certificate(assets, directory)
         if (not isinstance(certificate, dict) or type(certificate.get('format')) is not int or certificate['format'] != 1
                 or certificate.get('status') != 'QUALIFIED' or certificate.get('version') != tag[1:]
                 or not isinstance(certificate.get('program_commit'), str)
@@ -183,3 +193,26 @@ class ReleaseCatalog:
             raise ReleaseRejected('The certificate does not bind the complete release assets')
         return {'certificate': certificate, 'archive': str(self._download(archive, directory)),
                 'dashboard': str(self._download(dashboard, directory)), 'tag': tag}
+
+    def download_integration(self, directory, version=None):
+        """Download an in-place integration release: its format 2 certificate and integration archive only."""
+        tag, assets = self._release(version)
+        directory, certificate = self._certificate(assets, directory)
+        if not isinstance(certificate, dict) or certificate.get('format') != 2 or type(certificate['format']) is not int:
+            raise ReleaseRejected('This release is not an in-place integration release')
+        lifeos = certificate.get('lifeos')
+        if (certificate.get('status') != 'QUALIFIED' or certificate.get('version') != tag[1:]
+                or not isinstance(certificate.get('program_commit'), str)
+                or COMMIT.fullmatch(certificate['program_commit']) is None
+                or not isinstance(certificate.get('host_compatibility_sha256'), str)
+                or DIGEST.fullmatch(certificate['host_compatibility_sha256']) is None
+                or not isinstance(lifeos, dict) or set(lifeos) != {'upstream', 'commit', 'tree_sha256'}
+                or lifeos['upstream'] != LIFEOS_UPSTREAM
+                or not isinstance(lifeos['commit'], str) or COMMIT.fullmatch(lifeos['commit']) is None
+                or not isinstance(lifeos['tree_sha256'], str) or DIGEST.fullmatch(lifeos['tree_sha256']) is None):
+            raise ReleaseRejected('The integration release is not qualified')
+        archive = assets.get('lifeos-integration-' + tag[1:] + '-' + certificate['program_commit'][:8] + '.tgz')
+        if (archive is None or archive['sha256'] != certificate.get('archive_sha256')
+                or archive['size'] != certificate.get('archive_bytes')):
+            raise ReleaseRejected('The certificate does not bind the integration archive')
+        return {'certificate': certificate, 'archive': str(self._download(archive, directory)), 'tag': tag}

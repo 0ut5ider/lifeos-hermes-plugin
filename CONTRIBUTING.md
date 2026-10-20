@@ -52,7 +52,7 @@ Component tests, native tests, installed acceptance, and exact-package qualifica
 
 The declared patch order is part of the supported combination. Edit the affected upstream fixture, regenerate the relevant patch, and keep `patches/` and `lifeos_hook_bridge/patches/` synchronized. Re-prepare from the pinned bases and run affected behavior tests. [Patch ownership](docs/patch-footprint.md) explains the groups and regeneration command.
 
-The documentation audit finds one existing mismatch between the two lifecycle patch copies. The [source preparation guide](docs/clean-install.md) records its effect. Resolve the [tracked copy-equivalence follow-up](TODO.md#documentation-audit-follow-ups) before using that development helper as a qualified managed-source substitute.
+The two copies of each patch are byte-identical. `tests/test_patch_bundle.py` checks that, and the [source preparation guide](docs/clean-install.md) explains which copy each tool reads. Keep them identical when you edit either one.
 
 A patch that applies cleanly can still change behavior. Record upstream replacements explicitly before removing a patch from either declared list. Do not reintroduce the retained, inactive protected-instruction approval patch into the active Hermes sequence.
 
@@ -60,7 +60,19 @@ A patch that applies cleanly can still change behavior. Record upstream replacem
 
 A version bump identifies a complete integration release. Keep `VERSION`, both plugin YAML versions, and both dashboard manifest versions consistent. [`release_version.py`](lifeos_hook_bridge/release_version.py) verifies declarations and installed identity.
 
-The builder requires committed tracked source and these inputs:
+An in-place release patches the owner's existing Hermes checkout. Two scripts build its inputs:
+
+```bash
+python scripts/build_host_compatibility.py \
+  --stock-archive /path/to/stock-hermes.tgz \
+  --label v0.21.7
+python scripts/build_integration_release.py \
+  --output /path/to/private-build-output
+```
+
+[`build_host_compatibility.py`](scripts/build_host_compatibility.py) rewrites `optional/lifeos_release_manager/host-compatibility.json` from the exact stock Hermes archive and the distributed patches. It records stock and patched hashes, the pinned interpreter, and the bridge capabilities. Add `--known-conflict` once for each conflict that the releases page must show. Commit the result before the next step. [`build_integration_release.py`](scripts/build_integration_release.py) packs the bridge, the release manager, and their file maps into a reproducible archive, fetches the pinned LifeOS commit, and writes a `-build.json` record beside it. It refuses a dirty tree. [`local_release_server.py`](scripts/local_release_server.py) serves one built archive and its certificate through a loopback imitation of the GitHub release API, so qualification can use the real catalog download path.
+
+The managed-runtime builder requires committed tracked source and these inputs:
 
 ```bash
 python scripts/build_managed_release.py \

@@ -720,6 +720,7 @@ async def prepare_fresh_store(request: dict, account: str = Depends(_memory_acco
 
 
 def _launch_fresh_store(arguments, unit):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
     runtime = _launchers.runtime_command(_host_source(), [str(PLUGIN_DIR / 'fresh_store_worker.py'), *arguments],
@@ -821,6 +822,16 @@ def _candidate_path():
     return INSTALL_CANDIDATE.with_name(selected)
 
 
+# The release manager pins the LifeOS tree, the Hermes checkout, and the native mount of an in-place installation;
+# a bridge update, Hermes patch, or setup would drift from it.
+IN_PLACE_UPDATES = "This installation gets LifeOS updates from the LifeOS releases page at /lifeos-releases."
+
+
+def _refuse_in_place_update():
+    if install_module.memory_module('release_version').host_recorded(HERMES_HOME):
+        raise HTTPException(status_code=409, detail=IN_PLACE_UPDATES)
+
+
 @router.get("/installation")
 def get_installation():
     from hermes_cli.plugins import VALID_HOOKS
@@ -881,11 +892,13 @@ def get_installation():
         "hermes_candidate_patch_count": len(host_candidate["patches"]) if host_candidate else None,
         "hermes_candidate_error": host_candidate_error,
         "setup_baseline_exists": BASELINE_PATH.is_file(),
+        "in_place": install_module.memory_module('release_version').host_recorded(HERMES_HOME),
     }
 
 
 @router.post("/installation/prepare", dependencies=[Depends(_fixed_mount_request)])
 def prepare_installation():
+    _refuse_in_place_update()
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         if (INSTALLED_ROOT.is_symlink() or not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file()
                 or not BASELINE_PATH.is_file()):
@@ -938,6 +951,7 @@ def finalize_installation(account: str = Depends(_memory_account)):
 
 
 def _finalize_installation(account: str):
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before finishing setup")
     if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
@@ -961,6 +975,7 @@ def _finalize_installation(account: str):
 
 @router.post("/installation/prepare-hermes", dependencies=[Depends(_fixed_mount_request)])
 def prepare_hermes_installation():
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before preparing the Hermes extension")
     if HERMES_CANDIDATE.exists() or HERMES_CANDIDATE.is_symlink():
@@ -1024,6 +1039,7 @@ def _launch_lifeos_update(job: Path, action: str = "apply"):
         os.fchmod(stream.fileno(), 0o600)
         json.dump(status, stream)
         stream.write("\n")
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     arguments = [str(PLUGIN_DIR / "update_worker.py"), str(job)]
     if action != "apply":
@@ -1047,6 +1063,7 @@ def apply_lifeos_update(account: str = Depends(_memory_account)):
 
 
 def _apply_lifeos_update(account: str):
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not BASELINE_PATH.is_file():
         raise HTTPException(status_code=409, detail="An installed LifeOS and VersionDrift baseline are required")
     previous = get_lifeos_update_status()
@@ -1109,6 +1126,7 @@ def _recover_lifeos_update_locked(account: str):
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
         "stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"
     }:
+        _refuse_in_place_update()
         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
     return _resume_lifeos_update(previous, account, 'recover')
 
@@ -1124,6 +1142,7 @@ def _restore_lifeos_update(account: str):
 
 
 def _restore_lifeos_update_locked(account: str):
+    _refuse_in_place_update()
     previous = get_lifeos_update_status()
     if previous['state'] != 'applied' or previous.get('transaction_state') != 'applied':
         raise HTTPException(status_code=409, detail='There is no applied LifeOS update to restore')
@@ -1224,6 +1243,7 @@ def get_installation_selection(account: str = Depends(_memory_account)):
 
 
 def _launch_selection(job: Path, action: str, account: str):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     module = install_module.memory_module('installation_selection')
     module.selection_authority(job, HERMES_HOME, account, action)
@@ -1371,6 +1391,7 @@ def apply_hermes_installation():
 
 
 def _apply_hermes_installation():
+    _refuse_in_place_update()
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before patching Hermes")
     previous = get_host_patch_status()
@@ -1398,6 +1419,7 @@ def restore_hermes_installation():
 
 
 def _restore_hermes_installation():
+    _refuse_in_place_update()
     previous = get_host_patch_status()
     if previous["state"] != "applied":
         raise HTTPException(status_code=409, detail="There is no applied Hermes patch to restore")
@@ -1422,6 +1444,7 @@ def recover_hermes_installation():
 def _recover_hermes_installation():
     previous = get_host_patch_status()
     if previous["state"] != "interrupted":
+        _refuse_in_place_update()
         raise HTTPException(status_code=409, detail="There is no interrupted Hermes patch change to recover")
     snapshot = Path(previous["snapshot"])
     try:

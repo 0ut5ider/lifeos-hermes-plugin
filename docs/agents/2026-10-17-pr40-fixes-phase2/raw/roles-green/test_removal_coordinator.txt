@@ -1,0 +1,14 @@
+F...
+======================================================================
+FAIL: test_exact_running_coordinator_is_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 82, in test_exact_running_coordinator_is_admitted
+    result=self.run_coordinator();self.assertTrue(result['admitted'],result)
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'admitted': False, 'reason': 'The account process boundary cannot be verified', 'diagnostics': {'refused_process': 'sshd-session', 'refused_groups': ['/user.slice/user-1000.slice/session-4.scope'], 'trace': [['<string>', 24, '<module>'], ['removal_preparation.py', 98, '_consumers'], ['removal_consumers.py', 181, 'processes']]}}
+
+----------------------------------------------------------------------
+Ran 4 tests in 5.538s
+
+FAILED (failures=1)

@@ -34,6 +34,7 @@ class MemoryTransition:
         if operation_id is not None and (not isinstance(operation_id,str) or re.fullmatch('[0-9a-f]{32}',operation_id) is None):
             raise ValueError('Provider transition requires a server-issued operation identifier')
         self.operation_id=operation_id
+        # An in-place host passes only the units it has; their roles become the bound service set.
         self.units=ProfileServices(self.profile,self.installed,units=units).units
         self.directory=self.profile/'.lifeos-memory-transition'
 
@@ -47,7 +48,8 @@ class MemoryTransition:
             if selected['root']!=str(self.installed):
                 raise MemoryUnavailable('The selected native store changes during provider return')
             self.directory.mkdir(mode=0o700,exist_ok=True);_directory(self.directory,private=True)
-            services=ProfileServices(self.profile,self.installed,units=self.units,installation_lease=lease)
+            services=ProfileServices(self.profile,self.installed,units=self.units,
+                installation_lease=lease)
             operation=MemoryReturn(self.configuration,installation_lease=lease,verify_writers=services.verify_stopped,
                 operation_id=self.operation_id)
             yield services,operation
@@ -171,7 +173,8 @@ class MemoryTransition:
             _,state=self._load(signature,account)
             return self._receipt(signature,state)
 
-    def apply(self, signature, *, account=None, checkpoint=lambda point:None):
+    def apply(self, signature, *, account=None, checkpoint=lambda point:None, synchronize=None):
+        """Return to built-in memory; ``synchronize`` commits the dependency environment before services restart."""
         with self._lock(account) as (services,operation):
             plan,state=self._load(signature,account)
             if state in {'verification_required','verified'}:return self._receipt(signature,state)
@@ -193,13 +196,14 @@ class MemoryTransition:
                 self._state(signature,'configured');checkpoint('configured')
                 desired='disabled' if plan['pulse_enablement'] in {'enabled','enabled-runtime'} else plan['pulse_enablement']
                 self._enabled(desired,plan['pulse_enablement']);services.verify_stopped()
+                if synchronize is not None:synchronize()
                 self._state(signature,'restarting')
-                services.resume(roles=['dashboard','gateway'])
+                services.resume(roles=[role for role in ('dashboard','gateway') if role in self.units])
                 checkpoint('restarted')
                 self._state(signature,'verification_required')
             return self._receipt(signature,'verification_required')
 
-    def rollback(self, signature, *, account=None):
+    def rollback(self, signature, *, account=None, synchronize=None):
         with self._lock(account) as (services,operation):
             plan,state=self._load(signature,account)
             if state=='rolled_back':return self._receipt(signature,state)
@@ -213,6 +217,7 @@ class MemoryTransition:
                 self._state(signature,'restoring');services.quiesce();services.verify_stopped()
                 operation.rollback(Path(plan['snapshot']),plan['return_signature'],account=account)
                 self._enabled(plan['pulse_enablement'],plan['pulse_enablement'])
+                if synchronize is not None:synchronize()
                 services.resume(roles=plan['original_roles'],activate=True)
                 self._state(signature,'rolled_back')
             return self._receipt(signature,'rolled_back')

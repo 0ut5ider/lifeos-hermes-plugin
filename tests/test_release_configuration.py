@@ -9,7 +9,7 @@ import subprocess
 import unittest
 
 from ruamel.yaml import YAML
-from optional.lifeos_release_manager.release_worker import _yaml_configuration, _program_plan
+from optional.lifeos_release_manager.release_worker import _yaml_configuration, program_plan
 
 
 class ReleaseConfigurationTests(unittest.TestCase):
@@ -29,6 +29,39 @@ class ReleaseConfigurationTests(unittest.TestCase):
                 capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual(result.stdout + result.stderr, '')
+
+    def test_created_dashboard_unit_listens_on_the_reviewed_address(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
+            for path in (profile, generated, installed / 'LIFEOS/PULSE', root / '.local/bin'):
+                path.mkdir(parents=True, mode=0o700)
+            program = root / '.local/bin/hermes'
+            program.write_text('#!/bin/sh\nexit 0\n')
+            program.chmod(0o700)
+            request = {'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}
+            files = service_files(request, generated, roles=('dashboard',), dashboard={'host': '0.0.0.0', 'port': 9119})
+            text = next(iter(files.values())).read_text()
+            self.assertIn('ExecStart="' + str(program) + '" "dashboard" "--isolated" "--no-open" "--host" "0.0.0.0" "--port" "9119"\n', text)
+            result = subprocess.run(['systemd-analyze', '--user', 'verify', *map(str, files.values())],
+                capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            files = service_files(request, root / 'generated', roles=('dashboard',))
+            self.assertIn('"--no-open"\n', next(iter(files.values())).read_text())
+
+    def test_selected_service_roles_generate_only_their_units(self):
+        from optional.lifeos_release_manager.release_services import service_files
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            profile, generated, installed = root / '.hermes', root / 'generated', root / '.claude'
+            for path in (profile, generated, installed / 'LIFEOS/PULSE'):
+                path.mkdir(parents=True, mode=0o700)
+            request = {'account_home': str(root), 'profile': str(profile), 'installed': str(installed)}
+            files = service_files(request, generated, roles=('pulse',))
+            self.assertEqual([path.name for path in files], ['com.lifeos.pulse.service'])
+            with self.assertRaises(ValueError):
+                service_files(request, generated, roles=('mail',))
 
     def test_unsupported_service_paths_refuse_before_generating_files(self):
         from optional.lifeos_release_manager.release_services import service_files
@@ -82,8 +115,8 @@ class ReleaseConfigurationTests(unittest.TestCase):
             selected = {'profile': profile, 'installed': root / '.claude', 'package': package,
                         'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes'],
                         'current': None, 'fresh': True}
-            first = _program_plan(job, request, selected)
-            second = _program_plan(job, request, selected)
+            first = program_plan(job, request, selected)
+            second = program_plan(job, request, selected)
             self.assertEqual(first, second)
             self.assertFalse(selected['installed'].exists())
             for name in commands:
@@ -116,7 +149,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
             selected = {'profile': profile, 'installed': root / '.claude', 'package': package,
                         'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes']}
             with self.assertRaisesRegex(ValueError, 'The prepared runtime changes a native command path'):
-                _program_plan(job, request, selected)
+                program_plan(job, request, selected)
             launcher = job / 'generated/hermes'
             self.assertEqual(launcher.read_bytes(), ("#!/bin/sh\nexec '" + str(runtime) + "' \"$@\"\n").encode())
             self.assertEqual(launcher.stat().st_mode & 0o777, 0o700)
@@ -167,18 +200,18 @@ class ReleaseConfigurationTests(unittest.TestCase):
                 'bridge': profile / 'plugins/lifeos-hook-bridge', 'launchers': [root / '.local/bin/hermes'],
                 'current': SimpleNamespace(memory_module=modules.__getitem__), 'fresh': False,
                 'native_changes': False, 'baseline': baseline_path, 'reviewed_baseline': baseline}
-            directories, files, dependencies = _program_plan(job, request, selected)
+            directories, files, dependencies = program_plan(job, request, selected)
             prepared = (job / 'generated/baseline.json').read_bytes()
             self.assertEqual(json.loads(prepared)['created_at'], baseline['created_at'])
             transaction = ProgramTransaction(job / 'program-snapshot')
             transaction.prepare(directories=directories, files=files, dependencies=dependencies)
-            self.assertEqual(_program_plan(job, request, selected), (directories, files, dependencies))
+            self.assertEqual(program_plan(job, request, selected), (directories, files, dependencies))
             self.assertEqual((job / 'generated/baseline.json').read_bytes(), prepared)
             transaction.check_prepared()
             self.assertEqual(version_drift.load_baseline(baseline_path, installed), baseline)
             (installed / 'hooks/Test.hook.ts').write_text('later native edit\n')
             with self.assertRaisesRegex(update_plan.UpdateConflict, 'changed since baseline'):
-                _program_plan(job, request, selected)
+                program_plan(job, request, selected)
 
     def test_fresh_service_files_are_reviewed_without_starting_or_enabling_them(self):
         from optional.lifeos_release_manager.release_services import service_files
@@ -202,7 +235,7 @@ class ReleaseConfigurationTests(unittest.TestCase):
             self.assertIn('WorkingDirectory=' + str(root / '.claude/LIFEOS/PULSE') + '\n', files[pulse].read_text())
             transaction = ProgramTransaction(root / 'snapshot')
             transaction.prepare(directories={}, files=files)
-            self.assertEqual(len(transaction._load()['entries']), 3)
+            self.assertEqual(len(transaction.entries()), 3)
             transaction.apply()
             self.assertEqual(dashboard.read_text(), original)
             self.assertTrue(gateway.is_file() and pulse.is_file())

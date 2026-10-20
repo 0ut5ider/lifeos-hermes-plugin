@@ -87,6 +87,13 @@ assert 'explicitly disabled' in capture.getvalue()
         custom=b'HERMES_WRITE_SAFE_ROOT=/owner/custom\nOTHER=keep\n'
         self.assertEqual(operation.environment(custom,profile,workspace),custom)
 
+    def test_environment_keeps_a_later_owner_line_off_an_unterminated_last_line(self):
+        operation=self.operation();profile=Path('/account/.hermes');workspace=Path('/account/workspace')
+        block=operation.environment_block(profile,workspace)
+        data=b'# REDDIT_CLIENT_SECRET='+block+b'OPENROUTER_API_KEY=synthetic-key\n'
+        self.assertEqual(operation.environment(data,profile,workspace),b'# REDDIT_CLIENT_SECRET=\nOPENROUTER_API_KEY=synthetic-key\n')
+        self.assertEqual(operation.environment(b'# LAST='+block,profile,workspace),b'# LAST=\n')
+
     def test_prepared_environment_survives_actual_stock_startup_sanitizer(self):
         operation=self.operation()
         cases=(b'CUSTOM_API_KEY=synthetic',b'CUSTOM_API_KEY=synthetic\r\n',
@@ -115,3 +122,25 @@ assert path.read_bytes()==before
     def test_environment_refuses_invalid_utf8_before_owner_review(self):
         with self.assertRaises(ValueError):
             self.operation().environment(b'CUSTOM_API_KEY=synthetic\xff',Path('/account/.hermes'),Path('/account/workspace'))
+
+
+class RecordedConfigurationRemovalTests(unittest.TestCase):
+    def test_recorded_values_return_and_owner_changes_stay(self):
+        from ruamel.yaml import YAML
+        from optional.lifeos_release_manager.host_configuration import ABSENT
+        from optional.lifeos_release_manager.removal_configuration import configuration
+        installed = Path('/home/owner/.claude')
+        current = (b'approvals:\n  mode: manual\ncontext_file_max_chars: 120000\n'
+                   b'memory:\n  memory_enabled: true\n  user_profile_enabled: true\n'
+                   b'plugins:\n  enabled: [weather-test, lifeos-hook-bridge]\n  disabled: []\n  entries: {}\n'
+                   b'skills:\n  external_dirs: [/home/owner/.claude/skills]\nplatforms:\n  discord:\n    enabled: true\n')
+        recorded = {'format': 1, 'values': [
+            {'path': ['approvals'], 'before': ABSENT, 'installed': {'mode': 'manual'}},
+            {'path': ['context_file_max_chars'], 'before': ABSENT, 'installed': 100000},
+            {'path': ['skills', 'external_dirs'], 'before': [], 'installed': ['/home/owner/.claude/skills']}]}
+        value = YAML(typ='safe').load(configuration(current, installed, recorded))
+        self.assertNotIn('approvals', value)
+        self.assertEqual(value['context_file_max_chars'], 120000)
+        self.assertEqual(value['skills']['external_dirs'], [])
+        self.assertEqual(value['plugins']['enabled'], ['weather-test'])
+        self.assertIs(value['platforms']['discord']['enabled'], False)

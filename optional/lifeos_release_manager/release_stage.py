@@ -14,7 +14,7 @@ import sys
 import tarfile
 import types
 
-from .release_catalog import (ReleaseRejected, _directory, extract_package, _json,
+from .release_catalog import (ReleaseRejected, owner_directory, extract_package, parse_json,
     COMMIT, DIGEST, VERSION, MAX_ARCHIVE_BYTES, MAX_EXTRACTED_BYTES, MAX_MEMBERS)
 from .release_programs import publish, fingerprint
 from .release_tools import prepare_bun
@@ -125,9 +125,9 @@ def read_manifest(path):
 
 
 def validate_package(package, certificate):
-    package = _directory(package)
+    package = owner_directory(package)
     manifest_bytes = read_manifest(package / 'DAILY-CANDIDATE.json')
-    manifest = _json(manifest_bytes)
+    manifest = parse_json(manifest_bytes)
     if (not isinstance(manifest, dict) or not isinstance(certificate, dict)
             or certificate.get('format') != 1 or certificate.get('status') != 'QUALIFIED'
             or manifest.get('head') != certificate.get('program_commit')
@@ -173,7 +173,12 @@ def validate_package(package, certificate):
     return manifest
 
 
-def _environment(profile, *, home, source=None):
+def user_runtime_directory():
+    """Return this account's systemd runtime directory, which holds the user manager and session bus sockets."""
+    return '/run/user/' + str(os.getuid())
+
+
+def stage_environment(profile, *, home, source=None):
     environment = {key: value for key, value in os.environ.items()
         if key in {'PATH', 'LANG', 'LC_ALL', 'TZ', 'SSL_CERT_FILE', 'SSL_CERT_DIR'}}
     environment.update(HOME=str(home), HERMES_HOME=str(profile), PYTHONDONTWRITEBYTECODE='1')
@@ -192,15 +197,15 @@ def run_stage(command, job, label, *, environment, cwd=None, timeout=1800):
 
 
 def prepare_runtime(job, package, dashboard, profile, *, stock=False):
-    job, package = _directory(job), _directory(package)
+    job, package = owner_directory(job), owner_directory(package)
     helpers = load_bridge(package / 'lifeos_hook_bridge')
-    dependencies = _json((package / 'lifeos_hook_bridge/dependency_locks/catalog.json').read_bytes())
+    dependencies = parse_json((package / 'lifeos_hook_bridge/dependency_locks/catalog.json').read_bytes())
     tools = job / 'tools'
     tools.mkdir(mode=0o700)
     bun = prepare_bun(tools, package / 'optional/lifeos_release_manager/release-tools.json', dependencies['bun_version'])
     build_profile = job / 'dependency-profile'
     build_profile.mkdir(mode=0o700)
-    environment = _environment(build_profile, home=job, source=package / 'hermes')
+    environment = stage_environment(build_profile, home=job, source=package / 'hermes')
     script = ('from pathlib import Path\nimport pm\n'
         'result=pm.build_environment(source=Path(__import__("sys").argv[1]), out=Path(__import__("sys").argv[2]),'
         ' extras=["discord"], no_install_project=True, frozen=True, explicit=True)\n'
@@ -213,7 +218,7 @@ def prepare_runtime(job, package, dashboard, profile, *, stock=False):
     runtime = job / 'hermes'
     if stock:
         from .stock_hermes import prepare_source
-        manifest=_json(read_manifest(package/'DAILY-CANDIDATE.json'))
+        manifest=parse_json(read_manifest(package/'DAILY-CANDIDATE.json'))
         if 'stock_hermes' not in manifest:
             raise ReleaseRejected('This package has no qualified stock Hermes removal source')
         record=prepare_source(package/'stock-hermes.tgz',job/'stock-source',manifest['stock_hermes'])
@@ -228,7 +233,7 @@ def prepare_runtime(job, package, dashboard, profile, *, stock=False):
             for path in compiled.rglob('*') if path.is_file()):
         raise ReleaseRejected('The dashboard asset contains files outside its compiled output')
     commands = job / 'bin'
-    environment = _environment(build_profile, home=job, source=runtime)
+    environment = stage_environment(build_profile, home=job, source=runtime)
     script = ('import importlib.util,sys\nfrom pathlib import Path\n'
         'spec=importlib.util.spec_from_file_location("lifeos_release_payload",sys.argv[1])\n'
         'module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)\n'
@@ -247,10 +252,10 @@ def prepare_runtime(job, package, dashboard, profile, *, stock=False):
         'source=importlib.util.module_from_spec(spec);spec.loader.exec_module(source)\n'
         'source.install_lifeos(Path(sys.argv[2]),Path(sys.argv[3])/".claude",Path(sys.argv[3])/"failed",'
         'sys.argv[4],source.SUPPORTED_LIFEOS_COMMIT,Path(sys.argv[1])/"patches",source.LIFEOS_PATCHES)\n')
-    environment = _environment(build_profile, home=reference, source=runtime)
+    environment = stage_environment(build_profile, home=reference, source=runtime)
     environment['PATH'] = str(tools) + os.pathsep + environment.get('PATH', os.defpath)
     run_stage([python, '-B', '-c', script, package / 'lifeos_hook_bridge', package / 'lifeos', reference, bun],
         job, 'native-dependencies', environment=environment, timeout=1800)
     publish(job / 'runtime.json', (json.dumps({'python': str(python), 'bun': str(bun),
         'hermes': str(commands / 'hermes'), 'source': str(runtime), 'reference': str(reference / '.claude')}, indent=2) + '\n').encode())
-    return _json((job / 'runtime.json').read_bytes())
+    return parse_json((job / 'runtime.json').read_bytes())

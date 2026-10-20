@@ -47,6 +47,8 @@ class RemovalServices:
         with self.services._lock():
             if self.journal.exists() or self.journal.is_symlink():
                 raise ReleaseRejected('Use the existing removal service review')
+            if 'pulse' not in self.services.units:
+                raise ReleaseRejected('Removal requires the bound LifeOS Pulse service definition')
             admitted=self.services._admission()
             pulse=self._properties('pulse')
             if pulse['ActiveState']!='inactive' or pulse['MainPID']!='0' or pulse['UnitFileState'] not in {'disabled','static'}:

@@ -1,0 +1,23 @@
+.......E
+======================================================================
+ERROR: test_one_lease_covers_real_service_drain_backup_ownership_and_restart (test_installation_lease.ProfileLeaseTests.test_one_lease_covers_real_service_drain_backup_ownership_and_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_installation_lease.py", line 161, in test_one_lease_covers_real_service_drain_backup_ownership_and_restart
+    plan = ownership.preview(Path(snapshot['snapshot']), snapshot['signature'], account='dashboard:owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 213, in preview
+    plan, _,local_owner_access = self._plan(configuration, backup, backup_signature, account)
+                                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_ownership.py", line 198, in _plan
+    selected,local_owner_access=reviewed(configuration,self.profile,original_hermes)
+                                ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_owner_access.py", line 61, in reviewed
+    route=_route(profile,expected)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_owner_access.py", line 56, in _route
+    raise MemoryUnavailable('Ownership activation requires an available current Hermes model route') from None
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Ownership activation requires an available current Hermes model route
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.452s
+
+FAILED (errors=1)

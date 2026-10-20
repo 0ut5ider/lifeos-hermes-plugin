@@ -38,7 +38,7 @@ class RemovalCoordinatorTests(unittest.TestCase):
         code='''import json,sys,os
 from pathlib import Path
 from lifeos_hook_bridge.profile_services import ProfileServices
-from optional.lifeos_release_manager.removal_preparation import _consumers
+from optional.lifeos_release_manager.removal_preparation import check_consumers
 from optional.lifeos_release_manager.release_programs import publish
 s=json.loads(sys.argv[1]);p=Path(s['profile']);job=Path(s['job'])
 if s['forged']:publish(job/'launch.json',json.dumps({'unit':'lifeos-memory-'+job.name+'-ffffffff'}).encode())
@@ -58,7 +58,7 @@ def trace(frame,event,arg):
  return trace
 sys.settrace(trace)
 try:
- _consumers(p,Path(s['installed']),services,workflow=job)
+ check_consumers(p,Path(s['installed']),services,workflow=job)
  receipt={'admitted':True}
 except ValueError as error:
  import traceback

@@ -96,6 +96,56 @@ class ReleaseCatalogTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as temp, self.assertRaises(ReleaseRejected):
                 self.catalog.download(Path(temp) / 'foreign')
 
+    def integration_release(self, *, certificate_changes=None, archive=b'integration archive', version='0.8.0'):
+        certificate = {'format': 2, 'status': 'QUALIFIED', 'version': version, 'program_commit': 'a' * 40,
+            'archive_sha256': hashlib.sha256(archive).hexdigest(), 'archive_bytes': len(archive),
+            'host_compatibility_sha256': 'b' * 64,
+            'lifeos': {'upstream': 'https://github.com/danielmiessler/LifeOS.git', 'commit': 'c' * 40,
+                       'tree_sha256': 'd' * 64}}
+        certificate.update(certificate_changes or {})
+        tag = 'v' + version
+        def asset(name, data):
+            path = '/0ut5ider/lifeos-hermes-plugin/releases/download/' + tag + '/' + name
+            self.payloads[path] = data
+            return {'name': name, 'size': len(data), 'digest': 'sha256:' + hashlib.sha256(data).hexdigest(),
+                    'browser_download_url': self.origin + path}
+        value = {'tag_name': tag, 'draft': False, 'prerelease': False, 'assets': [
+            asset('lifeos-integration-' + version + '-aaaaaaaa.tgz', archive),
+            asset('RELEASE-CERTIFICATE.json', json.dumps(certificate).encode())]}
+        self.payloads['/repos/0ut5ider/lifeos-hermes-plugin/releases/latest'] = json.dumps(value).encode()
+        return value
+
+    def test_integration_release_downloads_only_its_certificate_and_archive(self):
+        self.integration_release()
+        with tempfile.TemporaryDirectory() as temp:
+            result = self.catalog.download_integration(Path(temp) / 'download')
+            self.assertEqual(result['certificate']['version'], '0.8.0')
+            self.assertEqual(Path(result['archive']).read_bytes(), b'integration archive')
+            self.assertEqual(sorted(path.name for path in (Path(temp) / 'download').iterdir()),
+                             ['RELEASE-CERTIFICATE.json', 'lifeos-integration-0.8.0-aaaaaaaa.tgz'])
+
+    def test_integration_release_refuses_a_managed_runtime_certificate(self):
+        self.release()
+        with tempfile.TemporaryDirectory() as temp, self.assertRaisesRegex(ReleaseRejected, 'in-place'):
+            self.catalog.download_integration(Path(temp) / 'download')
+
+    def test_managed_runtime_download_refuses_an_integration_release(self):
+        self.integration_release()
+        with tempfile.TemporaryDirectory() as temp, self.assertRaises(ReleaseRejected):
+            self.catalog.download(Path(temp) / 'download')
+
+    def test_integration_certificate_must_bind_the_archive_and_its_inputs(self):
+        for changes in ({'archive_sha256': 'e' * 64}, {'archive_bytes': 3}, {'host_compatibility_sha256': 'short'},
+                        {'lifeos': {'upstream': 'https://example.invalid/LifeOS.git', 'commit': 'c' * 40,
+                                    'tree_sha256': 'd' * 64}},
+                        {'lifeos': {'upstream': 'https://github.com/danielmiessler/LifeOS.git', 'commit': 'c' * 39,
+                                    'tree_sha256': 'd' * 64}},
+                        {'status': 'CANDIDATE'}):
+            with self.subTest(changes=changes), tempfile.TemporaryDirectory() as temp:
+                self.integration_release(certificate_changes=changes)
+                with self.assertRaises(ReleaseRejected):
+                    self.catalog.download_integration(Path(temp) / 'download')
+
     def test_extraction_rejects_traversal_links_duplicates_and_size_limit(self):
         for names, kind, limit in [(['../escaped'], tarfile.REGTYPE, 1024),
                                   (['link'], tarfile.SYMTYPE, 1024),

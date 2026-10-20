@@ -140,8 +140,12 @@ class ProgramTransaction:
     def _entries_digest(entries):
         return hashlib.sha256(json.dumps(entries, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
+    def entries(self):
+        """Return the validated journal entries in publication order."""
+        return self._load()['entries']
+
     def entries_digest(self):
-        return self._entries_digest(self._load()['entries'])
+        return self._entries_digest(self.entries())
 
     def check_plan(self, *, directories, files, dependencies=None):
         dependencies = {} if dependencies is None else dependencies
@@ -154,7 +158,7 @@ class ProgramTransaction:
                     raise ProgramConflict('The candidate program plan repeats a target')
                 expected[target] = {'source': None if source is None else str(Path(source).absolute()),
                                     'kind': kind, 'allow_links': links}
-        for entry in self._load()['entries']:
+        for entry in self.entries():
             selected = expected.pop(entry['target'], None)
             if selected != {key: entry[key] for key in ('source', 'kind', 'allow_links')}:
                 raise ProgramConflict('The reviewed entries differ from the candidate program plan')
@@ -285,9 +289,11 @@ class ProgramTransaction:
             raise ProgramConflict('A program target or source changes after preparation')
 
     @staticmethod
-    def _check_targets(value, side):
+    def _check_targets(value, side, replacements=None):
         for entry in value['entries']:
-            if fingerprint(entry['target'],allow_links=entry['allow_links'])!=entry[side]:
+            replacement=(replacements or {}).get(entry['target'])
+            expected=entry[side] if replacement is None else replacement['restored']
+            if fingerprint(entry['target'],allow_links=entry['allow_links'])!=expected:
                 raise ProgramConflict('Program publication preserves a later artifact edit')
 
     def _check_retained(self, value):
@@ -348,37 +354,55 @@ class ProgramTransaction:
         value['state'] = 'applied'
         self._record(value)
 
-    def check_recovery(self, *, overrides=None):
+    def check_recovery(self, *, overrides=None, replacements=None):
+        """Refuse a restore that would overwrite a later edit; return the journal.
+
+        ``replacements`` maps a file target to ``{'current', 'restored', 'data'}``: the restore accepts the
+        target at ``current`` or ``restored`` and publishes ``data`` instead of the retained prior copy.
+        """
         overrides = {} if overrides is None else overrides
+        replacements = {} if replacements is None else replacements
         value = self._load()
         if value['state'] not in {'prepared', 'applying', 'applied', 'restoring', 'restored'}:
             raise ProgramConflict('The program transaction cannot restore this state')
         for index, entry in enumerate(value['entries']):
-            self._check_recovery_entry(value,index,entry,overrides)
+            self._check_recovery_entry(value,index,entry,overrides,replacements)
         return value
 
-    def _check_recovery_entry(self, value, index, entry, overrides):
+    def _check_recovery_entry(self, value, index, entry, overrides, replacements):
         current = fingerprint(entry['target'], allow_links=entry['allow_links'])
         after = overrides.get(entry['target'], entry['after'])
-        if value['state'] == 'applied' and current != after:
+        replacement = replacements.get(entry['target'])
+        if replacement is not None and (entry['kind'] != 'file' or entry['before'] is None
+                or replacement['restored'] != {'type': 'file', 'mode': entry['before']['mode'],
+                                               'sha256': hashlib.sha256(replacement['data']).hexdigest()}):
+            raise ProgramConflict('The computed program replacement differs from its recorded identity')
+        accepted = () if replacement is None else (replacement['current'], replacement['restored'])
+        if value['state'] == 'applied' and current != after and current not in accepted:
             raise ProgramConflict('Program recovery preserves a later artifact edit')
         backup = self.snapshot / ('before-' + str(index))
         retained = fingerprint(backup, allow_links=entry['allow_links'])
         absent_swap = current is None and entry['kind'] == 'directory' and retained == entry['before'] and retained is not None
-        if current not in (entry['before'], entry['after'], after) and not absent_swap:
+        if current not in (entry['before'], entry['after'], after, *accepted) and not absent_swap:
             raise ProgramConflict('Program recovery preserves a later artifact edit')
         if retained is not None and retained != entry['before']:
             raise ProgramConflict('The retained program differs from its recorded identity')
         if current != entry['before'] and entry['before'] is not None and retained != entry['before']:
             raise ProgramConflict('Program recovery requires its retained prior artifact')
 
-    def restore(self):
-        value = self.check_recovery()
+    def restore(self, *, replacements=None):
+        replacements = {} if replacements is None else replacements
+        value = self.check_recovery(replacements=replacements)
         value['state'] = 'restoring'
         self._record(value)
         for index, entry in reversed(list(enumerate(value['entries']))):
             target, backup = Path(entry['target']), self.snapshot / ('before-' + str(index))
-            self._check_recovery_entry(value,index,entry,{})
+            self._check_recovery_entry(value,index,entry,{},replacements)
+            replacement = replacements.get(entry['target'])
+            if replacement is not None:
+                if fingerprint(target) != replacement['restored']:
+                    publish(target, replacement['data'], entry['before']['mode'])
+                continue
             if fingerprint(target, allow_links=entry['allow_links']) == entry['before']:
                 continue
             if entry['kind'] == 'directory':
@@ -395,6 +419,6 @@ class ProgramTransaction:
                 sync_directory(target.parent)
             else:
                 publish(target, backup.read_bytes(), entry['before']['mode'])
-        self._check_targets(value,'before')
+        self._check_targets(value,'before',replacements)
         value['state'] = 'restored'
         self._record(value)

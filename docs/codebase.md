@@ -28,7 +28,7 @@ The repository has two installable plugins. `lifeos_hook_bridge/` integrates run
 | [`docs/agents/`](agents/README.md) | Independent review reports, raw findings, and fixture snapshots |
 | [`notes/`](../notes/README.md) | Engineering decisions and measured investigation notes |
 
-The two active patch lists have the same base revisions and names. Their lifecycle patch bytes currently differ; see the [source-copy discrepancy](clean-install.md). Check equivalence before relying on the development helper's output.
+The two active patch lists have the same base revisions, names, and bytes. [`test_patch_bundle.py`](../tests/test_patch_bundle.py) checks that. The [source preparation guide](clean-install.md) explains which tool reads which copy.
 
 Historical source snapshots inside evidence directories are not active implementations. Start searches in the owning source directory. Use `git ls-files` when local caches and untracked artifacts would obscure the result.
 
@@ -61,6 +61,7 @@ The diagram shows ownership boundaries. Each action has additional authority, so
 | Native dashboard HTTP relay | [`memory_http.py`](../lifeos_hook_bridge/memory_http.py) | Owner-authorized native route relay, distinct from the external MCP listener |
 | Ownership, import, export, and return | [`ownership_setup.py`](../lifeos_hook_bridge/ownership_setup.py) | [`memory_import.py`](../lifeos_hook_bridge/memory_import.py), [`memory_export.py`](../lifeos_hook_bridge/memory_export.py), [`memory_return.py`](../lifeos_hook_bridge/memory_return.py), manager [`memory_workflow.py`](../optional/lifeos_release_manager/memory_workflow.py) |
 | Selected home and store recovery | [`lifeos_installation.py`](../lifeos_hook_bridge/lifeos_installation.py) | [`installation_selection.py`](../lifeos_hook_bridge/installation_selection.py), [`profile_backup.py`](../lifeos_hook_bridge/profile_backup.py), [`profile_backup_recovery.py`](../lifeos_hook_bridge/profile_backup_recovery.py) |
+| Patched or reduced hook registration per Hermes process | [`registration.py`](../lifeos_hook_bridge/registration.py) | [`release_version.py`](../lifeos_hook_bridge/release_version.py) reports the registration and host drift through `hermes lifeos-version` |
 
 Memory feature modules use `memory_<domain>.py` names, for example Atlas, TELOS, Conduit, Content, freshness, and proposals. Locate the feature module, then follow its calls into the shared admission and transaction layers. Do not treat a feature's raw native cache as an authorized read path.
 
@@ -85,9 +86,23 @@ Read [`optional/lifeos_release_manager/__init__.py`](../optional/lifeos_release_
 | Detached operation, service drain, apply, recovery, rollback | `release_operation.py`, `release_worker.py`, `release_baseline.py` |
 | Ownership, provider return, complete software removal | `memory_workflow.py`, `memory_workflow_worker.py`, `removal_*.py` |
 
+An in-place release patches the owner's existing Hermes checkout instead of publishing a managed runtime. The [in-place installation design](in-place-installation-design.md) explains the stages. These modules implement it:
+
+| Stage | Main modules |
+| --- | --- |
+| Read-only host check and the qualified manifest | `host_compatibility.py`, `host-compatibility.json`, `host_capabilities.py` |
+| Host record, retained originals, and staged patched files | `host_record.py`, `host_patches.py` |
+| Configuration values that LifeOS changes, and their restoration | `host_configuration.py` |
+| Integration archive checks and preparation | `integration_package.py`, `inplace_preparation.py`, `dependency_plan.py` |
+| Services and processes that use the Hermes checkout | `inplace_services.py`, `consumer_scan.py` |
+| Host plan, review, apply, recovery, and rollback | `inplace_plan.py`, `inplace_worker.py` |
+| Removal that restores the original Hermes files | `inplace_removal.py`, `stock_hermes.py` |
+
 These module names refer to the [release-manager directory](../optional/lifeos_release_manager/). Operations live in the selected profile's private `.lifeos-releases` workspace. Their requests, plans, grants, maps, and journals are transaction inputs, not editable configuration. A queued worker or created archive does not establish an applied release.
 
-The builder in [`scripts/build_managed_release.py`](../scripts/build_managed_release.py) selects committed package inputs explicitly. Some files under `docs/deployment/daily-text/` and the dated morning-delivery operator are executable package inputs. Do not bulk-move or delete `docs/` as if it contained prose only.
+[`scripts/build_host_compatibility.py`](../scripts/build_host_compatibility.py) writes the compatibility manifest from an exact stock Hermes archive. [`scripts/build_integration_release.py`](../scripts/build_integration_release.py) builds the reproducible in-place integration archive. [`scripts/local_release_server.py`](../scripts/local_release_server.py) serves a local build to the real catalog download path during qualification. [CONTRIBUTING](../CONTRIBUTING.md#release-changes) gives their commands.
+
+The managed-runtime builder in [`scripts/build_managed_release.py`](../scripts/build_managed_release.py) selects committed package inputs explicitly. Some files under `docs/deployment/daily-text/` and the dated morning-delivery operator are executable package inputs. Do not bulk-move or delete `docs/` as if it contained prose only.
 
 ## Tests and verification
 
@@ -98,6 +113,11 @@ The builder in [`scripts/build_managed_release.py`](../scripts/build_managed_rel
 | Memory grants, context, and runtime | [`test_memory_policy.py`](../tests/test_memory_policy.py), [`test_memory_runtime.py`](../tests/test_memory_runtime.py), [`test_memory_service.py`](../tests/test_memory_service.py) |
 | External memory connections | [`test_memory_remote.py`](../tests/test_memory_remote.py), [`test_memory_remote_host.py`](../tests/test_memory_remote_host.py), remote dashboard/UI tests |
 | Release preparation and service binding | [`test_release_preparation.py`](../tests/test_release_preparation.py), [`test_release_services.py`](../tests/test_release_services.py), other `test_release_*` |
+| In-place host check, manifest, and capabilities | [`test_host_compatibility.py`](../tests/test_host_compatibility.py), [`test_host_compatibility_manifest.py`](../tests/test_host_compatibility_manifest.py), [`test_host_capabilities.py`](../tests/test_host_capabilities.py) |
+| In-place host record, patches, and configuration | [`test_host_record.py`](../tests/test_host_record.py), [`test_host_patches.py`](../tests/test_host_patches.py), [`test_host_configuration.py`](../tests/test_host_configuration.py) |
+| In-place preparation, plan, services, and worker | [`test_inplace_preparation.py`](../tests/test_inplace_preparation.py), [`test_inplace_plan.py`](../tests/test_inplace_plan.py), [`test_inplace_services.py`](../tests/test_inplace_services.py), [`test_inplace_worker.py`](../tests/test_inplace_worker.py), [`test_consumer_scan.py`](../tests/test_consumer_scan.py), [`test_dependency_plan.py`](../tests/test_dependency_plan.py) |
+| In-place integration archive and removal | [`test_integration_package.py`](../tests/test_integration_package.py), [`test_integration_release_build.py`](../tests/test_integration_release_build.py), [`test_inplace_removal.py`](../tests/test_inplace_removal.py), [`test_stock_hermes.py`](../tests/test_stock_hermes.py) |
+| Bridge registration and host drift report | [`test_bridge_registration.py`](../tests/test_bridge_registration.py), [`test_release_version.py`](../tests/test_release_version.py) |
 | Provider cycles and removal | [`test_memory_portability_lifecycle.py`](../tests/test_memory_portability_lifecycle.py), `test_removal_*`, portability and removal UI tests |
 | Plugin presentation and request contracts | All `tests/*.cjs`, including [`test_setup_presentation.cjs`](../tests/test_setup_presentation.cjs); shared SDK fixture in [`tests/support/dashboard_sdk.cjs`](../tests/support/dashboard_sdk.cjs) |
 | Private recorder | [`development/tests/test_capture.py`](../development/tests/test_capture.py) |

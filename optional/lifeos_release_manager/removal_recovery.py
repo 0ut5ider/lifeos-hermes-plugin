@@ -2,6 +2,7 @@
 # ABOUTME: Issues the same exact owner workflow grant after the active manager has been removed.
 import getpass
 from pathlib import Path
+import re
 import secrets
 import sys
 import types
@@ -12,30 +13,29 @@ if not __package__:
     sys.modules[package.__name__]=package
     __package__=package.__name__
 
-from ruamel.yaml import YAML
-
 from .release_catalog import ReleaseRejected
 
 
-def basic_settings(profile):
-    from .release_programs import fingerprint
-    path=Path(profile)/'config.yaml'
-    identity=fingerprint(path)
-    if identity is None or identity['type']!='file' or identity['mode'] & 0o077 or path.stat().st_size>1024*1024:
-        raise ReleaseRejected('Standalone recovery requires the private current dashboard configuration')
-    value=YAML(typ='safe').load(path.read_bytes())
-    if fingerprint(path)!=identity:raise ReleaseRejected('The current dashboard configuration changes during authentication')
-    settings=value.get('dashboard',{}).get('basic_auth',{}) if isinstance(value,dict) else {}
-    if (not isinstance(settings,dict) or not isinstance(settings.get('username'),str)
-            or not settings['username'] or not isinstance(settings.get('password_hash'),str) or not settings['password_hash']):
+SCRYPT_HASH=re.compile(r'scrypt\$[1-9][0-9]*\$[1-9][0-9]*\$[1-9][0-9]*\$[A-Za-z0-9+/]+={0,2}\$[A-Za-z0-9+/]+={0,2}')
+
+
+def recovery_login(value, owner):
+    """Return the dashboard password login that authorizes standalone recovery for ``owner``.
+
+    Removal preparation records the login of the running dashboard password provider, the one that
+    authenticated the owner, so recovery never re-reads configuration that the removal can change.
+    """
+    if (not isinstance(value,dict) or set(value)!={'username','password_hash'}
+            or not isinstance(value['username'],str) or not value['username'] or len(value['username'])>256
+            or not isinstance(value['password_hash'],str) or SCRYPT_HASH.fullmatch(value['password_hash']) is None
+            or owner!='dashboard:basic:'+value['username']):
         raise ReleaseRejected('Complete removal currently requires a password-authenticated dashboard recovery owner')
-    return settings
+    return value
 
 
-def authenticate(profile, username, password, owner):
+def authenticate(login, username, password, owner):
     from plugins.dashboard_auth.basic import BasicAuthProvider
-    settings=basic_settings(profile)
-    provider=BasicAuthProvider(username=settings['username'],password_hash=settings['password_hash'],
+    provider=BasicAuthProvider(username=login['username'],password_hash=login['password_hash'],
         secret=secrets.token_bytes(32),ttl_seconds=60)
     session=provider.complete_password_login(username=username,password=password)
     account='dashboard:'+session.provider+':'+session.user_id
@@ -60,7 +60,7 @@ def main():
         print('This action changes software only. It retains current Hermes memory and native data.')
         username=input('Dashboard username: ')
         password=getpass.getpass('Dashboard password: ')
-        owner=authenticate(args.profile,username,password,plan['owner'])
+        owner=authenticate(recovery_login(plan.get('recovery_login'),plan['owner']),username,password,plan['owner'])
         del password
         result=memory_workflow.admit(args.profile,args.identifier,args.action,args.signature,
             owner=owner,launch=memory_workflow.launch)

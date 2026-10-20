@@ -56,13 +56,29 @@ class MemoryConflict(MemoryUnavailable):
     pass
 
 
+def bun_program(account_home: Path | None = None) -> str:
+    """Return Bun from ``PATH``, else the copy LifeOS installs in the account's ``~/.local/bin``.
+
+    A dashboard or service can run with a ``PATH`` or ``HOME`` that leaves out the account's programs,
+    so the default home comes from the account database. A missing program stays the bare name.
+    """
+    found = shutil.which("bun")
+    if found:
+        return found
+    if account_home is None:
+        import pwd
+        account_home = Path(pwd.getpwuid(os.getuid()).pw_dir)
+    account = Path(account_home) / ".local/bin/bun"
+    return str(account) if account.is_file() and os.access(account, os.X_OK) else "bun"
+
+
 class NativeMemory:
     def __init__(self, installed_root: Path, *, bun: str | None = None, profile: Path | None = None):
         self.root = Path(installed_root).absolute()
         self.physical_root = self.root.resolve()
         self.profile = Path(profile or self.root.parent / ".hermes").absolute()
         self.physical_profile = self.profile.resolve()
-        self.bun = bun or shutil.which("bun") or "bun"
+        self.bun = bun or bun_program()
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
         from .memory_content_disposal import resolve_move

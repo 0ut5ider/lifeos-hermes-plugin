@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 
 from .cli import profile_directory,read_private
-from .release_catalog import ReleaseRejected,_directory
+from .release_catalog import ReleaseRejected,owner_directory
 from .release_stage import load_bridge,validate_files
 
 
@@ -30,8 +30,8 @@ def prepared(profile, identifier, signature):
     if (not isinstance(identifier,str) or IDENTIFIER.fullmatch(identifier) is None
             or not isinstance(signature,str) or SIGNATURE.fullmatch(signature) is None):
         raise ReleaseRejected('Use the exact prepared removal identifier and review signature')
-    job=profile/'.lifeos-portability'/identifier;_directory(job)
-    stage=job/'removal';_directory(stage)
+    job=profile/'.lifeos-portability'/identifier;owner_directory(job)
+    stage=job/'removal';owner_directory(stage)
     plan=read_private(stage/'plan.json')
     data=json.dumps(plan,sort_keys=True,separators=(',',':')).encode()
     if (hashlib.sha256(data).hexdigest()!=signature or not isinstance(plan,dict)

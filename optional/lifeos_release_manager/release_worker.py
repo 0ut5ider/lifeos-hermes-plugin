@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import io
 import importlib
 import json
@@ -20,11 +22,11 @@ if not __package__:
     sys.modules[namespace.__name__] = namespace
     __package__ = namespace.__name__
 
-from .cli import operation, read_private, write_state
-from .release_catalog import ReleaseRejected, _json
+from .cli import operation, owner_message, read_private, write_state
+from .release_catalog import ReleaseRejected, parse_json
 from .release_plan import inspect_operation, service_environment, verify_runtime
 from .release_programs import ProgramTransaction, fingerprint, launcher_script, publish
-from .release_stage import load_bridge, sha, run_stage, _environment
+from .release_stage import load_bridge, sha, run_stage, stage_environment
 from .release_operation import (action_state, operation_lock, seal_plan,
     validate_admission, validate_plan, write_admission, request_digest)
 from .release_operation import worker_running, OperationBusy
@@ -51,7 +53,7 @@ def _review_operation(job, request, *, installation_lease=None, preparing=False)
     if programs.journal.is_file():
         programs.check_prepared()
     else:
-        directories, files, dependencies = _program_plan(job, request, selected)
+        directories, files, dependencies = program_plan(job, request, selected)
         programs.prepare(directories=directories, files=files, dependencies=dependencies)
     plan['program_entries_sha256'] = programs.entries_digest()
     seal_plan(job, request, plan, preparing=preparing)
@@ -111,10 +113,13 @@ def _admit_operation(job, request, action, *, authorization=None, installation_l
 
 def recovery_bridge(job, profile):
     request = read_private(job / 'request.json')
+    if request.get('format') == 2:
+        # One bridge copy owns the lease, services, mount, and grants of an in-place operation: its own package.
+        validate_operation_package(job, request)
+        return load_bridge(job / 'package/lifeos_hook_bridge')
     plan = validate_plan(job, request) if (job / 'plan.json').is_file() else None
     if plan is not None and plan['fresh']:
-        from .release_stage import validate_package
-        validate_package(job / 'package', request['certificate'])
+        validate_operation_package(job, request)
         return load_bridge(job / 'package/lifeos_hook_bridge')
     active = profile / 'plugins/lifeos-hook-bridge'
     if active.is_dir():
@@ -122,17 +127,24 @@ def recovery_bridge(job, profile):
     expected = plan['program_entries_sha256'] if plan is not None else None
     snapshot = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=expected)
     if snapshot.journal.is_file():
-        value = snapshot._load()
-        for index, entry in enumerate(value['entries']):
+        for index, entry in enumerate(snapshot.entries()):
             retained = snapshot.snapshot / ('before-' + str(index))
             if entry['target'] == str(active) and entry['before'] is not None and fingerprint(retained) == entry['before']:
                 return load_bridge(retained)
         if plan is None or not plan['fresh']:
             raise ReleaseRejected('The retained bridge does not match its recorded identity')
     candidate = job / 'package/lifeos_hook_bridge'
-    from .release_stage import validate_package
-    validate_package(job / 'package', request['certificate'])
+    validate_operation_package(job, request)
     return load_bridge(candidate)
+
+
+def validate_operation_package(job, request):
+    """Validate the operation's extracted package against its certificate; return the package manifest."""
+    if request.get('format') == 2:
+        from .integration_package import validate_integration
+        return validate_integration(job / 'package', request['certificate'])
+    from .release_stage import validate_package
+    return validate_package(job / 'package', request['certificate'])
 
 
 def _yaml_configuration(profile, native):
@@ -172,10 +184,10 @@ def _yaml_configuration(profile, native):
     return rendered.getvalue().encode()
 
 
-def _program_plan(job, request, selected):
+def program_plan(job, request, selected):
     profile, installed = selected['profile'], selected['installed']
     package = selected['package']
-    native = package / 'lifeos/LifeOS/install'
+    native = selected.get('native', package / 'lifeos/LifeOS/install')
     generated = job / 'generated'
     generated.mkdir(mode=0o700, exist_ok=True)
     if (generated.resolve() != generated or generated.stat().st_uid != os.getuid()
@@ -184,20 +196,30 @@ def _program_plan(job, request, selected):
     files, dependencies = {}, {}
     directories = {selected['bridge']: package / 'lifeos_hook_bridge',
                    profile / 'plugins/lifeos-release-manager': package / 'optional/lifeos_release_manager'}
-    launch = generated / 'hermes'
-    publish(launch, launcher_script(request['runtime']['hermes']), 0o700)
-    for path in selected['launchers']:
-        files[path] = launch
-    commands = _json((job / 'manifest.json').read_bytes())['runtime']['commands']
-    for name in ('hermes', 'hermes-agent', 'hermes-acp'):
-        if commands.get(name) != 'bin/' + name:
-            raise ReleaseRejected('The prepared runtime changes a native command path')
-        command = generated / name
-        publish(command, launcher_script(str(job / commands[name])), 0o700)
-        files[Path(request['account_home']) / '.local/bin' / name] = command
+    if request.get('format') == 2:
+        from .inplace_plan import host_entries
+        host_directories, host_files = host_entries(job, request, selected, generated)
+        directories.update(host_directories)
+        files.update(host_files)
+    else:
+        launch = generated / 'hermes'
+        publish(launch, launcher_script(request['runtime']['hermes']), 0o700)
+        for path in selected['launchers']:
+            files[path] = launch
+        commands = parse_json((job / 'manifest.json').read_bytes())['runtime']['commands']
+        for name in ('hermes', 'hermes-agent', 'hermes-acp'):
+            if commands.get(name) != 'bin/' + name:
+                raise ReleaseRejected('The prepared runtime changes a native command path')
+            command = generated / name
+            publish(command, launcher_script(str(job / commands[name])), 0o700)
+            files[Path(request['account_home']) / '.local/bin' / name] = command
     bun = Path(request['account_home']) / '.local/bin/bun'
     files[bun] = Path(request['runtime']['bun'])
     publish(generated / 'config.yaml', _yaml_configuration(profile, native))
+    if request.get('format') == 2:
+        from .host_record import load_record
+        from .inplace_plan import review_changes
+        review_changes(job, selected['entry'], load_record(profile), profile / 'config.yaml', generated / 'config.yaml')
     configuration_check = ('import sys\nfrom argparse import Namespace\n'
         'from hermes_constants import set_hermes_home_override\n'
         'set_hermes_home_override(sys.argv[1])\n'
@@ -205,14 +227,19 @@ def _program_plan(job, request, selected):
         'step_migrate_config()\n'
         'from hermes_cli.config import config_command\n'
         'config_command(Namespace(config_command="check"))\n')
-    run_stage([request['runtime']['python'], '-B', '-c', configuration_check, str(generated)],
-        job, 'program-configuration', environment=_environment(generated, home=job,
+    python = request['runtime']['python']
+    if request.get('format') == 2:
+        from .inplace_preparation import host_python
+        python = host_python(request['host']['source'])
+    run_stage([python, '-B', '-c', configuration_check, str(generated)],
+        job, 'program-configuration', environment=stage_environment(generated, home=job,
             source=Path(request['runtime']['source'])))
     files[profile / 'config.yaml'] = generated / 'config.yaml'
     current = selected['current']
-    if selected['fresh']:
+    created = selected.get('created_roles', ('gateway', 'dashboard', 'pulse') if selected['fresh'] else ())
+    if created:
         from .release_services import service_files
-        files.update(service_files(request, generated))
+        files.update(service_files(request, generated, roles=created, dashboard=selected.get('dashboard_options')))
     if not selected['fresh']:
         drift = current.memory_module('version_drift')
         previous = selected['reviewed_baseline']
@@ -249,20 +276,28 @@ def _program_plan(job, request, selected):
             baseline['created_at'] = previous['created_at']
             publish(generated / 'baseline.json', (json.dumps(baseline, indent=2) + '\n').encode())
             files[selected['baseline']] = generated / 'baseline.json'
-    manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
     certificate = request['certificate']
-    receipt = {'format': 1, 'version': request['version'], 'commit': request['commit'],
-        'package_sha256': request['package_sha256'],
-        'plugin_files': {name.removeprefix('lifeos_hook_bridge/'): value for name, value in manifest['plugin_files'].items()},
-        'upstream': {'hermes': certificate['hermes_base'], 'lifeos': certificate['lifeos_base']},
-        'patches': {'hermes': certificate['hermes_patch_count'], 'lifeos': certificate['lifeos_patch_count']},
-        'operators': manifest.get('operators', {})}
+    if request.get('format') == 2:
+        manifest = json.loads((package / 'INTEGRATION.json').read_bytes())
+        receipt = {'format': 1, 'version': request['version'], 'commit': request['commit'],
+            'package_sha256': request['package_sha256'], 'plugin_files': manifest['plugin_files'],
+            'upstream': {'hermes': request['host']['commit'], 'lifeos': certificate['lifeos']['commit']},
+            'patches': {'hermes': len(selected['entry']['patches']), 'lifeos': len(selected['candidate'].LIFEOS_PATCHES)},
+            'operators': {}}
+    else:
+        manifest = json.loads((package / 'DAILY-CANDIDATE.json').read_bytes())
+        receipt = {'format': 1, 'version': request['version'], 'commit': request['commit'],
+            'package_sha256': request['package_sha256'],
+            'plugin_files': {name.removeprefix('lifeos_hook_bridge/'): value for name, value in manifest['plugin_files'].items()},
+            'upstream': {'hermes': certificate['hermes_base'], 'lifeos': certificate['lifeos_base']},
+            'patches': {'hermes': certificate['hermes_patch_count'], 'lifeos': certificate['lifeos_patch_count']},
+            'operators': manifest.get('operators', {})}
     publish(generated / 'integration-release.json', (json.dumps(receipt, indent=2) + '\n').encode())
     files[profile / 'integration-release.json'] = generated / 'integration-release.json'
     return directories, files, dependencies
 
 
-def _fresh_native(job, request, selected, *, checkpoint=lambda point: None):
+def initialize_native(job, request, selected, *, checkpoint=lambda point: None):
     from .release_initialization import NativeInitialization
     helpers = selected['candidate'].memory_module('fresh_store')
     return NativeInitialization(job, request, selected['installed']).execute(helpers, checkpoint=checkpoint)
@@ -333,6 +368,9 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             raise ReleaseRejected('Recover the selected software removal before another release worker')
         request = read_private(job / 'request.json')
         validate_admission(job, request, action)
+        if request.get('format') == 2:
+            from .inplace_worker import run
+            return run(job, request, action, current, lease, checkpoint=checkpoint)
         plan = validate_plan(job, request)
         fresh_recovery = action == 'recover' and plan['fresh']
         if action == 'apply':
@@ -373,18 +411,18 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             write_state(job, 'recovering' if action == 'recover' else 'restoring')
             if services is not None:
                 services.quiesce()
-            _restore_mount(job, request, mount)
+            restore_native_mount(job, request, mount)
             programs.restore()
             if services is not None:
                 services.resume()
             verify_runtime(request, restored=True)
             write_state(job, 'rolled_back')
-            _revoke(administration, profile, request)
+            revoke_authorization(administration, profile, request)
             return {'state': 'rolled_back'}
         if not fresh_recovery and sha(profile / 'config.yaml') != request['configuration_sha256']:
             raise ReleaseRejected('The profile configuration changes before program selection')
         if not fresh_recovery:
-            directories, files, dependencies = _program_plan(job, request, selected)
+            directories, files, dependencies = program_plan(job, request, selected)
             programs.check_plan(directories=directories, files=files, dependencies=dependencies)
             programs.check_prepared()
         write_state(job, 'recovering' if fresh_recovery else 'applying')
@@ -402,11 +440,11 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                     from .release_services import check_dashboard_writers
                     check_dashboard_writers(profile)
             if fresh_recovery:
-                _restore_mount(job, request, mount)
-            for entry in programs._load()['entries']:
+                restore_native_mount(job, request, mount)
+            for entry in programs.entries():
                 Path(entry['target']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             if selected['fresh']:
-                _fresh_native(job, request, selected, checkpoint=checkpoint)
+                initialize_native(job, request, selected, checkpoint=checkpoint)
             if fresh_recovery:
                 programs.resume(checkpoint=checkpoint)
             else:
@@ -416,7 +454,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
                 mounted_module = importlib.reload(current.memory_module('mount_transaction'))
                 mount = mounted_module.MountTransaction(selected['installed'], profile, selected['baseline'])
                 drift = current.memory_module('version_drift')
-                baseline = drift.create_baseline(selected['package'] / 'lifeos/LifeOS/install', selected['installed'])
+                baseline = drift.create_baseline(selected['native'], selected['installed'])
                 prior = sha(mount.journal) if mount.journal.is_file() else None
                 publish(job / 'mount-intent.json', (json.dumps({'prior_journal_sha256': prior, 'action': action}) + '\n').encode())
                 mount.execute(environment, request['runtime']['bun'], request['runtime']['hermes'],
@@ -435,7 +473,7 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             record_failure(job, error)
             if services is not None:
                 services.quiesce()
-            _restore_mount(job, request, mount)
+            restore_native_mount(job, request, mount)
             if selected['fresh']:
                 write_state(job, 'recovery_required', error='The prepared first installation requires recovery. User data is preserved.')
                 if services is not None:
@@ -447,10 +485,10 @@ def _execute(job, action, *, checkpoint=lambda point: None):
             write_state(job, 'rolled_back')
             raise
         finally:
-            _revoke(administration, profile, request)
+            revoke_authorization(administration, profile, request)
 
 
-def _revoke(administration, profile, request):
+def revoke_authorization(administration, profile, request):
     authorization = request.get('memory_authorization')
     if authorization is not None:
         administration.revoke(administration.MemoryConfiguration(profile / 'lifeos-memory.json'), authorization)
@@ -459,7 +497,12 @@ def _revoke(administration, profile, request):
 def record_failure(job, error):
     frames = [{'file': frame.filename, 'line': frame.lineno, 'function': frame.name}
               for frame in traceback.extract_tb(error.__traceback__)]
-    publish(job / 'worker-failure.json', (json.dumps({'exception': type(error).__name__, 'frames': frames}) + '\n').encode())
+    value = {'exception': type(error).__name__, 'frames': frames}
+    message = owner_message(error)
+    if message is not None:
+        # Release refusals and LifeOS service refusals are written for the owner.
+        value['message'] = message
+    publish(job / 'worker-failure.json', (json.dumps(value) + '\n').encode())
 
 
 def _restore_mount_manifest(job, request, journal, *, required=False):
@@ -528,35 +571,120 @@ def check_mount_recovery(job, request, mount):
 
 
 def restore_available(job, request, plan):
+    return restore_status(job, request, plan)[0]
+
+
+def restore_status(job, request, plan):
+    """Return ``(available, refusal)``; ``refusal`` is the owner message of a configuration conflict, or None.
+
+    The check covers the receipt, the retained native mount, and the configuration keys that a restore returns.
+    """
+    from .host_configuration import ConfigurationConflict
     if plan['fresh']:
-        return False
+        return False, None
     try:
         profile = Path(request['profile'])
         receipt = read_private(profile / 'integration-release.json')
         if not isinstance(receipt, dict) or any(receipt.get(key) != request[key]
                 for key in ('version', 'commit', 'package_sha256')):
-            return False
+            return False, None
+        manifest = None
         if plan['native_mount_required']:
             manifest = _restore_mount_manifest(job, request, profile / '.lifeos-mount/operation.json', required=True)
             _retained_mount(manifest, profile)
-        return True
+        restore_configuration(job, request, ProgramTransaction(job / 'program-snapshot',
+            expected_entries_sha256=plan['program_entries_sha256']), manifest)
+        return True, None
+    except ConfigurationConflict as error:
+        return False, str(error)
     except (ValueError, OSError, RuntimeError, KeyError, TypeError):
-        return False
+        return False, None
 
 
 def check_restore(job, request, plan, mount):
+    """Refuse a restore before any service stops; return the configuration replacement of an in-place restore."""
     manifest = _restore_mount_manifest(job, request, mount.journal, required=plan['native_mount_required'])
+    programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
+    replacement = restore_configuration(job, request, programs, manifest)
     overrides = {}
     if manifest is not None:
         _retained_mount(manifest, Path(request['profile']))
         mount.check_completed()
         overrides = {entry['target']: {'type': 'file', 'mode': entry['after']['mode'],
                                       'sha256': entry['after']['digest']} for entry in manifest['entries']}
-    programs = ProgramTransaction(job / 'program-snapshot', expected_entries_sha256=plan['program_entries_sha256'])
+    if replacement is not None:
+        overrides[replacement['target']] = replacement['current']
     programs.check_applied(overrides=overrides)
+    return replacement
 
 
-def _restore_mount(job, request, mount):
+CONFIGURATION_RESTORE = 'configuration-restore.json'
+
+
+def restore_configuration(job, request, programs, manifest):
+    """Return the config.yaml restore of an in-place operation that keeps the owner's later changes, or None.
+
+    The restore returns only the values that the operation changed. A value the owner changed again refuses.
+    A completed native mount restores config.yaml by its bytes, so a later edit refuses with its own message.
+    """
+    if request.get('format') != 2:
+        return None
+    from .host_configuration import ConfigurationConflict, restore_operation
+    target = Path(request['profile']) / 'config.yaml'
+    if manifest is not None and manifest['state'] == 'committed':
+        mounted = [entry for entry in manifest['entries'] if entry['target'] == str(target)]
+        if mounted:
+            if (fingerprint(target) or {}).get('sha256') != mounted[0]['after']['digest']:
+                raise ConfigurationConflict('config.yaml changed after this operation mounted LifeOS. A restore after a '
+                    'native mount cannot keep later configuration changes. Undo the changes, or use complete removal.')
+            return None
+    for index, entry in enumerate(programs.entries()):
+        if entry['target'] == str(target) and entry['before'] is not None and entry['after'] is not None:
+            break
+    else:
+        return None
+    current = fingerprint(target)
+    if current is None:
+        return None
+    data = target.read_bytes()
+    before = (programs.snapshot / ('before-' + str(index))).read_bytes()
+    after = (programs.snapshot / ('incoming-' + str(index))).read_bytes()
+    if any(hashlib.sha256(value).hexdigest() != expected for value, expected in
+           ((data, current['sha256']), (before, entry['before']['sha256']), (after, entry['after']['sha256']))):
+        raise ReleaseRejected('The profile configuration or its retained copies change during the restore check')
+    restored = restore_operation(before, after, data)
+    return {'target': str(target), 'current': current, 'data': restored,
+            'restored': {'type': 'file', 'mode': entry['before']['mode'], 'sha256': hashlib.sha256(restored).hexdigest()}}
+
+
+def record_configuration_restore(job, replacement):
+    """Make the computed configuration restore durable before publication, so recovery publishes the same bytes."""
+    path = job / CONFIGURATION_RESTORE
+    if replacement is None:
+        path.unlink(missing_ok=True)
+        return
+    value = {'format': 1, 'target': replacement['target'], 'current': replacement['current'],
+             'restored': replacement['restored'], 'data': base64.b64encode(replacement['data']).decode()}
+    publish(path, (json.dumps(value, indent=2, sort_keys=True) + '\n').encode())
+
+
+def recorded_configuration_restore(job, request):
+    """Return the replacements map of an interrupted restore's recorded configuration restore."""
+    path = job / CONFIGURATION_RESTORE
+    if not path.is_file():
+        return {}
+    value = read_private(path)
+    if (not isinstance(value, dict) or set(value) != {'format', 'target', 'current', 'restored', 'data'}
+            or value['format'] != 1 or value['target'] != str(Path(request['profile']) / 'config.yaml')
+            or not isinstance(value['data'], str)):
+        raise ReleaseRejected('The recorded configuration restore has an invalid structure')
+    data = base64.b64decode(value['data'], validate=True)
+    if not isinstance(value['restored'], dict) or value['restored'].get('sha256') != hashlib.sha256(data).hexdigest():
+        raise ReleaseRejected('The recorded configuration restore changed')
+    return {value['target']: {'current': value['current'], 'restored': value['restored'], 'data': data}}
+
+
+def restore_native_mount(job, request, mount):
     if _restore_mount_manifest(job, request, mount.journal) is None:
         return
     candidate = load_bridge(job / 'package/lifeos_hook_bridge')

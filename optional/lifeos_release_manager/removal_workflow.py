@@ -1,5 +1,5 @@
 # ABOUTME: Selects and recovers the exact owner-reviewed complete software removal.
-# ABOUTME: Uses retained manager sources and stock Hermes after active integration files disappear.
+# ABOUTME: Uses retained manager sources with stock Hermes, or with the restored in-place host, after removal.
 import json
 import os
 from pathlib import Path
@@ -17,8 +17,14 @@ def _encoded(value):
 def launch_sources(profile, job, signature):
     source,configuration,selected,plan=prepared(profile,job.name,signature)
     if selected!=job:raise ReleaseRejected('Removal launch changes its fixed workflow directory')
-    _stock(job,plan)
-    return job/'removal/recovery-manager/memory_workflow_worker.py',plan['stock_runtime']
+    return job/'removal/recovery-manager/memory_workflow_worker.py',_runtime(job,plan)
+
+
+def _runtime(job, plan):
+    if 'host' in plan:
+        from .inplace_removal import runtime
+        return runtime(plan)
+    return _stock(job,plan)
 
 
 def _stock(job, plan):
@@ -41,20 +47,20 @@ def _archive_marker(profile, job, signature):
     if selected!=job or plan['signature']!=signature:
         raise ReleaseRejected('The current removal marker belongs to another owner review')
     history=profile/'.lifeos-removal-history';history.mkdir(mode=0o700,exist_ok=True)
-    from .release_catalog import _directory
-    _directory(history)
+    from .release_catalog import owner_directory
+    owner_directory(history)
     target=history/(job.name+'.json')
     if target.exists() or target.is_symlink():raise ReleaseRejected('The retained removal history already contains this selection')
     os.rename(marker,target);sync_directory(history);sync_directory(profile)
 
 
-def execute(profile, job, selected, action, signature, *, owner, source, configuration, installation_lease):
-    from .removal_preparation import prepare,returned,_consumers
+def execute(profile, job, selected, action, signature, *, owner, source, configuration, installation_lease, login=None):
+    from .removal_preparation import prepare,returned,check_consumers
     from .removal_publication import RemovalPublication
     profile,job=Path(profile),Path(job)
     if action=='prepare':
         return prepare(profile,job,selected,owner=owner,source=source,configuration=configuration,
-            installation_lease=installation_lease)
+            installation_lease=installation_lease,login=login)
     retained_source,retained_configuration,fixed,plan=prepared(profile,job.name,signature)
     retained_configuration.check_owner(retained_configuration.load(),owner)
     if (fixed!=job or plan['owner']!=owner or plan.get('return_identifier')!=selected['identifier']
@@ -74,14 +80,16 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
     if not selected_live and action=='recover':
         if operation['state']!='ready':raise ReleaseRejected('The interrupted removal loses its owner marker')
         return {**read_private(job/'review.json'),'state':'ready','application_verified':False}
-    runtime=_stock(job,plan)
+    runtime=_runtime(job,plan)
+    host=plan['host']['source'] if 'host' in plan else None
+    units=plan.get('service_units')
     if not selected_live:
         if operation['state']!='ready':raise ReleaseRejected('The interrupted removal loses its owner marker')
         returned(profile,selected['identifier'],selected['signature'],owner=owner,source=source,
             configuration=configuration,installation_lease=installation_lease)
-        services=source.memory_module('profile_services').ProfileServices(profile,Path(plan['root']),
+        services=source.memory_module('profile_services').ProfileServices(profile,Path(plan['root']),units=units,
             installation_lease=installation_lease)
-        _consumers(profile,Path(plan['root']),services,workflow=job)
+        check_consumers(profile,Path(plan['root']),services,workflow=job,source=host)
         ProgramTransaction(job/'removal/programs',expected_entries_sha256=plan['program_entries_sha256']).check_prepared()
         publish(marker,_encoded({'format':1,'workflow':job.name,'signature':signature}))
     else:
@@ -92,12 +100,15 @@ def execute(profile, job, selected, action, signature, *, owner, source, configu
         result=publication.rollback(account=owner);_archive_marker(profile,job,signature)
         return result
     publication.apply(account=owner)
-    from .memory_workflow import _probe
+    from .memory_workflow import run_transition_probe
     def probe(expected):
-        _stock(job,plan)
-        proof=_probe(profile,publication.source,expected,runtime=runtime)
-        _stock(job,plan)
+        _runtime(job,plan)
+        proof=run_transition_probe(profile,publication.source,expected,runtime=runtime,output=job/'probe-output.txt')
+        _runtime(job,plan)
         return proof
     result=publication.verify(probe,account=owner)
-    return {**result,'stock_commit':runtime['stock_source']['commit'],'stock_patches':0,
+    commit=plan['host']['commit'] if host is not None else runtime['stock_source']['commit']
+    if host is not None:
+        result['dependencies']=read_private(job/'removal/dependency-removal-packages.json')
+    return {**result,'stock_commit':commit,'stock_patches':0,
         'recovery_command':str(job/'removal/recover'),'discord_disabled':True}

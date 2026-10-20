@@ -1,0 +1,273 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 28340609..45f2151f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -15,6 +15,7 @@
+ - Record the configuration values that LifeOS changes. Removal restores them unless the owner changed them later.
+ - Remove an in-place installation: restore the original Hermes files, delete the added files, and keep memory, `.env` owner lines, and third-party plugins. Removal still works when the Hermes update hold is already gone.
+ - Move a managed 0.7.x installation to in-place, including its gateway unit, and restore it to the managed runtime on request.
++- Refuse the move while a Hermes unit runs a managed forwarder outside `~/.local/bin`. Point the unit at `~/.local/bin/hermes` first.
+ - Keep a private failure record for stopped memory workflows and failed fresh-agent probes.
+ 
+ ## 0.7.3 (2026-10-16)
+diff --git a/docs/in-place-installation-design.md b/docs/in-place-installation-design.md
+index f3b4c3d0..70650113 100644
+--- a/docs/in-place-installation-design.md
++++ b/docs/in-place-installation-design.md
+@@ -164,7 +164,7 @@ No drift report compares `memory.provider`. The worker checks it after restart (
+ 1. Back up the profile, `~/.claude`, `~/.config/LIFEOS`, `~/.local/bin`, and the user units.
+ 2. Stop the services.
+ 3. Install stock Hermes `v0.21.7` with `install.sh --commit 71d34bad... --skip-setup` into `~/.hermes/hermes-agent`. `--skip-setup` skips `hermes setup` and `gateway install`. The installer's products stage still runs configuration migration and skills synchronization on the live profile, and its environment build includes the enabled bridge, so the backup in step 1 is required and the rehearsal checks the result. The installer does not repoint launchers that another owner created (`hermes_cli/_launchers.py:505-548`).
+-4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally. A managed gateway unit runs the managed launcher, so preparation also generates the unit that `hermes gateway install` writes for the stock checkout (`hermes_cli.gateway.generate_systemd_unit`). The program transaction publishes it with the launchers. The transition also repoints each service launcher that the managed job's `plan.json` lists outside `~/.local/bin`. Preparation refuses when such a launcher no longer forwards to the running managed release. A Hermes checkout that owns such a launcher, such as `~/workspace/hermes-agent/.hermes/bin/hermes` on development, can rewrite it later. This is open review item R2-1; the owner decides whether preparation refuses instead. The service controller then rebinds the stopped gateway role to the reviewed unit file, so resume, rollback, and recovery accept either the managed or the stock definition. Preparation refuses the transition when another unit still runs the managed runtime. The registration receipt names the Hermes checkout that the gateway imports, and the worker requires the stock checkout.
++4. Run the in-place operation in transition mode: LifeOS is installed and the host is unpatched. The transition plan points the account launchers at the stock installation unconditionally. A managed gateway unit runs the managed launcher, so preparation also generates the unit that `hermes gateway install` writes for the stock checkout (`hermes_cli.gateway.generate_systemd_unit`). The program transaction publishes it with the launchers. Preparation refuses the transition while a gateway, dashboard, or Pulse unit runs a forwarder to the managed runtime outside `~/.local/bin`. Another Hermes checkout can own such a forwarder, for example `~/workspace/hermes-agent/.hermes/bin/hermes` on development, and that checkout can rewrite it later. The owner points the unit at `~/.local/bin/hermes` first (review item R2-1, decided by the owner on 2026-10-18). The service controller then rebinds the stopped gateway role to the reviewed unit file, so resume, rollback, and recovery accept either the managed or the stock definition. Preparation refuses the transition when another unit still runs the managed runtime. The registration receipt names the Hermes checkout that the gateway imports, and the worker requires the stock checkout.
+ 5. Verify, then retain the managed job directories until the owner approves their removal.
+ 
+ The transition is rehearsed first on a clone of the development container.
+@@ -221,7 +221,7 @@ The PR 40 code review compared this design with the code. These sections now des
+ | A4: drift reporting | Section 9: the page, `hermes lifeos-release compatibility`, and `hermes lifeos-version` report drift; registration writes only the receipt |
+ | A8: inventory scope | Section 8: `check_preserved` roots; memory provider check after restart |
+ | A9: shared checkouts | Section 13: single-profile admission is the first supported layout |
+-| B1: service launchers | Section 10; open review item R2-1 |
++| B1: service launchers | Section 10; review item R2-1, preparation refuses |
+ | A2, A3, A7: restart checks, enabled state, manifest qualification | Sections 2 and 7 |
+ | A5, A6: review contents | Section 4.1, step 9 |
+ | C2, C5: compatibility first, damaged record | Section 4.1, step 1 |
+diff --git a/docs/verification/2026-10-17-inplace-e2e/README.md b/docs/verification/2026-10-17-inplace-e2e/README.md
+index 817752f9..881b8b8c 100644
+--- a/docs/verification/2026-10-17-inplace-e2e/README.md
++++ b/docs/verification/2026-10-17-inplace-e2e/README.md
+@@ -82,7 +82,7 @@ The [independent review](../../agents/2026-10-17-inplace-fixes-review/inplace-fi
+ 
+ 7. **Adoption before reload.** A replaced unit file reports `NeedDaemonReload=yes` until the manager reloads, and service inspection refuses that state. A failure between publication and reload would leave the host in `recovery_required`. The worker now reloads before adoption.
+ 8. **Template gateway units.** A fresh managed installation writes its gateway unit with `KillMode=control-group` and the account launcher. Stock Hermes writes `KillMode=mixed`, so adoption would refuse the replacement after publication. Preparation now keeps a unit that runs the account launcher. It refuses a replacement that changes `KillMode` or `WorkingDirectory`, a symlinked unit, and a drop-in that runs the managed runtime.
+-9. **Service launchers outside `~/.local/bin`.** On the development host, the gateway and dashboard units run `~/workspace/hermes-agent/.hermes/bin/hermes`. The managed release rewrote that file into a forwarder to its runtime. The transition now publishes a stock forwarder at each launcher in the managed job's `plan.json`.
++9. **Service launchers outside `~/.local/bin`.** On the development host, the gateway and dashboard units run `~/workspace/hermes-agent/.hermes/bin/hermes`. The managed release rewrote that file into a forwarder to its runtime. The 0.8.0-rc.1 candidate first published a stock forwarder at each launcher in the managed job's `plan.json`. After review item R2-1, preparation refuses such a unit instead, and the owner points it at `~/.local/bin/hermes`.
+ 
+ The layout of defect 9 is not rehearsed on a container. The daily host uses only `~/.local/bin/hermes` and template units, which the 114 rehearsal does not reproduce exactly either (114 has a stock-format unit).
+ 
+diff --git a/optional/lifeos_release_manager/inplace_plan.py b/optional/lifeos_release_manager/inplace_plan.py
+index a00da22a..7ea8f44c 100644
+--- a/optional/lifeos_release_manager/inplace_plan.py
++++ b/optional/lifeos_release_manager/inplace_plan.py
+@@ -145,8 +145,7 @@ def host_entries(job, request, selected, generated):
+     publish(generated / 'update-hold.json', (json.dumps({'holder': 'LifeOS', 'message': HOLD_MESSAGE}) + '\n').encode())
+     files[source / '.git' / HOLD] = generated / 'update-hold.json'
+     if request['host'].get('transition'):
+-        files.update(transition_launchers(Path(request['account_home']), source, generated,
+-                                          services=request['host'].get('transition_launchers', [])))
++        files.update(transition_launchers(Path(request['account_home']), source, generated))
+         files.update(transition_unit_files(Path(request['account_home']), job, request['host'].get('transition_units', {})))
+     return {}, files
+ 
+@@ -184,12 +183,8 @@ def transition_unit_files(home, job, units):
+     return {home / GATEWAY_UNIT: generated}
+ 
+ 
+-def transition_launchers(home, source, generated, *, services=()):
+-    """Point the account commands and the managed service launchers at the stock checkout.
+-
+-    The account commands get the same forwarders Hermes itself publishes. Each service launcher that the
+-    managed release published gets the ``hermes`` forwarder.
+-    """
++def transition_launchers(home, source, generated):
++    """Point the account commands at the stock checkout with the forwarders Hermes itself publishes."""
+     import shlex
+     commands = {'hermes': [source / '.hermes/bin/hermes'],
+                 'hermes-agent': [source / '.hermes/bin/hermes', '--run-module', 'run_agent'],
+@@ -199,6 +194,4 @@ def transition_launchers(home, source, generated, *, services=()):
+         script = generated / ('launcher-' + name)
+         publish(script, ('#!/bin/sh\nexec ' + ' '.join(shlex.quote(str(part)) for part in command) + ' "$@"\n').encode(), 0o755)
+         files[home / '.local/bin' / name] = script
+-    for service in services:
+-        files[Path(service)] = generated / 'launcher-hermes'
+     return files
+diff --git a/optional/lifeos_release_manager/inplace_preparation.py b/optional/lifeos_release_manager/inplace_preparation.py
+index 4cb2a531..54d41d7c 100644
+--- a/optional/lifeos_release_manager/inplace_preparation.py
++++ b/optional/lifeos_release_manager/inplace_preparation.py
+@@ -8,7 +8,7 @@ from pathlib import Path
+ import shutil
+ import subprocess
+ 
+-from .host_compatibility import check, load_manifest, running_source
++from .host_compatibility import check, load_manifest
+ from .host_patches import stage_host_files
+ from .host_record import check_originals, load_record
+ from .integration_package import COMPATIBILITY, validate_integration
+@@ -66,30 +66,30 @@ def _service_value(text, key, default):
+     return values[-1] if values else default
+ 
+ 
+-def managed_service_launchers(job, home):
+-    """Return the service launchers that the active managed release published outside ``~/.local/bin``.
++SERVICE_UNITS = ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service')
+ 
+-    A managed release rewrites the launcher that each service unit runs into a forwarder to its runtime.
+-    The transition must repoint those launchers to the stock checkout as well. A launcher that no longer
+-    forwards to the running managed release refuses the transition: its owner changed it, or a service
+-    still runs an older managed release after an update.
++
++def check_service_launchers(home):
++    """Refuse a transition while a Hermes unit runs a managed forwarder outside ``~/.local/bin``.
++
++    The transition repoints only the account launchers. A forwarder elsewhere, such as one inside another
++    Hermes checkout, would keep running the managed runtime, and its own checkout can rewrite it later.
++    A unit that runs the managed runtime directly is left to ``transition_gateway_unit``.
+     """
+-    from .release_catalog import parse_json
++    import shlex
+     account = Path(home) / '.local/bin'
+-    try:
+-        recorded = parse_json((Path(job) / 'plan.json').read_bytes())['launchers']
+-    except (OSError, ValueError, KeyError, TypeError):
+-        raise ReleaseRejected('The running managed release has no plan record of its service launchers') from None
+-    launchers = []
+-    for value in recorded:
+-        path = Path(value)
+-        if not path.is_absolute() or path.parent == account:
++    for name in SERVICE_UNITS:
++        texts = _unit_texts(home, name)
++        command = [value for value in (_service_value(text, 'ExecStart', '') for text in texts.values()) if value]
++        try:
++            executable = Path(shlex.split(command[-1])[0].lstrip('-@+!:')) if command else None
++        except (ValueError, IndexError):
++            executable = None
++        if executable is None or executable.parent == account or MANAGED_RUNTIME in str(executable):
+             continue
+-        if path.is_symlink() or not path.is_file() or str(job) not in path.read_text(errors='replace'):
+-            raise ReleaseRejected('The service launcher ' + str(path) + ' does not run the managed release '
+-                                  + Path(job).name + '. Restart the Hermes services, or restore the launcher, then prepare again')
+-        launchers.append(str(path))
+-    return sorted(launchers)
++        if executable.is_file() and MANAGED_RUNTIME in executable.read_text(errors='replace'):
++            raise ReleaseRejected('The ' + name + ' unit runs ' + str(executable) + ', which forwards to the managed '
++                                  'runtime. Point the unit at ~/.local/bin/hermes, then prepare again.')
+ 
+ 
+ def transition_gateway_unit(python, source, profile, home, job):
+@@ -101,10 +101,11 @@ def transition_gateway_unit(python, source, profile, home, job):
+     or another unit that still runs the managed runtime refuses the transition, as does a replacement
+     whose stop behaviour or working directory differs, because the service controller binds those.
+     """
+-    for name in ('hermes-gateway.service', 'hermes-dashboard.service', 'com.lifeos.pulse.service'):
++    for name in SERVICE_UNITS:
+         for path, text in _unit_texts(home, name).items():
+             if MANAGED_RUNTIME in text and not (name == 'hermes-gateway.service' and path.name == name):
+                 raise ReleaseRejected('The ' + path.name + ' unit runs the managed runtime; point it at ~/.local/bin first')
++    check_service_launchers(home)
+     existing = Path(home) / GATEWAY_UNIT
+     if existing.is_symlink():
+         raise ReleaseRejected('The gateway unit must be a regular file before the transition')
+@@ -289,7 +290,6 @@ def prepare_inplace(profile, job, version=None, *, name, assistant, intent, cata
+                  'state': result['state'], 'state_directory': str(state_directory(source)),
+                  'transition': result['transition'],
+                  'transition_units': transition_gateway_unit(python, source, profile, home, job) if result['transition'] else {},
+-                 'transition_launchers': managed_service_launchers(running_source().parent, home) if result['transition'] else [],
+                  'record_sha256': None if record is None else sha(profile / 'lifeos-host.json')},
+         'runtime': {'python': str(python), 'bun': str(bun), 'hermes': str(host_launcher(source)),
+                     'source': str(preview), 'reference': str(reference / '.claude'),
+diff --git a/tests/test_inplace_plan.py b/tests/test_inplace_plan.py
+index ccf63f25..1924251a 100644
+--- a/tests/test_inplace_plan.py
++++ b/tests/test_inplace_plan.py
+@@ -110,7 +110,7 @@ class InplaceJob(unittest.TestCase):
+             configuration_sha256=sha(self.profile / 'config.yaml'),
+             host={'source': str(self.source), 'commit': self.commit, 'label': 'v0.0.1', 'state': 'compatible',
+                   'state_directory': str(self.job / 'installs-state'), 'transition': False, 'transition_units': {},
+-                  'transition_launchers': [], 'record_sha256': None},
++                  'record_sha256': None},
+             runtime={'python': sys.executable, 'bun': str(self.job / 'tools/bun'), 'hermes': str(launcher),
+                      'source': str(preview), 'reference': str(self.job / 'reference-home/.claude'),
+                      'lifeos': str(self.job / 'lifeos'), 'host_files': str(self.job / 'host')},
+diff --git a/tests/test_inplace_preparation.py b/tests/test_inplace_preparation.py
+index b8ab2744..ded99d94 100644
+--- a/tests/test_inplace_preparation.py
++++ b/tests/test_inplace_preparation.py
+@@ -262,23 +262,46 @@ class TransitionTests(unittest.TestCase):
+         adopt_units(None, {'host': {'transition_units': units}})
+         self.assertEqual(calls, [])
+ 
+-    def test_transition_repoints_the_service_launchers_of_the_managed_release(self):
+-        import json
+-        from optional.lifeos_release_manager.inplace_preparation import managed_service_launchers
++    def test_transition_refuses_a_unit_that_runs_another_managed_forwarder(self):
++        from optional.lifeos_release_manager.inplace_preparation import check_service_launchers
+         from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+         with tempfile.TemporaryDirectory() as directory:
+             home = Path(directory)
+-            job = home / '.hermes/.lifeos-releases' / ('a' * 32)
+-            job.mkdir(parents=True)
++            units = home / '.config/systemd/user'
++            units.mkdir(parents=True)
+             workspace = home / 'workspace/hermes-agent/.hermes/bin/hermes'
+             workspace.parent.mkdir(parents=True)
+-            workspace.write_text('#!/bin/sh\nexec ' + str(job) + '/bin/hermes "$@"\n')
++            workspace.write_text('#!/bin/sh\nexec ' + str(home) + '/.hermes/.lifeos-releases/' + 'a' * 32 + '/bin/hermes "$@"\n')
+             account = home / '.local/bin/hermes'
+-            (job / 'plan.json').write_text(json.dumps({'launchers': [str(workspace), str(account)]}))
+-            self.assertEqual(managed_service_launchers(job, home), [str(workspace)])
+-            workspace.write_text('#!/bin/sh\nexec /usr/bin/hermes "$@"\n')
+-            with self.assertRaisesRegex(ReleaseRejected, 'workspace'):
+-                managed_service_launchers(job, home)
++            account.parent.mkdir(parents=True)
++            account.write_text(workspace.read_text())
++            dashboard = units / 'hermes-dashboard.service'
++            dashboard.write_text('[Service]\nExecStart=' + str(workspace) + ' dashboard\n')
++            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service.*~/.local/bin/hermes'):
++                check_service_launchers(home)
++            # The transition repoints the account launcher, so a unit that runs it passes.
++            dashboard.write_text('[Service]\nExecStart=' + str(account) + ' dashboard\n')
++            check_service_launchers(home)
++            # The last assignment counts, including one in a drop-in.
++            (units / 'hermes-dashboard.service.d').mkdir()
++            (units / 'hermes-dashboard.service.d/exec.conf').write_text('[Service]\nExecStart=\nExecStart=-' + str(workspace) + ' dashboard\n')
++            with self.assertRaisesRegex(ReleaseRejected, 'hermes-dashboard.service'):
++                check_service_launchers(home)
++
++    def test_transition_accepts_units_that_run_other_programs(self):
++        from optional.lifeos_release_manager.inplace_preparation import check_service_launchers
++        with tempfile.TemporaryDirectory() as directory:
++            home = Path(directory)
++            units = home / '.config/systemd/user'
++            units.mkdir(parents=True)
++            stock = home / 'hermes-agent/.hermes/bin/hermes'
++            stock.parent.mkdir(parents=True)
++            stock.write_text('#!/bin/sh\nexec python -m hermes_cli "$@"\n')
++            (units / 'hermes-dashboard.service').write_text('[Service]\nExecStart=' + str(stock) + ' dashboard\n')
++            # A gateway unit that runs the managed runtime directly gets the stock unit instead.
++            (units / 'hermes-gateway.service').write_text('[Service]\nExecStart=' + str(home) + '/.hermes/.lifeos-releases/' + 'a' * 32 + '/bin/hermes gateway run\n')
++            (units / 'com.lifeos.pulse.service').write_text('[Service]\nExecStart=/missing/program\n')
++            check_service_launchers(home)
+ 
+     def test_service_value_reads_only_the_service_section(self):
+         from optional.lifeos_release_manager.inplace_preparation import _service_value
+@@ -287,29 +310,6 @@ class TransitionTests(unittest.TestCase):
+         self.assertEqual(_service_value(text, 'WorkingDirectory', ''), '')
+         self.assertEqual(_service_value('[Service]\nKillMode=mixed\nKillMode=process\n', 'KillMode', 'control-group'), 'process')
+ 
+-    def test_managed_release_without_a_launcher_record_refuses(self):
+-        import json
+-        from optional.lifeos_release_manager.inplace_preparation import managed_service_launchers
+-        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+-        with tempfile.TemporaryDirectory() as directory:
+-            job = Path(directory) / 'job'
+-            job.mkdir()
+-            with self.assertRaisesRegex(ReleaseRejected, 'plan record'):
+-                managed_service_launchers(job, Path(directory))
+-            (job / 'plan.json').write_text(json.dumps({}))
+-            with self.assertRaisesRegex(ReleaseRejected, 'plan record'):
+-                managed_service_launchers(job, Path(directory))
+-
+-    def test_transition_publishes_a_stock_forwarder_at_each_service_launcher(self):
+-        from optional.lifeos_release_manager.inplace_plan import transition_launchers
+-        with tempfile.TemporaryDirectory() as directory:
+-            generated = Path(directory)
+-            service = '/home/owner/workspace/hermes-agent/.hermes/bin/hermes'
+-            files = transition_launchers(Path('/home/owner'), Path('/home/owner/.hermes/hermes-agent'), generated,
+-                                         services=[service])
+-            self.assertEqual(files[Path(service)].read_text(),
+-                             '#!/bin/sh\nexec /home/owner/.hermes/hermes-agent/.hermes/bin/hermes "$@"\n')
+-
+     def test_transition_launchers_match_the_stock_forwarders(self):
+         from optional.lifeos_release_manager.inplace_plan import transition_launchers
+         with tempfile.TemporaryDirectory() as directory:

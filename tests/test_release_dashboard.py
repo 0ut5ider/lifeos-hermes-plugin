@@ -99,6 +99,27 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.configuration.save(self.policy)
         self.assertEqual(self.request(self.owner)[0], 403)
 
+    def test_compatibility_requires_owner_and_reports_the_running_hermes(self):
+        from optional.lifeos_release_manager.host_compatibility import running_source
+        self.assertEqual(self.request(path='/compatibility')[0], 401)
+        self.assertEqual(self.request(self.other, path='/compatibility')[0], 403)
+        code, value = self.request(self.owner, path='/compatibility')
+        self.assertEqual(code, 200)
+        self.assertEqual(value['detected']['source'], str(running_source()))
+        self.assertEqual(value['detected']['profile'], str(self.profile))
+        self.assertIn(value['state'], ('compatible', 'unsupported_layout', 'unsupported_version', 'modified_source',
+            'partially_patched', 'patched_without_record', 'shared_installation', 'dependency_conflict'))
+        self.assertFalse((self.profile / '.lifeos-releases').exists())
+
+    def test_malformed_host_record_is_reported_as_drift_with_its_reason(self):
+        (self.profile / 'lifeos-host.json').write_text('{not json')
+        (self.profile / 'lifeos-host.json').chmod(0o600)
+        code, value = self.request(self.owner, path='/compatibility')
+        self.assertEqual(code, 200)
+        self.assertEqual(value['state'], 'host_drift')
+        self.assertEqual(value['reasons'][0]['code'], 'invalid_host_record')
+        self.assertIn('lifeos-host.json', value['reasons'][0]['message'])
+
     def test_mutations_reject_foreign_origin_and_client_supplied_fields(self):
         path = '/operations/' + ('a' * 32) + '/review'
         self.assertEqual(self.request(self.owner, path=path, method='POST', origin='https://other.invalid')[0], 403)
@@ -168,3 +189,71 @@ class ReleaseDashboardTests(unittest.TestCase):
         self.assertEqual(results[0][0], 409)
         self.assertIn('first installation', results[0][1]['detail'])
         self.assertFalse(Path(request['installed']).exists())
+
+
+class RestoreRefusalTests(unittest.TestCase):
+    def test_configuration_conflict_reaches_the_owner(self):
+        from unittest import mock
+        from fastapi import HTTPException
+        from optional.lifeos_release_manager.dashboard import plugin_api
+        ConfigurationConflict = plugin_api.host_configuration.ConfigurationConflict
+        message = 'You changed configuration values after this operation that it also changed: model.default.'
+        current = type('Current', (), {'memory_administration': lambda self: None})()
+        with mock.patch.object(plugin_api, 'profile', return_value=Path('/profile')), \
+                mock.patch.object(plugin_api.commands, 'operation', return_value=(Path('/job'), {'installed': '/installed'})), \
+                mock.patch.object(plugin_api.worker, 'validate_plan', return_value={'native_mount_required': False}), \
+                mock.patch.object(plugin_api.worker, 'recovery_bridge', return_value=current), \
+                mock.patch.object(plugin_api.commands, 'launch', side_effect=ConfigurationConflict(message)), \
+                self.assertRaises(HTTPException) as raised:
+            plugin_api.apply_release('a' * 32, 'restore', 'owner')
+        self.assertEqual((raised.exception.status_code, raised.exception.detail), (409, message))
+
+
+class InplaceReviewTests(unittest.TestCase):
+    def test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts(self):
+        from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review
+        from optional.lifeos_release_manager.release_programs import publish
+        with tempfile.TemporaryDirectory() as directory:
+            job = Path(directory)
+            update = {'added': ['hermes_cli/new_hook.py'], 'changed': ['hermes_cli/plugins.py'], 'restored': ['run_agent.py']}
+            publish(job / 'inplace-review.json', json.dumps({'configuration': ['plugins.enabled', 'plugins.entries'],
+                                                             'update': update}).encode())
+            entry = {'label': 'v0.0.1', 'commit': 'a' * 40,
+                     'files': {'hermes_cli/plugins.py': {'stock': 'b' * 64, 'patched': 'c' * 64},
+                               'agent/loop.py': {'stock': 'b' * 64, 'patched': 'd' * 64},
+                               'hermes_cli/new_hook.py': {'stock': None, 'patched': 'e' * 64}},
+                     'known_conflicts': ['The example-relay plugin replaces the delivery hook.']}
+            value = {'host': {'source': '/home/owner/.hermes/hermes-agent'},
+                     'dependencies': {'added': {'tree-sitter': ['0.26.0']}}}
+            plan = {'services': {'roles': ['gateway'], 'created': [], 'consumers': []}}
+            review = inplace_review(job, {'entry': entry}, value, plan)
+        self.assertEqual(review['hermes']['files'], {'modified': ['agent/loop.py', 'hermes_cli/plugins.py'],
+                                                     'added': ['hermes_cli/new_hook.py']})
+        self.assertEqual((review['hermes']['modified'], review['hermes']['added']), (2, 1))
+        self.assertNotIn('update_hold', review['hermes'])
+        self.assertEqual(review['configuration'], ['plugins.enabled', 'plugins.entries'])
+        self.assertEqual(review['update'], update)
+        self.assertEqual(review['known_conflicts'], ['The example-relay plugin replaces the delivery hook.'])
+        self.assertEqual(review['packages'], ['tree-sitter==0.26.0'])
+        self.assertIsNone(review['services']['dashboard_address'])
+
+    def review_services(self, dashboard_options):
+        from optional.lifeos_release_manager.dashboard.plugin_api import inplace_review
+        from optional.lifeos_release_manager.release_programs import publish
+        with tempfile.TemporaryDirectory() as directory:
+            job = Path(directory)
+            publish(job / 'inplace-review.json', json.dumps({'configuration': [], 'update': None}).encode())
+            entry = {'label': 'v0.0.1', 'commit': 'a' * 40, 'files': {}}
+            value = {'host': {'source': '/home/owner/.hermes/hermes-agent'}, 'dependencies': {'added': {}}}
+            consumer = {'pid': 4321, 'command': 'hermes', 'role': 'dashboard'}
+            plan = {'services': {'roles': [], 'created': ['dashboard'], 'consumers': [consumer]}}
+            return inplace_review(job, {'entry': entry, 'dashboard_options': dashboard_options}, value, plan)['services']
+
+    def test_review_shows_the_address_the_created_dashboard_unit_keeps(self):
+        services = self.review_services({'host': '0.0.0.0', 'port': 9200})
+        self.assertEqual(services['dashboard_address'], {'host': '0.0.0.0', 'port': 9200})
+        self.assertEqual(services['replaced'], [{'pid': 4321, 'command': 'hermes', 'role': 'dashboard'}])
+
+    def test_review_shows_the_hermes_default_address_when_no_options_were_recorded(self):
+        self.assertEqual(self.review_services({})['dashboard_address'], {'host': '127.0.0.1', 'port': 9119})
+        self.assertEqual(self.review_services({'host': '0.0.0.0'})['dashboard_address'], {'host': '0.0.0.0', 'port': 9119})

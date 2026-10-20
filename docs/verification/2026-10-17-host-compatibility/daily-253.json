@@ -1,0 +1,40 @@
+{
+  "compatible": false,
+  "dependencies": {
+    "add": [],
+    "conflicts": []
+  },
+  "detected": {
+    "commit": "71d34bad1045610252eda02ee79549436896e784",
+    "interpreter": "/home/lifeos-hermes/.hermes/.lifeos-releases/3e74ddd455dd4211bfbd3c18606e98ed/dependency-profile/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "profile": "/home/lifeos-hermes/.hermes",
+    "python": "3.14.7",
+    "source": "/home/lifeos-hermes/.hermes/.lifeos-releases/3e74ddd455dd4211bfbd3c18606e98ed/hermes",
+    "version": "v0.21.7"
+  },
+  "format": 1,
+  "qualified": "v0.21.7",
+  "reasons": [
+    {
+      "code": "untracked_files",
+      "count": 3,
+      "message": "The Hermes source contains files that are not part of the upstream version.",
+      "paths": [
+        "hermes-source-manifest.json",
+        "hermes_agent-0.0.0.dist-info/METADATA",
+        "hermes_agent-0.0.0.dist-info/entry_points.txt"
+      ]
+    },
+    {
+      "code": "patched_without_record",
+      "message": "LifeOS changes are present, but this installation has no LifeOS installation record."
+    }
+  ],
+  "state": "modified_source",
+  "supported": [
+    {
+      "commit": "71d34bad1045610252eda02ee79549436896e784",
+      "label": "v0.21.7"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ Start with the task you need to complete. Active guides describe the supported i
 | Understand hook translation and accepted scenarios | [Hook parity](hook-parity.md), [Step 1 acceptance](parity/step1-acceptance.md) |
 | Capture private development traces | [Recorder guide](../development/README.md) |
 | Understand potential upstream contributions | [Upstream proposals](upstream-hermes-proposals.md) |
+| Implement the accepted in-place-only installer | [Installation redesign](in-place-installation-plan.md), [in-place design](in-place-installation-design.md) |
 
 ## Check a release claim
 

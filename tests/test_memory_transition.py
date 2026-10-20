@@ -44,6 +44,16 @@ class MemoryTransitionTests(unittest.TestCase):
         self.assertTrue(self.returned.configuration.load()['ownership_enabled'])
         for role in self.services.units:self.assertEqual(self.services.properties(role)['ActiveState'],'active')
 
+    def test_dependencies_synchronize_after_publication_and_before_services_restart(self):
+        # The restarted gateway must find a current environment, or Hermes runs its own completion under the update lock.
+        review=self.prepare();seen=[]
+        def synchronize():
+            seen.append((self.returned.configuration.load()['ownership_enabled'],
+                         tuple(self.services.properties(role)['ActiveState'] for role in ('dashboard','gateway'))))
+        self.operation().apply(review['signature'],account='dashboard:owner',synchronize=synchronize)
+        self.operation().rollback(review['signature'],account='dashboard:owner',synchronize=synchronize)
+        self.assertEqual(seen,[(False,('inactive','inactive')),(True,('inactive','inactive'))])
+
     def test_changed_profile_refuses_before_services_stop(self):
         review=self.prepare()
         pids={role:self.services.properties(role)['MainPID'] for role in self.services.units}
@@ -80,6 +90,26 @@ class MemoryTransitionTests(unittest.TestCase):
             installed.unlink()
             fixture.command('systemctl','--user','--quiet','link','--runtime',str(definition))
             fixture.command('systemctl','--user','daemon-reload')
+
+    def test_in_place_host_return_binds_only_the_gateway_and_pulse_units(self):
+        from lifeos_hook_bridge.memory_transition import MemoryTransition
+        units={role:self.services.units[role] for role in ('gateway','pulse')}
+        operation=lambda:MemoryTransition(self.returned.configuration,units=units)
+        dashboard=self.services.properties('dashboard')['MainPID']
+        gateway=self.services.properties('gateway')['MainPID']
+        review=operation().prepare_return(self.returned.fixture.snapshot,self.prepared['signature'],account='dashboard:owner')
+        result=operation().apply(review['signature'],account='dashboard:owner')
+        self.assertEqual(result['state'],'verification_required')
+        self.assertFalse(self.returned.configuration.load()['ownership_enabled'])
+        self.assertEqual(self.services.properties('pulse')['ActiveState'],'inactive')
+        self.assertEqual(self.services.properties('gateway')['ActiveState'],'active')
+        self.assertNotEqual(self.services.properties('gateway')['MainPID'],gateway)
+        self.assertEqual(self.services.properties('dashboard')['MainPID'],dashboard)
+        plan=json.loads((self.profile/'.lifeos-memory-transition/plan.json').read_bytes())
+        self.assertEqual(plan['units'],units)
+        rolled=operation().rollback(review['signature'],account='dashboard:owner')
+        self.assertEqual(rolled['state'],'rolled_back')
+        self.assertEqual(self.services.properties('dashboard')['MainPID'],dashboard)
 
     def test_interrupted_return_resumes_and_later_builtin_edit_blocks_rollback(self):
         review=self.prepare()

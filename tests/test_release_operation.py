@@ -379,11 +379,11 @@ class ReleaseOperationTests(unittest.TestCase):
 
     def test_mount_recovery_refuses_another_jobs_journal(self):
         from types import SimpleNamespace
-        from optional.lifeos_release_manager.release_worker import _restore_mount
+        from optional.lifeos_release_manager.release_worker import restore_native_mount
         with tempfile.TemporaryDirectory() as temp:
             job, request = self.fixture(Path(temp))
             journal = job / 'native-mount.json'
             publish(journal, b'{"binding":{"job":"another-job"}}')
             publish(job / 'mount-intent.json', b'{"prior_journal_sha256":null}')
             with self.assertRaisesRegex(ValueError, 'another release operation'):
-                _restore_mount(job, request, SimpleNamespace(journal=journal))
+                restore_native_mount(job, request, SimpleNamespace(journal=journal))

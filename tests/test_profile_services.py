@@ -192,6 +192,56 @@ class ProfileServicesTests(unittest.TestCase):
         self.assertEqual(restarted.journal.parent.name, '.lifeos-installation-services')
         self.assertFalse(self.barrier().journal.exists())
 
+    def test_selected_roles_bind_only_the_units_that_exist_on_the_host(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        before = {role: self.properties(role) for role in self.units}
+        barrier = ProfileServices(self.profile, self.installed, units={'gateway': self.units['gateway']},
+                                  roles=('gateway',))
+        self.assertEqual(barrier.drain(signature=barrier.preview()['signature'])['services_stopped'], ['gateway'])
+        self.assertEqual(self.properties('gateway')['MainPID'], '0')
+        for role in ('dashboard', 'pulse'):
+            self.assertEqual(self.properties(role)['MainPID'], before[role]['MainPID'])
+        self.assertEqual(barrier.resume()['services_started'], ['gateway'])
+        self.assertNotEqual(self.properties('gateway')['MainPID'], before['gateway']['MainPID'])
+
+    def test_drain_waits_for_a_unit_that_needs_its_whole_stop_timeout(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        unit = self.units['pulse']
+        self.command('systemctl', '--user', 'stop', unit)
+        path = self.home / 'units' / unit
+        path.write_text('[Unit]\nDescription=LifeOS synthetic slow-stopping control\n[Service]\nType=simple\n'
+            'WorkingDirectory=' + str(self.directories['pulse']) + '\n'
+            'ExecStart=' + json.dumps(sys.executable) + ' -c "import signal,time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(600)"\n'
+            'KillMode=control-group\nTimeoutStopSec=46s\nRestart=no\n')
+        self.command('systemctl', '--user', 'daemon-reload')
+        self.command('systemctl', '--user', 'start', unit)
+        barrier = ProfileServices(self.profile, self.installed, units={'pulse': unit}, roles=('pulse',))
+        started = time.monotonic()
+        self.assertEqual(barrier.drain(signature=barrier.preview()['signature'])['state'], 'stopped')
+        self.assertGreater(time.monotonic() - started, 45)
+        self.assertEqual(barrier.resume()['services_started'], ['pulse'])
+        self.command('systemctl', '--user', 'kill', '--signal=SIGKILL', unit)
+
+    def test_selected_roles_refuse_unknown_or_mismatched_bindings(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        for roles, units in ((('gateway', 'mail'), {'gateway': self.units['gateway']}),
+                             ((), {}),
+                             (('gateway',), {'dashboard': self.units['dashboard']})):
+            with self.subTest(roles=roles), self.assertRaises(MemoryUnavailable):
+                ProfileServices(self.profile, self.installed, units=units, roles=roles)
+
+    def test_units_without_roles_bind_exactly_the_roles_they_name(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        gateway = {'gateway': self.units['gateway']}
+        derived = ProfileServices(self.profile, self.installed, units=gateway)
+        explicit = ProfileServices(self.profile, self.installed, units=gateway, roles=('gateway',))
+        self.assertEqual((derived.units, derived.stop_order, derived.start_order),
+                         (explicit.units, explicit.stop_order, explicit.start_order))
+        self.assertEqual(derived.units, gateway)
+        for units in ({}, {'mail': 'lifeos-mail.service'}, {**gateway, 'mail': 'lifeos-mail.service'}):
+            with self.subTest(units=units), self.assertRaisesRegex(MemoryUnavailable, 'distinct known roles'):
+                ProfileServices(self.profile, self.installed, units=units)
+
     def test_unit_from_another_profile_refuses_before_any_writer_stops(self):
         before = {role: self.properties(role) for role in self.units}
         other = self.home / 'different-profile'
@@ -256,6 +306,49 @@ ProfileServices(Path(settings['profile']), Path(settings['installed']), units=se
         self.assertTrue(self.barrier().status()['recovery_required'])
         self.record('changed-definition', {'after': {role: self.properties(role) for role in self.units},
             'journal': json.loads(self.barrier().journal.read_text())})
+
+    def test_completed_journal_of_other_roles_does_not_block_a_later_review(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        self.barrier().drain()
+        self.barrier().resume()
+        fewer = ProfileServices(self.profile, self.installed, units={'gateway': self.units['gateway']})
+        self.assertEqual(fewer.drain(signature=fewer.preview()['signature'])['services_stopped'], ['gateway'])
+        self.assertEqual(fewer.resume()['services_started'], ['gateway'])
+
+    def test_interrupted_journal_of_other_roles_still_refuses(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        self.barrier().drain()
+        fewer = ProfileServices(self.profile, self.installed, units={'gateway': self.units['gateway']})
+        with self.assertRaises(MemoryUnavailable):
+            fewer.preview()
+        self.barrier().resume()
+
+    def test_stopped_role_adopts_only_a_reviewed_replacement_definition(self):
+        import hashlib
+        self.barrier().drain()
+        source = Path(self.properties('gateway')['FragmentPath']).resolve()
+        before = hashlib.sha256(source.read_bytes()).hexdigest()
+        source.write_text(source.read_text() + '# Synthetic reviewed stock definition\n')
+        after = hashlib.sha256(source.read_bytes()).hexdigest()
+        self.command('systemctl', '--user', 'daemon-reload')
+        with self.assertRaisesRegex(MemoryUnavailable, 'reviewed'):
+            self.barrier().adopt_definition('gateway', {before})
+        self.assertTrue(self.barrier().adopt_definition('gateway', {before, after}))
+        self.assertFalse(self.barrier().adopt_definition('gateway', {before, after}))
+        self.assertEqual(self.barrier().resume()['state'], 'active')
+        self.assertEqual(self.properties('gateway')['ActiveState'], 'active')
+
+    def test_running_role_refuses_definition_adoption(self):
+        import hashlib
+        self.barrier().drain()
+        self.barrier().resume()
+        source = Path(self.properties('gateway')['FragmentPath']).resolve()
+        source.write_text(source.read_text() + '# Synthetic reviewed stock definition\n')
+        after = hashlib.sha256(source.read_bytes()).hexdigest()
+        self.command('systemctl', '--user', 'daemon-reload')
+        with self.assertRaisesRegex(MemoryUnavailable, 'stopped'):
+            self.barrier().adopt_definition('gateway', {after})
+        self.assertEqual(self.properties('gateway')['ActiveState'], 'active')
 
     def test_definition_change_during_drain_preserves_the_remaining_live_services(self):
         before = {role: self.properties(role) for role in self.units}

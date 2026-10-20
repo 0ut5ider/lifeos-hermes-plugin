@@ -1,0 +1,14 @@
+F.s.....
+======================================================================
+FAIL: test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts (test_release_dashboard.InplaceReviewTests.test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_dashboard.py", line 215, in test_review_lists_host_files_configuration_keys_update_difference_and_known_conflicts
+    self.assertNotIn('update_hold', review['hermes'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'update_hold' unexpectedly found in {'label': 'v0.0.1', 'commit': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'source': '/home/owner/.hermes/hermes-agent', 'modified': 2, 'added': 1, 'files': {'modified': ['agent/loop.py', 'hermes_cli/plugins.py'], 'added': ['hermes_cli/new_hook.py']}, 'update_hold': True}
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.708s
+
+FAILED (failures=1, skipped=1)

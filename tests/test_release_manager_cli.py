@@ -123,6 +123,46 @@ class ReleaseManagerCommandTests(unittest.TestCase):
             finally:
                 reset_hermes_home_override(token)
 
+    def test_rollback_configuration_conflict_reports_its_message(self):
+        from unittest import mock
+        from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+        from optional.lifeos_release_manager import cli
+        from optional.lifeos_release_manager.host_configuration import ConfigurationConflict
+        message = 'You changed configuration values after this operation that it also changed: model.default.'
+        with tempfile.TemporaryDirectory() as temp:
+            token = set_hermes_home_override(Path(temp))
+            try:
+                parser = argparse.ArgumentParser()
+                configure(parser)
+                output = io.StringIO()
+                with redirect_stdout(output), mock.patch.object(cli, 'launch', side_effect=ConfigurationConflict(message)):
+                    self.assertEqual(run(parser.parse_args(['rollback', 'a' * 32])), 1)
+                self.assertEqual(json.loads(output.getvalue()), {'status': 'rejected', 'message': message})
+            finally:
+                reset_hermes_home_override(token)
+
+    def test_compatibility_reports_the_running_hermes_without_creating_release_state(self):
+        from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+        from lifeos_hook_bridge.install_source import SUPPORTED_HERMES_COMMIT
+        from optional.lifeos_release_manager.host_compatibility import running_source
+        with tempfile.TemporaryDirectory() as temp:
+            profile = Path(temp)
+            token = set_hermes_home_override(profile)
+            try:
+                parser = argparse.ArgumentParser()
+                configure(parser)
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    code = run(parser.parse_args(['compatibility']))
+                value = json.loads(output.getvalue())
+                self.assertEqual(code, 0 if value['compatible'] or value['installed'] else 1)
+                self.assertEqual(value['detected']['source'], str(running_source()))
+                self.assertEqual(value['detected']['profile'], str(profile))
+                self.assertEqual(value['supported'], [{'label': 'v0.21.7', 'commit': SUPPORTED_HERMES_COMMIT}])
+                self.assertEqual(list(profile.iterdir()), [])
+            finally:
+                reset_hermes_home_override(token)
+
     def test_invalid_operation_identifier_refuses_without_reading_an_external_file(self):
         from hermes_constants import set_hermes_home_override, reset_hermes_home_override
         with tempfile.TemporaryDirectory() as temp:
@@ -159,3 +199,104 @@ class ReleaseManagerCommandTests(unittest.TestCase):
                 time.sleep(0.01)
             self.assertFalse(worker_running(job))
             self.assertEqual((job / 'worker.stderr').read_bytes(), b'')
+
+
+class PreparedOperationTests(unittest.TestCase):
+    """Runs the in-place preparation tail with the request preparation and the candidate review replaced."""
+
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.job = Path(folder.name).resolve() / ('a' * 32)
+        self.job.mkdir(mode=0o700)
+        self.request = {'version': '0.8.0', 'commit': 'c' * 40, 'package_sha256': 'd' * 64}
+
+    def prepare(self, review_state):
+        from unittest import mock
+        from optional.lifeos_release_manager import cli, inplace_preparation
+        reviewed = []
+        def prepare_inplace(profile, job, version, **options):
+            self.assertEqual(options, {'name': 'User', 'assistant': 'Hermes', 'intent': None, 'catalog': None})
+            return self.request, {'manager_files': {'cli.py': 'e' * 64}}
+        def prepare_plan(job, request, files):
+            reviewed.append((job, request, files))
+            write_state(job, review_state)
+        with mock.patch.object(inplace_preparation, 'prepare_inplace', side_effect=prepare_inplace), \
+                mock.patch.object(cli, 'prepare_plan', side_effect=prepare_plan):
+            try:
+                return cli._prepare_inplace_operation(Path('/profile'), self.job, None, name=' User ', assistant='Hermes ')
+            finally:
+                self.assertEqual(reviewed, [(self.job, self.request, {'cli.py': 'e' * 64})])
+
+    def test_ready_review_returns_the_operation_and_the_next_step(self):
+        self.assertEqual(self.prepare('ready'), {
+            'identifier': 'a' * 32, 'state': 'ready', 'version': '0.8.0', 'commit': 'c' * 40,
+            'package_sha256': 'd' * 64, 'active_unchanged': True,
+            'next': 'Use the release dashboard to review the operation, or run hermes lifeos-release start ' + 'a' * 32})
+
+    def test_incomplete_review_is_refused(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with self.assertRaisesRegex(ReleaseRejected, 'does not complete its program review'):
+            self.prepare('preparation_failed')
+
+
+class PreparationErrorTests(unittest.TestCase):
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.job = Path(folder.name).resolve() / 'job'
+        self.job.mkdir(mode=0o700)
+
+    def error(self, error):
+        from optional.lifeos_release_manager.cli import _preparation_error
+        return _preparation_error(self.job, error)
+
+    def test_refusal_explains_itself_and_states_that_nothing_changed(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        self.assertEqual(self.error(ReleaseRejected('This LifeOS release does not support the installed Hermes version')),
+                         'This LifeOS release does not support the installed Hermes version '
+                         'Preparation did not change the active installation.')
+
+    def test_stage_failure_reports_the_recorded_worker_refusal(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        from optional.lifeos_release_manager.release_worker import record_failure
+        try:
+            raise ReleaseRejected('LifeOS would change installed Python packages: mcp')
+        except ReleaseRejected as error:
+            record_failure(self.job, error)
+        self.assertEqual(self.error(ReleaseRejected('Release preparation fails at dependency-resolution')),
+                         'LifeOS would change installed Python packages: mcp Preparation did not change the active installation.')
+
+    def memory_unavailable(self, message):
+        from optional.lifeos_release_manager.release_stage import load_bridge
+        bridge = load_bridge(Path(__file__).resolve().parents[1] / 'lifeos_hook_bridge')
+        return bridge.memory_module('memory_access').MemoryUnavailable(message)
+
+    def test_stage_failure_reports_the_recorded_service_controller_refusal(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        from optional.lifeos_release_manager.release_worker import record_failure
+        message = 'Profile services require a stable active or inactive state before draining'
+        try:
+            raise self.memory_unavailable(message)
+        except RuntimeError as error:
+            record_failure(self.job, error)
+        self.assertEqual(self.error(ReleaseRejected('Release preparation fails at candidate-review')),
+                         message + ' Preparation did not change the active installation.')
+
+    def test_service_controller_refusal_explains_itself(self):
+        message = 'Profile services require a stable active or inactive state before draining'
+        self.assertEqual(self.error(self.memory_unavailable(message)),
+                         message + ' Preparation did not change the active installation.')
+
+    def test_unexplained_failure_reports_only_that_nothing_changed(self):
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        from optional.lifeos_release_manager.release_programs import publish
+        unchanged = 'Preparation did not change the active installation.'
+        self.assertEqual(self.error(OSError('disk full at /secret/path')), unchanged)
+        self.assertEqual(self.error(ReleaseRejected('Release preparation fails at candidate-review')), unchanged)
+        publish(self.job / 'worker-failure.json', b'{"exception": "KeyError", "frames": []}')
+        self.assertEqual(self.error(KeyError('x')), unchanged)
+        publish(self.job / 'worker-failure.json', b'not json')
+        self.assertEqual(self.error(KeyError('x')), unchanged)
+        publish(self.job / 'worker-failure.json', b'{"message": "readable by others"}', 0o644)
+        self.assertEqual(self.error(KeyError('x')), unchanged)

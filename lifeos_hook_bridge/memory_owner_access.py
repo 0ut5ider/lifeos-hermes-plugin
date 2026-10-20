@@ -14,6 +14,7 @@ from .memory_policy import CATEGORIES
 
 def _route(profile, expected):
     import hermes_constants
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     host=Path(hermes_constants.__file__).resolve().parent
     code='''import contextlib,hashlib,io,json,sys

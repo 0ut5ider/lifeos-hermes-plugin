@@ -1105,6 +1105,11 @@
       }, "Could not restore LifeOS: ");
     }
 
+    function releasesPointer() {
+      return h("p", { id: "lifeos_update_pointer" }, "This installation gets LifeOS updates from the ",
+        h("a", { href: "/lifeos-releases" }, "LifeOS releases page"), ".");
+    }
+
     function renderTier(tier) {
       const label = tier.charAt(0).toUpperCase() + tier.slice(1);
       const modelKey = tier + "_model";
@@ -1178,21 +1183,22 @@
         installation?.lifeos === "installed" ? h("p", null,
           "LifeOS " + installation.version + " is installed.") : null,
         installation?.lifeos === "installed" && installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
-          h("p", null, "Updates use a tested LifeOS commit and compatibility patch set. The worker stages dependencies and hook registrations, restarts Hermes, then verifies the installed result."),
-          (!installation.candidate_ready || lifeosUpdate?.state === "applied") ? h("button", {
+          installation.in_place ? releasesPointer()
+            : h("p", null, "Updates use a tested LifeOS commit and compatibility patch set. The worker stages dependencies and hook registrations, restarts Hermes, then verifies the installed result."),
+          !installation.in_place && (!installation.candidate_ready || lifeosUpdate?.state === "applied") ? h("button", {
             type: "button", disabled: installationBusy || ["queued", "preparing", "applying"].includes(lifeosUpdate?.state),
             onClick: prepareLifeOS,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Preparing..." : lifeosUpdate?.state === "applied" ? "Check for newer supported LifeOS" : "Prepare latest LifeOS update") : null,
-          installation.candidate_ready ? h("p", null,
+          !installation.in_place && installation.candidate_ready ? h("p", null,
             "Prepared commit " + installation.candidate_commit + " with " + installation.candidate_patch_count + " compatibility patches.") : null,
-          installation.candidate_ready && (["none", "failed", "rolled_back"].includes(lifeosUpdate?.state)
+          !installation.in_place && installation.candidate_ready && (["none", "failed", "rolled_back"].includes(lifeosUpdate?.state)
             || (lifeosUpdate?.state === "applied" && installation.candidate_newer)) ? h("button", {
             type: "button", disabled: installationBusy, onClick: applyLifeOSUpdate,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Starting..." : "Apply prepared LifeOS update") : null,
           lifeosUpdate?.state === "applied" ? h("p", { role: "status" }, "LifeOS update applied and verified.") : null,
-          lifeosUpdate?.state === "applied" ? h("div", { className: "space-y-2" },
+          !installation.in_place && lifeosUpdate?.state === "applied" ? h("div", { className: "space-y-2" },
             h("p", null, "Restore the program version saved before this update. Memory and audit data in the same external user directory stay current. Restore stops if its directory links, user data inside the program directory, or Hermes configuration have changed. Your conversations stay in Hermes."),
             h("button", { type: "button", disabled: installationBusy, onClick: restoreLifeOSUpdate,
               className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Restore previous LifeOS version")) : null,
@@ -1209,7 +1215,8 @@
           h("button", {type: "button", disabled: installationBusy, onClick: recoverLifeOSMount,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50"},
             "Restore interrupted mount")) : null,
-        installation?.lifeos === "installed" && !installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
+        installation?.lifeos === "installed" && !installation.setup_baseline_exists && installation.in_place ? releasesPointer() : null,
+        installation?.lifeos === "installed" && !installation.setup_baseline_exists && !installation.in_place ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, installation.candidate_ready ?
             "Finish setup to mount LifeOS into Hermes and record the installed system files." :
             "A prepared LifeOS source is required to finish setup. Review the VersionDrift controls below if this is an existing installation."),
@@ -1235,15 +1242,15 @@
               "Scheduled workers may start outside the managed plugin dependency environment.",
             ].map(function (item) { return h("li", { key: item }, item); }))),
           h("p", null, "You can keep Hermes unchanged and use these limited callbacks."),
-          h("button", {
+          installation.in_place ? null : h("button", {
             type: "button", disabled: installationBusy || installation.hermes_candidate_ready,
             onClick: prepareHermes,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Preparing..." : "Prepare tested Hermes extension"),
-          installation.hermes_candidate_ready ? h("p", null,
+          !installation.in_place && installation.hermes_candidate_ready ? h("p", null,
             "Candidate base " + installation.hermes_candidate_commit + " contains " +
             installation.hermes_candidate_patch_count + " Hermes patches.") : null,
-          installation.hermes_candidate_ready && installation.setup_baseline_exists &&
+          !installation.in_place && installation.hermes_candidate_ready && installation.setup_baseline_exists &&
           ["none", "rolled_back", "failed_preflight"].includes(hostPatch?.state) ? h("button", {
             type: "button", disabled: installationBusy, onClick: applyHermes,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
@@ -1253,7 +1260,7 @@
         hostPatch?.state === "applied" ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, "Hermes extension is active. Full LifeOS hook parity remains unverified."),
           hostPatch.error ? h("p", { role: "status" }, hostPatch.error) : null,
-          h("button", {
+          installation?.in_place ? null : h("button", {
             type: "button", disabled: installationBusy, onClick: restoreHermes,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, "Restore previous Hermes")) : null,

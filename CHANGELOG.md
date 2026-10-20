@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+0.8.0-rc.5 installs LifeOS into the owner's existing Hermes installation instead of a separate managed runtime.
+
+- Check the Hermes installation before any change: `hermes lifeos-release compatibility` and the releases page compare every target file with the qualified stock and patched hashes. Preparation runs this check before it downloads anything.
+- Refuse a Hermes that runs another Python version than the release qualifies, and report a damaged `lifeos-host.json` as host drift that names the file.
+- Show the changed and added Hermes files, the configuration keys LifeOS changes, the files an update changes or restores, and any known conflicts in the review.
+- Download a small integration package (bridge, release manager, and patches) and the pinned LifeOS commit. Patch the existing Hermes checkout in place and keep the original files for removal.
+- Publish all host changes through one journaled transaction. Stop and restart only the services that the host has, and offer a standard unit for a hand-started gateway or dashboard.
+- Prove after restart that the gateway imports the installed checkout with the patched hooks. Each restarted service must run a new process and keep its enabled state, the patched hooks and middleware API must be present, and the memory provider must not change.
+- Report host drift in `hermes lifeos-version`: a `host` block lists the patched Hermes files that changed since installation.
+- Hold `hermes update` while LifeOS is installed.
+- Record the configuration values that LifeOS changes. Removal restores them unless the owner changed them later.
+- Remove an in-place installation: restore the original Hermes files, delete the added files, and keep memory, `.env` owner lines, and third-party plugins. Removal still works when the Hermes update hold is already gone.
+- Hold the Hermes update lock while removal, its rollback, or its recovery changes the Hermes files, so `hermes update` cannot change the checkout during removal.
+- Move a managed 0.7.x installation to in-place, including its gateway unit, and restore it to the managed runtime on request.
+- Keep later `config.yaml` changes when an in-place operation is restored, and return only the keys the operation changed. A restore refuses before any service stops, and names the key, when the owner changed such a key again. Before, any later configuration change made the restore fail with a generic message while the page still offered it. An operation that mounted native LifeOS still restores only while `config.yaml` is unchanged.
+- Refuse the move while a Hermes unit runs the managed runtime through a program other than the account commands in `~/.local/bin`. Point the unit at `~/.local/bin/hermes` first.
+- Keep a private failure record for stopped memory workflows and failed fresh-agent probes.
+- Let `hermes lifeos-release prepare` prepare an update or the managed-runtime move. In 0.8.0-rc.1 it prepared only a first installation.
+- Find Hermes processes that the stock launcher started without a re-execution, such as a hand-started dashboard or an interactive session. 0.8.0-rc.1 missed them, patched files beneath them, and offered no unit.
+- Give the unit that replaces a hand-started dashboard the same `--host` and `--port`. Refuse when hand-started dashboards listen on different addresses.
+- Show in the review the address that a created dashboard unit listens on, such as `0.0.0.0:9119`.
+- Point LifeOS updates on an in-place installation to the releases page: the LifeOS Bridge page hides its own LifeOS update, Hermes patch, and setup controls, and their routes refuse with HTTP 409 except to recover an interrupted bridge job.
+- Count the hand-started dashboard that serves the review as a consumer that its new unit replaces. In 0.8.0-rc.2 the review re-sealed a plan without it, and the installation rolled back.
+- Refuse an apply before any service stops when the services to stop, create, or replace differ from the reviewed plan.
+- Synchronize the Hermes dependencies when a provider return or its rollback changes the enabled plugins, before the services restart. Before, the restarted gateway finished the environment itself under the Hermes update lock, and the return's fresh-agent check failed until a recovery.
+- Find Bun in the account's `~/.local/bin` when the dashboard's `PATH` lacks it.
+- Tell the owner to claim the installation when the releases page cannot show memory workflows before the claim.
+- Record the login of the dashboard password provider that authorized a removal, and check the standalone recovery password against it. 0.8.0-rc.1 read the login only from `config.yaml` and refused removal on hosts that set it through the environment.
+- Delete the kept original of a Hermes file that an update stops patching, so the next complete removal no longer refuses.
+- Publish the Hermes files that LifeOS adds before the patched files that import them, and document a recovery command for a Hermes that cannot load its plugins.
+- Release the Hermes update lock before a rollback restarts the services, so a failed dependency restore no longer leaves them unable to boot.
+- Show the reason when preparation stops on a LifeOS service refusal, for example a gateway unit in the failed state.
+- Tell the owner to prepare the operation again, not to recover it, when a hand-started Hermes process does not stop.
+
 ## 0.7.3 (2026-10-16)
 
 - Add contributor instructions and a codebase navigation guide.

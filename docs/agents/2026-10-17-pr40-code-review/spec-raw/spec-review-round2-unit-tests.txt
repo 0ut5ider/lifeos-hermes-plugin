@@ -1,0 +1,120 @@
+== test_inplace_plan
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 1.522s
+
+OK
+== test_inplace_worker
+........................
+----------------------------------------------------------------------
+Ran 24 tests in 26.453s
+
+OK
+== test_host_capabilities
+.s.......
+----------------------------------------------------------------------
+Ran 9 tests in 2.671s
+
+OK (skipped=1)
+== test_release_version
+....E.......
+======================================================================
+ERROR: test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call (tests.test_release_version.ReleaseVersionCommandTests.test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_version.py", line 163, in test_actual_hermes_parser_reports_the_selected_plugin_without_a_model_call
+    import test_memory_owner_job_command as commands
+ModuleNotFoundError: No module named 'test_memory_owner_job_command'
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.018s
+
+FAILED (errors=1)
+== test_host_compatibility
+..........................................
+----------------------------------------------------------------------
+Ran 42 tests in 0.772s
+
+OK
+== test_host_compatibility_manifest
+............s
+----------------------------------------------------------------------
+Ran 13 tests in 0.247s
+
+OK (skipped=1)
+== test_inplace_removal
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.621s
+
+OK
+== test_inplace_preparation
+......................
+----------------------------------------------------------------------
+Ran 22 tests in 7.125s
+
+OK
+== test_inplace_services
+........
+----------------------------------------------------------------------
+Ran 8 tests in 8.327s
+
+OK
+== test_host_configuration
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.029s
+
+OK
+== test_release_dashboard
+..s.....
+----------------------------------------------------------------------
+Ran 8 tests in 3.341s
+
+OK (skipped=1)
+== test_integration_release_build
+...
+----------------------------------------------------------------------
+Ran 3 tests in 2.071s
+
+OK
+== test_release_manager_cli
+.....E........
+======================================================================
+ERROR: test_changed_retained_worker_refuses_before_admission_or_launch (tests.test_release_manager_cli.ReleaseManagerCommandTests.test_changed_retained_worker_refuses_before_admission_or_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_manager_cli.py", line 22, in test_changed_retained_worker_refuses_before_admission_or_launch
+    from test_release_stage import ReleaseStageTests
+ModuleNotFoundError: No module named 'test_release_stage'
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.098s
+
+FAILED (errors=1)
+== test_release_programs
+........................
+----------------------------------------------------------------------
+Ran 24 tests in 0.117s
+
+OK
+== test_release_accounts
+....E...
+======================================================================
+ERROR: test_installed_inspector_accepts_the_account_launcher_under_native_home (tests.test_release_accounts.ReleaseAccountTests.test_installed_inspector_accepts_the_account_launcher_under_native_home)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_accounts.py", line 23, in test_installed_inspector_accepts_the_account_launcher_under_native_home
+    from test_release_stage import ReleaseStageTests
+ModuleNotFoundError: No module named 'test_release_stage'
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.567s
+
+FAILED (errors=1)
+== test_release_preparation
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.016s
+
+OK

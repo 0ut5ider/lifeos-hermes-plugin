@@ -1,0 +1,614 @@
+# ABOUTME: Checks the in-place worker's restart verification, rollback order, bytecode removal, and inventory.
+# ABOUTME: Uses real user systemd units with synthetic names, real processes, real files, and real Git checkouts.
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+from unittest import mock
+from uuid import uuid4
+
+from optional.lifeos_release_manager import inplace_worker
+from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+from optional.lifeos_release_manager.release_programs import ProgramTransaction, publish
+
+
+PYTHON = '%d.%d' % sys.version_info[:2]
+
+
+class SyntheticUnits(unittest.TestCase):
+    """Starts uniquely named runtime units so the account's own Hermes services are never touched."""
+
+    def setUp(self):
+        self.folder = tempfile.TemporaryDirectory()
+        self.addCleanup(self.folder.cleanup)
+        self.root = Path(self.folder.name)
+        suffix = uuid4().hex[:8]
+        self.units = {'gateway': 'lifeos-worker-gateway-' + suffix + '.service',
+                      'dashboard': 'lifeos-worker-dashboard-' + suffix + '.service'}
+
+    def unit(self, role, *, start=True):
+        path = self.root / self.units[role]
+        path.write_text('[Unit]\nDescription=LifeOS synthetic worker control\n[Service]\nType=simple\n'
+                        'ExecStart=' + sys.executable + ' -c "import time; time.sleep(120)"\n'
+                        '[Install]\nWantedBy=default.target\n')
+        subprocess.run(['systemctl', '--user', '--quiet', 'link', '--runtime', str(path)], check=True)
+        subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
+        def cleanup():
+            subprocess.run(['systemctl', '--user', 'stop', self.units[role]], check=False)
+            subprocess.run(['systemctl', '--user', '--quiet', 'disable', '--runtime', self.units[role]], check=False)
+            subprocess.run(['systemctl', '--user', 'daemon-reload'], check=False)
+        self.addCleanup(cleanup)
+        if start:
+            subprocess.run(['systemctl', '--user', 'start', self.units[role]], check=True)
+            time.sleep(0.3)
+        return self.units[role]
+
+
+class RestartTests(SyntheticUnits):
+    def test_unit_restarted_after_the_drain_passes(self):
+        unit = self.unit('gateway', start=False)
+        drained = inplace_worker.boot_ticks()
+        time.sleep(0.05)
+        subprocess.run(['systemctl', '--user', 'start', unit], check=True)
+        inplace_worker.check_restarted([unit], drained)
+
+    def test_unit_whose_process_predates_the_drain_is_refused(self):
+        unit = self.unit('gateway')
+        time.sleep(0.05)
+        drained = inplace_worker.boot_ticks()
+        with self.assertRaisesRegex(ReleaseRejected, 'new main process'):
+            inplace_worker.check_restarted([unit], drained)
+
+    def test_stopped_unit_is_refused(self):
+        unit = self.unit('gateway', start=False)
+        with self.assertRaisesRegex(ReleaseRejected, 'new main process'):
+            inplace_worker.check_restarted([unit], inplace_worker.boot_ticks())
+
+    def test_unchanged_enablement_passes_and_a_changed_one_is_refused(self):
+        gateway, dashboard = self.unit('gateway'), self.unit('dashboard')
+        subprocess.run(['systemctl', '--user', '--quiet', 'enable', '--runtime', dashboard], check=True)
+        recorded = {gateway: 'linked-runtime', dashboard: 'enabled-runtime'}
+        inplace_worker.check_enabled(recorded)
+        subprocess.run(['systemctl', '--user', '--quiet', 'disable', '--runtime', dashboard], check=True)
+        subprocess.run(['systemctl', '--user', '--quiet', 'link', '--runtime', str(self.root / dashboard)], check=True)
+        with self.assertRaisesRegex(ReleaseRejected, dashboard):
+            inplace_worker.check_enabled(recorded)
+
+
+class VerifyRestartTests(SyntheticUnits):
+    def setUp(self):
+        super().setUp()
+        self.profile = self.root / '.hermes'
+        self.profile.mkdir(mode=0o700)
+        self.source = self.root / 'hermes-agent'
+        (self.source / 'hermes_cli').mkdir(parents=True)
+        (self.source / 'hermes_cli/__init__.py').write_text('')
+        (self.source / 'hermes_cli/plugins.py').write_text("VALID_HOOKS = {'pre_turn_stop'}\n")
+        (self.source / 'hermes_cli/middleware.py').write_text('REQUIRED_MIDDLEWARE_API_VERSION = 1\n')
+        self.before = b'memory:\n  provider: builtin\n'
+        (self.profile / 'config.yaml').write_bytes(self.before)
+        self.request = {'format': 2, 'profile': str(self.profile), 'account_home': str(self.root),
+                        'host': {'source': str(self.source)}, 'runtime': {'bun': str(self.root / 'tools/bun')}}
+        self.entry = {'label': 'v0.0.1', 'python': PYTHON,
+                      'capabilities': {'hooks': ['pre_turn_stop'], 'middleware_api': 1}}
+        self.gateway = self.unit('gateway', start=False)
+        self.plan = {'services': {'roles': ['gateway'], 'created': [], 'enabled': {'gateway': 'linked-runtime'}}}
+        self.drained = inplace_worker.boot_ticks()
+        time.sleep(0.05)
+        subprocess.run(['systemctl', '--user', 'start', self.gateway], check=True)
+
+    def verify(self, *, fresh=False):
+        inplace_worker.verify_restart(self.request, self.plan, self.entry, ['gateway'], self.drained, self.before,
+                                      fresh=fresh, python=sys.executable, units=self.units)
+
+    def test_restarted_patched_host_with_unchanged_memory_provider_passes(self):
+        self.verify()
+
+    def test_changed_memory_provider_is_refused_unless_fresh(self):
+        (self.profile / 'config.yaml').write_bytes(b'memory:\n  provider: lifeos\n')
+        with self.assertRaisesRegex(ReleaseRejected, 'memory.provider'):
+            self.verify()
+        self.verify(fresh=True)
+
+    def test_host_without_the_patched_hooks_is_refused(self):
+        (self.source / 'hermes_cli/plugins.py').write_text("VALID_HOOKS = {'pre_tool_call'}\n")
+        with self.assertRaisesRegex(ReleaseRejected, 'pre_turn_stop'):
+            self.verify()
+
+    def test_changed_enablement_is_refused(self):
+        self.plan['services']['enabled'] = {'gateway': 'enabled-runtime'}
+        with self.assertRaisesRegex(ReleaseRejected, 'starts with your account'):
+            self.verify()
+
+    def test_unit_that_did_not_restart_is_refused(self):
+        self.drained = inplace_worker.boot_ticks()
+        with self.assertRaisesRegex(ReleaseRejected, 'new main process'):
+            self.verify()
+
+
+class VerifyRuntimeTests(unittest.TestCase):
+    """Runs a real launcher script that answers ``config check`` and ``lifeos-version`` like Hermes."""
+
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        root = Path(folder.name).resolve()
+        self.profile = root / '.hermes'
+        job = self.profile / '.lifeos-releases' / ('a' * 32)
+        job.mkdir(parents=True, mode=0o700)
+        self.report = root / 'report.json'
+        launcher = root / 'hermes'
+        launcher.write_text('#!/bin/sh\nif [ "$1" = lifeos-version ]; then cat ' + str(self.report) + '; fi\n')
+        launcher.chmod(0o755)
+        publish(job / 'plan.json', json.dumps({'launchers': [str(launcher)]}).encode())
+        self.identity = {'version': '0.8.0', 'commit': 'c' * 40, 'package_sha256': 'd' * 64}
+        self.request = {'format': 2, 'profile': str(self.profile), 'account_home': str(root), 'identifier': job.name,
+                        'runtime': {'hermes': str(launcher), 'bun': str(root / 'tools/bun')}, **self.identity}
+
+    def verify(self, host):
+        from optional.lifeos_release_manager.release_plan import verify_runtime
+        self.report.write_text(json.dumps({'active': {'verification': 'verified', **self.identity}, 'host': host}))
+        verify_runtime(self.request)
+
+    def test_installed_host_passes(self):
+        self.verify({'state': 'installed', 'source': '/h', 'changed': []})
+
+    def test_host_drift_is_refused_with_the_changed_paths(self):
+        with self.assertRaisesRegex(ReleaseRejected, 'hermes_cli/plugins.py'):
+            self.verify({'state': 'host_drift', 'source': '/h', 'changed': ['hermes_cli/plugins.py']})
+
+
+class RollbackTests(unittest.TestCase):
+    """Publishes a real program transaction over real files, then rolls it back through the worker."""
+
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.root = Path(folder.name).resolve()
+        self.job = self.root / 'job'
+        self.job.mkdir(mode=0o700)
+        self.target = self.root / 'hermes-agent/hermes_cli/plugins.py'
+        self.target.parent.mkdir(parents=True)
+        self.target.write_text('stock\n')
+        self.added = self.target.with_name('new_hook.py')
+        patched, added = self.root / 'patched.py', self.root / 'added.py'
+        patched.write_text('patched\n')
+        added.write_text('added\n')
+        self.programs = ProgramTransaction(self.job / 'program-snapshot')
+        self.programs.prepare(directories={}, files={self.target: patched, self.added: added})
+        self.programs.apply()
+        self.order = []
+        self.request = {'host': {'source': str(self.target.parents[1])}}
+        self.plan = {'services': {'created': []}}
+
+    def services(self, state='stopped'):
+        order, outer = self.order, self
+
+        class Services:
+            def status(self):
+                return {'state': state}
+
+            def quiesce(self):
+                order.append('services-stopped')
+
+            def resume(self):
+                order.append(('services-resumed', outer.target.read_text(), outer.added.exists()))
+
+        return Services()
+
+    def rollback(self, synchronize, services=None):
+        def reload(*arguments):
+            self.order.append((' '.join(arguments), self.target.read_text(), self.added.exists()))
+        def mount():
+            self.order.append(('mount', self.target.read_text()))
+        with mock.patch.object(inplace_worker, '_systemctl', side_effect=reload), \
+                mock.patch.object(inplace_worker, 'synchronize', side_effect=synchronize):
+            return inplace_worker._rollback(self.job, self.request, self.plan,
+                                            self.services() if services is None else services, self.programs, mount,
+                                            release_update=lambda: self.order.append('update-released'))
+
+    def test_rollback_restores_mount_programs_reload_dependencies_then_services(self):
+        def synchronize(job, request, *, label):
+            self.order.append((label, self.target.read_text()))
+            return {'lock_sha256': 'a' * 64}
+        self.assertTrue(self.rollback(synchronize))
+        self.assertEqual(self.order, ['services-stopped', ('mount', 'patched\n'), ('daemon-reload', 'stock\n', False),
+                                      ('dependency-restore', 'stock\n'), 'update-released',
+                                      ('services-resumed', 'stock\n', False)])
+        self.assertFalse((self.job / 'dependency-restore-failure.json').exists())
+
+    def test_services_without_a_drain_journal_are_neither_stopped_nor_resumed(self):
+        def synchronize(job, request, *, label):
+            return {'lock_sha256': 'a' * 64}
+        self.request['host']['transition_units'] = {'gateway': {'before': 'b' * 64, 'after': 'c' * 64}}
+        self.assertTrue(self.rollback(synchronize, services=self.services('none')))
+        self.assertEqual(self.order, [('mount', 'patched\n'), ('daemon-reload', 'stock\n', False), 'update-released'])
+
+    def test_failed_dependency_restore_is_recorded_and_services_still_resume(self):
+        def synchronize(job, request, *, label):
+            raise ReleaseRejected('Hermes cannot build the environment')
+        self.assertFalse(self.rollback(synchronize))
+        self.assertEqual(self.order[-2:], ['update-released', ('services-resumed', 'stock\n', False)])
+        self.assertEqual(json.loads((self.job / 'dependency-restore-failure.json').read_text()),
+                         {'error': 'ReleaseRejected'})
+
+
+class TerminateTests(unittest.TestCase):
+    def test_process_that_outlives_the_deadline_asks_for_a_new_preparation(self):
+        child = subprocess.Popen([sys.executable, '-c', 'import signal, sys, time\n'
+                                  'signal.signal(signal.SIGTERM, signal.SIG_IGN)\nprint(flush=True)\ntime.sleep(60)'],
+                                 stdout=subprocess.PIPE)
+        self.addCleanup(child.wait)
+        self.addCleanup(child.kill)
+        child.stdout.readline()
+        with mock.patch.object(inplace_worker.time, 'monotonic', side_effect=[0, 31]), \
+                self.assertRaisesRegex(ReleaseRejected, '^A hand-started Hermes process does not stop; '
+                                                        'close it, then prepare the operation again$'):
+            inplace_worker._terminate([{'pid': child.pid}])
+
+
+class BytecodeTests(unittest.TestCase):
+    def test_only_the_cached_bytecode_of_changed_source_modules_is_removed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'hermes-agent'
+            cache = source / 'hermes_cli/__pycache__'
+            cache.mkdir(parents=True)
+            for name in ('plugins.cpython-314.pyc', 'plugins.cpython-314.opt-1.pyc', 'plugins_extra.cpython-314.pyc',
+                         'config.cpython-314.pyc'):
+                (cache / name).write_bytes(b'compiled')
+            outside = Path(directory) / 'elsewhere/__pycache__'
+            outside.mkdir(parents=True)
+            (outside / 'plugins.cpython-314.pyc').write_bytes(b'compiled')
+            inplace_worker.clear_bytecode({'host': {'source': str(source)}},
+                                          [str(source / 'hermes_cli/plugins.py'), str(source / 'scripts/run.sh'),
+                                           str(Path(directory) / 'elsewhere/plugins.py')])
+            self.assertEqual(sorted(path.name for path in cache.iterdir()),
+                             ['config.cpython-314.pyc', 'plugins_extra.cpython-314.pyc'])
+            self.assertTrue((outside / 'plugins.cpython-314.pyc').exists())
+
+
+class InventorySnapshotTests(unittest.TestCase):
+    def test_snapshot_records_other_plugins_enablement_and_packages_and_detects_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile, source = root / '.hermes', root / 'hermes-agent'
+            for name in ('weather', 'lifeos-hook-bridge'):
+                (profile / 'plugins' / name).mkdir(parents=True)
+                (profile / 'plugins' / name / 'plugin.yaml').write_text('name: ' + name + '\n')
+            (profile / 'config.yaml').write_text('plugins:\n  enabled: [weather, lifeos-hook-bridge]\n')
+            source.mkdir()
+            (source / 'uv.lock').write_text('version = 1\n[[package]]\nname = "mcp"\nversion = "2.0.0"\n'
+                                            'source = { registry = "https://pypi.org/simple" }\n'
+                                            '[[package]]\nname = "hermes-agent"\nversion = "0.21.7"\n'
+                                            'source = { editable = "." }\n')
+            request = {'profile': str(profile), 'host': {'source': str(source)}}
+            before = inplace_worker.inventory_snapshot(request)
+            self.assertEqual(sorted(before['plugins']), ['weather'])
+            self.assertEqual(before['enabled'], ['weather'])
+            self.assertEqual(before['packages'], {'mcp': ['2.0.0']})
+            (profile / 'plugins/lifeos-hook-bridge/plugin.yaml').write_text('name: changed by the operation\n')
+            inplace_worker.check_inventory(before, inplace_worker.inventory_snapshot(request), {})
+            (profile / 'plugins/weather/plugin.yaml').write_text('name: weather\nversion: 2\n')
+            with self.assertRaisesRegex(ReleaseRejected, 'another Hermes plugin'):
+                inplace_worker.check_inventory(before, inplace_worker.inventory_snapshot(request), {})
+
+
+class PluginDigestTests(unittest.TestCase):
+    def test_bytecode_is_ignored_and_a_changed_link_or_file_is_detected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile, source = root / '.hermes', root / 'hermes-agent'
+            plugin = profile / 'plugins/weather'
+            (plugin / '__pycache__').mkdir(parents=True)
+            (plugin / 'plugin.yaml').write_text('name: weather\n')
+            (plugin / 'current').symlink_to('plugin.yaml')
+            (profile / 'config.yaml').write_text('plugins:\n  enabled: [weather]\n')
+            source.mkdir()
+            (source / 'uv.lock').write_text('version = 1\n')
+            request = {'profile': str(profile), 'host': {'source': str(source)}}
+            before = inplace_worker.inventory_snapshot(request)
+            (plugin / '__pycache__/weather.cpython-314.pyc').write_bytes(b'compiled')
+            (plugin / 'cached.pyc').write_bytes(b'compiled')
+            self.assertEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+            (plugin / 'current').unlink()
+            (plugin / 'current').symlink_to('other.yaml')
+            self.assertNotEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+            (plugin / 'current').unlink()
+            (plugin / 'current').symlink_to('plugin.yaml')
+            self.assertEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+            (plugin / 'plugin.yaml').write_text('name: weather\nversion: 2\n')
+            self.assertNotEqual(inplace_worker.inventory_snapshot(request)['plugins'], before['plugins'])
+
+
+class CreatedUnitsTests(unittest.TestCase):
+    def test_created_units_are_the_standard_gateway_and_dashboard_units(self):
+        self.assertEqual(inplace_worker.CREATED_UNITS,
+                         {'gateway': 'hermes-gateway.service', 'dashboard': 'hermes-dashboard.service'})
+
+
+class ConsumersStoppedTests(unittest.TestCase):
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        root = Path(folder.name)
+        self.source = root / 'hermes-agent'
+        self.source.mkdir()
+        self.state = root / 'installs/0123456789abcdef'
+        self.state.mkdir(parents=True)
+        self.request = {'host': {'source': str(self.source), 'state_directory': str(self.state)}}
+
+    def process(self, *arguments):
+        """Start a detached Hermes-like process that this test does not parent, like a hand-started consumer."""
+        command = ' '.join([sys.executable, '-c', '"import time; time.sleep(120)"', *arguments])
+        launched = subprocess.run(['/bin/sh', '-c', command + ' >/dev/null 2>&1 & echo $!'], capture_output=True,
+                                  text=True, check=True, env={**os.environ, 'PYTHONPATH': str(self.source)})
+        pid = int(launched.stdout)
+        def stop():
+            try:
+                os.kill(pid, 9)
+            except ProcessLookupError:
+                pass
+        self.addCleanup(stop)
+        time.sleep(0.3)
+        return pid
+
+    def test_reviewed_hand_started_dashboard_is_stopped_for_its_created_unit(self):
+        from optional.lifeos_release_manager.inplace_services import inventory
+        pid = self.process('dashboard')
+        consumers = inventory(self.source, self.state)['consumers']
+        self.assertEqual([item['pid'] for item in consumers], [pid])
+        inplace_worker._consumers_stopped(self.request, {'services': {'created': ['dashboard'], 'consumers': consumers}})
+        self.assertFalse(Path('/proc', str(pid)).exists())
+
+    def test_remaining_consumer_refuses_with_its_process(self):
+        pid = self.process('chat')
+        with self.assertRaisesRegex(ReleaseRejected, 'still use the installation: .*' + str(pid)):
+            inplace_worker._consumers_stopped(self.request, {'services': {'created': [], 'consumers': []}})
+        self.assertTrue(Path('/proc', str(pid)).exists())
+
+
+class RegistrationTests(SyntheticUnits):
+    """A synthetic gateway unit writes a real registration receipt through the bridge's own module."""
+
+    def setUp(self):
+        super().setUp()
+        import shutil
+        repository = Path(__file__).resolve().parents[1]
+        self.profile = self.root / '.hermes'
+        shutil.copytree(repository / 'lifeos_hook_bridge', self.profile / 'plugins/lifeos-hook-bridge',
+                        ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+        self.source = self.root / 'hermes-agent'
+        (self.source / 'hermes_cli').mkdir(parents=True)
+        (self.source / 'hermes_cli/__init__.py').write_text('')
+        self.request = {'profile': str(self.profile), 'host': {'source': str(self.source)}}
+
+    def gateway(self, mode):
+        script = self.root / 'gateway.py'
+        script.write_text('import importlib.util, sys, time\nsys.path.insert(0, sys.argv[1])\n'
+                          'spec = importlib.util.spec_from_file_location("registration", sys.argv[2])\n'
+                          'module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)\n'
+                          'module.write_receipt(sys.argv[3], sys.argv[4])\ntime.sleep(120)\n')
+        unit = self.root / self.units['gateway']
+        unit.write_text('[Service]\nType=simple\nExecStart=' + sys.executable + ' -B ' + str(script) + ' ' + str(self.source)
+                        + ' ' + str(self.profile / 'plugins/lifeos-hook-bridge/registration.py') + ' ' + str(self.profile)
+                        + ' ' + mode + '\n')
+        subprocess.run(['systemctl', '--user', '--quiet', 'link', '--runtime', str(unit)], check=True)
+        subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
+        def cleanup():
+            subprocess.run(['systemctl', '--user', 'stop', self.units['gateway']], check=False)
+            subprocess.run(['systemctl', '--user', '--quiet', 'disable', '--runtime', self.units['gateway']], check=False)
+            subprocess.run(['systemctl', '--user', 'daemon-reload'], check=False)
+        self.addCleanup(cleanup)
+        subprocess.run(['systemctl', '--user', 'start', self.units['gateway']], check=True)
+
+    def verify(self, plan=None):
+        plan = plan or {'services': {'roles': ['gateway'], 'created': [], 'active': {'gateway': True}}}
+        return inplace_worker.verify_registration(self.request, plan, unit=self.units['gateway'])
+
+    def test_patched_receipt_from_the_installed_checkout_is_returned(self):
+        self.gateway('patched')
+        receipt = self.verify()
+        self.assertEqual((receipt['mode'], receipt['source']), ('patched', str(self.source.resolve())))
+
+    def test_reduced_registration_is_refused(self):
+        self.gateway('reduced')
+        with self.assertRaisesRegex(ReleaseRejected, 'without the patched host hooks'):
+            self.verify()
+
+    def test_gateway_that_did_not_run_before_may_stay_stopped(self):
+        self.unit('gateway', start=False)
+        self.assertIsNone(self.verify({'services': {'roles': ['gateway'], 'created': [], 'active': {'gateway': False}}}))
+        with self.assertRaisesRegex(ReleaseRejected, 'does not run after the operation'):
+            self.verify()
+
+    def test_profile_without_a_gateway_role_needs_no_receipt(self):
+        self.assertIsNone(self.verify({'services': {'roles': [], 'created': [], 'active': {}}}))
+
+
+class ReviewedServicesTests(unittest.TestCase):
+    def services(self, **changes):
+        value = {'roles': ['gateway'], 'created': ['dashboard', 'pulse'], 'signature': 's' * 64,
+                 'consumers': [{'pid': 41, 'start_time': 7, 'command': 'python3', 'role': 'dashboard'}],
+                 'active': {'gateway': True}, 'enabled': {'gateway': 'enabled'}}
+        value.update(changes)
+        return value
+
+    def test_apply_refuses_services_that_differ_from_the_review(self):
+        from optional.lifeos_release_manager.inplace_worker import check_reviewed_services
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        check_reviewed_services(self.services(), self.services())
+        check_reviewed_services(None, None)
+        for fresh in (self.services(created=['pulse']), self.services(roles=['gateway', 'dashboard']),
+                      self.services(consumers=[]), None,
+                      self.services(consumers=[{'pid': 41, 'start_time': 8, 'command': 'python3', 'role': 'dashboard'}])):
+            with self.subTest(fresh=fresh), self.assertRaisesRegex(ReleaseRejected, 'changed after review'):
+                check_reviewed_services(self.services(), fresh)
+
+
+class ConfigurationRestoreTests(unittest.TestCase):
+    """Restores an applied in-place operation after the owner changed config.yaml, through the worker's restore path."""
+
+    BEFORE = (b'# owner notes\nmodel:\n  default: m1\nplugins:\n  entries:\n    lifeos-hook-bridge:\n'
+              b'      settings:\n        lifeos_source_dir: /old\n')
+
+    def setUp(self):
+        from optional.lifeos_release_manager.cli import write_state
+        from optional.lifeos_release_manager.release_operation import seal_plan
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.root = Path(folder.name)
+        self.profile = self.root / '.hermes'
+        self.job = self.profile / '.lifeos-releases' / ('a' * 32)
+        self.job.mkdir(parents=True, mode=0o700)
+        os.chmod(self.profile, 0o700)
+        os.chmod(self.profile / '.lifeos-releases', 0o700)
+        self.configuration = self.profile / 'config.yaml'
+        self.configuration.write_bytes(self.BEFORE)
+        self.receipt = self.profile / 'integration-release.json'
+        self.receipt.write_text('{"version": "0.7.3"}\n')
+        generated = self.job / 'generated'
+        generated.mkdir(mode=0o700)
+        self.request = {'format': 2, 'identifier': self.job.name, 'profile': str(self.profile),
+                        'installed': str(self.root / 'installed'), 'version': '0.8.0', 'commit': 'b' * 40,
+                        'package_sha256': 'c' * 64, 'host': {'source': str(self.root / 'source')},
+                        'account_home': str(self.root), 'runtime': {'bun': str(self.root / 'bin/bun')}}
+        publish(generated / 'config.yaml', self.BEFORE.replace(b'/old', b'/new'))
+        publish(generated / 'integration-release.json',
+                json.dumps({key: self.request[key] for key in ('version', 'commit', 'package_sha256')}).encode())
+        programs = ProgramTransaction(self.job / 'program-snapshot')
+        programs.prepare(directories={}, files={self.configuration: generated / 'config.yaml',
+                                               self.receipt: generated / 'integration-release.json'})
+        programs.apply()
+        publish(self.job / 'request.json', json.dumps(self.request).encode())
+        write_state(self.job, 'ready')
+        self.plan = {'fresh': False, 'native_mount_required': False, 'services': {'roles': [], 'created': []},
+                     'program_entries_sha256': programs.entries_digest()}
+        seal_plan(self.job, self.request, self.plan)
+        write_state(self.job, 'applied')
+        self.order = []
+
+    def current(self):
+        installed, profile = self.root / 'installed', self.profile
+
+        class Module:
+            def selection(self, profile):
+                return type('Selection', (), {'installed': installed})()
+
+            def default_baseline_path(self, parent):
+                return parent / 'baseline.json'
+
+            def MountTransaction(self, installed, profile, baseline):
+                return type('Mount', (), {'journal': profile / '.lifeos-mount/operation.json'})()
+
+        class Current:
+            def memory_module(self, name):
+                return Module()
+
+            def memory_administration(self):
+                return None
+
+        return Current()
+
+    def run_action(self, action):
+        def record(name):
+            return lambda *arguments, **options: self.order.append(name)
+        with mock.patch.object(inplace_worker, '_quiesce', side_effect=record('services-stopped')), \
+                mock.patch.object(inplace_worker, '_consumers_stopped', side_effect=record('consumers-stopped')), \
+                mock.patch.object(inplace_worker, '_systemctl'), \
+                mock.patch.object(inplace_worker, 'synchronize', return_value={'lock_sha256': 'a' * 64}), \
+                mock.patch.object(inplace_worker, 'verify_runtime'):
+            return inplace_worker._run(self.job, self.request, action, self.current(), None,
+                                       checkpoint=lambda point: None, release_update=lambda: None)
+
+    def status(self):
+        from optional.lifeos_release_manager.cli import status
+        return status(self.profile, self.job.name)
+
+    def test_restore_keeps_a_later_unrelated_owner_change(self):
+        self.configuration.write_bytes(self.configuration.read_bytes().replace(b'default: m1', b'default: m2'))
+        self.assertTrue(self.status()['restore_available'])
+        self.assertNotIn('restore_refusal', self.status())
+        self.assertEqual(self.run_action('restore'), {'state': 'rolled_back'})
+        self.assertEqual(self.configuration.read_bytes(), self.BEFORE.replace(b'default: m1', b'default: m2'))
+        self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
+
+    def test_restore_refuses_before_services_stop_when_the_owner_changed_a_key_of_the_operation(self):
+        from optional.lifeos_release_manager.host_configuration import ConfigurationConflict
+        changed = self.configuration.read_bytes().replace(b'/new', b'/owner')
+        self.configuration.write_bytes(changed)
+        value = self.status()
+        self.assertFalse(value['restore_available'])
+        self.assertIn('plugins.entries.lifeos-hook-bridge.settings.lifeos_source_dir', value['restore_refusal'])
+        with self.assertRaisesRegex(ConfigurationConflict, r'lifeos-hook-bridge\.settings\.lifeos_source_dir.*restore again'):
+            self.run_action('restore')
+        self.assertEqual(self.order, [])
+        self.assertEqual(self.configuration.read_bytes(), changed)
+        self.assertEqual(self.status()['state'], 'applied')
+
+    def test_interrupted_restore_recovers_with_the_recorded_configuration(self):
+        from optional.lifeos_release_manager import release_programs
+        publish_program = release_programs.publish
+        def interrupted(path, *arguments, **options):
+            if Path(path) == self.configuration:
+                raise OSError('Synthetic interruption')
+            return publish_program(path, *arguments, **options)
+        self.configuration.write_bytes(self.configuration.read_bytes().replace(b'default: m1', b'default: m2'))
+        with mock.patch.object(release_programs, 'publish', interrupted), self.assertRaises(OSError):
+            self.run_action('restore')
+        self.assertEqual(self.status()['state'], 'restoring')
+        self.assertTrue((self.job / 'configuration-restore.json').is_file())
+        self.assertEqual(self.run_action('recover'), {'state': 'rolled_back'})
+        self.assertEqual(self.configuration.read_bytes(), self.BEFORE.replace(b'default: m1', b'default: m2'))
+        self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
+
+
+    def test_a_restore_interrupted_before_its_configuration_record_recovers(self):
+        self.configuration.write_bytes(self.configuration.read_bytes().replace(b'default: m1', b'default: m2'))
+        from optional.lifeos_release_manager.cli import write_state
+        write_state(self.job, 'queued-restore')
+        self.assertFalse((self.job / 'configuration-restore.json').exists())
+        self.assertEqual(self.run_action('recover'), {'state': 'rolled_back'})
+        self.assertEqual(self.configuration.read_bytes(), self.BEFORE.replace(b'default: m1', b'default: m2'))
+        self.assertEqual(self.receipt.read_text(), '{"version": "0.7.3"}\n')
+
+    def test_a_native_mount_or_a_managed_operation_keeps_the_byte_check(self):
+        import hashlib
+        from optional.lifeos_release_manager import release_worker
+        from optional.lifeos_release_manager.host_configuration import ConfigurationConflict
+        programs = ProgramTransaction(self.job / 'program-snapshot', expected_entries_sha256=self.plan['program_entries_sha256'])
+        mounted = self.configuration.read_bytes()
+        manifest = {'state': 'committed', 'entries': [{'target': str(self.configuration),
+                    'after': {'mode': 0o600, 'digest': hashlib.sha256(mounted).hexdigest()}}]}
+        self.assertIsNone(release_worker.restore_configuration(self.job, self.request, programs, manifest))
+        self.configuration.write_bytes(mounted.replace(b'default: m1', b'default: m2'))
+        with self.assertRaisesRegex(ConfigurationConflict, 'mounted LifeOS'):
+            release_worker.restore_configuration(self.job, self.request, programs, manifest)
+        self.assertIsNone(release_worker.restore_configuration(self.job, {**self.request, 'format': 1}, programs, None))
+        self.assertIsNotNone(release_worker.restore_configuration(self.job, self.request, programs, None))
+
+class HostSynchronizerTests(unittest.TestCase):
+    def test_only_an_in_place_host_synchronizes_its_dependencies(self):
+        from optional.lifeos_release_manager.inplace_worker import host_synchronizer
+        with tempfile.TemporaryDirectory() as directory:
+            profile = Path(directory) / '.hermes'
+            profile.mkdir(mode=0o700)
+            self.assertIsNone(host_synchronizer(profile, Path(directory), label='dependency-return'))
+
+    def test_synchronization_failure_uses_the_caller_message(self):
+        from unittest import mock
+        from optional.lifeos_release_manager import inplace_worker
+        from optional.lifeos_release_manager.release_catalog import ReleaseRejected
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(inplace_worker, 'run_stage', side_effect=ReleaseRejected('stage failed')), \
+                mock.patch('optional.lifeos_release_manager.inplace_preparation.host_python', return_value=Path('/python')):
+            with self.assertRaisesRegex(ReleaseRejected, '^The services stay stopped$'):
+                inplace_worker.synchronize_source(Path(directory), '/home/owner/.hermes/hermes-agent', {},
+                                                  label='dependency-return', failure='The services stay stopped')
+
+
+if __name__ == '__main__':
+    unittest.main()

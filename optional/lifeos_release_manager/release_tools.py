@@ -10,13 +10,13 @@ import subprocess
 from urllib.request import urlopen
 import zipfile
 
-from .release_catalog import ReleaseRejected, _directory
+from .release_catalog import ReleaseRejected, owner_directory
 from .release_catalog import DIGEST
 from .release_programs import publish
 
 
 def prepare_bun(directory, catalog, required_version):
-    directory = _directory(directory)
+    directory = owner_directory(directory)
     values = json.loads(Path(catalog).read_bytes())
     selected = values.get(platform.system().lower() + '-' + platform.machine())
     if (values.get('format') != 1 or not isinstance(selected, dict)

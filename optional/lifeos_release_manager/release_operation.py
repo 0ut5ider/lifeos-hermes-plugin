@@ -47,7 +47,8 @@ def process_stamp(pid):
         process = Path('/proc') / str(pid)
         if process.stat().st_uid != os.getuid():
             raise ReleaseRejected('The worker belongs to another account')
-        fields = (process / 'stat').read_text().rsplit(')', 1)[1].split()
+        from .consumer_scan import stat_fields
+        fields = stat_fields(pid)
         return None if fields[0] in {'Z', 'X'} else fields[19]
     except FileNotFoundError:
         return None

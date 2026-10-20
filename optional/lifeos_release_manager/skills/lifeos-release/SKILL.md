@@ -1,13 +1,13 @@
 ---
 name: lifeos-release
-description: Install, update, check, or recover the complete LifeOS integration from Hermes.
+description: Check compatibility, then install, update, or recover LifeOS in this Hermes installation.
 ---
 
-# Complete LifeOS releases
+# LifeOS releases
 
 Use this skill when the user asks to install or update LifeOS, check its integration version, or recover an interrupted release operation.
 
-The complete release includes the supported Hermes source, LifeOS source, bridge, release manager, dependency closure, and Hermes dashboard. Select the integration release version. The release certificate selects the supported Hermes version and native patches.
+A release contains the LifeOS bridge, the release manager, and the Hermes patches for each supported Hermes version. Installation patches the owner's existing Hermes installation; it never replaces Hermes. Run the compatibility check first: installation requires the state `compatible`, and updates require `installed`.
 
 1. Run `hermes lifeos-release status` to find current operations.
 2. Run `hermes lifeos-release prepare` to prepare the latest stable integration release. Use `--version X.Y.Z` only when the user selects an exact version. For a first installation, add `--name` and `--assistant` with the names the user supplies.
@@ -15,6 +15,8 @@ The complete release includes the supported Hermes source, LifeOS source, bridge
 4. Ask the installation owner to open the LifeOS releases tab in the authenticated Hermes dashboard. The owner reviews the exact operation and selects Install this release.
 5. For a command-line installation without managed native memory, the owner can run `hermes lifeos-release start IDENTIFIER`. A native mount with managed memory requires the authenticated dashboard owner grant.
 6. Run `hermes lifeos-release status IDENTIFIER` after Hermes restarts. Report the actual state. If it is applied, run `hermes lifeos-version` and report the verified version and commit.
+
+To check whether LifeOS can patch this Hermes installation in place, run `hermes lifeos-release compatibility`. Report the state, the detected version and commit, and each reason. The command changes nothing. Its exit status is 0 for a compatible installation and for an installation that LifeOS already patched (state `installed`).
 
 An operation in preparation_failed has not selected new programs. An operation in recovery_required needs owner review. Use the dashboard recovery control or `hermes lifeos-release recover IDENTIFIER` when the owner authorizes recovery. An existing installation can select its retained prior programs with the dashboard control or `hermes lifeos-release rollback IDENTIFIER`. The first installation has no prior integration release.
 

@@ -1,0 +1,55 @@
+90d1bf7f fix(transition): read unit keys in their section
+29c8d94c test(release): check the account of in-place preparation
+8d009e25 fix(transition): repoint managed service launchers
+56218073 docs(install): record in-place qualification results
+7511580d fix(bridge): record no source for a stub Hermes module
+d904d158 fix(memory): keep a failed probe's diagnostics
+812735d6 fix(memory): keep recovery code and failure causes
+51f7a698 fix(removal): keep owner .env lines separate
+9331c723 fix(transition): run the gateway from stock Hermes
+b19e793e fix(services): wait out each unit's whole stop timeout
+a456afe7 test(install): add memory and removal steps to the harness driver
+5a1ee1a2 fix(install): use one bridge copy for an in-place operation
+4a40868b test(install): record first-install crash recovery results
+5f645eac fix(install): control services with the operation's own bridge
+884609e4 test(install): select the harness container account
+6c55cf76 docs(install): describe in-place installation
+b07c2205 fix(memory): bind ownership activation to the host's units
+418dc080 fix(removal): restore recorded configuration on in-place removal
+4aa9a6b0 test(install): wait before rolling back stopped test containers
+c1430fe7 merge: in-place removal
+5cae2d67 docs(removal): record in-place removal work and evidence
+5757cd2d fix(install): clear stale bytecode and report dependency restore
+bfc7ed6f fix(install): recover interrupted in-place operations
+b8de109b feat(removal): remove an in-place installation
+319a30a8 fix(memory): bind provider return to the given units
+95b6db43 feat(dashboard): explain the move from a managed runtime
+08b747a5 test(install): add in-place qualification harness
+162a062d feat(install): move managed installations to in-place
+b7412a94 feat(install): record config changes and verify preserved state
+1e30fd01 feat(install): report a disabled bridge as host drift
+ec2f31b2 feat(dashboard): review in-place changes before installation
+2bfc5d42 chore(release): start 0.8.0-rc.1 for in-place installation
+d186af9d feat(install): prove the restarted gateway's bridge mode
+d945f651 fix(install): treat the operator process as the operator
+6ca799eb fix(install): inspect the recorded host source in the worker
+86d67a86 test(release): add a loopback release server for qualification
+e3904b4b feat(install): run in-place operations through the release worker
+83afeb55 feat(install): inventory host services and consumers
+e24124d7 feat(services): generate units for selected roles only
+47065be9 feat(services): bind only the profile roles a host has
+2d14a1ae feat(install): resolve bridge dependencies before review
+1c57108c docs(install): resolve design review findings
+35c3e3a6 feat(install): add in-place operation preparation
+352d5b88 feat(release): build and validate integration packages
+aee4887c feat(release): download in-place integration releases
+679c24ee feat(install): find processes that use the Hermes source
+3829e62d feat(install): record patched hosts and detect drift
+9ff3a022 feat(hermes): add update holds to update admission
+7e71dc12 docs(install): add in-place installation design
+9ffa8deb feat(install): stage patched Hermes files from the host
+5d1b52c3 fix(install): fetch the pinned LifeOS commit directly
+fa7c5fae feat(install): add read-only Hermes compatibility check
+0517bd8c docs(install): require existing Hermes patches
+7f4988f6 docs(install): preserve raw review output
+b9b06ac3 docs(install): assess minimal plugin paths

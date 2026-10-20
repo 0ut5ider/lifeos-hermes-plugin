@@ -1,0 +1,2115 @@
+{
+  "inputs": {
+    "extract": "/home/outsider/.cache/minimal-install-review-20261016/extract",
+    "stock": "/home/outsider/.cache/minimal-install-review-20261016/stock",
+    "work": "/home/outsider/.cache/minimal-install-review-20261016/work"
+  },
+  "commands": [
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/outsider/.cache/minimal-install-review-20261016/stock",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward"
+      ],
+      "rc": 0,
+      "seconds": 1.132,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.008,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.007,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.011,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.008,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e1-forward",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/hermes",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched"
+      ],
+      "rc": 0,
+      "seconds": 1.142,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.006,
+      "stderr": ":161\nerror: agent/learning_graph.py: patch does not apply\nerror: patch failed: agent/learning_mutations.py:37\nerror: agent/learning_mutations.py: patch does not apply\nerror: patch failed: hermes_cli/plugins.py:9\nerror: hermes_cli/plugins.py: patch does not apply\nerror: patch failed: hermes_cli/plugins_dispatch.py:16\nerror: hermes_cli/plugins_dispatch.py: patch does not apply\nerror: hermes_cli/plugins_policy.py: already exists in working directory\nerror: patch failed: model_tools.py:1\nerror: model_tools.py: patch does not apply\nerror: tests/agent/test_tool_result_context_hook.py: already exists in working directory\nerror: tests/hermes_cli/test_plugin_async_dispatch.py: already exists in working directory\nerror: tests/hermes_cli/test_plugin_policy_arguments.py: already exists in working directory\nerror: patch failed: tests/hermes_cli/test_plugins.py:31\nerror: tests/hermes_cli/test_plugins.py: patch does not apply\nerror: tests/hermes_cli/test_required_policy_hooks.py: already exists in working directory\nerror: patch failed: tests/hermes_cli/test_session_boundary_hooks.py:25\nerror: tests/hermes_cli/test_session_boundary_hooks.py: patch does not apply\nerror: tests/hermes_cli/test_stop_policy_dispatch.py: already exists in working directory\nerror: patch failed: tests/plugins/test_transform_tool_result_hook.py:60\nerror: tests/plugins/test_transform_tool_result_hook.py: patch does not apply\nerror: patch failed: tools/memory_tool.py:7\nerror: tools/memory_tool.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.005,
+      "stderr": "error: patch failed: agent/conversation_compression.py:2222\nerror: agent/conversation_compression.py: patch does not apply\nerror: patch failed: agent/conversation_loop.py:34\nerror: agent/conversation_loop.py: patch does not apply\nerror: patch failed: agent/session_persistence.py:39\nerror: agent/session_persistence.py: patch does not apply\nerror: agent/turn_admission.py: already exists in working directory\nerror: patch failed: agent/turn_api_call.py:50\nerror: agent/turn_api_call.py: patch does not apply\nerror: patch failed: agent/turn_context.py:330\nerror: agent/turn_context.py: patch does not apply\nerror: patch failed: agent/turn_failure_copy.py:18\nerror: agent/turn_failure_copy.py: patch does not apply\nerror: patch failed: agent/turn_final_response.py:340\nerror: agent/turn_final_response.py: patch does not apply\nerror: patch failed: agent/turn_finalizer.py:22\nerror: agent/turn_finalizer.py: patch does not apply\nerror: patch failed: agent/turn_stop_gates.py:1\nerror: agent/turn_stop_gates.py: patch does not apply\nerror: tests/agent/test_prompt_hook_block.py: already exists in working directory\nerror: patch failed: tests/agent/test_turn_context.py:541\nerror: tests/agent/test_turn_context.py: patch does not apply\nerror: patch failed: tests/agent/test_verification_continuation_budget.py:251\nerror: tests/agent/test_verification_continuation_budget.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.005,
+      "stderr": "ls/test_approval_plugin_hooks.py: patch does not apply\nerror: patch failed: tests/tools/test_code_execution.py:62\nerror: tests/tools/test_code_execution.py: patch does not apply\nerror: patch failed: tests/tools/test_code_execution_file_rpc.py:47\nerror: tests/tools/test_code_execution_file_rpc.py: patch does not apply\nerror: patch failed: tests/tools/test_code_kernel.py:431\nerror: tests/tools/test_code_kernel.py: patch does not apply\nerror: patch failed: tests/tools/test_code_kernel_remote.py:107\nerror: tests/tools/test_code_kernel_remote.py: patch does not apply\nerror: tests/tools/test_plugin_command_approval.py: already exists in working directory\nerror: patch failed: tests/tools/test_protected_instruction_cli_channel.py:14\nerror: tests/tools/test_protected_instruction_cli_channel.py: patch does not apply\nerror: patch failed: tools/approval.py:1\nerror: tools/approval.py: patch does not apply\nerror: tools/approval_policy.py: already exists in working directory\nerror: patch failed: tools/code_execution_rpc.py:25\nerror: tools/code_execution_rpc.py: patch does not apply\nerror: patch failed: tools/code_execution_tool.py:594\nerror: tools/code_execution_tool.py: patch does not apply\nerror: patch failed: tools/code_kernel.py:238\nerror: tools/code_kernel.py: patch does not apply\nerror: patch failed: tools/code_kernel_remote.py:336\nerror: tools/code_kernel_remote.py: patch does not apply\nerror: patch failed: tools/terminal_tool.py:1\nerror: tools/terminal_tool.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.007,
+      "stderr": "sts in working directory\nerror: patch failed: plugins/platforms/discord/adapter_media.py:1\nerror: plugins/platforms/discord/adapter_media.py: patch does not apply\nerror: plugins/platforms/discord/delivery.py: already exists in working directory\nerror: patch failed: tests/gateway/conftest.py:215\nerror: tests/gateway/conftest.py: patch does not apply\nerror: tests/gateway/test_clarify_cancellation_outcome.py: already exists in working directory\nerror: patch failed: tests/gateway/test_clarify_delivery_fallback.py:1\nerror: tests/gateway/test_clarify_delivery_fallback.py: patch does not apply\nerror: tests/gateway/test_discord_command_identity.py: already exists in working directory\nerror: patch failed: tests/gateway/test_discord_connect.py:1\nerror: tests/gateway/test_discord_connect.py: patch does not apply\nerror: tests/gateway/test_discord_guild_channel_only.py: already exists in working directory\nerror: patch failed: tests/gateway/test_discord_sync_limit.py:1\nerror: tests/gateway/test_discord_sync_limit.py: patch does not apply\nerror: patch failed: tests/gateway/test_resume_command.py:103\nerror: tests/gateway/test_resume_command.py: patch does not apply\nerror: tests/gateway/test_stop_clarify_waiters.py: already exists in working directory\nerror: patch failed: tests/hermes_cli/test_cli_resume_command.py:210\nerror: tests/hermes_cli/test_cli_resume_command.py: patch does not apply\nerror: patch failed: tools/clarify_gateway.py:58\nerror: tools/clarify_gateway.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.002,
+      "stderr": "error: tests/test_lifeos_delegate_tier_route.py: already exists in working directory\nerror: patch failed: tools/delegate_tool.py:200\nerror: tools/delegate_tool.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.003,
+      "stderr": "error: patch failed: agent/auxiliary_client.py:7\nerror: agent/auxiliary_client.py: patch does not apply\nerror: agent/auxiliary_recovery.py: already exists in working directory\nerror: tests/test_lifeos_aux_no_fallback.py: already exists in working directory\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.003,
+      "stderr": "error: patch failed: scripts/run_tests.sh:164\nerror: scripts/run_tests.sh: patch does not apply\nerror: tests/test_lifeos_batch_schema.py: already exists in working directory\nerror: tests/tools/test_remote_file_staleness.py: already exists in working directory\nerror: patch failed: tools/file_operations.py:1\nerror: tools/file_operations.py: patch does not apply\nerror: patch failed: tools/file_tools.py:1\nerror: tools/file_tools.py: patch does not apply\nerror: patch failed: tools/file_tools_read_tracking.py:1\nerror: tools/file_tools_read_tracking.py: patch does not apply\nerror: tools/file_tools_remote_tracking.py: already exists in working directory\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.002,
+      "stderr": "error: patch failed: cron/scheduler.py:3645\nerror: cron/scheduler.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.002,
+      "stderr": "error: patch failed: agent/auxiliary_hooks.py:225\nerror: agent/auxiliary_hooks.py: patch does not apply\nerror: patch failed: agent/turn_request_assembly.py:188\nerror: agent/turn_request_assembly.py: patch does not apply\nerror: patch failed: hermes_cli/middleware.py:7\nerror: hermes_cli/middleware.py: patch does not apply\nerror: patch failed: hermes_cli/plugin_validate.py:220\nerror: hermes_cli/plugin_validate.py: patch does not apply\nerror: tests/hermes_cli/test_required_middleware.py: already exists in working directory\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.002,
+      "stderr": "error: patch failed: agent/display.py:18\nerror: agent/display.py: patch does not apply\nerror: patch failed: agent/tool_guardrails.py:14\nerror: agent/tool_guardrails.py: patch does not apply\nerror: patch failed: agent/tool_result_classification.py:56\nerror: agent/tool_result_classification.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.013,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.007,
+      "stderr": "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch:1010: new blank line at EOF.\n+\nwarning: 1 line adds whitespace errors.\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e2-already-patched",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/outsider/.cache/minimal-install-review-20261016/stock",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e4-edit-inside-hunk"
+      ],
+      "rc": 0,
+      "seconds": 1.122,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e4-edit-inside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.006,
+      "stderr": "error: patch failed: hermes_cli/plugins.py:108\nerror: hermes_cli/plugins.py: patch does not apply\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/outsider/.cache/minimal-install-review-20261016/stock",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk"
+      ],
+      "rc": 0,
+      "seconds": 1.2,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.009,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.01,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.008,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch:1010: new blank line at EOF.\n+\nwarning: 1 line adds whitespace errors.\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e5-edit-outside-hunk",
+      "args": [
+        "git",
+        "apply",
+        "-R",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=auto",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e6-wheel-like",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only"
+      ],
+      "rc": 0,
+      "seconds": 0.136,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6-wheel-like",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 1,
+      "seconds": 0.005,
+      "stderr": "error: tests/hermes_cli/test_plugins.py: No such file or directory\nerror: tests/hermes_cli/test_session_boundary_hooks.py: No such file or directory\nerror: tests/plugins/test_transform_tool_result_hook.py: No such file or directory\n",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.008,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.007,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--check",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e6b-wheel-like-runtime-only",
+      "args": [
+        "git",
+        "apply",
+        "--exclude=tests/*",
+        "--exclude=scripts/*",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=always",
+        "/home/outsider/.cache/minimal-install-review-20261016/stock",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e7-reflink"
+      ],
+      "rc": 0,
+      "seconds": 1.161,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "cp",
+        "-a",
+        "--reflink=never",
+        "/home/outsider/.cache/minimal-install-review-20261016/stock",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e7-plain"
+      ],
+      "rc": 0,
+      "seconds": 3.504,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "findmnt",
+        "-T",
+        "/home/outsider/.cache/minimal-install-review-20261016/work",
+        "-no",
+        "FSTYPE"
+      ],
+      "rc": 0,
+      "seconds": 0.007,
+      "stderr": "",
+      "stdout": "btrfs\n"
+    }
+  ],
+  "results": {
+    "hermes_delta": {
+      "stock_files": 18243,
+      "patched_files_without_git_and_manifest": 18269,
+      "removed": [],
+      "added_count": 26,
+      "modified_count": 68,
+      "changed_total": 94,
+      "by_category": {
+        "wheel_package": 55,
+        "root_module": 2,
+        "other": 1,
+        "tests": 36
+      },
+      "other_paths": [
+        "scripts/run_tests.sh"
+      ],
+      "root_modules": [
+        "cli.py",
+        "model_tools.py"
+      ],
+      "runtime_changed_bytes_after": 3254452,
+      "runtime_changed_bytes_before": 3201872,
+      "all_changed_bytes_after": 3781668,
+      "stock_tree_bytes": 213612508
+    },
+    "E1_forward_apply_unversioned_stock": {
+      "steps": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-web-result-status.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        }
+      ],
+      "all_applied": true,
+      "comparison_with_qualified_tree": {
+        "only_left": 0,
+        "only_right": 0,
+        "different": 0
+      },
+      "comparison_detail": {
+        "only_left": [],
+        "only_right": [],
+        "different": []
+      }
+    },
+    "E2_already_patched_detection": {
+      "forward_checks": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "forward_check_rc": 1
+        },
+        {
+          "patch": "hermes-web-result-status.patch",
+          "forward_check_rc": 1
+        }
+      ],
+      "reverse_series_check_rc_single_invocation": 0,
+      "reverse_series_error": []
+    },
+    "E3_reverse_to_stock": {
+      "steps": [
+        {
+          "patch": "hermes-web-result-status.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        }
+      ],
+      "comparison_with_stock": {
+        "only_left": 0,
+        "only_right": 0,
+        "different": 0
+      },
+      "comparison_detail": {
+        "only_left": [],
+        "only_right": [],
+        "different": []
+      }
+    },
+    "E4_local_edit_inside_hunk": {
+      "edited": "hermes_cli/plugins.py VALID_HOOKS first line",
+      "steps": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 1,
+          "apply_rc": null,
+          "error": [
+            "error: patch failed: hermes_cli/plugins.py:108",
+            "error: hermes_cli/plugins.py: patch does not apply"
+          ]
+        }
+      ]
+    },
+    "E5_local_edit_outside_hunk": {
+      "edited": "model_tools.py appended comment",
+      "forward_steps": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-web-result-status.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        }
+      ],
+      "forward_all_applied": true,
+      "patched_file_matches_qualified_hash": false,
+      "reverse_steps": [
+        {
+          "patch": "hermes-web-result-status.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        }
+      ],
+      "reverse_restores_local_edit_exactly": true,
+      "other_files_match_stock_after_reverse": {
+        "only_left": 0,
+        "only_right": 0,
+        "different": 0
+      }
+    },
+    "E6_wheel_like_layout": {
+      "note": "Simulated from pyproject setuptools include list; not an actual built wheel or site-packages tree.",
+      "files_in_subset": 2216,
+      "unfiltered_steps": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 1,
+          "apply_rc": null,
+          "error": [
+            "error: tests/hermes_cli/test_plugins.py: No such file or directory",
+            "error: tests/hermes_cli/test_session_boundary_hooks.py: No such file or directory",
+            "error: tests/plugins/test_transform_tool_result_hook.py: No such file or directory"
+          ]
+        }
+      ],
+      "runtime_only_steps": [
+        {
+          "patch": "hermes-plugin-events.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-turn-gates.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-command-policy.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-session-lifecycle.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-child-routing.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-strict-inference.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-remote-files.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-cron-bootstrap.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-required-middleware.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        },
+        {
+          "patch": "hermes-web-result-status.patch",
+          "check_rc": 0,
+          "apply_rc": 0,
+          "error": []
+        }
+      ],
+      "runtime_only_all_applied": true,
+      "runtime_only_matches_qualified_runtime_files": {
+        "only_left": 0,
+        "only_right": 0,
+        "different": 0
+      }
+    },
+    "E7_copy_timing": {
+      "filesystem": "btrfs",
+      "reflink_rc": 0,
+      "reflink_seconds": 1.16,
+      "plain_rc": 0,
+      "plain_seconds": 3.5,
+      "note": "Single warm-cache run; on-disk sharing not measured."
+    },
+    "compressed_component_bytes_gzip9": {
+      "hermes_worktree_without_git": 81550670,
+      "hermes_git_metadata": 88235209,
+      "lifeos_worktree_without_git": 15946547,
+      "lifeos_git_metadata": 17696330,
+      "lifeos_hook_bridge": 1953166,
+      "optional": 76535,
+      "tests": 832734,
+      "scripts": 113522,
+      "python-runtime": 388878,
+      "docs": 6761,
+      "lifeos_hook_bridge_patches_only": 1406849,
+      "stock_hermes_tgz_as_stored": 81180515,
+      "hermes_overlay_runtime_changed_files": 902757,
+      "hermes_overlay_all_changed_files": 1022795,
+      "hermes_patch_series_only": 86215,
+      "integration_only_no_hermes_lifeos_stock_tests": 2565246
+    },
+    "uncompressed_component_bytes": {
+      "hermes_worktree_without_git": 213770704,
+      "lifeos_worktree_without_git": 29341247
+    }
+  }
+}

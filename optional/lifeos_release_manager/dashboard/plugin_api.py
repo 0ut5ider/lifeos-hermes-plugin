@@ -21,6 +21,9 @@ worker = importlib.import_module(namespace_name + '.release_worker')
 stage = importlib.import_module(namespace_name + '.release_stage')
 services = importlib.import_module(namespace_name + '.release_services')
 memory_workflow = importlib.import_module(namespace_name + '.memory_workflow')
+host_compatibility = importlib.import_module(namespace_name + '.host_compatibility')
+consumer_scan = importlib.import_module(namespace_name + '.consumer_scan')
+host_configuration = importlib.import_module(namespace_name + '.host_configuration')
 
 
 def profile():
@@ -67,11 +70,29 @@ def owner(request: Request):
 router = APIRouter(dependencies=[Depends(owner)])
 
 
+def dashboard_login(account):
+    """Return the running password provider's login when it authenticated ``account``.
+
+    Standalone removal recovery checks the owner's password after the dashboard plugin is gone, so the
+    removal records the login that this dashboard actually verifies. Hermes keeps it only on the provider.
+    """
+    from hermes_cli.dashboard_auth.registry import get_provider
+    provider=get_provider('basic')
+    username,password_hash=getattr(provider,'_username',None),getattr(provider,'_password_hash',None)
+    if not isinstance(username,str) or not isinstance(password_hash,str) or account!='dashboard:basic:'+username:
+        raise HTTPException(status_code=403,detail='Complete removal requires the password-authenticated dashboard owner')
+    return {'username':username,'password_hash':password_hash}
+
+
 @router.get('/memory-workflows')
 def memory_workflows(account: str = Depends(owner)):
     try:
         return JSONResponse(memory_workflow.status(profile(),owner=account),headers={'Cache-Control':'no-store'})
     except (ValueError,OSError,RuntimeError) as error:
+        selected=profile()
+        if not any((selected/name).exists() or (selected/name).is_symlink() for name in ('lifeos-memory.json','.lifeos-removal.json')):
+            raise HTTPException(status_code=409,detail='Claim this LifeOS installation on the LifeOS Bridge page '
+                                'before memory workflows') from error
         raise HTTPException(status_code=409,detail='Memory workflow status is unavailable under this profile') from error
 
 
@@ -83,10 +104,12 @@ async def prepare_memory_workflow(request: Request, account: str = Depends(owner
             raise HTTPException(status_code=413,detail='Use a bounded reviewed memory workflow')
         data.extend(chunk)
     if request.query_params:raise HTTPException(status_code=400,detail='Use the reviewed memory workflow fields')
-    try:selection=memory_workflow.selection(commands._json(data))
+    try:selection=memory_workflow.selection(commands.parse_json(data))
     except ValueError as error:raise HTTPException(status_code=400,detail=str(error)) from error
+    login=dashboard_login(account) if selection['kind']=='removal' else None
     try:
-        return await run_in_threadpool(memory_workflow.queue,profile(),selection,owner=account,launch=memory_workflow.launch)
+        return await run_in_threadpool(memory_workflow.queue,profile(),selection,owner=account,launch=memory_workflow.launch,
+                                       login=login)
     except PermissionError as error:
         raise HTTPException(status_code=403,detail='The installation owner must authorize this memory workflow') from error
     except (ValueError,OSError,RuntimeError) as error:
@@ -96,7 +119,7 @@ async def prepare_memory_workflow(request: Request, account: str = Depends(owner
 @router.post('/memory-workflows/{identifier}/{action}',status_code=202)
 async def apply_memory_workflow(identifier: str, action: str, request: Request, account: str = Depends(owner)):
     body=await request.body()
-    try:value=commands._json(body) if len(body)<=1024 else None
+    try:value=commands.parse_json(body) if len(body)<=1024 else None
     except ValueError:value=None
     if (action not in {'apply','recover','rollback'} or not isinstance(value,dict) or set(value)!={'signature'}
             or not isinstance(value['signature'],str) or memory_workflow.SIGNATURE.fullmatch(value['signature']) is None
@@ -119,13 +142,22 @@ def installation():
     return {'installed': existing}
 
 
+@router.get('/compatibility')
+def compatibility():
+    try:
+        value = host_compatibility.check(commands.profile_directory(profile()))
+    except (ValueError, OSError, RuntimeError, ImportError) as error:
+        raise HTTPException(status_code=409, detail='The Hermes compatibility check is unavailable') from error
+    return JSONResponse(value, headers={'Cache-Control': 'no-store'})
+
+
 @router.post('/prepare', status_code=202)
 async def prepare(request: Request):
     body = await request.body()
     if request.query_params or len(body) > 4096:
         raise HTTPException(status_code=400, detail='Use a bounded release selection')
     try:
-        value = preparation.selection(commands._json(body))
+        value = preparation.selection(commands.parse_json(body))
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
     try:
@@ -153,15 +185,48 @@ def review_release(identifier):
     try:
         job, value = commands.operation(profile(), identifier)
         selected, plan = worker.review_operation(job, value)
-        return {'identifier': identifier, 'version': value['version'], 'commit': value['commit'],
-                'package_sha256': value['package_sha256'], 'fresh': plan['fresh'],
-                'native_mount_required': plan['native_mount_required'],
-                'restart_required': plan['services'] is not None,
-                'state': commands.read_private(job / 'status.json')['state']}
+        result = {'identifier': identifier, 'version': value['version'], 'commit': value['commit'],
+                  'package_sha256': value['package_sha256'], 'fresh': plan['fresh'],
+                  'native_mount_required': plan['native_mount_required'],
+                  'restart_required': plan['services'] is not None,
+                  'state': commands.read_private(job / 'status.json')['state']}
+        if value.get('format') == 2:
+            result['in_place'] = inplace_review(job, selected, value, plan)
+        return result
     except services.FirstInstallationUnavailable as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
     except (ValueError, OSError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='The prepared release changes or has unfinished recovery') from error
+
+
+TESTED_SCOPE = ('Qualified on a single-profile Linux Git installation of Hermes {label} installed with the official '
+                'installer, with the stock gateway user service. Other plugins and tools stay installed and keep '
+                'their files; LifeOS changes how Hermes dispatches plugin hooks for every plugin.')
+
+
+def inplace_review(job, selected, value, plan):
+    """Summarize what an in-place operation changes in the owner's Hermes installation.
+
+    Preparation records the configuration keys and the update difference in the job; the review only reads them.
+    """
+    entry = selected['entry']
+    files = entry['files']
+    modified = sorted(path for path, item in files.items() if item['stock'] is not None)
+    added = sorted(path for path, item in files.items() if item['stock'] is None)
+    changes = commands.read_private(job / 'inplace-review.json')
+    services = plan['services']
+    return {'hermes': {'label': entry['label'], 'commit': entry['commit'], 'source': value['host']['source'],
+                       'modified': len(modified), 'added': len(added),
+                       'files': {'modified': modified, 'added': added}},
+            'configuration': changes['configuration'], 'update': changes['update'],
+            'known_conflicts': entry.get('known_conflicts', []),
+            'packages': sorted(name + '==' + versions[0] for name, versions in value['dependencies']['added'].items()),
+            'services': {'restarted': services['roles'], 'created': services['created'],
+                         'replaced': [{'pid': item['pid'], 'command': item['command'], 'role': item['role']}
+                                      for item in services['consumers'] if item['role'] in services['created']],
+                         'dashboard_address': {**consumer_scan.DASHBOARD_DEFAULTS, **selected['dashboard_options']}
+                         if 'dashboard' in services['created'] else None},
+            'tested_scope': TESTED_SCOPE.format(label=entry['label'])}
 
 
 @router.post('/operations/{identifier}/{action}')
@@ -190,6 +255,8 @@ def apply_release(identifier, action, account):
         return result
     except PermissionError as error:
         raise HTTPException(status_code=403, detail='The installation owner must authorize native mounting') from error
+    except host_configuration.ConfigurationConflict as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     except (ValueError, OSError, RuntimeError) as error:
         raise HTTPException(status_code=409, detail='The release operation is unavailable under the current profile') from error
     finally:

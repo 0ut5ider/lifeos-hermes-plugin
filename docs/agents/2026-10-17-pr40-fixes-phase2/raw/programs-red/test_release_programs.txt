@@ -1,0 +1,14 @@
+.........E..............
+======================================================================
+ERROR: test_entries_lists_the_reviewed_targets_and_refuses_a_substituted_journal (test_release_programs.ProgramTransactionTests.test_entries_lists_the_reviewed_targets_and_refuses_a_substituted_journal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_release_programs.py", line 269, in test_entries_lists_the_reviewed_targets_and_refuses_a_substituted_journal
+    self.assertEqual([entry['target'] for entry in reviewed.entries()],
+                                                   ^^^^^^^^^^^^^^^^
+AttributeError: 'ProgramTransaction' object has no attribute 'entries'
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.627s
+
+FAILED (errors=1)

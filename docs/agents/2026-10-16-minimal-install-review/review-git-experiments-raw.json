@@ -1,0 +1,1279 @@
+{
+  "commands": [
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "git",
+        "clone",
+        "-q",
+        "--no-checkout",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/hermes-clean",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e8-primary"
+      ],
+      "rc": 0,
+      "seconds": 1.184,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-primary",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 1.329,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-primary",
+      "args": [
+        "git",
+        "worktree",
+        "add",
+        "--detach",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 1.327,
+      "stderr": "Preparing worktree (detached HEAD 71d34bad)\nUpdating files:  78% (14328/18243)\nUpdating files:  79% (14412/18243)\nUpdating files:  80% (14595/18243)\nUpdating files:  81% (14777/18243)\nUpdating files:  82% (14960/18243)\nUpdating files:  83% (15142/18243)\nUpdating files:  84% (15325/18243)\nUpdating files:  85% (15507/18243)\nUpdating files:  86% (15689/18243)\nUpdating files:  87% (15872/18243)\nUpdating files:  88% (16054/18243)\nUpdating files:  89% (16237/18243)\nUpdating files:  90% (16419/18243)\nUpdating files:  91% (16602/18243)\nUpdating files:  92% (16784/18243)\nUpdating files:  93% (16966/18243)\nUpdating files:  94% (17149/18243)\nUpdating files:  95% (17331/18243)\nUpdating files:  96% (17514/18243)\nUpdating files:  97% (17696/18243)\nUpdating files:  98% (17879/18243)\nUpdating files:  99% (18061/18243)\nUpdating files: 100% (18243/18243)\nUpdating files: 100% (18243/18243), done.\n",
+      "stdout": "HEAD is now at 71d34bad fix(release): the builds-table render gets its R2 credentials and cannot block the release\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.009,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-primary",
+      "args": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "rc": 0,
+      "seconds": 0.661,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e8-overlay",
+      "args": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "rc": 0,
+      "seconds": 0.648,
+      "stderr": "",
+      "stdout": "t_stop_clarify_waiters.py\n?? tests/hermes_cli/test_plugin_async_dispatch.py\n?? tests/hermes_cli/test_plugin_policy_arguments.py\n?? tests/hermes_cli/test_required_middleware.py\n?? tests/hermes_cli/test_required_policy_hooks.py\n?? tests/hermes_cli/test_stop_policy_dispatch.py\n?? tests/test_lifeos_aux_no_fallback.py\n?? tests/test_lifeos_batch_schema.py\n?? tests/test_lifeos_delegate_tier_route.py\n?? tests/test_lifeos_execute_code_session.py\n?? tests/tools/test_plugin_command_approval.py\n?? tests/tools/test_remote_file_staleness.py\n?? tools/approval_policy.py\n?? tools/file_tools_remote_tracking.py\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "git",
+        "clone",
+        "-q",
+        "--no-checkout",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/hermes-clean",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base"
+      ],
+      "rc": 0,
+      "seconds": 1.229,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 1.334,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.01,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.004,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "rc": 0,
+      "seconds": 0.404,
+      "stderr": "",
+      "stdout": "t_stop_clarify_waiters.py\n?? tests/hermes_cli/test_plugin_async_dispatch.py\n?? tests/hermes_cli/test_plugin_policy_arguments.py\n?? tests/hermes_cli/test_required_middleware.py\n?? tests/hermes_cli/test_required_policy_hooks.py\n?? tests/hermes_cli/test_stop_policy_dispatch.py\n?? tests/test_lifeos_aux_no_fallback.py\n?? tests/test_lifeos_batch_schema.py\n?? tests/test_lifeos_delegate_tier_route.py\n?? tests/test_lifeos_execute_code_session.py\n?? tests/tools/test_plugin_command_approval.py\n?? tests/tools/test_remote_file_staleness.py\n?? tools/approval_policy.py\n?? tools/file_tools_remote_tracking.py\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "diff",
+        "HEAD"
+      ],
+      "rc": 0,
+      "seconds": 0.05,
+      "stderr": "",
+      "stdout": "cked\"))\n+\n+        if _effective_args is not None:\n+            _effective_args[\"command\"] = command\n \n         pty_disabled = pty and _command_requires_pipe_stdin(command)\n         if plan.promoted_from_foreground_timeout is not None:\n@@ -1619,6 +1648,7 @@ def _handle_terminal(args, **kw):\n         notify_on_complete = True  # the heartbeat rides the completion delivery path\n     return terminal_tool(\n         command=args.get(\"command\"),\n+        _effective_args=args,\n         background=args.get(\"background\", False),\n         timeout=args.get(\"timeout\"),\n         task_id=kw.get(\"task_id\"),\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "push",
+        "--include-untracked",
+        "-m",
+        "hermes-update-autostash-simulated"
+      ],
+      "rc": 0,
+      "seconds": 0.276,
+      "stderr": "",
+      "stdout": "Saved working directory and index state On (no branch): hermes-update-autostash-simulated\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "rc": 0,
+      "seconds": 0.063,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "apply"
+      ],
+      "rc": 0,
+      "seconds": 0.137,
+      "stderr": "",
+      "stdout": "li/test_plugin_async_dispatch.py\n\ttests/hermes_cli/test_plugin_policy_arguments.py\n\ttests/hermes_cli/test_required_middleware.py\n\ttests/hermes_cli/test_required_policy_hooks.py\n\ttests/hermes_cli/test_stop_policy_dispatch.py\n\ttests/test_lifeos_aux_no_fallback.py\n\ttests/test_lifeos_batch_schema.py\n\ttests/test_lifeos_delegate_tier_route.py\n\ttests/test_lifeos_execute_code_session.py\n\ttests/tools/test_plugin_command_approval.py\n\ttests/tools/test_remote_file_staleness.py\n\ttools/approval_policy.py\n\ttools/file_tools_remote_tracking.py\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "rc": 0,
+      "seconds": 0.052,
+      "stderr": "",
+      "stdout": "t_stop_clarify_waiters.py\n?? tests/hermes_cli/test_plugin_async_dispatch.py\n?? tests/hermes_cli/test_plugin_policy_arguments.py\n?? tests/hermes_cli/test_required_middleware.py\n?? tests/hermes_cli/test_required_policy_hooks.py\n?? tests/hermes_cli/test_stop_policy_dispatch.py\n?? tests/test_lifeos_aux_no_fallback.py\n?? tests/test_lifeos_batch_schema.py\n?? tests/test_lifeos_delegate_tier_route.py\n?? tests/test_lifeos_execute_code_session.py\n?? tests/tools/test_plugin_command_approval.py\n?? tests/tools/test_remote_file_staleness.py\n?? tools/approval_policy.py\n?? tools/file_tools_remote_tracking.py\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9a-autostash-same-base",
+      "args": [
+        "git",
+        "diff",
+        "HEAD"
+      ],
+      "rc": 0,
+      "seconds": 0.052,
+      "stderr": "",
+      "stdout": "cked\"))\n+\n+        if _effective_args is not None:\n+            _effective_args[\"command\"] = command\n \n         pty_disabled = pty and _command_requires_pipe_stdin(command)\n         if plan.promoted_from_foreground_timeout is not None:\n@@ -1619,6 +1648,7 @@ def _handle_terminal(args, **kw):\n         notify_on_complete = True  # the heartbeat rides the completion delivery path\n     return terminal_tool(\n         command=args.get(\"command\"),\n+        _effective_args=args,\n         background=args.get(\"background\", False),\n         timeout=args.get(\"timeout\"),\n         task_id=kw.get(\"task_id\"),\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "git",
+        "clone",
+        "-q",
+        "--no-checkout",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/hermes-clean",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent"
+      ],
+      "rc": 0,
+      "seconds": 1.159,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 1.322,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-q",
+        "-am",
+        "simulated upstream change"
+      ],
+      "rc": 0,
+      "seconds": 0.16,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": "a7923674711909f84b009ac4d8fe06bf4fee7c4f\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 0.143,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.01,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "push",
+        "--include-untracked",
+        "-m",
+        "hermes-update-autostash-simulated"
+      ],
+      "rc": 0,
+      "seconds": 0.875,
+      "stderr": "",
+      "stdout": "Saved working directory and index state On (no branch): hermes-update-autostash-simulated\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "a7923674711909f84b009ac4d8fe06bf4fee7c4f"
+      ],
+      "rc": 0,
+      "seconds": 0.043,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "apply"
+      ],
+      "rc": 0,
+      "seconds": 0.145,
+      "stderr": "",
+      "stdout": "li/test_plugin_async_dispatch.py\n\ttests/hermes_cli/test_plugin_policy_arguments.py\n\ttests/hermes_cli/test_required_middleware.py\n\ttests/hermes_cli/test_required_policy_hooks.py\n\ttests/hermes_cli/test_stop_policy_dispatch.py\n\ttests/test_lifeos_aux_no_fallback.py\n\ttests/test_lifeos_batch_schema.py\n\ttests/test_lifeos_delegate_tier_route.py\n\ttests/test_lifeos_execute_code_session.py\n\ttests/tools/test_plugin_command_approval.py\n\ttests/tools/test_remote_file_staleness.py\n\ttools/approval_policy.py\n\ttools/file_tools_remote_tracking.py\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9b-autostash-upstream-adjacent",
+      "args": [
+        "git",
+        "diff",
+        "--name-only",
+        "--diff-filter=U"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "git",
+        "clone",
+        "-q",
+        "--no-checkout",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/hermes-clean",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap"
+      ],
+      "rc": 0,
+      "seconds": 1.151,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 1.314,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-q",
+        "-am",
+        "simulated overlapping upstream change"
+      ],
+      "rc": 0,
+      "seconds": 0.107,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": "744601f9f7c277dec6f68e06be94d407eaba9d24\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 0.147,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.009,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "push",
+        "--include-untracked",
+        "-m",
+        "hermes-update-autostash-simulated"
+      ],
+      "rc": 0,
+      "seconds": 0.495,
+      "stderr": "",
+      "stdout": "Saved working directory and index state On (no branch): hermes-update-autostash-simulated\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "744601f9f7c277dec6f68e06be94d407eaba9d24"
+      ],
+      "rc": 0,
+      "seconds": 0.076,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "apply"
+      ],
+      "rc": 1,
+      "seconds": 0.153,
+      "stderr": "",
+      "stdout": "nly.py\n\ttests/gateway/test_stop_clarify_waiters.py\n\ttests/hermes_cli/test_plugin_async_dispatch.py\n\ttests/hermes_cli/test_plugin_policy_arguments.py\n\ttests/hermes_cli/test_required_middleware.py\n\ttests/hermes_cli/test_required_policy_hooks.py\n\ttests/hermes_cli/test_stop_policy_dispatch.py\n\ttests/test_lifeos_aux_no_fallback.py\n\ttests/test_lifeos_batch_schema.py\n\ttests/test_lifeos_delegate_tier_route.py\n\ttests/test_lifeos_execute_code_session.py\n\ttests/tools/test_plugin_command_approval.py\n\ttests/tools/test_remote_file_staleness.py\n\ttools/approval_policy.py\n\ttools/file_tools_remote_tracking.py\n\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9d-autostash-upstream-overlap",
+      "args": [
+        "git",
+        "diff",
+        "--name-only",
+        "--diff-filter=U"
+      ],
+      "rc": 0,
+      "seconds": 0.015,
+      "stderr": "",
+      "stdout": "hermes_cli/plugins.py\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work",
+      "args": [
+        "git",
+        "clone",
+        "-q",
+        "--no-checkout",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/hermes-clean",
+        "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean"
+      ],
+      "rc": 0,
+      "seconds": 1.162,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 1.256,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-q",
+        "-am",
+        "simulated unrelated upstream change"
+      ],
+      "rc": 0,
+      "seconds": 0.15,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": "2eced8188294172442432f6141b92b185142de35\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "71d34bad1045610252eda02ee79549436896e784"
+      ],
+      "rc": 0,
+      "seconds": 0.115,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-plugin-events.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-turn-gates.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-command-policy.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.006,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-session-lifecycle.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.011,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-child-routing.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-strict-inference.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-remote-files.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.003,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-required-middleware.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "apply",
+        "/home/outsider/.cache/minimal-install-review-20261016/extract/lifeos_hook_bridge/patches/hermes-web-result-status.patch"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "push",
+        "--include-untracked",
+        "-m",
+        "hermes-update-autostash-simulated"
+      ],
+      "rc": 0,
+      "seconds": 0.91,
+      "stderr": "",
+      "stdout": "Saved working directory and index state On (no branch): hermes-update-autostash-simulated\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "checkout",
+        "-q",
+        "--detach",
+        "2eced8188294172442432f6141b92b185142de35"
+      ],
+      "rc": 0,
+      "seconds": 0.103,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "-c",
+        "user.name=review",
+        "-c",
+        "user.email=review@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "stash",
+        "apply"
+      ],
+      "rc": 0,
+      "seconds": 0.17,
+      "stderr": "",
+      "stdout": "li/test_plugin_async_dispatch.py\n\ttests/hermes_cli/test_plugin_policy_arguments.py\n\ttests/hermes_cli/test_required_middleware.py\n\ttests/hermes_cli/test_required_policy_hooks.py\n\ttests/hermes_cli/test_stop_policy_dispatch.py\n\ttests/test_lifeos_aux_no_fallback.py\n\ttests/test_lifeos_batch_schema.py\n\ttests/test_lifeos_delegate_tier_route.py\n\ttests/test_lifeos_execute_code_session.py\n\ttests/tools/test_plugin_command_approval.py\n\ttests/tools/test_remote_file_staleness.py\n\ttools/approval_policy.py\n\ttools/file_tools_remote_tracking.py\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "rc": 0,
+      "seconds": 0.002,
+      "stderr": "",
+      "stdout": "2eced8188294172442432f6141b92b185142de35\n"
+    },
+    {
+      "cwd": "/home/outsider/.cache/minimal-install-review-20261016/work/e9c-autostash-upstream-clean",
+      "args": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "rc": 0,
+      "seconds": 0.086,
+      "stderr": "",
+      "stdout": "t_stop_clarify_waiters.py\n?? tests/hermes_cli/test_plugin_async_dispatch.py\n?? tests/hermes_cli/test_plugin_policy_arguments.py\n?? tests/hermes_cli/test_required_middleware.py\n?? tests/hermes_cli/test_required_policy_hooks.py\n?? tests/hermes_cli/test_stop_policy_dispatch.py\n?? tests/test_lifeos_aux_no_fallback.py\n?? tests/test_lifeos_batch_schema.py\n?? tests/test_lifeos_delegate_tier_route.py\n?? tests/test_lifeos_execute_code_session.py\n?? tests/tools/test_plugin_command_approval.py\n?? tests/tools/test_remote_file_staleness.py\n?? tools/approval_policy.py\n?? tools/file_tools_remote_tracking.py\n"
+    }
+  ],
+  "results": {
+    "E8_worktree_overlay": {
+      "worktree_rc": 0,
+      "worktree_seconds": 2.01,
+      "apply_rcs": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "primary_status_lines_after": 0,
+      "overlay_status_lines_after": 94,
+      "note": "Worktree shares the object store with the primary checkout; a primary gc or deletion affects it."
+    },
+    "E9a_autostash_same_base": {
+      "stash_rc": 0,
+      "clean_after_stash": true,
+      "apply_rc": 0,
+      "patch_diff_identical_after_restore": true
+    },
+    "E9b_autostash_upstream_adjacent": {
+      "apply_rc": 0,
+      "unmerged_paths": [],
+      "note": "A three-way merge combines the adjacent upstream line with the patch without a conflict."
+    },
+    "E9d_autostash_upstream_overlap": {
+      "apply_rc": 1,
+      "unmerged_paths": [
+        "hermes_cli/plugins.py"
+      ],
+      "note": "Hermes update resets the tree to clean upstream and parks the stash on a conflicted restore (stock hermes_cli/update_cmd_stash.py lines 450-496)."
+    },
+    "E9c_autostash_upstream_clean": {
+      "apply_rc": 0,
+      "head_is_base": false,
+      "patched_files_present": 94,
+      "note": "The patched files are restored on a commit that differs from the qualified base."
+    }
+  }
+}

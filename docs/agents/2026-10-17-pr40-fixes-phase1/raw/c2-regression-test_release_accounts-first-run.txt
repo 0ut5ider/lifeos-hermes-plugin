@@ -1,0 +1,16 @@
+First full run of tests/test_release_accounts.py after commit f9bc5172 (C2), before the test update in 5dd731c0.
+Ran 8 tests in 2.401s
+FAILED (errors=2)
+
+ERROR: test_cli_preparation_records_account_and_preserves_native_selection (profile='.hermes')
+  File "optional/lifeos_release_manager/inplace_preparation.py", line 220, in prepare_inplace
+    raise ReleaseRejected('LifeOS cannot be installed on this Hermes installation: ' + _first_reason(result))
+ReleaseRejected: LifeOS cannot be installed on this Hermes installation: The Hermes source contains files that are not part of the upstream version.
+
+ERROR: test_cli_preparation_records_account_and_preserves_native_selection (profile='.hermes/profiles/work')
+  File "optional/lifeos_release_manager/inplace_preparation.py", line 220, in prepare_inplace
+    raise ReleaseRejected('LifeOS cannot be installed on this Hermes installation: ' + _first_reason(result))
+ReleaseRejected: LifeOS cannot be installed on this Hermes installation: Hermes runs a named profile. LifeOS supports a single-profile installation only.
+
+Cause: the test used the integration download as its stop point (DownloadBoundary). C2 moves the
+compatibility check before the download, so the refusal arrives first. The test now expects the refusal.

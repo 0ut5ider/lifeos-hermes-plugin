@@ -13,7 +13,7 @@ if not __package__:
     sys.modules[package.__name__]=package
     __package__=package.__name__
 
-from .memory_workflow import execute, _job, _state
+from .memory_workflow import execute, workflow_job, write_workflow_state
 
 
 def main():
@@ -25,10 +25,14 @@ def main():
     try:
         if job.parent.name!='.lifeos-portability':raise ValueError('Use a fixed private memory workflow')
         execute(job.parent.parent,job.name,args.action)
-    except BaseException:
+    except BaseException as error:
         try:
-            admitted,_=_job(job.parent.parent,job.name)
-            _state(admitted,'interrupted')
+            from .release_worker import record_failure
+            record_failure(job,error)
+        except (OSError,ValueError,ImportError):pass
+        try:
+            admitted,_=workflow_job(job.parent.parent,job.name)
+            write_workflow_state(admitted,'interrupted')
         except (OSError,ValueError,RuntimeError):pass
         print('The memory workflow stopped. The owner can review its private recovery state.',file=sys.stderr)
         return 1

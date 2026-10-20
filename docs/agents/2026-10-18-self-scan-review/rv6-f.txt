@@ -1,0 +1,30 @@
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_consumers.py", line 171, in processes
+    executable=os.readlink(process/'exe').removesuffix(' (deleted)').encode()
+               ~~~~~~~~~~~^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/1708/exe'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_consumers.py", line 45, in test_running_bun_outside_reviewed_service_groups_refuses
+    self.operation().processes(self.profile,self.installed,groups=group)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/optional/lifeos_release_manager/removal_consumers.py", line 181, in processes
+    raise ReleaseRejected('The account process boundary cannot be verified') from error
+optional.lifeos_release_manager.release_catalog.ReleaseRejected: The account process boundary cannot be verified
+
+======================================================================
+FAIL: test_exact_running_coordinator_is_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_removal_coordinator.py", line 82, in test_exact_running_coordinator_is_admitted
+    result=self.run_coordinator();self.assertTrue(result['admitted'],result)
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'admitted': False, 'reason': 'The account process boundary cannot be verified', 'diagnostics': {'refused_process': 'sshd-session', 'refused_groups': ['/user.slice/user-1000.slice/session-2.scope'], 'trace': [['<string>', 24, '<module>'], ['removal_preparation.py', 98, 'check_consumers'], ['removal_consumers.py', 181, 'processes']]}}
+
+----------------------------------------------------------------------
+Ran 16 tests in 18.137s
+
+FAILED (failures=1, errors=1)

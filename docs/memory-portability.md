@@ -33,6 +33,8 @@ For reverse export and return:
 7. Review the prepared return and select **Apply reviewed provider return**.
 8. Verify the resulting provider and fresh Hermes session before proceeding with removal.
 
+The return verifies a fresh Hermes agent before it reports `verified`. That check resolves the configured model provider, so Hermes must have a provider with its credentials, even though the check sends no model request. Without one, the return stops as `interrupted` with `ProviderNotConfiguredError`; configure the provider, then select **Recover memory workflow**.
+
 To use preserved Hermes entries, select those occurrences in the export review. Review any newer LifeOS facts separately. The return uses the reviewed current files; it does not silently restore an old profile backup.
 
 For complete software removal:
@@ -41,6 +43,7 @@ For complete software removal:
 2. Acknowledge that removal disables Discord because stock Hermes lacks the integration's private-channel restrictions.
 3. Select **Prepare complete LifeOS removal**.
 4. Save the displayed standalone recovery command before applying. The manager page disappears after removal.
+   The command asks for the dashboard username and password. It checks them against the dashboard login that authorized this removal, so a later password change does not apply to it.
 5. Review the exact software changes and select **Remove reviewed LifeOS software**.
 
 Use **Recover memory workflow**, **Restore previous provider settings**, or **Restore integration software** only when offered for the operation's actual state. If the page is unavailable, use the retained standalone recovery path and its owner authentication. Preserve the journal and later edits.

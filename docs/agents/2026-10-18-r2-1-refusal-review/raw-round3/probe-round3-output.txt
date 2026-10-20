@@ -1,0 +1,14 @@
+CT 114 layout, gateway replaced -> accepted
+CT 114 layout, gateway not replaced (expect refusal) -> REFUSED: The hermes-gateway.service unit runs <home>/.hermes/.lifeos-releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/hermes/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
+CT 114 layout on Fedora with global 10-timeout-abort.conf, replaced -> accepted
+daily layout -> accepted
+dev layout, ExecStart repointed, ExecStop/ExecStopPost still on checkout forwarder -> accepted
+dashboard ExecStartPre on forwarder -> REFUSED: The hermes-dashboard.service unit runs <home>/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
+nfs-server style: sh -c with " ; " then forwarder -> REFUSED: The hermes-dashboard.service unit runs <home>/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
+two ExecStart, forwarder in first -> REFUSED: The hermes-dashboard.service unit runs <home>/workspace/hermes-agent/.hermes/bin/hermes, which runs the managed runtime. Point the unit at ~/.local/bin/hermes, run `systemctl --user daemon-reload`, then prepare again.
+replaced gateway, drop-in ExecStart forwarder -> REFUSED: The hermes-gateway.service drop-in <home>/.config/systemd/user/hermes-gateway.service.d/override.conf sets a command, and the transition replaces that unit. Remove the command from the drop-in, then prepare again.
+replaced gateway, drop-in ExecStop only (account launcher) -> REFUSED: The hermes-gateway.service drop-in <home>/.config/systemd/user/hermes-gateway.service.d/override.conf sets a command, and the transition replaces that unit. Remove the command from the drop-in, then prepare again.
+replaced gateway, drop-in ExecSearchPath sandbox option -> REFUSED: The hermes-gateway.service drop-in <home>/.config/systemd/user/hermes-gateway.service.d/override.conf sets a command, and the transition replaces that unit. Remove the command from the drop-in, then prepare again.
+replaced gateway, drop-in UMask only -> accepted
+replaced gateway, drop-in with commented Exec -> accepted
+replaced gateway, unreadable drop-in path -> REFUSED: Preparation cannot read the hermes-gateway.service drop-in /nonexistent/x.conf

@@ -1,0 +1,15 @@
+E
+======================================================================
+ERROR: test_units_without_roles_bind_exactly_the_roles_they_name (tests.test_profile_services.ProfileServicesTests.test_units_without_roles_bind_exactly_the_roles_they_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_services.py", line 236, in test_units_without_roles_bind_exactly_the_roles_they_name
+    derived = ProfileServices(self.profile, self.installed, units=gateway)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 90, in __init__
+    raise MemoryUnavailable('Profile services require distinct fixed service bindings')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Profile services require distinct fixed service bindings
+
+----------------------------------------------------------------------
+Ran 1 test in 0.851s
+
+FAILED (errors=1)

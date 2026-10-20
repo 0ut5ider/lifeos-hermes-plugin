@@ -60,6 +60,31 @@ class RemovalServicesTests(unittest.TestCase):
         self.assertEqual(self.fixture.properties('pulse')['ActiveState'],'inactive')
         for role in ('gateway','dashboard'):self.assertEqual(self.fixture.properties(role)['ActiveState'],'active')
 
+    def test_in_place_host_binds_only_gateway_and_pulse(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        from optional.lifeos_release_manager.removal_services import RemovalServices
+        units={role:self.fixture.units[role] for role in ('gateway','pulse')}
+        barrier=ProfileServices(self.profile,self.fixture.installed,units=units,roles=tuple(units))
+        operation=RemovalServices(barrier,self.home/'removal-host-service.json')
+        dashboard=self.fixture.properties('dashboard')['MainPID']
+        review=operation.prepare(removed=[self.installed_pulse])
+        operation.stop(review)
+        self.assertEqual(self.fixture.properties('gateway')['MainPID'],'0')
+        self.assertEqual(self.fixture.properties('dashboard')['MainPID'],dashboard)
+        self.installed_pulse.unlink()
+        operation.resume(review)
+        self.assertEqual(self.fixture.properties('gateway')['ActiveState'],'active')
+        self.assertEqual(self.fixture.properties('dashboard')['MainPID'],dashboard)
+        self.assertEqual(operation.verify(review)['pulse_definition_removed'],True)
+
+    def test_host_without_a_bound_pulse_refuses(self):
+        from lifeos_hook_bridge.profile_services import ProfileServices
+        from optional.lifeos_release_manager.removal_services import RemovalServices
+        barrier=ProfileServices(self.profile,self.fixture.installed,units={'gateway':self.fixture.units['gateway']},
+            roles=('gateway',))
+        with self.assertRaisesRegex(ValueError,'Pulse'):
+            RemovalServices(barrier,self.home/'removal-host-service.json').prepare(removed=[self.installed_pulse])
+
     def test_later_unit_edit_refuses_before_stopping(self):
         operation=self.operation();review=operation.prepare(removed=[self.installed_pulse])
         path=self.installed_definitions['gateway'];before=path.read_bytes()

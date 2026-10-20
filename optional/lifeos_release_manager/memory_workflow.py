@@ -10,7 +10,9 @@ import sys
 from uuid import uuid4
 
 from .cli import profile_directory, read_private
+from .inplace_services import profile_units
 from .release_accounts import account_home
+from .release_catalog import ReleaseRejected
 from .release_programs import fingerprint, publish, sync_directory
 from .release_stage import load_bridge
 
@@ -50,7 +52,7 @@ def _source(profile, *, workflow=None):
         source,configuration,_,_=retained(profile)
         return source,configuration
     if workflow is not None:
-        job,request=_job(profile,workflow)
+        job,request=workflow_job(profile,workflow)
         review_path=job/'review.json'
         if request['selection']['kind']=='removal' and (review_path.exists() or review_path.is_symlink()):
             review=read_private(review_path)
@@ -79,7 +81,7 @@ def _removal_binding(profile, identifier, kind):
             raise RuntimeError('Complete or recover the selected software removal first')
 
 
-def _state(job, state):
+def write_workflow_state(job, state):
     publish(job/'status.json',_encoded({'identifier':job.name,'state':state}))
 
 
@@ -89,7 +91,7 @@ def _review(job, request):
         'application_verified':False}
 
 
-def _job(profile, identifier):
+def workflow_job(profile, identifier):
     if not isinstance(identifier,str) or IDENTIFIER.fullmatch(identifier) is None:
         raise ValueError('Choose a server-issued memory workflow identifier')
     profile=profile_directory(profile)
@@ -97,7 +99,12 @@ def _job(profile, identifier):
     if job.resolve()!=job or not job.is_dir() or job.stat().st_uid!=os.getuid() or job.stat().st_mode & 0o077:
         raise ValueError('The memory workflow requires private profile storage')
     request=read_private(job/'request.json')
-    if (set(request)!={'version','identifier','profile','owner','bridge','selection'} or request['version']!=1
+    keys={'version','identifier','profile','owner','bridge','selection'}
+    # A removal records its owner's dashboard login; preparation requires it, status and recovery do not.
+    if isinstance(request,dict) and 'login' in request and isinstance(request.get('selection'),dict) \
+            and request['selection'].get('kind')=='removal':
+        keys.add('login')
+    if (set(request)!=keys or request['version']!=1
             or request['identifier']!=identifier or request['profile']!=str(profile)
             or not isinstance(request['owner'],str) or not request['owner'].startswith('dashboard:')):
         raise ValueError('The memory workflow belongs to another profile')
@@ -114,7 +121,7 @@ def status(profile, *, owner):
     source.memory_module('memory_backup')._directory(root,private=True)
     operations=[]
     for path in sorted(root.iterdir()):
-        job,request=_job(profile,path.name)
+        job,request=workflow_job(profile,path.name)
         if request['owner']!=owner:continue
         value=read_private(job/'status.json')
         value={**value,'kind':request['selection']['kind']}
@@ -124,8 +131,11 @@ def status(profile, *, owner):
     return {'operations':operations}
 
 
-def queue(profile, value, *, owner, launch):
+def queue(profile, value, *, owner, launch, login=None):
+    """Queue a reviewed memory workflow; a removal records the dashboard password ``login`` of its owner."""
     value=selection(value);profile=profile_directory(profile)
+    if value['kind']!='removal' and login is not None:
+        raise ValueError('Only removal records a dashboard login')
     source,configuration=_source(profile)
     configuration.check_owner(configuration.load(),owner)
     with source.memory_module('installation_lock').installation_lock(profile):
@@ -136,10 +146,14 @@ def queue(profile, value, *, owner, launch):
         source.memory_module('memory_backup')._directory(root,private=True)
         preparing=profile/'.lifeos-portability-preparations';preparing.mkdir(mode=0o700,exist_ok=True)
         source.memory_module('memory_backup')._directory(preparing,private=True)
+        if value['kind']=='removal':
+            from .removal_recovery import recovery_login
+            login=recovery_login(login,owner)
         identifier=uuid4().hex;job=preparing/identifier;job.mkdir(mode=0o700)
         request={'version':1,'identifier':identifier,'profile':str(profile),'owner':owner,
             'bridge':fingerprint(profile/'plugins/lifeos-hook-bridge'),'selection':value}
-        publish(job/'request.json',_encoded(request));_state(job,'queued')
+        if login is not None:request['login']=login
+        publish(job/'request.json',_encoded(request));write_workflow_state(job,'queued')
         os.rename(job,root/identifier);sync_directory(root);sync_directory(preparing)
     return admit(profile,identifier,'prepare',None,owner=owner,launch=launch)
 
@@ -148,7 +162,7 @@ def admit(profile, identifier, action, signature, *, owner, launch):
     if action not in {'prepare','apply','recover','rollback'}:raise ValueError('Choose a reviewed memory workflow action')
     profile=profile_directory(profile);source,configuration=_source(profile)
     with source.memory_module('installation_lock').installation_lock(profile):
-        job,request=_job(profile,identifier)
+        job,request=workflow_job(profile,identifier)
         configuration.check_owner(configuration.load(),owner)
         _removal_binding(profile,identifier,request['selection']['kind'])
         if request['owner']!=owner or _bridge_identity(source)!=request['bridge']:
@@ -180,14 +194,15 @@ def admit(profile, identifier, action, signature, *, owner, launch):
         publish(job/'admission.json',_encoded({'binding':binding,'authorization':str(grant)}))
         if previous is not None:administration.revoke(configuration,previous['authorization'])
         publish(job/'launch.json',_encoded({'unit':unit}))
-        _state(job,{'prepare':'preparing','apply':'applying','recover':'recovering','rollback':'rolling_back'}[action])
+        write_workflow_state(job,{'prepare':'preparing','apply':'applying','recover':'recovering','rollback':'rolling_back'}[action])
         try:launch(job,unit,action)
         except BaseException:
-            administration.revoke(configuration,grant);_state(job,'interrupted');raise
+            administration.revoke(configuration,grant);write_workflow_state(job,'interrupted');raise
         return {'identifier':identifier,'state':'queued','action':action}
 
 
 def launch(job, unit, action):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
     worker=Path(__file__).with_name('memory_workflow_worker.py')
@@ -198,12 +213,13 @@ def launch(job, unit, action):
         from .removal_workflow import launch_sources
         review=read_private(job/'review.json')
         worker,runtime=launch_sources(job.parent.parent,job,review['signature'])
-        host=Path(runtime['source']);python=runtime['python']
+        # An in-place host has no fixed interpreter: Hermes selects the environment when the command starts.
+        host=Path(runtime['source']);python=runtime.get('python')
     code="worker=sys.argv.pop(1)\nsys.argv[0]=worker\nrunpy.run_path(worker,run_name='__main__')\n"
     command=_launchers.runtime_command(host,[str(worker),str(job),action],
         code=code,python=python)
     command.insert(1,'-B')
-    if runtime is not None:
+    if runtime is not None and runtime.get('kind')!='host':
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     profile=job.parent.parent
@@ -214,24 +230,50 @@ def launch(job, unit, action):
     if result.returncode:raise RuntimeError('The owner service manager cannot start the memory workflow')
 
 
-def _probe(profile, source, expected, *, runtime=None):
+# The probe runs isolated (-I), which ignores PYTHONDONTWRITEBYTECODE; bytecode would alter retained recovery code.
+PROBE_CODE=('sys.dont_write_bytecode=True\nimport importlib,json,types\n'
+    'package=types.ModuleType("lifeos_memory_return_probe")\n'
+    'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
+    'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
+    'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
+
+
+def run_transition_probe(profile, source, expected, *, runtime=None, output=None):
+    # hermes_cli._launchers is a private module of the pinned Hermes v0.21.7.
     from hermes_cli import _launchers
     host=Path(_launchers.__file__).resolve().parents[1]
-    code=('import importlib,json,types\n'
-        'package=types.ModuleType("lifeos_memory_return_probe")\n'
-        'package.__path__=[sys.argv[1]]\nsys.modules[package.__name__]=package\n'
-        'probe=importlib.import_module(package.__name__+".memory_transition_probe")\n'
-        'print(json.dumps(probe.verify_builtin(json.load(sys.stdin))))\n')
+    code=PROBE_CODE
     host=host if runtime is None else Path(runtime['source'])
-    python=sys.executable if runtime is None else runtime['python']
+    python=sys.executable if runtime is None else runtime.get('python')
     command=_launchers.runtime_command(host,[str(Path(source.__file__).parent)],code=code,python=python)
-    if runtime is not None:
+    if runtime is not None and runtime.get('kind')!='host':
         from .removal_runtime import command as stock_command
         command=stock_command(command,runtime)
     environment=dict(os.environ,HERMES_HOME=str(profile),HOME=str(account_home(profile)),PYTHONDONTWRITEBYTECODE='1')
     result=subprocess.run(command,input=json.dumps(expected),text=True,capture_output=True,timeout=120,env=environment)
-    if result.returncode or result.stderr:raise RuntimeError('The actual fresh Hermes agent does not verify the reviewed memory')
+    if result.returncode or result.stderr:
+        if output is not None:record_probe_output(output,result.stderr)
+        raise probe_failure(result.stderr)
     return json.loads(result.stdout)
+
+
+PROBE_REFUSAL='MemoryUnavailable: '
+PROBE_OUTPUT_LINES=64
+
+
+def record_probe_output(path, stderr):
+    """Keep the last lines of a failed probe's diagnostics in a private file of the owner's workflow job."""
+    publish(path,('\n'.join(stderr.splitlines()[-PROBE_OUTPUT_LINES:])+'\n').encode())
+
+
+def probe_failure(stderr):
+    """Return the probe's own refusal for the owner record; other output can hold arbitrary content."""
+    lines=stderr.strip().splitlines()
+    last=lines[-1] if lines else ''
+    head,found,message=last.partition(PROBE_REFUSAL)
+    if found and head.endswith('memory_access.') and message.startswith('The '):
+        return ReleaseRejected(message)
+    return ReleaseRejected('The actual fresh Hermes agent does not verify the reviewed memory')
 
 
 def _cancel_preparation(source, configuration, job, request, lease):
@@ -242,14 +284,14 @@ def _cancel_preparation(source, configuration, job, request, lease):
         return {'state':'cancelled','application_verified':False,'native_data_retained':True}
     if selected['kind']=='activation':
         activation=source.memory_module('memory_activation').MemoryActivation(configuration,
-            installation_lease=lease,operation_id=job.name)
+            units=profile_units(profile),installation_lease=lease,operation_id=job.name)
         if activation.owns_operation(account=owner):return activation.recover(account=owner)
     else:
         snapshot=source.memory_module('memory_import_sources').directory(profile,selected['identifier'])
         returned=source.memory_module('memory_return').MemoryReturn(configuration,
             installation_lease=lease,operation_id=job.name)
         transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-            installation_lease=lease,operation_id=job.name)
+            units=profile_units(profile),installation_lease=lease,operation_id=job.name)
         own_inner=returned.owns_operation(snapshot,account=owner)
         own_outer=transition.owns_operation(account=owner)
         if own_outer and not own_inner:raise RuntimeError('The transition loses its bound return preparation')
@@ -277,7 +319,7 @@ def execute(profile, identifier, action):
     profile=profile_directory(profile);source,configuration=_source(profile,workflow=identifier)
     lock=source.memory_module('installation_lock').installation_lock
     with lock(profile,wait=True) as lease:
-        job,request=_job(profile,identifier)
+        job,request=workflow_job(profile,identifier)
         _removal_binding(profile,identifier,request['selection']['kind'])
         if _bridge_identity(source)!=request['bridge']:
             raise PermissionError('The reviewed memory workflow code changes before execution')
@@ -297,10 +339,10 @@ def execute(profile, identifier, action):
             elif selected['kind']=='removal':
                 from .removal_workflow import execute as remove
                 result=remove(profile,job,selected,action,signature,owner=owner,source=source,
-                    configuration=configuration,installation_lease=lease)
+                    configuration=configuration,installation_lease=lease,login=request.get('login'))
             elif selected['kind']=='activation':
                 activation=source.memory_module('memory_activation').MemoryActivation(configuration,
-                    installation_lease=lease,operation_id=identifier)
+                    units=profile_units(profile),installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     selected_source=read_private(snapshot/'source-binding.json')['source_identifier']
                     source_directory=paths.directory(profile,selected_source,source=True) if selected_source is not None else None
@@ -311,17 +353,22 @@ def execute(profile, identifier, action):
                 else:result=activation.recover(account=owner)
             else:
                 transition=source.memory_module('memory_transition').MemoryTransition(configuration,
-                    installation_lease=lease,operation_id=identifier)
+                    units=profile_units(profile),installation_lease=lease,operation_id=identifier)
                 if action=='prepare':
                     returned=source.memory_module('memory_return').MemoryReturn(configuration,
                         installation_lease=lease,operation_id=identifier)
                     review=returned.prepare(snapshot,selected['signature'],selected['plan_signature'],prompt=selected['prompt'],account=owner)
                     result={**transition.prepare_return(snapshot,review['signature'],account=owner),'prompt':review['prompt']}
-                elif action=='rollback':result=transition.rollback(signature,account=owner)
+                elif action=='rollback':
+                    from .inplace_worker import host_synchronizer
+                    result=transition.rollback(signature,account=owner,
+                        synchronize=host_synchronizer(profile,job,label='dependency-return-rollback'))
                 else:
-                    result=transition.apply(signature,account=owner)
-                    result=transition.verify(signature,lambda expected:_probe(profile,source,expected),account=owner)
+                    from .inplace_worker import host_synchronizer
+                    result=transition.apply(signature,account=owner,
+                        synchronize=host_synchronizer(profile,job,label='dependency-return'))
+                    result=transition.verify(signature,lambda expected:run_transition_probe(profile,source,expected,output=job/'probe-output.txt'),account=owner)
             if action=='prepare':publish(job/'review.json',_encoded(result))
-            publish(job/'receipt.json',_encoded(result));_state(job,result['state'])
+            publish(job/'receipt.json',_encoded(result));write_workflow_state(job,result['state'])
             return result
         finally:administration.revoke(configuration,admission['authorization'])

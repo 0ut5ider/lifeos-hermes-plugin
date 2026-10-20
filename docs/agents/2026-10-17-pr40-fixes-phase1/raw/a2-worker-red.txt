@@ -1,0 +1,42 @@
+EEEE
+======================================================================
+ERROR: test_stopped_unit_is_refused (test_inplace_worker.RestartTests.test_stopped_unit_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 69, in test_stopped_unit_is_refused
+    inplace_worker.check_restarted([unit], inplace_worker.boot_ticks())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'optional.lifeos_release_manager.inplace_worker' has no attribute 'check_restarted'
+
+======================================================================
+ERROR: test_unchanged_enablement_passes_and_a_changed_one_is_refused (test_inplace_worker.RestartTests.test_unchanged_enablement_passes_and_a_changed_one_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 75, in test_unchanged_enablement_passes_and_a_changed_one_is_refused
+    inplace_worker.check_enabled(recorded)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'optional.lifeos_release_manager.inplace_worker' has no attribute 'check_enabled'
+
+======================================================================
+ERROR: test_unit_restarted_after_the_drain_passes (test_inplace_worker.RestartTests.test_unit_restarted_after_the_drain_passes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 54, in test_unit_restarted_after_the_drain_passes
+    drained = inplace_worker.boot_ticks()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'optional.lifeos_release_manager.inplace_worker' has no attribute 'boot_ticks'
+
+======================================================================
+ERROR: test_unit_whose_process_predates_the_drain_is_refused (test_inplace_worker.RestartTests.test_unit_whose_process_predates_the_drain_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_inplace_worker.py", line 62, in test_unit_whose_process_predates_the_drain_is_refused
+    drained = inplace_worker.boot_ticks()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'optional.lifeos_release_manager.inplace_worker' has no attribute 'boot_ticks'
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.082s
+
+FAILED (errors=4)
+exit=1

@@ -1,0 +1,8 @@
+ERROR: test_running_bun_outside_reviewed_service_groups_refuses (test_removal_consumers.RemovalConsumersTests.test_running_bun_outside_reviewed_service_groups_refuses)
+PermissionError: [Errno 13] Permission denied: '/proc/2145/exe'
+Ran 4 tests in 2.808s
+FAILED (errors=1)
+FAIL: test_exact_running_coordinator_is_admitted (test_removal_coordinator.RemovalCoordinatorTests.test_exact_running_coordinator_is_admitted)
+AssertionError: False is not true : {'admitted': False, 'reason': 'The account process boundary cannot be verified', 'diagnostics': {'refused_process': 'sshd-session', 'refused_groups': ['/user.slice/user-1000.slice/session-4.scope'], 'trace': [['<string>', 24, '<module>'], ['removal_preparation.py', 98, '_consumers'], ['removal_consumers.py', 181, 'processes']]}}
+Ran 4 tests in 7.728s
+FAILED (failures=1)
